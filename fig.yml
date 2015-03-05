@@ -1,0 +1,8 @@
+www:
+  image: nginx
+  ports:
+    - "80:80"
+  volumes:
+    - "www:/usr/local/nginx/html"
+
+
