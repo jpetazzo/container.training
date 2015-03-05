@@ -3,6 +3,6 @@ www:
   ports:
     - "80:80"
   volumes:
-    - "www:/usr/local/nginx/html"
+    - "www:/usr/share/nginx/html"
 
 
