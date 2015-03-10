@@ -1,0 +1,9 @@
+slave:
+  image: redjack/mesos-slave
+  net: host
+  command: mesos-slave --master=trng.dckr.org:5050 --containerizers=docker,mesos
+  volumes:
+    - /sys/fs/cgroup:/sys/fs/cgroup
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /usr/bin/docker:/bin/docker
+
