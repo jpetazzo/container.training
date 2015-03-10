@@ -7,7 +7,7 @@ volt:
   image: volt/volt
   command: --master=trng.dckr.org:5050
   ports:
-    - "8080:8080"
+    - "8081:8080"
 
 zk:
   image: jplock/zookeeper
@@ -17,3 +17,5 @@ marathon:
   command: --master trng.dckr.org:5050 --zk zk://zk:2181/marathon
   links:
     - zk:zk
+  ports:
+    - "8082:8080"
