@@ -28,7 +28,7 @@ while addresses:
 
 os.system("sudo easy_install pip")
 os.system("sudo pip install docker-compose==1.3.0rc1")
-os.system("sudo apt-get -qy install pssh")
+os.system("sudo apt-get -qy install pssh apache2-utils httping")
 EOF
 pssh -I "chmod +x /tmp/postprep.py && /tmp/postprep.py" < ips.txt
 pssh "[ -f .ssh/id_rsa ] || scp -o StrictHostKeyChecking=no node1:.ssh/id_rsa* .ssh"
