@@ -4,5 +4,3 @@ www:
     - "80:80"
   volumes:
     - "htdocs:/usr/share/nginx/html"
-
-

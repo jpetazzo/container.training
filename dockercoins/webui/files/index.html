@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<title>DockerCoin Miner WebUI</title>
+<script src="jquery.js"></script>
+<script>
+
+String.prototype.format = function () {
+    var args = arguments;
+    return this.replace(/\{(\d+)\}/g, function (m, n) { return args[n]; });
+};
+
+var stats = [];
+
+function refresh () {
+    var content = $("#content");
+    $.ajax({ url: "json" }).done(function (data) {
+        stats.push(data);
+        while (stats.length > 20) {
+            stats.shift();
+        }
+        content.empty();
+        $.each(stats, function (index) {
+            var stat = stats[index];
+            content.append("Coins: {0}. ".format(stat.coins));
+            var s10 = Math.trunc(1000*stat.speed10)/1000;
+            var s100 = Math.trunc(1000*stat.speed100)/1000;
+            var s1000 = Math.trunc(1000*stat.speed1000)/1000;
+            var ago = Math.trunc(1000*stat.ago)/1000;
+            content.append("Average speed (10/100/1000): {0}/{1}/{2}. ".format(s10, s100, s1000));
+            content.append("Last result was {0}s ago.<br/>".format(ago));
+        });
+    });
+}
+
+function loop () {
+    setInterval(refresh, 3000);
+}
+</script>
+</head>
+<body>
+
+<h1>DockerCoin Miner WebUI</h1>
+
+<a href="#" onClick="refresh();">Refresh</a>
+<a href="#" onClick="loop();">Every 3s</a>
+
+<div id="content">Statistics will show up here.</div>
+
+</body>
+</html>

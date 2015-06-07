@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Docker Orchestration Workshop</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; font-size: 150%; }
+
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      a {
+        text-decoration: none;
+        color: blue;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .red { color: #fa0000; }
+      .gray { color: #ccc; }
+      .small { font-size: 70%; }
+      .big { font-size: 140%; }
+      .underline { text-decoration: underline; }
+      .footnote {
+        position: absolute;
+        bottom: 3em;
+      }
+      .pic {
+        vertical-align: middle;
+        text-align: center;
+        padding: 0 0 0 0 !important;
+      }
+      img {
+        max-width: 100%;
+        max-height: 450px;
+      }
+      .title {
+        vertical-align: middle;
+        text-align: center;
+      }
+      .title {
+        font-size: 2em;
+      }
+      .title .remark-slide-number {
+        font-size: 0.5em;
+      }
+      .quote {
+        background: #eee;
+        border-left: 10px solid #ccc;
+        margin: 1.5em 10px;
+        padding: 0.5em 10px;
+        quotes: "\201C""\201D""\2018""\2019";
+        font-style: italic;
+      }
+      .quote:before {
+        color: #ccc;
+        content: open-quote;
+        font-size: 4em;
+        line-height: 0.1em;
+        margin-right: 0.25em;
+        vertical-align: -0.4em;
+      }
+      .quote p {
+        display: inline;
+      }
+      .icon img {
+        height: 1em;
+      }
+      .exercise {
+        background-color: #eee;
+        background-image: url("keyboard.png");
+        background-size: 1.4em;
+        background-repeat: no-repeat;
+        background-position: 0.2em 0.2em;
+        border: 2px dotted black;
+      }
+      .exercise::before {
+        content: "Exercise:";
+        margin-left: 1.8em;
+      }
+      li p { line-height: 1.25em; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: title
+
+# Docker <br/> Orchestration <br/> Workshop
+
+---
+
+# Pre-requirements
+
+- Computer with network connection and SSH client
+  <br/>(on Windows, get [putty](http://www.putty.org/))
+- GitHub account
+- Docker Hub account
+- Basic Docker knowledge
+
+.exercise[
+
+- This is the stuff you're supposed to do!
+- Create [GitHub](https://github.com/) and
+  [Docker Hub](https://hub.docker.com) accounts now if needed
+- Go to [view.dckr.info](http://view.dckr.info) to view those slides
+
+]
+
+---
+
+# VM environment
+
+- Each person gets 5 VMs
+- They are *your* VMs
+- They'll be up until tomorrow
+- You have a little card with login+password+IP addresses
+- You can automatically SSH from one VM to another
+
+.exercise[
+
+- Log into one of the VMs
+- Check that you can SSH to `node1`
+- Check the version of docker with `docker version`
+
+]
+
+Note: from now on, unless instructed, all commands have
+to be done from the VMs.
+
+---
+
+# Our sample application
+
+- Split into 5 microservices
+  - `rng` = web service generating random bytes
+  - `hasher` = web service accepting POST data and
+    returning its hash
+  - `worker` = background process using `rng` and `hasher`
+  - `redis` = data store for the results of the worker
+  - `webui` = web interface to watch progress
+
+.exercise[
+
+- 
+
+---
+
+# Running on a single node
+
+# Finding bottlenecks
+
+# Scaling workers on a single node
+
+# Scaling HTTP on a single node
+
+# Introducing Swarm
+
+# Setting up our Swarm cluster
+
+# Running on Swarm
+
+# Scaling on Swarm
+
+# Cluster metrics
+
+# Introducing Mesos
+
+# Setting up our Mesos cluster
+
+# Running on Mesos
+
+# Network on Mesos
+
+---
+
+class: title
+
+# Thanks! <br/> Questions?
+
+### [@jpetazzo](https://twitter.com/jpetazzo) <br/> [@docker](https://twitter.com/docker)
+
+    </textarea>
+    <script src="https://gnab.github.io/remark/downloads/remark-0.5.9.min.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>

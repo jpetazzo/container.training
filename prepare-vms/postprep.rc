@@ -1,0 +1,35 @@
+pssh -I tee /tmp/postprep.py <<EOF
+#!/usr/bin/env python
+import os
+import sys
+import urllib
+
+clustersize = 5
+
+myaddr = urllib.urlopen("http://myip.enix.org/REMOTE_ADDR").read()
+
+addresses = list(l.strip() for l in sys.stdin)
+
+def makenames(addrs):
+    return [ "node%s"%(i+1) for i in range(len(addrs)) ]
+
+while addresses:
+    cluster = addresses[:clustersize]
+    addresses = addresses[clustersize:]
+    if myaddr not in cluster:
+        continue
+    names = makenames(cluster)
+    for ipaddr, name in zip(cluster, names):
+        os.system("grep ^%s /etc/hosts || echo %s %s | sudo tee -a /etc/hosts"
+                  %(ipaddr, ipaddr, name))
+    if myaddr == cluster[0]:
+        os.system("[ -f .ssh/id_rsa ] || ssh-keygen -t rsa -f .ssh/id_rsa -P ''")
+
+
+os.system("sudo easy_install pip")
+os.system("sudo pip install docker-compose==1.3.0rc1")
+os.system("sudo apt-get -qy install pssh")
+EOF
+pssh -I "chmod +x /tmp/postprep.py && /tmp/postprep.py" < ips.txt
+pssh "[ -f .ssh/id_rsa ] || scp -o StrictHostKeyChecking=no node1:.ssh/id_rsa* .ssh"
+pssh "grep docker@ .ssh/authorized_keys || cat .ssh/id_rsa.pub >> .ssh/authorized_keys"
