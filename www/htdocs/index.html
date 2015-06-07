@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <base target="_blank">
     <title>Docker Orchestration Workshop</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style type="text/css">
@@ -135,25 +136,300 @@ to be done from the VMs.
 
 # Our sample application
 
-- Split into 5 microservices
+- Let's look at the general layout of
+  [source code](https://github.com/jpetazzo/orchestration-workshop)
+
+- Each directory = 1 microservice
   - `rng` = web service generating random bytes
-  - `hasher` = web service accepting POST data and
-    returning its hash
+  - `hasher` = web service computing hash of POSTed data
   - `worker` = background process using `rng` and `hasher`
-  - `redis` = data store for the results of the worker
   - `webui` = web interface to watch progress
 
 .exercise[
 
-- 
+- Fork the repository on GitHub
+- Clone your fork on your VM
+
+]
+
 
 ---
 
-# Running on a single node
+## What's this application?
+
+- It is a DockerCoin miner! 💰🐳📦🚢
+
+- No, you can't buy coffee with DockerCoins
+
+- How DockerCoins works:
+
+  - `worker` asks to `rng` to give it random bytes
+  - `worker` feeds those random bytes into `hasher`
+  - each hash starting with `0` is a DockerCoin
+  - DockerCoins are stored in `redis`
+  - you can see the progress with the `webui`
+
+Next: we will inspect components independently.
+
+---
+
+## Running components independently
+
+.exercise[
+
+- Go to the `dockercoins` directory (in the cloned repo)
+- Run `docker-compose up rng`
+  <br/>(Docker will pull `python` and build the microservice)
+
+]
+
+.icon[![Warning](warning.png)] The container log says
+`Running on http://0.0.0.0:80/`
+<br/>but that is port 80 *in the container*.
+On the host it is 8001.
+
+This is mapped in The `docker-compose.yml` file:
+
+```
+rng:
+  …
+  ports:
+    - "8001:80"
+```
+
+---
+
+## Getting random bytes of data
+
+.exercise[
+
+- Open a second terminal and connect to the same VM
+- Check that the service is alive:
+  <br/>`curl localhost:8001`
+- Get 10 bytes of random data:
+  <br/>`curl localhost:8001/10`
+  <br/>(the output might confuse your terminal, since this is binary data)
+- Test the performance on one big request::
+  <br/>`curl -o/dev/null localhost:8001/10000000`
+  <br/>(should take ~1s, and show speed of ~10 MB/s)
+
+]
+
+Next: we'll see how it behaves with many small requests.
+
+---
+
+## Concurrent requests
+
+.exercise[
+
+- Test 1000 requests of 1000 bytes each:
+  <br/>`ab -n 1000 localhost:8001/1000`
+  <br/>(performance should be ~1 MB/s)
+- Test 1000 requests, 10 requests in parallel:
+  <br/>`ab -n 1000 -c 10 localhost:8001/1000`
+  <br/>(look how the latency has increased!)
+- Try with 100 requests in parallel:
+  <br/>`ab -n 1000 -c 100 localhost:8001/1000`
+
+]
+
+Take note of the number of requests/s.
+
+---
+
+## Save some random data and stop the generator
+
+Before testing the hasher, let's save some random
+data that we will feed to the hasher later.
+
+.exercise[
+
+- Run `curl localhost:8001/1000000 > /tmp/random`
+
+]
+
+Now we can stop the generator.
+
+.exercise[
+
+- In the shell where you did `docker-compose up rng`,
+  <br/>stop it by hitting `^C`
+
+]
+
+---
+
+## Running the hasher
+
+.exercise[
+
+- Run `docker-compose up hasher`
+  <br/>(it will pull `ruby` and do the build)
+
+]
+
+.icon[![Warning](warning.png)] Again, pay attention to the port mapping!
+
+The container log says that it's listening on port 80, 
+but it's mapped to port 8002 on the host.  
+
+You can see the mapping in `docker-compose.yml`.
+
+---
+
+## Testing the hasher
+
+.exercise[
+
+- Run `curl localhost:8002`
+  <br/>(it will say it's alive)
+
+- Posting binary data requires some extra flags:
+
+  ```
+  curl \
+    -H "Content-type: application/octet-stream" \
+    --data-binary @/tmp/random \
+    localhost:8002
+  ```
+
+- Compute the hash locally to verify that it works fine:
+  <br/>`sha256sum /tmp/random`
+  <br/>(it should display the same hash)
+
+]
+
+---
+
+## Benchmarking the hasher
+
+The invocation of `ab` will be slightly more complex as well.
+
+.exercise[
+
+- Execute 1000 requests in a row:
+  
+  ```
+  ab -n 1000 -T application/octet-stream \
+     -p /tmp/random localhost:8002/
+  ```
+
+- Execute 1000 requests with 100 requests in parallel:
+  
+  ```
+  ab -c 100 -n 1000 -T application/octet-stream \
+     -p /tmp/random localhost:8002/
+  ```
+
+]
+
+Take note of the performance numbers (requests/s).
+
+---
+
+## Benchmarking the hasher on smaller data
+
+Here we hashed 1 meg. Later we will hash much smaller payloads.
+
+Let's repeat the tests with smaller data.
+
+.exercise[
+
+- Run `truncate --size=10 /tmp/random`
+- Repeat the `ab` tests
+
+]
+
+---
+
+# Running the whole app on a single node
+
+.exercise[
+
+- Run `docker-compose up` to start all components
+
+]
+
+- Aggregate output is shown
+
+- Output is verbose because the worker is constantly hitting other services
+
+- Now let's use the little web UI to see realtime progress
+
+
+.exercise[
+
+- Open http://[yourVMaddr]:8000/ (from a browser)
+- Click on the (few) available buttons
+
+]
+
+---
+
+## Running in the background
+
+- The logs are very verbose (and won't get better)
+
+- Let's put them in the background for now!
+
+.exercise[
+
+- Stop the app (with `^C`)
+
+- Start it again with `docker-compose up -d`
+
+- Check that the number of coins is still increasing
+
+]
+
+---
 
 # Finding bottlenecks
 
+- Let's look at CPU, memory, and I/O usage
+
+.exercise[
+
+- run `top` to see CPU and memory usage
+  <br/>(you should see idle cycles)
+
+- run `vmstat 3` to see I/O usage (si/so/bi/bo)
+  <br/>(the 4 numbers should be almost zero,
+  <br/>except `bo` for logging)
+
+]
+
+We have available resources.
+
+- Why?
+- How can we use them?
+
+---
+
+## Measuring performance
+
+- The code doesn't have instrumentation
+
+- Let's use `ab` and `httping` to view latency of microservices
+
+.exercise[
+
+- Start two new SSH connections
+
+- In the first one, let run `httping localhost:8001`
+
+- In the other one, let run `httping localhost:8002`
+
+]
+
+---
+
 # Scaling workers on a single node
+
+- Docker Compose supports scaling
+- It doesn't deal with load balancing
+- For services that *do not* accept connections, that's OK
 
 # Scaling HTTP on a single node
 
