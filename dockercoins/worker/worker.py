@@ -18,7 +18,7 @@ def get_random_bytes():
     log.debug("Connecting to RNG")
     connection = http.client.HTTPConnection("rng")
     log.debug("Sending request")
-    connection.request("GET", "/4")
+    connection.request("GET", "/1000")
     response = connection.getresponse()
     random_bytes = response.read()
     log.debug("Got {} bytes of random data".format(len(random_bytes)))
@@ -35,6 +35,22 @@ def hash_bytes(data):
     hex_hash = response.read()
     log.debug("Got hash: {}...".format(hex_hash[:8]))
     return hex_hash
+
+
+def work_loop(interval=1):
+    deadline = 0
+    loops_done = 0
+    old_total = 0
+    while True:
+        if time.time() > deadline:
+            new_total = redis.incrby("hashes", loops_done)
+            deadline = time.time() + interval
+            loops_done = 0
+            log.info("Current apparent speed: {}h/s"
+                     .format((new_total-old_total)/interval))
+            old_total = new_total
+        work_once()
+        loops_done += 1
 
 
 def work_once():
@@ -64,8 +80,5 @@ def work_once():
 
 
 if __name__ == "__main__":
-    while True:
-        work_once()
-
-
+    work_loop()
 
