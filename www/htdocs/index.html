@@ -850,10 +850,142 @@ So, what do‽
 
 ---
 
-## 
+# Network plumbing on Swarm
 
+- We will share *network namespaces*
 
-- 
+- Other available options:
+
+  - injecting service addresses in environment variables
+
+  - implementing service discovery in the application
+
+  - using an overlay network like Weave or Pipework
+
+---
+
+## Network namespaces
+
+- Two (or more) containers can share a network stack
+
+- They will have the same IP address
+
+- They will be able to connect over `localhost`
+
+- Other containers can be added later
+
+---
+
+## Connecting over localhost
+
+.exercise[
+
+- Start a container running redis:
+  <br/>`docker run -d --name myredis redis`
+
+- Start another container in the same network namespace:
+  <br/>`docker run -ti --net container:myredis ubuntu`
+
+- In the 2nd container, install telnet:
+  <br/>`apt-get update && apt-get install telnet`
+
+- In the 2nd container, connect to redis on localhost:
+  <br/>`telnet localhost 6379`
+
+]
+
+Some Redis commands: `"SET key value"` `"GET key"`
+
+---
+
+## Same IP address
+
+- Let's confirm that our containers share
+  the same IP address
+
+.exercise[
+
+- Run a couple of times:
+  <br/>`docker run ubuntu ip addr ls`
+
+- Now run a couple of times:
+  <br/>`docker run --net container:myredis ubuntu ip addr ls`
+
+]
+
+---
+
+## Our plan for service discovery
+
+- Replace all `links` with static `/etc/hosts` entries
+
+- Those entries will map to `127.0.0.X`
+  <br/>(with different `X` for each service)
+
+- Example: `redis` will point to `127.0.0.2`
+  <br/>(instead of a container address)
+
+- Start all services; scale them if we want
+  <br/>(at this point, they will all fail to connect)
+
+- Start ambassadors in the services' namespace;
+  <br/>each ambassador will listen on the right `127.0.0.X`
+
+.icon[![Warning](warning.png)] Services should try to reconnect!
+
+---
+
+## .icon[![Warning](warning.png)] Work in progress
+
+- Ideally, we would use `--add-host`
+  (and Docker Compose counterpart, `extra_hosts`) to populate
+  `/etc/hosts`
+
+- Unfortunately, this does not work yet
+  <br/>(See [Swarm issue #908](https://github.com/docker/swarm/issues/908)
+  for details)
+
+- We'll populate `/etc/hosts` manually instead
+  <br/>(with `docker exec`)
+
+---
+
+## Our tools
+
+- `unlink-services.py`
+
+  - replaces all `links` with `extra_hosts` entries
+
+- `connect-services.py`
+
+  - scans running containers
+
+  - generate commands to patch `/etc/hosts`
+
+  - generate commands to start ambassadors
+
+---
+
+## Putting it together
+
+.exercise[
+
+- Generate the new Compose YAML file:
+  <br/>`../unlink-services.py docker-compose.yml-XXX deploy.yml`
+
+- Start our services:
+  <br/>`docker-compose -f deploy.yml up -d`
+  <br/>`docker-compose -f deploy.yml scale worker=10`
+  <br/>`docker-compose -f deploy.yml scale rng=10`
+
+- Generate plumbing commands:
+  <br/>`../connect-services.py deploy.yml`
+
+]
+
+Review the plumbing commands, then execute them.
+
+---
 
 # Scaling on Swarm
 
