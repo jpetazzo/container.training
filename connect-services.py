@@ -35,7 +35,7 @@ for service_name, service in stack.items():
     extra_hosts = service.get("extra_hosts", {})
     for link_name, link_addr in extra_hosts.items():
         if link_name not in ports:
-            print("Skipping link {} in service {} "
+            print("# Skipping link {} in service {} "
                   "(no port mapping defined). "
                   "Your code will probably break."
                   .format(link, service_name))
@@ -47,8 +47,6 @@ for service_name, service in stack.items():
                 ["docker", "port", container_name, port]
             )
         endpoints.append(endpoint.strip())
-        print("Endpoints found for {}->{}:".format(service_name, link_name))
-        print(endpoints)
         for container_name in service_instances[service_name]:
             ambassador = {}
             ambassador["image"] = "jpetazzo/hamba"
@@ -60,6 +58,13 @@ for service_name, service in stack.items():
             n = len(ambassadors)
             ambassador["name"] = "amba{}".format(n)
             ambassadors.append(ambassador)
+
+for service_name, service in stack.items():
+    for container_name in service_instances[service_name]:
+        extra_hosts = service.get("extra_hosts", {})
+        for link_name, link_addr in extra_hosts.items():
+            print("docker exec {} sh -c 'echo {} {} >> /etc/hosts'"
+                  .format(container_name, link_addr, link_name))
 
 for amba in ambassadors:
     print("docker run -d --name {name} --net {net} {image} {command}".format(**amba))
