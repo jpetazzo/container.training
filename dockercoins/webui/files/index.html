@@ -43,7 +43,7 @@ function refresh () {
             // Compute instantaneous speed
             var s1 = series[i];
             var s2 = series[i+1];
-            var speed = (s2.coins-s1.coins)/(s2.now-s1.now);
+            var speed = (s2.hashes-s1.hashes)/(s2.now-s1.now);
             points.push({ x: s2.now, y: speed });
         }
         if (graph == null) {
