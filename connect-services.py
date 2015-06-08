@@ -59,8 +59,8 @@ for service_name, service in stack.items():
             ambassador["name"] = "amba{}".format(n)
             ambassadors.append(ambassador)
 
-for service_name, container_names in service_instances.items():
-    for container_name in container_names:
+for service_name, service in stack.items():
+    for container_name in service_instances[service_name]:
         extra_hosts = service.get("extra_hosts", {})
         for link_name, link_addr in extra_hosts.items():
             print("docker exec {} sh -c 'echo {} {} >> /etc/hosts'"
