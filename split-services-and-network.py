@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
+import sys
 import yaml
 
 input_file, output_file = sys.argv[1:3]
 
-stack = yaml.load(input_file)
+stack = yaml.load(open(input_file))
 
 # The ambassadors need to know the service port to use.
 # Those ports must be declared here.
@@ -18,7 +19,7 @@ ports = dict(
 links = {}
 
 # First, collect all links.
-for service_name, service in stack.itemize():
+for service_name, service in stack.items():
     if "links" in service:
         for link in service["links"]:
             if link not in ports:
