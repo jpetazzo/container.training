@@ -33,6 +33,9 @@ function refresh () {
             data.now -= 1;
             series.unshift(data);
         }
+        while (series.length > 250) {
+            series.shift();
+        }
         while (points.length > 0) {
             points.pop();
         }
