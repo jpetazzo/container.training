@@ -32,6 +32,8 @@ for service_name, service in stack.items():
                 links[service_name] = []
             links[service_name].append(link)
         del service["links"]
+    if "ports" in service:
+        del service["ports"]
 
 yaml.safe_dump(stack, open(output_file, "w"))
 
