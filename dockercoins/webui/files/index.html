@@ -2,7 +2,17 @@
 <html>
 <head>
 <title>DockerCoin Miner WebUI</title>
+<link rel="stylesheet" type="text/css" href="rickshaw.min.css"> 
+<style>
+#graph {
+    background-color: #eee;
+    width: 800px;
+    height: 400px;
+}
+</style>
 <script src="jquery.js"></script>
+<script src="d3.min.js"></script>
+<script src="rickshaw.min.js"></script>
 <script>
 
 String.prototype.format = function () {
@@ -10,42 +20,68 @@ String.prototype.format = function () {
     return this.replace(/\{(\d+)\}/g, function (m, n) { return args[n]; });
 };
 
-var stats = [];
+var series = [];
+var points = []
+var graph = null;
 
 function refresh () {
     var content = $("#content");
     $.ajax({ url: "json" }).done(function (data) {
-        stats.push(data);
-        while (stats.length > 20) {
-            stats.shift();
+        series.push(data);
+        while (series.length < 250) {
+            data = JSON.parse(JSON.stringify(data));
+            data.now -= 1;
+            series.unshift(data);
         }
-        content.empty();
-        $.each(stats, function (index) {
-            var stat = stats[index];
-            content.append("Coins: {0}. ".format(stat.coins));
-            var s10 = Math.trunc(1000*stat.speed10)/1000;
-            var s100 = Math.trunc(1000*stat.speed100)/1000;
-            var s1000 = Math.trunc(1000*stat.speed1000)/1000;
-            var ago = Math.trunc(1000*stat.ago)/1000;
-            content.append("Average speed (10/100/1000): {0}/{1}/{2}. ".format(s10, s100, s1000));
-            content.append("Last result was {0}s ago.<br/>".format(ago));
-        });
+        while (points.length > 0) {
+            points.pop();
+        }
+        for (var i=0; i<series.length-1; i++) {
+            // Compute instantaneous speed
+            var s1 = series[i];
+            var s2 = series[i+1];
+            var speed = (s2.coins-s1.coins)/(s2.now-s1.now);
+            points.push({ x: s2.now, y: speed });
+        }
+        if (graph == null) {
+            graph = new Rickshaw.Graph({
+                renderer: "area",
+                stroke: true,
+                width: 800,
+                height: 400,
+                element: $("#graph")[0],
+                preserve: true,
+                series: [
+                    { name: "Coins",
+                      color: "steelblue",
+                      data: points 
+                    }
+                ]
+            });
+            graph.render();
+            var yAxis = new Rickshaw.Graph.Axis.Y({
+                graph: graph,
+                tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+                ticksTreatment: "glow"
+            });
+            yAxis.render();
+        } else {
+            graph.update();
+        }
     });
 }
 
-function loop () {
-    setInterval(refresh, 3000);
-}
+$(function () {
+    setInterval(refresh, 2000);
+});
 </script>
 </head>
 <body>
 
 <h1>DockerCoin Miner WebUI</h1>
 
-<a href="#" onClick="refresh();">Refresh</a>
-<a href="#" onClick="loop();">Every 3s</a>
-
-<div id="content">Statistics will show up here.</div>
+<div id="graph"></div>
+<div id="content">Current speed: N/A</div>
 
 </body>
 </html>
