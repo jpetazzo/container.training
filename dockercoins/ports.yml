@@ -1,0 +1,5 @@
+hasher: 80
+redis: 6379
+rng: 80
+webui: 80
+
