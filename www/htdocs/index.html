@@ -766,6 +766,95 @@ Note: the Docker daemon on your VMs listens on port 55555
 
 # Running on Swarm
 
+- Swarm doesn't support builds (yet)
+
+- .icon[![Explosion](explosion.gif)] Our version of Compose will crash on builds
+
+- Try it!
+
+.exercise[
+
+- Run `docker-compose build` and see the traceback!
+
+]
+
+---
+
+## Building with Swarm
+
+- Let's step back and think for a minute ...
+
+- What should `docker build` do on Swarm?
+
+  - build on one machine
+
+  - build everywhere ($$$)
+
+- After the build, what should `docker run` do?
+
+  - run where we built (how do we know where it is?)
+
+  - run on any machine that has the image
+
+- What do, what do‽
+
+---
+
+## The plan
+
+- Build locally
+
+- Tag images
+
+- Upload them to the hub
+
+- Update the Compose file to use those images
+
+*That's the purpose of the `build-tag-push.py` script!*
+
+---
+
+## Build, Tag, And Push
+
+.exercise[
+
+- Look at `build-tag-push.py`
+
+- Run it!
+]
+
+- Run it in the directory containing `docker-compose.yml`
+  <br/>(suggestion: `../build-tag-push.py`)
+
+- It will create a new `docker-compose.yml` file
+  <br/>(named `docker-compose.yml-XXX` where `XXX` is a timestamp)
+
+---
+
+## Can we run this now?
+
+Let's try!
+
+.exercise[
+
+- Run `docker-compose -f docker-compose.yml-XXX up`
+
+]
+
+--
+
+It won't work, because Compose and Swarm do not collaborate
+to establish *placement constraints*.
+
+So, what do‽
+
+---
+
+## 
+
+
+- 
+
 # Scaling on Swarm
 
 # Cluster metrics
