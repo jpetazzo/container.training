@@ -59,11 +59,12 @@ def work_once():
 
 
 if __name__ == "__main__":
-    try:
-        work_loop()
-    except:
-        log.exception("In work loop:")
-        log.error("Waiting 10s and restarting.")
-        time.sleep(10)
+    while True:
+        try:
+            work_loop()
+        except:
+            log.exception("In work loop:")
+            log.error("Waiting 10s and restarting.")
+            time.sleep(10)
 
 
