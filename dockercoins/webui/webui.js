@@ -8,6 +8,9 @@ app.get('/', function (req, res) {
 
 app.get('/json', function (req, res) {
     var client = redis.createClient(6379, 'redis');
+    client.on("error", function (err) {
+        console.error("Error connecting to redis", err);
+    });
     client.hlen('wallet', function (err, coins) {
         client.get('hashes', function (err, hashes) {
             var now = Date.now() / 1000;
