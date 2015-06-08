@@ -1,82 +1,61 @@
-import http.client
 import logging
 import os
 from redis import Redis
+import requests
 import time
 
 DEBUG = os.environ.get("DEBUG", "").lower().startswith("y")
 
 log = logging.getLogger(__name__)
-level = logging.DEBUG if DEBUG else logging.INFO
-logging.basicConfig(level=level)
+if DEBUG:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.INFO)
+    logging.getLogger("requests").setLevel(logging.WARNING)
 
 
 redis = Redis("redis")
 
 
 def get_random_bytes():
-    log.debug("Connecting to RNG")
-    connection = http.client.HTTPConnection("rng")
-    log.debug("Sending request")
-    connection.request("GET", "/1000")
-    response = connection.getresponse()
-    random_bytes = response.read()
-    log.debug("Got {} bytes of random data".format(len(random_bytes)))
-    return random_bytes
+    r = requests.get("http://rng/32")
+    return r.content
 
 
 def hash_bytes(data):
-    log.debug("Connecting to HASHER")
-    connection = http.client.HTTPConnection("hasher")
-    log.debug("Sending request")
-    connection.request(
-        "POST", "/", data, {"Content-Type": "application/octet-stream"})
-    response = connection.getresponse()
-    hex_hash = response.read()
-    log.debug("Got hash: {}...".format(hex_hash[:8]))
+    r = requests.post("http://hasher/",
+                      data=data,
+                      headers={"Content-Type": "application/octet-stream"})
+    hex_hash = r.text
     return hex_hash
 
 
 def work_loop(interval=1):
     deadline = 0
     loops_done = 0
-    old_total = 0
     while True:
         if time.time() > deadline:
-            new_total = redis.incrby("hashes", loops_done)
-            deadline = time.time() + interval
+            log.info("{} units of work done, updating hash counter"
+                     .format(loops_done))
+            redis.incrby("hashes", loops_done)
             loops_done = 0
-            log.info("Current apparent speed: {}h/s"
-                     .format((new_total-old_total)/interval))
-            old_total = new_total
+            deadline = time.time() + interval
         work_once()
         loops_done += 1
 
 
 def work_once():
     log.debug("Doing one unit of work")
+    time.sleep(0.1)
     random_bytes = get_random_bytes()
     hex_hash = hash_bytes(random_bytes)
-    if not hex_hash.startswith(b'0'):
+    if not hex_hash.startswith('0'):
         log.debug("No coin found")
         return
     log.info("Coin found: {}...".format(hex_hash[:8]))
     created = redis.hset("wallet", hex_hash, random_bytes)
     if not created:
         log.info("We already had that coin")
-        return
-    log.debug("Storing timing information")
-    now = time.time()
-    redis.rpush("timing", now)
-    redis.ltrim("timing", -1000, -1)
-    log.debug("Getting timing information")
-    oldest = float(redis.lrange("timing", 0, 0)[0])
-    total = redis.llen("timing")
-    if oldest == now:
-        log.debug("oldest == now, can't compute timing")
-        return
-    speed = total / (now - oldest)
-    log.info("Speed over the last {} coins: {} coins/s".format(total, speed))
 
 
 if __name__ == "__main__":
