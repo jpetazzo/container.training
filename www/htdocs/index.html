@@ -123,14 +123,24 @@ class: title
 
 .exercise[
 
-- Log into one of the VMs
-- Check that you can SSH to `node1`
+- Log into the first VM
+- Check that you can SSH (without password) to `node2`
 - Check the version of docker with `docker version`
 
 ]
 
 Note: from now on, unless instructed, all commands have
-to be done from the VMs.
+to be done from the first VM, `node1`.
+
+---
+
+## Versions
+
+- Docker 1.6 (1.7 will be released in a few days)
+
+- Compose 0.3 RC
+
+- Swarm 0.3 RC
 
 ---
 
@@ -148,7 +158,7 @@ to be done from the VMs.
 .exercise[
 
 - Fork the repository on GitHub
-- Clone your fork on your VM
+- Clone your fork on `node1`
 
 ]
 
@@ -224,13 +234,12 @@ Next: we'll see how it behaves with many small requests.
 .exercise[
 
 - Test 1000 requests of 1000 bytes each:
-  <br/>`ab -n 1000 localhost:8001/1000`
-  <br/>(performance should be ~1 MB/s)
+  <br/>`ab -n 100 localhost:8001/1000`
 - Test 1000 requests, 10 requests in parallel:
-  <br/>`ab -n 1000 -c 10 localhost:8001/1000`
+  <br/>`ab -n 100 -c 10 localhost:8001/1000`
   <br/>(look how the latency has increased!)
 - Try with 100 requests in parallel:
-  <br/>`ab -n 1000 -c 100 localhost:8001/1000`
+  <br/>`ab -n 100 -c 100 localhost:8001/1000`
 
 ]
 
@@ -308,17 +317,17 @@ The invocation of `ab` will be slightly more complex as well.
 
 .exercise[
 
-- Execute 1000 requests in a row:
+- Execute 100 requests in a row:
   
   ```
-  ab -n 1000 -T application/octet-stream \
+  ab -n 100 -T application/octet-stream \
      -p /tmp/random localhost:8002/
   ```
 
-- Execute 1000 requests with 100 requests in parallel:
+- Execute 100 requests with 10 requests in parallel:
   
   ```
-  ab -c 100 -n 1000 -T application/octet-stream \
+  ab -c 10 -n 100 -T application/octet-stream \
      -p /tmp/random localhost:8002/
   ```
 
@@ -340,6 +349,12 @@ Let's repeat the tests with smaller data.
 - Repeat the `ab` tests
 
 ]
+
+---
+
+## Why do `rng` and `hasher` behave differently?
+
+![Equations on a blackboard](equations.png)
 
 ---
 
@@ -378,7 +393,7 @@ Let's repeat the tests with smaller data.
 
 - Start it again with `docker-compose up -d`
 
-- Check that the number of coins is still increasing
+- Check on the web UI that the app is still making progress
 
 ]
 
@@ -433,18 +448,321 @@ We have available resources.
 
 .exercise[
 
-- Run `docker-compose scale worker=4`
+- In one SSH session, run `docker-compose logs worker`
+
+- In another, run `docker-compose scale worker=4`
 
 - See the impact on CPU load (with top/htop),
   <br/>and on compute speed (with web UI)
 
 ]
 
+---
+
 # Scaling HTTP on a single node
+
+The plan:
+
+- Scale `rng` to multiple containers
+
+- Put a load balancer in front of it
+
+- Point other services to the load balancer
+
+Note: Compose does not support that kind of scaling yet.
+<br/>We will have to do it manually for now.
+
+---
+
+## Scaling `rng`
+
+.exercise[
+
+- Replace the `rng` service with multiple copies of it:
+
+  ```
+  rng1:
+    build: rng
+
+  rng2:
+    build: rng
+
+  rng3:
+    build: rng
+  ```
+
+]
+
+That's all!
+
+---
+
+## Introduction to `jpetazzo/hamba`
+
+- Public image on the Docker Hub
+
+- Load balancer based on HAProxy
+
+- Expects the following arguments:
+  <br/>`FE-port BE1-addr BE1-port BE2-addr BE2-port ...`
+  <br/>*or*
+  <br/>`FE-addr:FE-port BE1-addr BE1-port BE2-addr BE2-port ...`
+
+  - FE=frontend (the thing other services connect to)
+
+  - BE=backend (the multiple copies of your scaled service)
+
+.small[
+Example: listen to port 80 and balance traffic on www1:1234 + www2:2345
+
+```
+docker run -d -p 80 jpetazzo/hamba 80 www1 1234 www2 2345
+```
+]
+
+---
+
+## Add our load balancer to the Compose file
+
+.exercise[
+
+- Add the following section to the Compose file:
+
+  ```
+  rng0:
+      image: jpetazzo/hamba
+      links:
+        - rng1
+        - rng2
+        - rng3
+      command: 80 rng1 80 rng2 80 rng3 80
+      ports:
+        - "8001:80"
+  ```
+
+]
+
+---
+
+## Point other services to the load balancer
+
+- The only affected service is `worker`
+
+- We have to replace the `rng` link with a link to `rng0`,
+  but it should still be named `rng` (so we don't change the code)
+
+.exercise[
+
+- Update the `worker` section as follows:
+
+  ```
+  worker:
+    build: worker
+    links:
+      - rng0:rng
+      - hasher
+      - redis
+   ```
+
+]
+
+---
+
+## Start the whole stack
+
+- The new `rng0` load balancer also ties up port 8001
+
+- We have to stop the old `rng` service first
+  <br/>(Compose doesn't do it for us)
+
+.exercise[
+
+- Run `docker-compose stop rng`
+
+]
+
+- Now (re-)start the whole stack
+
+.exercise[
+
+- Run `docker-compose up -d`
+- Check worker logs with `docker-compose logs worker`
+- Check load balancer logs with `docker-compose logs rng0`
+
+]
+
+---
+
+## The good, the bad, the ugly
+
+- The good
+
+  We scaled a service, added a load balancer - 
+  <br/>without changing a single line of code
+
+- The bad
+
+  We manually copy-pasted sections in `docker-compose.yml`
+
+- The ugly
+
+  If we scale up/down, we have to restart everything
+
+---
+
+## Ideas to improve the situation
+
+- Parse `docker-compose.yml` to automatically replace
+  services with their scaled counterparts
+
+- Replace Docker Links with network namespace sharing
+
+- More on this later
+
+---
 
 # Introducing Swarm
 
+![Swarm Logo](swarm.png)
+
+---
+
+## Overview
+
+- Swarm consolidates multiple Docker hosts into a single one
+
+- Swarm "looks like" a Docker daemon, but it dispatches (schedules)
+  your containers on multiple daemons
+
+- Swarm talks the Docker API front and back
+
+- Swarm is open source and written in Go (like Docker)
+
+- Swarm was started by two of the original Docker authors
+  <br/>([@aluzzardi](https://twitter.com/aluzzardi) and [@vieux](https://twitter.com/vieux))
+
+- Swarm is not stable yet (version 0.3 right now)
+
+---
+
 # Setting up our Swarm cluster
+
+- This is usually done by **Docker Machine**
+  <br/>( or by custom deployment scripts)
+
+- We will do a simplified version here (without TLS),
+  <br/>to give you an idea of what's involved
+
+- Components involved:
+
+  - service discovery mechanism
+    <br/>(we'll use Docker's hosted system)
+
+  - swarm agent
+    <br/>(runs on each node, registers it with service discovery)
+
+  - swarm manager
+    <br/>(runs on `node1`, exposes Docker API)
+
+---
+
+## Service discovery
+
+- Possible backends:
+
+  - dynamic, self-hosted (zk, etcd, consul)
+
+  - static (command-line or file)
+
+  - hosted by Docker (token)
+
+- We will use the token mechanism
+
+.exercise[
+
+- Run `docker run swarm create`
+- Save the output carefully: it's your token
+  <br/>(it's the unique identifier for your cluster)
+
+]
+
+---
+
+## Swarm agent
+
+- Used only for dynamic discovery (zk, etcd, consul, token)
+
+- Must run on each node
+
+- Every 20s (by default), tells to the discovery system:
+  </br>"Hello, there is a Swarm node at A.B.C.D:EFGH"
+
+- The node continues to work even if the agent dies
+
+---
+
+## Join the cluster
+
+.exercise[
+
+- Connect to `node2`
+
+- Start the swarm agent:
+  <br/>`docker run -d swarm join \`
+  <br/>`       --advertise A.B.C.D:55555 token://XXX`
+  <br/>.small[(`A.B.C.D` is the IP address of `node2`, `XXX` is the token generated earlier)]
+
+- Check that the node registered successfully:
+  <br/>`docker swarm list token://XXX`
+
+- Repeat on nodes 3, 4, 5
+
+]
+
+Note: the Docker daemon on your VMs listens on port 55555
+
+---
+
+## Swarm manager
+
+- Today: must run on the "master" node
+
+- Later: can run on multiple nodes, with master election
+
+.exercise[
+
+- Connect to `node1`
+
+- Start the swarm manager:
+  <br/>`docker run -d -p 10000:2375 swarm manage token://XXX`
+
+]
+
+- Remember to replace XXX with your token!
+- The Swarm manager listens on port 2375
+- We're telling Docker to expose that on port 10000
+
+---
+
+## First contact with Swarm
+
+- We must setup our CLI to talk to the Swarm master
+
+.exercise[
+
+- From any machine, set the environment variable:
+  <br/>`export DOCKER_HOST=tcp://node1:10000`
+
+- Check the output of `docker version` and `docker info`
+
+]
+
+- Remember to set the environment variable if you open another SSH session!
+
+- With Docker Machine, you would do a command like:
+  <br/>`eval $(docker-machine env my-swarm-master)`
+
+---
 
 # Running on Swarm
 
