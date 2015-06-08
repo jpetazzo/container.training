@@ -361,7 +361,6 @@ Let's repeat the tests with smaller data.
 .exercise[
 
 - Open http://[yourVMaddr]:8000/ (from a browser)
-- Click on the (few) available buttons
 
 ]
 
@@ -430,6 +429,16 @@ We have available resources.
 - Docker Compose supports scaling
 - It doesn't deal with load balancing
 - For services that *do not* accept connections, that's OK
+- Let's scale `worker` and see what happens!
+
+.exercise[
+
+- Run `docker-compose scale worker=4`
+
+- See the impact on CPU load (with top/htop),
+  <br/>and on compute speed (with web UI)
+
+]
 
 # Scaling HTTP on a single node
 
