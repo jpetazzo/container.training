@@ -22,13 +22,16 @@ for service_name, service in stack.items():
             continue
         port = ports[link_name]
         endpoints = []
-        n = 1
+        n = 0
         while True:
+           n += 1
             try:
                 container_name = "{}_{}_{}".format(project_name, link_name, n)
-                endpoint.append(subprocess.check_output([
-                                    "docker", "port", container_name, str(port)]))
-            except OSError:
+                endpoint = subprocess.check_output(
+                               [ "docker", "port", container_name, str(port)],
+                              stderr=open("/dev/null","a"))
+               endpoints.append(endpoint.strip())
+            except subprocess.CalledProcessError:
                 break
         print("Endpoints found for {}->{}:".format(service_name, link_name))
         print(endpoints)
