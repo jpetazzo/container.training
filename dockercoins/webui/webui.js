@@ -1,13 +1,15 @@
 var express = require('express');
 var app = express();
+var redis = require('redis');
 
 app.get('/', function (req, res) {
     res.redirect('/index.html');
 });
 
 app.get('/json', function (req, res) {
-    redis.hlen('wallet', function (err, coins) {
-        redis.get('hashes', function (err, hashes) {
+    var client = redis.createClient(6379, 'redis');
+    client.hlen('wallet', function (err, coins) {
+        client.get('hashes', function (err, hashes) {
             var now = Date.now() / 1000;
             res.json( {
                 coins: coins,
@@ -19,8 +21,6 @@ app.get('/json', function (req, res) {
 });
 
 app.use(express.static('files'));
-
-var redis = require('redis').createClient(6379, 'redis');
 
 var server = app.listen(80, function () {
     console.log('WEBUI running on port 80');

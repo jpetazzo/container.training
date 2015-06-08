@@ -59,5 +59,11 @@ def work_once():
 
 
 if __name__ == "__main__":
-    work_loop()
+    try:
+        work_loop()
+    except:
+        log.exception()
+        log.error("Waiting 10s and restarting.")
+        time.sleep(10)
+
 
