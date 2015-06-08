@@ -46,7 +46,7 @@ for service_name, service in stack.items():
             endpoint = subprocess.check_output(
                 ["docker", "port", container_name, port]
             )
-        endpoints.append(endpoint.strip())
+            endpoints.append(endpoint.strip())
         for container_name in service_instances[service_name]:
             ambassador = {}
             ambassador["image"] = "jpetazzo/hamba"
@@ -61,6 +61,8 @@ for service_name, service in stack.items():
 
 for service_name, service in stack.items():
     for container_name in service_instances[service_name]:
+        print("docker exec {} sh -c 'sed /^127.127/d /etc/hosts >/tmp/hosts && cat /tmp/hosts >/etc/hosts && rm /tmp/hosts'"
+              .format(container_name))
         extra_hosts = service.get("extra_hosts", {})
         for link_name, link_addr in extra_hosts.items():
             print("docker exec {} sh -c 'echo {} {} >> /etc/hosts'"

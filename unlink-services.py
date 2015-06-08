@@ -14,7 +14,7 @@ ports = yaml.load(open("ports.yml"))
 def generate_local_addr():
     last_byte = 2
     while last_byte<255:
-        yield "127.0.0.{}".format(last_byte)
+        yield "127.127.0.{}".format(last_byte)
         last_byte += 1
 
 for service_name, service in stack.items():
@@ -32,6 +32,8 @@ for service_name, service in stack.items():
         del service["links"]
     if "ports" in service:
         del service["ports"]
+    if "volumes" in service:
+        del service["volumes"]
     if service_name in ports:
         service["ports"] = [ ports[service_name] ]
 
