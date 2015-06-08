@@ -25,4 +25,11 @@ for service_name, service in stack.items():
         hub_image = "{}/{}_{}:{}".format(user_name, project_name, service_name, version)
         subprocess.check_call(["docker", "tag", compose_image, hub_image])
         subprocess.check_call(["docker", "push", hub_image])
+        del service[build]
+        service["image"] = hub_image
 
+new_compose_file = "docker-compose.yml-{}".format(version)
+with open(new_compose_file, "w") as f:
+    yaml.safe_dump(stack, f)
+print("You can now use:")
+print("docker-compose -f {}".format(new_compose_file))
