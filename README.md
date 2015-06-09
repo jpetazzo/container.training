@@ -12,6 +12,7 @@ Preparation:
 
 - Make sure that you have SSH keys loaded (`ssh-add -l`).
 - Source `rc`.
+- Run `pcopykey`.
 - Source `postprep.rc`.
   (This will install a few extra packages, add entries to
   /etc/hosts, generate SSH keys, and deploy them on all hosts.)

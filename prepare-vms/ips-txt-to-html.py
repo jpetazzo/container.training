@@ -17,6 +17,9 @@ while ips:
     ips = ips[clustersize:]
     clusters.append(cluster)
 
+def makenames(addrs):
+    return [ "node%d"%(i+1) for i in range(len(addrs)) ]
+
 html = open("ips.html", "w")
 html.write("<html><head><style>")
 html.write("""
@@ -47,9 +50,9 @@ for i, cluster in enumerate(clusters):
     html.write("cluster for this orchestration workshop. You can connect ")
     html.write("to each VM with your SSH client.</p>\n")
     html.write("<p>login=docker password=training</p>\n")
-    html.write("<p>IP addresses:<ul>\n")
-    for ipaddr in cluster:
-        html.write("<li>%s</li>\n"%ipaddr)
+    html.write("<p>Your machines are:<ul>\n")
+    for ipaddr, hostname in zip(cluster, makenames(cluster)):
+        html.write("<li>%s - %s</li>\n"%(hostname, ipaddr))
     html.write("</ul></p>")
     html.write("</div>")
 html.close()

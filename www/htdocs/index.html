@@ -146,7 +146,7 @@ to be done from the first VM, `node1`.
 
 # Our sample application
 
-- Let's look at the general layout of
+- Let's look at the general layout of the
   [source code](https://github.com/jpetazzo/orchestration-workshop)
 
 - Each directory = 1 microservice
@@ -219,7 +219,7 @@ rng:
 - Get 10 bytes of random data:
   <br/>`curl localhost:8001/10`
   <br/>(the output might confuse your terminal, since this is binary data)
-- Test the performance on one big request::
+- Test the performance on one big request:
   <br/>`curl -o/dev/null localhost:8001/10000000`
   <br/>(should take ~1s, and show speed of ~10 MB/s)
 
@@ -233,9 +233,9 @@ Next: we'll see how it behaves with many small requests.
 
 .exercise[
 
-- Test 1000 requests of 1000 bytes each:
+- Test 100 requests of 1000 bytes each:
   <br/>`ab -n 100 localhost:8001/1000`
-- Test 1000 requests, 10 requests in parallel:
+- Test 100 requests, 10 requests in parallel:
   <br/>`ab -n 100 -c 10 localhost:8001/1000`
   <br/>(look how the latency has increased!)
 - Try with 100 requests in parallel:
@@ -339,7 +339,9 @@ Take note of the performance numbers (requests/s).
 
 ## Benchmarking the hasher on smaller data
 
-Here we hashed 1 meg. Later we will hash much smaller payloads.
+Here we hashed 1 meg.
+
+Later we will hash much smaller payloads.
 
 Let's repeat the tests with smaller data.
 
@@ -618,6 +620,60 @@ docker run -d -p 80 jpetazzo/hamba 80 www1 1234 www2 2345
 - Replace Docker Links with network namespace sharing
 
 - More on this later
+
+---
+
+# Connecting to containers on other hosts
+
+- We want to scale across multiple nodes
+
+- We will deploy the same stack multiple times
+
+- But we want every stack to use the same Redis
+  <br/>(in other words: Redis is our only *stateful* service here)
+
+---
+
+## The plan
+
+- Deploy our Redis service separately
+
+  - use the same `redis` image
+
+  - make sure that Redis server port (6379) is publicly accessible,
+    using port 6379 on the Docker host
+
+- Update our Docker Compose YAML file
+
+  - remove the `redis` section
+
+  - in the `links` section, remove `redis`
+
+  - instead, put a `redis` entry in `extra_hosts`
+
+---
+
+## Deploy Redis
+
+.exercise[
+
+- Start a new redis container, mapping port 6379 to 6379:
+
+  ```
+  docker run -d -p 6379:6379 redis
+  ```
+
+- Note the IP address of this Docker host
+
+- Try to connect to it (from anywhere):
+
+  ```
+  telnet ip.ad.dr.ess 6379
+  ```
+
+]
+
+To exit a telnet session: `Ctrl-] c ENTER`
 
 ---
 
@@ -975,21 +1031,39 @@ Some Redis commands: `"SET key value"` `"GET key"`
 
 - Start our services:
   <br/>`docker-compose -f deploy.yml up -d`
-  <br/>`docker-compose -f deploy.yml scale worker=10`
-  <br/>`docker-compose -f deploy.yml scale rng=10`
+  <br/>`docker-compose -f deploy.yml scale worker=8`
+  <br/>`docker-compose -f deploy.yml scale rng=4`
 
 - Generate plumbing commands:
   <br/>`../connect-services.py deploy.yml`
 
-]
+- Execute plumbing commands:
+  <br/>`../connect-services.py deploy.yml | sh`
 
-Review the plumbing commands, then execute them.
+]
 
 ---
 
-# Scaling on Swarm
+## Notes
 
-# Cluster metrics
+- If you want to scale up or down, you have to re-do
+  the whole plumbing 
+
+- This is not a design issue; just an implementation detail
+  of the `connect-services.py` script
+
+- Possible improvements:
+
+  - get list of containers using a single API call
+
+  - use labels to tag ambassador containers
+
+  - update script to do fine-grained updates of `/etc/hosts`
+
+  - update script to add/remove ambassadors carefully
+    <br/>(instead of destroying+recreating them all)
+
+---
 
 # Introducing Mesos
 
