@@ -94,6 +94,36 @@ class: title
 
 ---
 
+<!-- grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C -->
+
+## Outline (1/2)
+
+- Pre-requirements
+- VM environment
+- Our sample application
+- Running the whole app on a single node
+- Finding bottlenecks
+- Scaling workers on a single node
+- Scaling HTTP on a single node
+- Connecting to containers on other hosts
+- Abstracting connection details
+
+---
+
+## Outline (2/2)
+
+- Backups
+- Logs
+- Security upgrades
+- Network traffic analysis
+- Introducing Swarm
+- Setting up our Swarm cluster
+- Running on Swarm
+- Network plumbing on Swarm
+- Last words
+
+---
+
 # Pre-requirements
 
 - Computer with network connection and SSH client
@@ -959,6 +989,157 @@ To exit a telnet session: `Ctrl-] c ENTER`
 
 ---
 
+# Logs
+
+- Sorry, this part won't be hands-on
+
+- Two (and a half) strategies:
+
+  - log to plain files on volumes
+
+  - log to stdout with the syslog driver
+
+  - log to stdout with the JSON driver
+
+- The last one doesn't really count
+  <br/>(but it's the default)
+
+---
+
+## Logging to plain files on volumes
+
+- Start a container with `-v /logs`
+
+- Make sure that all log files are in `/logs`
+
+- To check logs, run e.g.
+
+  ```
+  docker run --volumes-from ... ubuntu sh -c \
+         "grep WARN /logs/*.log"
+  ```
+
+- Or just go interactive:
+
+  ```
+  docker run --volumes-from ... -ti ubuntu
+  ```
+
+- You can (should) start a log shipper that way
+
+---
+
+## Logging to syslog
+
+- All containers should write to stdout/stderr
+
+- Change Docker start options to add `--log-driver syslog`
+  <br>(On Ubuntu, tweak `DOCKER_OPTS` in `/etc/default/docker`)
+
+- When you do that, you can't use `docker logs` anymore
+
+---
+
+## Logging to JSON files
+
+- That's the default option
+
+- All containers should write to stdout/stderr
+
+- You can use `docker logs`
+
+- But those local JSON files are, well, local
+
+- ... And they will eventually use up all the space
+
+---
+
+# Security upgrades
+
+- This section is not hands-on
+
+- Public Service Announcement
+
+- We'll discuss:
+
+  - how to upgrade the Docker daemon
+
+  - how to upgrade container images
+
+---
+
+## Upgrading the Docker daemon
+
+- Stop all containers cleanly
+  <br/>(`docker ps -q | xargs docker stop`)
+
+- Stop the Docker daemon
+
+- Upgrade the Docker daemon
+
+- Start the Docker daemon
+
+- Start all containers
+
+- This is like upgrading your Linux kernel,
+  <br/>but it will get better
+
+---
+
+## Upgrading container images
+
+- When a vulnerability is announced:
+
+  - if it affects your base images,
+    <br/>make sure they are fixed first
+
+  - if it affects downloaded packages,
+    <br/>make sure they are fixed first
+
+  - re-pull base images
+
+  - rebuild
+
+  - restart containres
+
+(The procedure is simple and plain, just follow it!)
+
+---
+
+# Network traffic analysis
+
+- We still have `myredis` running
+
+- We will use *shared network namespaces*
+  <br/>to perform network analysis
+
+- Two containers sharing the same network namespace...
+
+  - have the same IP addresses
+
+  - have the same network interfaces
+
+- `eth0` is therefore the same in both containers
+
+---
+
+## Install and start `ngrep`
+
+.exercise[
+
+- Start a container with the same network namespace:
+  <br/>`docker run --net container:myredis -ti ubuntu`
+
+- Install ngrep:
+  <br/>`apt-get update && apt-get install -y ngrep`
+
+- Run ngrep:
+  <br/>`ngrep -tpd eth0 -Wbyline . tcp`
+
+]
+
+---
+
 # Introducing Swarm
 
 ![Swarm Logo](swarm.png)
@@ -1190,7 +1371,7 @@ So, what do‽
 
 # Network plumbing on Swarm
 
-- We will share *network namespaces*
+- We will share *network namespaces* (as seen before)
 
 - Other available options:
 
@@ -1202,7 +1383,7 @@ So, what do‽
 
 ---
 
-## Network namespaces
+## Another use of network namespaces
 
 - Two (or more) containers can share a network stack
 
@@ -1347,13 +1528,15 @@ Some Redis commands: `"SET key value"` `"GET key"`
 
 ---
 
-# Introducing Mesos
+# Last words
 
-# Setting up our Mesos cluster
+- Kubernetes
 
-# Running on Mesos
+- Mesos
 
-# Network on Mesos
+- Powerstrip
+
+- Weave
 
 ---
 
