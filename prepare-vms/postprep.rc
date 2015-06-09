@@ -35,6 +35,6 @@ os.system("echo 1000000 | sudo tee /proc/sys/net/nf_conntrack_max")
 os.system("""sudo sed -i 's,^DOCKER_OPTS=.*,DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:55555",' /etc/default/docker""")
 os.system("sudo service docker restart")
 EOF
-pssh -I "chmod +x /tmp/postprep.py && /tmp/postprep.py" < ips.txt
+pssh -t 300 -I "chmod +x /tmp/postprep.py && /tmp/postprep.py" < ips.txt
 pssh "[ -f .ssh/id_rsa ] || scp -o StrictHostKeyChecking=no node1:.ssh/id_rsa* .ssh"
 pssh "grep docker@ .ssh/authorized_keys || cat .ssh/id_rsa.pub >> .ssh/authorized_keys"

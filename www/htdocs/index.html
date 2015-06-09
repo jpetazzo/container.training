@@ -663,6 +663,8 @@ docker run -d -p 80 jpetazzo/hamba 80 www1 1234 www2 2345
   docker run -d -p 6379:6379 redis
   ```
 
+- Check that it's running with `docker ps`
+
 - Note the IP address of this Docker host
 
 - Try to connect to it (from anywhere):
@@ -674,6 +676,286 @@ docker run -d -p 80 jpetazzo/hamba 80 www1 1234 www2 2345
 ]
 
 To exit a telnet session: `Ctrl-] c ENTER`
+
+---
+
+## Update `docker-compose.yml` (1/3)
+
+.exercise[
+
+- Comment out `redis`:
+
+  ```
+  #redis:
+  #    image: redis
+  ```
+
+]
+
+---
+
+## Update `docker-compose.yml` (2/3)
+
+.exercise[
+
+- Update `worker`:
+
+  ```
+  worker:
+    build: worker
+    extra_hosts:
+      redis: A.B.C.D
+    links:
+      - rng
+      - hasher
+  ```
+
+]
+
+(Replace `A.B.C.D` with the IP address noted earlier)
+
+---
+
+## Update `docker-compose.yml` (3/3)
+
+.exercise[
+
+- Update `webui`:
+
+  ```
+  webui:
+    build: webui
+    extra_hosts:
+      redis: A.B.C.D
+    ports:
+      - "8000:80"
+    volumes:
+      - "webui/files/:/files/"
+  ```
+
+]
+
+(Replace `A.B.C.D` with the IP address noted earlier)
+
+---
+
+## Start the stack on another machine
+
+- We will set the `DOCKER_HOST` variable
+
+- `docker-compose` will detect and use it
+
+- Our Docker hosts are listening on port 55555
+
+.exercise[
+
+- Set the environment variable:
+  <br/>`export DOCKER_HOST=tcp://X.Y.Z:55555`
+
+- Start the stack:
+  <br/>`docker-compose up -d`
+
+- Check that it's running:
+  <br/>`docker-compose ps`
+
+]
+
+---
+
+## Scale!
+
+.exercise[
+
+- Open the Web UI
+
+- Deploy one instance of the stack on each node
+
+]
+
+---
+
+## Cleanup
+
+- Let's remove what we did
+
+.exercise[
+
+- You can use the following scriptlet:
+
+  ```
+  for N in $(seq 1 5); do
+    export DOCKER_HOST=tcp://node$N:55555
+    docker ps -qa | xargs docker rm -f
+  done
+  unset DOCKER_HOST
+  ```
+
+]
+
+---
+
+# Abstracting connection details
+
+- What if we can't/won't run Redis on its default port?
+
+- What if we want to be able to move it more easily?
+
+--
+
+- We will use an ambassador
+
+- Redis will run at an arbitrary location (host+port)
+
+- The ambassador will be part of the scaled stack
+
+- The ambassador will connect to Redis
+
+- The ambassador will "act as" Redis in the stack
+
+---
+
+## Start redis
+
+- This time, we will let Docker pick the port for Redis
+
+.exercise[
+
+- Run redis with a random public port:
+  <br/>`docker run -d -P --name myredis redis`
+
+- Check which port was allocated:
+  <br/>`docker port myredis 6379`
+
+]
+
+- Note this IP address and port
+
+---
+
+## Update `docker-compose.yml`
+
+.exercise[
+
+- Restore `links` as they were before in `webui` and `worker`
+
+- Replace `redis` with an ambassador using `jpetazzo/hamba`:
+
+  ```
+  redis:
+    image: jpetazzo/hamba
+    command: 6379 52.26.10.3 32785
+  ```
+
+]
+
+---
+
+## Start the new stack
+
+.exercise[
+
+- Run `docker-compose up -d`
+
+- Go to the web UI
+
+- Start the stack on another node as previously,
+  <br/>and confirm on the web UI that it's picking up
+
+]
+
+---
+
+## Discussion
+
+- `jpetazzo/hamba` is stack and stupid
+
+- It could be replaced with something dynamic:
+
+  - looking up the host+port in consul/etcd/zk
+
+  - reconfiguring itself when consul/etcd/zk is updated
+
+  - dealing with failover
+
+---
+
+# Backups
+
+- Redis is still running (with name `myredis`)
+
+- We want to enable backups without touching it
+
+- We will use a special backup container:
+
+  - sharing the same volumes
+
+  - linked to it (to connect to it easily)
+
+  - possibly containing our backup tools
+
+- This works because the `redis` container image
+  <br/>stores its data on a volume
+
+---
+
+## Starting the backup container
+
+.exercise[
+
+- Start the container:
+
+  ```
+  docker run --link myredis:redis \
+             --volumes-from myredis \
+             -v /tmp/myredis:/output \
+             -ti ubuntu
+  ```
+
+- Look in `/data` in the container.
+  <br/>(It should be empty.)
+]
+
+- We need to tell Redis to perform a data dump
+
+---
+
+## Connecting to Redis
+
+.exercise[
+
+- `apt-get install telnet`
+
+- `telnet redis 6379`
+
+- issue `SAVE` then `QUIT`
+
+- Look at `/data` again
+
+]
+
+- There should be a dump file now
+
+---
+
+## Getting the dump out of the container
+
+- We could use many things:
+
+  - s3cmd to copy to S3
+  - SSH to copy to a remote host
+  - gzip/bzip/etc before copying
+
+- We'll just copy it to the Docker host
+
+.exercise[
+
+- Copy the file from `/data` to `/output`
+
+- Exit the container
+
+- Look into `/tmp/myredis` (on the host)
+
+]
 
 ---
 
