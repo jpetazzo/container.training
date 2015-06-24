@@ -164,13 +164,13 @@ to be done from the first VM, `node1`.
 
 ---
 
-## Versions
+## Brand new versions!
 
-- Docker 1.6 (1.7 will be released in a few days)
+- Docker 1.7
 
-- Compose 0.3 RC
+- Compose 1.3.1
 
-- Swarm 0.3 RC
+- Swarm 0.3
 
 ---
 
@@ -495,6 +495,8 @@ We have available resources.
 
 The plan:
 
+- Stop the `rng` service first
+
 - Scale `rng` to multiple containers
 
 - Put a load balancer in front of it
@@ -503,6 +505,29 @@ The plan:
 
 Note: Compose does not support that kind of scaling yet.
 <br/>We will have to do it manually for now.
+
+---
+
+## Stopping `rng`
+
+- That's the easy part!
+
+.exercise[
+
+- Use `docker-compose` to stop `rng`:
+
+  ```
+  docker-compose stop rng
+  ```
+
+]
+
+Note: we do this first because we are about to remove
+`rng` from the Docker Compose file.
+
+If we don't stop
+`rng` now, it will remain up and running, with Compose
+being unaware of its existence!
 
 ---
 
@@ -759,13 +784,16 @@ To exit a telnet session: `Ctrl-] c ENTER`
       redis: A.B.C.D
     ports:
       - "8000:80"
-    volumes:
-      - "webui/files/:/files/"
+    #volumes:
+    #  - "webui/files/:/files/"
   ```
 
 ]
 
 (Replace `A.B.C.D` with the IP address noted earlier)
+
+Note: we also commented out the `volumes` section since
+those files are only present locally, not on the remote nodes.
 
 ---
 
