@@ -1,8 +1,29 @@
 #!/usr/bin/env python
 
-clustersize = 5
+SETTINGS_BASIC = dict(
+    clustersize=1,
+    pagesize=12,
+    blurb="<p>Here is the connection information to your very own "
+    "VM for this intro to Docker workshop. You can connect "
+    "to the VM using your SSH client.</p>\n"
+    "<p>Your VM is reachable on the following address:</p>\n",
+    prettify=lambda x: x,
+    )
 
-pagesize = 12
+SETTINGS_ADVANCED = dict(
+    clustersize=5,
+    pagesize=12,
+    blurb="<p>Here is the connection information to your very own "
+    "cluster for this orchestration workshop. You can connect "
+    "to each VM with your SSH client.</p>\n"
+    "<p>Your machines are:<ul>\n",
+    prettify=lambda l: [ "node%d: %s"%(i+1, s) 
+                         for (i, s) in zip(range(len(l)), l) ],
+    )
+
+SETTINGS = SETTINGS_ADVANCED
+
+globals().update(SETTINGS)
 
 ###############################################################################
 
@@ -16,9 +37,6 @@ while ips:
     cluster = ips[:clustersize]
     ips = ips[clustersize:]
     clusters.append(cluster)
-
-def makenames(addrs):
-    return [ "node%d"%(i+1) for i in range(len(addrs)) ]
 
 html = open("ips.html", "w")
 html.write("<html><head><style>")
@@ -46,14 +64,11 @@ for i, cluster in enumerate(clusters):
     if i>0 and i%pagesize==0:
         html.write('<span class="pagebreak"></span>\n')
     html.write("<div>")
-    html.write("<p>Here is the connection information to your very own ")
-    html.write("cluster for this orchestration workshop. You can connect ")
-    html.write("to each VM with your SSH client.</p>\n")
-    html.write("<p>login=docker password=training</p>\n")
-    html.write("<p>Your machines are:<ul>\n")
-    for ipaddr, hostname in zip(cluster, makenames(cluster)):
-        html.write("<li>%s - %s</li>\n"%(hostname, ipaddr))
+    html.write(blurb)
+    for s in prettify(cluster):
+        html.write("<li>%s</li>\n"%s)
     html.write("</ul></p>")
+    html.write("<p>login=docker password=training</p>\n")
     html.write("</div>")
 html.close()
 
