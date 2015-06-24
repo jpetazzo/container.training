@@ -26,11 +26,11 @@ while addresses:
         os.system("[ -f .ssh/id_rsa ] || ssh-keygen -t rsa -f .ssh/id_rsa -P ''")
 
 
+os.system("sudo apt-get -qy install python-setuptools pssh apache2-utils httping htop")
 os.system("sudo easy_install pip")
-os.system("sudo pip install docker-compose==1.3.0rc1")
-os.system("docker pull swarm:0.3.0-rc2")
-os.system("docker tag -f swarm:0.3.0-rc2 swarm")
-os.system("sudo apt-get -qy install pssh apache2-utils httping htop")
+os.system("sudo pip install docker-compose==1.3.1")
+os.system("docker pull swarm:0.3.0")
+os.system("docker tag -f swarm:0.3.0 swarm")
 os.system("echo 1000000 | sudo tee /proc/sys/net/nf_conntrack_max")
 os.system("""sudo sed -i 's,^DOCKER_OPTS=.*,DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:55555",' /etc/default/docker""")
 os.system("sudo service docker restart")
