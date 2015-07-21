@@ -116,11 +116,12 @@ class: title
 - Logs
 - Security upgrades
 - Network traffic analysis
-- Introducing Swarm
+- Dynamic orchestration
+- Introducing Mesos, Kubernetes, Swarm
+- PAAS and other tools
 - Setting up our Swarm cluster
 - Running on Swarm
 - Network plumbing on Swarm
-- Last words
 
 ---
 
@@ -169,7 +170,7 @@ to be done from the first VM, `node1`.
 
 - Docker 1.7
 
-- Compose 1.3.1
+- Compose 1.3.2
 
 - Swarm 0.3
 
@@ -826,6 +827,7 @@ those files are only present locally, not on the remote nodes.
 .exercise[
 
 - Open the Web UI
+  <br/>(on a node where it's deployed)
 
 - Deploy one instance of the stack on each node
 
@@ -902,7 +904,7 @@ those files are only present locally, not on the remote nodes.
   ```
   redis:
     image: jpetazzo/hamba
-    command: 6379 52.26.10.3 32785
+    command: 6379 AA.BB.CC.DD EEEEE
   ```
 
 ]
@@ -926,7 +928,7 @@ those files are only present locally, not on the remote nodes.
 
 ## Discussion
 
-- `jpetazzo/hamba` is stack and stupid
+- `jpetazzo/hamba` is simple and stupid
 
 - It could be replaced with something dynamic:
 
@@ -970,11 +972,11 @@ those files are only present locally, not on the remote nodes.
              -ti ubuntu
   ```
 
-- Look in `/data` in the container.
-  <br/>(It should be empty.)
+- Look in `/data` in the container
+  <br/>(That's where Redis puts its data dumps)
 ]
 
-- We need to tell Redis to perform a data dump
+- We need to tell Redis to perform a data dump *now*
 
 ---
 
@@ -992,7 +994,7 @@ those files are only present locally, not on the remote nodes.
 
 ]
 
-- There should be a dump file now
+- There should be a recent dump file now
 
 ---
 
@@ -1129,7 +1131,7 @@ those files are only present locally, not on the remote nodes.
 
   - rebuild
 
-  - restart containres
+  - restart containers
 
 (The procedure is simple and plain, just follow it!)
 
@@ -1169,27 +1171,188 @@ those files are only present locally, not on the remote nodes.
 
 ---
 
-# Introducing Swarm
+class: title
 
-![Swarm Logo](swarm.png)
+# Dynamic orchestration
 
 ---
 
-## Overview
+# Static vs Dynamic
 
-- Swarm consolidates multiple Docker hosts into a single one
+- Static
 
-- Swarm "looks like" a Docker daemon, but it dispatches (schedules)
+  - you decide what goes where
+
+  - simple to describe and implement
+
+  - seems easy at first but doesn't scale efficiently
+
+- Dynamic
+
+  - the system decides what goes where
+  
+  - requires extra components (HA KV...)
+
+  - scaling can be finer-grained, more efficient
+
+---
+
+# Mesos (overview)
+
+- First presented in 2009
+
+- Initial goal: resource scheduler
+  <br/>(two-level/pessimistic)
+
+  - top-level "master" knows the global cluster state
+
+  - "slave" nodes report status and resources to master
+
+  - master allocates resources to "frameworks"
+
+- Container support added recently
+  <br/>(had to fit existing model)
+
+- Network and service discovery is complex
+
+---
+
+# Mesos (in practice)
+
+- Easy to setup a test cluster (in containers!)
+
+- Great to accommodate mixed workloads
+  <br/>(see Marathon, Chronos, Aurora, and many more)
+
+- "Meh" if you only want to run Docker containers
+
+- In production on clusters of thousands of nodes
+
+- Open source project; commercial support available
+
+---
+
+# Kubernetes (overview)
+
+- 1 year old
+
+- Designed specifically as a platform for containers
+  <br/>("greenfield" design)
+
+  - "pods" = groups of containers sharing network/storage
+
+  - Scaling and HA managed by "replication controllers"
+
+  - extensive use of "tags" instead of e.g. tree hierarchy
+
+- Initially designed around Docker,
+  <br/>but doesn't hesitate to diverge in a few places
+
+---
+
+# Kubernetes (in practice)
+
+- Network and service discovery is powerful, but complex
+  <br/>.small[(different mechanisms within pod, between pods, for inbound traffic...)]
+
+- Initially designed around GCE
+  <br/>.small[(currently relies on "native" features for fast networking and persistence)]
+
+- Adaptation is needed when it differs from Docker
+  <br/>.small[(need to learn new API, new tooling, new concepts)]
+
+- Great deployment platform ...
+  <br/>but no developer experience yet
+
+---
+
+# Swarm (in theory)
+
+- Consolidates multiple Docker hosts into a single one
+
+- "Looks like" a Docker daemon, but it dispatches (schedules)
   your containers on multiple daemons
 
-- Swarm talks the Docker API front and back
+- Talks the Docker API front and back
+  <br/>(leverages the Docker API and ecosystem)
 
-- Swarm is open source and written in Go (like Docker)
+- Open source and written in Go (like Docker)
 
-- Swarm was started by two of the original Docker authors
+- Started by two of the original Docker authors
   <br/>([@aluzzardi](https://twitter.com/aluzzardi) and [@vieux](https://twitter.com/vieux))
 
-- Swarm is not stable yet (version 0.3 right now)
+---
+
+# Swarm (in practice)
+
+- Not stable yet (version 0.3 right now)
+
+- OK for some scenarios (Jenkins, grid...)
+
+- Not OK (yet) for Compose build, links...
+
+- We'll see it (briefly) in action
+
+---
+
+# PAAS on Docker
+
+- The PAAS workflow: *just push code*
+  <br/>(inspired by Heroku, dotCloud...)
+
+- TL,DR: easier for devs, harder for ops,
+  <br/>some very opinionated choices
+
+- A few examples:
+  <br/>(Non-exhaustive list!!!)
+
+  - Cloud Foundry
+  - Deis
+  - Dokku
+  - Flynn
+  - Tsuru
+
+---
+
+# A few other tools
+
+- Flocker
+
+  - manage/migrate stateful containers
+
+- Powerstrip
+
+  - sits in front of the Docker API
+
+  - great to implement your own experiments
+
+- Weave
+
+  - overlay network so that containers can ping each other
+
+... And many more!
+
+---
+
+class: pic
+
+![Here Be Dragons](dragons.jpg)
+
+---
+
+# Warning: here be dragons
+
+- So far, we've used stable products (versions 1.X)
+
+- We're going to expore experimental software
+
+- **Use at your own risk**
+
+---
+
+# Introducing Swarm
+
+![Swarm Logo](swarm.png)
 
 ---
 
@@ -1467,17 +1630,17 @@ Some Redis commands: `"SET key value"` `"GET key"`
 
 - Replace all `links` with static `/etc/hosts` entries
 
-- Those entries will map to `127.0.0.X`
+- Those entries will map to `127.127.0.X`
   <br/>(with different `X` for each service)
 
-- Example: `redis` will point to `127.0.0.2`
+- Example: `redis` will point to `127.127.0.2`
   <br/>(instead of a container address)
 
 - Start all services; scale them if we want
   <br/>(at this point, they will all fail to connect)
 
 - Start ambassadors in the services' namespace;
-  <br/>each ambassador will listen on the right `127.0.0.X`
+  <br/>each ambassador will listen on the right `127.127.0.X`
 
 .icon[![Warning](warning.png)] Services should try to reconnect!
 
@@ -1554,18 +1717,6 @@ Some Redis commands: `"SET key value"` `"GET key"`
 
   - update script to add/remove ambassadors carefully
     <br/>(instead of destroying+recreating them all)
-
----
-
-# Last words
-
-- Kubernetes
-
-- Mesos
-
-- Powerstrip
-
-- Weave
 
 ---
 
