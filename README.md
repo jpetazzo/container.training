@@ -1,8 +1,56 @@
-# Orchestration at scales
+# Orchestration at scale(s)
 
-Preparation:
+This is the material for the "Docker orchestration workshop"
+written and delivered by Jérôme Petazzoni (and possibly others)
+at multiple conferences and events like:
 
-- Create VMs with docker-fundamentals script.
+- QCON, New York City (2015, June)
+- KCDC, Kansas City (2015, June)
+- JDEV, Bordeaux (2015, July)
+- OSCON, Portland (2015, July)
+
+
+## Slides
+
+The slides are in the `www/htdocs` directory.
+
+The recommended way to view them is to:
+
+- have a Docker host
+- clone this repository to your Docker host
+- `cd www && docker-compose up -d`
+- this will start a web server on port 80
+- point your browser at your Docker host and enjoy
+
+
+## Sample code
+
+The sample app is in the `dockercoins` directory.
+
+To see it in action:
+
+- `cd dockercoins && docker-compose up -d`
+- this will build and start all the services
+- the web UI will be available on port 8000
+
+
+## Running the workshop
+
+WARNING: those instructions are incomplete. Consider
+them as notes quickly drafted on a napkin rather than
+proper documentation!
+
+
+### Creating the VMs
+
+I use the `trainctl` script from the `docker-fundamentals`
+repository. Sorry if you don't have that!
+
+After starting the VMs, use the `trainctl ips` command
+to dump the list of IP addresses into a file named `ips.txt`.
+
+
+### Generating the printed cards
 
 - Put `ips.txt` file in `prepare-vms` directory.
 - Generate HTML file.
@@ -10,107 +58,48 @@ Preparation:
 - Transform to PDF.
 - Print it.
 
+
+### Deploying your SSH key to all the machines
+
 - Make sure that you have SSH keys loaded (`ssh-add -l`).
 - Source `rc`.
 - Run `pcopykey`.
+
+
+### Installing extra packages
+
 - Source `postprep.rc`.
   (This will install a few extra packages, add entries to
   /etc/hosts, generate SSH keys, and deploy them on all hosts.)
 
-- Set one group of machines for instructor's use.
-- Remove it from `ips.txt`.
-- Log into the first machine.
+
+### Final touches
+
+- Set two groups of machines for instructor's use.
+- You will use the first group during the workshop.
+- The second group will run a web server with the slides.
+- Log into the first machine of the second group.
 - Git clone this repo.
-- Put up the web server.
-- Use cli53 to add an A record for `view.dckr.info`.
+- Put up the web server as instructed above.
+- Use cli53 to add an A record for e.g. `view.dckr.info`.
 
 
-# Description
+# Problems? Bugs? Questions?
 
+If there is a bug and you can fix it: submit a PR.
+Make sure that I know who you are so that I can thank you
+(because you're the real MVP!)
 
-Chaos Monkey.
+If there is a bug and you can't fix it, but you can
+reproduce it: submit an issue explaining how to reproduce.
 
-App: pseudo-cryptocurrency?
+If there is a bug and you can't even reproduce it:
+sorry. It is probably an Heisenbug. I can't act on it
+until it's reproducible.
 
+if you have attended this workshop and have feedback,
+or if you want us to deliver that workshop at your
+conference or for your company: contact me (jerome
+at docker dot com).
 
-- datastore: redis
-- rng: microservice generating randomness
-- hasher: microservice computing hashes
-  (really just computing sha256sum)
-- worker: microservice using the previous two
-  to "mine" currency; a coin is a random string whose
-  hash starts with at least one zero; they are stored
-  in the datastore
-- webui: display statistics
-
-(Details: use map sha256->randorigin; also maintain
-a list of length 1000 containing timestamps;
-compute hash speed by CARD/(NOW()-oldest_ts))
-
-Initial worker has a bug, and takes only 4 first
-bytes of seed
-
-## Intro to the environment
-
-- SSH with password
-- SSH with keys
-- docker run blahblah
-- sudo
-- parallel-ssh example
-
-## Intro to the app
-
-## Deploy app on single machine
-
-- Docker Compose
-- frontend, backend, worker, datastore
-- check CPU usage with docker top; docker stats; top
-- cadvisor
-- introduce ambassador/balancer
-- scale appropriately
-- fix bug, redeploy
-
-## Clean up
-
-- Stop all containers
-
-## Get started with Swarm
-
-- Explain that machine would take care of this
-- Enable SSL certs everywhere
-- Create token
-- Start swarm master on node1
-- Start swarm agent everywhere
-- Point CLI to swarm master
-- Check docker info, docker version
-- Run a few hello worlds
-
-## Deploy with Swarm
-
-- compose up -> doesn't work because build
-- docker-compose-tag + push
-- docker-compose-pull 
-- replace each "linked-to" service by ambassador + single service
-  - workers: as is
-  - redis: single service + amba
-  - backend: scaled + lb; lb is haproxy with net:container
-- scale up and see results
-- check cadvisor
-
-## Deploy with Mesos
-
-
-
-
-# TODO
-
-+ write pseudo miner
-- write deployment scripts
-- write chaos monkey
-- docker-compose-tag
-- docker-compose-pull
-- haproxy ambassador
-- docker-compose 1.3
-
-
-
+Thank you!
