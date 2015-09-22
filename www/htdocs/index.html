@@ -314,8 +314,8 @@ Now we can stop the generator.
 
 .icon[![Warning](warning.png)] Again, pay attention to the port mapping!
 
-The container log says that it's listening on port 80, 
-but it's mapped to port 8002 on the host.  
+The container log says that it's listening on port 80,
+but it's mapped to port 8002 on the host.
 
 You can see the mapping in `docker-compose.yml`.
 
@@ -352,14 +352,14 @@ The invocation of `ab` will be slightly more complex as well.
 .exercise[
 
 - Execute 100 requests in a row:
-  
+
   ```
   ab -n 100 -T application/octet-stream \
      -p /tmp/random localhost:8002/
   ```
 
 - Execute 100 requests with 10 requests in parallel:
-  
+
   ```
   ab -c 10 -n 100 -T application/octet-stream \
      -p /tmp/random localhost:8002/
@@ -658,7 +658,7 @@ docker run -d -p 80 jpetazzo/hamba 80 www1 1234 www2 2345
 
 - The good
 
-  We scaled a service, added a load balancer - 
+  We scaled a service, added a load balancer -
   <br/>without changing a single line of code
 
 - The bad
@@ -1192,7 +1192,7 @@ class: title
 - Dynamic
 
   - the system decides what goes where
-  
+
   - requires extra components (HA KV...)
 
   - scaling can be finer-grained, more efficient
@@ -1360,22 +1360,76 @@ class: pic
 
 # Setting up our Swarm cluster
 
-- This is usually done by **Docker Machine**
-  <br/>( or by custom deployment scripts)
+- This can be done manually or with **Docker Machine**
 
-- We will do a simplified version here (without TLS),
-  <br/>to give you an idea of what's involved
+- Manual deployment:
+
+  - with TLS: certificate generation is painful
+    <br/>(needs dual-use certs)
+
+  - without TLS: easier, but insecure
+    <br/>(unless you run on your internal/private network)
+
+- Docker Machine deployment:
+
+  - generates keys, certificates, and deploys them for you
+
+  - can also create VMs
+
+---
+
+# The Way Of The Machine
+
+- Install `docker-machine` (single binary download)
+
+- Set a few environment variables (cloud credentials)
+
+- Create one or more machines:
+  <br/>`docker-machine create -d digitalocean node42`
+
+- List machines and their status:
+  <br/>`docker-machine ls`
+
+- Select a machine for use:
+  <br/>`eval $(docker-machine env node42)`
+  <br/>(this will set a few environment variables)
+
+- Execute regular commands with Docker, Compose, etc.
+  <br/>(they will pick up remote host address from environment)
+
+---
+
+# Docker Machine `generic` driver
+
+- Most drivers work the same way:
+
+  - use cloud API to create instance
+
+  - connect to instance over SSH
+
+  - install Docker
+
+- The `generic` driver skips the first step
+
+- It can install Docker on any machine,
+  <br/>as long as you have SSH access
+
+- We will use that!
+
+---
+
+# Swarm deployment
 
 - Components involved:
 
   - service discovery mechanism
     <br/>(we'll use Docker's hosted system)
 
-  - swarm agent
-    <br/>(runs on each node, registers it with service discovery)
-
   - swarm manager
     <br/>(runs on `node1`, exposes Docker API)
+
+  - swarm agent
+    <br/>(runs on each node, registers it with service discovery)
 
 ---
 
@@ -1393,8 +1447,8 @@ class: pic
 
 .exercise[
 
-- Run `docker run swarm create`
-- Save the output carefully: it's your token
+- Run `TOKEN=$(docker run swarm create)`
+- Save `$TOKEN` carefully: it's your token
   <br/>(it's the unique identifier for your cluster)
 
 ]
@@ -1410,74 +1464,234 @@ class: pic
 - Every 20s (by default), tells to the discovery system:
   </br>"Hello, there is a Swarm node at A.B.C.D:EFGH"
 
+- Must know the node's IP address
+  <br/>(sorry, it can't figure it out by itself, because
+  <br/>it doesn't know whether to use public or private addresses)
+
 - The node continues to work even if the agent dies
 
----
-
-## Join the cluster
-
-.exercise[
-
-- Connect to `node2`
-
-- Start the swarm agent:
-  <br/>`docker run -d swarm join \`
-  <br/>`       --advertise A.B.C.D:55555 token://XXX`
-  <br/>.small[(`A.B.C.D` is the IP address of `node2`, `XXX` is the token generated earlier)]
-
-- Check that the node registered successfully:
-  <br/>`docker swarm list token://XXX`
-
-- Repeat on nodes 3, 4, 5
-
-]
-
-Note: the Docker daemon on your VMs listens on port 55555
+- Automatically started by Docker Machine
+  <br/>(when the `--swarm` option is passed)
 
 ---
 
 ## Swarm manager
 
-- Today: must run on the "master" node
+- Today: must run on the leader node
 
-- Later: can run on multiple nodes, with master election
+- Later: can run on multiple nodes, with leader election
+
+- Automatically started by Docker Machine
+  <br/>(when the `--swarm-master` option is passed)
 
 .exercise[
 
 - Connect to `node1`
 
-- Start the swarm manager:
-  <br/>`docker run -d -p 10000:2375 swarm manage token://XXX`
+- "Create" a node with Docker Machine
+
+  .small[
+  ```
+  docker-machine create node1 --driver generic \
+    --swarm --swarm-master --swarm-discovery token://$TOKEN \
+    --generic-ssh-user docker --generic-ip-address 1.2.3.4
+  ```
+  ]
 
 ]
 
-- Remember to replace XXX with your token!
-- The Swarm manager listens on port 2375
-- We're telling Docker to expose that on port 10000
+(Don't forget to replace 1.2.3.4 with the node IP address!)
 
 ---
 
-## First contact with Swarm
+## Check our node
 
-- We must setup our CLI to talk to the Swarm master
+Let's connect to the node *individually*.
 
 .exercise[
 
-- From any machine, set the environment variable:
-  <br/>`export DOCKER_HOST=tcp://node1:10000`
+- Select the node with Machine
 
-- Check the output of `docker version` and `docker info`
+  ```
+  eval $(docker-machine env node1)
+  ```
+
+- Execute some Docker commands
+
+  ```
+  docker version
+  docker info
+  docker ps
+  ```
 
 ]
 
-- Remember to set the environment variable if you open another SSH session!
-
-- With Docker Machine, you would do a command like:
-  <br/>`eval $(docker-machine env my-swarm-master)`
+Two containers should show up: the agent and the manager.
 
 ---
 
-# Running on Swarm
+## Check our (single-node) Swarm cluster
+
+Let's connect to the manager instead.
+
+.exercise[
+
+- Select the Swarm manager with Machine
+
+  ```
+  eval $(docker-machine env node1 --swarm)
+  ```
+
+- Execute some Docker commands
+
+  ```
+  docker version
+  docker info
+  docker ps
+  ```
+
+]
+
+The output is different! Let's review this.
+
+---
+
+## `docker version`
+
+Swarm identifies itself clearly:
+
+```
+Client:
+ Version:      1.8.2
+ API version:  1.20
+ Go version:   go1.4.2
+ Git commit:   0a8c2e3
+ Built:        Thu Sep 10 19:19:00 UTC 2015
+ OS/Arch:      linux/amd64
+
+Server:
+ Version:      swarm/0.4.0
+ API version:  1.16
+ Go version:   go1.4.2
+ Git commit:   d647d82
+ Built:
+ OS/Arch:      linux/amd64
+```
+
+---
+
+## `docker info`
+
+Swarm gives cluster information, showing all nodes:
+
+```
+Containers: 3
+Images: 6
+Role: primary
+Strategy: spread
+Filters: affinity, health, constraint, port, dependency
+Nodes: 1
+ node: 52.89.117.68:2376
+  └ Containers: 3
+  └ Reserved CPUs: 0 / 2
+  └ Reserved Memory: 0 B / 3.86 GiB
+  └ Labels: executiondriver=native-0.2,
+            kernelversion=3.13.0-53-generic,
+            operatingsystem=Ubuntu 14.04.2 LTS,
+            provider=generic, storagedriver=aufs
+CPUs: 2
+Total Memory: 3.86 GiB
+Name: 2ec2e6c4054e
+```
+
+---
+
+## `docker ps`
+
+- This one should show nothing at this point.
+
+- The Swarm containers are hidden.
+
+- This avoids unneeded pollution.
+
+- This also avoids killing them by mistake.
+
+---
+
+## Add other nodes to the cluster
+
+- Let's use *almost* the same command line
+  <br/>(but without `--swarm-master`)
+
+.exercise[
+
+- Stay on `node1` (it has keys and certificates now!)
+
+- Add another node with Docker Machine
+
+  .small[
+  ```
+  docker-machine create node2 --driver generic \
+    --swarm --swarm-discovery token://$TOKEN \
+    --generic-ssh-user docker --generic-ip-address 1.2.3.4
+  ```
+  ]
+]
+
+Remember to update the IP address correctly.
+
+Repeat for all 4 nodes.
+
+Pro tip: look for name/address mapping in `/etc/hosts`.
+
+---
+
+## Scripting
+
+To help you a little bit:
+
+```
+grep node[2345] /etc/hosts | grep -v ^127 |
+while read IPADDR NODENAME
+do docker-machine create $NODENAME --driver generic \
+   --swarm --swarm-discovery token://$TOKEN \
+   --generic-ssh-user docker \
+   --generic-ip-address $IPADDR \
+</dev/null
+done
+```
+
+Fun fact: Machine drains stdin.
+
+That's why we use `</dev/null` here.
+
+<!---
+Let's fix Markdown coloring with this one weird trick!
+-->
+
+---
+
+# Running containers on Swarm
+
+Try to run a few `busybox` containers.
+
+Then, let's get serious:
+
+.exercise[
+
+- Start a Redis service:
+  <br/>`docker run -dP redis`
+
+- See the service address:
+  <br/>`docker port $(docker ps -lq) 6379`
+
+]
+
+This can be any of your five nodes.
+
+---
+
+# Running our app on Swarm
 
 - Swarm doesn't support builds (yet)
 
@@ -1704,7 +1918,7 @@ Some Redis commands: `"SET key value"` `"GET key"`
 ## Notes
 
 - If you want to scale up or down, you have to re-do
-  the whole plumbing 
+  the whole plumbing
 
 - This is not a design issue; just an implementation detail
   of the `connect-services.py` script
