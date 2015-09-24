@@ -130,8 +130,8 @@ class: title
 - Computer with network connection and SSH client
   <br/>(on Windows, get [putty](http://www.putty.org/)
   or [Git BASH](https://msysgit.github.io/))
-- GitHub account
-- Docker Hub account
+- GitHub account (recommended; not mandatory)
+- Docker Hub account (only for Swarm hands-on section)
 - Basic Docker knowledge
 
 .exercise[
@@ -191,11 +191,12 @@ be run from the first VM, `node1`**.
 
 .exercise[
 
-- Fork the repository on GitHub
-- Clone your fork on `node1`
+- Clone the repository on `node1`:
+  <br/>.small[`git clone git://github.com/jpetazzo/orchestration-workshop`]
 
 ]
 
+(Bonus points for forking on GitHub and cloning your fork!)
 
 ---
 
@@ -211,6 +212,7 @@ be run from the first VM, `node1`**.
   - `worker` feeds those random bytes into `hasher`
   - each hash starting with `0` is a DockerCoin
   - DockerCoins are stored in `redis`
+  - `redis` is also updated every second to track speed
   - you can see the progress with the `webui`
 
 Next: we will inspect components independently.
@@ -219,20 +221,54 @@ Next: we will inspect components independently.
 
 ## Running components independently
 
+First, we will run the random number generator (`rng`).
+
 .exercise[
 
 - Go to the `dockercoins` directory (in the cloned repo)
+
 - Run `docker-compose up rng`
   <br/>(Docker will pull `python` and build the microservice)
 
 ]
 
-.icon[![Warning](warning.png)] The container log says
-`Running on http://0.0.0.0:80/`
-<br/>but that is port 80 *in the container*.
-On the host it is 8001.
+.icon[![Warning](warning.png)] Pay attention to the port mapping!
 
-This is mapped in The `docker-compose.yml` file:
+- The container log says:
+  <br/>`Running on http://0.0.0.0:80/`
+
+- But if you try `curl localhost:80`, you will get:
+  <br/>`Connection refused`
+
+---
+
+## Understanding port mapping
+
+- `node1`, the Docker host, has only one port 80
+
+- If we give the one and only port 80 to the first
+  container who asks for it, we are in trouble when
+  another container needs it
+
+- Default behavior: containers are not "exposed"
+  <br/>(only reachable through their private address)
+
+- Container network services can be exposed:
+
+  - statically (you decide which host port to use)
+  
+  - dynamically (Docker allocates a host port)
+
+---
+
+## Declaring port mapping
+
+- Directly with the Docker Engine:
+  <br/>`docker run -P redis`
+  <br/>`docker run -p 6379 redis`
+  <br/>`docker run -p 1234:6379 redis`
+
+- With Docker Compose, in the `docker-compose.yml` file:
 
 ```
 rng:
@@ -241,25 +277,238 @@ rng:
     - "8001:80"
 ```
 
+→ port 8001 *on the host* maps to
+port 80 *in the container*
+
 ---
 
-## Getting random bytes of data
+## Using the `rng` service
+
+Let's get random bytes of data!
 
 .exercise[
 
 - Open a second terminal and connect to the same VM
+
 - Check that the service is alive:
   <br/>`curl localhost:8001`
+
 - Get 10 bytes of random data:
   <br/>`curl localhost:8001/10`
-  <br/>(the output might confuse your terminal, since this is binary data)
+
+- If the binary data output messed up your terminal, fix it:
+  <br/>`reset`
+
+]
+
+---
+
+## Running the hasher
+
+.exercise[
+
+- Run `docker-compose up hasher`
+  <br/>(it will pull `ruby` and do the build)
+
+]
+
+.icon[![Warning](warning.png)] Again, pay attention to the port mapping!
+
+The container log says that it's listening on port 80,
+but it's mapped to port 8002 on the host.
+
+You can see the mapping in `docker-compose.yml`.
+
+---
+
+## Testing the hasher
+
+.exercise[
+
+- Open a third terminal window, and SSH to `node1`
+
+- Run `curl localhost:8002`
+  <br/>(it will say it's alive)
+
+- Posting binary data requires some extra flags:
+
+  ```
+  curl \
+    -H "Content-type: application/octet-stream" \
+    --data-binary hello \
+    localhost:8002
+  ```
+
+- Check that it computed the right hash:
+  <br/>`echo -n hello | sha256sum`
+
+]
+
+---
+
+## Stopping services
+
+We have multiple options:
+
+- Interrupt `docker-compose up` with `^C`
+
+- Stop individual services with `docker-compose stop rng`
+
+- Stop all services with `docker-compose stop`
+
+- Kill all services with `docker-compose kill`
+  <br/>(rude, but faster!)
+
+.exercise[
+
+- Use any of those methods to stop `rng` and `hasher`
+
+]
+
+---
+
+# Running the whole app on a single node
+
+.exercise[
+
+- Run `docker-compose up` to start all components
+
+]
+
+- Aggregate output is shown
+
+- Output is verbose
+  <br/>(because the worker is constantly hitting other services)
+
+- Now let's use the little web UI to see realtime progress
+
+
+.exercise[
+
+- Open http://[yourVMaddr]:8000/ (from a browser)
+
+]
+
+---
+
+## Running in the background
+
+- The logs are very verbose (and won't get better)
+
+- Let's put them in the background for now!
+
+.exercise[
+
+- Stop the app (with `^C`)
+
+- Start it again with `docker-compose up -d`
+
+- Check on the web UI that the app is still making progress
+
+]
+
+---
+
+## Looking at resource usage
+
+- Let's look at CPU, memory, and I/O usage
+
+.exercise[
+
+- run `top` to see CPU and memory usage
+  <br/>(you should see idle cycles)
+
+- run `vmstat 3` to see I/O usage (si/so/bi/bo)
+  <br/>(the 4 numbers should be almost zero,
+  <br/>except `bo` for logging)
+
+]
+
+We have available resources.
+
+- Why?
+- How can we use them?
+
+---
+
+## Scaling workers on a single node
+
+- Docker Compose supports scaling
+- It doesn't deal with load balancing
+- For services that *do not* accept connections, that's OK
+- Let's scale `worker` and see what happens!
+
+.exercise[
+
+- In one SSH session, run `docker-compose logs worker`
+
+- In another, run `docker-compose scale worker=4`
+
+- See the impact on CPU load (with top/htop),
+  <br/>and on compute speed (with web UI)
+
+]
+
+---
+
+# Identifying bottlenecks
+
+- Adding workers didn't result in linear improvement
+
+- *Something else* is slowing us down
+
+--
+
+- ... But what?
+
+--
+
+- The code doesn't have instrumentation
+
+- We will use `ab` for individual load testing
+
+- We will use `httping` to view latency under load
+
+---
+
+## Benchmarking our microservices
+
+We will test microservices in isolation.
+
+.exercise[
+
+- Stop the application:
+  `docker-compose kill`
+
+- Remove old containers:
+  `docker-compose rm`
+
+- Start `hasher` and `rng`:
+  `docker-compose up hasher rng`
+
+]
+
+Now let's hammer them with requests!
+
+---
+
+## Testing `rng`
+
+Let's assess the raw performance of our RNG.
+
+.exercise[
+
 - Test the performance on one big request:
   <br/>`curl -o/dev/null localhost:8001/10000000`
   <br/>(should take ~1s, and show speed of ~10 MB/s)
 
 ]
 
-Next: we'll see how it behaves with many small requests.
+If we were doing requests of 1000 bytes ...
+
+... Could we get 10k req/s?
+
+Let's test and see what happens!
 
 ---
 
@@ -269,9 +518,11 @@ Next: we'll see how it behaves with many small requests.
 
 - Test 100 requests of 1000 bytes each:
   <br/>`ab -n 100 localhost:8001/1000`
+
 - Test 100 requests, 10 requests in parallel:
   <br/>`ab -n 100 -c 10 localhost:8001/1000`
   <br/>(look how the latency has increased!)
+
 - Try with 100 requests in parallel:
   <br/>`ab -n 100 -c 100 localhost:8001/1000`
 
@@ -303,30 +554,11 @@ Now we can stop the generator.
 
 ---
 
-## Running the hasher
+## Benchmarking the hasher
+
+We will hash the data that we just got from `rng`.
 
 .exercise[
-
-- Run `docker-compose up hasher`
-  <br/>(it will pull `ruby` and do the build)
-
-]
-
-.icon[![Warning](warning.png)] Again, pay attention to the port mapping!
-
-The container log says that it's listening on port 80,
-but it's mapped to port 8002 on the host.
-
-You can see the mapping in `docker-compose.yml`.
-
----
-
-## Testing the hasher
-
-.exercise[
-
-- Run `curl localhost:8002`
-  <br/>(it will say it's alive)
 
 - Posting binary data requires some extra flags:
 
@@ -345,7 +577,7 @@ You can see the mapping in `docker-compose.yml`.
 
 ---
 
-## Benchmarking the hasher
+## The hasher under load
 
 The invocation of `ab` will be slightly more complex as well.
 
@@ -386,7 +618,7 @@ Let's repeat the tests with smaller data.
 
 ]
 
----
+???
 
 ## Why do `rng` and `hasher` behave differently?
 
@@ -394,104 +626,54 @@ Let's repeat the tests with smaller data.
 
 ---
 
-# Running the whole app on a single node
+# Measuring latency under load
+
+We will use `httping`.
 
 .exercise[
 
-- Run `docker-compose up` to start all components
-
-]
-
-- Aggregate output is shown
-
-- Output is verbose because the worker is constantly hitting other services
-
-- Now let's use the little web UI to see realtime progress
-
-
-.exercise[
-
-- Open http://[yourVMaddr]:8000/ (from a browser)
-
-]
-
----
-
-## Running in the background
-
-- The logs are very verbose (and won't get better)
-
-- Let's put them in the background for now!
-
-.exercise[
-
-- Stop the app (with `^C`)
-
-- Start it again with `docker-compose up -d`
-
-- Check on the web UI that the app is still making progress
-
-]
-
----
-
-# Finding bottlenecks
-
-- Let's look at CPU, memory, and I/O usage
-
-.exercise[
-
-- run `top` to see CPU and memory usage
-  <br/>(you should see idle cycles)
-
-- run `vmstat 3` to see I/O usage (si/so/bi/bo)
-  <br/>(the 4 numbers should be almost zero,
-  <br/>except `bo` for logging)
-
-]
-
-We have available resources.
-
-- Why?
-- How can we use them?
-
----
-
-## Measuring performance
-
-- The code doesn't have instrumentation
-
-- Let's use `ab` and `httping` to view latency of microservices
-
-.exercise[
-
-- Start two new SSH connections
+- You need three SSH connections
 
 - In the first one, let run `httping localhost:8001`
 
-- In the other one, let run `httping localhost:8002`
+- In the second one, let run `httping localhost:8002`
+
+- In the third one, run `docker-compose up -d`
 
 ]
+
+Check the latency numbers.
+
+- `hasher` should be very low (~1ms)
+- `rng` should be low, with occasional spikes (10-100ms)
 
 ---
 
-# Scaling workers on a single node
+## Latency when scaling the worker
 
-- Docker Compose supports scaling
-- It doesn't deal with load balancing
-- For services that *do not* accept connections, that's OK
-- Let's scale `worker` and see what happens!
+We will add workers and see what happens.
 
 .exercise[
 
-- In one SSH session, run `docker-compose logs worker`
+- Run `docker-compose scale worker=2`
 
-- In another, run `docker-compose scale worker=4`
+- Check latency
 
-- See the impact on CPU load (with top/htop),
-  <br/>and on compute speed (with web UI)
+- Increase number of workers and repeat
 
 ]
+
+What happens?
+
+- `hasher` remains low
+- `rng` spikes up until it is reaches ~N*100ms
+  <br/>(when you have N+1 workers) 
+
+---
+
+## Why do `rng` and `hasher` behave differently?
+
+![Equations on a blackboard](equations.png)
 
 ---
 
@@ -556,6 +738,8 @@ being unaware of its existence!
 
 That's all!
 
+Shortcut: `docker-compose.yml-scaled-rng`
+
 ---
 
 ## Introduction to `jpetazzo/hamba`
@@ -603,6 +787,8 @@ docker run -d -p 80 jpetazzo/hamba 80 www1 1234 www2 2345
 
 ]
 
+Shortcut: `docker-compose.yml-scaled-rng`
+
 ---
 
 ## Point other services to the load balancer
@@ -627,30 +813,24 @@ docker run -d -p 80 jpetazzo/hamba 80 www1 1234 www2 2345
 
 ]
 
+Shortcut: `docker-compose.yml-scaled-rng`
+
 ---
 
 ## Start the whole stack
 
-- The new `rng0` load balancer also ties up port 8001
-
-- We have to stop the old `rng` service first
-  <br/>(Compose doesn't do it for us)
-
-.exercise[
-
-- Run `docker-compose stop rng`
-
-]
-
-- Now (re-)start the whole stack
-
 .exercise[
 
 - Run `docker-compose up -d`
+
 - Check worker logs with `docker-compose logs worker`
+
 - Check load balancer logs with `docker-compose logs rng0`
 
 ]
+
+If you get errors about port 8001, make sure that
+`rng` was stopped correctly and try again.
 
 ---
 
@@ -771,7 +951,10 @@ To exit a telnet session: `Ctrl-] c ENTER`
 
 ]
 
-(Replace `A.B.C.D` with the IP address noted earlier)
+Replace `A.B.C.D` with the IP address noted earlier.
+
+Shortcut: `docker-compose.yml-extra-hosts`
+<br/>(But you still have to replace `A.B.C.D`!)
 
 ---
 
@@ -789,7 +972,7 @@ To exit a telnet session: `Ctrl-] c ENTER`
     ports:
       - "8000:80"
     #volumes:
-    #  - "webui/files/:/files/"
+    #  - "./webui/files/:/files/"
   ```
 
 ]
@@ -812,7 +995,7 @@ those files are only present locally, not on the remote nodes.
 .exercise[
 
 - Set the environment variable:
-  <br/>`export DOCKER_HOST=tcp://X.Y.Z:55555`
+  <br/>`export DOCKER_HOST=tcp://node2:55555`
 
 - Start the stack:
   <br/>`docker-compose up -d`
@@ -911,6 +1094,9 @@ those files are only present locally, not on the remote nodes.
 
 ]
 
+Shortcut: `docker-compose.yml-ambassador`
+<br/>(But you still have to update `AA.BB.CC.DD EEEE`!)
+
 ---
 
 ## Start the new stack
@@ -928,17 +1114,95 @@ those files are only present locally, not on the remote nodes.
 
 ---
 
-## Discussion
+# Discussion about ambassadors
 
-- `jpetazzo/hamba` is simple and stupid
+- "But, ambassadors are adding an extra hop!"
 
-- It could be replaced with something dynamic:
+--
 
-  - looking up the host+port in consul/etcd/zk
+- Yes, but if you need load balancing, you need that hop
 
-  - reconfiguring itself when consul/etcd/zk is updated
+- Ambassadors actually *save* one hop
+  <br/>(they act as local load balancers)
 
-  - dealing with failover
+--
+
+- However, they have a negative impact on load balancing fairness
+
+--
+
+- Ambassadors are not the only solution
+  <br/>(see also: overlay networks)
+
+--
+
+- There are multiple ways to deploy ambassadors
+
+---
+
+## Single-tier ambassador deployment
+
+- One-shot configuration process
+
+- Must be executed manually after each scaling operation
+
+- Scans current state, updates load balancer configuration
+
+- Pros:
+  <br/>- simple, robust, no extra moving part
+  <br/>- easy to customize (thanks to simple design)
+  <br/>- can deal efficiently with large changes
+
+- Cons:
+  <br/>- must be executed after each scaling operation
+  <br/>- harder to compose different strategies
+
+- Example: this workshop
+
+---
+
+## Two-tier ambassador deployment
+
+- Daemon listens to Docker events API
+
+- Reacts to container start/stop events
+
+- Adds/removes back-ends to load balancers configuration
+
+- Pros:
+  <br/>- no extra step required when scaling up/down
+
+- Cons:
+  <br/>- extra process to run and maintain
+  <br/>- deals with one event at a time (ordering matters)
+
+- Hidden gotcha: load balancer creation
+
+- Example: interlock
+
+---
+
+## Three-tier ambassador deployment
+
+
+- Daemon listens to Docker events API
+
+- Reacts to container start/stop events
+
+- Adds/removes scaled services in distributed config DB
+  <br/>(zookeeper, etcd, consul…)
+
+- Another daemon listens to config DB events
+
+- Adds/removes backends to load balancers configuration
+
+- Pros:
+  <br/>- more flexibility
+
+- Cons:
+  <br/>- three extra services to run and maintain
+
+- Example: registrator
 
 ---
 
@@ -1179,7 +1443,7 @@ class: title
 
 ---
 
-# Static vs Dynamic
+## Static vs Dynamic
 
 - Static
 
@@ -1199,7 +1463,7 @@ class: title
 
 ---
 
-# Mesos (overview)
+## Mesos (overview)
 
 - First presented in 2009
 
@@ -1219,7 +1483,7 @@ class: title
 
 ---
 
-# Mesos (in practice)
+## Mesos (in practice)
 
 - Easy to setup a test cluster (in containers!)
 
@@ -1234,7 +1498,7 @@ class: title
 
 ---
 
-# Kubernetes (overview)
+## Kubernetes (overview)
 
 - 1 year old
 
@@ -1252,7 +1516,7 @@ class: title
 
 ---
 
-# Kubernetes (in practice)
+## Kubernetes (in practice)
 
 - Network and service discovery is powerful, but complex
   <br/>.small[(different mechanisms within pod, between pods, for inbound traffic...)]
@@ -1268,7 +1532,7 @@ class: title
 
 ---
 
-# Swarm (in theory)
+## Swarm (in theory)
 
 - Consolidates multiple Docker hosts into a single one
 
@@ -1285,7 +1549,7 @@ class: title
 
 ---
 
-# Swarm (in practice)
+## Swarm (in practice)
 
 - Not stable yet (version 0.4 right now)
 
@@ -1297,7 +1561,7 @@ class: title
 
 ---
 
-# PAAS on Docker
+## PAAS on Docker
 
 - The PAAS workflow: *just push code*
   <br/>(inspired by Heroku, dotCloud...)
@@ -1316,7 +1580,7 @@ class: title
 
 ---
 
-# A few other tools
+## A few other tools
 
 - Flocker
 
@@ -1342,7 +1606,7 @@ class: pic
 
 ---
 
-# Warning: here be dragons
+## Warning: here be dragons
 
 - So far, we've used stable products (versions 1.X)
 
@@ -1352,13 +1616,13 @@ class: pic
 
 ---
 
-# Introducing Swarm
+# Hands-on Swarm
 
 ![Swarm Logo](swarm.png)
 
 ---
 
-# Setting up our Swarm cluster
+## Setting up our Swarm cluster
 
 - This can be done manually or with **Docker Machine**
 
@@ -1378,7 +1642,7 @@ class: pic
 
 ---
 
-# The Way Of The Machine
+## The Way Of The Machine
 
 - Install `docker-machine` (single binary download)
 
@@ -1399,7 +1663,7 @@ class: pic
 
 ---
 
-# Docker Machine `generic` driver
+## Docker Machine `generic` driver
 
 - Most drivers work the same way:
 
@@ -1418,7 +1682,7 @@ class: pic
 
 ---
 
-# Swarm deployment
+## Swarm deployment
 
 - Components involved:
 
@@ -1671,7 +1935,7 @@ Let's fix Markdown coloring with this one weird trick!
 
 ---
 
-# Running containers on Swarm
+## Running containers on Swarm
 
 Try to run a few `busybox` containers.
 
@@ -1691,7 +1955,7 @@ This can be any of your five nodes.
 
 ---
 
-# Building our app on Swarm
+## Building our app on Swarm
 
 - Swarm has partial support for builds
 
@@ -1829,9 +2093,10 @@ So, what do‽
 
 ---
 
-# Network plumbing on Swarm
+## Network plumbing on Swarm
 
-- We will share *network namespaces* (as seen before)
+- We will use one-tier, dynamic ambassadors
+  <br/>(as seen before)
 
 - Other available options:
 
@@ -1839,8 +2104,30 @@ So, what do‽
 
   - implementing service discovery in the application
 
-  - using the new network plugins, available in Docker Experimental
+  - use Docker Engine Experimental + network plugins
     <br/>(or any other overlay network like Weave or Pipework)
+
+---
+
+## Revisiting `jpetazzo/hamba`
+
+- Configuration is stored in a *volume*
+
+- A watcher process looks for configuration updates,
+  <br/>and restarts HAProxy when needed
+
+- It can be started without configuration:
+  
+  ```
+  docker run --name amba jpetazzo/hamba run
+  ```
+
+- There is a helper to inject a new configuration:
+
+  ```
+  docker run --rm --volumes-from amba jpetazzo/hamba \
+         80 backend1 port1 backend2 port2 ...
+  ```
 
 ???
 
@@ -1913,6 +2200,8 @@ class: hidden
 - Start ambassadors in the services' namespace;
   <br/>each ambassador will listen on the right `127.127.0.X`
 
+- Gather all backend addresses and configure ambassadors
+
 .icon[![Warning](warning.png)] Services should try to reconnect!
 
 ???
@@ -1934,60 +2223,34 @@ class: hidden
 
 ## Our tools
 
-- `unlink-services.py`
+- `link-to-ambassadors.py`
 
   - replaces all `links` with `extra_hosts` entries
 
-- `connect-services.py`
+- `create-ambassadors.py`
 
   - scans running containers
+  - allocates `127.127.X.X` addresses
+  - starts (unconfigured) ambassadors
 
-  - generate commands to patch `/etc/hosts`
+- `configure-ambassadors.py`
 
-  - generate commands to start ambassadors
+  - scans running containers
+  - gathers backend addresses
+  - sends configuration to ambassadors
 
 ---
 
 ## Putting it together
 
-.exercise[
+- build-tag-push
+- link-to-ambassadors
+- up!
+- scale!
+- create-ambassadors
+- configure-ambassadors
 
-- Generate the new Compose YAML file:
-  <br/>`../unlink-services.py docker-compose.yml-XXX deploy.yml`
-
-- Start our services:
-  <br/>`docker-compose -f deploy.yml up -d`
-  <br/>`docker-compose -f deploy.yml scale worker=8`
-  <br/>`docker-compose -f deploy.yml scale rng=4`
-
-- Generate plumbing commands:
-  <br/>`../connect-services.py deploy.yml`
-
-- Execute plumbing commands:
-  <br/>`../connect-services.py deploy.yml | sh`
-
-]
-
----
-
-## Notes
-
-- If you want to scale up or down, you have to re-do
-  the whole plumbing
-
-- This is not a design issue; just an implementation detail
-  of the `connect-services.py` script
-
-- Possible improvements:
-
-  - get list of containers using a single API call
-
-  - use labels to tag ambassador containers
-
-  - update script to do fine-grained updates of `/etc/hosts`
-
-  - update script to add/remove ambassadors carefully
-    <br/>(instead of destroying+recreating them all)
+Repeat last 3 steps.
 
 ---
 
