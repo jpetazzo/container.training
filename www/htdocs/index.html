@@ -1691,23 +1691,27 @@ This can be any of your five nodes.
 
 ---
 
-# Running our app on Swarm
+# Building our app on Swarm
 
-- Swarm doesn't support builds (yet)
+- Swarm has partial support for builds
 
-- .icon[![Explosion](explosion.gif)] Our version of Compose will crash on builds
+- .icon[![Explosion](explosion.gif)] Older versions of Compose would crash on builds
 
 - Try it!
 
 .exercise[
 
-- Run `docker-compose build` and see the traceback!
+- Run `docker-compose build` once ...
+
+- Run `docker-compose build` twice ...
+
+- What happened?
 
 ]
 
 ---
 
-## Building with Swarm
+## Re-thinking the build process
 
 - Let's step back and think for a minute ...
 
@@ -1773,7 +1777,55 @@ Let's try!
 It won't work, because Compose and Swarm do not collaborate
 to establish *placement constraints*.
 
+--
+
+(╯°□°)╯︵ ┻━┻
+
+---
+
+## Simple container dependencies
+
+- Container A has a link to container B
+
+- Compose starts B first, then A
+
+- Swarm translates the link into a placement constraint:
+
+  - *"put A on the same node as B"*
+
+- Alles gut
+
+---
+
+## Complex container dependencies
+
+- Container A has a link to containers B and C
+
+- Compose starts B and C first
+  <br/>(but that can be on different nodes!)
+
+- Compose starts A
+
+- Swarm translates the links into placements contraints
+
+  - *"put A on the same node as B"*
+  - *"put A on the same node as C"*
+
+- If B and C are on different nodes, that's impossible
+
 So, what do‽
+
+---
+
+## A word on placement constraints
+
+- Swarm supports constraints
+
+- We could tell swarm to put all our containers together
+
+- Linking would work
+
+- But seriously, what's the point?
 
 ---
 
@@ -1787,9 +1839,10 @@ So, what do‽
 
   - implementing service discovery in the application
 
-  - using an overlay network like Weave or Pipework
+  - using the new network plugins, available in Docker Experimental
+    <br/>(or any other overlay network like Weave or Pipework)
 
----
+???
 
 ## Another use of network namespaces
 
@@ -1801,7 +1854,7 @@ So, what do‽
 
 - Other containers can be added later
 
----
+???
 
 ## Connecting over localhost
 
@@ -1823,7 +1876,9 @@ So, what do‽
 
 Some Redis commands: `"SET key value"` `"GET key"`
 
----
+???
+
+class: hidden
 
 ## Same IP address
 
@@ -1860,7 +1915,7 @@ Some Redis commands: `"SET key value"` `"GET key"`
 
 .icon[![Warning](warning.png)] Services should try to reconnect!
 
----
+???
 
 ## .icon[![Warning](warning.png)] Work in progress
 
