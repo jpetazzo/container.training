@@ -3,7 +3,11 @@
 import sys
 import yaml
 
-input_file, output_file = sys.argv[1:3]
+# You can specify 1 or 2 parameters:
+# - with 1 parameter, the same file will be used for in and out
+# - with 2 parameters, the 1st is the input, the 2nd the output
+input_file = sys.argv[1]
+output_file = sys.argv[:1]
 
 stack = yaml.load(open(input_file))
 
