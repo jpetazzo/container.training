@@ -8,6 +8,7 @@ SETTINGS_BASIC = dict(
     "to the VM using your SSH client.</p>\n"
     "<p>Your VM is reachable on the following address:</p>\n",
     prettify=lambda x: x,
+    footer="",
     )
 
 SETTINGS_ADVANCED = dict(
@@ -15,10 +16,12 @@ SETTINGS_ADVANCED = dict(
     pagesize=12,
     blurb="<p>Here is the connection information to your very own "
     "cluster for this orchestration workshop. You can connect "
-    "to each VM with your SSH client.</p>\n"
+    "to each VM with any SSH client.</p>\n"
     "<p>Your machines are:<ul>\n",
     prettify=lambda l: [ "node%d: %s"%(i+1, s) 
                          for (i, s) in zip(range(len(l)), l) ],
+    footer="<p>You can find the last version of the slides on "
+    "http://view.dckr.info/.</p>"
     )
 
 SETTINGS = SETTINGS_ADVANCED
@@ -44,13 +47,16 @@ html.write("""
 div { 
     float:left;
     border: 1px solid black;
-    width: 25%;
-    padding: 4%;
+    width: 28%;
+    padding: 4% 2.5% 2.5% 2.5%;
     font-size: x-small;
     background-image: url("docker-nb.svg");
     background-size: 15%;
     background-position-x: 50%;
     background-repeat: no-repeat;
+}
+p {
+    margin: 0.5em 0 0.5em 0;
 }
 .pagebreak {
     page-break-before: always;
@@ -69,6 +75,7 @@ for i, cluster in enumerate(clusters):
         html.write("<li>%s</li>\n"%s)
     html.write("</ul></p>")
     html.write("<p>login=docker password=training</p>\n")
+    html.write(footer)
     html.write("</div>")
 html.close()
 
