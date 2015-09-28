@@ -980,6 +980,14 @@ If you get errors about port 8001, make sure that
 - But we want every stack to use the same Redis
   <br/>(in other words: Redis is our only *stateful* service here)
 
+--
+
+- And remember: we're not allowed to change the code!
+
+  - the code connects to host `redis`
+  - `redis` must resolve to the address of our Redis service
+  - the Redis service must listen on the default port (6379)
+
 ---
 
 ## The plan
@@ -1110,8 +1118,28 @@ Shortcut: `docker-compose.yml-extra-hosts`
 
 (Replace `A.B.C.D` with the IP address noted earlier)
 
-Note: we also commented out the `volumes` section since
-those files are only present locally, not on the remote nodes.
+.icon[![Warning](warning.png)] Don't forget to comment out the `volumes` section!
+
+---
+
+## Why did we comment out the `volumes` section?
+
+- Volumes have multiple uses:
+
+  - storing persistent stuff (database files...)
+
+  - sharing files between containers (logs, configuration...)
+
+  - sharing files between host and containers (source...)
+
+- The `volumes` directive expands to an host path
+  <br/>.small[(e.g. `/home/docker/orchestration-workshop/dockercoins/webui/files`)]
+
+- This host path exists on the local machine
+  <br/>(not on the others)
+
+- This specific volume is used in development
+  <br/>(not in production)
 
 ---
 
@@ -1127,7 +1155,7 @@ those files are only present locally, not on the remote nodes.
 
 ]
 
-- Check in the web browser that it's running correctly.
+- Check in the web browser that it's running correctly
 
 ---
 
@@ -1272,18 +1300,47 @@ Shortcut: `docker-compose.yml-ambassador`
 - Ambassadors actually *save* one hop
   <br/>(they act as local load balancers)
 
---
+  - traditional load balancer:
+    <br/>client ⇒ external LB ⇒ server (2 physical hops)
 
-- However, they have a negative impact on load balancing fairness
-
---
-
-- Ambassadors are not the only solution
-  <br/>(see also: overlay networks)
+  - ambassadors:
+    <br/>client → ambassador ⇒ server (1 physical hop)
 
 --
 
-- There are multiple ways to deploy ambassadors
+- Ambassadors are more reliable than traditional LBs
+  <br/>(they are colocated with their clients)
+
+---
+
+## Inconvenients of ambassadors
+
+- Generic issues
+  <br/>(shared with any kind of load balancing / HA setup)
+
+  - extra logical hop (not transparent to the client)
+
+  - must assess backend health
+
+  - one more thing to worry about (!)
+
+- Specific issues
+
+  - load balancing fairness
+
+High-end load balancing solutions will rely on back pressure
+from the backends. This addresses the fairness issue.
+
+---
+
+## There are many ways to deploy ambassadors
+
+"Ambassador" is a design pattern.
+
+There are many ways to implement it.
+
+We will present three increasingly complex (but also powerful)
+ways to deploy ambassadors.
 
 ---
 
@@ -1350,6 +1407,26 @@ Shortcut: `docker-compose.yml-ambassador`
   <br/>- three extra services to run and maintain
 
 - Example: registrator
+
+---
+
+## Other multi-host communication mechanisms
+
+- Overlay networks
+
+  - weave, flannel, pipework ...
+
+- Network plugins
+
+  - check out Docker Experimental Engine
+    <br/>(should land in stable releases soon)
+
+- Allow a flat network for your containers
+
+- Often requires an extra service to deal with BUM packets
+  <br/>(broadcast/unknown/multicast)
+
+- Load balancers and/or failover mechanisms still needed
 
 ---
 
@@ -2113,7 +2190,7 @@ This can be any of your five nodes.
 
 - Swarm has partial support for builds
 
-- .icon[![Explosion](explosion.gif)] Older versions of Compose would crash on builds
+- .icon[![Warning](warning.png)] Older versions of Compose would crash on builds
 
 - Try it!
 
@@ -2192,7 +2269,7 @@ Let's try!
 .exercise[
 
 - Switch back to the Swarm cluster:
-  <br/>`eval $(docker-machine env node1 --swarm)
+  <br/>`eval $(docker-machine env node1 --swarm)`
 
 - Bring up the application:
   <br/>`docker-compose -f docker-compose.yml-XXX up`
@@ -2470,7 +2547,7 @@ It will gather:
 - the list of app backends,
 - the list of ambassadors.
 
-Then it will configure all ambassadors will all found backends.
+Then it configures all ambassadors with all found backends.
 
 .exercise[
 
@@ -2500,7 +2577,7 @@ Then it will configure all ambassadors will all found backends.
 
 # Going further
 
-Scaling the application (easy)
+Scaling the application (difficulty: easy)
 
 - Run `docker-compose scale`
 
@@ -2514,7 +2591,7 @@ Scaling the application (easy)
 
 ## Going further
 
-Deploying a new version (easy)
+Deploying a new version (difficulty: easy)
 
 - Just re-run all the steps!
 
@@ -2532,7 +2609,7 @@ Deploying a new version (easy)
 
 ## Going further
 
-Zero-downtime deployment (medium)
+Zero-downtime deployment (difficulty: medium)
 
 - Isolate stateful services
   <br/>(like we did earlier for Redis)
@@ -2553,9 +2630,13 @@ Zero-downtime deployment (medium)
 
 ## Going further
 
-Try two-tier or three-tier ambassador deployments.
+Harder projects:
 
-Try overlay networking instead of ambassadors.
+- Try two-tier or three-tier ambassador deployments
+
+- Try overlay networking instead of ambassadors
+
+- Try to deploy Mesos or Kubernetes
 
 ---
 
