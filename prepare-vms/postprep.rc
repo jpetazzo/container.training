@@ -28,7 +28,7 @@ while addresses:
 
 os.system("sudo apt-get -qy install python-setuptools pssh apache2-utils httping htop")
 os.system("sudo easy_install pip")
-os.system("sudo pip install docker-compose==1.4.1")
+os.system("sudo pip install docker-compose==1.4.2")
 os.system("docker pull swarm:0.4.0")
 os.system("docker tag -f swarm:0.4.0 swarm")
 os.system("sudo curl -L https://github.com/docker/machine/releases/download/v0.4.1/docker-machine_linux-amd64 -o /usr/local/bin/docker-machine")

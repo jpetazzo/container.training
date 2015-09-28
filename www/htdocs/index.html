@@ -101,27 +101,32 @@ class: title
 - Pre-requirements
 - VM environment
 - Our sample application
+- Running services independently
 - Running the whole app on a single node
-- Finding bottlenecks
-- Scaling workers on a single node
+- Identifying bottlenecks
+- Measuring latency under load
 - Scaling HTTP on a single node
+- Put a load balancer on it
 - Connecting to containers on other hosts
-- Abstracting connection details
+- Abstracting remote services with ambassadors
+- Various considerations about ambassadors
 
 ---
 
 ## Outline (2/2)
 
+- Docker for ops
 - Backups
 - Logs
 - Security upgrades
 - Network traffic analysis
 - Dynamic orchestration
-- Introducing Mesos, Kubernetes, Swarm
-- PAAS and other tools
-- Setting up our Swarm cluster
-- Running on Swarm
+- Hands-on Swarm
+- Deploying Swarm
+- Cluster discovery
+- Building our app on Swarm
 - Network plumbing on Swarm
+- Going further
 
 ---
 
@@ -156,21 +161,21 @@ class: title
 .exercise[
 
 - Log into the first VM (`node1`)
-- Check that you can SSH (without password) to `node2`\*
+- Check that you can SSH (without password) to `node2`
 - Check the version of docker with `docker version`
 
 ]
 
-\*Note: from now on, unless instructed, **all commands must
-be run from the first VM, `node1`**.
+.footnote[Note: from now on, unless instructed, **all commands must
+be run from the first VM, `node1`**.]
 
 ---
 
 ## Brand new versions!
 
-- Docker 1.8.2
+- Engine 1.8.2
 
-- Compose 1.4.1
+- Compose 1.4.2
 
 - Swarm 0.4
 
@@ -219,7 +224,7 @@ Next: we will inspect components independently.
 
 ---
 
-## Running components independently
+# Running services independently
 
 First, we will run the random number generator (`rng`).
 
@@ -433,21 +438,23 @@ We have available resources.
 
 ## Scaling workers on a single node
 
-- Docker Compose supports scaling
-- It doesn't deal with load balancing
-- For services that *do not* accept connections, that's OK
+- Docker Compose supports scaling.red[*]
 - Let's scale `worker` and see what happens!
 
 .exercise[
 
 - In one SSH session, run `docker-compose logs worker`
 
-- In another, run `docker-compose scale worker=4`
+- In another, run `docker-compose scale worker=10`
 
 - See the impact on CPU load (with top/htop),
   <br/>and on compute speed (with web UI)
 
 ]
+
+You should see the compute speed increase ~3x (not 10x).
+
+.footnote[.red[*]With some limitations, as we'll see later.]
 
 ---
 
@@ -528,7 +535,32 @@ Let's test and see what happens!
 
 ]
 
-Take note of the number of requests/s.
+--
+
+Whatever we do, we get ~10 requests/second.
+
+Increasing concurrency doesn't help:
+it just increases latency.
+
+---
+
+## Discussion
+
+- When serving requests sequentially, they each take 100ms
+
+- When 10 requests arrive at the same time:
+
+  - one request is served in 100ms
+  - another is served in 200ms
+  - another is served in 300ms
+  - ...
+  - another is served in 1000ms
+
+- All requests are queued and served by a single thread
+
+- It looks like `rng` doesn't handle concurrent requests
+
+- What about `hasher`?
 
 ---
 
@@ -605,7 +637,7 @@ Take note of the performance numbers (requests/s).
 
 ## Benchmarking the hasher on smaller data
 
-Here we hashed 1 meg.
+Here we hashed 1,000,000 bytes.
 
 Later we will hash much smaller payloads.
 
@@ -617,12 +649,6 @@ Let's repeat the tests with smaller data.
 - Repeat the `ab` tests
 
 ]
-
-???
-
-## Why do `rng` and `hasher` behave differently?
-
-![Equations on a blackboard](equations.png)
 
 ---
 
@@ -671,26 +697,112 @@ What happens?
 
 ---
 
+class: title
+
+Why?
+
+---
+
+## Why does everything take (at least) 100ms?
+
+--
+
+`rng` code:
+
+![RNG code screenshot](delay-rng.png)
+
+--
+
+`hasher` code:
+
+![HASHER code screenshot](delay-hasher.png)
+
+---
+
+class: title
+
+But ...
+
+WHY?!?
+
+---
+
+## Why did we sprinkle this sample app with sleeps?
+
+- Deterministic performance
+  <br/>(regardless of instance speed, CPUs, I/O...)
+
+--
+
+- Actual code sleeps all the time anyway
+
+--
+
+- When your code makes a remote API call:
+
+  - it sends a request;
+
+  - it sleeps until it gets the response;
+
+  - it processes the response.
+
+---
+
 ## Why do `rng` and `hasher` behave differently?
 
 ![Equations on a blackboard](equations.png)
+
+--
+
+(Synchronous vs. asynchronous event processing)
+
+---
+
+## How to make `rng` go faster
+
+- Obvious solution: comment out the `sleep` instruction
+
+--
+
+- Real-world solution: use an asynchronous framework
+  <br/>(e.g. use gunicorn with gevent)
+
+--
+
+- New rule: we can't change the code!
+
+--
+
+- Solution: scale out `rng`
+  <br/>(dispatch `rng` requests on multiple instances)
 
 ---
 
 # Scaling HTTP on a single node
 
-The plan:
+- We could try to scale with Compose:
+
+  ```
+  docker-compose scale rng=3
+  ```
+
+- Compose doesn't deal with load balancing
+
+- We would get 3 instances ...
+
+- ... But only the first one would serve traffic
+
+---
+
+## The plan
 
 - Stop the `rng` service first
 
-- Scale `rng` to multiple containers
+- Create multiple identical `rng` containers
 
-- Put a load balancer in front of it
+- Put a load balancer in front of them
 
 - Point other services to the load balancer
-
-Note: Compose does not support that kind of scaling yet.
-<br/>We will have to do it manually for now.
 
 ---
 
@@ -767,7 +879,9 @@ docker run -d -p 80 jpetazzo/hamba 80 www1 1234 www2 2345
 
 ---
 
-## Add our load balancer to the Compose file
+# Put a load balancer on it
+
+Let's add our load balancer to the Compose file.
 
 .exercise[
 
@@ -839,32 +953,27 @@ If you get errors about port 8001, make sure that
 - The good
 
   We scaled a service, added a load balancer -
-  <br/>without changing a single line of code
+  <br/>without changing a single line of code.
 
 - The bad
 
-  We manually copy-pasted sections in `docker-compose.yml`
+  We manually copy-pasted sections in `docker-compose.yml`.
+
+  Improvement: write scripts to transform the YAML file.
 
 - The ugly
 
-  If we scale up/down, we have to restart everything
+  If we scale up/down, we have to restart everything.
 
----
-
-## Ideas to improve the situation
-
-- Parse `docker-compose.yml` to automatically replace
-  services with their scaled counterparts
-
-- Replace Docker Links with network namespace sharing
-
-- More on this later
+  Improvement: reconfigure the load balancer dynamically.
 
 ---
 
 # Connecting to containers on other hosts
 
-- We want to scale across multiple nodes
+- So far, our whole stack is on a single machine
+
+- We want to scale out (across multiple nodes)
 
 - We will deploy the same stack multiple times
 
@@ -889,6 +998,28 @@ If you get errors about port 8001, make sure that
   - in the `links` section, remove `redis`
 
   - instead, put a `redis` entry in `extra_hosts`
+
+---
+
+## Making Redis available on its default port
+
+There are two strategies.
+
+- `docker run -p 6379:6379 redis`
+
+  - the container has its own, isolated network stack
+  - Docker creates a port mapping rule through iptables
+  - slight performance overhead
+  - port number is explicit (visible through Docker API)
+
+- `docker run --net host redis`
+
+  - the container uses the network stack of the host
+  - when it binds to 6379/tcp, that's 6379/tcp on the host
+  - allows raw speed (no overhead due to iptables/bridge)
+  - port number is not visible through Docker API
+
+Choose wisely!
 
 ---
 
@@ -984,6 +1115,22 @@ those files are only present locally, not on the remote nodes.
 
 ---
 
+## Start the stack on the first machine
+
+- Nothing special to do here
+
+- Just bring up the application like we did before
+
+.exercise[
+
+- `docker-compose up -d`
+
+]
+
+- Check in the web browser that it's running correctly.
+
+---
+
 ## Start the stack on another machine
 
 - We will set the `DOCKER_HOST` variable
@@ -1040,7 +1187,7 @@ those files are only present locally, not on the remote nodes.
 
 ---
 
-# Abstracting connection details
+# Abstracting remote services with ambassadors
 
 - What if we can't/won't run Redis on its default port?
 
@@ -1114,7 +1261,7 @@ Shortcut: `docker-compose.yml-ambassador`
 
 ---
 
-# Discussion about ambassadors
+# Various considerations about ambassadors
 
 - "But, ambassadors are adding an extra hop!"
 
@@ -1206,6 +1353,14 @@ Shortcut: `docker-compose.yml-ambassador`
 
 ---
 
+class: title
+
+# Interlude <br/>
+
+# Docker for ops
+
+---
+
 # Backups
 
 - Redis is still running (with name `myredis`)
@@ -1290,16 +1445,12 @@ Shortcut: `docker-compose.yml-ambassador`
 
 - Sorry, this part won't be hands-on
 
-- Two (and a half) strategies:
+- Two strategies:
 
   - log to plain files on volumes
 
-  - log to stdout with the syslog driver
-
-  - log to stdout with the JSON driver
-
-- The last one doesn't really count
-  <br/>(but it's the default)
+  - log to stdout
+    <br/>(and use a logging driver)
 
 ---
 
@@ -1326,28 +1477,25 @@ Shortcut: `docker-compose.yml-ambassador`
 
 ---
 
-## Logging to syslog
+## Logging to stdout
 
 - All containers should write to stdout/stderr
 
-- Change Docker start options to add `--log-driver syslog`
+- Docker will collect logs and pass them to a logging driver
+
+- Available drivers:
+  <br/>json-file (default), syslog, journald, gelf, fluentd
+
+- Change driver by passing `--log-driver` option to daemon
   <br>(On Ubuntu, tweak `DOCKER_OPTS` in `/etc/default/docker`)
 
-- When you do that, you can't use `docker logs` anymore
+- For now, only json-files supports logs retrieval
+  <br/>(i.e. `docker logs`)
 
----
+- Warning: json-file doesn't rotate logs by default
+  <br/>(but this can be changed with `--log-opt`)
 
-## Logging to JSON files
-
-- That's the default option
-
-- All containers should write to stdout/stderr
-
-- You can use `docker logs`
-
-- But those local JSON files are, well, local
-
-- ... And they will eventually use up all the space
+See: https://docs.docker.com/reference/logging/overview/
 
 ---
 
@@ -1422,18 +1570,22 @@ Shortcut: `docker-compose.yml-ambassador`
 
 ## Install and start `ngrep`
 
+Ngrep uses libpcap (like tcpdump) to sniff network traffic.
+
 .exercise[
 
 - Start a container with the same network namespace:
-  <br/>`docker run --net container:myredis -ti ubuntu`
+  <br/>`docker run --net container:myredis -ti alpine`
 
 - Install ngrep:
-  <br/>`apt-get update && apt-get install -y ngrep`
+  <br/>`apk update && apk add ngrep`
 
 - Run ngrep:
   <br/>`ngrep -tpd eth0 -Wbyline . tcp`
 
 ]
+
+You should see a stream of Redis requests and responses.
 
 ---
 
@@ -1555,9 +1707,11 @@ class: title
 
 - OK for some scenarios (Jenkins, grid...)
 
-- Not OK (yet) for Compose build, links...
+- Not OK (yet.red[*]) for Compose build, links...
 
 - We'll see it (briefly) in action
+
+.footnote[.red[*]By "not OK" we mean "requires extra elbow grease."]
 
 ---
 
@@ -1682,7 +1836,7 @@ class: pic
 
 ---
 
-## Swarm deployment
+# Deploying Swarm
 
 - Components involved:
 
@@ -1697,7 +1851,7 @@ class: pic
 
 ---
 
-## Service discovery
+# Cluster discovery
 
 - Possible backends:
 
@@ -1955,7 +2109,7 @@ This can be any of your five nodes.
 
 ---
 
-## Building our app on Swarm
+# Building our app on Swarm
 
 - Swarm has partial support for builds
 
@@ -2011,18 +2165,23 @@ This can be any of your five nodes.
 
 ## Build, Tag, And Push
 
+Let's inspect the source code of `build-tag-push.py` and run it.
+
+.icon[![Warning](warning.png)] It is better to run it against a single node!
+
+(There are some race conditions within Swarm when building+pushing too fast.)
+
 .exercise[
 
-- Look at `build-tag-push.py`
+- Point to a single node:
+  <br/>`eval $(docker-machine env node1)`
 
-- Run it!
+- Run the script (from the `dockercoins` directory):
+  <br/>`../build-tag-push.py`
+
+- Inspect the `docker-compose.yml-XXX` file that it created
+
 ]
-
-- Run it in the directory containing `docker-compose.yml`
-  <br/>(suggestion: `../build-tag-push.py`)
-
-- It will create a new `docker-compose.yml` file
-  <br/>(named `docker-compose.yml-XXX` where `XXX` is a timestamp)
 
 ---
 
@@ -2032,7 +2191,11 @@ Let's try!
 
 .exercise[
 
-- Run `docker-compose -f docker-compose.yml-XXX up`
+- Switch back to the Swarm cluster:
+  <br/>`eval $(docker-machine env node1 --swarm)
+
+- Bring up the application:
+  <br/>`docker-compose -f docker-compose.yml-XXX up`
 
 ]
 
@@ -2089,11 +2252,15 @@ So, what do‽
 
 - Linking would work
 
-- But seriously, what's the point?
+- But all containers would end up on the same node
+
+--
+
+- So having a cluster would be pointless!
 
 ---
 
-## Network plumbing on Swarm
+# Network plumbing on Swarm
 
 - We will use one-tier, dynamic ambassadors
   <br/>(as seen before)
@@ -2126,61 +2293,47 @@ So, what do‽
 
   ```
   docker run --rm --volumes-from amba jpetazzo/hamba \
-         80 backend1 port1 backend2 port2 ...
+         reconfigure 80 backend1 port1 backend2 port2 ...
   ```
 
-???
+.footnote[Note: configuration validation and error messages
+will be logged by the ambassador, not the `reconfigure` container.]
 
-## Another use of network namespaces
+---
 
-- Two (or more) containers can share a network stack
+## Should we use `links` for our ambassadors?
 
-- They will have the same IP address
+Technically, we could use links.
 
-- They will be able to connect over `localhost`
+- Before starting an app container:
+  
+  start the ambassador(s) it needs
 
-- Other containers can be added later
+- When starting an app container:
 
-???
+  link it to its ambassador(s)
 
-## Connecting over localhost
+But we wouldn't be able to use `docker-compose scale` anymore.
 
-.exercise[
+---
 
-- Start a container running redis:
-  <br/>`docker run -d --name myredis redis`
+## Network namespaces and `extra_hosts`
 
-- Start another container in the same network namespace:
-  <br/>`docker run -ti --net container:myredis ubuntu`
+This is our plan:
 
-- In the 2nd container, install telnet:
-  <br/>`apt-get update && apt-get install telnet`
+- Replace each `link` with an `extra_host`,
+  <br/>pointing to the `127.127.X.X` address space
 
-- In the 2nd container, connect to redis on localhost:
-  <br/>`telnet localhost 6379`
+- Start app containers normally
+  <br/>(`docker-compose up`, `docker-compose scale`)
 
-]
+- Start ambassadors after app containers are up:
 
-Some Redis commands: `"SET key value"` `"GET key"`
+  - ambassadors bind to `127.127.X.X`
 
-???
+  - they share their client's network namespace
 
-class: hidden
-
-## Same IP address
-
-- Let's confirm that our containers share
-  the same IP address
-
-.exercise[
-
-- Run a couple of times:
-  <br/>`docker run ubuntu ip addr ls`
-
-- Now run a couple of times:
-  <br/>`docker run --net container:myredis ubuntu ip addr ls`
-
-]
+- Reconfigure ambassadors each time something changes
 
 ---
 
@@ -2204,20 +2357,19 @@ class: hidden
 
 .icon[![Warning](warning.png)] Services should try to reconnect!
 
-???
+---
 
-## .icon[![Warning](warning.png)] Work in progress
+## "Design for failure," they said
 
-- Ideally, we would use `--add-host`
-  (and Docker Compose counterpart, `extra_hosts`) to populate
-  `/etc/hosts`
+- When the containers are started, the network is not ready
 
-- Unfortunately, this does not work yet
-  <br/>(See [Swarm issue #908](https://github.com/docker/swarm/issues/908)
-  for details)
+- First connection attempts **will fail**
 
-- We'll populate `/etc/hosts` manually instead
-  <br/>(with `docker exec`)
+- App should try to reconnect
+
+- It is OK to crash and restart
+
+- Exponential back-off is nice
 
 ---
 
@@ -2241,16 +2393,169 @@ class: hidden
 
 ---
 
-## Putting it together
+## Convert links to ambassadors
 
-- build-tag-push
-- link-to-ambassadors
-- up!
-- scale!
-- create-ambassadors
-- configure-ambassadors
+- When we ran `build-tag-push.py` earlier,
+  <br/>it generated a new `docker-compose.yml-XXX` file.
 
-Repeat last 3 steps.
+.exercise[
+
+- Run the first script to create a new YAML file:
+  <br/>`../link-to-ambassadors.py docker-compose.yml-XXX a.yml`
+
+- Look how the file was modified:
+  <br/>`diff docker-compose.yml-XXX a.yml`
+
+]
+
+The script can take one or two file name arguments:
+
+- two arguments indicate input and output files to use;
+- with one argument, the file will be modified in place.
+
+---
+
+## Bring up the application
+
+The application can now be started and scaled.
+
+Remember to use the *new* YAML file!
+
+.exercise[
+
+- Start the application:
+  <br/>`docker-compose -f a.yml up -d`
+
+- Scale the application:
+  <br/>`docker-compose -f a.yml scale worker=5 rng=10`
+
+]
+
+Note: you can scale everything as you like, *except Redis*,
+because it is stateful.
+
+---
+
+## Create the ambassadors
+
+This has to be executed each time you create new services
+or scale up existing ones.
+
+The script takes the YAML file as its only argument.
+
+It will scan and compare:
+
+- the list of app containers,
+- the list of ambassadors.
+
+It will create missing ambassadors.
+
+.exercise[
+
+- Run the script!
+  <br/>`../create-ambassadors.py a.yml`
+
+]
+
+---
+
+## Configure the ambassadors
+
+All ambassadors are created but they still need configuration.
+
+That's the purpose of the last script.
+
+It will gather:
+
+- the list of app backends,
+- the list of ambassadors.
+
+Then it will configure all ambassadors will all found backends.
+
+.exercise[
+
+- Run it!
+  <br/>`../configure-ambassadors.py a.yml`
+
+]
+
+---
+
+## Check what we did
+
+.exercise[
+
+
+- Find out the address of the web UI:
+  <br/>`docker-compose ps webui`
+
+- Point your browser to it
+
+- Check the logs:
+  <br/>`docker-compose logs`
+
+]
+
+---
+
+# Going further
+
+Scaling the application (easy)
+
+- Run `docker-compose scale`
+
+- Re-create ambassadors
+
+- Re-configure ambassadors
+
+- No downtime
+
+---
+
+## Going further
+
+Deploying a new version (easy)
+
+- Just re-run all the steps!
+
+- However, Compose will re-create the containers
+
+- You will have to re-create ambassadors
+  <br/>(and configure them)
+
+- You will have to cleanup old ambassadors
+  <br/>(left as an exercise for the reader)
+
+- You will experience a little bit of downtime
+
+---
+
+## Going further
+
+Zero-downtime deployment (medium)
+
+- Isolate stateful services
+  <br/>(like we did earlier for Redis)
+
+- Do blue/green deployment:
+
+  - deploy and scale version N
+
+  - point a "top-level" load balancer to the app
+
+  - deploy and scale version N+1
+
+  - put both apps in the "top-level" balancer
+
+  - slowly switch traffic over to app version N+1
+
+---
+
+## Going further
+
+Try two-tier or three-tier ambassador deployments.
+
+Try overlay networking instead of ambassadors.
 
 ---
 
