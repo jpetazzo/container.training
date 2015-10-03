@@ -25,7 +25,6 @@ var points = []
 var graph = null;
 
 function refresh () {
-    var content = $("#content");
     $.ajax({ url: "json" }).done(function (data) {
         series.push(data);
         while (series.length < 250) {
@@ -70,12 +69,17 @@ function refresh () {
             yAxis.render();
         } else {
             graph.update();
+            $("text").css({
+                "font-size": "15px",
+                "font-weight": "normal",
+                "opacity": 0.5,
+            });
         }
     });
 }
 
 $(function () {
-    setInterval(refresh, 2000);
+    setInterval(refresh, 1000);
 });
 </script>
 </head>
@@ -84,7 +88,6 @@ $(function () {
 <h1>DockerCoin Miner WebUI</h1>
 
 <div id="graph"></div>
-<div id="content">Current speed: N/A</div>
 
 </body>
 </html>
