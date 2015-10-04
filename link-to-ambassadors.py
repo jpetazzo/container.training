@@ -41,5 +41,5 @@ for service_name, service in stack.items():
     if service_name in ports:
         service["ports"] = [ ports[service_name] ]
 
-yaml.safe_dump(stack, open(output_file, "w"))
+yaml.safe_dump(stack, open(output_file, "w"), default_flow_style=False)
 

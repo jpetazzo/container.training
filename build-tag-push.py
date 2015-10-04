@@ -63,6 +63,6 @@ for service_name, popen_object in push_operations.items():
 
 # Write the new docker-compose.yml file.
 with open(output_file, "w") as f:
-    yaml.safe_dump(stack, f)
+    yaml.safe_dump(stack, f, default_flow_style=False)
 
 print("Wrote new compose file: {}".format(output_file))
