@@ -1,13 +1,30 @@
 #!/usr/bin/env python
 
+import os
 import sys
 import yaml
 
-# You can specify 1 or 2 parameters:
+# You can specify up to 2 parameters:
+# - with 0 parameter, we will look for the COMPOSE_FILE env var
 # - with 1 parameter, the same file will be used for in and out
 # - with 2 parameters, the 1st is the input, the 2nd the output
-input_file = sys.argv[1]
-output_file = sys.argv[-1]
+if len(sys.argv)==1:
+    if "COMPOSE_FILE" not in os.environ:
+        print("Please specify 1 or 2 file names, or set COMPOSE_FILE.")
+        sys.exit(1)
+    compose_file = os.environ["COMPOSE_FILE"]
+    if compose_file == "docker-compose.yml":
+        print("Refusing to operate directly on docker-compose.yml.")
+        print("Specify it on the command-line if that's what you want.")
+        sys.exit(1)
+    input_file, output_file = compose_file, compose_file
+elif len(sys.argv)==2:
+    input_file, output_file = sys.argv[1], sys.argv[1]
+elif len(sys.argv)==3:
+    input_file, output_file = sys.argv[1], sys.argv[2]
+else:
+    print("Too many arguments. Please specify up to 2 file names.")
+    sys.exit(1)
 
 stack = yaml.load(open(input_file))
 

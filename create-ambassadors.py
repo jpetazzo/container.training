@@ -5,7 +5,8 @@ import subprocess
 import sys
 import yaml
 
-stack = yaml.load(open(sys.argv[1]))
+compose_file = os.environ.get("COMPOSE_FILE") or sys.argv[1]
+stack = yaml.load(open(compose_file))
 
 project_name = os.path.basename(os.path.realpath("."))
 
