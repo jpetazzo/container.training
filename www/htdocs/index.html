@@ -144,7 +144,7 @@ class: title
 - This is the stuff you're supposed to do!
 - Create [GitHub](https://github.com/) and
   [Docker Hub](https://hub.docker.com) accounts now if needed
-- Go to [view.dckr.info](http://view.dckr.info) to view these slides
+- Go to [lisa.dckr.info](http://lisa.dckr.info) to view these slides
 
 ]
 
@@ -173,13 +173,13 @@ be run from the first VM, `node1`**.]
 
 ## Brand new versions!
 
-- Engine 1.8.2
+- Engine 1.9.0
 
-- Compose 1.4.2
+- Compose 1.5.0
 
-- Swarm 0.4
+- Swarm 1.0
 
-- Machine 0.4.1
+- Machine 0.5.0
 
 ---
 
@@ -1418,13 +1418,14 @@ ways to deploy ambassadors.
 
 - Network plugins
 
-  - check out Docker Experimental Engine
-    <br/>(should land in stable releases soon)
-
+  - available since Engine 1.9
+  
 - Allow a flat network for your containers
 
 - Often requires an extra service to deal with BUM packets
   <br/>(broadcast/unknown/multicast)
+  
+  - e.g. a key/value store (Consul, Etcd, Zookeeper ...)
 
 - Load balancers and/or failover mechanisms still needed
 
@@ -1759,6 +1760,9 @@ class: title
 - Great deployment platform ...
   <br/>but no developer experience yet
 
+Note: this slide probably needs an update, since KubeCon is happening
+*right now* in San Francisco!
+
 ---
 
 ## Swarm (in theory)
@@ -1780,15 +1784,15 @@ class: title
 
 ## Swarm (in practice)
 
-- Not stable yet (version 0.4 right now)
+- Stable since November 2015
 
-- OK for some scenarios (Jenkins, grid...)
+- Great for some scenarios (Jenkins, grid...)
 
-- Not OK (yet.red[*]) for Compose build, links...
+- Requires extra effort for Compose build, links...
+
+- Requires a key/value store to achieve high availability
 
 - We'll see it (briefly) in action
-
-.footnote[.red[*]By "not OK" we mean "requires extra elbow grease."]
 
 ---
 
@@ -1813,29 +1817,31 @@ class: title
 
 ## A few other tools
 
-- Flocker
+- Volume plugins (Convoy, Flocker...)
 
-  - manage/migrate stateful containers
+  - manage/migrate stateful containers (and more)
 
-- Powerstrip
-
-  - sits in front of the Docker API
-
-  - great to implement your own experiments
-
-- Weave
+- Network plugins (Contiv, Weave...)
 
   - overlay network so that containers can ping each other
 
+- Powerstrip
+
+  - sits in front of the Docker API; great for experiments
+
+- Tutum
+
+  - dashboard to manage feelts of Docker hosts
+
 ... And many more!
 
----
+~~~
 
 class: pic
 
 ![Here Be Dragons](dragons.jpg)
 
----
+~~~
 
 ## Warning: here be dragons
 
@@ -1987,9 +1993,9 @@ class: pic
 
   .small[
   ```
-  docker-machine create node1 --driver generic \
+  docker-machine create --driver generic \
     --swarm --swarm-master --swarm-discovery token://$TOKEN \
-    --generic-ssh-user docker --generic-ip-address 1.2.3.4
+    --generic-ssh-user docker --generic-ip-address 1.2.3.4 node1
   ```
   ]
 
@@ -2126,9 +2132,9 @@ Name: 2ec2e6c4054e
 
   .small[
   ```
-  docker-machine create node2 --driver generic \
+  docker-machine create --driver generic \
     --swarm --swarm-discovery token://$TOKEN \
-    --generic-ssh-user docker --generic-ip-address 1.2.3.4
+    --generic-ssh-user docker --generic-ip-address 1.2.3.4 node2
   ```
   ]
 ]
@@ -2148,10 +2154,10 @@ To help you a little bit:
 ```
 grep node[2345] /etc/hosts | grep -v ^127 |
 while read IPADDR NODENAME
-do docker-machine create $NODENAME --driver generic \
+do docker-machine create --driver generic \
    --swarm --swarm-discovery token://$TOKEN \
    --generic-ssh-user docker \
-   --generic-ip-address $IPADDR \
+   --generic-ip-address $IPADDR $NODENAME \
 </dev/null
 done
 ```
@@ -2630,13 +2636,25 @@ Zero-downtime deployment (difficulty: medium)
 
 ## Going further
 
+Use the new networking features (difficulty: medium)
+
+- Create a key/value store (e.g. Consul cluster)
+
+- Reconfigure all Engines to use the key/value store
+
+- Load balancers can use DNS for backend discovery
+
+Note: this is really easy to do with a 1-node Consul cluster.
+
+---
+
+## Going further
+
 Harder projects:
 
-- Try two-tier or three-tier ambassador deployments
+- Two-tier or three-tier ambassador deployments
 
-- Try overlay networking instead of ambassadors
-
-- Try to deploy Mesos or Kubernetes
+- Deploy to Mesos or Kubernetes
 
 ---
 

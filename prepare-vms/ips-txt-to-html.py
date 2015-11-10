@@ -2,13 +2,14 @@
 
 SETTINGS_BASIC = dict(
     clustersize=1,
-    pagesize=12,
+    pagesize=15,
     blurb="<p>Here is the connection information to your very own "
     "VM for this intro to Docker workshop. You can connect "
     "to the VM using your SSH client.</p>\n"
     "<p>Your VM is reachable on the following address:</p>\n",
     prettify=lambda x: x,
-    footer="",
+    footer="<p>You can find the last version of the slides on "
+    "http://lisa.dckr.info/.</p>",
     )
 
 SETTINGS_ADVANCED = dict(
@@ -21,10 +22,10 @@ SETTINGS_ADVANCED = dict(
     prettify=lambda l: [ "node%d: %s"%(i+1, s) 
                          for (i, s) in zip(range(len(l)), l) ],
     footer="<p>You can find the last version of the slides on "
-    "http://view.dckr.info/.</p>"
+    "http://lisa.dckr.info/.</p>"
     )
 
-SETTINGS = SETTINGS_ADVANCED
+SETTINGS = SETTINGS_BASIC
 
 globals().update(SETTINGS)
 
