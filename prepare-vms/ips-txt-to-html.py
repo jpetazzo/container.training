@@ -9,7 +9,7 @@ SETTINGS_BASIC = dict(
     "<p>Your VM is reachable on the following address:</p>\n",
     prettify=lambda x: x,
     footer="<p>You can find the last version of the slides on "
-    "http://lisa.dckr.info/.</p>",
+    "http://view.dckr.info/.</p>",
     )
 
 SETTINGS_ADVANCED = dict(
@@ -22,7 +22,7 @@ SETTINGS_ADVANCED = dict(
     prettify=lambda l: [ "node%d: %s"%(i+1, s) 
                          for (i, s) in zip(range(len(l)), l) ],
     footer="<p>You can find the last version of the slides on "
-    "http://lisa.dckr.info/.</p>"
+    "http://view.dckr.info/.</p>"
     )
 
 SETTINGS = SETTINGS_BASIC

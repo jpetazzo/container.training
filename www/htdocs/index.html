@@ -1838,22 +1838,6 @@ Note: this slide probably needs an update, since KubeCon is happening
 
 ... And many more!
 
-~~~
-
-class: pic
-
-![Here Be Dragons](dragons.jpg)
-
-~~~
-
-## Warning: here be dragons
-
-- So far, we've used stable products (versions 1.X)
-
-- We're going to expore experimental software
-
-- **Use at your own risk**
-
 ---
 
 # Hands-on Swarm
@@ -2161,17 +2145,8 @@ do docker-machine create --driver generic \
    --swarm --swarm-discovery token://$TOKEN \
    --generic-ssh-user docker \
    --generic-ip-address $IPADDR $NODENAME \
-</dev/null
 done
 ```
-
-Fun fact: Machine drains stdin.
-
-That's why we use `</dev/null` here.
-
-<!---
-Let's fix Markdown coloring with this one weird trick!
--->
 
 ---
 
@@ -2201,21 +2176,40 @@ This can be any of your five nodes.
 
 - .icon[![Warning](warning.png)] Older versions of Compose would crash on builds
 
-- Try it!
-
 .exercise[
 
-- Run `docker-compose build` once ...
+- Run `docker-compose build` multiple times
+  <br/>(until you get it to build twice)
 
-- Run `docker-compose build` twice ...
+- Loudly complain that caching doesn't work as expected!
 
-- What happened?
+- Run one container multiple times with a resource limit:
+  <br/>`docker run -d -m 1G dockercoins_rng`
+
+- Check where the containers are running with `docker ps`
 
 ]
 
 ---
 
-## Re-thinking the build process
+## Caveats when building with Swarm
+
+- Caching doesn't work all the time
+
+  - cause: build nodes can be picked randomly
+  
+  - solution: always pin builds to the same node
+  
+- Containers are only scheduled on a few nodes
+
+  - cause: images are not present on all nodes
+
+  - solution: distribute images through a registry
+    <br/>(e.g. Docker Hub)
+
+---
+
+## Why can't Swarm do this automatically for us?
 
 - Let's step back and think for a minute ...
 
@@ -2231,7 +2225,28 @@ This can be any of your five nodes.
 
   - run on any machine that has the image
 
-- What do, what do‽
+- Could Compose+Swarm solve this automatically?
+
+---
+
+## A few words about "sane defaults"
+
+- *It would be nice if Swarm could pick a node, and build there!*
+
+  - but which node should it pick?
+  - what if the build is very expensive?
+  - what if we want to distribute the build across nodes?
+  - what if we want to tag some builder nodes?
+  - ok but what if no node has been tagged?
+
+- *It would be nice if Swarm could automatically push images!*
+
+  - using the Docker Hub is an easy choice
+    <br/>(you just need an account)
+  - but some of us can't/won't use Docker Hub
+    <br/>(for compliance reasons or because no network access)
+
+.small[("Sane" defaults are nice only if we agree on the definition of "sane")]
 
 ---
 
@@ -2280,8 +2295,11 @@ Let's try!
 - Switch back to the Swarm cluster:
   <br/>`eval $(docker-machine env node1 --swarm)`
 
+- Protip - set the `COMPOSE_FILE` variable:
+  <br/>`export COMPOSE_FILE=docker-compose.yml-XXX`
+
 - Bring up the application:
-  <br/>`docker-compose -f docker-compose.yml-XXX up`
+  <br/>`docker-compose up`
 
 ]
 
@@ -2357,8 +2375,7 @@ So, what do‽
 
   - implementing service discovery in the application
 
-  - use Docker Engine Experimental + network plugins
-    <br/>(or any other overlay network like Weave or Pipework)
+  - use an overlay network
 
 ---
 
@@ -2487,17 +2504,34 @@ This is our plan:
 .exercise[
 
 - Run the first script to create a new YAML file:
-  <br/>`../link-to-ambassadors.py docker-compose.yml-XXX a.yml`
+  <br/>`../link-to-ambassadors.py $COMPOSE_FILE new.yml`
 
 - Look how the file was modified:
-  <br/>`diff docker-compose.yml-XXX a.yml`
+  <br/>`diff $COMPOSE_FILE new.yml`
 
 ]
 
-The script can take one or two file name arguments:
+---
+
+## Change `$COMPOSE_FILE` in place
+
+The script can take zero, one, or two file name arguments:
 
 - two arguments indicate input and output files to use;
-- with one argument, the file will be modified in place.
+- with one argument, the file will be modified in place;
+- with zero agument, it will act on `$COMPOSE_FILE`.
+
+For convenience, let's avoid having a bazillion files around.
+
+.exercise[
+
+- Remove the temporary Compose file we just created:
+  <br/>`rm -f new.yml`
+
+- Update `$COMPOSE_FILE` in place:
+  <br/>`../link-to-ambassadors.py`
+
+]
 
 ---
 
@@ -2505,15 +2539,13 @@ The script can take one or two file name arguments:
 
 The application can now be started and scaled.
 
-Remember to use the *new* YAML file!
-
 .exercise[
 
 - Start the application:
-  <br/>`docker-compose -f a.yml up -d`
+  <br/>`docker-compose up -d`
 
 - Scale the application:
-  <br/>`docker-compose -f a.yml scale worker=5 rng=10`
+  <br/>`docker-compose scale worker=5 rng=10`
 
 ]
 
@@ -2527,9 +2559,7 @@ because it is stateful.
 This has to be executed each time you create new services
 or scale up existing ones.
 
-The script takes the YAML file as its only argument.
-
-It will scan and compare:
+After reading `$COMPOSE_FILE`, it will scan running containers, and compare:
 
 - the list of app containers,
 - the list of ambassadors.
@@ -2539,7 +2569,7 @@ It will create missing ambassadors.
 .exercise[
 
 - Run the script!
-  <br/>`../create-ambassadors.py a.yml`
+  <br/>`../create-ambassadors.py`
 
 ]
 
@@ -2551,7 +2581,7 @@ All ambassadors are created but they still need configuration.
 
 That's the purpose of the last script.
 
-It will gather:
+It will read `$COMPOSE_FILE` and gather:
 
 - the list of app backends,
 - the list of ambassadors.
@@ -2561,7 +2591,7 @@ Then it configures all ambassadors with all found backends.
 .exercise[
 
 - Run it!
-  <br/>`../configure-ambassadors.py a.yml`
+  <br/>`../configure-ambassadors.py`
 
 ]
 
@@ -2658,6 +2688,553 @@ Harder projects:
 - Two-tier or three-tier ambassador deployments
 
 - Deploy to Mesos or Kubernetes
+
+---
+
+class: pic
+
+![Here Be Dragons](dragons.jpg)
+
+---
+
+# Here be dragons
+
+- So far, we've used stable products (versions 1.X)
+
+- We're going to explore experimental software
+
+- **Use at your own risk**
+
+---
+
+# Setting up Consul and overlay networks
+
+- We will reconfigure our Swarm cluster to enable overlays
+
+- We will deploy a Consul cluster
+
+- We will connect containers running on different machines
+
+---
+
+## First, let's Clean All The Things!
+
+- We need to remove the old containers
+  <br/>(in particular the `swarm` agents and managers)
+
+.exercise[
+
+- The following snippet will nuke all containers on all hosts:
+
+  ```
+  for N in 1 2 3 4 5
+  do
+    ssh node$N "docker ps -qa | xargs -r docker rm -f"
+  done
+  ```
+
+(If it asks you to confirm SSH keys, just do it!)
+
+]
+
+Note: our Swarm cluster is now broken.
+
+---
+
+## Remove old Machine information
+
+- We will use `docker-machine rm`
+
+- With the `generic` driver, this doesn't do anything
+  <br/>(it just deletes local configuration)
+
+- With cloud/VM drivers, this would actually delete VMs
+
+.exercise[
+
+- Remove our nodes from Docker Machine config database:
+
+  ```
+  for N in 1 2 3 4 5
+  do
+    docker-machine rm -f node$N
+  done
+  ```
+
+]
+
+---
+
+## Add extra options to our Engines
+
+- We need two new options for our engines:
+
+  - `cluster-store` (to indicate which key/value store to use)
+
+  - `cluster-advertise` (to indicate which IP address to register)
+
+- `cluster-store` will be `consul://localhost:8500`
+  <br/>(we will run one Consul node on each machine)
+
+- `cluster-advertise` will be `eth0:2376`
+  <br/>(Engine will automatically pick up eth0's IP address)
+
+---
+
+## Reconfiguring Swarm clusters, the Docker way
+
+- The traditional way to reconfigure a service is to edit
+  its configuration (or init script), then restart
+  
+- We can use Machine to make that easier
+
+- Re-deploying with Machine's `generic` driver will reconfigure
+  Engines with the new parameters
+
+.exercise[
+
+- Re-provision the manager node:
+
+  .small[
+  ```
+  docker-machine create --driver generic \
+    --engine-opt cluster-store=consul://localhost:8500 \
+    --engine-opt cluster-advertise=eth0:2376 \
+    --swarm --swarm-master --swarm-discovery consul://localhost:8500 \
+    --generic-ssh-user docker --generic-ip-address 52.32.216.30 node1
+  ```
+  ]
+]
+
+---
+
+## Reconfigure the other nodes
+
+- Once again, scripting to the rescue!
+
+.exercise[
+
+```
+grep node[2345] /etc/hosts | grep -v ^127 |
+while read IPADDR NODENAME
+do docker-machine create --driver generic \
+   --engine-opt cluster-store=consul://localhost:8500 \
+   --engine-opt cluster-advertise=eth0:2376 \
+   --swarm --swarm-discovery consul://localhost:8500 \
+   --generic-ssh-user docker \
+   --generic-ip-address $IPADDR $NODENAME
+done
+```
+
+]
+
+---
+
+## Checking what we did
+
+.exercise[
+
+- Directly point the CLI to a node and check configuration:
+  
+  ```
+  eval $(docker-machine env node1)
+  docker info
+  ```
+
+  (should show `Cluster store` and `Cluster advertise`)
+
+- Try to talk to the Swarm cluster:
+
+  ```
+  eval $(docker-machine env node1 --swarm)
+  docker info
+  ```
+
+  (should show zero node)
+
+]
+
+---
+
+## Why zero node?
+
+- We haven't started Consul yet
+
+- Swarm discovery is not operationl
+
+- Swarm can't discover the nodes
+
+Note: good guy ~~Stevedore~~ Docker will start without K/V
+
+(This lets us run Consul itself in a container!)
+
+---
+
+## Adding Consul
+
+- We will run Consul in containers
+
+- We will use [awesome Jeff Linday](https://twitter.com/progrium)'s
+  [awesome consul image](https://hub.docker.com/r/progrium/consul/)
+
+- We will tell Docker to automatically restart it on reboots
+
+- To simplify network setup, we will use `host` networking
+
+---
+
+## Starting the first Consul node
+
+.exercise[
+
+- Log into `node1`
+
+- The first node must be started with the `-bootstrap` flag:
+
+  ```
+  CID=$(docker run --name consul_node1 \
+        -d --restart=always --net host \
+        progrium/consul -server -bootstrap)
+  ```
+
+- Find the internal IP address of that node
+  <br/>With This One Weird Trick:
+
+  ```
+  IPADDR=$(docker run --rm --net container:$CID alpine \
+           ip a ls dev eth0 |
+           sed -n 's,.*inet \(.*\)/.*,\1,p')
+  ```
+
+]
+
+---
+
+## Starting the other Consul nodes
+
+.exercise[
+
+- The other nodes have to be startd with the `-join IP.AD.DR.ESS` flag:
+
+  ```
+  for N in 2 3 4 5; do
+  ssh node$N docker run --name consul_node$N \
+               -d --restart=always --net host \
+               progrium/consul -server -join $IPADDR
+  done
+  ```
+
+- With your browser, navigate to any instance on port 8500
+  <br/>(in "NODES" you should see the five nodes)
+
+]
+
+---
+
+## Check that our Swarm cluster is up
+
+.exercise[
+
+- Try again the `docker info` from earlier:
+
+  ```
+  $(docker-machine env --swarm node1)
+  docker info
+  ```
+
+- Now all nodes should be visible
+
+]
+
+---
+
+# Multi-host networking
+
+- Docker 1.9 has the concept of *networks*
+
+- By default, containers are on the default "bridge" network
+
+- You can create additional networks
+
+- Containers can be on multiple networks
+
+- Containers can dynamically join/leave networks
+
+- The "overlay" driver lets networks span multiple hosts
+
+- Let's see that in action!
+
+---
+
+## Create a few networks and containers
+
+.exercise[
+
+```
+docker network create --driver overlay jedi
+docker network create --driver overlay darkside
+docker network ls
+```
+
+]
+
+--
+
+(Don't worry, there won't be any spoiler here, I have
+been so busy preparing this workshop that I haven't
+seen the new movie yet!)
+
+--
+
+.exercise[
+
+```
+docker run -d --name luke --net jedi -m 3G redis
+docker run -d --name vador --net jedi -m 3G redis
+docker run -d --name palpatine --net darkside -m 3G redis
+```
+
+]
+
+---
+
+## Check connectivity within networks
+
+.exercise[
+
+- Check that our containers are on different networks:
+
+  ```
+  docker ps
+  ```
+
+- This will work:
+
+  ```
+  docker exec -ti vador ping luke
+  ```
+
+- This will not:
+
+  ```
+  docker exec -ti vador ping palpatine
+  ```
+
+]
+
+---
+
+## Dynamically connect containers
+
+.exercise[
+
+- ~~Connect `vador` to the `darkside`:~~
+- To the `darkside`, connect `vador` we must:
+
+  ```
+  docker network connect darkside vador
+  ```
+
+- Now this will work:
+
+  ```
+  docker exec -ti vador ping palpatine
+  ```
+
+- Take a peek inside `vador`:
+
+  ```
+  docker exec -ti vador ip addr ls
+  ```
+
+]
+
+---
+
+## Dynamically disconnecting containers
+
+.exercise[
+
+- This works, right:
+
+  ```
+  docker exec -ti vador ping luke
+  ```
+
+- Let's disconnect `vador` from the `jedi` ~~order~~ network:
+
+  ```
+  docker network disconnect jedi vador
+  ```
+
+- And now:
+
+  ```
+  docker exec -ti vador ping luke
+  ```
+
+]
+
+---
+
+## Cleaning up
+
+.exercise[
+
+- Destroy containers:
+
+  ```
+  docker rm -f luke vador palpatine
+  ```
+
+- Destroy networks:
+
+  ```
+  docker network rm jedi
+  docker network rm darkside
+  ```
+
+]
+
+---
+
+# Compose and multi-host networking
+
+.icon[![Warning](warning.png)] Here be 7-headed flame-throwing hydras!
+
+- This is super experimental
+
+- Your cluster is likely to blow up to bits
+
+- Situation is much better in Engine 1.10 and Compose 1.6
+  <br/>(currently in RC; to be released circa February 2016!)
+
+---
+
+## Revisiting DockerCoins
+
+.exercise[
+
+- Go back to the `dockercoins` app:
+
+  ```
+  cd ~/orchestration-workshop/dockercoins
+  ```
+
+- Re-execute `build-tag-push` to get a fresh Compose file:
+
+  ```
+  eval $(docker-machine env -u)
+  ../build-tag-push.py
+  export COMPOSE_FILE=docker-compose.yml-XXX
+  ```
+
+]
+
+---
+
+## Add `container_name` to Compose file
+
+.exercise[
+
+- Edit the Compose file
+
+- In the `hasher`, `rng`, and `redis` sections, add:
+  <br/>`container_name: XXX`
+  <br/>(where XXX is the name of the section)
+
+- Also, comment out the `volumes` section
+
+]
+
+Note: by default, containers will be named `dockercoins_XXX_1`
+(instead of `XXX`) and links will not work.
+
+*This is no longer necessary with Compose 1.6!*
+
+---
+
+## Run the app
+
+.exercise[
+
+- Add two custom experimental flags:
+
+  ```
+  docker-compose \
+      --x-networking --x-network-driver=overlay \
+      up -d
+  ```
+
+- Check the `webui` endpoint address:
+
+  ```
+  docker-compose ps webui
+  ```
+
+- Go to the webui with your browser!
+
+]
+
+---
+
+## Scale the app
+
+.exercise[
+
+- Don't forget the custom experimental flags:
+
+  ```
+  docker-compose \
+      --x-networking --x-network-driver=overlay \
+      scale worker=2
+  ```
+
+- Look at the graph in your browser
+
+]
+
+Note: with Compose 1.6 and Engine 1.10, you can have
+multiple containers with the same DNS name, thus
+achieving "natural" load balancing through DNS round robin.
+
+---
+
+## Cleaning up
+
+.exercise[
+
+- Terminate containers and remove them:
+
+  ```
+  docker-compose kill
+  docker-compose rm -f
+  ```
+
+]
+
+Note: Compose 1.5 doesn't support changes to an
+existing app (except basic scaling).
+
+When trying to do `docker-compose -x-... up` on existing
+apps, you might get errors like this one:
+<br/>.small[`ERROR: unable to find a node that satisfies container==38aac...`]
+
+If that happens, just kill+rm the app and try again.
+
+---
+
+## A new hope
+
+- Compose 1.5 + Engine 1.9 =
+  <br/>first release with multi-host networking
+
+- Compose 1.6 + Engine 1.10 = 
+  <br/>HUGE improvements
+
+- I will deliver this workshop about twice a month
+
+- Check out the GitHub repo for updated content!
 
 ---
 

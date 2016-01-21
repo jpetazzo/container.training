@@ -26,17 +26,19 @@ while addresses:
         os.system("[ -f .ssh/id_rsa ] || ssh-keygen -t rsa -f .ssh/id_rsa -P ''")
 
 
+os.system("sudo apt-get remove -y --purge dnsmasq-base")
 os.system("sudo apt-get -qy install python-setuptools pssh apache2-utils httping htop unzip")
 os.system("sudo easy_install pip")
-os.system("sudo pip install docker-compose==1.5.0")
-os.system("docker pull swarm:1.0.0")
-os.system("docker tag -f swarm:1.0.0 swarm")
-os.system("sudo curl -L https://github.com/docker/machine/releases/download/v0.5.0/docker-machine_linux-amd64.zip -o /tmp/docker-machine.zip")
-os.system("cd /usr/local/bin ; sudo unzip /tmp/docker-machine.zip")
+os.system("sudo pip install docker-compose==1.5.2")
+os.system("docker pull swarm:1.0.1")
+os.system("docker tag -f swarm:1.0.1 swarm")
+#os.system("sudo curl -L https://github.com/docker/machine/releases/download/v0.5.6/docker-machine_linux-amd64.zip -o /tmp/docker-machine.zip")
+#os.system("cd /usr/local/bin ; sudo unzip /tmp/docker-machine.zip")
+os.system("sudo curl -L https://github.com/docker/machine/releases/download/v0.5.6/docker-machine_linux-amd64 -o /usr/local/bin/docker-machine")
 os.system("sudo chmod +x /usr/local/bin/docker-machine*")
 os.system("echo 1000000 | sudo tee /proc/sys/net/nf_conntrack_max")
-os.system("""sudo sed -i 's,^DOCKER_OPTS=.*,DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:55555",' /etc/default/docker""")
-os.system("sudo service docker restart")
+#os.system("""sudo sed -i 's,^DOCKER_OPTS=.*,DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:55555",' /etc/default/docker""")
+#os.system("sudo service docker restart")
 EOF
 pssh -t 300 -I "python /tmp/postprep.py >>/tmp/pp.out 2>>/tmp/pp.err" < ips.txt
 pssh "[ -f .ssh/id_rsa ] || scp -o StrictHostKeyChecking=no node1:.ssh/id_rsa* .ssh"
