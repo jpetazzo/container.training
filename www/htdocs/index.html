@@ -2938,11 +2938,12 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 - Try again the `docker info` from earlier:
 
   ```
-  $(docker-machine env --swarm node1)
+  eval $(docker-machine env --swarm node1)
   docker info
   ```
 
 - Now all nodes should be visible
+  <br/>(Give them a minute or two to register)
 
 ]
 
