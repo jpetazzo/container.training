@@ -94,6 +94,32 @@ class: title
 
 ---
 
+## Logistics
+
+.small[
+
+- Hello! I'm `jerome at docker dot com`
+
+- Agenda:
+
+  - 2:30pm (now-ish) workshop begins
+  - 3:45pm (approx.) short coffee break
+  - 5:00pm (supposedly) workshop ends
+    <br/>(but we'll try to overstay if nobody kicks us out,
+    <br/>and do some extra fun stuff with those interested)
+
+- This will be FAST PACED, but DON'T PANIC!
+
+- All the content is publicly available
+  <br/>(slides, code samples, scripts) 
+
+- Experimental chat support: #docker-workshop on Freenode
+  <br/>(you can connect with https://webchat.freenode.net/)
+
+]
+
+---
+
 <!-- grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C -->
 
 ## Outline (1/2)
@@ -173,13 +199,13 @@ be run from the first VM, `node1`**.]
 
 ## Brand new versions!
 
-- Engine 1.9.0
+- Engine 1.9.1
 
-- Compose 1.5.0
+- Compose 1.5.2
 
-- Swarm 1.0
+- Swarm 1.0.1
 
-- Machine 0.5.0
+- Machine 0.5.6
 
 ---
 
@@ -230,12 +256,19 @@ First, we will run the random number generator (`rng`).
 
 .exercise[
 
-- Go to the `dockercoins` directory (in the cloned repo)
+- Go to the `dockercoins` directory, in the cloned repo:
+  <br/>`cd orchestration-workshop/dockercoins`
 
-- Run `docker-compose up rng`
-  <br/>(Docker will pull `python` and build the microservice)
+- Use Compose to run the `rng` service:
+  <br/>`docker-compose up rng`
+
+- Docker will pull `python` and build the microservice
 
 ]
+
+---
+
+## Lies, damn lies, and port numbers
 
 .icon[![Warning](warning.png)] Pay attention to the port mapping!
 
@@ -244,6 +277,8 @@ First, we will run the random number generator (`rng`).
 
 - But if you try `curl localhost:80`, you will get:
   <br/>`Connection refused`
+
+- Port 80 on the container ≠ port 80 on the Docker host
 
 ---
 
@@ -256,12 +291,13 @@ First, we will run the random number generator (`rng`).
   another container needs it
 
 - Default behavior: containers are not "exposed"
-  <br/>(only reachable through their private address)
+  <br/>(only reachable by the Docker host and other containers,
+  through their private address)
 
 - Container network services can be exposed:
 
   - statically (you decide which host port to use)
-  
+
   - dynamically (Docker allocates a host port)
 
 ---
@@ -312,8 +348,10 @@ Let's get random bytes of data!
 
 .exercise[
 
-- Run `docker-compose up hasher`
-  <br/>(it will pull `ruby` and do the build)
+- Start the `hasher` service:
+  <br/>`docker-compose up hasher`
+
+- It will pull `ruby` and do the build
 
 ]
 
@@ -332,8 +370,8 @@ You can see the mapping in `docker-compose.yml`.
 
 - Open a third terminal window, and SSH to `node1`
 
-- Run `curl localhost:8002`
-  <br/>(it will say it's alive)
+- Check that the `hasher` service is alive:
+  <br/>`curl localhost:8002`
 
 - Posting binary data requires some extra flags:
 
@@ -370,6 +408,20 @@ We have multiple options:
 
 ]
 
+???
+
+This hidden content is here for automation
+(so that `docker-compose kill` gets executed
+when auto-testing the content).
+
+.exercise[
+
+```
+docker-compose kill
+```
+
+]
+
 ---
 
 # Running the whole app on a single node
@@ -380,19 +432,37 @@ We have multiple options:
 
 ]
 
+- `rng` and `hasher` can be started directly
+
+- Other components are built accordingly
+
 - Aggregate output is shown
 
 - Output is verbose
   <br/>(because the worker is constantly hitting other services)
 
-- Now let's use the little web UI to see realtime progress
+---
 
+## Viewing our application
+
+- The app exposes a Web UI with a realtime progress graph
 
 .exercise[
 
 - Open http://[yourVMaddr]:8000/ (from a browser)
 
 ]
+
+- The app actually has a constant, steady speed
+  <br/>(3.33 coins/second)
+
+- The speed seems not-so-steady because:
+
+  - we measure a discrete value over discrete intervals
+
+  - the measurement is done by the browser
+
+  - BREAKING: network latency is a thing
 
 ---
 
@@ -443,22 +513,24 @@ We have available resources.
 
 .exercise[
 
-- In one SSH session, run `docker-compose logs worker`
+- Start 9 more `worker` containers:
+  <br/>`docker-compose scale worker=10`
 
-- In another, run `docker-compose scale worker=10`
+- Check the aggregated logs of those containers:
+  <br/>`docker-compose logs worker`
 
 - See the impact on CPU load (with top/htop),
   <br/>and on compute speed (with web UI)
 
 ]
 
-You should see the compute speed increase ~3x (not 10x).
-
 .footnote[.red[*]With some limitations, as we'll see later.]
 
 ---
 
 # Identifying bottlenecks
+
+- You should have seen a 3x speed bump (not 10x)
 
 - Adding workers didn't result in linear improvement
 
@@ -472,11 +544,10 @@ You should see the compute speed increase ~3x (not 10x).
 
 - The code doesn't have instrumentation
 
-- We will use `ab` for individual load testing
+- Let's use state-of-the-art HTTP performance analysis!
+  <br/>(i.e. good old tools like `ab`, `httping`...)
 
-- We will use `httping` to view latency under load
-
----
+???
 
 ## Benchmarking our microservices
 
@@ -497,7 +568,7 @@ We will test microservices in isolation.
 
 Now let's hammer them with requests!
 
----
+???
 
 ## Testing `rng`
 
@@ -517,7 +588,7 @@ If we were doing requests of 1000 bytes ...
 
 Let's test and see what happens!
 
----
+???
 
 ## Concurrent requests
 
@@ -535,14 +606,14 @@ Let's test and see what happens!
 
 ]
 
---
+??
 
 Whatever we do, we get ~10 requests/second.
 
 Increasing concurrency doesn't help:
 it just increases latency.
 
----
+???
 
 ## Discussion
 
@@ -562,7 +633,7 @@ it just increases latency.
 
 - What about `hasher`?
 
----
+???
 
 ## Save some random data and stop the generator
 
@@ -584,7 +655,7 @@ Now we can stop the generator.
 
 ]
 
----
+???
 
 ## Benchmarking the hasher
 
@@ -607,7 +678,7 @@ We will hash the data that we just got from `rng`.
 
 ]
 
----
+???
 
 ## The hasher under load
 
@@ -633,7 +704,7 @@ The invocation of `ab` will be slightly more complex as well.
 
 Take note of the performance numbers (requests/s).
 
----
+???
 
 ## Benchmarking the hasher on smaller data
 
@@ -658,19 +729,36 @@ We will use `httping`.
 
 .exercise[
 
-- You need three SSH connections
+- Scale back the `worker` service to zero:
+  <br/>`docker-compose scale worker=0`
 
-- In the first one, let run `httping localhost:8001`
+- Open a new SSH connection and check the latency of `rng`:
+  <br/>`httping localhost:8001`
 
-- In the second one, let run `httping localhost:8002`
+- Open a new SSH conection and do the same for `hasher`:
+  <br/>`httping localhost:8002`
 
-- In the third one, run `docker-compose up -d`
+- Keep an eye on both connections!
 
 ]
 
-Check the latency numbers.
+---
+
+## Latency in initial conditions
+
+Latency for both services should be very low (~1ms).
+
+Now add a first worker and see what happens.
+
+.exercise[
+
+- Create the first `worker` instance:
+  <br/>`docker-compose scale worker=1`
+
+]
 
 - `hasher` should be very low (~1ms)
+
 - `rng` should be low, with occasional spikes (10-100ms)
 
 ---
@@ -692,8 +780,8 @@ We will add workers and see what happens.
 What happens?
 
 - `hasher` remains low
-- `rng` spikes up until it is reaches ~N*100ms
-  <br/>(when you have N+1 workers) 
+- `rng` spikes up until it is reaches ~(N-2)*100ms
+  <br/>(when you have N workers) 
 
 ---
 
@@ -935,16 +1023,35 @@ Shortcut: `docker-compose.yml-scaled-rng`
 
 .exercise[
 
-- Run `docker-compose up -d`
+- Start the new services:
+  <br/>`docker-compose up -d`
 
-- Check worker logs with `docker-compose logs worker`
+- Check worker logs:
+  <br/>`docker-compose logs worker`
 
-- Check load balancer logs with `docker-compose logs rng0`
+- Check load balancer logs:
+  <br/>`docker-compose logs rng0`
 
 ]
 
 If you get errors about port 8001, make sure that
 `rng` was stopped correctly and try again.
+
+---
+
+## Results
+
+- Check the latency of `rng`
+  <br/>(it should have improved significantly!)
+
+- Check the application performance in the Web UI
+  <br/>(it should improve if you have enough workers)
+
+*Note: if `worker` was scaled when you did `docker-compose up`,
+it probably took a while, because `worker` doesn't handle
+signals properly and Docker patiently waits 10 seconds for
+each `worker` instance to terminate. This would be much
+faster for a well-behaved application.*
 
 ---
 
@@ -990,6 +1097,30 @@ If you get errors about port 8001, make sure that
 
 ---
 
+## Using host name injection to abstract service dependencies
+
+- It is possible to add host entries to a container
+
+- With the CLI:
+
+  ```
+  docker run --add-host redis:192.168.1.2 myservice...
+  ```
+
+- In a Compose file:
+
+  ```
+  myservice:
+    image: myservice
+    extra_host:
+      redis: 192.168.1.2
+  ```
+
+- This creates entries in `/etc/hosts` in the container
+  </br>(in Engine 1.10, a local DNS server is used instead)
+
+???
+
 ## The plan
 
 - Deploy our Redis service separately
@@ -1010,7 +1141,7 @@ If you get errors about port 8001, make sure that
 Note: the code stays on the first node!
 <br/>(We do not need to copy the code to the other nodes.)
 
----
+???
 
 ## Making Redis available on its default port
 
@@ -1032,7 +1163,7 @@ There are two strategies.
 
 Choose wisely!
 
----
+???
 
 ## Deploy Redis
 
@@ -1058,7 +1189,7 @@ Choose wisely!
 
 To exit a telnet session: `Ctrl-] c ENTER`
 
----
+???
 
 ## Update `docker-compose.yml` (1/3)
 
@@ -1073,7 +1204,7 @@ To exit a telnet session: `Ctrl-] c ENTER`
 
 ]
 
----
+???
 
 ## Update `docker-compose.yml` (2/3)
 
@@ -1098,7 +1229,7 @@ Replace `A.B.C.D` with the IP address noted earlier.
 Shortcut: `docker-compose.yml-extra-hosts`
 <br/>(But you still have to replace `A.B.C.D`!)
 
----
+???
 
 ## Update `docker-compose.yml` (3/3)
 
@@ -1122,6 +1253,171 @@ Shortcut: `docker-compose.yml-extra-hosts`
 (Replace `A.B.C.D` with the IP address noted earlier)
 
 .icon[![Warning](warning.png)] Don't forget to comment out the `volumes` section!
+
+???
+
+## Why did we comment out the `volumes` section?
+
+- Volumes have multiple uses:
+
+  - storing persistent stuff (database files...)
+
+  - sharing files between containers (logs, configuration...)
+
+  - sharing files between host and containers (source...)
+
+- The `volumes` directive expands to an host path
+  <br/>.small[(e.g. `/home/docker/orchestration-workshop/dockercoins/webui/files`)]
+
+- This host path exists on the local machine
+  <br/>(not on the others)
+
+- This specific volume is used in development
+  <br/>(not in production)
+
+???
+
+## Start the stack on the first machine
+
+- Nothing special to do here
+
+- Just bring up the application like we did before
+
+.exercise[
+
+- `docker-compose up -d`
+
+]
+
+- Check in the web browser that it's running correctly
+
+???
+
+## Start the stack on another machine
+
+- We will set the `DOCKER_HOST` variable
+
+- `docker-compose` will detect and use it
+
+- Our Docker hosts are listening on port 55555
+
+.exercise[
+
+- Set the environment variable:
+  <br/>`export DOCKER_HOST=tcp://node2:55555`
+
+- Start the stack:
+  <br/>`docker-compose up -d`
+
+- Check that it's running:
+  <br/>`docker-compose ps`
+
+]
+
+???
+
+## Scale!
+
+.exercise[
+
+- Open the Web UI
+  <br/>(on a node where it's deployed)
+
+- Deploy one instance of the stack on each node
+
+]
+
+???
+
+## Cleanup
+
+- Let's remove what we did
+
+.exercise[
+
+- You can use the following scriptlet:
+
+  ```
+  for N in $(seq 1 5); do
+    export DOCKER_HOST=tcp://node$N:55555
+    docker ps -qa | xargs docker rm -f
+  done
+  unset DOCKER_HOST
+  ```
+
+]
+
+---
+
+# Abstracting remote services with ambassadors
+
+- What if we can't/won't run Redis on its default port?
+
+- What if we want to be able to move it easily?
+
+--
+
+- We will use an ambassador
+
+- Redis will be started independently of our stack
+
+- It will run at an arbitrary location (host+port)
+
+- In our stack, we replace `redis` with an ambassador
+
+- The ambassador will connect to Redis
+
+- The ambassador will "act as" Redis in the stack
+
+---
+
+## Start redis
+
+- Start a standalone Redis container
+
+- Let Docker expose it on a random port
+
+.exercise[
+
+- Run redis with a random public port:
+  <br/>`docker run -d -P --name myredis redis`
+
+- Check which port was allocated:
+  <br/>`docker port myredis 6379`
+
+]
+
+- Note the IP address of the machine, and this port
+
+---
+
+## Update `docker-compose.yml`
+
+.exercise[
+
+<!--
+- Restore `links` as they were before in `webui` and `worker`
+-->
+
+- Replace `redis` with an ambassador using `jpetazzo/hamba`:
+
+  ```
+  redis:
+    image: jpetazzo/hamba
+    command: 6379 AA.BB.CC.DD EEEEE
+  ```
+
+- Comment out the `volumes` section in `webui`:
+
+  ```
+  #volumes:
+  #  - "./webui/files/:/files/"
+  ```
+
+]
+
+Shortcut: `docker-compose.yml-ambassador`
+<br/>(But you still have to update `AA.BB.CC.DD EEEE`!)
 
 ---
 
@@ -1148,17 +1444,27 @@ Shortcut: `docker-compose.yml-extra-hosts`
 
 ## Start the stack on the first machine
 
-- Nothing special to do here
+- Compose will detect the change in the `redis` service
 
-- Just bring up the application like we did before
+- It will replace `redis` with a `jpetazzo/hamba` instance
 
 .exercise[
 
-- `docker-compose up -d`
+- Just tell Compose to to its thing:
+
+  ```
+  docker-compose up -d
+  ```
+
+- Check that the stack is up and running:
+
+  ```
+  docker-compose ps
+  ```
+
+- Look at the Web UI to make sure that it works fine
 
 ]
-
-- Check in the web browser that it's running correctly
 
 ---
 
@@ -1189,104 +1495,43 @@ Shortcut: `docker-compose.yml-extra-hosts`
 
 .exercise[
 
-- Open the Web UI
-  <br/>(on a node where it's deployed)
+- Deploy one instance of the stack on each node:
 
-- Deploy one instance of the stack on each node
-
-]
-
----
-
-## Cleanup
-
-- Let's remove what we did
-
-.exercise[
-
-- You can use the following scriptlet:
-
+  .small[
   ```
-  for N in $(seq 1 5); do
-    export DOCKER_HOST=tcp://node$N:55555
-    docker ps -qa | xargs docker rm -f
+  for N in 3 4 5; do
+    DOCKER_HOST=tcp://node$N:55555 docker-compose up -d &
   done
-  unset DOCKER_HOST
   ```
+  ]
+
+- Add a bunch of workers all over the place:
+ 
+  .small[
+  ```
+  for N in 1 2 3 4 5; do
+    DOCKER_HOST=tcp://node$N:55555 docker-compose scale worker=10
+  done
+  ```
+  ]
+
+- Admire the result in the Web UI!
 
 ]
 
 ---
 
-# Abstracting remote services with ambassadors
+## Social Media Moment
 
-- What if we can't/won't run Redis on its default port?
+Let's celebrate our success!
 
-- What if we want to be able to move it more easily?
-
---
-
-- We will use an ambassador
-
-- Redis will run at an arbitrary location (host+port)
-
-- The ambassador will be part of the scaled stack
-
-- The ambassador will connect to Redis
-
-- The ambassador will "act as" Redis in the stack
-
----
-
-## Start redis
-
-- This time, we will let Docker pick the port for Redis
+(And the fact that we're just 2498349893849283948982 DockerCoins away from being able to afford a cup of coffee!)
 
 .exercise[
 
-- Run redis with a random public port:
-  <br/>`docker run -d -P --name myredis redis`
-
-- Check which port was allocated:
-  <br/>`docker port myredis 6379`
-
-]
-
-- Note this IP address and port
-
----
-
-## Update `docker-compose.yml`
-
-.exercise[
-
-- Restore `links` as they were before in `webui` and `worker`
-
-- Replace `redis` with an ambassador using `jpetazzo/hamba`:
-
-  ```
-  redis:
-    image: jpetazzo/hamba
-    command: 6379 AA.BB.CC.DD EEEEE
-  ```
-
-]
-
-Shortcut: `docker-compose.yml-ambassador`
-<br/>(But you still have to update `AA.BB.CC.DD EEEE`!)
-
----
-
-## Start the new stack
-
-.exercise[
-
-- Run `docker-compose up -d`
-
-- Go to the web UI
-
-- Start the stack on another node as previously,
-  <br/>and confirm on the web UI that it's picking up
+- If you have a Twitter account, [tweet](
+https://twitter.com/intent/tweet?text=I%27m%20attending%20the%20%40Docker%20training%20at%20%23SCALE14x%20and%20my%20DockerCoin%20rig%20is%20mining%20XXX%20%23DockerCoins%20per%20second!%20Woot!%20%5Co%2F")
+about your awesome Docker deployment skills!
 
 ]
 
@@ -1465,38 +1710,43 @@ class: title
 
 .exercise[
 
+- Make sure you're talking to the initial host:
+
+  ```
+  unset DOCKER_HOST
+  ```
+
 - Start the container:
 
   ```
   docker run --link myredis:redis \
              --volumes-from myredis \
              -v /tmp/myredis:/output \
-             -ti ubuntu
+             -ti alpine sh
   ```
 
 - Look in `/data` in the container
   <br/>(That's where Redis puts its data dumps)
 ]
 
-- We need to tell Redis to perform a data dump *now*
-
 ---
 
 ## Connecting to Redis
 
+- We need to tell Redis to perform a data dump *now*
+
 .exercise[
 
-- `apt-get install telnet`
+- Connect to Redis:
+  <br/>`telnet redis 6379`
 
-- `telnet redis 6379`
-
-- issue `SAVE` then `QUIT`
+- Issue commands `SAVE` then `QUIT`
 
 - Look at `/data` again
 
 ]
 
-- There should be a recent dump file now
+- There should be a recent dump file now!
 
 ---
 
@@ -1568,7 +1818,7 @@ class: title
   <br/>json-file (default), syslog, journald, gelf, fluentd
 
 - Change driver by passing `--log-driver` option to daemon
-  <br>(On Ubuntu, tweak `DOCKER_OPTS` in `/etc/default/docker`)
+  <br>(Better use Machine `engine-opt` for that!)
 
 - For now, only json-files supports logs retrieval
   <br/>(i.e. `docker logs`)
@@ -1656,7 +1906,7 @@ Ngrep uses libpcap (like tcpdump) to sniff network traffic.
 .exercise[
 
 - Start a container with the same network namespace:
-  <br/>`docker run --net container:myredis -ti alpine`
+  <br/>`docker run --net container:myredis -ti alpine sh`
 
 - Install ngrep:
   <br/>`apk update && apk add ngrep`
@@ -1760,11 +2010,8 @@ class: title
 - Adaptation is needed when it differs from Docker
   <br/>.small[(need to learn new API, new tooling, new concepts)]
 
-- Great deployment platform ...
-  <br/>but no developer experience yet
-
-Note: this slide probably needs an update, since KubeCon is happening
-*right now* in San Francisco!
+- Tends to be loved by ops more than devs
+  <br/>.small[(but keep in mind that it's evolving quite as fast as Docker)]
 
 ---
 
@@ -1789,13 +2036,16 @@ Note: this slide probably needs an update, since KubeCon is happening
 
 - Stable since November 2015
 
-- Great for some scenarios (Jenkins, grid...)
+- Tested with 1000 nodes + 50000 containers
+  <br/>.small[(without particular tuning; see DockerCon EU opening keynotes!)]
+
+- Perfect for some scenarios (Jenkins, grid...)
 
 - Requires extra effort for Compose build, links...
 
 - Requires a key/value store to achieve high availability
 
-- We'll see it (briefly) in action
+- We'll see it in action!
 
 ---
 
@@ -1832,9 +2082,9 @@ Note: this slide probably needs an update, since KubeCon is happening
 
   - sits in front of the Docker API; great for experiments
 
-- Tutum
+- Tutum, Docker UCP (Universal Control Plane)
 
-  - dashboard to manage feelts of Docker hosts
+  - dashboards to manage fleets of Docker hosts
 
 ... And many more!
 
@@ -1933,11 +2183,22 @@ Note: this slide probably needs an update, since KubeCon is happening
 
 - We will use the token mechanism
 
+---
+
+## Generating our Swarm discovery token
+
+The token is a unique identifier, corresponding to a bucket
+in the discovery service hosted by Docker Inc.
+
+(You can consider it as a rendez-vous point for your cluster.)
+
 .exercise[
 
-- Run `TOKEN=$(docker run swarm create)`
-- Save `$TOKEN` carefully: it's your token
-  <br/>(it's the unique identifier for your cluster)
+- Create your token, saving it preciusly to disk as well:
+
+  ```
+  TOKEN=$(docker run swarm create | tee token)
+  ```
 
 ]
 
@@ -2050,19 +2311,19 @@ Swarm identifies itself clearly:
 
 ```
 Client:
- Version:      1.8.2
- API version:  1.20
+ Version:      1.9.1
+ API version:  1.21
  Go version:   go1.4.2
- Git commit:   0a8c2e3
- Built:        Thu Sep 10 19:19:00 UTC 2015
+ Git commit:   a34a1d5
+ Built:        Fri Nov 20 13:20:08 UTC 2015
  OS/Arch:      linux/amd64
 
 Server:
- Version:      swarm/0.4.0
- API version:  1.16
- Go version:   go1.4.2
- Git commit:   d647d82
- Built:
+ Version:      swarm/1.0.1
+ API version:  1.21
+ Go version:   go1.5.2
+ Git commit:   744e3a3
+ Built:        
  OS/Arch:      linux/amd64
 ```
 
@@ -2144,7 +2405,7 @@ while read IPADDR NODENAME
 do docker-machine create --driver generic \
    --swarm --swarm-discovery token://$TOKEN \
    --generic-ssh-user docker \
-   --generic-ip-address $IPADDR $NODENAME \
+   --generic-ip-address $IPADDR $NODENAME
 done
 ```
 
@@ -2171,6 +2432,25 @@ This can be any of your five nodes.
 ---
 
 # Building our app on Swarm
+
+Before trying to build our app, we will remove previous images.
+
+.exercise[
+
+- Delete all images with "dockercoins" in the name:
+
+  ```
+  docker images | 
+    grep dockercoins | 
+    awk '{print $3}' | 
+    xargs -r docker rmi -f
+  ```
+
+]
+
+---
+
+## Building our app on Swarm
 
 - Swarm has partial support for builds
 
@@ -2257,10 +2537,37 @@ This can be any of your five nodes.
 - Tag images
 
 - Upload them to the hub
+  <br/>(Note: this part requires a Docker Hub account!)
 
 - Update the Compose file to use those images
 
 *That's the purpose of the `build-tag-push.py` script!*
+
+---
+
+## Docker Hub account
+
+- You need a Docker Hub account for that part
+
+- If you don't have one, create it
+
+.exercise[
+
+- Set the following environment variable:
+
+  ```
+  export DOCKERHUB_USER=jpetazzo
+  ```
+
+- (Use *your* Docker Hub login, of course!)
+
+- Log into the Docker Hub:
+
+  ```
+  docker login
+  ```
+
+]
 
 ---
 

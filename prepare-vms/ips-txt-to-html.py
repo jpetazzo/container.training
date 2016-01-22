@@ -25,7 +25,7 @@ SETTINGS_ADVANCED = dict(
     "http://view.dckr.info/.</p>"
     )
 
-SETTINGS = SETTINGS_BASIC
+SETTINGS = SETTINGS_ADVANCED
 
 globals().update(SETTINGS)
 
