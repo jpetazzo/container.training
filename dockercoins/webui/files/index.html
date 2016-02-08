@@ -2,12 +2,15 @@
 <html>
 <head>
 <title>DockerCoin Miner WebUI</title>
-<link rel="stylesheet" type="text/css" href="rickshaw.min.css"> 
+<link rel="stylesheet" type="text/css" href="rickshaw.min.css">
 <style>
 #graph {
     background-color: #eee;
     width: 800px;
     height: 400px;
+}
+#tweet {
+    color: royalblue;
 }
 </style>
 <script src="jquery.js"></script>
@@ -38,13 +41,22 @@ function refresh () {
         while (points.length > 0) {
             points.pop();
         }
+        var speed;
         for (var i=0; i<series.length-1; i++) {
             // Compute instantaneous speed
             var s1 = series[i];
             var s2 = series[i+1];
-            var speed = (s2.hashes-s1.hashes)/(s2.now-s1.now);
+            speed = (s2.hashes-s1.hashes)/(s2.now-s1.now);
             points.push({ x: s2.now, y: speed });
         }
+        $("#speed").text("~" + speed.toFixed(1) + " hashes/second");
+        var msg = ("I'm attending the @docker Swarm workshop at @ZenikaIT, "
+                   + "and my #DockerCoins mining rig is crunching "
+                   + speed.toFixed(1) + " hashes/second! W00T!");
+        $("#tweet").attr(
+            "href",
+            "https://twitter.com/intent/tweet?text="+encodeURIComponent(msg)
+        );
         if (graph == null) {
             graph = new Rickshaw.Graph({
                 renderer: "area",
@@ -56,7 +68,7 @@ function refresh () {
                 series: [
                     { name: "Coins",
                       color: "steelblue",
-                      data: points 
+                      data: points
                     }
                 ]
             });
@@ -88,6 +100,12 @@ $(function () {
 <h1>DockerCoin Miner WebUI</h1>
 
 <div id="graph"></div>
+
+<h2>
+  Current mining speed:
+  <span id="speed">-</span>
+  <a id="tweet" href="#">(Tweet this!)</a>
+</h2>
 
 </body>
 </html>

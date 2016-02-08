@@ -1,5 +1,9 @@
 pssh -I tee /tmp/postprep.py <<EOF
 #!/usr/bin/env python
+COMPOSE_VERSION = "1.6.0"
+MACHINE_VERSION = "0.6.0"
+SWARM_VERSION = "1.1.0"
+
 import os
 import sys
 import urllib
@@ -25,16 +29,18 @@ while addresses:
     if myaddr == cluster[0]:
         os.system("[ -f .ssh/id_rsa ] || ssh-keygen -t rsa -f .ssh/id_rsa -P ''")
 
-
 os.system("sudo apt-get remove -y --purge dnsmasq-base")
 os.system("sudo apt-get -qy install python-setuptools pssh apache2-utils httping htop unzip")
 os.system("sudo easy_install pip")
-os.system("sudo pip install docker-compose==1.5.2")
-os.system("docker pull swarm:1.0.1")
-os.system("docker tag -f swarm:1.0.1 swarm")
-#os.system("sudo curl -L https://github.com/docker/machine/releases/download/v0.5.6/docker-machine_linux-amd64.zip -o /tmp/docker-machine.zip")
+os.system("sudo pip uninstall -y docker-compose")
+#os.system("sudo pip install docker-compose=={}".format(COMPOSE_VERSION))
+os.system("sudo curl -sSL -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/{}/docker-compose-$(uname -s)-$(uname -m)".format(COMPOSE_VERSION))
+os.system("sudo chmod +x /usr/local/bin/docker-compose")
+os.system("docker pull swarm:{}".format(SWARM_VERSION))
+os.system("docker tag -f swarm:{} swarm".format(SWARM_VERSION))
+#os.system("sudo curl -sSL https://github.com/docker/machine/releases/download/v{}/docker-machine_linux-amd64.zip -o /tmp/docker-machine.zip".format(MACHINE_VERSION))
 #os.system("cd /usr/local/bin ; sudo unzip /tmp/docker-machine.zip")
-os.system("sudo curl -L https://github.com/docker/machine/releases/download/v0.5.6/docker-machine_linux-amd64 -o /usr/local/bin/docker-machine")
+os.system("sudo curl -sSL -o /usr/local/bin/docker-machine https://github.com/docker/machine/releases/download/v{}/docker-machine-$(uname -s)-$(uname -m)".format(MACHINE_VERSION))
 os.system("sudo chmod +x /usr/local/bin/docker-machine*")
 os.system("echo 1000000 | sudo tee /proc/sys/net/nf_conntrack_max")
 #os.system("""sudo sed -i 's,^DOCKER_OPTS=.*,DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:55555",' /etc/default/docker""")
