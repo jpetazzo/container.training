@@ -1,0 +1,44 @@
+rng:
+    build: rng
+    ports:
+      - "8001:80"
+    log_driver: gelf
+    log_opt:
+      gelf-address: "udp://XX.XX.XX.XX:XXXXX"
+
+hasher:
+    build: hasher
+    ports:
+      - "8002:80"
+    log_driver: gelf
+    log_opt:
+      gelf-address: "udp://XX.XX.XX.XX:XXXXX"
+
+webui:
+    build: webui
+    links:
+      - redis
+    ports:
+      - "8000:80"
+    volumes:
+      - "./webui/files/:/files/"
+    log_driver: gelf
+    log_opt:
+      gelf-address: "udp://XX.XX.XX.XX:XXXXX"
+
+redis:
+    image: redis
+    log_driver: gelf
+    log_opt:
+      gelf-address: "udp://XX.XX.XX.XX:XXXXX"
+
+worker:
+    build: worker
+    links:
+      - rng
+      - hasher
+      - redis
+    log_driver: gelf
+    log_opt:
+      gelf-address: "udp://XX.XX.XX.XX:XXXXX"
+
