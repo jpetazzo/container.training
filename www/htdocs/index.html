@@ -1777,8 +1777,6 @@ class: title
 
 # Logs
 
-- Sorry, this part won't be hands-on
-
 - Two strategies:
 
   - log to plain files on volumes
@@ -1789,6 +1787,8 @@ class: title
 ---
 
 ## Logging to plain files on volumes
+
+(Sorry, that part won't be hands-on!)
 
 - Start a container with `-v /logs`
 
@@ -1817,19 +1817,316 @@ class: title
 
 - Docker will collect logs and pass them to a logging driver
 
-- Available drivers:
-  <br/>json-file (default), syslog, journald, gelf, fluentd
+- Logging driver can specified globally, and per container
+  <br/>(changing it for a container overrides the global setting)
 
-- Change driver by passing `--log-driver` option to daemon
-  <br>(Better use Machine `engine-opt` for that!)
+- To change the global logging driver,
+  <br/>pass extra flags to the daemon
+  <br/>(requires a daemon restart)
 
-- For now, only json-files supports logs retrieval
-  <br/>(i.e. `docker logs`)
+- To override the logging driver for a container,
+  <br/>pass extra flags to `docker run`
 
-- Warning: json-file doesn't rotate logs by default
-  <br/>(but this can be changed with `--log-opt`)
+---
 
-See: https://docs.docker.com/reference/logging/overview/
+## Specifying logging flags
+
+- `--log-driver`
+
+  *selects the driver*
+
+- `--log-opt key=val`
+
+  *adds driver-specific options*
+  <br/>*(can be repeated multiple times)*
+
+- The flags are identical for `docker daemon` and `docker run`
+
+Tip #1: when provisioning with Docker Machine, use:
+```
+docker-machine create ... --engine-opt log-driver=...
+```
+
+Tip #2: you can set logging options in Compose files.
+
+---
+
+## Available drivers
+
+- json-file (default)
+
+- syslog (can send to UDP, TCP, TCP+TLS, UNIX sockets)
+
+- awslogs (AWS CloudWatch)
+
+- journald
+
+- gelf
+
+- fluentd
+
+- splunk
+
+---
+
+## About json-file ...
+
+- It doesn't rotate logs by default, so your disks will fill up
+  
+  (Unless you set `maxsize` *and* `maxfile` log options.)
+
+- It's the only one supporting logs retrieval
+  
+  (If you want to use `docker logs`, `docker-compose logs`,
+  or fetch logs from the Docker API, you need json-file!)
+
+- This might change in the future
+
+  (But it's complex since there is no standard protocol
+  to *retrieve* log entries.)
+
+All about logging in the documentation:
+https://docs.docker.com/reference/logging/overview/
+
+---
+
+# Storing container logs in an ELK stack
+
+*Important foreword: this is not an "official" or "recommended"
+setup; it is just an example. We do not endorse ELK, GELF,
+or the other elements of the stack more than others!*
+
+What we will do:
+
+- Spin up an ELK stack, with Compose
+
+- Gaze at the spiffy Kibana web UI
+
+- Manually send a few log entries over GELF
+
+- Reconfigure our DockerCoins app to send logs to ELK
+
+---
+
+## What's in an ELK stack?
+
+- ELK is three components:
+
+  - ElasticSearch (to store and index log entries)
+
+  - Logstash (to receive log entries from various
+    sources, process them, and forward them to various
+    destinations)
+
+  - Kibana (to view/search log entries with a nice UI)
+
+- The only component that we will configure is Logstash
+
+- We will accept log entries using the GELF protocol
+
+- Log entries will be stored in ElasticSearch,
+  <br/>and displayed on Logstash's stdout for debugging
+
+---
+
+## Starting our ELK stack
+
+- We will use a *separate* Compose file
+
+- The Compose file is in the `elk` directory
+
+.exercise[
+
+- Go to the `elk` directory:
+  ```
+  cd ~/orchestration-workshop/elk
+  ```
+
+- Start the ELK stack:
+  ```
+  docker-compose up -d
+  ```
+
+]
+
+---
+
+## Checking that our ELK stack works
+
+- Our default Logstash configuration sends a test
+  message every minute
+
+- All messages are stored into ElasticSearch,
+  but also shown on Logstash stdout
+
+.exercise[
+
+- Look at Logstash stdout:
+  ```
+  docker-compose log logstash
+  ```
+
+]
+
+After less than one minute, you should see a `"message" => "ok"`
+in the output.
+
+---
+
+## Connect to Kibana
+
+- Our ELK stack exposes two public services:
+  <br/>the Kibana web server, and the GELF UDP socket
+
+.exercise[
+
+- Check the port number for the Kibana UI:
+  ```
+  docker-compose ps kibana
+  ```
+
+- Open the UI in your browser
+  <br/>(Use the instance IP address and the public port number)
+
+]
+
+---
+
+## "Configuring" Kibana
+
+- If you see a status page with a yellow item, wait a minute and reload
+  (Kibana is probably still initializing)
+
+- Kibana should offer you to "Configure an index pattern",
+  just click the "Create" button
+
+- Then:
+
+  - click "Discover" (in the top-left corner)
+  - click "Last 15 minutes" (in the top-right corner)
+  - click "Last 1 hour" (in the list in the middle)
+  - click "Auto-refresh" (top-right corner)
+  - click "5 seconds" (top-left of the list)
+
+- You should see a series of green bars
+  <br/>(with one new green bar every minute)
+
+---
+
+## Kibana out of the box
+
+![Screenshot of Kibana](kibana.png)
+
+---
+
+## Sending container output to Kibana
+
+- We will create a simple container displaying "hello world"
+
+- We will override the container logging driver
+
+.exercise[
+
+- Check the port number for the GELF socket:
+  <br/>`docker-compose ps logstash`
+
+- Start a one-off container, overriding its logging driver:
+  <br/>(make sure to update X.X.X.X:XXXXX, of course)
+  
+  ```
+  docker run --rm --log-driver gelf \
+         --log-opt gelf-address=udp://X.X.X.X:XXXXX \
+         alpine echo hello world
+  ```
+
+]
+
+---
+
+## Visualizing container logs in Kibana
+
+- Less than 5 seconds later (the refresh rate of the UI),
+  the log line should be visible in the Web UI
+
+- We can customize the Web UI to be more readable
+
+.exercise[
+
+- In the left column, move the mouse over the following
+  columns, and click the "Add" button that appears:
+
+  - host
+  - container_name
+  - short_message
+
+]
+
+---
+
+## Removing the old deployment of DockerCoins
+
+- Before redeploying DockerCoins, remove everything
+
+.exercise[
+
+- Stop all DockerCoins containers:
+  <br/>`docker-compose kill`
+
+- Remove them:
+  <br/>`docker-compose rm -f`
+
+- Reset the Compose file:
+  <br/>`git checkout docker-compose.yml`
+
+- Point the Docker API to a single node:
+  <br/>`eval $(docker-machine env -u)`
+
+]
+
+---
+
+## Add the logging driver to the Compose file
+
+- We need to add the logging section to each container
+
+- We need the GELF endpoint (host+port) that we
+  got earlier with `docker-compose ps logstash`
+
+.exercise[
+
+- Edit the `docker-compose.yml` file,
+  <br/>adding the the following lines **to each container**:
+
+  ```
+  log_driver: gelf
+  log_opt:
+    gelf-address: "udp://X.X.X.X:XXXXX"
+  ```
+
+]
+
+Shortcut: `docker-compose.yml-logging`
+<br/>(But you still have to update `XX.XX.XX.XX:XXXXX`!)
+
+---
+
+## Start the DockerCoins app
+
+.exercise[
+
+- Use Compose normally:
+  ```
+  docker-compose up -d
+  ```
+
+]
+
+If you look in the Kibana web UI, you will see log lines
+refreshed every 5 seconds.
+
+Note: to do interesting things (graphs, searches...) we
+would need to create indexes. This is beyond the scope
+of this workshop.
 
 ---
 
@@ -3184,8 +3481,8 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 
 - We will run Consul in containers
 
-- We will use [awesome Jeff Linday](https://twitter.com/progrium)'s
-  [awesome consul image](https://hub.docker.com/r/progrium/consul/)
+- We will use a
+  [custom consul image](https://hub.docker.com/r/jpetazzo/consul/)
 
 - We will tell Docker to automatically restart it on reboots
 
@@ -3204,15 +3501,14 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
   ```
   CID=$(docker run --name consul_node1 \
         -d --restart=always --net host \
-        progrium/consul -server -bootstrap)
+        jpetazzo/consul -server -bootstrap)
   ```
 
 - Find the internal IP address of that node
   <br/>With This One Weird Trick:
 
   ```
-  IPADDR=$(docker run --rm --net container:$CID alpine \
-           ip a ls dev eth0 |
+  IPADDR=$(ip a ls dev eth0 |
            sed -n 's,.*inet \(.*\)/.*,\1,p')
   ```
 
@@ -3229,8 +3525,8 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
   ```
   for N in 2 3 4 5; do
   ssh node$N docker run --name consul_node$N \
-               -d --restart=always --net host \
-               progrium/consul -server -join $IPADDR
+             -d --restart=always --net host \
+             jpetazzo/consul agent -server -join $IPADDR
   done
   ```
 
