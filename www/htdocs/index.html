@@ -114,7 +114,7 @@ class: title
 <!-- - This will be FAST PACED, but DON'T PANIC! -->
 
 - All the content is publicly available
-  <br/>(slides, code samples, scripts) 
+  <br/>(slides, code samples, scripts)
 
 - Experimental chat support on
   [Gitter](https://gitter.im/jpetazzo/workshop-20160215-paris)
@@ -785,7 +785,7 @@ What happens?
 
 - `hasher` remains low
 - `rng` spikes up until it is reaches ~(N-2)*100ms
-  <br/>(when you have N workers) 
+  <br/>(when you have N workers)
 
 ---
 
@@ -1510,7 +1510,7 @@ Shortcut: `docker-compose.yml-ambassador`
   ]
 
 - Add a bunch of workers all over the place:
- 
+
   .small[
   ```
   for N in 1 2 3 4 5; do
@@ -1670,12 +1670,12 @@ ways to deploy ambassadors.
 - Network plugins
 
   - available since Engine 1.9
-  
+
 - Allow a flat network for your containers
 
 - Often requires an extra service to deal with BUM packets
   <br/>(broadcast/unknown/multicast)
-  
+
   - e.g. a key/value store (Consul, Etcd, Zookeeper ...)
 
 - Load balancers and/or failover mechanisms still needed
@@ -1872,11 +1872,11 @@ Tip #2: you can set logging options in Compose files.
 ## About json-file ...
 
 - It doesn't rotate logs by default, so your disks will fill up
-  
+
   (Unless you set `maxsize` *and* `maxfile` log options.)
 
 - It's the only one supporting logs retrieval
-  
+
   (If you want to use `docker logs`, `docker-compose logs`,
   or fetch logs from the Docker API, you need json-file!)
 
@@ -2032,7 +2032,7 @@ in the output.
 
 - Start a one-off container, overriding its logging driver:
   <br/>(make sure to update X.X.X.X:XXXXX, of course)
-  
+
   ```
   docker run --rm --log-driver gelf \
          --log-opt gelf-address=udp://X.X.X.X:XXXXX \
@@ -2740,9 +2740,9 @@ Before trying to build our app, we will remove previous images.
 - Delete all images with "dockercoins" in the name:
 
   ```
-  docker images | 
-    grep dockercoins | 
-    awk '{print $3}' | 
+  docker images |
+    grep dockercoins |
+    awk '{print $3}' |
     xargs -r docker rmi -f
   ```
 
@@ -2777,9 +2777,9 @@ Before trying to build our app, we will remove previous images.
 - Caching doesn't work all the time
 
   - cause: build nodes can be picked randomly
-  
+
   - solution: always pin builds to the same node
-  
+
 - Containers are only scheduled on a few nodes
 
   - cause: images are not present on all nodes
@@ -2994,7 +2994,7 @@ So, what do‽
   <br/>and restarts HAProxy when needed
 
 - It can be started without configuration:
-  
+
   ```
   docker run --name amba jpetazzo/hamba run
   ```
@@ -3016,7 +3016,7 @@ will be logged by the ambassador, not the `reconfigure` container.]
 Technically, we could use links.
 
 - Before starting an app container:
-  
+
   start the ambassador(s) it needs
 
 - When starting an app container:
@@ -3392,7 +3392,7 @@ Note: our Swarm cluster is now broken.
 
 - The traditional way to reconfigure a service is to edit
   its configuration (or init script), then restart
-  
+
 - We can use Machine to make that easier
 
 - Re-deploying with Machine's `generic` driver will reconfigure
@@ -3442,7 +3442,7 @@ done
 .exercise[
 
 - Directly point the CLI to a node and check configuration:
-  
+
   ```
   eval $(docker-machine env node1)
   docker info
@@ -3501,7 +3501,7 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
   ```
   CID=$(docker run --name consul_node1 \
         -d --restart=always --net host \
-        jpetazzo/consul -server -bootstrap)
+        jpetazzo/consul agent -server -bootstrap)
   ```
 
 - Find the internal IP address of that node
@@ -3532,6 +3532,26 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 
 - With your browser, navigate to any instance on port 8500
   <br/>(in "NODES" you should see the five nodes)
+
+]
+
+---
+
+## Check that our Consul cluster is up
+
+- Let's run a couple of useful Consul commands
+
+.exercise[
+
+- Ask Consul the list of members it knows:
+  ```
+  docker run --net host --rm jpetazzo/consul members
+  ```
+
+- Ask Consul which node is the current leader:
+  ```
+  curl localhost:8500/v1/status/leader
+  ```
 
 ]
 
@@ -3831,12 +3851,295 @@ If that happens, just kill+rm the app and try again.
 
 ---
 
+# Highly available Swarm managers
+
+- Until now, the Swarm manager was a SPOF
+  <br/>(Single Point Of Failure)
+
+- Swarm has experimental support for replication
+
+- When replication is enabled, you deploy multiple (identical) managers
+
+  - one will be "primary"
+  - the other(s) will be "secondary"
+  - this is determined automatically
+    <br/>(through *leader election*)
+
+---
+
+## Swarm leader election
+
+- The leader election mechanism relies on a key/value store
+  <br/>(consul, etcd, zookeeper)
+
+- There is no requirement on the number of replicas
+  <br/>(the quorum is achieved through the key/value store)
+
+- When the leader (or "primary") is unavailable,
+  <br/>a new election happens automatically
+
+- You can issue API requests to any manager:
+  <br/>if you talk to a secondary, it forwards to the primary
+
+.icon[![Warning](warning.png)] There is currently a bug when
+the Consul cluster itself has a leader election; see [docker/swarm#1782](
+https://github.com/docker/swarm/issues/1782).
+
+---
+
+## Swarm replication in practice
+
+- We need to give two extra flags to the Swarm manager:
+
+  - `--replication`
+
+    *enables replication (duh!)*
+
+  - `--advertise ip.ad.dr.ess:port`
+
+    *address and port where this Swarm manager is reachable*
+
+- Do you deploy with Docker Machine?
+  <br/>Then you can use `--swarm-opt`
+  to automatically pass flags to the Swarm manager
+
+---
+
+## Cleaning up our current Swarm containers
+
+- We will use Docker Machine to re-provision Swarm
+
+- We need to:
+
+  - remove the nodes from the Machine registry
+
+  - remove the Swarm containers
+
+.exercise[
+
+- Remove the current configuration:
+  ```
+  for N in 1 2 3 4 5; do
+    ssh node$N docker rm -f swarm-agent swarm-agent-master
+    docker-machine rm -f node$N
+  done
+  ```
+
+]
+
+---
+
+## Re-deploy with the new configuration
+
+- This time, we can deploy each node identically
+  <br/>(instead of 1 manager + 4 non-managers)
+
+.exercise[
+
+- Deploy all five nodes with the previous options,
+  and the new replication options:
+
+  .small[
+  ```
+  grep node[12345] /etc/hosts | grep -v ^127 |
+  while read IPADDR NODENAME; do
+    docker-machine create --driver generic \
+      --engine-opt cluster-store=consul://localhost:8500 \
+      --engine-opt cluster-advertise=eth0:2376 \
+      --swarm --swarm-master \
+      --swarm-discovery consul://localhost:8500  \
+      --swarm-opt replication --swarm-opt advertise=$IPADDR:3376 \
+      --generic-ssh-user docker --generic-ip-address $IPADDR $NODENAME
+  done
+  ```
+  ]
+
+]
+
+.small[
+Note: Consul is still running thanks to the `--restart=always` policy.
+Other containers are now stopped, because the engines have been
+reconfigured and restarted.
+]
+
+---
+
+## Assess our new cluster health
+
+- The output of `docker info` will tell us the status
+  of the node that we are talking to (primary or replica)
+
+- If we talk to a replica, it will tell us who is the primary
+
+.exercise[
+
+- Talk to a random node, and ask its view of the cluster:
+  ```
+  eval $(docker-machine env node3 --swarm)
+  docker info | grep -e ^Name -e ^Role -e ^Primary
+  ```
+
+]
+
+Note: `docker info` is one of the only commands that will
+work even when there is no elected primary. This helps
+debugging.
+
+---
+
+## Test Swarm manager failover
+
+- The previous command told us which node was the primary manager
+
+  - if `Role` is `primary`,
+    <br/>then the primary is indicated by `Name`
+
+  - if `Role` is `replica`,
+    <br/>then the primary is indicated by `Primary`
+
+.exercise[
+
+- Powercycle the primary manager:
+  ```
+  ssh XXX sudo reboot
+  ```
+
+]
+
+Look at the output of `docker info` every few seconds.
+
+---
+
+# Highly available containers
+
+- Swarm has support for *rescheduling* on node failure
+
+- It has to be explicitly enabled on a per-container basis
+
+- When the primary manager detects that a node goes down,
+  <br/>those containers are rescheduled elsewhere
+
+- If the containers can't be rescheduled (constraints issue),
+  <br/>they are lost (there is no reconciliation loop yet)
+
+- As of Swarm 1.1.0, this is an *experimental* feature
+  <br/>(To enable it, you must pass the
+  `--experimental` flag when you start Swarm itself!)
+
+---
+
+## Working around flag order
+
+- The flag must be *before* the Swarm command
+  <br/>(i.e. `docker run swarm --experimental manage ...`)
+
+- We cannot use Docker Machine to pass that flag ☹
+  <br/>(Machine adds flags *after* the Swarm command)
+
+- Instead, we will use the Swarm image `jpetazzo/swarm:experimental`:
+  ```
+  FROM swarm
+  ENTRYPOINT ["/swarm", "--experimental"]
+  ```
+
+- We can tell Machine to use this with `--swarm-image`
+
+---
+
+## Reconfigure Swarm [one more time](https://www.youtube.com/watch?v=FGBhQbmPwH8)
+
+.exercise[
+
+- Redeploy Swarm with `--experimental`:
+
+  .small[
+  ```
+  for N in 1 2 3 4 5; do
+    ssh node$N docker rm -f swarm-agent swarm-agent-master
+    docker-machine rm -f node$N
+  done
+
+  grep node[12345] /etc/hosts | grep -v ^127 |
+  while read IPADDR NODENAME; do
+    docker-machine create --driver generic \
+      --engine-opt cluster-store=consul://localhost:8500 \
+      --engine-opt cluster-advertise=eth0:2376 \
+      --swarm --swarm-master --swarm-image jpetazzo/swarm:experimental \
+      --swarm-discovery consul://localhost:8500  \
+      --swarm-opt replication --swarm-opt advertise=$IPADDR:3376 \
+      --generic-ssh-user docker --generic-ip-address $IPADDR $NODENAME
+  done
+  ```
+  ]
+
+]
+
+---
+
+## Start a resilient container
+
+- By default, containers will not be restarted when their node goes down
+
+- You must pass an explicit *rescheduling policy* to make that happen
+
+- For now, the only policy is "on-node-failure"
+
+.exercise[
+
+- Start a container with a rescheduling policy:
+
+  .small[
+  ```
+  docker run -d --name highlander -e reschedule:on-node-failure redis
+  ```
+  ]
+
+]
+
+Check that the container is up and running.
+
+---
+
+## Simulate a node failure
+
+- We will reboot the node running this container
+
+- Swarm will reschedule it
+
+.exercise[
+
+- Check on which node the container is running:
+  </br>.small[`NODE=$(docker inspect --format '{{.Node.Name}}' highlander)`]
+
+- Reboot that node:
+  <br/>`ssh $NODE sudo reboot`
+
+- Check that the container has been recheduled:
+  <br/>`docker ps`
+
+]
+
+---
+
+## .icon[![Warning](warning.png)] Caveats
+
+- There are some corner cases when the node is also
+  the Swarm leader or the Consul leader; this is being improved
+  right now!
+
+- Swarm doesn't handle gracefully the fact that after the
+  reboot, you have *two* containers named `highlander`,
+  and attempts to manipulate the container with its name
+  will not work. This will be improved too.
+
+---
+
 ## A new hope
 
 - Compose 1.5 + Engine 1.9 =
   <br/>first release with multi-host networking
 
-- Compose 1.6 + Engine 1.10 = 
+- Compose 1.6 + Engine 1.10 =
   <br/>HUGE improvements
 
 - I will deliver this workshop about twice a month
