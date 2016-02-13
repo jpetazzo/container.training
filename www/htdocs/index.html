@@ -4134,13 +4134,54 @@ Check that the container is up and running.
 
 ---
 
-## A new hope
+# Conclusions
 
-- Compose 1.5 + Engine 1.9 =
+- Bad news: we still have work to do to deploy our apps
+
+  - it's not all unicorns, ponies, and rainbows
+
+  - *no, Docker will not make your job obsolete*
+
+- Good news: a lot of hard things are becoming easier
+
+  - building, packaging, distributing apps
+
+  - running distributed systems on clusters
+
+---
+
+## "This is complicated"
+
+- The scripts used here are pretty simple
+  <br/>(each is less than 100 LOCs)
+
+- You can easily rewrite them in your favorite language,
+  <br/>adapt and customize them, in a few hours of time
+
+- FYI: those scripts are smaller and simpler than the
+  scripts (cloud init etc) used to deploy the VMs for this
+  workshop!
+
+- Docker Inc. has commercial products to wrap all this:
+
+  - Docker Cloud
+    <br/>(manage your Docker nodes from a SAAS portal)
+
+  - Universal Control Plane
+    <br/>(buzzword-compliant management solution:
+    <br/>turnkey, enterprise-class, on-premise, etc.)
+
+---
+
+## What's next?
+
+- November 2015: Compose 1.5 + Engine 1.9 =
   <br/>first release with multi-host networking
 
-- Compose 1.6 + Engine 1.10 =
-  <br/>HUGE improvements
+- January 2016: Compose 1.6 + Engine 1.10 =
+  <br/>HUGE improvements (DNS server, HA...)
+
+- Next release: another truckload of features
 
 - I will deliver this workshop about twice a month
 
