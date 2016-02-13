@@ -121,7 +121,9 @@ class: title
 
 ---
 
-<!-- grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C -->
+<!--
+grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
+-->
 
 ## Outline (1/2)
 
@@ -2742,7 +2744,7 @@ Before trying to build our app, we will remove previous images.
   ```
   docker images |
     grep dockercoins |
-    awk '{print $3}' |
+    awk '{print $1}' |
     xargs -r docker rmi -f
   ```
 
@@ -2752,19 +2754,18 @@ Before trying to build our app, we will remove previous images.
 
 ## Building our app on Swarm
 
-- Swarm has partial support for builds
-
-- .icon[![Warning](warning.png)] Older versions of Compose would crash on builds
+- Compose now supports builds on Swarm
+  <br/>(older versions would crash)
 
 .exercise[
 
-- Run `docker-compose build` multiple times
-  <br/>(until you get it to build twice)
+- Run `docker-compose build`
 
-- Loudly complain that caching doesn't work as expected!
-
-- Run one container multiple times with a resource limit:
-  <br/>`docker run -d -m 1G dockercoins_rng`
+- Scale a few containers:
+  ```
+  docker-compose scale worker=10
+  docker-compose scale webui=2
+  ```
 
 - Check where the containers are running with `docker ps`
 
@@ -2774,18 +2775,21 @@ Before trying to build our app, we will remove previous images.
 
 ## Caveats when building with Swarm
 
-- Caching doesn't work all the time
-
-  - cause: build nodes can be picked randomly
-
-  - solution: always pin builds to the same node
-
-- Containers are only scheduled on a few nodes
+- Containers are only scheduled where they were built
 
   - cause: images are not present on all nodes
 
   - solution: distribute images through a registry
     <br/>(e.g. Docker Hub)
+
+- You can end up with inconsistent versions
+  <br/>(i.e. `dockercoins_rng:latest` being different on two nodes)
+
+  - cause: build nodes can come and go
+
+  - solution: always pin builds to the same node
+
+- Also, caching doesn't work all the time
 
 ---
 
