@@ -1246,7 +1246,7 @@ To exit a telnet session: `Ctrl-] c ENTER`
     extra_hosts:
       redis: A.B.C.D
     links:
-      - rng0:rng
+      - rng
       - hasher
   ```
 
@@ -1424,7 +1424,9 @@ Shortcut: `docker-compose.yml-extra-hosts`
 .exercise[
 
 <!-- Following line to be commented out if we skip extra_hosts section -->
+
 - Restore `links` as they were before in `webui` and `worker`
+
 <!-- -->
 
 - Replace `redis` with an ambassador using `jpetazzo/hamba`:
@@ -1435,7 +1437,7 @@ Shortcut: `docker-compose.yml-extra-hosts`
     command: 6379 AA.BB.CC.DD EEEEE
   ```
 
-- Comment out the `volumes` section in `webui`:
+- Make sure that the `volumes` section is commented in `webui`:
 
   ```
   #volumes:
@@ -1987,7 +1989,7 @@ What we will do:
 
 - Look at Logstash stdout:
   ```
-  docker-compose log logstash
+  docker-compose logs logstash
   ```
 
 ]
@@ -2093,17 +2095,18 @@ in the output.
 
 .exercise[
 
-- Stop all DockerCoins containers:
-  <br/>`docker-compose kill`
+- Go back to the dockercoins directory:
+  <br/>`cd ~/orchestration-workshop/dockercoins`
 
-- Remove them:
+- Stop and remove all DockerCoins containers:
+  <br/>`docker-compose kill`
   <br/>`docker-compose rm -f`
 
 - Reset the Compose file:
   <br/>`git checkout docker-compose.yml`
 
 - Point the Docker API to a single node:
-  <br/>`eval $(docker-machine env -u)`
+  <br/>`unset DOCKER_HOST`
 
 ]
 
@@ -2652,19 +2655,19 @@ Swarm identifies itself clearly:
 
 ```
 Client:
- Version:      1.9.1
- API version:  1.21
- Go version:   go1.4.2
- Git commit:   a34a1d5
- Built:        Fri Nov 20 13:20:08 UTC 2015
+ Version:      1.10.1
+ API version:  1.22
+ Go version:   go1.5.3
+ Git commit:   9e83765
+ Built:        Thu Feb 11 19:32:54 2016
  OS/Arch:      linux/amd64
 
 Server:
- Version:      swarm/1.0.1
- API version:  1.21
- Go version:   go1.5.2
- Git commit:   744e3a3
- Built:        
+ Version:      swarm/1.1.0
+ API version:  1.22
+ Go version:   go1.5.3
+ Git commit:   a0fd82b
+ Built:        Thu Feb  4 08:55:18 UTC 2016
  OS/Arch:      linux/amd64
 ```
 
@@ -2750,6 +2753,8 @@ do docker-machine create --driver generic \
 done
 ```
 
+Then check with `docker info` that all the nodes are there.
+
 ---
 
 ## Running containers on Swarm
@@ -2800,13 +2805,16 @@ Before trying to build our app, we will remove previous images.
 
 - Run `docker-compose build`
 
-- Scale a few containers:
+- Try to start the application:
+  ```
+  docker-compose up -d
+  ```
+
+- *If it works*, scale a few containers:
   ```
   docker-compose scale worker=10
   docker-compose scale webui=2
   ```
-
-- Check where the containers are running with `docker ps`
 
 ]
 
@@ -3296,9 +3304,6 @@ Then it configures all ambassadors with all found backends.
 
 - Point your browser to it
 
-- Check the logs:
-  <br/>`docker-compose logs`
-
 ]
 
 ---
@@ -3419,7 +3424,7 @@ Note: our Swarm cluster is now broken.
     --engine-opt cluster-store=consul://localhost:8500 \
     --engine-opt cluster-advertise=eth0:2376 \
     --swarm --swarm-master --swarm-discovery consul://localhost:8500 \
-    --generic-ssh-user docker --generic-ip-address 52.32.216.30 node1
+    --generic-ssh-user docker --generic-ip-address XX.XX.XX.XX node1
   ```
   ]
 ]
