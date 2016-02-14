@@ -125,7 +125,7 @@ class: title
 grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 -->
 
-## Outline (1/2)
+## Outline (1/4)
 
 - Pre-requirements
 - VM environment
@@ -142,20 +142,37 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 
 ---
 
-## Outline (2/2)
+## Outline (2/4)
 
 - Docker for ops
 - Backups
 - Logs
+- Storing container logs in an ELK stack
 - Security upgrades
 - Network traffic analysis
+
+---
+
+## Outline (3/4)
+
 - Dynamic orchestration
 - Hands-on Swarm
 - Deploying Swarm
 - Cluster discovery
 - Building our app on Swarm
-- Network plumbing on Swarm
-- Going further
+- Connecting containers with ambassadors
+- Setting up Consul and overlay networks
+- Multi-host networking
+- Using overlay networks with Compose
+
+---
+
+## Outline (4/4)
+
+- Here be dragons
+- Highly available Swarm managers
+- Highly available containers
+- Conclusions
 
 ---
 
@@ -172,9 +189,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 .exercise[
 
 - This is the stuff you're supposed to do!
-- Create [GitHub](https://github.com/) and
-  [Docker Hub](https://hub.docker.com) accounts now if needed
-- Go to [view.dckr.info](http://view.dckr.info) to view these slides
+- Go to [view.dckr.info](http://view.dckr.info/) to view these slides
 - Join the chat room on
   [Gitter](https://gitter.im/jpetazzo/workshop-20160215-paris)
 
@@ -205,7 +220,7 @@ be run from the first VM, `node1`**.]
 
 ## Brand new versions!
 
-- Engine 1.10.0
+- Engine 1.10.1
 
 - Compose 1.6.0
 
@@ -311,9 +326,9 @@ First, we will run the random number generator (`rng`).
 ## Declaring port mapping
 
 - Directly with the Docker Engine:
-  <br/>`docker run -P redis`
-  <br/>`docker run -p 6379 redis`
-  <br/>`docker run -p 1234:6379 redis`
+  <br/>`docker run -d -p 8000:80 nginx`
+  <br/>`docker run -d -p 80 nginx`
+  <br/>`docker run -d -P nginx`
 
 - With Docker Compose, in the `docker-compose.yml` file:
 
@@ -354,6 +369,8 @@ Let's get random bytes of data!
 
 .exercise[
 
+- Open yet another terminal and SSH session
+
 - Start the `hasher` service:
   <br/>`docker-compose up hasher`
 
@@ -374,7 +391,7 @@ You can see the mapping in `docker-compose.yml`.
 
 .exercise[
 
-- Open a third terminal window, and SSH to `node1`
+- Open one more terminal window, and SSH to `node1`
 
 - Check that the `hasher` service is alive:
   <br/>`curl localhost:8002`
@@ -890,7 +907,9 @@ WHY?!?
 
 ## The plan
 
+<!--
 - Stop the `rng` service first
+-->
 
 - Create multiple identical `rng` containers
 
@@ -898,7 +917,7 @@ WHY?!?
 
 - Point other services to the load balancer
 
----
+???
 
 ## Stopping `rng`
 
@@ -955,9 +974,9 @@ Shortcut: `docker-compose.yml-scaled-rng`
 - Load balancer based on HAProxy
 
 - Expects the following arguments:
-  <br/>`FE-port BE1-addr BE1-port BE2-addr BE2-port ...`
+  <br/>`FE-port BE1-addr:BE1-port BE2-addr:BE2-port ...`
   <br/>*or*
-  <br/>`FE-addr:FE-port BE1-addr BE1-port BE2-addr BE2-port ...`
+  <br/>`FE-addr:FE-port BE1-addr:BE1-port BE2-addr:BE2-port ...`
 
   - FE=frontend (the thing other services connect to)
 
@@ -967,7 +986,7 @@ Shortcut: `docker-compose.yml-scaled-rng`
 Example: listen to port 80 and balance traffic on www1:1234 + www2:2345
 
 ```
-docker run -d -p 80 jpetazzo/hamba 80 www1 1234 www2 2345
+docker run -d -p 80 jpetazzo/hamba 80 www1:1234 www2:2345
 ```
 ]
 
@@ -982,7 +1001,7 @@ Let's add our load balancer to the Compose file.
 - Add the following section to the Compose file:
 
   ```
-  rng0:
+  rng:
       image: jpetazzo/hamba
       links:
         - rng1
@@ -997,7 +1016,7 @@ Let's add our load balancer to the Compose file.
 
 Shortcut: `docker-compose.yml-scaled-rng`
 
----
+???
 
 ## Point other services to the load balancer
 
@@ -1036,12 +1055,14 @@ Shortcut: `docker-compose.yml-scaled-rng`
   <br/>`docker-compose logs worker`
 
 - Check load balancer logs:
-  <br/>`docker-compose logs rng0`
+  <br/>`docker-compose logs rng`
 
 ]
 
+<!--
 If you get errors about port 8001, make sure that
 `rng` was stopped correctly and try again.
+-->
 
 ---
 
@@ -1122,10 +1143,11 @@ faster for a well-behaved application.*
       redis: 192.168.1.2
   ```
 
-- This creates entries in `/etc/hosts` in the container
-  </br>(in Engine 1.10, a local DNS server is used instead)
+- Docker exposes a DNS server to the container,
+  <br/>with a private view where `redis` resolves to `192.168.1.2`
+  (Before Engine 1.10, it created entries in `/etc/hosts`)
 
-???
+---
 
 ## The plan
 
@@ -1147,7 +1169,7 @@ faster for a well-behaved application.*
 Note: the code stays on the first node!
 <br/>(We do not need to copy the code to the other nodes.)
 
-???
+---
 
 ## Making Redis available on its default port
 
@@ -1169,7 +1191,7 @@ There are two strategies.
 
 Choose wisely!
 
-???
+---
 
 ## Deploy Redis
 
@@ -1195,7 +1217,7 @@ Choose wisely!
 
 To exit a telnet session: `Ctrl-] c ENTER`
 
-???
+---
 
 ## Update `docker-compose.yml` (1/3)
 
@@ -1210,7 +1232,7 @@ To exit a telnet session: `Ctrl-] c ENTER`
 
 ]
 
-???
+---
 
 ## Update `docker-compose.yml` (2/3)
 
@@ -1235,7 +1257,7 @@ Replace `A.B.C.D` with the IP address noted earlier.
 Shortcut: `docker-compose.yml-extra-hosts`
 <br/>(But you still have to replace `A.B.C.D`!)
 
-???
+---
 
 ## Update `docker-compose.yml` (3/3)
 
@@ -1260,7 +1282,7 @@ Shortcut: `docker-compose.yml-extra-hosts`
 
 .icon[![Warning](warning.png)] Don't forget to comment out the `volumes` section!
 
-???
+---
 
 ## Why did we comment out the `volumes` section?
 
@@ -1281,7 +1303,7 @@ Shortcut: `docker-compose.yml-extra-hosts`
 - This specific volume is used in development
   <br/>(not in production)
 
-???
+---
 
 ## Start the stack on the first machine
 
@@ -1297,7 +1319,7 @@ Shortcut: `docker-compose.yml-extra-hosts`
 
 - Check in the web browser that it's running correctly
 
-???
+---
 
 ## Start the stack on another machine
 
@@ -1320,7 +1342,7 @@ Shortcut: `docker-compose.yml-extra-hosts`
 
 ]
 
-???
+---
 
 ## Scale!
 
@@ -1333,7 +1355,7 @@ Shortcut: `docker-compose.yml-extra-hosts`
 
 ]
 
-???
+---
 
 ## Cleanup
 
@@ -1401,9 +1423,9 @@ Shortcut: `docker-compose.yml-extra-hosts`
 
 .exercise[
 
-<!--
+<!-- Following line to be commented out if we skip extra_hosts section -->
 - Restore `links` as they were before in `webui` and `worker`
--->
+<!-- -->
 
 - Replace `redis` with an ambassador using `jpetazzo/hamba`:
 
@@ -1425,7 +1447,7 @@ Shortcut: `docker-compose.yml-extra-hosts`
 Shortcut: `docker-compose.yml-ambassador`
 <br/>(But you still have to update `AA.BB.CC.DD EEEE`!)
 
----
+???
 
 ## Why did we comment out the `volumes` section?
 
@@ -2129,6 +2151,23 @@ refreshed every 5 seconds.
 Note: to do interesting things (graphs, searches...) we
 would need to create indexes. This is beyond the scope
 of this workshop.
+
+---
+
+## Logging in production
+
+- If we were using an ELK stack:
+
+  - scale ElasticSearch
+  - scale Logstash 
+  - (probably) switch away from GELF+UDP
+
+- Configure your Engines to send all logs to the stack by default
+
+- Start the logging containers with a different logging system
+  <br/>(to avoid a logging loop)
+
+- Make sure you don't end up writing *all logs* on the nodes running Logstash!
 
 ---
 
@@ -2975,18 +3014,57 @@ So, what do‽
 
 ---
 
-# Network plumbing on Swarm
+## Connecting containers with Swarm (1/2)
+
+- Implement service discovery in the application
+
+  - requires extensive code changes
+
+  - doesn't require extra services or containers
+
+  - provides load balancing and failover
+
+- Inject service addresses in environment variables
+
+  - requires minimal code changes
+
+  - doesn't require extra services or containers
+
+  - doesn't provide load balancing and failover
+
+---
+
+## Connecting containers with Swarm (2/2)
+
+- Ambassadors
+
+  - don't require code changes
+
+  - require additional containers
+
+  - provide load balancing and failover
+
+- Overlay networks
+
+  - don't require code changes
+
+  - don't require extra services or containers
+
+  - doesn't provide load balancing and failover (yet)
+
+---
+
+# Connecting containers with ambassadors
 
 - We will use one-tier, dynamic ambassadors
-  <br/>(as seen before)
 
-- Other available options:
+- Each link to a service will be replaced by an ambassador
 
-  - injecting service addresses in environment variables
+- Each ambassador will be placed in the network namespace
+  of the service using the ambassador
 
-  - implementing service discovery in the application
-
-  - use an overlay network
+- Ambassadors will be dynamically reconfigured when
+  linked services are updated
 
 ---
 
@@ -3225,96 +3303,25 @@ Then it configures all ambassadors with all found backends.
 
 ---
 
-# Going further
+## Clean up
 
-Scaling the application (difficulty: easy)
+- Before moving on, stop and remove all containers
 
-- Run `docker-compose scale`
+.exercise[
 
-- Re-create ambassadors
+- Terminate all containers:
+  ```
+  docker-compose kill
+  ```
 
-- Re-configure ambassadors
+- Remove them:
+  ```
+  docker-compose rm -f
+  ```
 
-- No downtime
+]
 
----
-
-## Going further
-
-Deploying a new version (difficulty: easy)
-
-- Just re-run all the steps!
-
-- However, Compose will re-create the containers
-
-- You will have to re-create ambassadors
-  <br/>(and configure them)
-
-- You will have to cleanup old ambassadors
-  <br/>(left as an exercise for the reader)
-
-- You will experience a little bit of downtime
-
----
-
-## Going further
-
-Zero-downtime deployment (difficulty: medium)
-
-- Isolate stateful services
-  <br/>(like we did earlier for Redis)
-
-- Do blue/green deployment:
-
-  - deploy and scale version N
-
-  - point a "top-level" load balancer to the app
-
-  - deploy and scale version N+1
-
-  - put both apps in the "top-level" balancer
-
-  - slowly switch traffic over to app version N+1
-
----
-
-## Going further
-
-Use the new networking features (difficulty: medium)
-
-- Create a key/value store (e.g. Consul cluster)
-
-- Reconfigure all Engines to use the key/value store
-
-- Load balancers can use DNS for backend discovery
-
-Note: this is really easy to do with a 1-node Consul cluster.
-
----
-
-## Going further
-
-Harder projects:
-
-- Two-tier or three-tier ambassador deployments
-
-- Deploy to Mesos or Kubernetes
-
----
-
-class: pic
-
-![Here Be Dragons](dragons.jpg)
-
----
-
-# Here be dragons
-
-- So far, we've used stable products (versions 1.X)
-
-- We're going to explore experimental software
-
-- **Use at your own risk**
+Note: we also need to remove the ambassadors.
 
 ---
 
@@ -3729,105 +3736,162 @@ docker run -d --name palpatine --net darkside -m 3G redis
 
 ---
 
-# Compose and multi-host networking
+# Using overlay networks with Compose
 
-.icon[![Warning](warning.png)] Here be 7-headed flame-throwing hydras!
+- Compose 1.5 had `--x-networking` flag
+  <br/>(enabling experimental support for overlay networks)
 
-- This is super experimental
+- Compose 1.6 has a new Compose file format
+  <br/>(using the new format enables overlay networks support)
 
-- Your cluster is likely to blow up to bits
+- Compose will remain backward compatible with old files
 
-- Situation is much better in Engine 1.10 and Compose 1.6
-  <br/>(currently in RC; to be released circa February 2016!)
-
----
-
-## Revisiting DockerCoins
-
-.exercise[
-
-- Go back to the `dockercoins` app:
-
-  ```
-  cd ~/orchestration-workshop/dockercoins
-  ```
-
-- Re-execute `build-tag-push` to get a fresh Compose file:
-
-  ```
-  eval $(docker-machine env -u)
-  ../build-tag-push.py
-  export COMPOSE_FILE=docker-compose.yml-XXX
-  ```
-
-]
+- Converting to new files is (ridiculously) easy
 
 ---
 
-## Add `container_name` to Compose file
+## Converting from Compose file v1 to v2
 
-.exercise[
+- Services are no longer at the top level,
+  <br/>but under a `services` section
 
-- Edit the Compose file
+- There has to be a `version` key at the top level,
+  <br/>with value `"2"` (as a string, not an integer)
 
-- In the `hasher`, `rng`, and `redis` sections, add:
-  <br/>`container_name: XXX`
-  <br/>(where XXX is the name of the section)
+- Links should be removed
 
-- Also, comment out the `volumes` section
+- Fixed port mappings should be removed
+  <br/>(until [docker/compose#2866](
+  https://github.com/docker/compose/issues/2866) is fixed)
 
-]
-
-Note: by default, containers will be named `dockercoins_XXX_1`
-(instead of `XXX`) and links will not work.
-
-*This is no longer necessary with Compose 1.6!*
+- There are other minor differences, but for our sample
+  app, that's all we have to worry about!
 
 ---
 
-## Run the app
+## Our new Compose file
 
-.exercise[
+.small[
+```
+version: '2'
 
-- Add two custom experimental flags:
+services:
+    rng:
+        build: rng
+        ports:
+            - 80
 
-  ```
-  docker-compose \
-      --x-networking --x-network-driver=overlay \
-      up -d
-  ```
+    hasher:
+        build: hasher
+        ports:
+            - 80
 
-- Check the `webui` endpoint address:
+    webui:
+        build: webui
+        ports:
+            - 80
 
-  ```
-  docker-compose ps webui
-  ```
+    redis:
+        image: redis
 
-- Go to the webui with your browser!
-
+    worker:
+        build: worker
+```
 ]
+
+Note: `build-tag-push.py` doesn't support v2 format yet.
+
+<!--
+Copy-paste this into `docker-compose.yml`
+<br/>or you can `cp docker-compose.yml-v2 docker-compose.yml`)
+-->
 
 ---
 
-## Scale the app
+## Manually edit out Compose file
+
+- If we try to start the app like that, containers will only
+  run on nodes with the appropriate images
+
+- We need to replace each `build:` section with an `image:` section
 
 .exercise[
 
-- Don't forget the custom experimental flags:
+- Merge `docker-compose.yml-v2` and `docker-compose.yml-12345678`
+  that was generated earlier
 
-  ```
-  docker-compose \
-      --x-networking --x-network-driver=overlay \
-      scale worker=2
-  ```
+- Start the application
 
-- Look at the graph in your browser
+- Observe that it's running on multiple nodes
 
 ]
 
-Note: with Compose 1.6 and Engine 1.10, you can have
-multiple containers with the same DNS name, thus
-achieving "natural" load balancing through DNS round robin.
+Alternate solution: live code a patch for `build-tag-push.py`.
+
+---
+
+## Going further
+
+Adding load balancers (difficulty: easy)
+
+- Replace each service by:
+
+ - multiple copies of itself
+
+ - a load balancer
+
+- This is what we did with `rng` earlier
+
+- Traffic will follow suboptimal paths
+
+---
+
+## Going further
+
+Deploying a new version (difficulty: easy)
+
+- Just re-run all the steps!
+
+- However, Compose will re-create the containers
+
+- You will have to re-create ambassadors
+  <br/>(and configure them)
+
+- You will have to cleanup old ambassadors
+  <br/>(left as an exercise for the reader)
+
+- You will experience a little bit of downtime
+
+---
+
+## Going further
+
+Zero-downtime deployment (difficulty: medium)
+
+- Isolate stateful services
+  <br/>(like we did earlier for Redis)
+
+- Do blue/green deployment:
+
+  - deploy and scale version N
+
+  - point a "top-level" load balancer to the app
+
+  - deploy and scale version N+1
+
+  - put both apps in the "top-level" balancer
+
+  - slowly switch traffic over to app version N+1
+
+---
+
+## Going further
+
+Harder projects:
+
+- Two-tier or three-tier ambassador deployments
+
+- Deploy to Mesos or Kubernetes
 
 ---
 
@@ -3844,14 +3908,21 @@ achieving "natural" load balancing through DNS round robin.
 
 ]
 
-Note: Compose 1.5 doesn't support changes to an
-existing app (except basic scaling).
+---
 
-When trying to do `docker-compose -x-... up` on existing
-apps, you might get errors like this one:
-<br/>.small[`ERROR: unable to find a node that satisfies container==38aac...`]
+class: pic
 
-If that happens, just kill+rm the app and try again.
+![Here Be Dragons](dragons.jpg)
+
+---
+
+# Here be dragons
+
+- So far, we've used stable products (versions 1.X)
+
+- We're going to explore experimental software
+
+- **Use at your own risk**
 
 ---
 
@@ -4190,6 +4261,7 @@ Check that the container is up and running.
 - I will deliver this workshop about twice a month
 
 - Check out the GitHub repo for updated content!
+  <br/>(there is a tag for each big round of updates)
 
 ---
 

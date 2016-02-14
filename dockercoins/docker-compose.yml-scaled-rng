@@ -7,7 +7,7 @@ rng2:
 rng3:
     build: rng
 
-rng0:
+rng:
     image: jpetazzo/hamba
     links:
       - rng1
@@ -37,7 +37,7 @@ redis:
 worker:
     build: worker
     links:
-      - rng0:rng
-      - hasher:hasher
+      - rng
+      - hasher
       - redis
 
