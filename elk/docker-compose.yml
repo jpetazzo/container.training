@@ -48,7 +48,7 @@ logstash:
 kibana:
   image: kibana
   ports:
-    - 5601
+    - 8080:5601
   links:
     - elasticsearch
   environment:
