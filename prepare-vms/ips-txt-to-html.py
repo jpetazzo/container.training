@@ -21,8 +21,8 @@ SETTINGS_ADVANCED = dict(
     "<p>Your machines are:<ul>\n",
     prettify=lambda l: [ "node%d: %s"%(i+1, s) 
                          for (i, s) in zip(range(len(l)), l) ],
-    footer="<p>You can find the last version of the slides on "
-    "http://view.dckr.info/.</p>"
+    footer="<p>You can find the last version of the slides on -&gt; "
+    "http://container.training/</p>"
     )
 
 SETTINGS = SETTINGS_ADVANCED

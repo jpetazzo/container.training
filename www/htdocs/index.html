@@ -117,7 +117,7 @@ class: title
   <br/>(slides, code samples, scripts)
 
 - Experimental chat support on
-  [Gitter](https://gitter.im/jpetazzo/workshop-20160215-paris)
+  [Gitter](https://gitter.im/jpetazzo/workshop-20160219-amsterdam)
 
 ---
 
@@ -189,9 +189,9 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 .exercise[
 
 - This is the stuff you're supposed to do!
-- Go to [view.dckr.info](http://view.dckr.info/) to view these slides
+- Go to [container.training](http://container.training/) to view these slides
 - Join the chat room on
-  [Gitter](https://gitter.im/jpetazzo/workshop-20160215-paris)
+  [Gitter](https://gitter.im/jpetazzo/workshop-20160219-amsterdam)
 
 ]
 
@@ -215,6 +215,37 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 
 .footnote[Note: from now on, unless instructed, **all commands must
 be run from the first VM, `node1`**.]
+
+---
+
+## Terminals
+
+Once in a while, the instructions will say:
+<br/>"Open a new terminal."
+
+There are multiple ways to do this:
+
+- create a new window or tab on your machine,
+  <br/>and SSH into the VM;
+
+- use tmux on the VM and open a new window in tmux.
+
+If you want to use screen or whatever, you're welcome!
+
+---
+
+## Tmux cheatsheet
+
+- Ctrl-b c → creates a new window
+- Ctrl-b n → go to next window
+- Ctrl-b p → go to previous window
+- Ctrl-b " → split window top/bottom
+- Ctrl-b % → split window left/right
+- Ctrl-b Alt-1 → rearrange windows in columns
+- Ctrl-b Alt-2 → rearrange windows in rows
+- Ctrl-b arrows → navigate to other windows
+- Ctrl-b d → detach session
+- tmux attach → reattach to session
 
 ---
 
@@ -249,6 +280,16 @@ be run from the first VM, `node1`**.]
 ]
 
 (Bonus points for forking on GitHub and cloning your fork!)
+
+---
+
+## What's this application?
+
+--
+
+![DockerCoins logo](dockercoins.png)
+
+(DockerCoins logo courtesy of @jonasrosland. Thanks!)
 
 ---
 
@@ -350,7 +391,13 @@ Let's get random bytes of data!
 
 .exercise[
 
-- Open a second terminal and connect to the same VM
+- Open a new terminal and connect to the same VM
+
+<!--
+```
+NEW-TERM
+```
+-->
 
 - Check that the service is alive:
   <br/>`curl localhost:8001`
@@ -369,7 +416,13 @@ Let's get random bytes of data!
 
 .exercise[
 
-- Open yet another terminal and SSH session
+- Open yet another terminal
+
+<!--
+```
+NEW-TERM
+```
+-->
 
 - Start the `hasher` service:
   <br/>`docker-compose up hasher`
@@ -391,7 +444,13 @@ You can see the mapping in `docker-compose.yml`.
 
 .exercise[
 
-- Open one more terminal window, and SSH to `node1`
+- Open one more terminal to `node1`
+
+<!--
+```
+NEW-TERM
+```
+-->
 
 - Check that the `hasher` service is alive:
   <br/>`curl localhost:8002`
@@ -504,6 +563,9 @@ docker-compose kill
 - Check on the web UI that the app is still making progress
 
 ]
+
+Note: there is a regression in Compose 1.6; `^C` doesn't
+stop the containers. It will be fixed soon.
 
 ---
 
@@ -875,7 +937,11 @@ WHY?!?
 
 --
 
-- Real-world solution: use an asynchronous framework
+- Unfortunately, in the real world, network latency exists
+
+--
+
+- More realistic solution: use an asynchronous framework
   <br/>(e.g. use gunicorn with gevent)
 
 --
@@ -1084,16 +1150,22 @@ faster for a well-behaved application.*
 
 ## The good, the bad, the ugly
 
+--
+
 - The good
 
   We scaled a service, added a load balancer -
   <br/>without changing a single line of code.
+
+--
 
 - The bad
 
   We manually copy-pasted sections in `docker-compose.yml`.
 
   Improvement: write scripts to transform the YAML file.
+
+--
 
 - The ugly
 
@@ -1210,12 +1282,12 @@ Choose wisely!
 - Try to connect to it (from anywhere):
 
   ```
-  telnet ip.ad.dr.ess 6379
+  curl node1:6379
   ```
 
 ]
 
-To exit a telnet session: `Ctrl-] c ENTER`
+The `ERR` messages are normal: Redis speaks Redis, not HTTP.
 
 ---
 
@@ -2162,7 +2234,7 @@ of this workshop.
 - If we were using an ELK stack:
 
   - scale ElasticSearch
-  - scale Logstash 
+  - scale Logstash
   - (probably) switch away from GELF+UDP
 
 - Configure your Engines to send all logs to the stack by default
@@ -2327,7 +2399,7 @@ class: title
 
 ## Kubernetes (overview)
 
-- 1 year old
+- Started in June 2014
 
 - Designed specifically as a platform for containers
   <br/>("greenfield" design)
@@ -2349,13 +2421,16 @@ class: title
   <br/>.small[(different mechanisms within pod, between pods, for inbound traffic...)]
 
 - Initially designed around GCE
-  <br/>.small[(currently relies on "native" features for fast networking and persistence)]
+  <br/>.small[(networking and persistence work better on GCE, but this is getting better)]
+
+- Tends to be loved by ops more than devs
+  <br/>.small[(but keep in mind that it's evolving quite as fast as Docker)]
 
 - Adaptation is needed when it differs from Docker
   <br/>.small[(need to learn new API, new tooling, new concepts)]
 
-- Tends to be loved by ops more than devs
-  <br/>.small[(but keep in mind that it's evolving quite as fast as Docker)]
+- Bottom line: Kubernetes is not Docker!
+  <br/>.small[(different APIs, concepts, configuration files...)]
 
 ---
 
@@ -2391,7 +2466,7 @@ class: title
 
 - We'll see it in action!
 
----
+???
 
 ## PAAS on Docker
 
@@ -2410,7 +2485,9 @@ class: title
   - Flynn
   - Tsuru
 
----
+*Docker made it very easy to cobble your own PAAS.*
+
+???
 
 ## A few other tools
 
@@ -2422,11 +2499,7 @@ class: title
 
   - overlay network so that containers can ping each other
 
-- Powerstrip
-
-  - sits in front of the Docker API; great for experiments
-
-- Tutum, Docker UCP (Universal Control Plane)
+- Docker Cloud (Tutum), Docker UCP (Universal Control Plane)
 
   - dashboards to manage fleets of Docker hosts
 
@@ -2504,11 +2577,11 @@ class: title
 
 - Components involved:
 
-  - service discovery mechanism
-    <br/>(we'll use Docker's hosted system)
+  - cluster discovery mechanism
+    <br/>(so that the manager can learn about the nodes)
 
   - swarm manager
-    <br/>(runs on `node1`, exposes Docker API)
+    <br/>(your frontend to the cluster)
 
   - swarm agent
     <br/>(runs on each node, registers it with service discovery)
@@ -2570,18 +2643,17 @@ in the discovery service hosted by Docker Inc.
 
 ## Swarm manager
 
-- Today: must run on the leader node
+- Exposes a Docker API endpoint
 
-- Later: can run on multiple nodes, with leader election
+- Talks to the cluster nodes
 
-- Automatically started by Docker Machine
-  <br/>(when the `--swarm-master` option is passed)
+- Performs healthchecks, scheduling...
 
 .exercise[
 
 - Connect to `node1`
 
-- "Create" a node with Docker Machine
+- "Create" a node with Docker Machine:
 
   .small[
   ```
@@ -2594,6 +2666,23 @@ in the discovery service hosted by Docker Inc.
 ]
 
 (Don't forget to replace 1.2.3.4 with the node IP address!)
+
+---
+
+## Redundancy
+
+- The manager is a SPOF
+
+- If you lose the manager:
+
+  - you can't control the cluster anymore
+
+  - you can still control individual nodes
+
+  - you can start a new manager
+    <br/>(at this point, it is stateless)
+
+- We'll setup active/passive redundancy later
 
 ---
 
@@ -2701,13 +2790,15 @@ Name: 2ec2e6c4054e
 
 ## `docker ps`
 
-- This one should show nothing at this point.
+- This one should show nothing at this point
 
-- The Swarm containers are hidden.
+- The Swarm containers are hidden
 
-- This avoids unneeded pollution.
+- This avoids unneeded pollution
 
-- This also avoids killing them by mistake.
+- This also avoids killing them by mistake
+
+- We can still see them with `docker ps -a`, though
 
 ---
 
@@ -2774,6 +2865,19 @@ Then, let's get serious:
 ]
 
 This can be any of your five nodes.
+
+---
+
+## Scheduling strategies
+
+- Random: pick a node at random
+  <br/>(but honor resource constraints)
+
+- Spread: pick the node with the least containers
+  <br/>(including stopped containers)
+
+- Binpack: try to maximize resource usage
+  <br/>(in other words: use as few hosts as possible)
 
 ---
 
@@ -3923,9 +4027,9 @@ class: pic
 
 # Here be dragons
 
-- So far, we've used stable products (versions 1.X)
+- So far, we've used stable features
 
-- We're going to explore experimental software
+- We're going to explore experimental code
 
 - **Use at your own risk**
 
@@ -4079,9 +4183,9 @@ debugging.
 
 .exercise[
 
-- Powercycle the primary manager:
+- Kill the primary manager:
   ```
-  ssh XXX sudo reboot
+  ssh XXX docker kill swarm-agent-master
   ```
 
 ]
@@ -4170,7 +4274,7 @@ Look at the output of `docker info` every few seconds.
 
   .small[
   ```
-  docker run -d --name highlander -e reschedule:on-node-failure redis
+  CID=$(docker run -d -e reschedule:on-node-failure nginx)
   ```
   ]
 
@@ -4189,7 +4293,7 @@ Check that the container is up and running.
 .exercise[
 
 - Check on which node the container is running:
-  </br>.small[`NODE=$(docker inspect --format '{{.Node.Name}}' highlander)`]
+  </br>.small[`NODE=$(docker inspect --format '{{.Node.Name}}' $CID)`]
 
 - Reboot that node:
   <br/>`ssh $NODE sudo reboot`
