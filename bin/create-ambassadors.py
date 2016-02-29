@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
+from common import ComposeFile
 import os
 import subprocess
-import sys
-import yaml
 
-compose_file = os.environ.get("COMPOSE_FILE") or sys.argv[1]
-stack = yaml.load(open(compose_file))
+config = ComposeFile()
 
 project_name = os.path.basename(os.path.realpath("."))
 
@@ -39,7 +37,7 @@ for container in containers_data.split('\n'):
     if not container:
         continue
     container_id, service_name = container.split()
-    extra_hosts = stack[service_name].get("extra_hosts", {})
+    extra_hosts = config.services[service_name].get("extra_hosts", {})
     for linked_service, bind_address in extra_hosts.items():
         description = "Ambassador {}/{}/{}".format(
             service_name, container_id, linked_service)
