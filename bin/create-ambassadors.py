@@ -32,8 +32,9 @@ for ambassador in ambassadors_data.split('\n'):
     ambassador_id, container_id, linked_service = ambassador.split()
     ambassadors[container_id, linked_service] = ambassador_id
 
-# Start the missing ambassadors.
 operations = []
+
+# Start the missing ambassadors.
 for container in containers_data.split('\n'):
     if not container:
         continue
@@ -42,7 +43,7 @@ for container in containers_data.split('\n'):
     for linked_service, bind_address in extra_hosts.items():
         description = "Ambassador {}/{}/{}".format(
             service_name, container_id, linked_service)
-        ambassador_id = ambassadors.get((container_id, linked_service))
+        ambassador_id = ambassadors.pop((container_id, linked_service), None)
         if ambassador_id:
             print("{} already exists: {}".format(description, ambassador_id))
         else:
@@ -57,6 +58,14 @@ for container in containers_data.split('\n'):
 		"--label", "ambassador.bindaddr={}".format(bind_address),
 		"jpetazzo/hamba", "run"
 	    ])
+
+# Destroy extraneous ambassadors.
+for ambassador_id in ambassadors.values():
+    print("{} is not useful anymore, destroying it.".format(ambassador_id))
+    operations.append([
+        "rm -f {}".format(ambassador_id),
+        "docker", "rm", "-f", ambassador_id,
+    ])
 
 # Execute all commands in parallel.
 parallel_run(operations, 10)
