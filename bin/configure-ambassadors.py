@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
+from common import parallel_run
 import os
 import subprocess
 
 project_name = os.path.basename(os.path.realpath("."))
 
-# Get all services and backends in our compose application
+# Get all services and backends in our compose application.
 containers_data = subprocess.check_output([
     "docker", "ps",
     "--filter", "label=com.docker.compose.project={}".format(project_name),
@@ -14,7 +15,7 @@ containers_data = subprocess.check_output([
                 '{{ .Ports }}',
 ])
 
-# Build list of backends
+# Build list of backends.
 frontend_ports = dict()
 backends = dict()
 for container in containers_data.split('\n'):
@@ -35,7 +36,7 @@ for container in containers_data.split('\n'):
         backends[service_name] = []
     backends[service_name].append((backend_addr, backend_port))
 
-# Get all existing ambassadors for this application
+# Get all existing ambassadors for this application.
 ambassadors_data = subprocess.check_output([
     "docker", "ps",
     "--filter", "label=ambassador.project={}".format(project_name),
@@ -44,7 +45,8 @@ ambassadors_data = subprocess.check_output([
                 '{{ .Label "ambassador.bindaddr" }}',
 ])
 
-# Update ambassadors
+# Update ambassadors.
+operations = []
 for ambassador in ambassadors_data.split('\n'):
     if not ambassador:
         continue
@@ -54,11 +56,14 @@ for ambassador in ambassadors_data.split('\n'):
                   bind_address, frontend_ports[service_name],
                   backends[service_name]))
     command = [
+        ambassador_id,
         "docker", "run", "--rm", "--volumes-from", ambassador_id,
         "jpetazzo/hamba", "reconfigure",
         "{}:{}".format(bind_address, frontend_ports[service_name])
     ]
     for backend_addr, backend_port in backends[service_name]:
         command.extend([backend_addr, backend_port])
-    print command
-    subprocess.check_call(command)
+    operations.append(command)
+
+# Execute all commands in parallel.
+parallel_run(operations, 10)

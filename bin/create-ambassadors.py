@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from common import ComposeFile
+from common import ComposeFile, parallel_run
 import os
 import subprocess
 
@@ -8,14 +8,14 @@ config = ComposeFile()
 
 project_name = os.path.basename(os.path.realpath("."))
 
-# Get all services in our compose application
+# Get all services in our compose application.
 containers_data = subprocess.check_output([
     "docker", "ps",
     "--filter", "label=com.docker.compose.project={}".format(project_name),
     "--format", '{{ .ID }} {{ .Label "com.docker.compose.service" }}',
 ])
 
-# Get all existing ambassadors for this application
+# Get all existing ambassadors for this application.
 ambassadors_data = subprocess.check_output([
     "docker", "ps",
     "--filter", "label=ambassador.project={}".format(project_name),
@@ -24,7 +24,7 @@ ambassadors_data = subprocess.check_output([
                 '{{ .Label "ambassador.service" }}',
 ])
 
-# Build a set of existing ambassadors
+# Build a set of existing ambassadors.
 ambassadors = dict()
 for ambassador in ambassadors_data.split('\n'):
     if not ambassador:
@@ -32,7 +32,8 @@ for ambassador in ambassadors_data.split('\n'):
     ambassador_id, container_id, linked_service = ambassador.split()
     ambassadors[container_id, linked_service] = ambassador_id
 
-# Start the missing ambassadors
+# Start the missing ambassadors.
+operations = []
 for container in containers_data.split('\n'):
     if not container:
         continue
@@ -45,8 +46,9 @@ for container in containers_data.split('\n'):
         if ambassador_id:
             print("{} already exists: {}".format(description, ambassador_id))
         else:
-            print("{} not found, creating it:".format(description))
-	    subprocess.check_call([
+            print("{} not found, creating it.".format(description))
+	    operations.append([
+                description,
 		"docker", "run", "-d",
 		"--net", "container:{}".format(container_id),
 		"--label", "ambassador.project={}".format(project_name),
@@ -56,3 +58,5 @@ for container in containers_data.split('\n'):
 		"jpetazzo/hamba", "run"
 	    ])
 
+# Execute all commands in parallel.
+parallel_run(operations, 10)
