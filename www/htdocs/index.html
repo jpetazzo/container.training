@@ -4179,6 +4179,185 @@ class: pic
 
 ---
 
+# Distributing Machine credentials
+
+- All the credentials (TLS keys and certs) are on node1
+  <br/>(the node on which we ran `docker-machine create`)
+
+- If we lose node1, we're toast
+
+- We need to move (or copy) the credentials somewhere safe
+
+- Credentials are regular files, and relatively small
+
+- Ah, if only we had a highly available, hierarchic store ...
+
+--
+
+- Wait a minute, we have one!
+
+--
+
+(That's Consul, if you were wondering)
+
+---
+
+## Storing files into Consul
+
+- We will use [Benjamin Wester's consulfs](
+  https://github.com/bwester/consulfs)
+
+- It mounts a Consul key/value store as a local filesystem
+
+- Performance will be horrible
+  <br/>(don't run a database on top of that!)
+
+- But to store files of a few KB, nobody will notice
+
+- We will copy/link/sync... `~/.docker/machine` to Consul
+
+---
+
+## Installing consulfs
+
+- Option 1: install Go, git clone, go build ...
+
+- Option 2: be lazy and use [jpetazzo/consulfs](
+  https://hub.docker.com/r/jpetazzo/consulfs/)
+
+.exercise[
+
+- Be lazy and use the Docker image:
+  ```
+  docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
+  ```
+]
+
+Note: the `jpetazzo/consulfs` image contains the
+`consulfs` binary.
+It copies it to `/target` (if `/target` is a volume).
+
+We need `consulfs` locally (not in a container) because
+we can't propagate a FUSE mount from a container to
+the host (yet).
+
+---
+
+## Running consulfs
+
+- The `consulfs` binary takes two arguments:
+
+  - the Consul server address
+  - a mount point (that has to be created first)
+
+.exercise[
+
+- Create a mount point:
+  ```
+  mkdir ~/consul
+  ```
+
+- Mount Consul as a local filesystem:
+  ```
+  consulfs localhost:8500 ~/consul
+  ```
+
+]
+
+Leave this running in the foreground.
+
+---
+
+## Copying our credentials to Consul
+
+- Use standard UNIX commands
+
+- Don't try to preserve permissions, though
+  <br/>(`consulfs` doesn't store those)
+
+.exercise[
+
+- Check that Consul key/values are visible:
+  ```
+  ls -l ~/consul/
+  ```
+
+- Copy Machine credentials into Consul:
+  ```
+  cp -r ~/.docker/machine/. ~/consul/machine/
+  ```
+
+]
+
+(This command can be re-executed to update the copy.)
+
+---
+
+## Mount Consul on another node
+
+- We will repeat the previous steps to mount `~/consul`
+
+.exercise[
+
+- Connect to node2:
+  ```
+  ssh node2
+  ```
+
+- Install `consulfs` and mount Consul:
+  ```
+  docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
+  mkdir ~/consul
+  consulfs localhost:8500 ~/consul
+  ```
+
+]
+
+At this point, `ls -l ~/consul` should show `docker` and
+`machine` directories.
+
+---
+
+## Access the credentials from the other node
+
+- We will create a symlink
+
+- We could also copy the credentials
+
+.exercise[
+
+- Create the symlink:
+  ```
+  mkdir -p ~/.docker/
+  ln -s ~/consul/machine ~/.docker/
+  ```
+
+- Check that all nodes are visible:
+  ```
+  docker-machine ls
+  ```
+
+]
+
+---
+
+## A few words on this strategy
+
+- Anyone accessing Consul can control your Docker cluster
+  <br/>(to be fair: anyone accessing Consul can wreck
+  serious havoc to your cluster anyway)
+
+- If Consul becomes unavailable (e.g. loses quorum),
+  <br/>you won't be able to access your credentials
+
+- If Consul becomes unavailable ...
+  <br/>your cluster will be in a bad state anyway
+
+- You can still access each Docker Engine over the
+  local UNIX socket (and repair Consul that way)
+
+---
+
 # Highly available Swarm managers
 
 - Until now, the Swarm manager was a SPOF
