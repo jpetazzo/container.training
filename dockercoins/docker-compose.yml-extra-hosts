@@ -28,8 +28,8 @@ webui:
       redis: A.B.C.D
     ports:
       - "8000:80"
-    #volumes:
-    #  - "./webui/files/:/files/"
+    volumes:
+      - "./webui/files/:/files/"
 
 #redis:
 #    image: redis

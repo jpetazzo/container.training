@@ -101,14 +101,14 @@ class: title
 - Agenda:
 
   .small[
-  - 09:00-10:30 part 1
-  - 10:30-11:00 coffee break
-  - 11:00-12:30 part 2
-  - 12:30-13:30 lunch break
-  - 13:30-15:00 part 3
-  - 15:00-15:30 coffee break
-  - 15:30-17:00 part 4
-  - 17:00- open discussion, Q&A
+  - 09:00-10:25 part 1
+  - 10:25-10:35 coffee break
+  - 10:35-12:00 part 2
+  - 12:00-13:00 lunch break
+  - 13:00-14:25 part 3
+  - 14:25-14:35 coffee break
+  - 14:35-16:00 part 4
+  - 16:00- optional Q&A
   ]
 
 <!-- - This will be FAST PACED, but DON'T PANIC! -->
@@ -116,8 +116,15 @@ class: title
 - All the content is publicly available
   <br/>(slides, code samples, scripts)
 
+<!--
+Remember to change:
+- the Gitter link below
+- the other Gitter link
+- the "tweet my speed" hashtag in DockerCoins HTML
+-->
+
 - Experimental chat support on
-  [Gitter](https://gitter.im/jpetazzo/workshop-20160219-amsterdam)
+  [Gitter](https://gitter.im/jpetazzo/workshop-20160311-london)
 
 ---
 
@@ -181,17 +188,39 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 - Computer with network connection and SSH client
   <br/>(on Windows, get [putty](http://www.putty.org/)
   or [Git BASH](https://msysgit.github.io/))
-- GitHub account (recommended; not mandatory)
-- Gitter account (recommended; not mandatory)
-- Docker Hub account (only for Swarm hands-on section)
+
+- [GitHub](https://github.com/join) account
+  <br/>(if you want to fork the repo; also used to join Gitter)
+
+
+- [Gitter](https://gitter.im/) account
+  <br/>(to join the conversation during the workshop)
+
+- [Docker Hub](https://hub.docker.com) account
+  <br/>(it's one way to distribute images on your Swarm cluster)
+
 - Basic Docker knowledge
+  <br/>(but that's OK if you're not a Docker expert!)
+
+---
+
+## Hands-on sections
+
+- The whole workshop is hands-on
+
+- I will show Docker in action
+
+- I invite you to reproduce what I do
+
+- All hands-on sections are clearly identified
+  <br/>(see below)
 
 .exercise[
 
 - This is the stuff you're supposed to do!
 - Go to [container.training](http://container.training/) to view these slides
 - Join the chat room on
-  [Gitter](https://gitter.im/jpetazzo/workshop-20160219-amsterdam)
+  [Gitter](https://gitter.im/jpetazzo/workshop-20160311-london)
 
 ]
 
@@ -251,11 +280,11 @@ If you want to use screen or whatever, you're welcome!
 
 ## Brand new versions!
 
-- Engine 1.10.1
+- Engine 1.10.2
 
-- Compose 1.6.0
+- Compose 1.6.2
 
-- Swarm 1.1.0
+- Swarm 1.1.3
 
 - Machine 0.6.0
 
@@ -483,6 +512,8 @@ We have multiple options:
 
 - Kill all services with `docker-compose kill`
   <br/>(rude, but faster!)
+
+- Stop and remove all services with `docker-compose down`
 
 .exercise[
 
@@ -817,10 +848,10 @@ We will use `httping`.
 - Scale back the `worker` service to zero:
   <br/>`docker-compose scale worker=0`
 
-- Open a new SSH connection and check the latency of `rng`:
+- Open a new terminal and check the latency of `rng`:
   <br/>`httping localhost:8001`
 
-- Open a new SSH conection and do the same for `hasher`:
+- Open a new terminal and do the same for `hasher`:
   <br/>`httping localhost:8002`
 
 - Keep an eye on both connections!
@@ -1344,36 +1375,13 @@ Shortcut: `docker-compose.yml-extra-hosts`
       redis: A.B.C.D
     ports:
       - "8000:80"
-    #volumes:
-    #  - "./webui/files/:/files/"
+    volumes:
+      - "./webui/files/:/files/"
   ```
 
 ]
 
 (Replace `A.B.C.D` with the IP address noted earlier)
-
-.icon[![Warning](warning.png)] Don't forget to comment out the `volumes` section!
-
----
-
-## Why did we comment out the `volumes` section?
-
-- Volumes have multiple uses:
-
-  - storing persistent stuff (database files...)
-
-  - sharing files between containers (logs, configuration...)
-
-  - sharing files between host and containers (source...)
-
-- The `volumes` directive expands to an host path
-  <br/>.small[(e.g. `/home/docker/orchestration-workshop/dockercoins/webui/files`)]
-
-- This host path exists on the local machine
-  <br/>(not on the others)
-
-- This specific volume is used in development
-  <br/>(not in production)
 
 ---
 
@@ -1420,12 +1428,19 @@ Shortcut: `docker-compose.yml-extra-hosts`
 
 .exercise[
 
-- Open the Web UI
-  <br/>(on a node where it's deployed)
+- Keep an eye on the web UI
 
-- Deploy one instance of the stack on each node
+- Create 20 workers on both nodes:
+  ```
+  for NODE in node1 node2; do
+    export DOCKER_HOST=tcp://$NODE:55555
+    docker-compose scale worker=20
+  done
+  ```
 
 ]
+
+Note: of course, if we wanted, we could run on all five nodes.
 
 ---
 
@@ -1507,13 +1522,6 @@ Shortcut: `docker-compose.yml-extra-hosts`
   redis:
     image: jpetazzo/hamba
     command: 6379 AA.BB.CC.DD EEEEE
-  ```
-
-- Make sure that the `volumes` section is commented in `webui`:
-
-  ```
-  #volumes:
-  #  - "./webui/files/:/files/"
   ```
 
 ]
@@ -1635,6 +1643,30 @@ Let's celebrate our success!
   </br>(use the "Tweet this!" link below the graph☺)
 
 ]
+
+---
+
+## Stop the app (but leave Redis running)
+
+- Let's use `docker-compose down`
+
+- It will stop and remove the DockerCoins app
+  <br/>(but leave other containers running)
+
+.exercise[
+
+- We can do another simple shell loop:
+  ```
+  for N in $(seq 1 5); do
+    export DOCKER_HOST=tcp://node$N:55555
+    docker-compose down &
+  done
+  ```
+
+]
+
+(We need to keep the `myredis` container for
+our next section, which will be about backups!)
 
 ---
 
@@ -2235,9 +2267,10 @@ of this workshop.
 
   - scale ElasticSearch
   - scale Logstash
-  - (probably) switch away from GELF+UDP
+  - move away from UDP *or* put one Logstash per node
+  - interpose a Redis or Kafka queue
 
-- Configure your Engines to send all logs to the stack by default
+- Configure your Engines to send all logs to ELK by default
 
 - Start the logging containers with a different logging system
   <br/>(to avoid a logging loop)
@@ -2263,7 +2296,6 @@ of this workshop.
 ## Upgrading the Docker daemon
 
 - Stop all containers cleanly
-  <br/>(`docker ps -q | xargs docker stop`)
 
 - Stop the Docker daemon
 
@@ -2275,6 +2307,23 @@ of this workshop.
 
 - This is like upgrading your Linux kernel,
   <br/>but it will get better
+
+---
+
+## In practice
+
+- Keep track of running containers before stopping the Engine:
+  ```
+  docker ps --no-trunc -q |
+  tee /tmp/running |
+  xargs -n1 -P10 docker stop
+  ```
+
+- Restart those containers after the Engine is running again:
+  ```
+  xargs docker start < /tmp/running
+  ```
+  <br/>(Run this multiple times if you have linked containers!)
 
 ---
 
@@ -2294,7 +2343,11 @@ of this workshop.
 
   - restart containers
 
-(The procedure is simple and plain, just follow it!)
+Compose makes this particularly easy:
+```
+docker-compose build --pull --no-cache
+docker-compose up -d
+```
 
 ---
 
@@ -2611,7 +2664,7 @@ in the discovery service hosted by Docker Inc.
 
 .exercise[
 
-- Create your token, saving it preciusly to disk as well:
+- Create your token, saving it preciously to disk as well:
 
   ```
   TOKEN=$(docker run swarm create | tee token)
@@ -2991,8 +3044,7 @@ Before trying to build our app, we will remove previous images.
 
 - Tag images
 
-- Upload them to the hub
-  <br/>(Note: this part requires a Docker Hub account!)
+- Upload them to a registry
 
 - Update the Compose file to use those images
 
@@ -3000,26 +3052,90 @@ Before trying to build our app, we will remove previous images.
 
 ---
 
-## Docker Hub account
+## Which registry do we want to use?
 
-- You need a Docker Hub account for that part
+.small[
 
-- If you don't have one, create it
+- **Docker Hub**
+
+  - hosted by Docker Inc.
+  - requires an account (free, no credit card needed)
+  - images will be public (unless you pay)
+  - located in AWS EC2 us-east-1
+
+- **Docker Trusted Registry**
+
+  - self-hosted commercial product
+  - requires a subscription (free 30-day trial available)
+  - images can be public or private
+  - located wherever you want
+
+- **Docker open source registry**
+
+  - self-hosted barebones repository hosting
+  - doesn't require anything
+  - doesn't come with anything either
+  - located wherever you want
+]
+
+---
+
+## Using Docker Hub
+
+- To tell `build-tag-push.py` to use Docker Hub,
+  <br/>set the `DOCKER_REGISTRY` environment variable
+  <br/>to your Docker Hub user name
+
+- We will also see how to run the open source registry
+  <br/>(so use whatever option you want!)
 
 .exercise[
 
 - Set the following environment variable:
-
-  ```
-  export DOCKERHUB_USER=jpetazzo
-  ```
+  <br/>`export DOCKER_REGISTRY=jpetazzo`
 
 - (Use *your* Docker Hub login, of course!)
 
 - Log into the Docker Hub:
+  <br/>`docker login`
 
+]
+
+---
+
+## Using Docker Trusted Registry
+
+If we wanted to use DTR, we would:
+
+- make sure we have a Docker Hub account
+- [activate a Docker Datacenter subscription](
+  https://hub.docker.com/enterprise/trial/)
+- install DTR on our machines
+- set `DOCKER_REGISTRY` to `dtraddress:port/user`
+
+*This is out of the scope of this workshop!*
+
+---
+
+## Using open source registry
+
+- All we need to do is to run a `registry:2` container
+  <br/>(make sure you specify tag `:2` to run the new version!)
+
+- It will store images and layers to the local filesystem
+  <br/>(but you can add a config file to use S3, Swift, etc.)
+
+.exercise[
+
+- Start your registry on your Swarm cluster:
   ```
-  docker login
+  eval $(docker-machine env node1 --swarm)
+  docker run -dP --name registry registry:2
+  ```
+
+- Set the `DOCKER_REGISTRY` variable:
+  ```
+  export DOCKER_REGISTRY=$(docker port registry 5000)
   ```
 
 ]
@@ -3030,17 +3146,15 @@ Before trying to build our app, we will remove previous images.
 
 Let's inspect the source code of `build-tag-push.py` and run it.
 
-.icon[![Warning](warning.png)] It is better to run it against a single node!
-
-(There are some race conditions within Swarm when building+pushing too fast.)
+.icon[![Warning](warning.png)] Make sure to run it against a single node!
 
 .exercise[
 
 - Point to a single node:
   <br/>`eval $(docker-machine env node1)`
 
-- Run the script (from the `dockercoins` directory):
-  <br/>`../build-tag-push.py`
+- Run the script (from the `bin` directory):
+  <br/>`../bin/build-tag-push.py`
 
 - Inspect the `docker-compose.yml-XXX` file that it created
 
