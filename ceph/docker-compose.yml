@@ -1,0 +1,53 @@
+version: "2"
+
+services:
+  mon:
+    image: ceph/daemon
+    command: mon
+    environment:
+      CEPH_PUBLIC_NETWORK: 10.33.0.0/16
+      MON_IP: 10.33.0.2
+  osd:
+    image: ceph/daemon
+    command: osd_directory
+    depends_on:
+      - mon
+    volumes_from: 
+      - mon
+    volumes:
+      - /var/lib/ceph/osd
+  mds:
+    image: ceph/daemon
+    command: mds
+    environment:
+      CEPHFS_CREATE: 1
+    depends_on:
+      - mon
+    volumes_from: 
+      - mon
+  rgw:
+    image: ceph/daemon
+    command: rgw
+    depends_on:
+      - mon
+    volumes_from:
+      - mon
+    environment:
+      CEPH_OPTS: --verbose
+  admin:
+    image: ceph/daemon
+    entrypoint: radosgw-admin
+    depends_on:
+      - mon
+    volumes_from:
+      - mon
+    command: user create --uid=docker --display-name=docker
+
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.33.0.0/16
+          gateway: 10.33.0.1
+
