@@ -1905,6 +1905,36 @@ class: title
 
 ---
 
+## Scheduling backups
+
+In the "old world," we (generally) use cron.
+
+With containers, what are our options?
+
+--
+
+- run `cron` on the Docker host,
+  <br/>and put `docker run` in the crontab
+
+--
+
+- run `cron` in the backup container,
+  <br/>and make sure it keeps running
+  <br/>(e.g. with `docker run --restart=…`)
+
+--
+
+- run `cron` in a container,
+  <br/>and start backup containers from there
+
+--
+
+- listen to the Docker events stream,
+  <br/>automatically scheduling backups
+  <br/>when database containers are started
+
+---
+
 # Logs
 
 - Two strategies:
