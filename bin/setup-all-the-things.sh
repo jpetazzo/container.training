@@ -119,6 +119,16 @@ setup_all () {
     dm_swarm
 }
 
+force_remove_network () {
+    dm_swarm
+    NET="$1"
+    for CNAME in $(docker network inspect $NET | grep Name | grep -v \"$NET\" | cut -d\" -f4); do
+        echo $CNAME
+        docker network disconnect -f $NET $CNAME
+    done
+    docker network rm $NET
+}
+
 demo_1_compose_up () {
     dm_swarm
     cd ~/orchestration-workshop/dockercoins
