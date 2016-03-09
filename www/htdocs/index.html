@@ -96,18 +96,29 @@ class: title
 
 ## Logistics
 
-- Hello! I'm `jerome at docker dot com`
+- Hello! We are:
+  <br/>`jerome at docker dot com`
+  <br/>`aj at soulshake dot net`
+
+<!--
+Reminder, when updating the agenda: when people are told to show
+up at 9am, they usually trickle in until 9:30am (except for paid
+training sessions). If you're not sure that people will be there
+on time, it's a good idea to have a breakfast with the attendees
+at e.g. 9am, and start at 9:30.
+-->
 
 - Agenda:
 
   .small[
-  - 09:00-10:25 part 1
-  - 10:25-10:35 coffee break
-  - 10:35-12:00 part 2
-  - 12:00-13:00 lunch break
-  - 13:00-14:25 part 3
-  - 14:25-14:35 coffee break
-  - 14:35-16:00 part 4
+  - 08:00-08:50 breakfast
+  - 09:00-10:30 part 1
+  - 10:30-10:45 coffee break
+  - 10:45-12:00 part 2
+  - 12:00-12:50 lunch break
+  - 13:00-14:30 part 3
+  - 14:30-14:45 coffee break
+  - 14:45-16:00 part 4
   - 16:00- optional Q&A
   ]
 
@@ -127,6 +138,7 @@ Remember to change:
   [Gitter](https://gitter.im/jpetazzo/workshop-20160311-london)
 
 ---
+
 
 <!--
 grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
@@ -189,18 +201,21 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
   <br/>(on Windows, get [putty](http://www.putty.org/)
   or [Git BASH](https://msysgit.github.io/))
 
+- Basic Docker knowledge
+  <br/>(but that's OK if you're not a Docker expert!)
+
+---
+
+## Nice-to-haves
+
 - [GitHub](https://github.com/join) account
   <br/>(if you want to fork the repo; also used to join Gitter)
-
 
 - [Gitter](https://gitter.im/) account
   <br/>(to join the conversation during the workshop)
 
 - [Docker Hub](https://hub.docker.com) account
   <br/>(it's one way to distribute images on your Swarm cluster)
-
-- Basic Docker knowledge
-  <br/>(but that's OK if you're not a Docker expert!)
 
 ---
 
@@ -595,8 +610,10 @@ docker-compose kill
 
 ]
 
-Note: there is a regression in Compose 1.6; `^C` doesn't
+Note: there is a regression in Compose 1.6 when it
+is installed as a self-contained binary: `^C` doesn't
 stop the containers. It will be fixed soon.
+Meanwhile, installing with `pip` is fine too.
 
 ---
 
@@ -1935,6 +1952,140 @@ With containers, what are our options?
 
 ---
 
+# Docker events stream
+
+- Using the Docker API, we can get real-time
+  notifications of everything happening in the Engine:
+
+  - container creation/destruction
+  - container start/stop
+  - container exit/signal/out of memory
+  - container attach/detach
+  - volume creation/destruction
+  - network creation/destruction
+  - connection/disconnection of containers
+
+(Networks will be covered a bit later!)
+
+---
+
+## Subscribing to the events stream
+
+- This is done with `docker events`
+
+.exercise[
+
+- Get a stream of events:
+  ```
+  docker events
+  ```
+
+<!-- NEW-TERM -->
+
+- In a new terminal, do *anything*:
+  ```
+  docker run --rm alpine sleep 10
+  ```
+
+]
+
+You should see events for the lifecycle of the
+container, as well as its connection/disconnection
+to the default `bridge` network.
+
+---
+
+# Attaching labels
+
+- You can attach arbitrary labels to engines and containers
+
+- You can read the value of those labels
+
+- You can use those labels as filters in some commands
+
+.exercise[
+
+- Start two containers, with and without a `backup` label:
+  ```
+  docker run -d --name leweb nginx
+  docker run -d --name ledata --label backup=please redis
+  ```
+
+]
+
+---
+
+## Using labels as filters
+
+- `docker ps` can take a `--filter` argument
+
+.exercise[
+
+- List only containers that have a `backup` label:
+  ```
+  docker ps --filter label=backup
+  ```
+
+- List only containers where the `backup` label
+  has a specific value:
+  ```
+  docker ps --filter label=backup=please
+  ```
+
+]
+
+---
+
+## Filtering events
+
+- On a large cluster, there will be *lots* of events
+  <br/>(especially when using short-lived containers)
+
+- `docker events` can also take a `--filter` argument
+
+.exercise[
+
+- Show events only for containers with a "backup" label:
+  ```
+  docker events --filter label=backup
+  ```
+
+<!-- NEW-TERM -->
+
+- In a different terminal, terminate our containers:
+  ```
+  docker kill leweb ledata
+  ```
+
+]
+
+Only the events for `ledata` will be shown.
+
+---
+
+## Using `docker ps` in scripts
+
+- The default output of `docker ps` has two flaws:
+
+  - it is not machine-readable
+  - some information is not shown
+
+- This can be changed with the `--format` flag
+
+.exercise[
+
+- List containers that have a `backup` label;
+  <br/>show their container ID, image, and the label:
+  ```
+  docker ps \
+    --filter label=backup \
+    --format '{{ .ID }} {{ .Image }} {{ .Label "backup" }}'
+  ```
+
+]
+
+---
+
 # Logs
 
 - Two strategies:
@@ -2373,11 +2524,24 @@ of this workshop.
 
   - restart containers
 
+---
+
+## Upgrading with Compose
+
 Compose makes this particularly easy:
 ```
 docker-compose build --pull --no-cache
 docker-compose up -d
 ```
+
+This will automatically:
+
+- pull base images;
+- rebuild all container images;
+- bring up the new containers.
+
+Remember: Compose will automatically move our
+volumes to the new containers, so data is preserved.
 
 ---
 
@@ -2742,13 +2906,13 @@ in the discovery service hosted by Docker Inc.
   ```
   docker-machine create --driver generic \
     --swarm --swarm-master --swarm-discovery token://$TOKEN \
-    --generic-ssh-user docker --generic-ip-address 1.2.3.4 node1
+    --generic-ssh-user docker --generic-ip-address A.B.C.D node1
   ```
   ]
 
 ]
 
-(Don't forget to replace 1.2.3.4 with the node IP address!)
+(Don't forget to replace A.B.C.D with the node IP address!)
 
 ---
 
@@ -2827,19 +2991,19 @@ Swarm identifies itself clearly:
 
 ```
 Client:
- Version:      1.10.1
+ Version:      1.10.2
  API version:  1.22
  Go version:   go1.5.3
- Git commit:   9e83765
- Built:        Thu Feb 11 19:32:54 2016
+ Git commit:   c3959b1
+ Built:        Mon Feb 22 21:40:35 2016
  OS/Arch:      linux/amd64
 
 Server:
- Version:      swarm/1.1.0
+ Version:      swarm/1.1.3
  API version:  1.22
  Go version:   go1.5.3
- Git commit:   a0fd82b
- Built:        Thu Feb  4 08:55:18 UTC 2016
+ Git commit:   7e9c6bd
+ Built:        Wed Mar  2 00:15:12 UTC 2016
  OS/Arch:      linux/amd64
 ```
 
@@ -2849,6 +3013,7 @@ Server:
 
 Swarm gives cluster information, showing all nodes:
 
+.small[
 ```
 Containers: 3
 Images: 6
@@ -2856,18 +3021,26 @@ Role: primary
 Strategy: spread
 Filters: affinity, health, constraint, port, dependency
 Nodes: 1
- node: 52.89.117.68:2376
+ node1: 52.58.50.15:2376
+  └ Status: Healthy
   └ Containers: 3
   └ Reserved CPUs: 0 / 2
-  └ Reserved Memory: 0 B / 3.86 GiB
+  └ Reserved Memory: 0 B / 3.859 GiB
   └ Labels: executiondriver=native-0.2,
-            kernelversion=3.13.0-53-generic,
-            operatingsystem=Ubuntu 14.04.2 LTS,
-            provider=generic, storagedriver=aufs
+            kernelversion=4.2.0-30-generic,
+            operatingsystem=Ubuntu 15.10,
+            provider=generic,
+            storagedriver=aufs
+  └ Error: (none)
+  └ UpdatedAt: 2016-03-09T14:01:43Z
+Kernel Version: 4.2.0-30-generic
+Operating System: linux
+Architecture: amd64
 CPUs: 2
 Total Memory: 3.86 GiB
-Name: 2ec2e6c4054e
+Name: node1
 ```
+]
 
 ---
 
@@ -2900,7 +3073,7 @@ Name: 2ec2e6c4054e
   ```
   docker-machine create --driver generic \
     --swarm --swarm-discovery token://$TOKEN \
-    --generic-ssh-user docker --generic-ip-address 1.2.3.4 node2
+    --generic-ssh-user docker --generic-ip-address A.B.C.D node2
   ```
   ]
 ]
@@ -2992,18 +3165,18 @@ Before trying to build our app, we will remove previous images.
 
 - Run `docker-compose build`
 
-- Try to start the application:
+- Try to start and scale the application:
   ```
   docker-compose up -d
-  ```
-
-- *If it works*, scale a few containers:
-  ```
   docker-compose scale worker=10
   docker-compose scale webui=2
   ```
 
 ]
+
+.icon[![Warning](warning.png)] This is supposed to fail!
+
+(Don't bang your head on the keyboard if it doesn't work!)
 
 ---
 
@@ -3209,14 +3382,18 @@ Let's try!
 
 ]
 
---
-
-It won't work, because Compose and Swarm do not collaborate
-to establish *placement constraints*.
+.icon[![Warning](warning.png)] This is *still* supposed to fail!
 
 --
 
 (╯°□°)╯︵ ┻━┻
+
+---
+
+## Why do we get that weird error message?
+
+- Compose and Swarm do not collaborate
+  to establish *placement constraints*.
 
 ---
 
@@ -3344,9 +3521,6 @@ So, what do‽
          reconfigure 80 backend1 port1 backend2 port2 ...
   ```
 
-.footnote[Note: configuration validation and error messages
-will be logged by the ambassador, not the `reconfigure` container.]
-
 ---
 
 ## Should we use `links` for our ambassadors?
@@ -3362,6 +3536,9 @@ Technically, we could use links.
   link it to its ambassador(s)
 
 But we wouldn't be able to use `docker-compose scale` anymore.
+
+(We would have to scale the ambassadors *first*,
+then add our client containers.)
 
 ---
 

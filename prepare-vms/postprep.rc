@@ -2,7 +2,7 @@ pssh -I tee /tmp/postprep.py <<EOF
 #!/usr/bin/env python
 COMPOSE_VERSION = "1.6.2"
 MACHINE_VERSION = "0.6.0"
-SWARM_VERSION = "1.1.3-rc1"
+SWARM_VERSION = "1.1.3"
 
 import os
 import sys
