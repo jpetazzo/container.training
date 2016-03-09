@@ -4150,7 +4150,12 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 
 .exercise[
 
-- Log into `node1`
+- Make sure you're logged into `node1`,
+  with a clean environment:
+  
+  ```
+  unset DOCKER_HOST
+  ```
 
 - The first node must be started with the `-bootstrap` flag:
 
@@ -4160,24 +4165,24 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
         jpetazzo/consul agent -server -bootstrap)
   ```
 
-- Find the internal IP address of that node
-  <br/>With This One Weird Trick:
-
-  ```
-  IPADDR=$(ip a ls dev eth0 |
-           sed -n 's,.*inet \(.*\)/.*,\1,p')
-  ```
-
 ]
 
 ---
 
 ## Starting the other Consul nodes
 
+- Other nodes have to be started with the `-join A.B.C.D`
+  option, where A.B.C.D is the address of an existing node
+
 .exercise[
 
-- The other nodes have to be startd with the `-join IP.AD.DR.ESS` flag:
+- Find the internal IP address of our first node:
+  ```
+  IPADDR=$(ip a ls dev eth0 |
+           sed -n 's,.*inet \(.*\)/.*,\1,p')
+  ```
 
+- Start the other nodes:
   ```
   for N in 2 3 4 5; do
   ssh node$N docker run --name consul_node$N \
@@ -4186,14 +4191,14 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
   done
   ```
 
-- With your browser, navigate to any instance on port 8500
-  <br/>(in "NODES" you should see the five nodes)
-
 ]
 
 ---
 
 ## Check that our Consul cluster is up
+
+- With your browser, navigate to any instance on port 8500
+  <br/>(in "NODES" you should see the five nodes)
 
 - Let's run a couple of useful Consul commands
 
@@ -4313,7 +4318,7 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 - Check connectivity:
   ```
   docker exec -ti turquoise ping -c1 navy
-  docker exec -ti turquiose ping -c1 grass
+  docker exec -ti turquoise ping -c1 grass
   ```
   (First works; second doesn't)
 
@@ -4336,7 +4341,7 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 - Check connectivity:
   ```
   docker exec -ti turquoise ping -c1 navy
-  docker exec -ti turquiose ping -c1 grass
+  docker exec -ti turquoise ping -c1 grass
   ```
   (Both commands work now)
 
@@ -4376,7 +4381,7 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 - Check connectivity:
   ```
   docker exec -ti turquoise ping -c1 navy
-  docker exec -ti turquiose ping -c1 grass
+  docker exec -ti turquoise ping -c1 grass
   ```
   (First command fails, second one works)
 
@@ -4445,11 +4450,78 @@ Let's examine the `docker-compose.yml` file.
 
 ---
 
-FIXME
+## Our first Compose v2 file
+
+```
+version: "2"
+
+services:
+  backend:
+    image: registry:2
+  frontend:
+    image: jpetazzo/hamba
+    command: 5000 backend:5000
+    ports:
+      - "127.0.0.1:5000:5000"
+    depends_on:
+      - backend
+```
+
+- *Backend* is the actual registry.
+- *Frontend* is the ambassador that we deployed earlier.
+<br/>
+It communicates with *backend* using an internal network
+and network aliases.
 
 ---
 
-## Converting from Compose file v1 to v2
+## Starting a local registry with Compose
+
+- We will bring up the registry
+
+- Then we will ensure that one *frontend* is running
+  on each node by scaling it to our number of nodes
+
+.exercise[
+
+- Make sure that `COMPOSE_FILE` is not set:
+  ```
+  unset COMPOSE_FILE
+  ```
+
+- Start the registry:
+  ```
+  docker-compose up -d
+  ```
+
+]
+
+---
+
+## "Scaling" the local registry
+
+- This is a particular kind of scaling
+
+- We just want to ensure that one *frontend*
+  is running on every single node of the cluster
+
+.exercise[
+
+- Scale the registry:
+  ```
+  N=1
+  while docker-compose scale frontend=$N; do
+    N=$((N+1))
+  done
+  ```
+
+]
+
+Note: Swarm might do that automatically for us in the future.
+
+---
+
+## Converting the Compose file for DockerCoins
 
 - Services are no longer at the top level,
   <br/>but under a `services` section
@@ -4503,44 +4575,358 @@ Copy-paste this into `docker-compose.yml`
 
 ---
 
-## Update our Compose file
+## Use images, not builds
 
 - If we try to start the app like that, containers will only
-  run on nodes with the appropriate images
+  run on nodes which have the images
 
-- We need to replace each `build:` section with an `image:` section
+- Like before: we need to replace `build` with `image`
 
 - We can re-use the `build-tag-push.py` script for that
 
 .exercise[
 
-XXX
-
-- Start the application
-
-- Observe that it's running on multiple nodes
+- Set `DOCKER_REGISTRY` to use our local registry,
+  <br/>then build, tag, and push the application:
+  ```
+  export DOCKER_REGISTRY=localhost:5000
+  ../bin/build-tag-push.py
+  ```
 
 ]
 
 ---
 
-## Going further
+## Run the application
 
-Adding load balancers (difficulty: easy)
+- At this point, our app is ready to run
 
-- Replace each service by:
+- We don't need ambassadors or extra containers
 
- - multiple copies of itself
+.exercise[
 
- - a load balancer
+- Start the application:
+  ```
+  docker-compose up -d
+  ```
 
-- This is what we did with `rng` earlier
+- Observe that it's running on multiple nodes:
+  ```
+  docker ps
+  ```
 
-- Traffic will follow suboptimal paths
+]
+
+Each container name is prefixed with the node it's running on.
 
 ---
 
-## Going further
+## View the performance graph
+
+- Load up the graph in the browser
+
+.exercise[
+
+- Check the `webui` service address and port:
+  ```
+  docker-compose port webui 80
+  ```
+
+- Open it in your browser
+
+]
+
+---
+
+# Load balancing with overlay networks
+
+- Scaling the `worker` service works out of the box
+  (like before)
+
+.exercise[
+
+- Scale `worker`:
+  ```
+  docker-compose scale worker=10
+  ```
+
+]
+
+We will hit the bottleneck caused by the `rng` service.
+
+How can we scale that service?
+
+---
+
+## The manual method
+
+- Replace `rng` with:
+
+  - multiple copies `rng1`, `rng2`, `rng3`, ...
+
+  - a load balancer taking over the name `rng`,
+    <br/>and spreading traffic accross all instances
+  
+- You should have a sense of *déjà vu*
+
+- We did that in the beginning of the workshop
+
+- Can we do better?
+
+---
+
+## The scripted method
+
+- We could write a script to automate those steps
+
+--
+
+- *Can we do better?*
+
+--
+
+- In a perfect world, we would like to do:
+  ```
+  docker-compose scale rng=10
+  ```
+
+---
+
+## Naming problem
+
+- Service is called `rng`
+
+- It therefore takes the network name `rng`
+
+- Worker code connects to `rng`
+
+- So `rng` should point to the load balancer
+
+- What do‽
+
+---
+
+## Naming is *per-network*
+
+- Solution: put `rng` on its own network
+
+- That way, it doesn't take the network name `rng`
+  <br/>(at least not on the default network)
+
+- Have the load balancer sit on both networks
+
+- Add the name `rng` to the load balancer
+
+---
+
+class: pic
+
+## Original DockerCoins
+
+![](dockercoins-single-node.png)
+
+---
+
+class: pic
+
+## Load-balanced DockerCoins
+
+![](dockercoins-multi-node.png)
+
+---
+
+## Declaring networks
+
+- Networks (other than the default one)
+  *must* be declared
+  in a top-level `networks` section
+ 
+.exercise[
+
+- Add the `rng` network to the Dockerfile:
+  ```
+  version: '2'
+  
+  networks:
+    rng:
+
+  services:
+    rng:
+      image: ...
+  ...
+  ```
+
+]
+
+That section can be placed anywhere in the file.
+
+---
+
+## Putting the `rng` service in its network
+
+- Services can have a `networks` section
+
+- If they don't: they are placed in the default network
+
+- If they do: they are placed only in the mentioned networks
+
+.exercise[
+
+- Change the `rng` service to put it in its network:
+  ```
+  rng:
+    image: localhost:5000/dockercoins_rng:…
+    networks:
+      rng:
+  ```
+
+]
+
+---
+
+## Adding the load balancer
+
+- The load balancer has to be in both networks:
+  <br/>`rng` and `default`
+
+- In the `default` network, it must have the `rng` alias
+
+- We will use the `jpetazzo/hamba` image
+
+.exercise[
+
+- Add the `rng-lb` service to the Compose file:
+  ```
+  rng-lb:
+    image: jpetazzo/hamba
+    command: run
+    networks:
+      rng:
+      default:
+        aliases: [ rng ]
+  ```
+]
+
+---
+
+## Load balancer initial configuration
+
+- We specified `run` as the initial command
+
+- This tells `hamba` to wait for an initial configuration
+
+- The load balancer will not be operational
+  <br/>(until we feed it its configuration)
+
+---
+
+## Start the application
+
+.exercise[
+
+- Bring up DockerCoins:
+  ```
+  docker-compose up -d
+  ```
+
+- See that `worker` is complaining:
+  ```
+  docker-compose logs worker
+  ```
+]
+
+Note: the workers didn't need to be restarted.
+
+---
+
+## Configure the load balancer
+
+- Multiple solutions:
+
+  - lookup the IP address of the `rng` backend
+  - use the backend's network name
+  - use the backend's container name (easiest!)
+
+.exercise[
+
+- Configure the load balancer:
+  ```
+  docker run --rm \
+    --volumes-from dockercoins_rng-lb_1 \
+    --net container:dockercoins_rng-lb_1 \
+    jpetazzo/hamba reconfigure 80 dockercoins_rng_1 80
+  ```
+
+]
+
+The application should now be working correctly.
+
+---
+
+## Scale the application
+
+- Use `docker-compose scale` as planned
+
+.exercise[
+
+- Scale `rng`:
+  ```
+  docker-compose scale rng=10
+  ```
+
+]
+
+Of course, the graph doesn't change *yet*.
+
+We need to add the new backends to the load balancer
+configuration first.
+
+---
+
+## Reconfigure the load balancer
+
+- The command is similar to the one before
+
+- We need to pass the list of all backends
+
+.exercise[
+
+- Reconfigure the load balancer:
+  ```
+  docker run --rm \
+    --volumes-from dockercoins_rng-lb_1 \
+    --net container:dockercoins_rng-lb_1 \
+    jpetazzo/hamba reconfigure 80 \
+    $(for N in $(seq 1 10); do
+        echo dockercoins_rng_$N:80
+      done)
+  ```
+
+]
+
+---
+
+## Automating the process
+
+- Nobody loves artisan YAML handy craft
+
+- This can be automated very easily
+
+- To make things easier, we can use a label:
+
+  *each container behind a load balancer will
+  have a `loadbalancer` label giving the name
+  of that loadbalancer*
+
+- This is implemented by two scripts:
+
+  - add-load-balancer-v2.py
+
+  - reconfigure-load-balancers.py
+
+---
+
+# Going further
 
 Deploying a new version (difficulty: easy)
 
@@ -4596,11 +4982,13 @@ Harder projects:
 - Terminate containers and remove them:
 
   ```
-  docker-compose kill
-  docker-compose rm -f
+  docker-compose down
   ```
 
 ]
+
+Note: `docker-compose down` also deletes the
+networks that had been created for the application.
 
 ---
 
@@ -4643,7 +5031,7 @@ class: pic
 
 ---
 
-## Storing files into Consul
+## Storing files in Consul
 
 - We will use [Benjamin Wester's consulfs](
   https://github.com/bwester/consulfs)
@@ -4780,6 +5168,8 @@ At this point, `ls -l ~/consul` should show `docker` and
 
 ]
 
+.icon[![Warning](warning.png)] Go back to node1 after this.
+
 ---
 
 ## A few words on this strategy
@@ -4787,6 +5177,16 @@ At this point, `ls -l ~/consul` should show `docker` and
 - Anyone accessing Consul can control your Docker cluster
   <br/>(to be fair: anyone accessing Consul can wreck
   serious havoc to your cluster anyway)
+
+- ConsulFS doesn't support *all* POSIX operations,
+  <br/>so a few things (like `mv`) will not work)
+
+- As a consequence, with Machine 0.6, you cannot
+  run `docker-machine create` directly on top of ConsulFS
+
+---
+
+## What if Consul becomes unavailable?
 
 - If Consul becomes unavailable (e.g. loses quorum),
   <br/>you won't be able to access your credentials
@@ -4796,6 +5196,7 @@ At this point, `ls -l ~/consul` should show `docker` and
 
 - You can still access each Docker Engine over the
   local UNIX socket (and repair Consul that way)
+
 
 ---
 
