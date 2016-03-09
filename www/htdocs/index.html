@@ -1503,6 +1503,18 @@ Note: of course, if we wanted, we could run on all five nodes.
 
 ---
 
+class: pic
+
+![Ambassador principle](ambassadors/principle-1.png)
+
+---
+
+class: pic
+
+![Ambassador principle](ambassadors/principle-2.png)
+
+---
+
 ## Start redis
 
 - Start a standalone Redis container
@@ -3322,11 +3334,23 @@ If we wanted to use DTR, we would:
 
 ## Using open source registry
 
-- All we need to do is to run a `registry:2` container
+- We need to run a `registry:2` container
   <br/>(make sure you specify tag `:2` to run the new version!)
 
 - It will store images and layers to the local filesystem
   <br/>(but you can add a config file to use S3, Swift, etc.)
+
+- Docker *requires* TLS when communicating with the registry,
+  unless for registries on `localhost` or with the Engine
+  flag `--insecure-registry`
+
+- We will run an ambassador on each node
+  of the cluster, redirecting `localhost:5000` to
+  the registry
+
+---
+
+## Deploying our open source registry
 
 .exercise[
 
@@ -3336,9 +3360,53 @@ If we wanted to use DTR, we would:
   docker run -dP --name registry registry:2
   ```
 
+- Start five ambassadors (one per node):
+  ```
+  for N in $(seq 1 5); do
+    docker run -d -p 5000:5000 jpetazzo/hamba \
+           5000 $(docker port registry 5000)
+  done
+  ```
+
+]
+
+---
+
+## Testing our local registry
+
+- We can retag a small image, and push it to the registry
+
+.exercise[
+
+- Make sure we have the busybox image:
+  ```
+  docker pull busybox
+  ```
+
+- Retag the busybox image:
+  ```
+  docker tag busybox localhost:5000/busybox
+  ```
+
+- Push it:
+  ```
+  docker push localhost:5000/busybox
+  ```
+
+]
+
+---
+
+## Using our local registry
+
+- The `build-tag-push.py` script uses the `DOCKER_REGISTRY`
+  environment variable
+
+.exercise[
+
 - Set the `DOCKER_REGISTRY` variable:
   ```
-  export DOCKER_REGISTRY=$(docker port registry 5000)
+  export DOCKER_REGISTRY=localhost:5000
   ```
 
 ]
@@ -3598,6 +3666,50 @@ This is our plan:
 
 ---
 
+## Pictures worth 1000 words
+
+- In the following diagrams, we are connecting a
+  `www` service to a `redis` service through
+  an ambassador.
+
+---
+
+class: pic
+
+![](ambassadors/simple-1.png)
+
+---
+
+class: pic
+
+![](ambassadors/simple-2.png)
+
+---
+
+class: pic
+
+![](ambassadors/simple-3.png)
+
+---
+
+class: pic
+
+![](ambassadors/simple-4.png)
+
+---
+
+class: pic
+
+![](ambassadors/simple-5.png)
+
+---
+
+class: pic
+
+![](ambassadors/simple-6.png)
+
+---
+
 ## Our tools
 
 - `link-to-ambassadors.py`
@@ -3626,34 +3738,20 @@ This is our plan:
 .exercise[
 
 - Run the first script to create a new YAML file:
-  <br/>`../link-to-ambassadors.py $COMPOSE_FILE new.yml`
-
-- Look how the file was modified:
-  <br/>`diff $COMPOSE_FILE new.yml`
+  <br/>`../bin/link-to-ambassadors.py`
 
 ]
+
+In the Compose file, all links have been replaced
+by `extra_hosts` sections.
 
 ---
 
-## Change `$COMPOSE_FILE` in place
+class: pic
 
-The script can take zero, one, or two file name arguments:
+## Current state
 
-- two arguments indicate input and output files to use;
-- with one argument, the file will be modified in place;
-- with zero agument, it will act on `$COMPOSE_FILE`.
-
-For convenience, let's avoid having a bazillion files around.
-
-.exercise[
-
-- Remove the temporary Compose file we just created:
-  <br/>`rm -f new.yml`
-
-- Update `$COMPOSE_FILE` in place:
-  <br/>`../link-to-ambassadors.py`
-
-]
+![Two empty hosts](ambassadors/dockercoins-1.png)
 
 ---
 
@@ -3666,13 +3764,18 @@ The application can now be started and scaled.
 - Start the application:
   <br/>`docker-compose up -d`
 
-- Scale the application:
-  <br/>`docker-compose scale worker=5 rng=10`
-
 ]
 
 Note: you can scale everything as you like, *except Redis*,
 because it is stateful.
+
+---
+
+class: pic
+
+## Current state
+
+![Containers are running, but disconnected](ambassadors/dockercoins-2.png)
 
 ---
 
@@ -3691,9 +3794,17 @@ It will create missing ambassadors.
 .exercise[
 
 - Run the script!
-  <br/>`../create-ambassadors.py`
+  <br/>`../bin/create-ambassadors.py`
 
 ]
+
+---
+
+class: pic
+
+## Current state
+
+![Ambassadors are started, but unconfigured](ambassadors/dockercoins-3.png)
 
 ---
 
@@ -3713,9 +3824,17 @@ Then it configures all ambassadors with all found backends.
 .exercise[
 
 - Run it!
-  <br/>`../configure-ambassadors.py`
+  <br/>`../bin/configure-ambassadors.py`
 
 ]
+
+---
+
+class: pic
+
+## Current state
+
+![Ambassadors are configured](ambassadors/dockercoins-4.png)
 
 ---
 
@@ -3733,25 +3852,121 @@ Then it configures all ambassadors with all found backends.
 
 ---
 
+## Scale
+
+- We will now add more containers.
+
+.exercise[
+
+- Scale worker and rng:
+  ```
+  docker-compose scale worker=5 rng=10
+  ```
+
+]
+
+The performance graph stays at the same level.
+
+If we look at the logs of the added workers, we will
+see screenfuls of "connection refused" exceptions.
+
+---
+
+class: pic
+
+## Current state
+
+![New containers are there, but not ambassadors](ambassadors/dockercoins-5.png)
+
+---
+
+## Add ambassadors
+
+- The new containers don't have ambassadors at this point.
+
+.exercise[
+
+- Create the missing ambassadors with the script:
+  ```
+  ../bin/create-ambassadors.py
+  ```
+
+]
+
+The performance graph stays at the same level.
+
+If we look at the logs of the added workers, we will
+now see timeout errors instead of "connection refused."
+
+---
+
+class: pic
+
+## Current state
+
+![Now ambassadors are here, but unconfigured](ambassadors/dockercoins-6.png)
+
+---
+
+## Configure ambassadors
+
+- The last step is to inject the updated configuration.
+
+.exercise[
+
+- Run the last script one more time:
+  ```
+  ../bin/configure-ambassadors.py
+  ```
+
+]
+
+Now the performance graph climbs up, and the worker
+logs show normal operation.
+
+---
+
+class: pic
+
+## Current state
+
+![All ambassadors are here and configured](ambassadors/dockercoins-7.png)
+
+---
+
 ## Clean up
 
 - Before moving on, stop and remove all containers
 
 .exercise[
 
-- Terminate all containers:
+- Terminate and remove all containers:
   ```
-  docker-compose kill
+  docker-compose down
   ```
 
-- Remove them:
+- Remove ambassadors:
   ```
-  docker-compose rm -f
+  ../bin/delete-ambassadors.sh
   ```
 
 ]
 
-Note: we also need to remove the ambassadors.
+---
+
+## A few words about those ambassadors
+
+- There is "a lot" of added complexity here
+  <br/>(5 scripts of almost 50 lines each!)
+
+- Snark aside, those scripts tap into those concepts:
+
+  - network namespaces
+  - dynamic load balancer reconfiguration
+  - sidekick containers that are *mandatory*
+  - ... and have to be managed manually
+
+- We are going to see an easier way to manage this!
 
 ---
 
@@ -4038,29 +4253,21 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 
 .exercise[
 
-```
-docker network create --driver overlay jedi
-docker network create --driver overlay darkside
-docker network ls
-```
+- Create two networks, *blue* and *green*:
+  ```
+  docker network create --driver overlay blue
+  docker network create --driver overlay green
+  docker network ls
+  ```
 
-]
-
---
-
-(Don't worry, there won't be any spoiler here, I have
-been so busy preparing this workshop that I haven't
-seen the new movie yet!)
-
---
-
-.exercise[
-
-```
-docker run -d --name luke --net jedi -m 3G redis
-docker run -d --name vador --net jedi -m 3G redis
-docker run -d --name palpatine --net darkside -m 3G redis
-```
+- Create containers with names of blue and green
+  things, on their respective networks:
+  ```
+  docker run -d --name sky --net blue -m 3G redis
+  docker run -d --name navy --net blue -m 3G redis
+  docker run -d --name grass --net green -m 3G redis
+  docker run -d --name forest --net green -m 3G redis
+  ```
 
 ]
 
@@ -4079,40 +4286,75 @@ docker run -d --name palpatine --net darkside -m 3G redis
 - This will work:
 
   ```
-  docker exec -ti vador ping luke
+  docker exec -ti sky ping navy
   ```
 
 - This will not:
 
   ```
-  docker exec -ti vador ping palpatine
+  docker exec -ti navy ping grass
   ```
 
 ]
 
 ---
 
-## Dynamically connect containers
+## Containers connected to multiple networks
+
+- Some colors aren't *quite* blue *nor* green
 
 .exercise[
 
-- ~~Connect `vador` to the `darkside`:~~
-- To the `darkside`, connect `vador` we must:
-
+- Create a container that we want to be on both networks:
   ```
-  docker network connect darkside vador
+  docker run -d --net blue --name turquoise nginx
   ```
 
-- Now this will work:
-
+- Check connectivity:
   ```
-  docker exec -ti vador ping palpatine
+  docker exec -ti turquoise ping -c1 navy
+  docker exec -ti turquiose ping -c1 grass
+  ```
+  (First works; second doesn't)
+
+]
+
+---
+
+## Dynamically connecting containers
+
+- This is achieved with the command:
+  <br/>`docker network connect NETNAME CONTAINER`
+
+.exercise[
+
+- Dynamically connect to the green network:
+  ```
+  docker network connect green turquoise
   ```
 
-- Take a peek inside `vador`:
-
+- Check connectivity:
   ```
-  docker exec -ti vador ip addr ls
+  docker exec -ti turquoise ping -c1 navy
+  docker exec -ti turquiose ping -c1 grass
+  ```
+  (Both commands work now)
+
+]
+
+---
+
+## Under the hood
+
+- Each network has an interface in the container
+
+- There is also an interface for the default gateway
+
+.exercise[
+
+- View interfaces in our `turquoise` container:
+  ```
+  docker exec -ti turquoise ip addr ls
   ```
 
 ]
@@ -4121,25 +4363,22 @@ docker run -d --name palpatine --net darkside -m 3G redis
 
 ## Dynamically disconnecting containers
 
+- There is a mirror command to `docker network connect`
+
 .exercise[
 
-- This works, right:
-
+- Disconnect the *turquoise* container from *blue*
+  (its original network):
   ```
-  docker exec -ti vador ping luke
-  ```
-
-- Let's disconnect `vador` from the `jedi` ~~order~~ network:
-
-  ```
-  docker network disconnect jedi vador
+  docker network disconnect blue turquoise
   ```
 
-- And now:
-
+- Check connectivity:
   ```
-  docker exec -ti vador ping luke
+  docker exec -ti turquoise ping -c1 navy
+  docker exec -ti turquiose ping -c1 grass
   ```
+  (First command fails, second one works)
 
 ]
 
@@ -4152,17 +4391,24 @@ docker run -d --name palpatine --net darkside -m 3G redis
 - Destroy containers:
 
   ```
-  docker rm -f luke vador palpatine
+  docker rm -f sky navy grass forest turquoise
   ```
 
 - Destroy networks:
 
   ```
-  docker network rm jedi
-  docker network rm darkside
+  docker network rm blue
+  docker network rm green
   ```
 
 ]
+
+You cannot remove a network if
+it still has containers.
+
+There is no `"rm -f"` for network.
+<br/>
+There is a `"disconnect -f"` if needed.
 
 ---
 
@@ -4177,6 +4423,29 @@ docker run -d --name palpatine --net darkside -m 3G redis
 - Compose will remain backward compatible with old files
 
 - Converting to new files is (ridiculously) easy
+
+---
+
+## Our first "Compose v2" app
+
+- To deploy DockerCoins, we still need a local registry
+
+- Let's deploy a local registry using a Compose File v2!
+
+.exercise[
+
+- Go to the `registry` directory in the repository:
+  ```
+  cd ~/orchestration-workshop/registry
+  ```
+
+]
+
+Let's examine the `docker-compose.yml` file.
+
+---
+
+FIXME
 
 ---
 
@@ -4229,34 +4498,29 @@ services:
 ```
 ]
 
-Note: `build-tag-push.py` doesn't support v2 format yet.
-
-<!--
 Copy-paste this into `docker-compose.yml`
-<br/>or you can `cp docker-compose.yml-v2 docker-compose.yml`)
--->
+<br/>(or you can `cp docker-compose.yml-v2 docker-compose.yml`)
 
 ---
 
-## Manually edit out Compose file
+## Update our Compose file
 
 - If we try to start the app like that, containers will only
   run on nodes with the appropriate images
 
 - We need to replace each `build:` section with an `image:` section
 
+- We can re-use the `build-tag-push.py` script for that
+
 .exercise[
 
-- Merge `docker-compose.yml-v2` and `docker-compose.yml-12345678`
-  that was generated earlier
+XXX
 
 - Start the application
 
 - Observe that it's running on multiple nodes
 
 ]
-
-Alternate solution: live code a patch for `build-tag-push.py`.
 
 ---
 
