@@ -5097,7 +5097,7 @@ class: pic
 
 - Be lazy and use the Docker image:
   ```
-  docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
+  sudo docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
   ```
 ]
 
@@ -5174,7 +5174,7 @@ Leave this running in the foreground.
 
 - Install `consulfs` and mount Consul:
   ```
-  docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
+  sudo docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
   mkdir ~/consul
   consulfs localhost:8500 ~/consul
   ```
