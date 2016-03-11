@@ -1941,7 +1941,7 @@ class: title
 
 - Issue commands `SAVE` then `QUIT`
 
-- Look at `/data` again
+- Look at `/data` again (notice the time stamps)
 
 ]
 
@@ -4189,7 +4189,7 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 
 - Make sure you're logged into `node1`,
   with a clean environment:
-  
+
   ```
   unset DOCKER_HOST
   ```
@@ -4413,6 +4413,7 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
   (its original network):
   ```
   docker network disconnect blue turquoise
+  docker network connect green turquoise
   ```
 
 - Check connectivity:
@@ -4644,6 +4645,7 @@ Copy-paste this into `docker-compose.yml`
 
 - Start the application:
   ```
+  export COMPOSE_FILE=docker-compose.yml-XXXX
   docker-compose up -d
   ```
 
@@ -4703,7 +4705,7 @@ How can we scale that service?
 
   - a load balancer taking over the name `rng`,
     <br/>and spreading traffic accross all instances
-  
+
 - You should have a sense of *déjà vu*
 
 - We did that in the beginning of the workshop
@@ -4777,13 +4779,13 @@ class: pic
 - Networks (other than the default one)
   *must* be declared
   in a top-level `networks` section
- 
+
 .exercise[
 
 - Add the `rng` network to the Dockerfile:
   ```
   version: '2'
-  
+
   networks:
     rng:
 
@@ -5095,7 +5097,7 @@ class: pic
 
 - Be lazy and use the Docker image:
   ```
-  docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
+  sudo docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
   ```
 ]
 
@@ -5172,7 +5174,7 @@ Leave this running in the foreground.
 
 - Install `consulfs` and mount Consul:
   ```
-  docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
+  sudo docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
   mkdir ~/consul
   consulfs localhost:8500 ~/consul
   ```
