@@ -1,0 +1,3 @@
+[submodule "trainer-tools"]
+	path = trainer-tools
+	url = https://github.com/soulshake/trainer-tools.git
