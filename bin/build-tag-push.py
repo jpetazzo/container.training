@@ -19,10 +19,8 @@ project_name = os.path.basename(os.path.realpath("."))
 # Version used to tag the generated Docker image, using the UNIX timestamp or the given version.
 if "VERSION" not in os.environ:
     version = str(int(time.time()))
-    print("Writing to new Compose file:")
 else:
     version = os.environ["VERSION"]
-    print("Writing to provided Compose file:")
 
 # Execute "docker-compose build" and abort if it fails.
 subprocess.check_call(["docker-compose", "-f", "docker-compose.yml", "build"])
