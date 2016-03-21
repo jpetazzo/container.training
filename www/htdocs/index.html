@@ -111,15 +111,14 @@ at e.g. 9am, and start at 9:30.
 - Agenda:
 
   .small[
-  - 08:00-08:50 breakfast
-  - 09:00-10:30 part 1
-  - 10:30-10:45 coffee break
-  - 10:45-12:00 part 2
-  - 12:00-12:50 lunch break
-  - 13:00-14:30 part 3
-  - 14:30-14:45 coffee break
-  - 14:45-16:00 part 4
-  - 16:00- optional Q&A
+  - 09:00-09:15 hello!
+  - 09:15-10:45 part 1
+  - 10:45-11:00 coffee break
+  - 11:00-12:30 part 2
+  - 12:30-13:45 lunch break
+  - 13:45-15:15 part 3
+  - 15:15-15:30 coffee break
+  - 15:30-17:00 part 4
   ]
 
 <!-- - This will be FAST PACED, but DON'T PANIC! -->
@@ -135,7 +134,7 @@ Remember to change:
 -->
 
 - Experimental chat support on
-  [Gitter](https://gitter.im/jpetazzo/workshop-20160311-london)
+  [Gitter](https://gitter.im/jpetazzo/workshop-20160322-munchen)
 
 ---
 
@@ -235,7 +234,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 - This is the stuff you're supposed to do!
 - Go to [container.training](http://container.training/) to view these slides
 - Join the chat room on
-  [Gitter](https://gitter.im/jpetazzo/workshop-20160311-london)
+  [Gitter](https://gitter.im/jpetazzo/workshop-20160322-munchen)
 
 ]
 
@@ -2730,6 +2729,69 @@ class: title
 
 ---
 
+## ECS (overview)
+
+- Amazon EC2 Container Service
+
+- "Bring your own instance"
+
+- "Native" container scheduler on AWS
+
+- Some integration with other AWS products
+
+- No extra component to operate
+
+- Defines new concepts:
+
+  - task
+  - task definition
+  - service
+
+---
+
+## ECS (in practice)
+
+- Task definitions look like Compose files,
+  <br/>but are significantly different
+
+- Integration with e.g. ELB is suboptimal
+  <br/>(ELB requires all backends to run on the same port)
+
+- Cluster deployment is made easier thanks to ECS CLI
+
+- Docker API gets partially exposed through ECS API,
+  <br/>with some features lagging behind
+
+- Service discovery is painful
+
+---
+
+## Nomad (overview)
+
+- Generic job scheduler
+  <br/>(not only for containers)
+
+- Desired state is stored in Consul
+
+- Nodes pull jobs from Consul
+
+- Scheduling happens in parallel
+
+---
+
+## Nomad (in practice)
+
+*Disclaimer: I have little first-hand experience with Nomad!*
+
+- Does only one thing, but does it really well
+
+- Works with jobs, not applications, services, etc.
+
+- As I understand it: Nomad is an excellent building block,
+  <br/>but you need to add other components to deploy your apps
+
+---
+
 ## Swarm (in theory)
 
 - Consolidates multiple Docker hosts into a single one
@@ -4873,8 +4935,6 @@ That section can be placed anywhere in the file.
   docker-compose logs worker
   ```
 ]
-
-Note: the workers didn't need to be restarted.
 
 ---
 
