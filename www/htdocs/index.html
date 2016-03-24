@@ -3518,17 +3518,22 @@ Let's inspect the source code of `build-tag-push.py` and run it.
 
 .icon[![Warning](warning.png)] Make sure to run it against a single node!
 
+.icon[![Warning](warning.png)] Make sure to use the original Compose file!
+
+.small[(We don't want the scaled RNG service, the custom logging driver, etc.)]
+
 .exercise[
 
-- Point to a single node:
-  <br/>`eval $(docker-machine env node1)`
-
-- Run the script (from the `bin` directory):
-  <br/>`../bin/build-tag-push.py`
-
-- Inspect the `docker-compose.yml-XXX` file that it created
+- Run `build-tag-push.py`:
+  ```
+  eval $(docker-machine env node1)
+  git checkout docker-compose.yml
+  ../bin/build-tag-push.py
+  ```
 
 ]
+
+Inspect the `docker-compose.yml-XXX` file that it created.
 
 ---
 
@@ -4844,7 +4849,7 @@ class: pic
 
 .exercise[
 
-- Add the `rng` network to the Dockerfile:
+- Add the `rng` network to the Compose file:
   ```
   version: '2'
 
