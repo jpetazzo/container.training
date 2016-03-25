@@ -1,0 +1,38 @@
+prepare-vms:
+    build: .
+    container_name: prepare-vms
+    working_dir: /home/user/prepare-vms
+    volumes:
+        - $HOME/.aws/:$HOME.aws/
+        - $HOME/.ssh/:/home/user/.ssh/
+        - /etc/localtime:/etc/localtime:ro
+        #- /home:/home
+        - /tmp/.X11-unix:/tmp/.X11-unix
+        - $SSH_AUTH_DIRNAME:$SSH_AUTH_DIRNAME
+        - $SCRIPT_DIR/:/home/user/prepare-vms/
+        #- $SCRIPT_DIR/:$HOME/prepare-vms/
+        #- $HOME/trainer-tools/
+        #- $(dirname $SSH_AUTH_SOCK):$(dirname $SSH_AUTH_SOCK)
+        #- /etc/passwd:/etc/passwd:ro
+        #- /etc/group:/etc/group:ro
+        #- /run/user:/run/user
+    environment:
+        HOME: /home/user
+        #SCRIPT_DIR: /home/aj/git/prepare-vms
+        SCRIPT_DIR: /home/user/prepare-vms
+        HOME: /home/user
+        SSH_AUTH_SOCK: ${SSH_AUTH_SOCK}
+        SSH_AGENT_PID: ${SSH_AGENT_PID}
+        AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+        AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+        DISPLAY: ${DISPLAY}
+        USER: ${USER}
+        AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+        AWS_DEFAULT_OUTPUT:
+        AWS_INSTANCE_TYPE: ${AWS_INSTANCE_TYPE}
+        AWS_VPC_ID: ${AWS_VPC_ID}
+    entrypoint: /home/user/prepare-vms/scripts/trainer-cli
+    #entrypoint: trainer
+
+        #AWS_DEFAULT_PROFILE: ${AWS_DEFAULT_PROFILE}
+    #command: /home/user/prepare-vms/trainer-cli

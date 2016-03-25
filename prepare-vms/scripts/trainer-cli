@@ -1,0 +1,489 @@
+#!/bin/bash
+# Don't execute this script directly. Use ../trainer instead.
+
+set -e  # if we encounter an error, abort
+
+greet() {
+    hello=$(aws iam get-user --query 'User.UserName')
+    echo "Greetings, $hello!"
+}
+
+deploy_hq(){
+    TAG=$1
+    need_tag $TAG
+    REMOTE_USER=ubuntu
+    REMOTE_HOST=$(aws_get_instance_ips_by_tag $TAG)
+    echo "Trying to reach $TAG instances..."
+    while ! tag_is_reachable $TAG; do
+        echo -n "."
+        sleep 2
+    done
+    env | grep -i aws > envvars.sh
+    scp \
+        -o "UserKnownHostsFile /dev/null" \
+        -o "StrictHostKeyChecking=no" \
+        scripts/remote-execution.sh \
+        envvars.sh \
+        $REMOTE_USER@$REMOTE_HOST:/tmp/
+
+    ssh -A $REMOTE_USER@$REMOTE_HOST "bash /tmp/remote-execution.sh >>/tmp/pre.out 2>>/tmp/pre.err"
+    ssh -A $REMOTE_USER@$REMOTE_HOST 
+}
+
+deploy_tag(){
+    TAG=$1
+    need_tag $TAG
+    link_tag $TAG
+
+
+    count=$(cat ips.txt | wc -l)
+
+    # wait until all hosts are reachable before trying to deploy
+    echo "Trying to reach $TAG instances..."
+    while ! tag_is_reachable $TAG; do
+        echo -n "."
+        sleep 2
+    done
+
+    echo "[[ Deploying tag $TAG ]]"
+    source scripts/postprep.rc
+    echo "Finished deploying $TAG."
+    echo "You may want to run one of the following commands:"
+    echo "trainer pull-images $TAG"
+    echo "trainer cards $TAG"
+}
+
+link_tag() {
+    TAG=$1
+    need_tag $TAG
+    IPS_FILE=tags/$TAG/ips.txt
+    need_ips_file $IPS_FILE
+    ln -sf $IPS_FILE ips.txt
+}
+
+pull_tag(){
+    TAG=$1
+    need_tag $TAG
+    link_tag $TAG
+    cards_file=ips.html
+    if [ ! -s $IPS_FILE ]; then
+        echo "Nonexistent or empty IPs file $IPS_FILE"
+    fi
+
+    # Pre-pull a bunch of images
+    pssh --timeout 900 'for I in \
+            debian:latest \
+            ubuntu:latest \
+            fedora:latest \
+            centos:latest \
+            postgres \
+            redis \
+            training/namer \
+            nathanleclaire/redisonrails; do
+        sudo -u docker docker pull $I
+    done'
+
+    echo "Finished pulling images for $TAG"
+
+    echo "You may now want to run:"
+    echo "trainer cards $TAG"
+}
+
+wait_until_tag_is_running() {
+    # Wait up to 10 seconds for instances to be created
+    timeout=10
+    TAG=$1
+    COUNT=$2
+    i=0
+    done_count=0
+    while [[ $done_count -lt $COUNT ]]; do \
+        let "i += 1"
+        echo "Waiting: $done_count/$COUNT instances online"
+        done_count=$(aws ec2 describe-instances \
+                --filters "Name=instance-state-name,Values=running" \
+                          "Name=tag:Name,Values=$TAG" \
+                --query "Reservations[*].Instances[*].State.Name" \
+            | tr "\t" "\n" \
+            | wc -l)
+
+        if [[ $i -gt $timeout ]]; then \
+            die " Timed out while waiting for instance creation ($timeout secs)"; \
+        fi
+        sleep 1
+    done
+}
+
+tag_is_reachable() {
+    TAG=$1
+    need_tag $TAG
+    link_tag $TAG
+    if ! pssh -t 5 true 2>&1 >/dev/null; then
+        return 1
+    fi
+    return 0
+}
+
+test_tag(){
+    ips_file=tags/$TAG/ips.txt
+    echo "Using random IP in $ips_file to run tests on $TAG"
+    ip=$(shuf -n 1 $ips_file)
+    test_vm $ip
+    echo "Tests complete. You may want to run one of the following commands:"
+    echo "trainer cards $TAG"
+}
+
+test_vm() {
+    ip=$1
+    echo "[[ Testing instance with IP $(tput bold)$ip $(tput sgr0) ]]"
+    user=ubuntu
+
+    for cmd in "hostname" \
+        "whoami" \
+        "hostname -i" \
+        "cat /tmp/node" \
+        "cat /tmp/ipv4" \
+        "cat /etc/hosts" \
+        "hostnamectl status" \
+        "docker version | grep Version -B1" \
+        "docker-compose version" \
+        "docker-machine version" \
+        "docker images" \
+        "docker ps" \
+        "which fig" \
+        "curl --silent localhost:55555" \
+        "sudo ls -la /mnt/ | grep docker" \
+        "env" \
+        "ls -la /home/docker/.ssh"; do
+        echo "=== $cmd ==="
+        echo "$cmd" | 
+            ssh -A -q \
+                -o "UserKnownHostsFile /dev/null" \
+                -o "StrictHostKeyChecking=no" \
+                $user@$ip sudo -u docker -i
+        echo
+    done
+}
+
+make_key_name(){
+    SHORT_FINGERPRINT=$(ssh-add -l | grep RSA | head -n1 | cut -d " " -f 2 | tr -d : | cut -c 1-8)
+    echo "${SHORT_FINGERPRINT}-${USER}"
+}
+
+sync_keys() {
+    # make sure ssh-add -l contains "RSA"
+    ssh-add -l | grep -q RSA ||
+        die "The output of \`ssh-add -l\` doesn't contain 'RSA'. Start the agent, add your keys?"
+
+    AWS_KEY_NAME=$(make_key_name)
+    echo -n "Syncing keys... "
+    if ! aws ec2 describe-key-pairs --key-name "$AWS_KEY_NAME" &> /dev/null; then
+        aws ec2 import-key-pair --key-name $AWS_KEY_NAME \
+            --public-key-material "$(ssh-add -L \
+                                    | grep -i RSA \
+                                    | head -n1 \
+                                    | cut -d " " -f 1-2)" &> /dev/null
+
+        if ! aws ec2 describe-key-pairs --key-name "$AWS_KEY_NAME" &> /dev/null; then
+            die "Somehow, importing the key didn't work. Make sure that 'ssh-add -l | grep RSA | head -n1' returns an RSA key?"
+        else
+            echo "Imported new key $AWS_KEY_NAME."
+        fi
+    else
+        echo "Using existing key $AWS_KEY_NAME."
+    fi
+}
+
+suggest_amis() {
+    scripts/find-ubuntu-ami.sh -r $AWS_DEFAULT_REGION -a amd64 -v 15.10 -t hvm:ebs -N
+}
+
+get_token() {
+    if [ -z $USER ]; then
+        export USER=anonymous
+    fi
+    date +%Y-%m-%d-%H-%M-$USER
+}
+
+get_ami() {
+    # using find-ubuntu-ami script in `trainer-tools/scripts`:
+    #AMI=$(./scripts/find-ubuntu-ami.sh -r $AWS_DEFAULT_REGION -a amd64 -v 15.10 -t hvm:ebs -N | grep -v ^REGION | head -1 | awk '{print $7}')
+    #AMI=$(suggest_amis | grep -v ^REGION | head -1 | awk '{print $7}')
+    case $AWS_DEFAULT_REGION in
+    eu-central-1)
+      AMI=ami-74a4bc18
+      ;;
+    eu-west-1)
+      AMI=ami-cda312be
+      ;;
+    us-west-2)
+      AMI=ami-495bbd29
+      ;;
+    us-east-1)
+      AMI=ami-1711387d
+      ;;
+    esac
+    echo $AMI
+}
+
+
+make_cards(){
+    # Generate cards for a given tag
+    TAG=$1
+    IPS=$(aws_get_instance_ips_by_tag $TAG)
+    echo "$IPS" > tags/$TAG/ips.txt
+
+    # Remove symlinks to old cards if they exist
+    for f in ips.html ips.pdf; do
+        if [ -e $f ]; then rm $f; fi
+    done
+
+    # This will generate two files in the base dir: ips.pdf and ips.html
+    python scripts/ips-txt-to-html.py settings.yaml
+
+    for f in ips.html ips.pdf; do
+        # Remove old versions of cards if they exist
+        if [ -e tags/$TAG/$f ]; then rm tags/$TAG/$f; fi
+
+        # Move the generated file and replace it with a symlink
+        mv -f $f tags/$TAG/$f && ln -s tags/$TAG/$f $f
+    done
+
+    echo "Cards created. You may want to run:"
+    echo "chromium ips.html"
+    echo "chromium ips.pdf"
+}
+
+describe_tag() {
+    # Display instance details and reachability/status information
+    TAG=$1
+    need_tag $TAG
+    echo "============= Tag: $TAG ============="
+    aws_display_instances_by_tag $TAG
+    aws_display_instance_statuses_by_tag $TAG
+}
+
+run_cli() {
+    case "$1" in
+    ami)
+        # A wrapper for scripts/find-ubuntu-ami.sh
+        shift
+        scripts/find-ubuntu-ami.sh -r $AWS_DEFAULT_REGION $*
+        echo
+        echo "Protip:"
+        echo "trainer ami -a amd64 -v 15.10 -t hvm:ebs -N | grep -v ^REGION | cut -d\" \" -f15"
+        echo
+        echo "Suggestions:"
+        suggest_amis
+        ;;
+    cards)
+        TAG=$2
+        need_tag $TAG
+        make_cards $TAG
+        ;;
+    deploy)
+        TAG=$2
+        need_tag $TAG
+        if [[ $TAG == *"-hq"* ]]; then
+            echo "Deploying HQ"
+            deploy_hq $TAG
+        else
+            workshop=$2
+            if [ -z $workshop ]; then
+                echo "Please specify a workshop name (fundamentals or orchestration)"
+                exit 1
+            fi
+            echo "Deploying with $workshop settings"
+            ln -sf settings/$workshop-settings.yaml settings.yaml
+            deploy_tag $TAG
+        
+        fi
+        ;;
+    ids)
+        TAG=$2
+        need_tag $TAG
+        IDS=$(aws_get_instance_ids_by_tag $TAG)
+        echo "$IDS"
+
+        # Just in case we managed to create instances but weren't able to tag them
+        echo "Lookup by client token $TAG:"
+        IDS=$(aws_get_instance_ids_by_client_token $TAG)
+        echo "$IDS"
+        ;;
+    ips)
+        TAG=$2
+        need_tag $TAG
+        mkdir -p tags/$TAG
+        aws_get_instance_ips_by_tag $TAG | tee tags/$TAG/ips.txt
+        link_tag $TAG
+        ;;
+    list)
+        # list existing instances in a given batch
+        # to list batches, see "tags" command
+        echo "Using region $AWS_DEFAULT_REGION."
+        TAG=$2
+        need_tag $TAG
+        describe_tag $TAG
+        tag_is_reachable $TAG
+        echo "You may be interested in running one of the following commands:"
+        echo "trainer ips $TAG"
+        echo "trainer deploy $TAG"
+        ;;
+    opensg)
+        aws ec2 authorize-security-group-ingress \
+            --group-name default \
+            --protocol icmp \
+            --port -1 \
+            --cidr 0.0.0.0/0
+
+        aws ec2 authorize-security-group-ingress \
+            --group-name default \
+            --protocol udp \
+            --port 0-65535 \
+            --cidr 0.0.0.0/0
+
+        aws ec2 authorize-security-group-ingress \
+            --group-name default \
+            --protocol tcp \
+            --port 0-65535 \
+            --cidr 0.0.0.0/0
+        ;;
+    pull-images)
+        TAG=$2
+        need_tag $TAG
+        pull_tag $TAG
+        ;;
+    shell)
+        # Get a shell in the container
+        export PS1="trainer@$AWS_DEFAULT_REGION# "
+        exec $SHELL
+        ;;
+    start)
+        # Create $2 instances
+        COUNT=$2
+
+        if [ -z "$COUNT" ]; then
+            die "Indicate number of instances to start."
+        fi
+
+        greet       # Print our AWS username, to ease the pain of credential-juggling
+        key_name=$(sync_keys)   # Upload our SSH keys to AWS if needed, to be added to each VM's authorized_keys
+        AMI=$(get_ami)  # Retrieve the AWS image ID
+        TOKEN=$(get_token)  # generate a timestamp token for this batch of VMs
+        if [ ! -z $3 ]; then
+            # If an extra arg is present, append it to the tag
+            TOKEN=$TOKEN-$3
+        fi
+
+        echo "-----------------------------------"
+        echo "Starting $COUNT instances:"
+        echo "        Region: $AWS_DEFAULT_REGION"
+        echo "     Token/tag: $TOKEN"
+        echo "           AMI: $AMI"
+
+        AWS_KEY_NAME=$(make_key_name)
+        result=$(aws ec2 run-instances \
+            --key-name $AWS_KEY_NAME \
+            --count $2 \
+            --instance-type c3.large \
+            --client-token $TOKEN \
+            --image-id $AMI)
+        reservation_id=$(echo "$result" | head -1 | awk '{print $2}' )
+        echo "      Key name: $AWS_KEY_NAME"
+        echo "Reservation ID: $reservation_id"
+        echo "-----------------------------------"
+
+        # if instance creation succeeded, we should have some IDs
+        IDS=$(aws_get_instance_ids_by_client_token $TOKEN)
+        if [ -z "$IDS" ]; then
+            die "Instance creation failed."
+        fi
+
+        # Tag these new instances with a tag that is the same as the token
+        aws ec2 create-tags --tag Key=Name,Value=$TOKEN --resources $IDS >> /dev/null
+        TAG=$TOKEN
+        unset TOKEN
+
+        wait_until_tag_is_running $TAG $COUNT
+
+        echo "[-------------------------------------------------------------------------------------]"
+        echo "        Successfully created $2 instances with tag: $TAG"
+        echo "[-------------------------------------------------------------------------------------]"
+
+        mkdir -p tags/$TAG
+        IPS=$(aws_get_instance_ips_by_tag $TAG)
+        echo "$IPS" > tags/$TAG/ips.txt
+        link_tag $TAG
+        echo "To deploy or kill these instances, run one of the following:"
+        echo "trainer deploy $TAG"
+        echo "trainer list $TAG"
+        ;;
+    status)
+        greet && echo
+
+        max_instances=$(aws ec2 describe-account-attributes \
+                        --attribute-names max-instances \
+                        --query 'AccountAttributes[*][AttributeValues]')
+        echo "Max instances: $max_instances" && echo
+
+        # Print list of AWS EC2 regions, highlighting ours ($AWS_DEFAULT_REGION) in the list
+        # If our $AWS_DEFAULT_REGION is not valid, the error message will be pretty descriptive:
+        # Could not connect to the endpoint URL: "https://ec2.foo.amazonaws.com/"
+        echo "Region:" # $AWS_DEFAULT_REGION."
+        aws ec2 describe-regions | awk '{print $3}' | grep --color=auto $AWS_DEFAULT_REGION -C50
+
+        ;;
+    stop)
+        TAG=$2
+        need_tag $TAG
+        aws_kill_instances_by_tag $TAG
+        ;;
+    tag)
+        # add a tag to a batch of VMs
+        TAG=$2
+        NEW_TAG_KEY=$3
+        NEW_TAG_VALUE=$4
+        need_tag $TAG
+        need_tag $NEW_TAG_KEY
+        need_tag $NEW_TAG_VALUE
+        ;;
+    test)
+        TAG=$2
+        need_tag $TAG
+        test_tag $TAG
+        ;;
+    *)
+        echo && echo "trainer COMMAND [n-instances|tag]
+
+    Core commands:
+        start       n           Start n instances
+        list        [TAG]       If a tag is provided, list its VMs. Otherwise, list tags.
+        deploy      TAG         Deploy all instances with a given tag
+        pull-images TAG         Pre-pull docker images. Run only after deploying.
+        stop        TAG         Stop and delete instances tagged TAG
+
+    Extras:
+        ips         TAG         List all IPs of instances with a given tag (updates ips.txt)
+        ids         TAG/TOKEN   List all instance IDs with a given tag
+        shell                   Get a shell in the trainer container
+        status      TAG         Print information about this tag and its VMs
+        tags                    List all tags (per-region)
+
+    Beta:
+        ami                     Look up Amazon Machine Images
+        cards                   Generate cards (see settings.txt)
+        opensg                  Modify AWS security groups
+        "
+        ;;
+    esac
+}
+
+(
+    cd $SCRIPT_DIR
+    source scripts/cli.sh
+    source scripts/aws.sh
+    source scripts/rc
+    source scripts/colors.sh
+    mkdir -p tags
+    # TODO: unset empty envvars
+    run_cli "$@"
+)
