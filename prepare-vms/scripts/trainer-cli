@@ -3,6 +3,8 @@
 
 set -e  # if we encounter an error, abort
 
+export AWS_DEFAULT_OUTPUT=text
+
 greet() {
     hello=$(aws iam get-user --query 'User.UserName')
     echo "Greetings, $hello!"

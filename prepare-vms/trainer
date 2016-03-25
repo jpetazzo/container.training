@@ -2,26 +2,14 @@
 
 TRAINER_IMAGE="soulshake/prepare-vms"
 
-PIP_DEPENDENCIES="
-    awscli
-"
-
-# dpkg -l/pip/type-friendly
 DEPENDENCIES="
     aws
-    awscli
     ssh
     curl
     jq
-    bsdmainutils
     pssh
     pip
-    python-pip
     wkhtmltopdf
-    JP_PLACEHOLDER
-    "
-
-OPTIONAL_DEPENDENCIES="
     man
     "
 
@@ -29,109 +17,66 @@ ENVVARS="
     AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY
     AWS_DEFAULT_REGION
-    AWS_DEFAULT_PROFILE
-    SSH_AGENT_PID
     SSH_AUTH_SOCK
-    SSH_AUTH_DIRNAME
     "
 
-envvars_ok() {
-    # This script expects plain text output from the AWS CLI in some places
-    export AWS_DEFAULT_OUTPUT=text
-
+check_envvars() {
+    STATUS=0
     for envvar in $ENVVARS; do
         if [ -z "${!envvar}" ]; then
-            echo "Please export $envvar environment variable. Unsetting."
+            echo "Please set environment variable $envvar."
+            STATUS=1
             unset $envvar
-            #return 1
         fi
     done
-    return 0
+    return $STATUS
 }
 
-package_is_installed() {
-    # Try "type", "dpkg -l", and "pip freeze" to see if a package is installed
-    dependency=$1
-    type $dependency >/dev/null 2>&1 \
-        || dpkg -l $dependency >/dev/null 2>&1 \
-        || pip freeze | grep $dependency >/dev/null 2>&1 || return 1
-}
-
-show_missing_dependencies() {
-    for dependency in $DEPENDENCIES; do
-            package_is_installed $dependency \
-            && echo "     $dependency: [OK]" \
-                || { echo >&2 "$(tput setaf 1)     $dependency: [NOK] $(tput sgr0)" ;}
+check_dependencies() {
+    STATUS=0
+    for dependency in $DEPENDENCIES ; do
+         if ! command -v $dependency >/dev/null; then
+             echo "Could not find dependency $dependency."
+             STATUS=1
+         fi
     done
-
-    echo "Recommended:"
-    for dependency in $OPTIONAL_DEPENDENCIES; do
-            package_is_installed $dependency \
-            && echo "     $dependency: [OK]" \
-                || { echo >&2 "$(tput setaf 1)     $dependency: [NOK] $(tput sgr0)" ;}
-    done
+    return $STATUS
 }
 
-run_natively() {
-    scripts/trainer-cli "$@"
-}
-
-run_containerized() {
+check_ssh_auth_sock() {
     if [ -z $SSH_AUTH_SOCK ]; then
         echo -n "SSH_AUTH_SOCK envvar not set, so its parent directory can't be "
         echo "mounted as a volume in a container."
         echo "Try running the command below and trying again:"
-        echo "eval \$(ssh-agent) && ssh-agent && ssh-add"
+        echo "eval \$(ssh-agent) && ssh-add"
         exit 1
     fi
-
-    #/tmp/ssh-uN1oMimerRo0/agent.1411
-    (
-    cd $SCRIPT_DIR
-    export SSH_AUTH_DIRNAME=$(dirname $SSH_AUTH_SOCK)
-    docker-compose -f docker-compose.yml run prepare-vms "$@"
-
-    )
 }
 
-dependencies_fulfilled() {
-    for dependency in $DEPENDENCIES ; do
-        package_is_installed $dependency || return 1
-    done
-
-    echo "All dependencies fulfilled. Running locally."
-}
-
-trainer_image_exists_locally() {
-    ret=$(docker inspect $TRAINER_IMAGE >/dev/null 2>&1)
-    return $?
+check_image() {
+    docker inspect $TRAINER_IMAGE >/dev/null 2>&1
 }
 
 # Get the script's real directory, whether we're being called directly or via a symlink
-if [ -L $0 ]; then
-    export SCRIPT_DIR=$(dirname $(readlink $0))
+if [ -L "$0" ]; then
+    export SCRIPT_DIR=$(dirname $(readlink "$0"))
 else
-    export SCRIPT_DIR=$(dirname $(readlink -f $0))
+    export SCRIPT_DIR=$(dirname "$0")
 fi
+cd "$SCRIPT_DIR"
 
-export SSH_AUTH_DIRNAME=$(dirname $SSH_AUTH_SOCK)
+check_envvars || exit 1
 
-if ! envvars_ok; then
-    exit 1
-fi
-
-if dependencies_fulfilled; then
-    (
-        cd $SCRIPT_DIR
-        run_natively "$@"
-    )
-elif trainer_image_exists_locally; then
-    run_containerized "$@"
+if check_dependencies; then
+    scripts/trainer-cli "$@"
+elif check_image; then
+    check_ssh_auth_sock
+    export SSH_AUTH_DIRNAME=$(dirname $SSH_AUTH_SOCK)
+    docker-compose -f docker-compose.yml run prepare-vms "$@"
 else
     echo "Some dependencies are missing, and docker image $TRAINER_IMAGE doesn't exist locally."
     echo "Please do one of the following: "
     echo "- run \`docker build -t soulshake/prepare-vms .\`"
     echo "- run \`docker pull soulshake/prepare-vms\`"
-    echo "- install all dependencies: "
-    show_missing_dependencies
+    echo "- install missing dependencies"
 fi
