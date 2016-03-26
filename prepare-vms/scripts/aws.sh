@@ -8,7 +8,8 @@ aws_display_tags(){
     aws ec2 describe-instances --filter "Name=tag:Name,Values=[*]" \
             --query "Reservations[*].Instances[*].[{Tags:Tags[0].Value,State:State.Name}]" \
         | awk '{ printf " %-13s %-10s %-1s\n", $1, $2, $3}' \
-        | uniq -c 
+        | uniq -c \
+        | sort -k 3
 }
 
 aws_display_tokens(){
@@ -19,7 +20,8 @@ aws_display_tokens(){
             --query 'Reservations[*].Instances[*].{ClientToken:ClientToken,Tags:Tags[0].Value}' \
         | awk '{ printf " %7s %12s %50s\n", $1, $2, $3}' \
         | sort \
-        | uniq -c
+        | uniq -c \
+        | sort -k 3
 }
 
 aws_get_tokens() {
@@ -96,12 +98,12 @@ aws_kill_instances_by_tag() {
     IDS=$(aws_get_instance_ids_by_tag $TAG)
     if [ -z "$IDS" ]; then
         die "Invalid tag."
-    else
-        echo "Deleting instances with tag $TAG"
     fi
 
+    echo "Deleting instances with tag $TAG"
+
     echo "$IDS" \
-        | xargs -r aws ec2 terminate-instances --instance-ids \
+        | xargs aws ec2 terminate-instances --instance-ids \
         | grep ^TERMINATINGINSTANCES
 }
 
