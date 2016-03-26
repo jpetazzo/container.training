@@ -7,10 +7,10 @@ import urllib
 
 #################################
 
-COMPOSE_VERSION = "1.6.2"
+COMPOSE_VERSION = os.environ.get("COMPOSE_VERSION") or "1.6.2"
 MACHINE_VERSION = os.environ.get("MACHINE_VERSION") or "0.6.0"
 SWARM_VERSION = os.environ.get("SWARM_VERSION") or "1.1.3"
-CLUSTER_SIZE = os.environ.get("CLUSTER_SIZE") or 1
+CLUSTER_SIZE = int(os.environ.get("CLUSTER_SIZE") or "1")
 
 #################################
 
@@ -93,11 +93,12 @@ system("sudo pip install -U docker-compose=={}".format(COMPOSE_VERSION))
 system("sudo curl -sSL -o /usr/local/bin/docker-machine https://github.com/docker/machine/releases/download/v{}/docker-machine-$(uname -s)-$(uname -m)".format(MACHINE_VERSION))
 system("sudo chmod +x /usr/local/bin/docker-machine*")
 
-# Wait for Docker to be up. If we don't do this, Docker will not be responsive during the next step.
-system("while ! sudo -u docker docker version ; do sleep 2; done")
-
 system("sudo apt-get remove -y --purge dnsmasq-base")
-system("sudo apt-get -qy install python-setuptools pssh apache2-utils httping htop unzip")
+system("sudo apt-get -qy install python-setuptools pssh apache2-utils httping htop unzip mosh")
+
+### Wait for Docker to be up.
+### (If we don't do this, Docker will not be responsive during the next step.)
+system("while ! sudo -u docker docker version ; do sleep 2; done")
 
 ### Install Swarm
 system("docker pull swarm:{}".format(SWARM_VERSION))
