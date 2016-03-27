@@ -34,11 +34,12 @@ deploy_hq(){
 
 deploy_tag(){
     TAG=$1
+    SETTINGS=$2
     need_tag $TAG
     link_tag $TAG
 
 
-    count=$(cat ips.txt | wc -l)
+    count=$(wc -l ips.txt)
 
     # wait until all hosts are reachable before trying to deploy
     echo "Trying to reach $TAG instances..."
@@ -48,6 +49,7 @@ deploy_tag(){
     done
 
     echo "[[ Deploying tag $TAG ]]"
+    export SETTINGS
     source scripts/postprep.rc
     echo "Finished deploying $TAG."
     echo "You may want to run one of the following commands:"
@@ -92,8 +94,7 @@ pull_tag(){
 }
 
 wait_until_tag_is_running() {
-    # Wait up to 10 seconds for instances to be created
-    timeout=10
+    max_retry=50
     TAG=$1
     COUNT=$2
     i=0
@@ -108,8 +109,8 @@ wait_until_tag_is_running() {
             | tr "\t" "\n" \
             | wc -l)
 
-        if [[ $i -gt $timeout ]]; then \
-            die " Timed out while waiting for instance creation ($timeout secs)"; \
+        if [[ $i -gt $max_retry ]]; then
+            die "Timed out while waiting for instance creation (after $max_retry retries)"
         fi
         sleep 1
     done
@@ -119,10 +120,7 @@ tag_is_reachable() {
     TAG=$1
     need_tag $TAG
     link_tag $TAG
-    if ! pssh -t 5 true 2>&1 >/dev/null; then
-        return 1
-    fi
-    return 0
+    pssh -t 5 true 2>&1 >/dev/null
 }
 
 test_tag(){
@@ -231,20 +229,23 @@ get_ami() {
 make_cards(){
     # Generate cards for a given tag
     TAG=$1
-    IPS=$(aws_get_instance_ips_by_tag $TAG)
-    echo "$IPS" > tags/$TAG/ips.txt
+    SETTINGS_FILE=$2
+    [[ -z "$SETTINGS_FILE" ]] && {
+        echo "Please specify the settings file you want to use."
+        echo "e.g.: settings/orchestration.yaml"
+        exit 1
+    }
+    aws_get_instance_ips_by_tag $TAG > tags/$TAG/ips.txt
 
-    # Remove symlinks to old cards if they exist
-    for f in ips.html ips.pdf; do
-        if [ -e $f ]; then rm $f; fi
-    done
+    # Remove symlinks to old cards
+    rm -f ips.html ips.pdf
 
     # This will generate two files in the base dir: ips.pdf and ips.html
-    python scripts/ips-txt-to-html.py settings.yaml
+    python scripts/ips-txt-to-html.py $SETTINGS_FILE
 
     for f in ips.html ips.pdf; do
         # Remove old versions of cards if they exist
-        if [ -e tags/$TAG/$f ]; then rm tags/$TAG/$f; fi
+        rm -f tags/$TAG/$f
 
         # Move the generated file and replace it with a symlink
         mv -f $f tags/$TAG/$f && ln -s tags/$TAG/$f $f
@@ -280,7 +281,7 @@ run_cli() {
     cards)
         TAG=$2
         need_tag $TAG
-        make_cards $TAG
+        make_cards $TAG $3
         ;;
     deploy)
         TAG=$2
@@ -289,15 +290,17 @@ run_cli() {
             echo "Deploying HQ"
             deploy_hq $TAG
         else
-            workshop=$2
-            if [ -z $workshop ]; then
-                echo "Please specify a workshop name (fundamentals or orchestration)"
+            SETTINGS=$3
+            if [[ -z "$SETTINGS" ]]; then
+                echo "Please specify a settings file."
                 exit 1
             fi
-            echo "Deploying with $workshop settings"
-            ln -sf settings/$workshop-settings.yaml settings.yaml
-            deploy_tag $TAG
-        
+            if ! [[ -f "$SETTINGS" ]]; then
+                echo "Settings file $SETTINGS not found."
+                exit 1
+            fi
+            echo "Deploying with settings $SETTINGS."
+            deploy_tag $TAG $SETTINGS
         fi
         ;;
     ids)
@@ -472,7 +475,7 @@ run_cli() {
 
     Beta:
         ami                     Look up Amazon Machine Images
-        cards                   Generate cards (see settings.txt)
+        cards                   Generate cards
         opensg                  Modify AWS security groups
         "
         ;;

@@ -1,13 +1,13 @@
 # This file is passed by trainer-cli to scripts/ips-txt-to-html.py
 
-workshop_name: Advanced Docker Orchestration
-workshop_short_name: orchestration
-repo: https://github.com/jpetazzo/orchestration-workshop
+workshop_name: Docker fundamentals
+workshop_short_name: Docker     # appears on VM connection cards
+repo: https://github.com/docker/docker-fundamentals
 
 instance_login: docker
 instance_password: training
 
-clustersize: 5  # Number of VMs per cluster
+clustersize: 1  # Number of VMs per cluster
 pagesize: 15    # Number of cards to print per page
 
 #background_image: https://myapps.developer.ubuntu.com/site_media/appmedia/2014/12/swarm.png
@@ -28,3 +28,8 @@ footer: >
     <center>{url}</center>
 
 url: http://container.training/
+
+engine_version: get.docker.com
+compose_version: 1.6.2
+machine_version: 0.6.0
+swarm_version: 1.2.0-rc1

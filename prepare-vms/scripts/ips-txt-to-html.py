@@ -11,9 +11,7 @@ def prettify(l):
 
 
 # Read settings from settings.yaml
-#with open(sys.argv[1]) as f:
-#with open("settings.yaml") as f:
-with open("settings/fundamentals-settings.yaml") as f:
+with open(sys.argv[1]) as f:
     data = f.read()
 
 SETTINGS = yaml.load(data)

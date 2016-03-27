@@ -1,6 +1,8 @@
 *.pyc
 *.swp
 *~
-ips.txt
-ips.html
-ips.pdf
+prepare-vms/ips.txt
+prepare-vms/ips.html
+prepare-vms/ips.pdf
+prepare-vms/settings.yaml
+prepare-vms/tags
