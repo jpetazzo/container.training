@@ -357,6 +357,12 @@ run_cli() {
         need_tag $TAG
         pull_tag $TAG
         ;;
+    retag)
+        if [[ -z "$2" ]] || [[ -z "$3" ]]; then
+            die "Please specify old tag/token, and new tag."
+        fi
+        aws_tag_instances $2 $3
+        ;;
     shell)
         # Get a shell in the container
         export PS1="trainer@$AWS_DEFAULT_REGION# "
@@ -404,9 +410,8 @@ run_cli() {
         fi
 
         # Tag these new instances with a tag that is the same as the token
-        aws ec2 create-tags --tag Key=Name,Value=$TOKEN --resources $IDS >> /dev/null
         TAG=$TOKEN
-        unset TOKEN
+        aws_tag_instances $TOKEN $TAG
 
         wait_until_tag_is_running $TAG $COUNT
 
@@ -457,27 +462,29 @@ run_cli() {
         test_tag $TAG
         ;;
     *)
-        echo && echo "trainer COMMAND [n-instances|tag]
+        echo "
+trainer COMMAND [n-instances|tag]
 
-    Core commands:
-        start       n           Start n instances
-        list        [TAG]       If a tag is provided, list its VMs. Otherwise, list tags.
-        deploy      TAG         Deploy all instances with a given tag
-        pull-images TAG         Pre-pull docker images. Run only after deploying.
-        stop        TAG         Stop and delete instances tagged TAG
+Core commands:
+  start        n              Start n instances
+  list         [TAG]          If a tag is provided, list its VMs. Otherwise, list tags.
+  deploy       TAG            Deploy all instances with a given tag
+  pull-images  TAG            Pre-pull docker images. Run only after deploying.
+  stop         TAG            Stop and delete instances tagged TAG
 
-    Extras:
-        ips         TAG         List all IPs of instances with a given tag (updates ips.txt)
-        ids         TAG/TOKEN   List all instance IDs with a given tag
-        shell                   Get a shell in the trainer container
-        status      TAG         Print information about this tag and its VMs
-        tags                    List all tags (per-region)
+Extras:
+  ips          TAG            List all IPs of instances with a given tag (updates ips.txt)
+  ids          TAG/TOKEN      List all instance IDs with a given tag
+  shell                       Get a shell in the trainer container
+  status       TAG            Print information about this tag and its VMs
+  tags                        List all tags (per-region)
+  retag        TAG/TOKEN TAG  Retag instances with a new tag
 
-    Beta:
-        ami                     Look up Amazon Machine Images
-        cards                   Generate cards
-        opensg                  Modify AWS security groups
-        "
+Beta:
+  ami                         Look up Amazon Machine Images
+  cards                       Generate cards
+  opensg                      Modify AWS security groups
+"
         ;;
     esac
 }

@@ -107,3 +107,11 @@ aws_kill_instances_by_tag() {
         | grep ^TERMINATINGINSTANCES
 }
 
+aws_tag_instances() {
+    OLD_TAG_OR_TOKEN=$1
+    NEW_TAG=$2
+    IDS=$(aws_get_instance_ids_by_client_token $OLD_TAG_OR_TOKEN)
+    [[ -n "$IDS" ]] && aws ec2 create-tags --tag Key=Name,Value=$NEW_TAG --resources $IDS >/dev/null
+    IDS=$(aws_get_instance_ids_by_tag $OLD_TAG_OR_TOKEN)
+    [[ -n "$IDS" ]] && aws ec2 create-tags --tag Key=Name,Value=$NEW_TAG --resources $IDS >/dev/null
+}
