@@ -1,8 +1,11 @@
 pssh -I tee /tmp/settings.yaml < $SETTINGS
 
+pssh sudo easy_install pyyaml
+
 pssh -I tee /tmp/postprep.py <<EOF
 #!/usr/bin/env python
 import os
+import platform
 import sys
 import time
 import urllib
@@ -95,7 +98,7 @@ system("sudo systemctl start docker || true")
 system("sudo pip install -U docker-compose=={}".format(COMPOSE_VERSION))
 
 ### Install docker-machine
-system("sudo curl -sSL -o /usr/local/bin/docker-machine https://github.com/docker/machine/releases/download/v{}/docker-machine-$(uname -s)-$(uname -m)".format(MACHINE_VERSION))
+system("sudo curl -sSL -o /usr/local/bin/docker-machine https://github.com/docker/machine/releases/download/v{}/docker-machine-{}-{}".format(MACHINE_VERSION, platform.system(), platform.machine()))
 system("sudo chmod +x /usr/local/bin/docker-machine*")
 
 system("sudo apt-get remove -y --purge dnsmasq-base")
