@@ -3,12 +3,38 @@ unset DOCKER_REGISTRY
 unset DOCKER_HOST
 unset COMPOSE_FILE
 
-SWARM_IMAGE=jpetazzo/swarm:1.1.3-rc2-debug-experimental
+SWARM_IMAGE=${SWARM_IMAGE:-jpetazzo/swarm:1.1.3-rc2-debug-experimental}
 
-check_ssh_keys () {
+prepare_1_check_ssh_keys () {
     for N in $(seq 1 5); do
         ssh node$N true
     done
+}
+
+prepare_2_compile_swarm () {
+    cd ~
+    git clone git://github.com/docker/swarm
+    cd swarm
+    [[ -z "$1" ]] && {
+        echo "Specify which revision to build."
+        return
+    }
+    git checkout "$1" || return
+    mkdir -p image
+    docker build -t docker/swarm:$1 .
+    docker run -i --entrypoint sh docker/swarm:$1 \
+         -c 'cat $(which swarm)' > image/swarm
+    chmod +x image/swarm
+    cat >image/Dockerfile <<EOF
+FROM scratch
+COPY ./swarm /swarm
+ENTRYPOINT ["/swarm", "-debug", "-experimental"]
+EOF
+    docker build -t jpetazzo/swarm:$1 image
+    docker login
+    docker push jpetazzo/swarm:$1
+    docker logout
+    SWARM_IMAGE=jpetazzo/swarm:$1
 }
 
 clean_1_containers () {
@@ -118,6 +144,7 @@ setup_all () {
     setup_6_add_lbs
     dm_swarm
 }
+
 
 force_remove_network () {
     dm_swarm
