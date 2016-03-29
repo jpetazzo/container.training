@@ -13,7 +13,7 @@ Command should be:
 
 ssh docker@$1 sudo sh <<EOF
 _cm_init () {
-        iptables -L CHAOSMONKEY 2>/dev/null || {
+        iptables -L CHAOSMONKEY >/dev/null 2>/dev/null || {
                 iptables -N CHAOSMONKEY
                 iptables -I FORWARD -j CHAOSMONKEY
                 iptables -I INPUT -j CHAOSMONKEY
