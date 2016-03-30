@@ -572,7 +572,7 @@ docker-compose kill
 
 ## Viewing our application
 
-- The app exposes a Web UI with a realtime progress graph
+- The app exposes a web UI with a realtime progress graph
 
 .exercise[
 
@@ -1184,7 +1184,7 @@ If you get errors about port 8001, make sure that
 - Check the latency of `rng`
   <br/>(it should have improved significantly!)
 
-- Check the application performance in the Web UI
+- Check the application performance in the web UI
   <br/>(it should improve if you have enough workers)
 
 *Note: if `worker` was scaled when you did `docker-compose up`,
@@ -1598,7 +1598,7 @@ Shortcut: `docker-compose.yml-ambassador`
   docker-compose ps
   ```
 
-- Look at the Web UI to make sure that it works fine
+- Look at the web UI to make sure that it works fine
 
 ]
 
@@ -1651,7 +1651,7 @@ Shortcut: `docker-compose.yml-ambassador`
   ```
   ]
 
-- Admire the result in the Web UI!
+- Admire the result in the web UI!
 
 ]
 
@@ -2405,9 +2405,9 @@ in the output.
 ## Visualizing container logs in Kibana
 
 - Less than 5 seconds later (the refresh rate of the UI),
-  the log line should be visible in the Web UI
+  the log line should be visible in the web UI
 
-- We can customize the Web UI to be more readable
+- We can customize the web UI to be more readable
 
 .exercise[
 
@@ -2959,10 +2959,10 @@ class: title
   - cluster discovery mechanism
     <br/>(so that the manager can learn about the nodes)
 
-  - swarm manager
+  - Swarm manager
     <br/>(your frontend to the cluster)
 
-  - swarm agent
+  - Swarm agent
     <br/>(runs on each node, registers it with service discovery)
 
 ---
@@ -3628,7 +3628,7 @@ So, what do‽
 
 - Swarm supports constraints
 
-- We could tell swarm to put all our containers together
+- We could tell Swarm to put all our containers together
 
 - Linking would work
 
