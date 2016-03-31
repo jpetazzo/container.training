@@ -9,7 +9,7 @@
       @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
       @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
 
-      body { font-family: 'Droid Serif'; font-size: 150%; }
+      body { font-family: 'Droid Serif'; }
 
       h1, h2, h3 {
         font-family: 'Yanone Kaffeesatz';
@@ -19,16 +19,20 @@
         text-decoration: none;
         color: blue;
       }
+
+      .remark-slide-content { font-size: 25px; }
+      .remark-slide-content h1 { font-size: 50px; }
+      .remark-slide-content h2 { font-size: 50px; }
+      .remark-slide-content h3 { font-size: 25px; }
+      .remark-code { font-size: 25px; }
+      .small .remark-code { font-size: 16px; }
+
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
       .red { color: #fa0000; }
       .gray { color: #ccc; }
       .small { font-size: 70%; }
       .big { font-size: 140%; }
       .underline { text-decoration: underline; }
-      .footnote {
-        position: absolute;
-        bottom: 3em;
-      }
       .pic {
         vertical-align: middle;
         text-align: center;
@@ -36,18 +40,14 @@
       }
       img {
         max-width: 100%;
-        max-height: 450px;
+        max-height: 550px;
       }
       .title {
         vertical-align: middle;
         text-align: center;
       }
-      .title {
-        font-size: 2em;
-      }
-      .title .remark-slide-number {
-        font-size: 0.5em;
-      }
+      .title h1 { font-size: 100px; }
+      .title p { font-size: 100px; }
       .quote {
         background: #eee;
         border-left: 10px solid #ccc;
@@ -256,8 +256,8 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 
 ]
 
-.footnote[Note: from now on, unless instructed, **all commands must
-be run from the first VM, `node1`**.]
+Note: from now on, unless instructed, **all commands must
+be run from the first VM, `node1`**.
 
 ---
 
@@ -318,7 +318,7 @@ If you want to use screen or whatever, you're welcome!
 .exercise[
 
 - Clone the repository on `node1`:
-  <br/>.small[`git clone git://github.com/jpetazzo/orchestration-workshop`]
+  <br/>`git clone git://github.com/jpetazzo/orchestration-workshop`
 
 ]
 
@@ -328,7 +328,9 @@ If you want to use screen or whatever, you're welcome!
 
 ## What's this application?
 
---
+---
+
+class: pic
 
 ![DockerCoins logo](dockercoins.png)
 
@@ -416,12 +418,12 @@ First, we will run the random number generator (`rng`).
 
 - With Docker Compose, in the `docker-compose.yml` file:
 
-```
-rng:
-  …
-  ports:
-    - "8001:80"
-```
+  ```yaml
+    rng:
+      …
+      ports:
+        - "8001:80"
+  ```
 
 → port 8001 *on the host* maps to
 port 80 *in the container*
@@ -656,7 +658,7 @@ We have available resources.
 
 ]
 
-.footnote[.red[*]With some limitations, as we'll see later.]
+.red[*]With some limitations, as we'll see later.
 
 ---
 
@@ -1061,15 +1063,15 @@ being unaware of its existence!
 
 - Replace the `rng` service with multiple copies of it:
 
-  ```
-  rng1:
-    build: rng
+  ```yaml
+    rng1:
+      build: rng
 
-  rng2:
-    build: rng
+    rng2:
+      build: rng
 
-  rng3:
-    build: rng
+    rng3:
+      build: rng
   ```
 
 ]
@@ -1113,7 +1115,7 @@ Let's add our load balancer to the Compose file.
 
 - Add the following section to the Compose file:
 
-  ```
+  ```yaml
   rng:
       image: jpetazzo/hamba
       links:
@@ -1363,7 +1365,7 @@ The `ERR` messages are normal: Redis speaks Redis, not HTTP.
   worker:
     build: worker
     extra_hosts:
-      redis: A.B.C.D
+      redis: AA.BB.CC.DD
     links:
       - rng
       - hasher
@@ -1371,10 +1373,10 @@ The `ERR` messages are normal: Redis speaks Redis, not HTTP.
 
 ]
 
-Replace `A.B.C.D` with the IP address noted earlier.
+Replace `AA.BB.CC.DD` with the IP address noted earlier.
 
 Shortcut: `docker-compose.yml-extra-hosts`
-<br/>(But you still have to replace `A.B.C.D`!)
+<br/>(But you still have to replace `AA.BB.CC.DD`!)
 
 ???
 
@@ -1388,7 +1390,7 @@ Shortcut: `docker-compose.yml-extra-hosts`
   webui:
     build: webui
     extra_hosts:
-      redis: A.B.C.D
+      redis: AA.BB.CC.DD
     ports:
       - "8000:80"
     volumes:
@@ -1397,7 +1399,7 @@ Shortcut: `docker-compose.yml-extra-hosts`
 
 ]
 
-(Replace `A.B.C.D` with the IP address noted earlier)
+(Replace `AA.BB.CC.DD` with the IP address noted earlier)
 
 ???
 
@@ -1564,17 +1566,16 @@ class: pic
 <!-- -->
 
 - Replace `redis` with an ambassador using `jpetazzo/hamba`:
-
-  ```
-  redis:
-    image: jpetazzo/hamba
-    command: 6379 AA.BB.CC.DD EEEEE
+  ```yaml
+    redis:
+      image: jpetazzo/hamba
+      command: 6379 `AA.BB.CC.DD EEEEE`
   ```
 
 ]
 
 Shortcut: `docker-compose.yml-ambassador`
-<br/>(But you still have to update `AA.BB.CC.DD EEEE`!)
+<br/>(But you still have to update `AA.BB.CC.DD EEEEE`!)
 
 ---
 
@@ -1633,23 +1634,19 @@ Shortcut: `docker-compose.yml-ambassador`
 
 - Deploy one instance of the stack on each node:
 
-  .small[
+  ```bash
+    for N in 3 4 5; do
+      DOCKER_HOST=tcp://node$N:55555 docker-compose up -d &
+    done
   ```
-  for N in 3 4 5; do
-    DOCKER_HOST=tcp://node$N:55555 docker-compose up -d &
-  done
-  ```
-  ]
 
 - Add a bunch of workers all over the place:
 
-  .small[
+  ```bash
+    for N in 1 2 3 4 5; do
+      DOCKER_HOST=tcp://node$N:55555 docker-compose scale worker=10
+    done
   ```
-  for N in 1 2 3 4 5; do
-    DOCKER_HOST=tcp://node$N:55555 docker-compose scale worker=10
-  done
-  ```
-  ]
 
 - Admire the result in the web UI!
 
@@ -1701,7 +1698,7 @@ Let's celebrate our success!
   - sharing files between host and containers (source...)
 
 - The `volumes` directive expands to an host path
-  <br/>.small[(e.g. `/home/docker/orchestration-workshop/dockercoins/webui/files`)]
+  <br/>(e.g. `/home/docker/orchestration-workshop/dockercoins/webui/files`)
 
 - This host path exists on the local machine
   <br/>(not on the others)
@@ -1721,11 +1718,11 @@ Let's celebrate our success!
 .exercise[
 
 - We can do another simple shell loop:
-  ```
-  for N in $(seq 1 5); do
-    export DOCKER_HOST=tcp://node$N:55555
-    docker-compose down &
-  done
+  ```bash
+    for N in $(seq 1 5); do
+      export DOCKER_HOST=tcp://node$N:55555
+      docker-compose down &
+    done
   ```
 
 ]
@@ -1842,9 +1839,8 @@ ways to deploy ambassadors.
 - Adds/removes scaled services in distributed config DB
   <br/>(zookeeper, etcd, consul…)
 
-- Another daemon listens to config DB events
-
-- Adds/removes backends to load balancers configuration
+- Another daemon listens to config DB events,
+  <br/>adds/removes backends to load balancers configuration
 
 - Pros:
   <br/>- more flexibility
@@ -1916,11 +1912,11 @@ class: title
 
 - Start the container:
 
-  ```
-  docker run --link myredis:redis \
-             --volumes-from myredis \
-             -v /tmp/myredis:/output \
-             -ti alpine sh
+  ```bash
+    docker run --link myredis:redis \
+               --volumes-from myredis \
+               -v /tmp/myredis:/output \
+               -ti alpine sh
   ```
 
 - Look in `/data` in the container
@@ -1978,24 +1974,20 @@ With containers, what are our options?
 
 --
 
-- run `cron` on the Docker host,
-  <br/>and put `docker run` in the crontab
+- run `cron` on the Docker host, and put `docker run` in the crontab
 
 --
 
-- run `cron` in the backup container,
-  <br/>and make sure it keeps running
+- run `cron` in the backup container, and make sure it keeps running
   <br/>(e.g. with `docker run --restart=…`)
 
 --
 
-- run `cron` in a container,
-  <br/>and start backup containers from there
+- run `cron` in a container, and start backup containers from there
 
 --
 
-- listen to the Docker events stream,
-  <br/>automatically scheduling backups
+- listen to the Docker events stream, automatically scheduling backups
   <br/>when database containers are started
 
 ---
@@ -2124,10 +2116,10 @@ Only the events for `ledata` will be shown.
 
 - List containers that have a `backup` label;
   <br/>show their container ID, image, and the label:
-  ```
-  docker ps \
-    --filter label=backup \
-    --format '{{ .ID }} {{ .Image }} {{ .Label "backup" }}'
+  ```bash
+    docker ps \
+      --filter label=backup \
+      --format '{{ .ID }} {{ .Image }} {{ .Label "backup" }}'
   ```
 
 ]
@@ -2372,8 +2364,6 @@ in the output.
 
 ---
 
-## Kibana out of the box
-
 ![Screenshot of Kibana](kibana.png)
 
 ---
@@ -2390,12 +2380,12 @@ in the output.
   <br/>`docker-compose ps logstash`
 
 - Start a one-off container, overriding its logging driver:
-  <br/>(make sure to update X.X.X.X:XXXXX, of course)
+  <br/>(make sure to update the port number, of course)
 
-  ```
-  docker run --rm --log-driver gelf \
-         --log-opt gelf-address=udp://X.X.X.X:XXXXX \
-         alpine echo hello world
+  ```bash
+    docker run --rm --log-driver gelf \
+           --log-opt gelf-address=udp://127.0.0.1:`EEEEE` \
+           alpine echo hello world
   ```
 
 ]
@@ -2432,8 +2422,7 @@ in the output.
   <br/>`cd ~/orchestration-workshop/dockercoins`
 
 - Stop and remove all DockerCoins containers:
-  <br/>`docker-compose kill`
-  <br/>`docker-compose rm -f`
+  <br/>`docker-compose kill && docker-compose rm -f`
 
 - Reset the Compose file:
   <br/>`git checkout docker-compose.yml`
@@ -2454,19 +2443,18 @@ in the output.
 
 .exercise[
 
-- Edit the `docker-compose.yml` file,
-  <br/>adding the the following lines **to each container**:
+- Edit the `docker-compose.yml` file, adding the following lines **to each container**:
 
-  ```
-  log_driver: gelf
-  log_opt:
-    gelf-address: "udp://X.X.X.X:XXXXX"
+  ```yaml
+    log_driver: gelf
+    log_opt:
+      gelf-address: "udp://`AA.BB.CC.DD:EEEEE`"
   ```
 
 ]
 
 Shortcut: `docker-compose.yml-logging`
-<br/>(But you still have to update `XX.XX.XX.XX:XXXXX`!)
+<br/>(But you still have to update `AA.BB.CC.DD:EEEEE`!)
 
 ---
 
@@ -2886,7 +2874,13 @@ class: title
 
 ---
 
+class: title
+
 # Hands-on Swarm
+
+---
+
+class: pic
 
 ![Swarm Logo](swarm.png)
 
@@ -3022,29 +3016,25 @@ in the discovery service hosted by Docker Inc.
 
 ## Swarm manager
 
-- Exposes a Docker API endpoint
-
-- Talks to the cluster nodes
-
+- Accepts Docker API requests 
+- Communicates with the cluster nodes
 - Performs healthchecks, scheduling...
 
 .exercise[
 
-- Connect to `node1`
+- Double-check that you are on `node1`
 
-- "Create" a node with Docker Machine:
+- Provision a node with Docker Machine:
 
-  .small[
+  ```bash
+    docker-machine create --driver generic \
+      --swarm --swarm-master --swarm-discovery token://$TOKEN \
+      --generic-ssh-user docker --generic-ip-address `AA.BB.CC.DD` node1
   ```
-  docker-machine create --driver generic \
-    --swarm --swarm-master --swarm-discovery token://$TOKEN \
-    --generic-ssh-user docker --generic-ip-address A.B.C.D node1
-  ```
-  ]
 
 ]
 
-(Don't forget to replace A.B.C.D with the node IP address!)
+(Don't forget to replace AA.BB.CC.DD with the node IP address!)
 
 ---
 
@@ -3192,8 +3182,7 @@ Name: node1
 
 ## Add other nodes to the cluster
 
-- Let's use *almost* the same command line
-  <br/>(but without `--swarm-master`)
+- Let's use *almost* the same command line (but without `--swarm-master`)
 
 .exercise[
 
@@ -3201,20 +3190,17 @@ Name: node1
 
 - Add another node with Docker Machine
 
-  .small[
+  ```bash
+    docker-machine create --driver generic \
+      --swarm --swarm-discovery token://$TOKEN \
+      --generic-ssh-user docker --generic-ip-address `AA.BB.CC.DD` node2
   ```
-  docker-machine create --driver generic \
-    --swarm --swarm-discovery token://$TOKEN \
-    --generic-ssh-user docker --generic-ip-address A.B.C.D node2
-  ```
-  ]
+
 ]
 
-Remember to update the IP address correctly.
+Remember to replace AA.BB.CC.DD with the correct IP address.
 
-Repeat for all 4 nodes.
-
-Pro tip: look for name/address mapping in `/etc/hosts`.
+Repeat for all 4 nodes. (Pro tip: look for name/address mapping in `/etc/hosts`!)
 
 ---
 
@@ -3222,7 +3208,7 @@ Pro tip: look for name/address mapping in `/etc/hosts`.
 
 To help you a little bit:
 
-```
+```bash
 grep node[2345] /etc/hosts | grep -v ^127 |
 while read IPADDR NODENAME
 do docker-machine create --driver generic \
@@ -3417,9 +3403,8 @@ Before trying to build our app, we will remove previous images.
 
 ## Using Docker Hub
 
-- To tell `build-tag-push.py` to use Docker Hub,
-  <br/>set the `DOCKER_REGISTRY` environment variable
-  <br/>to your Docker Hub user name
+- Set the `DOCKER_REGISTRY` environment variable to your Docker Hub user name
+  <br/>(the `build-tag-push.py` script prefixes each image name with that variable)
 
 - We will also see how to run the open source registry
   <br/>(so use whatever option you want!)
@@ -3475,17 +3460,17 @@ If we wanted to use DTR, we would:
 .exercise[
 
 - Start your registry on your Swarm cluster:
-  ```
+  ```bash
   eval $(docker-machine env node1 --swarm)
   docker run -dP --name registry registry:2
   ```
 
 - Start five ambassadors (one per node):
-  ```
-  for N in $(seq 1 5); do
-    docker run -d -p 5000:5000 jpetazzo/hamba \
-           5000 $(docker port registry 5000)
-  done
+  ```bash
+    for N in $(seq 1 5); do
+      docker run -d -p 5000:5000 jpetazzo/hamba \
+             5000 $(docker port registry 5000)
+    done
   ```
 
 ]
@@ -3554,7 +3539,7 @@ Let's inspect the source code of `build-tag-push.py` and run it.
 
 ]
 
-Inspect the `docker-compose.yml-XXX` file that it created.
+Inspect the `docker-compose.yml-NNN` file that it created.
 
 ---
 
@@ -3568,7 +3553,7 @@ Let's try!
   <br/>`eval $(docker-machine env node1 --swarm)`
 
 - Protip - set the `COMPOSE_FILE` variable:
-  <br/>`export COMPOSE_FILE=docker-compose.yml-XXX`
+  <br/>`export COMPOSE_FILE=docker-compose.yml-NNN`
 
 - Bring up the application:
   <br/>`docker-compose up`
@@ -3858,7 +3843,7 @@ class: pic
 ## Convert links to ambassadors
 
 - When we ran `build-tag-push.py` earlier,
-  <br/>it generated a new `docker-compose.yml-XXX` file.
+  <br/>it generated a new `docker-compose.yml-NNN` file.
 
 .exercise[
 
@@ -4114,11 +4099,11 @@ class: pic
 
 - The following snippet will nuke all containers on all hosts:
 
-  ```
-  for N in 1 2 3 4 5
-  do
-    ssh node$N "docker ps -qa | xargs -r docker rm -f"
-  done
+  ```bash
+    for N in 1 2 3 4 5
+    do
+      ssh node$N "docker ps -qa | xargs -r docker rm -f"
+    done
   ```
 
 (If it asks you to confirm SSH keys, just do it!)
@@ -4142,11 +4127,11 @@ Note: our Swarm cluster is now broken.
 
 - Remove our nodes from Docker Machine config database:
 
-  ```
-  for N in 1 2 3 4 5
-  do
-    docker-machine rm -f node$N
-  done
+  ```bash
+    for N in 1 2 3 4 5
+    do
+      docker-machine rm -f node$N
+    done
   ```
 
 ]
@@ -4174,24 +4159,21 @@ Note: our Swarm cluster is now broken.
 - The traditional way to reconfigure a service is to edit
   its configuration (or init script), then restart
 
-- We can use Machine to make that easier
-
-- Re-deploying with Machine's `generic` driver will reconfigure
-  Engines with the new parameters
+- Instead, we can use Machine's `generic` driver to
+  redeploy with new parameters
 
 .exercise[
 
 - Re-provision the manager node:
 
-  .small[
+  ```bash
+    docker-machine create --driver generic \
+      --engine-opt cluster-store=consul://localhost:8500 \
+      --engine-opt cluster-advertise=eth0:2376 \
+      --swarm --swarm-master --swarm-discovery consul://localhost:8500 \
+      --generic-ssh-user docker --generic-ip-address `AA.BB.CC.DD` node1
   ```
-  docker-machine create --driver generic \
-    --engine-opt cluster-store=consul://localhost:8500 \
-    --engine-opt cluster-advertise=eth0:2376 \
-    --swarm --swarm-master --swarm-discovery consul://localhost:8500 \
-    --generic-ssh-user docker --generic-ip-address XX.XX.XX.XX node1
-  ```
-  ]
+
 ]
 
 ---
@@ -4202,16 +4184,16 @@ Note: our Swarm cluster is now broken.
 
 .exercise[
 
-```
-grep node[2345] /etc/hosts | grep -v ^127 |
-while read IPADDR NODENAME
-do docker-machine create --driver generic \
-   --engine-opt cluster-store=consul://localhost:8500 \
-   --engine-opt cluster-advertise=eth0:2376 \
-   --swarm --swarm-discovery consul://localhost:8500 \
-   --generic-ssh-user docker \
-   --generic-ip-address $IPADDR $NODENAME
-done
+```bash
+  grep node[2345] /etc/hosts | grep -v ^127 |
+  while read IPADDR NODENAME
+  do docker-machine create --driver generic \
+     --engine-opt cluster-store=consul://localhost:8500 \
+     --engine-opt cluster-advertise=eth0:2376 \
+     --swarm --swarm-discovery consul://localhost:8500 \
+     --generic-ssh-user docker \
+     --generic-ip-address $IPADDR $NODENAME
+  done
 ```
 
 ]
@@ -4278,16 +4260,16 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 - Make sure you're logged into `node1`,
   with a clean environment:
 
-  ```
+  ```bash
   unset DOCKER_HOST
   ```
 
 - The first node must be started with the `-bootstrap` flag:
 
-  ```
-  CID=$(docker run --name consul_node1 \
-        -d --restart=always --net host \
-        jpetazzo/consul agent -server -bootstrap)
+  ```bash
+    CID=$(docker run --name consul_node1 \
+          -d --restart=always --net host \
+          jpetazzo/consul agent -server -bootstrap)
   ```
 
 ]
@@ -4296,24 +4278,22 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 
 ## Starting the other Consul nodes
 
-- Other nodes have to be started with the `-join A.B.C.D`
-  option, where A.B.C.D is the address of an existing node
+- Other nodes have to be started with the `-join AA.BB.CC.DD`
+  option, where AA.BB.CC.DD is the address of an existing node
 
 .exercise[
 
 - Find the internal IP address of our first node:
-  ```
-  IPADDR=$(ip a ls dev eth0 |
-           sed -n 's,.*inet \(.*\)/.*,\1,p')
+  ```bash
+    IPADDR=$(ip a ls dev eth0 | sed -n 's,.*inet \(.*\)/.*,\1,p')
   ```
 
 - Start the other nodes:
-  ```
-  for N in 2 3 4 5; do
-  ssh node$N docker run --name consul_node$N \
-             -d --restart=always --net host \
-             jpetazzo/consul agent -server -join $IPADDR
-  done
+  ```bash
+      for N in 2 3 4 5; do
+      ssh node$N docker run --name consul_node$N -d --restart=always \
+                --net host jpetazzo/consul agent -server -join $IPADDR
+      done
   ```
 
 ]
@@ -4578,7 +4558,7 @@ Let's examine the `docker-compose.yml` file.
 
 ## Our first Compose v2 file
 
-```
+```yaml
 version: "2"
 
 services:
@@ -4634,11 +4614,11 @@ and network aliases.
 .exercise[
 
 - Scale the registry:
-  ```
-  N=1
-  while docker-compose scale frontend=$N; do
-    N=$((N+1))
-  done
+  ```bash
+    N=1
+    while docker-compose scale frontend=$N; do
+      N=$((N+1))
+    done
   ```
 
 ]
@@ -4669,30 +4649,30 @@ Note: Swarm might do that automatically for us in the future.
 ## Our new Compose file
 
 .small[
-```
+```yaml
 version: '2'
 
 services:
-    rng:
-        build: rng
-        ports:
-            - 80
+  rng:
+    build: rng
+    ports:
+      - 80
 
-    hasher:
-        build: hasher
-        ports:
-            - 80
+  hasher:
+    build: hasher
+    ports:
+      - 80
 
-    webui:
-        build: webui
-        ports:
-            - 80
+  webui:
+    build: webui
+    ports:
+      - 80
 
-    redis:
-        image: redis
+  redis:
+    image: redis
 
-    worker:
-        build: worker
+  worker:
+    build: worker
 ```
 ]
 
@@ -4733,7 +4713,7 @@ Copy-paste this into `docker-compose.yml`
 
 - Start the application:
   ```
-  export COMPOSE_FILE=docker-compose.yml-XXXX
+  export COMPOSE_FILE=docker-compose.yml-NNN
   docker-compose up -d
   ```
 
@@ -4848,7 +4828,7 @@ How can we scale that service?
 
 class: pic
 
-## Original DockerCoins
+Original DockerCoins
 
 ![](dockercoins-single-node.png)
 
@@ -4856,7 +4836,7 @@ class: pic
 
 class: pic
 
-## Load-balanced DockerCoins
+Load-balanced DockerCoins
 
 ![](dockercoins-multi-node.png)
 
@@ -4866,26 +4846,25 @@ class: pic
 
 - Networks (other than the default one)
   *must* be declared
-  in a top-level `networks` section
+  in a top-level `networks` section,
+  placed anywhere in the file
 
 .exercise[
 
 - Add the `rng` network to the Compose file:
-  ```
-  version: '2'
+  ```yaml
+    version: '2'
 
-  networks:
-    rng:
+    networks:
+      rng:
 
-  services:
-    rng:
-      image: ...
-  ...
+    services:
+      rng:
+        image: ...
+    ...
   ```
 
 ]
-
-That section can be placed anywhere in the file.
 
 ---
 
@@ -4900,11 +4879,11 @@ That section can be placed anywhere in the file.
 .exercise[
 
 - Change the `rng` service to put it in its network:
-  ```
-  rng:
-    image: localhost:5000/dockercoins_rng:…
-    networks:
-      rng:
+  ```yaml
+    rng:
+      image: localhost:5000/dockercoins_rng:…
+      networks:
+        rng:
   ```
 
 ]
@@ -4913,8 +4892,7 @@ That section can be placed anywhere in the file.
 
 ## Adding the load balancer
 
-- The load balancer has to be in both networks:
-  <br/>`rng` and `default`
+- The load balancer has to be in both networks: `rng` and `default`
 
 - In the `default` network, it must have the `rng` alias
 
@@ -4923,14 +4901,14 @@ That section can be placed anywhere in the file.
 .exercise[
 
 - Add the `rng-lb` service to the Compose file:
-  ```
-  rng-lb:
-    image: jpetazzo/hamba
-    command: run
-    networks:
-      rng:
-      default:
-        aliases: [ rng ]
+  ```yaml
+    rng-lb:
+      image: jpetazzo/hamba
+      command: run
+      networks:
+        rng:
+        default:
+          aliases: [ rng ]
   ```
 ]
 
@@ -4975,11 +4953,11 @@ That section can be placed anywhere in the file.
 .exercise[
 
 - Configure the load balancer:
-  ```
-  docker run --rm \
-    --volumes-from dockercoins_rng-lb_1 \
-    --net container:dockercoins_rng-lb_1 \
-    jpetazzo/hamba reconfigure 80 dockercoins_rng_1 80
+  ```bash
+    docker run --rm \
+      --volumes-from dockercoins_rng-lb_1 \
+      --net container:dockercoins_rng-lb_1 \
+      jpetazzo/hamba reconfigure 80 dockercoins_rng_1 80
   ```
 
 ]
@@ -5017,14 +4995,14 @@ configuration first.
 .exercise[
 
 - Reconfigure the load balancer:
-  ```
-  docker run --rm \
-    --volumes-from dockercoins_rng-lb_1 \
-    --net container:dockercoins_rng-lb_1 \
-    jpetazzo/hamba reconfigure 80 \
-    $(for N in $(seq 1 10); do
-        echo dockercoins_rng_$N:80
-      done)
+  ```bash
+    docker run --rm \
+      --volumes-from dockercoins_rng-lb_1 \
+      --net container:dockercoins_rng-lb_1 \
+      jpetazzo/hamba reconfigure 80 \
+      $(for N in $(seq 1 10); do
+          echo dockercoins_rng_$N:80
+        done)
   ```
 
 ]
@@ -5386,17 +5364,16 @@ https://github.com/docker/swarm/issues/1782).
 - We need to:
 
   - remove the nodes from the Machine registry
-
   - remove the Swarm containers
 
 .exercise[
 
 - Remove the current configuration:
-  ```
-  for N in 1 2 3 4 5; do
-    ssh node$N docker rm -f swarm-agent swarm-agent-master
-    docker-machine rm -f node$N
-  done
+  ```bash
+    for N in 1 2 3 4 5; do
+      ssh node$N docker rm -f swarm-agent swarm-agent-master
+      docker-machine rm -f node$N
+    done
   ```
 
 ]
@@ -5405,16 +5382,12 @@ https://github.com/docker/swarm/issues/1782).
 
 ## Re-deploy with the new configuration
 
-- This time, we can deploy each node identically
+- This time, all nodes can be deployed identically
   <br/>(instead of 1 manager + 4 non-managers)
 
 .exercise[
 
-- Deploy all five nodes with the previous options,
-  and the new replication options:
-
-  .small[
-  ```
+```bash
   grep node[12345] /etc/hosts | grep -v ^127 |
   while read IPADDR NODENAME; do
     docker-machine create --driver generic \
@@ -5425,8 +5398,7 @@ https://github.com/docker/swarm/issues/1782).
       --swarm-opt replication --swarm-opt advertise=$IPADDR:3376 \
       --generic-ssh-user docker --generic-ip-address $IPADDR $NODENAME
   done
-  ```
-  ]
+```
 
 ]
 
@@ -5475,7 +5447,7 @@ debugging.
 
 - Kill the primary manager:
   ```
-  ssh XXX docker kill swarm-agent-master
+  ssh node`N` docker kill swarm-agent-master
   ```
 
 ]
@@ -5526,26 +5498,22 @@ Look at the output of `docker info` every few seconds.
 
 - Redeploy Swarm with `--experimental`:
 
-  .small[
+  ```bash
+    for N in 1 2 3 4 5; do
+      ssh node$N docker rm -f swarm-agent swarm-agent-master
+      docker-machine rm -f node$N
+    done
+    grep node[12345] /etc/hosts | grep -v ^127 |
+    while read IPADDR NODENAME; do
+      docker-machine create --driver generic \
+        --engine-opt cluster-store=consul://localhost:8500 \
+        --engine-opt cluster-advertise=eth0:2376 \
+        --swarm --swarm-master --swarm-image jpetazzo/swarm:experimental \
+        --swarm-discovery consul://localhost:8500  \
+        --swarm-opt replication --swarm-opt advertise=$IPADDR:3376 \
+        --generic-ssh-user docker --generic-ip-address $IPADDR $NODENAME
+    done
   ```
-  for N in 1 2 3 4 5; do
-    ssh node$N docker rm -f swarm-agent swarm-agent-master
-    docker-machine rm -f node$N
-  done
-
-  grep node[12345] /etc/hosts | grep -v ^127 |
-  while read IPADDR NODENAME; do
-    docker-machine create --driver generic \
-      --engine-opt cluster-store=consul://localhost:8500 \
-      --engine-opt cluster-advertise=eth0:2376 \
-      --swarm --swarm-master --swarm-image jpetazzo/swarm:experimental \
-      --swarm-discovery consul://localhost:8500  \
-      --swarm-opt replication --swarm-opt advertise=$IPADDR:3376 \
-      --generic-ssh-user docker --generic-ip-address $IPADDR $NODENAME
-  done
-  ```
-  ]
-
 ]
 
 ---
@@ -5562,11 +5530,9 @@ Look at the output of `docker info` every few seconds.
 
 - Start a container with a rescheduling policy:
 
-  .small[
-  ```
+  ```bash
   CID=$(docker run -d -e reschedule:on-node-failure nginx)
   ```
-  ]
 
 ]
 
@@ -5671,10 +5637,13 @@ class: title
 ### [@jpetazzo](https://twitter.com/jpetazzo) <br/> [@docker](https://twitter.com/docker)
 
     </textarea>
-    <script src="https://gnab.github.io/remark/downloads/remark-0.5.9.min.js" type="text/javascript">
+    <script src="https://gnab.github.io/remark/downloads/remark-0.13.min.js" type="text/javascript">
     </script>
     <script type="text/javascript">
-      var slideshow = remark.create();
+      var slideshow = remark.create({
+        ratio: '16:9',
+        highlightSpans: true
+      });
     </script>
   </body>
 </html>
