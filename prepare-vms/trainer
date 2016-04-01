@@ -8,7 +8,6 @@ DEPENDENCIES="
     curl
     jq
     pssh
-    pip
     wkhtmltopdf
     man
     "
