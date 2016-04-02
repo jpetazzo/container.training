@@ -331,7 +331,7 @@ run_cli() {
         tag_is_reachable $TAG
         echo "You may be interested in running one of the following commands:"
         echo "trainer ips $TAG"
-        echo "trainer deploy $TAG"
+        echo "trainer deploy $TAG <settings/somefile.yaml>"
         ;;
     opensg)
         aws ec2 authorize-security-group-ingress \

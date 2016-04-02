@@ -95,11 +95,13 @@ system("curl --silent localhost:55555 || sudo systemctl restart docker ")  # doe
 system("sudo systemctl start docker || true")
 
 ### Install docker-compose
-system("sudo pip install -U docker-compose=={}".format(COMPOSE_VERSION))
+#system("sudo pip install -U docker-compose=={}".format(COMPOSE_VERSION))
+system("sudo curl -sSL -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/{}/docker-compose-{}-{}".format(COMPOSE_VERSION, platform.system(), platform.machine()))
+system("sudo chmod +x /usr/local/bin/docker-compose")
 
 ### Install docker-machine
 system("sudo curl -sSL -o /usr/local/bin/docker-machine https://github.com/docker/machine/releases/download/v{}/docker-machine-{}-{}".format(MACHINE_VERSION, platform.system(), platform.machine()))
-system("sudo chmod +x /usr/local/bin/docker-machine*")
+system("sudo chmod +x /usr/local/bin/docker-machine")
 
 system("sudo apt-get remove -y --purge dnsmasq-base")
 system("sudo apt-get -qy install python-setuptools pssh apache2-utils httping htop unzip mosh")
