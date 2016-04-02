@@ -7,7 +7,7 @@
 
     - name: installing dependencies
       apt:
-        name: apt-transport-https,ca-certificates,python-pip
+        name: apt-transport-https,ca-certificates,python-pip,tmux
         state: present
         update_cache: true
 
