@@ -5,6 +5,22 @@
     - vagrant.yml
   tasks:
 
+    - name: clean up the home folder
+      file:
+        path: /home/vagrant/{{ item }}
+        state: absent
+      with_items:
+        - base.sh
+        - chef.sh
+        - cleanup.sh
+        - cleanup-virtualbox.sh
+        - puppetlabs-release-wheezy.deb
+        - puppet.sh
+        - ruby.sh
+        - vagrant.sh
+        - virtualbox.sh
+        - zerodisk.sh
+
     - name: installing dependencies
       apt:
         name: apt-transport-https,ca-certificates,python-pip,tmux
