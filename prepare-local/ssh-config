@@ -1,0 +1,3 @@
+Host node*
+    IdentityFile ~/private-key
+    StrictHostKeyChecking no

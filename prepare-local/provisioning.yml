@@ -107,6 +107,22 @@
         state: present
       with_items: instances
 
+    - name: copying the ssh key to the nodes
+      copy:
+        src: private-key
+        dest: /home/vagrant/private-key
+        mode: 0600
+        group: root
+        owner: vagrant
+
+    - name: copying ssh configuration
+      copy:
+        src: ssh-config
+        dest: /home/vagrant/.ssh/config
+        mode: 0600
+        group: root
+        owner: vagrant
+
     - name: fixing the hostname
       hostname:
         name: "{{ inventory_hostname }}"
