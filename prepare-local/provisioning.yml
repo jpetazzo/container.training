@@ -1,6 +1,8 @@
 ---
 - hosts: nodes
   sudo: true
+  vars_files:
+    - vagrant.yml
   tasks:
 
     - name: installing dependencies
@@ -80,3 +82,29 @@
         line: "alias docker-compose='/opt/docker-compose/bin/docker-compose'"
         state: present
         regexp: '^alias docker-compose=.*$'
+
+    - name: building the /etc/hosts file with all nodes
+      lineinfile:
+        dest: /etc/hosts
+        line: "{{ item.private_ip }} {{ item.hostname }}"
+        regexp: "^{{ item.private_ip }} {{ item.hostname }}$"
+        state: present
+      with_items: instances
+
+    - name: fixing the hostname
+      hostname:
+        name: "{{ inventory_hostname }}"
+
+    - name: adjusting the /etc/hosts to the new hostname
+      lineinfile:
+        dest: /etc/hosts
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        owner: root
+        group: root
+        mode: 0644
+      with_items:
+        - regexp: '^127\.0\.0\.1'
+          line: "127.0.0.1 localhost {{ inventory_hostname }}"
+        - regexp: '^127\.0\.1\.1'
+          line: "127.0.1.1 {{ inventory_hostname }}"
