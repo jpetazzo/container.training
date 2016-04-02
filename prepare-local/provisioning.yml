@@ -34,6 +34,20 @@
         groups: docker
         append: yes
 
+    - name: making docker daemon listen to port 55555
+      lineinfile:
+        dest: /etc/default/docker
+        line: DOCKER_OPTS="--host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:55555"
+        regexp: '^#?DOCKER_OPTS=.*$'
+        state: present
+      register: docker_opts
+
+    - name: restarting docker daemon, if needed
+      service:
+        name: docker
+        state: restarted
+      when: docker_opts is defined and docker_opts.changed
+
     - name: performing pip autoupgrade
       pip:
         name: pip
