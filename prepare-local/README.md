@@ -70,8 +70,8 @@ will reflect inside the instance.
   your terminal session and install the Ansible prerequisites again.
 
 - If the IP's `10.10.10.[10-50]` are already taken in your machine, you can
-  change them to other values in the `vagrant.yml` file in this directory.
-  Make sure you pick a set of IP's inside the same subnet.
+  change them to other values in the `vagrant.yml` and `inventory` files in
+  this directory. Make sure you pick a set of IP's inside the same subnet.
 
 - If you suspend your computer, the simulated private network may stop to
   work. This is a known problem of Virtualbox. To fix it, reload all the VM's
