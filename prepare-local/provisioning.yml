@@ -5,7 +5,7 @@
 
     - name: installing dependencies
       apt:
-        name: apt-transport-https,ca-certificates
+        name: apt-transport-https,ca-certificates,python-pip
         state: present
         update_cache: true
 
@@ -33,3 +33,36 @@
         name: vagrant
         groups: docker
         append: yes
+
+    - name: performing pip autoupgrade
+      pip:
+        name: pip
+        state: latest
+
+    - name: installing virtualenv
+      pip:
+        name: virtualenv
+        state: latest
+
+    - name: creating docker-compose folder
+      file:
+        path: /opt/docker-compose
+        state: directory
+      register: docker_compose_folder
+
+    - name: creating virtualenv for docker-compose
+      shell: virtualenv /opt/docker-compose
+      when: docker_compose_folder is defined and docker_compose_folder.changed
+
+    - name: installing docker-compose
+      pip:
+        name: docker-compose
+        state: latest
+        virtualenv: /opt/docker-compose
+
+    - name: making the docker-compose command available to user
+      lineinfile:
+        dest: .bashrc
+        line: "alias docker-compose='/opt/docker-compose/bin/docker-compose'"
+        state: present
+        regexp: '^alias docker-compose=.*$'
