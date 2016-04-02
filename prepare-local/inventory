@@ -1,0 +1,11 @@
+node1 ansible_ssh_host=10.10.10.10
+node2 ansible_ssh_host=10.10.10.20
+node3 ansible_ssh_host=10.10.10.30
+node4 ansible_ssh_host=10.10.10.40
+node5 ansible_ssh_host=10.10.10.50
+
+[nodes]
+node[1:5]
+
+[all:children]
+nodes

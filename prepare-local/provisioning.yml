@@ -1,0 +1,35 @@
+---
+- hosts: nodes
+  sudo: true
+  tasks:
+
+    - name: installing dependencies
+      apt:
+        name: apt-transport-https,ca-certificates
+        state: present
+        update_cache: true
+
+    - name: fetching docker repo key
+      apt_key:
+        keyserver: hkp://p80.pool.sks-keyservers.net:80
+        id: 58118E89F3A912897C070ADBF76221572C52609D
+
+    - name: adding package repos
+      apt_repository:
+        repo: "{{ item }}"
+        state: present
+      with_items:
+        - deb http://http.debian.net/debian wheezy-backports main
+        - deb https://apt.dockerproject.org/repo {{ ansible_lsb.id|lower }}-{{ ansible_lsb.codename }} main
+
+    - name: installing docker
+      apt:
+        name: docker-engine
+        state: present
+        update_cache: true
+
+    - name: adding user vagrant to group docker
+      user:
+        name: vagrant
+        groups: docker
+        append: yes
