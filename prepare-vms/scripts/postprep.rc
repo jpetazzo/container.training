@@ -61,11 +61,52 @@ ipv4 = open("/tmp/ipv4").read()
 system("sudo useradd -d /home/docker -m -s /bin/bash docker")
 system("echo docker:training | sudo chpasswd")
 
+# Helper for Docker prompt.
+system("""sudo tee /usr/local/bin/docker-prompt <<SQRL
+#!/bin/sh
+case "\\\$DOCKER_HOST" in
+*:3376)
+  echo swarm
+  ;;
+*:2376)
+  echo \\\$DOCKER_MACHINE_NAME
+  ;;
+*:2375)
+  echo \\\$DOCKER_MACHINE_NAME
+  ;;
+*:55555)
+  echo \\\$DOCKER_MACHINE_NAME
+  ;;
+"")
+  echo local
+  ;;
+*)
+  echo unknown
+  ;;
+esac
+SQRL""")
+system("sudo chmod +x /usr/local/bin/docker-prompt")
+
 # Fancy prompt courtesy of @soulshake.
-system("echo \"export PS1='\e[1m\[\033[0;32m\][\h] \e[1m\[\033[0;35m\]\u@{}\[\033[0;33m\] \w\[\033[00m\]\n$ '\" | sudo -u docker tee -a /home/docker/.bashrc".format(ipv4))
+system("""sudo -u docker tee -a /home/docker/.bashrc <<SQRL
+export PS1='\e[1m\e[32m[\h] \e[34m(\\\$(docker-prompt)) \e[35m\u@{}\e[33m \w\e[0m\n$ '
+SQRL""".format(ipv4))
+
+# Custom .vimrc
+system("""sudo -u docker tee /home/docker/.vimrc <<SQRL
+syntax on
+set autoindent
+set expandtab
+set number
+set shiftwidth=2
+set softtabstop=2
+SQRL""")
 
 # add docker user to sudoers and allow password authentication
-system("sudo bash -c \"echo 'docker ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/docker\"")
+system("""sudo tee /etc/sudoers.d/docker <<SQRL
+docker ALL=(ALL) NOPASSWD:ALL
+SQRL""")
+
 system("sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config")
 
 system("sudo service ssh restart")
