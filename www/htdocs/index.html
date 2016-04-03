@@ -69,9 +69,6 @@
       .quote p {
         display: inline;
       }
-      .icon img {
-        height: 1em;
-      }
       .warning {
         background-image: url("warning.png");
         background-size: 1.5em;
@@ -458,8 +455,6 @@ and displays aggregated logs.
 
   - between two consecutive updates, the counter will increase either by 4, or by 0
 
-]
-
 ---
 
 ## Viewing logs
@@ -485,6 +480,8 @@ and displays aggregated logs.
 -->
 
 ]
+
+Tip: use `^S` and `^Q` to pause/resume log output.
 
 ---
 
@@ -1015,26 +1012,23 @@ Shortcut: `docker-compose.yml-scaled-rng`
 
 ## Introduction to `jpetazzo/hamba`
 
-- Public image on the Docker Hub
+- General purpose load balancer and traffic director
 
-- Load balancer based on HAProxy
+- [Source code is available on GitHub](
+  https://github.com/jpetazzo/hamba)
 
-- Expects the following arguments:
-  <br/>`FE-port BE1-addr:BE1-port BE2-addr:BE2-port ...`
-  <br/>*or*
-  <br/>`FE-addr:FE-port BE1-addr:BE1-port BE2-addr:BE2-port ...`
+- [Public image is available on the Docker Hub](
+  https://hub.docker.com/r/jpetazzo/hamba/)
 
-  - FE=frontend (the thing other services connect to)
+- Generates a configuration file for HAProxy, then starts HAProxy
 
-  - BE=backend (the multiple copies of your scaled service)
-
-.small[
-Example: listen to port 80 and balance traffic on www1:1234 + www2:2345
-
-```
-docker run -d -p 80 jpetazzo/hamba 80 www1:1234 www2:2345
-```
-]
+- Parameters are provided on the command line; for instance:
+  ```bash
+  docker run -d -p 80 jpetazzo/hamba 80 www1:1234 www2:2345
+  docker run -d -p 80 jpetazzo/hamba 80 www1 1234 www2 2345
+  ```
+  Those two commands do the same thing: they start a load balancer
+  listening on port 80, and balancing traffic across www1:1234 and www2:2345
 
 ---
 
@@ -3223,7 +3217,7 @@ Before trying to build our app, we will remove previous images.
 
 ]
 
-.icon[![Warning](warning.png)] This is supposed to fail!
+.warning[This is supposed to fail!]
 
 (Don't bang your head on the keyboard if it doesn't work!)
 
@@ -3453,9 +3447,9 @@ If we wanted to use DTR, we would:
 
 Let's inspect the source code of `build-tag-push.py` and run it.
 
-.icon[![Warning](warning.png)] Make sure to run it against a single node!
+.warning[Make sure to run it against a single node!]
 
-.icon[![Warning](warning.png)] Make sure to use the original Compose file!
+.warning[Make sure to use the original Compose file!]
 
 .small[(We don't want the scaled RNG service, the custom logging driver, etc.)]
 
@@ -3491,7 +3485,7 @@ Let's try!
 
 ]
 
-.icon[![Warning](warning.png)] This is *still* supposed to fail!
+.warning[This is *still* supposed to fail!]
 
 --
 
@@ -3689,7 +3683,7 @@ This is our plan:
 
 - Gather all backend addresses and configure ambassadors
 
-.icon[![Warning](warning.png)] Services should try to reconnect!
+.warning[Services should try to reconnect!]
 
 ---
 
@@ -5202,7 +5196,7 @@ At this point, `ls -l ~/consul` should show `docker` and
 
 ]
 
-.icon[![Warning](warning.png)] Go back to node1 after this.
+.warning[Go back to node1 after this.]
 
 ---
 
@@ -5264,9 +5258,9 @@ At this point, `ls -l ~/consul` should show `docker` and
 - You can issue API requests to any manager:
   <br/>if you talk to a secondary, it forwards to the primary
 
-.icon[![Warning](warning.png)] There is currently a bug when
+.warning[There is currently a bug when
 the Consul cluster itself has a leader election; see [docker/swarm#1782](
-https://github.com/docker/swarm/issues/1782).
+https://github.com/docker/swarm/issues/1782).]
 
 ---
 
@@ -5492,7 +5486,7 @@ Check that the container is up and running.
 
 ---
 
-## .icon[![Warning](warning.png)] Caveats
+## .warning[Caveats]
 
 - There are some corner cases when the node is also
   the Swarm leader or the Consul leader; this is being improved
