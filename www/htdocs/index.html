@@ -14,11 +14,13 @@
       h1, h2, h3 {
         font-family: 'Yanone Kaffeesatz';
         font-weight: normal;
+        margin-top: 0.5em;
       }
       a {
         text-decoration: none;
         color: blue;
       }
+      .remark-slide-content { padding: 1em 2.5em 1em 2.5em; }
 
       .remark-slide-content { font-size: 25px; }
       .remark-slide-content h1 { font-size: 50px; }
@@ -70,6 +72,12 @@
       .icon img {
         height: 1em;
       }
+      .warning {
+        background-image: url("warning.png");
+        background-size: 1.5em;
+        background-repeat: no-repeat;
+        padding-left: 2em;
+      }
       .exercise {
         background-color: #eee;
         background-image: url("keyboard.png");
@@ -79,7 +87,7 @@
         border: 2px dotted black;
       }
       .exercise::before {
-        content: "Exercise:";
+        content: "Exercise";
         margin-left: 1.8em;
       }
       li p { line-height: 1.25em; }
@@ -357,39 +365,185 @@ Next: we will inspect components independently.
 
 ---
 
-# Running services independently
+# Running the application
 
-First, we will run the random number generator (`rng`).
+Without further ado, let's start our application.
 
 .exercise[
 
 - Go to the `dockercoins` directory, in the cloned repo:
-  <br/>`cd orchestration-workshop/dockercoins`
+  ```bash
+  cd orchestration-workshop/dockercoins
+  ```
 
-- Use Compose to run the `rng` service:
-  <br/>`docker-compose up rng`
+- Use Compose to build and run all containers:
+  ```bash
+  docker-compose up
+  ```
 
-- Docker will pull `python` and build the microservice
+]
+
+Compose tells Docker to build all container images (pulling
+the corresponding base images), then starts all containers,
+and displays aggregated logs.
+
+---
+
+## Lots of logs
+
+- The application continuously generates logs
+
+- We can see the `worker` service making requests to `rng` and `hasher`
+
+- Let's put that in the background
+
+.exercise[
+
+- Stop the application by hitting `^C`
+
+<!--
+```
+^C
+```
+-->
+
+]
+
+- `^C` stops all containers by sending them the `TERM` signal
+
+- Some containers exit immediately, others take longer
+  <br/>(because they don't handle `SIGTERM` and end up being killed after a 10s timeout)
+
+---
+
+## Restarting in the background
+
+- Many flags and commands of Compose are modeled after those of `docker`
+
+.exercise[
+
+- Start the app in the background with the `-d` option:
+  ```bash
+  docker-compose up -d
+  ```
+
+- Check that our app is running with the `ps` command:
+  ```bash
+  docker-compose ps
+  ```
+
+]
+
+`docker-compose ps` also shows the ports exposed by the application.
+
+---
+
+## Connecting to the web UI
+
+- The `webui` container exposes a web dashboard; let's view it
+
+.exercise[
+
+- Open http://[yourVMaddr]:8000/ (from a browser)
+
+]
+
+- The app actually has a constant, steady speed (3.33 coins/second)
+
+- The speed seems not-so-steady because:
+
+  - the worker doesn't update the counter after every loop, but up to once per second
+
+  - the speed is computed by the browser, looking at the counter up to once per second
+
+  - between two consecutive updates, the counter will increase either by 4, or by 0
 
 ]
 
 ---
 
-## Lies, damn lies, and port numbers
+## Viewing logs
 
-.icon[![Warning](warning.png)] Pay attention to the port mapping!
+- The `docker-compose logs` command works like `docker logs`
 
-- The container log says:
-  <br/>`Running on http://0.0.0.0:80/`
+.exercise[
 
-- But if you try `curl localhost:80`, you will get:
-  <br/>`Connection refused`
+- View all logs since container creation and exit when done:
+  ```bash
+  docker-compose logs
+  ```
 
-- Port 80 on the container ≠ port 80 on the Docker host
+- Stream container logs, starting at the last 10 lines for each container:
+  ```bash
+  docker-compose logs --tail 10 --follow
+  ```
+
+<!--
+```
+^C
+```
+-->
+
+]
 
 ---
 
-## Understanding port mapping
+## Upgrading from Compose 1.6
+
+.warning[The `logs` command has changed between Compose 1.6 and 1.7!]
+
+- Up to 1.6
+
+  - `docker-compose logs` is the equivalent of `logs --follow`
+
+  - `docker-compose logs` must be restarted if containers are added
+
+- Since 1.7
+
+  - `--follow` must be specified explicitly
+
+  - new containers are automatically picked up by `docker-compose logs`
+
+---
+
+## Testing services in isolation
+
+- We will stop the `worker` service, and test `rng` and `hasher` alone
+
+.exercise[
+
+- Stop the `worker` service:
+  ```bash
+  docker-compose stop worker
+  ```
+
+- Look at the logs of `rng` and `hasher`:
+  ```bash
+  docker-compose logs --tail 10 --follow
+  ```
+
+]
+
+---
+
+## Locating port numbers for `rng` and `hasher`
+
+- We can see the port mapping for our services with:
+  ```
+  docker-compose ps
+  ```
+
+- Both services run on port 80 *in their respective container*
+
+- On the Docker host, they are mapped to ports 8001 and 8002
+
+- They are not exposed on port 80, because the Docker host has only one port 80
+
+- The mapping is done in `docker-compose.yml`
+
+---
+
+# Container port mapping
 
 - `node1`, the Docker host, has only one port 80
 
@@ -430,7 +584,7 @@ port 80 *in the container*
 
 ---
 
-## Using the `rng` service
+## Testing the `rng` service
 
 Let's get random bytes of data!
 
@@ -457,56 +611,20 @@ NEW-TERM
 
 ---
 
-## Running the hasher
+## Testing the `hasher` service
 
 .exercise[
-
-- Open yet another terminal
-
-<!--
-```
-NEW-TERM
-```
--->
-
-- Start the `hasher` service:
-  <br/>`docker-compose up hasher`
-
-- It will pull `ruby` and do the build
-
-]
-
-.icon[![Warning](warning.png)] Again, pay attention to the port mapping!
-
-The container log says that it's listening on port 80,
-but it's mapped to port 8002 on the host.
-
-You can see the mapping in `docker-compose.yml`.
-
----
-
-## Testing the hasher
-
-.exercise[
-
-- Open one more terminal to `node1`
-
-<!--
-```
-NEW-TERM
-```
--->
 
 - Check that the `hasher` service is alive:
   <br/>`curl localhost:8002`
 
 - Posting binary data requires some extra flags:
 
-  ```
-  curl \
-    -H "Content-type: application/octet-stream" \
-    --data-binary hello \
-    localhost:8002
+  ```bash
+    curl \
+      -H "Content-type: application/octet-stream" \
+      --data-binary hello \
+      localhost:8002
   ```
 
 - Check that it computed the right hash:
@@ -516,107 +634,28 @@ NEW-TERM
 
 ---
 
-## Stopping services
+## Checking logs
 
-We have multiple options:
+- The tests that we made should show up in the first window
+  <br/>(where `docker-compose logs` is still running)
 
-- Interrupt `docker-compose up` with `^C`
-
-- Stop individual services with `docker-compose stop rng`
-
-- Stop all services with `docker-compose stop`
-
-- Kill all services with `docker-compose kill`
-  <br/>(rude, but faster!)
-
-- Stop and remove all services with `docker-compose down`
+- We can now restart the `worker` service
 
 .exercise[
 
-- Use any of those methods to stop `rng` and `hasher`
+- Start the `worker` container:
+  ```bash
+  docker-compose start worker
+  ```
 
 ]
 
-???
+In the web UI, the graph should go up again.
 
-This hidden content is here for automation
-(so that `docker-compose kill` gets executed
-when auto-testing the content).
-
-.exercise[
-
-```
-docker-compose kill
-```
-
-]
+How can we get that graph to go further up?
 
 ---
 
-# Running the whole app on a single node
-
-.exercise[
-
-- Run `docker-compose up` to start all components
-
-]
-
-- `rng` and `hasher` can be started directly
-
-- Other components are built accordingly
-
-- Aggregate output is shown
-
-- Output is verbose
-  <br/>(because the worker is constantly hitting other services)
-
----
-
-## Viewing our application
-
-- The app exposes a web UI with a realtime progress graph
-
-.exercise[
-
-- Open http://[yourVMaddr]:8000/ (from a browser)
-
-]
-
-- The app actually has a constant, steady speed
-  <br/>(3.33 coins/second)
-
-- The speed seems not-so-steady because:
-
-  - we measure a discrete value over discrete intervals
-
-  - the measurement is done by the browser
-
-  - BREAKING: network latency is a thing
-
----
-
-## Running in the background
-
-- The logs are very verbose (and won't get better)
-
-- Let's put them in the background for now!
-
-.exercise[
-
-- Stop the app (with `^C`)
-
-- Start it again with `docker-compose up -d`
-
-- Check on the web UI that the app is still making progress
-
-]
-
-Note: there is a regression in Compose 1.6 when it
-is installed as a self-contained binary: `^C` doesn't
-stop the containers. It will be fixed soon.
-Meanwhile, installing with `pip` is fine too.
-
----
 
 ## Looking at resource usage
 
@@ -624,12 +663,10 @@ Meanwhile, installing with `pip` is fine too.
 
 .exercise[
 
-- run `top` to see CPU and memory usage
-  <br/>(you should see idle cycles)
+- run `top` to see CPU and memory usage (you should see idle cycles)
 
 - run `vmstat 3` to see I/O usage (si/so/bi/bo)
-  <br/>(the 4 numbers should be almost zero,
-  <br/>except `bo` for logging)
+  <br/>(the 4 numbers should be almost zero, except `bo` for logging)
 
 ]
 
@@ -648,13 +685,13 @@ We have available resources.
 .exercise[
 
 - Start 9 more `worker` containers:
-  <br/>`docker-compose scale worker=10`
+  ```bash
+  docker-compose scale worker=10
+  ```
 
-- Check the aggregated logs of those containers:
-  <br/>`docker-compose logs worker`
+- Check the aggregated logs of those containers
 
-- See the impact on CPU load (with top/htop),
-  <br/>and on compute speed (with web UI)
+- See the impact on CPU load (with top/htop), and on compute speed (with web UI)
 
 ]
 
@@ -681,79 +718,72 @@ We have available resources.
 - Let's use state-of-the-art HTTP performance analysis!
   <br/>(i.e. good old tools like `ab`, `httping`...)
 
-???
+---
 
-## Benchmarking our microservices
+## Measuring latency under load
 
-We will test microservices in isolation.
-
-.exercise[
-
-- Stop the application:
-  `docker-compose kill`
-
-- Remove old containers:
-  `docker-compose rm`
-
-- Start `hasher` and `rng`:
-  `docker-compose up hasher rng`
-
-]
-
-Now let's hammer them with requests!
-
-???
-
-## Testing `rng`
-
-Let's assess the raw performance of our RNG.
+We will use `httping`.
 
 .exercise[
 
-- Test the performance on one big request:
-  <br/>`curl -o/dev/null localhost:8001/10000000`
-  <br/>(should take ~1s, and show speed of ~10 MB/s)
+- Check the latency of `rng`:
+  ```bash
+  httping -c 10 localhost:8001
+  ```
+
+- Check the latency of `hasher`:
+  ```bash
+  httping -c 10 localhost:8002
+  ```
 
 ]
 
-If we were doing requests of 1000 bytes ...
+`rng` has a much higher latency than `hasher`.
 
-... Could we get 10k req/s?
+---
 
-Let's test and see what happens!
+## Benchmarking in isolation
 
-???
-
-## Concurrent requests
+We will now use `ab`.
 
 .exercise[
 
-- Test 100 requests of 1000 bytes each:
-  <br/>`ab -n 100 localhost:8001/1000`
-
-- Test 100 requests, 10 requests in parallel:
-  <br/>`ab -n 100 -c 10 localhost:8001/1000`
-  <br/>(look how the latency has increased!)
-
-- Try with 100 requests in parallel:
-  <br/>`ab -n 100 -c 100 localhost:8001/1000`
+- Stop the `worker` containers:
+  ```bash
+  docker-compose kill worker
+  ```
 
 ]
 
-??
+---
 
-Whatever we do, we get ~10 requests/second.
+## Benchmarking `rng`
 
-Increasing concurrency doesn't help:
-it just increases latency.
+We will send 50 requests, but with various levels of concurrency.
 
-???
+.exercise[
 
-## Discussion
+- Send 50 requests, with a single sequential client:
+  ```bash
+  ab -c 1 -n 50 localhost:8001/10
+  ```
+
+- Send 50 requests, with ten parallel clients:
+  ```bash
+  ab -c 10 -n 50 localhost:8001/10
+  ```
+
+]
+
+---
+
+## Benchmark results for `rng`
+
+- In both cases, the benchmark takes ~5 seconds to complete
 
 - When serving requests sequentially, they each take 100ms
 
-- When 10 requests arrive at the same time:
+- In the parallel scenario, the latency increased dramatically:
 
   - one request is served in 100ms
   - another is served in 200ms
@@ -761,161 +791,62 @@ it just increases latency.
   - ...
   - another is served in 1000ms
 
-- All requests are queued and served by a single thread
-
-- It looks like `rng` doesn't handle concurrent requests
-
 - What about `hasher`?
 
-???
+---
 
-## Save some random data and stop the generator
+## Benchmarking `hasher`
 
-Before testing the hasher, let's save some random
-data that we will feed to the hasher later.
+We will do the same tests for `hasher`.
 
-.exercise[
+The command is slightly more complex, since we need to post random data.
 
-- Run `curl localhost:8001/1000000 > /tmp/random`
-
-]
-
-Now we can stop the generator.
+First, we need to put the POST payload in a temporary file.
 
 .exercise[
 
-- In the shell where you did `docker-compose up rng`,
-  <br/>stop it by hitting `^C`
-
-]
-
-???
-
-## Benchmarking the hasher
-
-We will hash the data that we just got from `rng`.
-
-.exercise[
-
-- Posting binary data requires some extra flags:
-
+- Generate 10 bytes of random data:
+  ```bash
+  curl localhost:8001/10 >/tmp/random
   ```
-  curl \
-    -H "Content-type: application/octet-stream" \
-    --data-binary @/tmp/random \
-    localhost:8002
-  ```
-
-- Compute the hash locally to verify that it works fine:
-  <br/>`sha256sum /tmp/random`
-  <br/>(it should display the same hash)
-
-]
-
-???
-
-## The hasher under load
-
-The invocation of `ab` will be slightly more complex as well.
-
-.exercise[
-
-- Execute 100 requests in a row:
-
-  ```
-  ab -n 100 -T application/octet-stream \
-     -p /tmp/random localhost:8002/
-  ```
-
-- Execute 100 requests with 10 requests in parallel:
-
-  ```
-  ab -c 10 -n 100 -T application/octet-stream \
-     -p /tmp/random localhost:8002/
-  ```
-
-]
-
-Take note of the performance numbers (requests/s).
-
-???
-
-## Benchmarking the hasher on smaller data
-
-Here we hashed 1,000,000 bytes.
-
-Later we will hash much smaller payloads.
-
-Let's repeat the tests with smaller data.
-
-.exercise[
-
-- Run `truncate --size=10 /tmp/random`
-- Repeat the `ab` tests
 
 ]
 
 ---
 
-# Measuring latency under load
+## Benchmarking `hasher`
 
-We will use `httping`.
+Once again, we will send 50 requests, with different levels of concurrency.
 
 .exercise[
 
-- Scale back the `worker` service to zero:
-  <br/>`docker-compose scale worker=0`
+- Send 50 requests with a sequential client:
+  ```bash
+    ab -c 1 -n 50 -T application/octet-stream \
+       -p /tmp/random localhost:8002/
+  ```
 
-- Open a new terminal and check the latency of `rng`:
-  <br/>`httping localhost:8001`
-
-- Open a new terminal and do the same for `hasher`:
-  <br/>`httping localhost:8002`
-
-- Keep an eye on both connections!
+- Send 50 requests with 10 parallel clients:
+  ```bash
+    ab -c 10 -n 50 -T application/octet-stream \
+       -p /tmp/random localhost:8002/
+  ```
 
 ]
 
 ---
 
-## Latency in initial conditions
+## Benchmark results for `hasher`
 
-Latency for both services should be very low (~1ms).
+- The sequential benchmarks takes ~5 seconds to complete
 
-Now add a first worker and see what happens.
+- The parallel benchmark takes less than 1 second to complete
 
-.exercise[
+- In both cases, each request takes a bit more than 100ms to complete
 
-- Create the first `worker` instance:
-  <br/>`docker-compose scale worker=1`
+- Requests are a bit slower in the parallel benchmark
 
-]
-
-- `hasher` should be very low (~1ms)
-
-- `rng` should be low, with occasional spikes (10-100ms)
-
----
-
-## Latency when scaling the worker
-
-We will add workers and see what happens.
-
-.exercise[
-
-- Run `docker-compose scale worker=2`
-
-- Check latency
-
-- Increase number of workers and repeat
-
-]
-
-What happens?
-
-- `hasher` remains low
-- `rng` spikes up until it is reaches ~(N-2)*100ms
-  <br/>(when you have N workers)
+- It looks like `hasher` is better equiped to deal with concurrency than `rng`
 
 ---
 
