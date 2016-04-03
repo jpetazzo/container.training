@@ -1,0 +1,78 @@
+# vim: set filetype=ruby:
+require 'yaml'
+require 'vagrant-vbguest' unless defined? VagrantVbguest::Config
+
+configuration_file = File.expand_path("vagrant.yml", File.dirname(__FILE__))
+configuration = YAML.load_file configuration_file
+settings = configuration['vagrant']
+instances = configuration['instances']
+
+$enable_serial_logging = false
+
+Vagrant.configure('2') do |config|
+
+  def check_dependency(plugin_name)
+    unless Vagrant.has_plugin?(plugin_name)
+      puts "Vagrant [" + plugin_name + "] is required but is not installed\n" +
+           "please check if you have the plugin with the following command:\n" +
+           "    $ vagrand plugin list\n" +
+           "If needed install the plugin:\n" +
+           "    $ vagrant plugin install " + plugin_name + "\n"
+      abort "Missing [" + plugin_name + "] plugin\n\n"
+    end
+  end
+
+  check_dependency 'vagrant-vbguest'
+
+  config.vm.box     = settings['default_box']
+  config.vm.box_url = settings['default_box_url']
+  config.ssh.forward_agent = true
+  config.ssh.insert_key = settings['ssh_insert_key']
+  config.vm.box_check_update = true
+  config.vbguest.auto_update = false
+
+  instances.each do |instance|
+
+    next if instance.has_key? 'deactivated' and instance['deactivated']
+
+    config.vm.define instance['hostname'] do |guest|
+
+      if instance.has_key? 'box'
+        guest.vm.box = instance['box']
+      end
+      if instance.has_key? 'box_url'
+        guest.vm.box_url = instance['box_url']
+      end
+
+      if instance.has_key? 'private_ip'
+        guest.vm.network 'private_network', ip: instance['private_ip']
+      end
+
+      guest.vm.provider 'virtualbox' do |vb|
+        if instance.has_key? 'cpu_execution_cap'
+          vb.customize ["modifyvm", :id, "--cpuexecutioncap", instance['cpu_execution_cap'].to_s]
+        end
+
+        vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
+        vb.customize ["modifyvm", :id, "--nictype2", "virtio"]
+
+        if instance.has_key? 'memory'
+          vb.memory = instance['memory']
+        end
+
+        if instance.has_key? 'cores'
+          vb.cpus = instance['cores']
+        end
+      end
+
+      if instance.has_key? 'mounts'
+        instance['mounts'].each do |mount|
+          guest.vm.synced_folder mount['host_path'], mount['guest_path'], owner: mount['owner'], group: mount['group']
+        end
+      end
+
+    end
+
+  end
+
+end
