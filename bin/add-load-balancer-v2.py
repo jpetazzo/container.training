@@ -33,10 +33,15 @@ if service_name not in config["services"]:
 
 lb_name = "{}-lb".format(service_name)
 be_name = "{}-be".format(service_name)
+wd_name = "{}-wd".format(service_name)
 
 if lb_name in config["services"]:
     error("load balancer {} already exists in $COMPOSE_FILE"
-          .format(service_name))
+          .format(lb_name))
+
+if wd_name in config["services"]:
+    error("dns watcher {} already exists in $COMPOSE_FILE"
+          .format(wd_name))
 
 service = config["services"][service_name]
 if "networks" in service:
@@ -60,6 +65,16 @@ config["services"][lb_name] = {
             "aliases": [ service_name ],
         },
         service_name: None,
+    },
+}
+
+# Add the DNS watcher.
+config["services"][wd_name] = {
+    "image": "jpetazzo/watchdns",
+    "command": "{} {} {}".format(port, be_name, port),
+    "volumes_from": [ lb_name ],
+    "networks": {
+      service_name: None,
     },
 }
 

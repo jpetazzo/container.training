@@ -1,0 +1,142 @@
+---
+- hosts: nodes
+  sudo: true
+  vars_files:
+    - vagrant.yml
+  tasks:
+
+    - name: clean up the home folder
+      file:
+        path: /home/vagrant/{{ item }}
+        state: absent
+      with_items:
+        - base.sh
+        - chef.sh
+        - cleanup.sh
+        - cleanup-virtualbox.sh
+        - puppetlabs-release-wheezy.deb
+        - puppet.sh
+        - ruby.sh
+        - vagrant.sh
+        - virtualbox.sh
+        - zerodisk.sh
+
+    - name: installing dependencies
+      apt:
+        name: apt-transport-https,ca-certificates,python-pip,tmux
+        state: present
+        update_cache: true
+
+    - name: fetching docker repo key
+      apt_key:
+        keyserver: hkp://p80.pool.sks-keyservers.net:80
+        id: 58118E89F3A912897C070ADBF76221572C52609D
+
+    - name: adding package repos
+      apt_repository:
+        repo: "{{ item }}"
+        state: present
+      with_items:
+        - deb http://http.debian.net/debian wheezy-backports main
+        - deb https://apt.dockerproject.org/repo {{ ansible_lsb.id|lower }}-{{ ansible_lsb.codename }} main
+
+    - name: installing docker
+      apt:
+        name: docker-engine
+        state: present
+        update_cache: true
+
+    - name: adding user vagrant to group docker
+      user:
+        name: vagrant
+        groups: docker
+        append: yes
+
+    - name: making docker daemon listen to port 55555
+      lineinfile:
+        dest: /etc/default/docker
+        line: DOCKER_OPTS="--host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:55555"
+        regexp: '^#?DOCKER_OPTS=.*$'
+        state: present
+      register: docker_opts
+
+    - name: restarting docker daemon, if needed
+      service:
+        name: docker
+        state: restarted
+      when: docker_opts is defined and docker_opts.changed
+
+    - name: performing pip autoupgrade
+      pip:
+        name: pip
+        state: latest
+
+    - name: installing virtualenv
+      pip:
+        name: virtualenv
+        state: latest
+
+    - name: creating docker-compose folder
+      file:
+        path: /opt/docker-compose
+        state: directory
+      register: docker_compose_folder
+
+    - name: creating virtualenv for docker-compose
+      shell: virtualenv /opt/docker-compose
+      when: docker_compose_folder is defined and docker_compose_folder.changed
+
+    - name: installing docker-compose
+      pip:
+        name: docker-compose
+        state: latest
+        virtualenv: /opt/docker-compose
+
+    - name: making the docker-compose command available to user
+      lineinfile:
+        dest: .bashrc
+        line: "alias docker-compose='/opt/docker-compose/bin/docker-compose'"
+        state: present
+        regexp: '^alias docker-compose=.*$'
+
+    - name: building the /etc/hosts file with all nodes
+      lineinfile:
+        dest: /etc/hosts
+        line: "{{ item.private_ip }} {{ item.hostname }}"
+        regexp: "^{{ item.private_ip }} {{ item.hostname }}$"
+        state: present
+      with_items: instances
+
+    - name: copying the ssh key to the nodes
+      copy:
+        src: private-key
+        dest: /home/vagrant/private-key
+        mode: 0600
+        group: root
+        owner: vagrant
+
+    - name: copying ssh configuration
+      copy:
+        src: ssh-config
+        dest: /home/vagrant/.ssh/config
+        mode: 0600
+        group: root
+        owner: vagrant
+
+    - name: fixing the hostname
+      hostname:
+        name: "{{ inventory_hostname }}"
+
+    - name: adjusting the /etc/hosts to the new hostname
+      lineinfile:
+        dest: /etc/hosts
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        owner: root
+        group: root
+        mode: 0644
+      with_items:
+        - regexp: '^127\.0\.0\.1'
+          line: "127.0.0.1 localhost {{ inventory_hostname }}"
+        - regexp: '^127\.0\.1\.1'
+          line: "127.0.1.1 {{ inventory_hostname }}"
