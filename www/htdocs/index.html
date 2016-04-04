@@ -2890,11 +2890,15 @@ class: pic
 
 - Possible backends:
 
-  - dynamic, self-hosted (zk, etcd, consul)
+  - dynamic, self-hosted
+    <br/>(requires to run a Consul/Etcd/Zookeeper cluster)
 
-  - static (command-line or file)
+  - static, through command-line or file
+    <br/>(great for testing, or for private subnets, see [this article](
+    https://medium.com/on-docker/docker-swarm-flat-file-engine-discovery-2b23516c71d4#.6vp94h5wn)
 
-  - hosted by Docker (token)
+  - external, token-based
+    <br/>(dynamic; nothing to operate; relies on external service operated by Docker Inc.)
 
 - We will use the token mechanism
 
@@ -3177,6 +3181,45 @@ This can be any of your five nodes.
 
 - Binpack: try to maximize resource usage
   <br/>(in other words: use as few hosts as possible)
+
+---
+
+# Resource allocation
+
+- Swarm can honor resource reservations
+
+- This requires containers to be started with resource limits
+
+- Swarm refuses to schedule a container if it cannot honor a reservation
+
+.exercise[
+
+- Start Redis containers with 1 GB of RAM until Swarm refuses to start more:
+  ```bash
+  docker run -d -m 1G redis
+  ```
+
+]
+
+On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start the 16th container.
+
+---
+
+## Things to know about resource allocation
+
+- `docker info` shows resource allocation for each node
+
+- Swarm allows a 5% resource overcommit (tunable)
+
+- Containers without resource reservation can always be started
+
+- Resources of stopped containers are still counted as being reserved
+
+  - this guarantees that it will be possible to restart a stopped container
+
+  - containers have to be deleted to free up their resources
+
+  - `docker update` can be used to change resource allocation on the fly
 
 ---
 
@@ -4946,11 +4989,21 @@ configuration first.
   have a `loadbalancer` label giving the name
   of that loadbalancer*
 
-- This is implemented by two scripts:
+- See script `reconfigure-load-balancers.py` for an example
 
-  - add-load-balancer-v2.py
+---
 
-  - reconfigure-load-balancers.py
+## Further automation with Engine 1.11 and round robin DNS
+
+- When multiple containers have the same network alias:
+
+  - Engine 1.10 returns only one of them (the same one across the whole network)
+
+  - Engine 1.11 returns all of them (in a random order)
+
+- A "smart" client can use all records to implement load balancing
+
+- See script `add-load-balancer-v2.py` for an example
 
 ---
 
@@ -5544,7 +5597,10 @@ Check that the container is up and running.
   <br/>first release with multi-host networking
 
 - January 2016: Compose 1.6 + Engine 1.10 =
-  <br/>HUGE improvements (DNS server, HA...)
+  <br/>embedded DNS server, experimental high availability
+
+- April 2016: Compose 1.7 + Engine 1.11 =
+  <br/>round robin DNS records, huge improvements in HA
 
 - Next release: another truckload of features
 
