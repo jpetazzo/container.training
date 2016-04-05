@@ -2,7 +2,10 @@
 import os
 import sys
 import yaml
-import pdfkit
+try:
+    import pdfkit
+except ImportError:
+    print("WARNING: could not import pdfkit; PDF generation will fali.")
 
 def prettify(l):
     l = [ip.strip() for ip in l]
@@ -59,8 +62,8 @@ div {{
     float:left;
     border: 1px dotted black;
     width: 27%;
-    padding: 6% 3.5% 2.5% 2.5%;
-    font-size: x-medium;
+    padding: 6% 2.5% 2.5% 2.5%;
+    font-size: x-small;
     background-image: url("{background_image}");
     background-size: 13%;
     background-position-x: 50%;

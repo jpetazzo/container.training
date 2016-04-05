@@ -8,7 +8,7 @@ instance_login: docker
 instance_password: training
 
 clustersize: 5  # Number of VMs per cluster
-pagesize: 15    # Number of cards to print per page
+pagesize: 12    # Number of cards to print per page
 
 #background_image: https://myapps.developer.ubuntu.com/site_media/appmedia/2014/12/swarm.png
 background_image: http://www.yellosoft.us/public/images/docker.png
