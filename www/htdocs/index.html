@@ -101,9 +101,11 @@ class: title
 
 ## Logistics
 
-- Hello! We are:
-  <br/>`jerome at docker dot com`
+- Hello! I'm `jerome at docker dot com`
+
+<!--
   <br/>`aj at soulshake dot net`
+-->
 
 <!--
 Reminder, when updating the agenda: when people are told to show
@@ -115,16 +117,16 @@ at e.g. 9am, and start at 9:30.
 
 - Agenda:
 
-  .small[
-  - 09:00-09:15 hello!
-  - 09:15-10:45 part 1
-  - 10:45-11:00 coffee break
-  - 11:00-12:30 part 2
-  - 12:30-13:45 lunch break
-  - 13:45-15:15 part 3
-  - 15:15-15:30 coffee break
-  - 15:30-17:00 part 4
-  ]
+.small[
+- 09:00-09:15 hello!
+- 09:15-10:45 part 1
+- 10:45-11:00 coffee break
+- 11:00-12:30 part 2
+- 12:30-13:45 lunch break
+- 13:45-15:15 part 3
+- 15:15-15:30 coffee break
+- 15:30-17:00 part 4
+]
 
 <!-- - This will be FAST PACED, but DON'T PANIC! -->
 
@@ -139,7 +141,7 @@ Remember to change:
 -->
 
 - Experimental chat support on
-  [Gitter](https://gitter.im/jpetazzo/workshop-20160322-munchen)
+  [Gitter](https://gitter.im/jpetazzo/workshop-20160405-stockholm)
 
 ---
 
@@ -153,10 +155,9 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 - Pre-requirements
 - VM environment
 - Our sample application
-- Running services independently
-- Running the whole app on a single node
+- Running the application
+- Container port mapping
 - Identifying bottlenecks
-- Measuring latency under load
 - Scaling HTTP on a single node
 - Put a load balancer on it
 - Connecting to containers on other hosts
@@ -169,6 +170,8 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 
 - Docker for ops
 - Backups
+- Docker events stream
+- Attaching labels
 - Logs
 - Storing container logs in an ELK stack
 - Security upgrades
@@ -187,12 +190,14 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 - Setting up Consul and overlay networks
 - Multi-host networking
 - Using overlay networks with Compose
+- Load balancing with overlay networks
 
 ---
 
 ## Outline (4/4)
 
 - Here be dragons
+- Distributing Machine credentials
 - Highly available Swarm managers
 - Highly available containers
 - Conclusions
@@ -239,7 +244,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 - This is the stuff you're supposed to do!
 - Go to [container.training](http://container.training/) to view these slides
 - Join the chat room on
-  [Gitter](https://gitter.im/jpetazzo/workshop-20160322-munchen)
+  [Gitter](https://gitter.im/jpetazzo/workshop-20160405-stockholm)
 
 ]
 
@@ -299,13 +304,13 @@ If you want to use screen or whatever, you're welcome!
 
 ## Brand new versions!
 
-- Engine 1.10.**3**
+- Engine 1.11-rc3
 
-- Compose 1.6.2
+- Compose 1.7-rc1
 
-- Swarm 1.1.3
+- Swarm 1.2-rc1
 
-- Machine 0.6.0
+- Machine 0.7-rc1
 
 ---
 
@@ -357,8 +362,6 @@ class: pic
   - DockerCoins are stored in `redis`
   - `redis` is also updated every second to track speed
   - you can see the progress with the `webui`
-
-Next: we will inspect components independently.
 
 ---
 
@@ -451,7 +454,7 @@ and displays aggregated logs.
 
   - the worker doesn't update the counter after every loop, but up to once per second
 
-  - the speed is computed by the browser, looking at the counter up to once per second
+  - the speed is computed by the browser, checking the counter up to once per second
 
   - between two consecutive updates, the counter will increase either by 4, or by 0
 
@@ -521,6 +524,40 @@ Tip: use `^S` and `^Q` to pause/resume log output.
 
 ]
 
+We will let Compose stream the logs,
+and open a new terminal.
+
+<!--
+```
+&
+```
+-->
+
+---
+
+## Compose file location
+
+- What happens if you try to run Compose in `$HOME`?
+
+--
+
+- Compose complains that it cannot find `docker-compose.yml`
+
+- You need to go to the directory containing `docker-compose.yml`
+
+  - or use the `-f` option to give the path to the Compose file
+
+  - or set the `COMPOSE_FILE` environment variable
+
+.exercise[
+
+- Go to the application directory:
+  ```bash
+  cd ~/orchestration-workshop/dockercoins
+  ```
+
+]
+
 ---
 
 ## Locating port numbers for `rng` and `hasher`
@@ -586,14 +623,6 @@ port 80 *in the container*
 Let's get random bytes of data!
 
 .exercise[
-
-- Open a new terminal and connect to the same VM
-
-<!--
-```
-NEW-TERM
-```
--->
 
 - Check that the service is alive:
   <br/>`curl localhost:8001`
@@ -2331,7 +2360,7 @@ in the output.
 
   - host
   - container_name
-  - short_message
+  - message
 
 ]
 

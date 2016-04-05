@@ -1,6 +1,6 @@
 www:
   image: nginx
   ports:
-    - "80:80"
+    - "8080:80"
   volumes:
     - "./htdocs:/usr/share/nginx/html"
