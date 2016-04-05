@@ -1,23 +1,24 @@
 version: '2'
 
 services:
-    rng:
-        build: rng
-        ports:
-            - 80
+  rng:
+    build: rng
+    ports:
+    - 80
 
-    hasher:
-        build: hasher
-        ports:
-            - 80
+  hasher:
+    build: hasher
+    ports:
+    - 80
 
-    webui:
-        build: webui
-        ports:
-            - 80
+  webui:
+    build: webui
+    ports:
+    - 80
 
-    redis:
-        image: redis
+  redis:
+    image: redis
 
-    worker:
-        build: worker
+  worker:
+    build: worker
+

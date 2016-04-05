@@ -1,43 +1,44 @@
 rng1:
-    build: rng
+  build: rng
 
 rng2:
-    build: rng
+  build: rng
 
 rng3:
-    build: rng
+  build: rng
 
 rng:
-    image: jpetazzo/hamba
-    links:
-      - rng1
-      - rng2
-      - rng3
-    command: 80 rng1 80 rng2 80 rng3 80
-    ports:
-      - "8001:80"
+  image: jpetazzo/hamba
+  links:
+  - rng1
+  - rng2
+  - rng3
+  command: 80 rng1 80 rng2 80 rng3 80
+  ports:
+  - "8001:80"
 
 hasher:
-    build: hasher
-    ports:
-      - "8002:80"
+  build: hasher
+  ports:
+  - "8002:80"
 
 webui:
-    build: webui
-    links:
-      - redis
-    ports:
-      - "8000:80"
-    volumes:
-      - "./webui/files/:/files/"
+  build: webui
+  links:
+  - redis
+  ports:
+  - "8000:80"
+  volumes:
+  - "./webui/files/:/files/"
 
 redis:
-    image: jpetazzo/hamba
-    command: 6379 AA.BB.CC.DD EEEEE
+  image: jpetazzo/hamba
+  command: 6379 AA.BB.CC.DD EEEEE
 
 worker:
-    build: worker
-    links:
-      - rng
-      - hasher
-      - redis
+  build: worker
+  links:
+  - rng
+  - hasher
+  - redis
+
