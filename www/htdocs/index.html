@@ -252,22 +252,50 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 
 # VM environment
 
-- Each person gets 5 VMs
-- They are *your* VMs
+- Each person gets 5 private VMs (not shared with anybody else)
 - They'll be up until tomorrow
 - You have a little card with login+password+IP addresses
 - You can automatically SSH from one VM to another
 
 .exercise[
 
+<!--
+```bash
+for N in $(seq 1 5); do
+  ssh -o StrictHostKeyChecking=no node$N true
+done
+for N in $(seq 1 5); do
+  ssh node$N "docker ps -aq | xargs -r docker rm -f"
+done
+```
+-->
+
 - Log into the first VM (`node1`)
-- Check that you can SSH (without password) to `node2`
-- Check the version of docker with `docker version`
+- Check that you can SSH (without password) to `node2`:
+  ```bash
+  ssh node2
+  ```
+- Type `exit` or `^D` to come back to node1
+
+<!--
+```meta
+^D
+```
+-->
 
 ]
 
-Note: from now on, unless instructed, **all commands must
-be run from the first VM, `node1`**.
+---
+
+## We will (mostly) interact with node1 only
+
+- Unless instructed, **all commands must be run from the first VM, `node1`**
+
+- We will only checkout/copy the code on `node1`
+
+- When we will use the other nodes, we will do it mostly through the Docker API
+
+- We will use SSH only for a few "out of band" operations (mass-removing containers...)
 
 ---
 
@@ -305,12 +333,21 @@ If you want to use screen or whatever, you're welcome!
 ## Brand new versions!
 
 - Engine 1.11-rc3
-
 - Compose 1.7-rc1
-
 - Swarm 1.2-rc1
-
 - Machine 0.7-rc1
+
+.exercise[
+
+- Check all installed versions:
+  ```bash
+  docker version
+  docker-compose -v
+  docker run --rm swarm -version
+  docker-machine -v
+  ```
+
+]
 
 ---
 
@@ -326,6 +363,10 @@ If you want to use screen or whatever, you're welcome!
   - `webui` = web interface to watch progress
 
 .exercise[
+
+<!--
+<br/>`[ -d orchestration-workshop ] && mv orchestration-workshop orchestration-workshop.$$`
+-->
 
 - Clone the repository on `node1`:
   <br/>`git clone git://github.com/jpetazzo/orchestration-workshop`
@@ -373,7 +414,7 @@ Without further ado, let's start our application.
 
 - Go to the `dockercoins` directory, in the cloned repo:
   ```bash
-  cd orchestration-workshop/dockercoins
+  cd ~/orchestration-workshop/dockercoins
   ```
 
 - Use Compose to build and run all containers:
@@ -402,7 +443,7 @@ and displays aggregated logs.
 - Stop the application by hitting `^C`
 
 <!--
-```
+```meta
 ^C
 ```
 -->
@@ -477,7 +518,7 @@ and displays aggregated logs.
   ```
 
 <!--
-```
+```meta
 ^C
 ```
 -->
@@ -522,16 +563,16 @@ Tip: use `^S` and `^Q` to pause/resume log output.
   docker-compose logs --tail 10 --follow
   ```
 
+<!--
+```meta
+^Z
+```
+-->
+
 ]
 
 We will let Compose stream the logs,
 and open a new terminal.
-
-<!--
-```
-&
-```
--->
 
 ---
 
@@ -563,7 +604,7 @@ and open a new terminal.
 ## Locating port numbers for `rng` and `hasher`
 
 - We can see the port mapping for our services with:
-  ```
+  ```bash
   docker-compose ps
   ```
 
@@ -630,10 +671,9 @@ Let's get random bytes of data!
 - Get 10 bytes of random data:
   <br/>`curl localhost:8001/10`
 
-- If the binary data output messed up your terminal, fix it:
-  <br/>`reset`
-
 ]
+
+If the binary data output messed up your terminal, fix it with `reset`.
 
 ---
 
@@ -642,21 +682,36 @@ Let's get random bytes of data!
 .exercise[
 
 - Check that the `hasher` service is alive:
-  <br/>`curl localhost:8002`
+  ```bash
+  curl localhost:8002
+  ```
 
 - Posting binary data requires some extra flags:
 
   ```bash
-    curl \
-      -H "Content-type: application/octet-stream" \
-      --data-binary hello \
-      localhost:8002
+    curl -H "Content-type: application/octet-stream" \
+      --data-binary hello localhost:8002
   ```
 
-- Check that it computed the right hash:
-  <br/>`echo -n hello | sha256sum`
+]
+
+---
+
+## Verifying the computed hash
+
+- This web service is essentially implementing `sha256sum` over HTTP
+
+.exercise[
+
+- Check that `sha256sum` yields the same result:
+  ```bash
+  echo -n hello | sha256sum
+  ```
 
 ]
+
+- We specify `-n` to prevent `echo` from adding a trailing `\n`
+  <br/>(which would change the SHA digest)
 
 ---
 
@@ -718,6 +773,13 @@ We have available resources.
 - Check the aggregated logs of those containers
 
 - See the impact on CPU load (with top/htop), and on compute speed (with web UI)
+
+<!--
+```bash
+sleep 5
+killall docker-compose
+```
+-->
 
 ]
 
@@ -965,7 +1027,7 @@ WHY?!?
 
 - We could try to scale with Compose:
 
-  ```
+  ```bash
   docker-compose scale rng=3
   ```
 
@@ -999,7 +1061,7 @@ WHY?!?
 
 - Use `docker-compose` to stop `rng`:
 
-  ```
+  ```bash
   docker-compose stop rng
   ```
 
@@ -1081,31 +1143,11 @@ Let's add our load balancer to the Compose file.
         - "8001:80"
   ```
 
-]
-
-Shortcut: `docker-compose.yml-scaled-rng`
-
-???
-
-## Point other services to the load balancer
-
-- The only affected service is `worker`
-
-- We have to replace the `rng` link with a link to `rng0`,
-  but it should still be named `rng` (so we don't change the code)
-
-.exercise[
-
-- Update the `worker` section as follows:
-
-  ```
-  worker:
-    build: worker
-    links:
-      - rng0:rng
-      - hasher
-      - redis
-   ```
+<!--
+```edit
+cp docker-compose.yml-scaled-rng docker-compose.yml
+```
+-->
 
 ]
 
@@ -1178,6 +1220,21 @@ faster for a well-behaved application.*
 
 ---
 
+## Cleaning up
+
+- Before moving forward, let's clean up all those containers
+
+.exercise[
+
+- Use the `down` command to stop and remove containers:
+  ```bash
+  docker-compose down
+  ```
+
+]
+
+---
+
 # Connecting to containers on other hosts
 
 - So far, our whole stack is on a single machine
@@ -1205,13 +1262,13 @@ faster for a well-behaved application.*
 
 - With the CLI:
 
-  ```
+  ```bash
   docker run --add-host redis:192.168.1.2 myservice...
   ```
 
 - In a Compose file:
 
-  ```
+  ```yaml
   myservice:
     image: myservice
     extra_host:
@@ -1274,7 +1331,7 @@ Choose wisely!
 
 - Start a new redis container, mapping port 6379 to 6379:
 
-  ```
+  ```bash
   docker run -d -p 6379:6379 redis
   ```
 
@@ -1284,7 +1341,7 @@ Choose wisely!
 
 - Try to connect to it (from anywhere):
 
-  ```
+  ```bash
   curl node1:6379
   ```
 
@@ -1300,7 +1357,7 @@ The `ERR` messages are normal: Redis speaks Redis, not HTTP.
 
 - Comment out `redis`:
 
-  ```
+  ```yaml
   #redis:
   #    image: redis
   ```
@@ -1315,7 +1372,7 @@ The `ERR` messages are normal: Redis speaks Redis, not HTTP.
 
 - Update `worker`:
 
-  ```
+  ```yaml
   worker:
     build: worker
     extra_hosts:
@@ -1340,7 +1397,7 @@ Shortcut: `docker-compose.yml-extra-hosts`
 
 - Update `webui`:
 
-  ```
+  ```yaml
   webui:
     build: webui
     extra_hosts:
@@ -1403,7 +1460,7 @@ Shortcut: `docker-compose.yml-extra-hosts`
 - Keep an eye on the web UI
 
 - Create 20 workers on both nodes:
-  ```
+  ```bash
   for NODE in node1 node2; do
     export DOCKER_HOST=tcp://$NODE:55555
     docker-compose scale worker=20
@@ -1424,7 +1481,7 @@ Note: of course, if we wanted, we could run on all five nodes.
 
 - You can use the following scriptlet:
 
-  ```
+  ```bash
   for N in $(seq 1 5); do
     export DOCKER_HOST=tcp://node$N:55555
     docker ps -qa | xargs docker rm -f
@@ -1445,9 +1502,15 @@ Note: of course, if we wanted, we could run on all five nodes.
 .exercise[
 
 - See what happens if we run:
-  ```
+  ```bash
   docker run --add-host redis:1.2.3.4 alpine ping redis
   ```
+
+<!--
+```meta
+^C
+```
+-->
 
 ]
 
@@ -1526,6 +1589,12 @@ class: pic
       command: 6379 `AA.BB.CC.DD EEEEE`
   ```
 
+<!--
+```edit
+cat docker-compose.yml-ambassador | sed "s/AA.BB.CC.DD/$(curl myip.enix.org/REMOTE_ADDR)/" | sed "s/EEEEE/$(docker port myredis 6379 | cut -d: -f2)/" > docker-compose.yml
+```
+-->
+
 ]
 
 Shortcut: `docker-compose.yml-ambassador`
@@ -1543,13 +1612,13 @@ Shortcut: `docker-compose.yml-ambassador`
 
 - Just tell Compose to do its thing:
 
-  ```
+  ```bash
   docker-compose up -d
   ```
 
 - Check that the stack is up and running:
 
-  ```
+  ```bash
   docker-compose ps
   ```
 
@@ -1677,6 +1746,7 @@ Let's celebrate our success!
       export DOCKER_HOST=tcp://node$N:55555
       docker-compose down &
     done
+    wait
   ```
 
 ]
@@ -1860,9 +1930,15 @@ class: title
 
 - Make sure you're talking to the initial host:
 
-  ```
+  ```bash
   unset DOCKER_HOST
   ```
+
+<!--
+```meta
+^{
+```
+-->
 
 - Start the container:
 
@@ -1915,6 +1991,12 @@ class: title
 - Exit the container
 
 - Look into `/tmp/myredis` (on the host)
+
+<!--
+```meta
+^}
+```
+-->
 
 ]
 
@@ -1970,14 +2052,18 @@ With containers, what are our options?
 .exercise[
 
 - Get a stream of events:
-  ```
+  ```bash
   docker events
   ```
 
-<!-- NEW-TERM -->
+<!--
+```meta
+^Z
+```
+-->
 
 - In a new terminal, do *anything*:
-  ```
+  ```bash
   docker run --rm alpine sleep 10
   ```
 
@@ -2000,7 +2086,7 @@ to the default `bridge` network.
 .exercise[
 
 - Start two containers, with and without a `backup` label:
-  ```
+  ```bash
   docker run -d --name leweb nginx
   docker run -d --name ledata --label backup=please redis
   ```
@@ -2016,13 +2102,13 @@ to the default `bridge` network.
 .exercise[
 
 - List only containers that have a `backup` label:
-  ```
+  ```bash
   docker ps --filter label=backup
   ```
 
 - List only containers where the `backup` label
   has a specific value:
-  ```
+  ```bash
   docker ps --filter label=backup=please
   ```
 
@@ -2040,14 +2126,18 @@ to the default `bridge` network.
 .exercise[
 
 - Show events only for containers with a "backup" label:
-  ```
+  ```bash
   docker events --filter label=backup
   ```
 
-<!-- NEW-TERM -->
+<!--
+```meta
+^Z
+```
+-->
 
 - In a different terminal, terminate our containers:
-  ```
+  ```bash
   docker kill leweb ledata
   ```
 
@@ -2101,14 +2191,14 @@ Only the events for `ledata` will be shown.
 
 - To check logs, run e.g.
 
-  ```
+  ```bash
   docker run --volumes-from ... ubuntu sh -c \
          "grep WARN /logs/*.log"
   ```
 
 - Or just go interactive:
 
-  ```
+  ```bash
   docker run --volumes-from ... -ti ubuntu
   ```
 
@@ -2148,7 +2238,7 @@ Only the events for `ledata` will be shown.
 - The flags are identical for `docker daemon` and `docker run`
 
 Tip #1: when provisioning with Docker Machine, use:
-```
+```bash
 docker-machine create ... --engine-opt log-driver=...
 ```
 
@@ -2243,12 +2333,12 @@ What we will do:
 .exercise[
 
 - Go to the `elk` directory:
-  ```
+  ```bash
   cd ~/orchestration-workshop/elk
   ```
 
 - Start the ELK stack:
-  ```
+  ```bash
   docker-compose up -d
   ```
 
@@ -2267,7 +2357,7 @@ What we will do:
 .exercise[
 
 - Look at Logstash stdout:
-  ```
+  ```bash
   docker-compose logs logstash
   ```
 
@@ -2286,7 +2376,7 @@ in the output.
 .exercise[
 
 - Check the port number for the Kibana UI:
-  ```
+  ```bash
   docker-compose ps kibana
   ```
 
@@ -2331,10 +2421,18 @@ in the output.
 .exercise[
 
 - Check the port number for the GELF socket:
-  <br/>`docker-compose ps logstash`
+  ```bash
+  docker-compose ps logstash
+  ```
 
 - Start a one-off container, overriding its logging driver:
   <br/>(make sure to update the port number, of course)
+
+  <!--
+  ```placeholder
+  EEEEE 32768
+  ```
+  -->
 
   ```bash
     docker run --rm --log-driver gelf \
@@ -2405,6 +2503,12 @@ in the output.
       gelf-address: "udp://`AA.BB.CC.DD:EEEEE`"
   ```
 
+<!--
+```edit
+cat docker-compose.yml-logging | sed "s/AA.BB.CC.DD:EEEEE/127.0.0.1:32768/" > docker-compose.yml
+```
+-->
+
 ]
 
 Shortcut: `docker-compose.yml-logging`
@@ -2417,7 +2521,7 @@ Shortcut: `docker-compose.yml-logging`
 .exercise[
 
 - Use Compose normally:
-  ```
+  ```bash
   docker-compose up -d
   ```
 
@@ -2484,14 +2588,14 @@ of this workshop.
 ## In practice
 
 - Keep track of running containers before stopping the Engine:
-  ```
+  ```bash
   docker ps --no-trunc -q |
   tee /tmp/running |
   xargs -n1 -P10 docker stop
   ```
 
 - Restart those containers after the Engine is running again:
-  ```
+  ```bash
   xargs docker start < /tmp/running
   ```
   <br/>(Run this multiple times if you have linked containers!)
@@ -2540,7 +2644,7 @@ of this workshop.
 ## Upgrading with Compose
 
 Compose makes this particularly easy:
-```
+```bash
 docker-compose build --pull --no-cache
 docker-compose up -d
 ```
@@ -2579,6 +2683,12 @@ Ngrep uses libpcap (like tcpdump) to sniff network traffic.
 
 .exercise[
 
+<!--
+```meta
+^{
+```
+-->
+
 - Start a container with the same network namespace:
   <br/>`docker run --net container:myredis -ti alpine sh`
 
@@ -2587,6 +2697,12 @@ Ngrep uses libpcap (like tcpdump) to sniff network traffic.
 
 - Run ngrep:
   <br/>`ngrep -tpd eth0 -Wbyline . tcp`
+
+<!--
+```meta
+^}
+```
+-->
 
 ]
 
@@ -2944,7 +3060,7 @@ in the discovery service hosted by Docker Inc.
 
 - Create your token, saving it preciously to disk as well:
 
-  ```
+  ```bash
   TOKEN=$(docker run swarm create | tee token)
   ```
 
@@ -2984,6 +3100,12 @@ in the discovery service hosted by Docker Inc.
 
 - Provision a node with Docker Machine:
 
+  <!--
+  ```placeholder
+  AA.BB.CC.DD $(getent hosts node1 | awk '{print $1}')
+  ```
+  -->
+
   ```bash
     docker-machine create --driver generic \
       --swarm --swarm-master --swarm-discovery token://$TOKEN \
@@ -3021,13 +3143,13 @@ Let's connect to the node *individually*.
 
 - Select the node with Machine
 
-  ```
+  ```bash
   eval $(docker-machine env node1)
   ```
 
 - Execute some Docker commands
 
-  ```
+  ```bash
   docker version
   docker info
   docker ps
@@ -3047,13 +3169,13 @@ Let's connect to the manager instead.
 
 - Select the Swarm manager with Machine
 
-  ```
+  ```bash
   eval $(docker-machine env node1 --swarm)
   ```
 
 - Execute some Docker commands
 
-  ```
+  ```bash
   docker version
   docker info
   docker ps
@@ -3148,6 +3270,12 @@ Name: node1
 
 - Add another node with Docker Machine
 
+  <!--
+  ```placeholder
+  AA.BB.CC.DD $(getent hosts node2 | awk '{print $1}')
+  ```
+  -->
+
   ```bash
     docker-machine create --driver generic \
       --swarm --swarm-discovery token://$TOKEN \
@@ -3164,19 +3292,26 @@ Repeat for all 4 nodes. (Pro tip: look for name/address mapping in `/etc/hosts`!
 
 ## Scripting
 
-To help you a little bit:
+- We can automate the remaining nodes with a little shell script
 
-```bash
-grep node[2345] /etc/hosts | grep -v ^127 |
-while read IPADDR NODENAME
-do docker-machine create --driver generic \
-   --swarm --swarm-discovery token://$TOKEN \
-   --generic-ssh-user docker \
-   --generic-ip-address $IPADDR $NODENAME
-done
-```
+.exercise[
 
-Then check with `docker info` that all the nodes are there.
+- Deploy nodes 3, 4, and 5:
+  ```bash
+  grep node[345] /etc/hosts | grep -v ^127 |
+  while read IPADDR NODENAME
+  do docker-machine create --driver generic \
+     --swarm --swarm-discovery token://$TOKEN \
+     --generic-ssh-user docker \
+     --generic-ip-address $IPADDR $NODENAME
+  done
+  ```
+
+- Check that all nodes are here:
+  ```bash
+  docker info
+  ```
+]
 
 ---
 
@@ -3260,7 +3395,7 @@ Before trying to build our app, we will remove previous images.
 
 - Delete all images with "dockercoins" in the name:
 
-  ```
+  ```bash
   docker images |
     grep dockercoins |
     awk '{print $1}' |
@@ -3281,7 +3416,7 @@ Before trying to build our app, we will remove previous images.
 - Run `docker-compose build`
 
 - Try to start and scale the application:
-  ```
+  ```bash
   docker-compose up -d
   docker-compose scale worker=10
   docker-compose scale webui=2
@@ -3408,6 +3543,12 @@ Before trying to build our app, we will remove previous images.
 
 .exercise[
 
+<!--
+```meta
+^{
+```
+-->
+
 - Set the following environment variable:
   <br/>`export DOCKER_REGISTRY=jpetazzo`
 
@@ -3415,6 +3556,12 @@ Before trying to build our app, we will remove previous images.
 
 - Log into the Docker Hub:
   <br/>`docker login`
+
+<!--
+```meta
+^}
+```
+-->
 
 ]
 
@@ -3481,17 +3628,17 @@ If we wanted to use DTR, we would:
 .exercise[
 
 - Make sure we have the busybox image:
-  ```
+  ```bash
   docker pull busybox
   ```
 
 - Retag the busybox image:
-  ```
+  ```bash
   docker tag busybox localhost:5000/busybox
   ```
 
 - Push it:
-  ```
+  ```bash
   docker push localhost:5000/busybox
   ```
 
@@ -3507,7 +3654,7 @@ If we wanted to use DTR, we would:
 .exercise[
 
 - Set the `DOCKER_REGISTRY` variable:
-  ```
+  ```bash
   export DOCKER_REGISTRY=localhost:5000
   ```
 
@@ -3528,7 +3675,7 @@ Let's inspect the source code of `build-tag-push.py` and run it.
 .exercise[
 
 - Run `build-tag-push.py`:
-  ```
+  ```bash
   eval $(docker-machine env node1)
   git checkout docker-compose.yml
   ../bin/build-tag-push.py
@@ -3685,13 +3832,13 @@ So, what do‽
 
 - It can be started without configuration:
 
-  ```
+  ```bash
   docker run --name amba jpetazzo/hamba run
   ```
 
 - There is a helper to inject a new configuration:
 
-  ```
+  ```bash
   docker run --rm --volumes-from amba jpetazzo/hamba \
          reconfigure 80 backend1 port1 backend2 port2 ...
   ```
@@ -3966,7 +4113,7 @@ class: pic
 .exercise[
 
 - Scale worker and rng:
-  ```
+  ```bash
   docker-compose scale worker=5 rng=10
   ```
 
@@ -3994,7 +4141,7 @@ class: pic
 .exercise[
 
 - Create the missing ambassadors with the script:
-  ```
+  ```bash
   ../bin/create-ambassadors.py
   ```
 
@@ -4022,7 +4169,7 @@ class: pic
 .exercise[
 
 - Run the last script one more time:
-  ```
+  ```bash
   ../bin/configure-ambassadors.py
   ```
 
@@ -4048,12 +4195,12 @@ class: pic
 .exercise[
 
 - Terminate and remove all containers:
-  ```
+  ```bash
   docker-compose down
   ```
 
 - Remove ambassadors:
-  ```
+  ```bash
   ../bin/delete-ambassadors.sh
   ```
 
@@ -4163,6 +4310,12 @@ Note: our Swarm cluster is now broken.
 
 - Re-provision the manager node:
 
+  <!--
+  ```placeholder
+  AA.BB.CC.DD $(getent hosts node1 | awk '{print $1}')
+  ```
+  -->
+
   ```bash
     docker-machine create --driver generic \
       --engine-opt cluster-store=consul://localhost:8500 \
@@ -4203,7 +4356,7 @@ Note: our Swarm cluster is now broken.
 
 - Directly point the CLI to a node and check configuration:
 
-  ```
+  ```bash
   eval $(docker-machine env node1)
   docker info
   ```
@@ -4212,7 +4365,7 @@ Note: our Swarm cluster is now broken.
 
 - Try to talk to the Swarm cluster:
 
-  ```
+  ```bash
   eval $(docker-machine env node1 --swarm)
   docker info
   ```
@@ -4307,12 +4460,12 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 .exercise[
 
 - Ask Consul the list of members it knows:
-  ```
+  ```bash
   docker run --net host --rm jpetazzo/consul members
   ```
 
 - Ask Consul which node is the current leader:
-  ```
+  ```bash
   curl localhost:8500/v1/status/leader
   ```
 
@@ -4326,7 +4479,7 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 
 - Try again the `docker info` from earlier:
 
-  ```
+  ```bash
   eval $(docker-machine env --swarm node1)
   docker info
   ```
@@ -4361,7 +4514,7 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 .exercise[
 
 - Create two networks, *blue* and *green*:
-  ```
+  ```bash
   docker network create --driver overlay blue
   docker network create --driver overlay green
   docker network ls
@@ -4369,7 +4522,7 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 
 - Create containers with names of blue and green
   things, on their respective networks:
-  ```
+  ```bash
   docker run -d --name sky --net blue -m 3G redis
   docker run -d --name navy --net blue -m 3G redis
   docker run -d --name grass --net green -m 3G redis
@@ -4386,19 +4539,19 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 
 - Check that our containers are on different networks:
 
-  ```
+  ```bash
   docker ps
   ```
 
 - This will work:
 
-  ```
+  ```bash
   docker exec -ti sky ping navy
   ```
 
 - This will not:
 
-  ```
+  ```bash
   docker exec -ti navy ping grass
   ```
 
@@ -4413,12 +4566,12 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 .exercise[
 
 - Create a container that we want to be on both networks:
-  ```
+  ```bash
   docker run -d --net blue --name turquoise nginx
   ```
 
 - Check connectivity:
-  ```
+  ```bash
   docker exec -ti turquoise ping -c1 navy
   docker exec -ti turquoise ping -c1 grass
   ```
@@ -4436,12 +4589,12 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 .exercise[
 
 - Dynamically connect to the green network:
-  ```
+  ```bash
   docker network connect green turquoise
   ```
 
 - Check connectivity:
-  ```
+  ```bash
   docker exec -ti turquoise ping -c1 navy
   docker exec -ti turquoise ping -c1 grass
   ```
@@ -4460,7 +4613,7 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 .exercise[
 
 - View interfaces in our `turquoise` container:
-  ```
+  ```bash
   docker exec -ti turquoise ip addr ls
   ```
 
@@ -4476,13 +4629,13 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 
 - Disconnect the *turquoise* container from *blue*
   (its original network):
-  ```
+  ```bash
   docker network disconnect blue turquoise
   docker network connect green turquoise
   ```
 
 - Check connectivity:
-  ```
+  ```bash
   docker exec -ti turquoise ping -c1 navy
   docker exec -ti turquoise ping -c1 grass
   ```
@@ -4498,13 +4651,13 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 
 - Destroy containers:
 
-  ```
+  ```bash
   docker rm -f sky navy grass forest turquoise
   ```
 
 - Destroy networks:
 
-  ```
+  ```bash
   docker network rm blue
   docker network rm green
   ```
@@ -4543,7 +4696,7 @@ There is a `"disconnect -f"` if needed.
 .exercise[
 
 - Go to the `registry` directory in the repository:
-  ```
+  ```bash
   cd ~/orchestration-workshop/registry
   ```
 
@@ -4588,12 +4741,12 @@ and network aliases.
 .exercise[
 
 - Make sure that `COMPOSE_FILE` is not set:
-  ```
+  ```bash
   unset COMPOSE_FILE
   ```
 
 - Start the registry:
-  ```
+  ```bash
   docker-compose up -d
   ```
 
@@ -4691,7 +4844,7 @@ Copy-paste this into `docker-compose.yml`
 
 - Set `DOCKER_REGISTRY` to use our local registry,
   <br/>then build, tag, and push the application:
-  ```
+  ```bash
   export DOCKER_REGISTRY=localhost:5000
   ../bin/build-tag-push.py
   ```
@@ -4709,13 +4862,13 @@ Copy-paste this into `docker-compose.yml`
 .exercise[
 
 - Start the application:
-  ```
-  export COMPOSE_FILE=docker-compose.yml-NNN
+  ```bash
+  export COMPOSE_FILE=docker-compose.yml-`NNN`
   docker-compose up -d
   ```
 
 - Observe that it's running on multiple nodes:
-  ```
+  ```bash
   docker ps
   ```
 
@@ -4732,7 +4885,7 @@ Each container name is prefixed with the node it's running on.
 .exercise[
 
 - Check the `webui` service address and port:
-  ```
+  ```bash
   docker-compose port webui 80
   ```
 
@@ -4750,7 +4903,7 @@ Each container name is prefixed with the node it's running on.
 .exercise[
 
 - Scale `worker`:
-  ```
+  ```bash
   docker-compose scale worker=10
   ```
 
@@ -4790,7 +4943,7 @@ How can we scale that service?
 --
 
 - In a perfect world, we would like to do:
-  ```
+  ```bash
   docker-compose scale rng=10
   ```
 
@@ -4927,12 +5080,12 @@ Load-balanced DockerCoins
 .exercise[
 
 - Bring up DockerCoins:
-  ```
+  ```bash
   docker-compose up -d
   ```
 
 - See that `worker` is complaining:
-  ```
+  ```bash
   docker-compose logs worker
   ```
 ]
@@ -4970,7 +5123,7 @@ The application should now be working correctly.
 .exercise[
 
 - Scale `rng`:
-  ```
+  ```bash
   docker-compose scale rng=10
   ```
 
@@ -5091,7 +5244,7 @@ Harder projects:
 
 - Terminate containers and remove them:
 
-  ```
+  ```bash
   docker-compose down
   ```
 
@@ -5167,7 +5320,7 @@ class: pic
 .exercise[
 
 - Be lazy and use the Docker image:
-  ```
+  ```bash
   sudo docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
   ```
 ]
@@ -5192,12 +5345,12 @@ the host (yet).
 .exercise[
 
 - Create a mount point:
-  ```
+  ```bash
   mkdir ~/consul
   ```
 
 - Mount Consul as a local filesystem:
-  ```
+  ```bash
   consulfs localhost:8500 ~/consul
   ```
 
@@ -5217,12 +5370,12 @@ Leave this running in the foreground.
 .exercise[
 
 - Check that Consul key/values are visible:
-  ```
+  ```bash
   ls -l ~/consul/
   ```
 
 - Copy Machine credentials into Consul:
-  ```
+  ```bash
   cp -r ~/.docker/machine/. ~/consul/machine/
   ```
 
@@ -5239,7 +5392,7 @@ Leave this running in the foreground.
 .exercise[
 
 - Connect to node2:
-  ```
+  ```bash
   ssh node2
   ```
 
@@ -5427,7 +5580,7 @@ reconfigured and restarted.
 .exercise[
 
 - Talk to a random node, and ask its view of the cluster:
-  ```
+  ```bash
   eval $(docker-machine env node3 --swarm)
   docker info | grep -e ^Name -e ^Role -e ^Primary
   ```
@@ -5453,7 +5606,7 @@ debugging.
 .exercise[
 
 - Kill the primary manager:
-  ```
+  ```bash
   ssh node`N` docker kill swarm-agent-master
   ```
 
@@ -5490,7 +5643,7 @@ Look at the output of `docker info` every few seconds.
   <br/>(Machine adds flags *after* the Swarm command)
 
 - Instead, we will use the Swarm image `jpetazzo/swarm:experimental`:
-  ```
+  ```dockerfile
   FROM swarm
   ENTRYPOINT ["/swarm", "--experimental"]
   ```
