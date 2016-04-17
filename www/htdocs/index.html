@@ -265,8 +265,17 @@ for N in $(seq 1 5); do
   ssh -o StrictHostKeyChecking=no node$N true
 done
 for N in $(seq 1 5); do
+  (.
+  docker-machine rm -f node$N
   ssh node$N "docker ps -aq | xargs -r docker rm -f"
+  ssh node$N sudo rm -f /etc/systemd/system/docker.service
+  ssh node$N sudo systemctl daemon-reload
+  echo Restarting node$N.
+  ssh node$N sudo systemctl restart docker
+  echo Restarted node$N.
+  ) &
 done
+wait
 ```
 -->
 
@@ -2623,7 +2632,7 @@ of this workshop.
 ## How do we know when to upgrade?
 
 - Subscribe to CVE notifications
-  
+
   - https://cve.mitre.org/
 
   - your distros' security announcements
@@ -3090,7 +3099,7 @@ in the discovery service hosted by Docker Inc.
 
 ## Swarm manager
 
-- Accepts Docker API requests 
+- Accepts Docker API requests
 - Communicates with the cluster nodes
 - Performs healthchecks, scheduling...
 
@@ -3172,6 +3181,14 @@ Let's connect to the manager instead.
   ```bash
   eval $(docker-machine env node1 --swarm)
   ```
+
+<!--
+```bash
+while ! docker info | grep -q "^Nodes: 1"; do
+  sleep 1
+done
+```
+-->
 
 - Execute some Docker commands
 
@@ -3306,6 +3323,14 @@ Repeat for all 4 nodes. (Pro tip: look for name/address mapping in `/etc/hosts`!
      --generic-ip-address $IPADDR $NODENAME
   done
   ```
+
+<!--
+```bash
+while ! docker info | grep -q "^Nodes: 5"; do
+  sleep 1
+done
+```
+-->
 
 - Check that all nodes are here:
   ```bash
