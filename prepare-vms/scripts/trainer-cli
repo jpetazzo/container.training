@@ -424,7 +424,7 @@ run_cli() {
         echo "$IPS" > tags/$TAG/ips.txt
         link_tag $TAG
         echo "To deploy or kill these instances, run one of the following:"
-        echo "trainer deploy $TAG"
+        echo "trainer deploy $TAG <settings/somefile.yml>"
         echo "trainer list $TAG"
         ;;
     status)

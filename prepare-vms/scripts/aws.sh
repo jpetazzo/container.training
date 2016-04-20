@@ -102,8 +102,7 @@ aws_kill_instances_by_tag() {
 
     echo "Deleting instances with tag $TAG"
 
-    echo "$IDS" \
-        | xargs aws ec2 terminate-instances --instance-ids \
+    aws ec2 terminate-instances --instance-ids $IDS \
         | grep ^TERMINATINGINSTANCES
 }
 
