@@ -3,7 +3,7 @@ unset DOCKER_REGISTRY
 unset DOCKER_HOST
 unset COMPOSE_FILE
 
-SWARM_IMAGE=${SWARM_IMAGE:-jpetazzo/swarm:1.1.3-rc2-debug-experimental}
+SWARM_IMAGE=${SWARM_IMAGE:-swarm:1.2.0}
 
 prepare_1_check_ssh_keys () {
     for N in $(seq 1 5); do
