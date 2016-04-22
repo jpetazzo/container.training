@@ -143,7 +143,11 @@ for current_action, next_action in zip(actions, actions[1:]+[("bash", "true")]):
     popen_options = dict(shell=True, cwd=cwd, stdin=subprocess.PIPE, preexec_fn=os.setpgrp)
     # The follow hack allows to capture the environment variables set by `docker-machine env`
     # FIXME: this doesn't handle `unset` for now
-    if "eval $(docker-machine env" in current_action[1]:
+    if any([
+        "eval $(docker-machine env" in current_action[1],
+        "DOCKER_HOST" in current_action[1],
+        "COMPOSE_FILE" in current_action[1],
+        ]):
         popen_options["stdout"] = subprocess.PIPE
         current_action[1] += "\nenv"
     proc = subprocess.Popen(current_action[1], **popen_options)

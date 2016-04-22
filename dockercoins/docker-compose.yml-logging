@@ -4,7 +4,7 @@ rng:
   - "8001:80"
   log_driver: gelf
   log_opt:
-    gelf-address: "udp://AA.BB.CC.DD:EEEEE"
+    gelf-address: "udp://127.0.0.1:EEEEE"
 
 hasher:
   build: hasher
@@ -12,7 +12,7 @@ hasher:
   - "8002:80"
   log_driver: gelf
   log_opt:
-    gelf-address: "udp://AA.BB.CC.DD:EEEEE"
+    gelf-address: "udp://127.0.0.1:EEEEE"
 
 webui:
   build: webui
@@ -24,13 +24,13 @@ webui:
   - "./webui/files/:/files/"
   log_driver: gelf
   log_opt:
-    gelf-address: "udp://AA.BB.CC.DD:EEEEE"
+    gelf-address: "udp://127.0.0.1:EEEEE"
 
 redis:
   image: redis
   log_driver: gelf
   log_opt:
-    gelf-address: "udp://AA.BB.CC.DD:EEEEE"
+    gelf-address: "udp://127.0.0.1:EEEEE"
 
 worker:
   build: worker
@@ -40,5 +40,5 @@ worker:
   - redis
   log_driver: gelf
   log_opt:
-    gelf-address: "udp://AA.BB.CC.DD:EEEEE"
+    gelf-address: "udp://127.0.0.1:EEEEE"
 

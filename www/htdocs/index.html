@@ -118,7 +118,7 @@ at e.g. 9am, and start at 9:30.
 - Agenda:
 
 .small[
-- 09:00-09:15 hello!
+- 09:00-09:15 hello and breakfast
 - 09:15-10:45 part 1
 - 10:45-11:00 coffee break
 - 11:00-12:30 part 2
@@ -141,7 +141,7 @@ Remember to change:
 -->
 
 - Experimental chat support on
-  [Gitter](https://gitter.im/jpetazzo/workshop-20160405-stockholm)
+  [Gitter](http://container.training/chat)
 
 ---
 
@@ -240,15 +240,14 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 
 - I invite you to reproduce what I do
 
-- All hands-on sections are clearly identified
-  <br/>(see below)
+- All hands-on sections are clearly identified, like the gray rectangle below
 
 .exercise[
 
 - This is the stuff you're supposed to do!
 - Go to [container.training](http://container.training/) to view these slides
 - Join the chat room on
-  [Gitter](https://gitter.im/jpetazzo/workshop-20160405-stockholm)
+  [Gitter](http://container.training/chat)
 
 ]
 
@@ -319,12 +318,11 @@ Once in a while, the instructions will say:
 
 There are multiple ways to do this:
 
-- create a new window or tab on your machine,
-  <br/>and SSH into the VM;
+- create a new window or tab on your machine, and SSH into the VM;
 
-- use tmux on the VM and open a new window in tmux.
+- use screen or tmux on the VM and open a new window from there.
 
-If you want to use screen or whatever, you're welcome!
+You are welcome to use the method that you feel the most comfortable with.
 
 ---
 
@@ -345,10 +343,10 @@ If you want to use screen or whatever, you're welcome!
 
 ## Brand new versions!
 
-- Engine 1.11-rc3
-- Compose 1.7-rc1
-- Swarm 1.2-rc1
-- Machine 0.7-rc1
+- Engine 1.12
+- Compose 1.7
+- Swarm 1.2
+- Machine 0.6
 
 .exercise[
 
@@ -364,29 +362,38 @@ If you want to use screen or whatever, you're welcome!
 
 ---
 
+## Why are we not using the latest version of Machine?
+
+- The latest version of Machine is 0.7
+
+- The way it deploys Swarm is different from 0.6
+
+- This causes a regression in the strategy that we will use later
+
+- More details later!
+
+---
+
 # Our sample application
 
-- Let's look at the general layout of the
-  [source code](https://github.com/jpetazzo/orchestration-workshop)
+- Visit the GitHub repository with all the materials of this workshop:
+  <br/>https://github.com/jpetazzo/orchestration-workshop
 
-- Each directory = 1 microservice
+- The application is in the [dockercoins](
+  https://github.com/jpetazzo/orchestration-workshop/tree/master/dockercoins)
+  subdirectory
+
+- Let's look at the general layout of the source code:
+  
+  there is a Compose file [docker-compose.yml](
+  https://github.com/jpetazzo/orchestration-workshop/blob/master/dockercoins/docker-compose.yml) ...
+
+  ... and 4 other services, each in its own directory:
+
   - `rng` = web service generating random bytes
   - `hasher` = web service computing hash of POSTed data
   - `worker` = background process using `rng` and `hasher`
   - `webui` = web interface to watch progress
-
-.exercise[
-
-<!--
-<br/>`[ -d orchestration-workshop ] && mv orchestration-workshop orchestration-workshop.$$`
--->
-
-- Clone the repository on `node1`:
-  <br/>`git clone git://github.com/jpetazzo/orchestration-workshop`
-
-]
-
-(Bonus points for forking on GitHub and cloning your fork!)
 
 ---
 
@@ -416,6 +423,31 @@ class: pic
   - DockerCoins are stored in `redis`
   - `redis` is also updated every second to track speed
   - you can see the progress with the `webui`
+
+---
+
+## Getting the application source code
+
+- We will clone the GitHub repository
+
+- The repository also contains scripts and tools that we will use through the workshop
+
+.exercise[
+
+<!--
+```bash
+[ -d orchestration-workshop ] && mv orchestration-workshop orchestration-workshop.$$
+```
+-->
+
+- Clone the repository on `node1`:
+  ```bash
+  git clone git://github.com/jpetazzo/orchestration-workshop
+  ```
+
+]
+
+(You can also fork the repository on GitHub and clone your fork if you prefer that.)
 
 ---
 
@@ -508,7 +540,7 @@ and displays aggregated logs.
 
   - the worker doesn't update the counter after every loop, but up to once per second
 
-  - the speed is computed by the browser, checking the counter up to once per second
+  - the speed is computed by the browser, checking the counter about once per second
 
   - between two consecutive updates, the counter will increase either by 4, or by 0
 
@@ -598,10 +630,8 @@ and open a new terminal.
 - Compose complains that it cannot find `docker-compose.yml`
 
 - You need to go to the directory containing `docker-compose.yml`
-
-  - or use the `-f` option to give the path to the Compose file
-
-  - or set the `COMPOSE_FILE` environment variable
+  <br/>...or use the `-f` option to give the path to the Compose file
+  <br/>...or set the `COMPOSE_FILE` environment variable
 
 .exercise[
 
@@ -654,12 +684,13 @@ and open a new terminal.
 ## Declaring port mapping
 
 - Directly with the Docker Engine:
-  <br/>`docker run -d -p 8000:80 nginx`
-  <br/>`docker run -d -p 80 nginx`
-  <br/>`docker run -d -P nginx`
+  ```bash
+  docker run -d -p 8000:80 nginx
+  docker run -d -p 80 nginx
+  docker run -d -P nginx
+  ```
 
 - With Docker Compose, in the `docker-compose.yml` file:
-
   ```yaml
     rng:
       …
@@ -1044,11 +1075,15 @@ WHY?!?
   docker-compose scale rng=3
   ```
 
-- Compose doesn't deal with load balancing
+- Since Engine 1.11, we get round-robin DNS records
 
-- We would get 3 instances ...
+  (i.e. resolving `rng` will yield the IP addresses of all 3 containers)
 
-- ... But only the first one would serve traffic
+- But many (most) resolvers will sort records
+
+- So we would get 3 instances ...
+
+- ... But only one would serve traffic
 
 ---
 
@@ -1212,8 +1247,7 @@ faster for a well-behaved application.*
 
 - The good
 
-  We scaled a service, added a load balancer -
-  <br/>without changing a single line of code.
+  We scaled a service, added a load balancer - without changing a single line of code.
 
 --
 
@@ -1624,16 +1658,10 @@ Shortcut: `docker-compose.yml-ambassador`
 .exercise[
 
 - Just tell Compose to do its thing:
-
-  ```bash
-  docker-compose up -d
-  ```
+  <br/>`docker-compose up -d`
 
 - Check that the stack is up and running:
-
-  ```bash
-  docker-compose ps
-  ```
+  <br/>`docker-compose ps`
 
 - Look at the web UI to make sure that it works fine
 
@@ -1641,30 +1669,56 @@ Shortcut: `docker-compose.yml-ambassador`
 
 ---
 
-## Start the stack on another machine
+## Controlling other Docker Engines
 
-- We will set the `DOCKER_HOST` variable
+- Many tools in the ecosystem will honor the `DOCKER_HOST` environment variable
 
-- `docker-compose` will detect and use it
+- Those tools include (obviously!) the Docker CLI and Docker Compose
 
-- Our Docker hosts are listening on port 55555
+- Our training VMs have been setup to accept API requests on port 55555
+  <br/>(without authentication - this is very insecure, by the way!)
 
 .exercise[
 
-- Set the environment variable:
-  <br/>`export DOCKER_HOST=tcp://node2:55555`
+- Set the `DOCKER_HOST` variable to control `node2`, and execute a `docker` command:
+  ```bash
+  export DOCKER_HOST=tcp://node2:55555
+  docker ps
+  ```
+
+]
+
+You shouldn't see any container running at this point.
+
+---
+
+## Start the stack on another machine
+
+- We will tell Compose to bring up our stack on the other node
+
+- It will use the local code (we don't need to checkout the code on `node2`)
+
+.exercise[
 
 - Start the stack:
-  <br/>`docker-compose up -d`
+  ```bash
+  docker-compose up -d
+  ```
 
 - Check that it's running:
-  <br/>`docker-compose ps`
+  ```bash
+  docker-compose ps
+  ```
 
 ]
 
 ---
 
-## Scale!
+## Run the application on every node
+
+- We will repeat the previous step with a little shell loop
+
+  ... but introduce parallelism to save some time
 
 .exercise[
 
@@ -1674,7 +1728,23 @@ Shortcut: `docker-compose.yml-ambassador`
     for N in 3 4 5; do
       DOCKER_HOST=tcp://node$N:55555 docker-compose up -d &
     done
+    wait
   ```
+
+]
+
+Note: building the stack everywhere is not optimal. We will see later
+how to build once, and deploy the same build everywhere.
+
+---
+
+## Scale!
+
+- The app is built (and running!) everywhere
+
+- Scaling can be done very quickly
+
+.exercise[
 
 - Add a bunch of workers all over the place:
 
@@ -1733,14 +1803,13 @@ Let's celebrate our success!
 
   - sharing files between host and containers (source...)
 
-- The `volumes` directive expands to an host path
-  <br/>(e.g. `/home/docker/orchestration-workshop/dockercoins/webui/files`)
+- The `volumes` directive expands to an host path:
+ 
+  `/home/docker/orchestration-workshop/dockercoins/webui/files`
 
-- This host path exists on the local machine
-  <br/>(not on the others)
+- This host path exists on the local machine (not on the others)
 
-- This specific volume is used in development
-  <br/>(not in production)
+- This specific volume is used in development (not in production)
 
 ---
 
@@ -1748,12 +1817,11 @@ Let's celebrate our success!
 
 - Let's use `docker-compose down`
 
-- It will stop and remove the DockerCoins app
-  <br/>(but leave other containers running)
+- It will stop and remove the DockerCoins app (but leave other containers running)
 
 .exercise[
 
-- We can do another simple shell loop:
+- We can do another simple parallel shell loop:
   ```bash
     for N in $(seq 1 5); do
       export DOCKER_HOST=tcp://node$N:55555
@@ -1873,8 +1941,7 @@ ways to deploy ambassadors.
 
 - Reacts to container start/stop events
 
-- Adds/removes scaled services in distributed config DB
-  <br/>(zookeeper, etcd, consul…)
+- Adds/removes scaled services in distributed config DB (zookeeper, etcd, consul…)
 
 - Another daemon listens to config DB events,
   <br/>adds/removes backends to load balancers configuration
@@ -1901,8 +1968,7 @@ ways to deploy ambassadors.
 
 - Allow a flat network for your containers
 
-- Often requires an extra service to deal with BUM packets
-  <br/>(broadcast/unknown/multicast)
+- Often requires an extra service to deal with BUM packets (broadcast/unknown/multicast)
 
   - e.g. a key/value store (Consul, Etcd, Zookeeper ...)
 
@@ -1932,8 +1998,7 @@ class: title
 
   - possibly containing our backup tools
 
-- This works because the `redis` container image
-  <br/>stores its data on a volume
+- This works because the `redis` container image stores its data on a volume
 
 ---
 
@@ -1962,8 +2027,7 @@ class: title
                -ti alpine sh
   ```
 
-- Look in `/data` in the container
-  <br/>(That's where Redis puts its data dumps)
+- Look in `/data` in the container (that's where Redis puts its data dumps)
 ]
 
 ---
@@ -1975,7 +2039,9 @@ class: title
 .exercise[
 
 - Connect to Redis:
-  <br/>`telnet redis 6379`
+  ```bash
+  telnet redis 6379
+  ```
 
 - Issue commands `SAVE` then `QUIT`
 
@@ -2104,6 +2170,12 @@ to the default `bridge` network.
   docker run -d --name ledata --label backup=please redis
   ```
 
+<!--
+```meta
+^K
+```
+-->
+
 ]
 
 ---
@@ -2154,9 +2226,13 @@ to the default `bridge` network.
   docker kill leweb ledata
   ```
 
-]
+<!--
+```meta
+^K
+```
+-->
 
-Only the events for `ledata` will be shown.
+]
 
 ---
 
@@ -2174,9 +2250,8 @@ Only the events for `ledata` will be shown.
 - List containers that have a `backup` label;
   <br/>show their container ID, image, and the label:
   ```bash
-    docker ps \
-      --filter label=backup \
-      --format '{{ .ID }} {{ .Image }} {{ .Label "backup" }}'
+    docker ps --filter label=backup \
+              --format '{{ .ID }} {{ .Image }} {{ .Label "backup" }}'
   ```
 
 ]
@@ -2205,8 +2280,7 @@ Only the events for `ledata` will be shown.
 - To check logs, run e.g.
 
   ```bash
-  docker run --volumes-from ... ubuntu sh -c \
-         "grep WARN /logs/*.log"
+  docker run --volumes-from ... ubuntu sh -c "grep WARN /logs/*.log"
   ```
 
 - Or just go interactive:
@@ -2228,12 +2302,10 @@ Only the events for `ledata` will be shown.
 - Logging driver can specified globally, and per container
   <br/>(changing it for a container overrides the global setting)
 
-- To change the global logging driver,
-  <br/>pass extra flags to the daemon
+- To change the global logging driver, pass extra flags to the daemon
   <br/>(requires a daemon restart)
 
-- To override the logging driver for a container,
-  <br/>pass extra flags to `docker run`
+- To override the logging driver for a container, pass extra flags to `docker run`
 
 ---
 
@@ -2250,12 +2322,21 @@ Only the events for `ledata` will be shown.
 
 - The flags are identical for `docker daemon` and `docker run`
 
-Tip #1: when provisioning with Docker Machine, use:
-```bash
-docker-machine create ... --engine-opt log-driver=...
-```
+---
 
-Tip #2: you can set logging options in Compose files.
+## Logging flags in practice
+
+- If you provision your nodes with Docker Machine,
+  you can set global logging flags (which will apply to all
+  containers started by a given Engine) like this:
+  
+  ```bash
+  docker-machine create ... --engine-opt log-driver=...
+  ```
+
+- Otherwise, use your favorite method to edit or manage configuration files
+
+- You can set per-container logging options in Compose files
 
 ---
 
@@ -2416,8 +2497,7 @@ in the output.
   - click "Auto-refresh" (top-right corner)
   - click "5 seconds" (top-left of the list)
 
-- You should see a series of green bars
-  <br/>(with one new green bar every minute)
+- You should see a series of green bars (with one new green bar every minute)
 
 ---
 
@@ -2438,8 +2518,7 @@ in the output.
   docker-compose ps logstash
   ```
 
-- Start a one-off container, overriding its logging driver:
-  <br/>(make sure to update the port number, of course)
+- Note the port number, and start our one-off container:
 
   <!--
   ```placeholder
@@ -2503,7 +2582,7 @@ in the output.
 
 - We need to add the logging section to each container
 
-- We need the GELF endpoint (host+port) that we
+- We need the GELF endpoint that we
   got earlier with `docker-compose ps logstash`
 
 .exercise[
@@ -2513,19 +2592,18 @@ in the output.
   ```yaml
     log_driver: gelf
     log_opt:
-      gelf-address: "udp://`AA.BB.CC.DD:EEEEE`"
+      gelf-address: "udp://127.0.0.1:`EEEEE`"
   ```
 
 <!--
 ```edit
-cat docker-compose.yml-logging | sed "s/AA.BB.CC.DD:EEEEE/127.0.0.1:32768/" > docker-compose.yml
+cat docker-compose.yml-logging | sed "s/EEEEE/32768/" > docker-compose.yml
 ```
 -->
 
 ]
 
-Shortcut: `docker-compose.yml-logging`
-<br/>(But you still have to update `AA.BB.CC.DD:EEEEE`!)
+Shortcut: `docker-compose.yml-logging` (remember to update the port number!)
 
 ---
 
@@ -2593,8 +2671,9 @@ of this workshop.
 
 - Start all containers
 
-- This is like upgrading your Linux kernel,
-  <br/>but it will get better
+- This is like upgrading your Linux kernel, but it will get better
+
+(Docker Engine 1.11 is using containerd, which will ultimately allow seamless upgrades.)
 
 ---
 
@@ -2619,11 +2698,9 @@ of this workshop.
 
 - When a vulnerability is announced:
 
-  - if it affects your base images,
-    <br/>make sure they are fixed first
+  - if it affects your base images: make sure they are fixed first
 
-  - if it affects downloaded packages,
-    <br/>make sure they are fixed first
+  - if it affects downloaded packages: make sure they are fixed first
 
   - re-pull base images
 
@@ -2677,8 +2754,7 @@ volumes to the new containers, so data is preserved.
 
 - We still have `myredis` running
 
-- We will use *shared network namespaces*
-  <br/>to perform network analysis
+- We will use *shared network namespaces* to perform network analysis
 
 - Two containers sharing the same network namespace...
 
@@ -2703,7 +2779,7 @@ Ngrep uses libpcap (like tcpdump) to sniff network traffic.
 -->
 
 - Start a container with the same network namespace:
-  <br/>`docker run --net container:myredis -ti alpine sh`
+  <br/>`docker run --net container:dockercoins_redis_1 -ti alpine sh`
 
 - Install ngrep:
   <br/>`apk update && apk add ngrep`
@@ -2753,8 +2829,7 @@ class: title
 
 - First presented in 2009
 
-- Initial goal: resource scheduler
-  <br/>(two-level/pessimistic)
+- Initial goal: resource scheduler (two-level/pessimistic)
 
   - top-level "master" knows the global cluster state
 
@@ -2762,8 +2837,7 @@ class: title
 
   - master allocates resources to "frameworks"
 
-- Container support added recently
-  <br/>(had to fit existing model)
+- Container support added recently (had to fit existing model)
 
 - Network and service discovery is complex
 
@@ -2771,7 +2845,8 @@ class: title
 
 ## Mesos (in practice)
 
-- Easy to setup a test cluster (in containers!)
+- Super easy to setup a test cluster
+  <br/>(e.g. [minimesos](https://minimesos.org/) put all Mesos components in container)
 
 - Great to accommodate mixed workloads
   <br/>(see Marathon, Chronos, Aurora, and many more)
@@ -2788,8 +2863,7 @@ class: title
 
 - Started in June 2014
 
-- Designed specifically as a platform for containers
-  <br/>("greenfield" design)
+- Designed specifically as a platform for containers ("greenfield" design)
 
   - "pods" = groups of containers sharing network/storage
 
@@ -2797,8 +2871,7 @@ class: title
 
   - extensive use of "tags" instead of e.g. tree hierarchy
 
-- Initially designed around Docker,
-  <br/>but doesn't hesitate to diverge in a few places
+- Initially designed around Docker, but doesn't hesitate to diverge in a few places
 
 ---
 
@@ -2813,11 +2886,11 @@ class: title
 - Tends to be loved by ops more than devs
   <br/>.small[(but keep in mind that it's evolving quite as fast as Docker)]
 
-- Adaptation is needed when it differs from Docker
-  <br/>.small[(need to learn new API, new tooling, new concepts)]
+- Setting up a local development cluster is non-trivial
+  <br/>.small[(the easiest way is to stage it up on e.g. GKE)]
 
 - Bottom line: Kubernetes is not Docker!
-  <br/>.small[(different APIs, concepts, configuration files...)]
+  <br/>.small[(different concepts, APIs, tooling, concepts, configuration files...)]
 
 ---
 
@@ -2843,16 +2916,14 @@ class: title
 
 ## ECS (in practice)
 
-- Task definitions look like Compose files,
-  <br/>but are significantly different
+- Task definitions look like Compose files, but are significantly different
 
 - Integration with e.g. ELB is suboptimal
   <br/>(ELB requires all backends to run on the same port)
 
 - Cluster deployment is made easier thanks to ECS CLI
 
-- Docker API gets partially exposed through ECS API,
-  <br/>with some features lagging behind
+- Docker API gets partially exposed through ECS API, with some features lagging behind
 
 - Service discovery is painful
 
@@ -2888,16 +2959,20 @@ class: title
 
 - Consolidates multiple Docker hosts into a single one
 
-- "Looks like" a Docker daemon, but it dispatches (schedules)
-  your containers on multiple daemons
+- You talk to Swarm using the Docker API
+  
+  → you can use all existing tools: Docker CLI, Docker Compose, etc.
 
-- Talks the Docker API front and back
-  <br/>(leverages the Docker API and ecosystem)
+- Swarm talks to your Docker Engines using the Docker API too
+
+  → you can use existing Engines without modification
+
+- Dispatches (schedules) your containers across the cluster, transparently
 
 - Open source and written in Go (like Docker)
 
 - Started by two of the original Docker authors
-  <br/>([@aluzzardi](https://twitter.com/aluzzardi) and [@vieux](https://twitter.com/vieux))
+  ([@aluzzardi](https://twitter.com/aluzzardi) and [@vieux](https://twitter.com/vieux))
 
 ---
 
@@ -2905,14 +2980,14 @@ class: title
 
 - Stable since November 2015
 
+- Initially for small setups, easy to setup
+
 - Tested with 1000 nodes + 50000 containers
   <br/>.small[(without particular tuning; see DockerCon EU opening keynotes!)]
 
-- Perfect for some scenarios (Jenkins, grid...)
+- Still easy to setup, but scales perfectly to larger deployments too
 
-- Requires extra effort for Compose build, links...
-
-- Requires a key/value store to achieve high availability
+- Requires a key/value store for advanced features
 
 - We'll see it in action!
 
@@ -3022,8 +3097,7 @@ class: pic
 
 - The `generic` driver skips the first step
 
-- It can install Docker on any machine,
-  <br/>as long as you have SSH access
+- It can install Docker on any machine, as long as you have SSH access
 
 - We will use that!
 
@@ -3096,8 +3170,7 @@ in the discovery service hosted by Docker Inc.
 
 - The node continues to work even if the agent dies
 
-- Automatically started by Docker Machine
-  <br/>(when the `--swarm` option is passed)
+- Automatically started by Docker Machine (when the `--swarm` option is passed)
 
 ---
 
@@ -3141,8 +3214,7 @@ in the discovery service hosted by Docker Inc.
 
   - you can still control individual nodes
 
-  - you can start a new manager
-    <br/>(at this point, it is stateless)
+  - you can start a new manager (at this point, it is stateless)
 
 - We'll setup active/passive redundancy later
 
@@ -3298,6 +3370,7 @@ Name: node1
   -->
 
   ```bash
+    TOKEN=$(cat token)
     docker-machine create --driver generic \
       --swarm --swarm-discovery token://$TOKEN \
       --generic-ssh-user docker --generic-ip-address `AA.BB.CC.DD` node2
@@ -3319,14 +3392,23 @@ Repeat for all 4 nodes. (Pro tip: look for name/address mapping in `/etc/hosts`!
 
 - Deploy nodes 3, 4, and 5:
   ```bash
-  grep node[345] /etc/hosts | grep -v ^127 |
-  while read IPADDR NODENAME
-  do docker-machine create --driver generic \
-     --swarm --swarm-discovery token://$TOKEN \
-     --generic-ssh-user docker \
-     --generic-ip-address $IPADDR $NODENAME
-  done
+    TOKEN=$(cat token)
+    grep node[345] /etc/hosts | grep -v ^127 |
+    while read IPADDR NODENAME
+    do docker-machine create --driver generic \
+      --swarm --swarm-discovery token://$TOKEN \
+      --generic-ssh-user docker \
+      --generic-ip-address $IPADDR $NODENAME
+    done
   ```
+
+]
+
+---
+
+## Checking the state of our cluster
+
+.exercise[
 
 <!--
 ```bash
@@ -3341,6 +3423,9 @@ done
   docker info
   ```
 ]
+
+If less than 5 nodes show up, just retry every few seconds: the
+nodes need some time to register themselves with the service discovery mechanism.
 
 ---
 
@@ -3437,8 +3522,7 @@ Before trying to build our app, we will remove previous images.
 
 ## Building our app on Swarm
 
-- Compose now supports builds on Swarm
-  <br/>(older versions would crash)
+- Compose now supports builds on Swarm (older versions would crash)
 
 .exercise[
 
@@ -3453,9 +3537,7 @@ Before trying to build our app, we will remove previous images.
 
 ]
 
-.warning[This is supposed to fail!]
-
-(Don't bang your head on the keyboard if it doesn't work!)
+.warning[This is supposed to fail! Don't bang your head on the keyboard if it doesn't work!]
 
 ---
 
@@ -3463,19 +3545,18 @@ Before trying to build our app, we will remove previous images.
 
 - Containers are only scheduled where they were built
 
-  - cause: images are not present on all nodes
+  - cause: Swarm will not automatically copy images across nodes
 
-  - solution: distribute images through a registry
-    <br/>(e.g. Docker Hub)
+  - solution: distribute images through a registry (e.g. Docker Hub)
 
 - You can end up with inconsistent versions
   <br/>(i.e. `dockercoins_rng:latest` being different on two nodes)
 
-  - cause: build nodes can come and go
+  - cause: builds can happen on different nodes
 
-  - solution: always pin builds to the same node
+  - solution: always pin builds to the same node; use explicit version tags
 
-- Also, caching doesn't work all the time
+- Also, build caching doesn't work all the time
 
 ---
 
@@ -4291,8 +4372,7 @@ Note: our Swarm cluster is now broken.
 
 - We will use `docker-machine rm`
 
-- With the `generic` driver, this doesn't do anything
-  <br/>(it just deletes local configuration)
+- With the `generic` driver, this doesn't do anything (it just deletes local configuration)
 
 - With cloud/VM drivers, this would actually delete VMs
 
@@ -4413,9 +4493,9 @@ Note: our Swarm cluster is now broken.
 
 - Swarm can't discover the nodes
 
-Note: good guy ~~Stevedore~~ Docker will start without K/V
+Note: Docker will start (and be functional) without a K/V store.
 
-(This lets us run Consul itself in a container!)
+This lets us run Consul itself in a container.
 
 ---
 
@@ -4693,12 +4773,15 @@ Note: good guy ~~Stevedore~~ Docker will start without K/V
 
 ]
 
-You cannot remove a network if
-it still has containers.
+---
 
-There is no `"rm -f"` for network.
-<br/>
-There is a `"disconnect -f"` if needed.
+## Cleaning up after an outage or a crash
+
+- You cannot remove a network if it still has containers
+
+- There is no `"rm -f"` for network
+
+- If a network still has stale endpoints, you can use `"disconnect -f"`
 
 ---
 
@@ -4794,10 +4877,7 @@ and network aliases.
 
 - Scale the registry:
   ```bash
-    N=1
-    while docker-compose scale frontend=$N; do
-      N=$((N+1))
-    done
+    docker-compose scale frontend=5
   ```
 
 ]
@@ -4808,16 +4888,13 @@ Note: Swarm might do that automatically for us in the future.
 
 ## Converting the Compose file for DockerCoins
 
-- Services are no longer at the top level,
-  <br/>but under a `services` section
+- Services are no longer at the top level, but under a `services` section
 
-- There has to be a `version` key at the top level,
-  <br/>with value `"2"` (as a string, not an integer)
+- There has to be a `version` key at the top level, with value `"2"` (as a string, not an integer)
 
 - Links should be removed
 
-- Fixed port mappings should be removed
-  <br/>(until [docker/compose#2866](
+- Fixed port mappings should be removed (until [docker/compose#2866](
   https://github.com/docker/compose/issues/2866) is fixed)
 
 - There are other minor differences, but for our sample
@@ -4897,13 +4974,12 @@ Copy-paste this into `docker-compose.yml`
   ```
 
 - Observe that it's running on multiple nodes:
+  <br/>(each container name is prefixed with the node it's running on)
   ```bash
   docker ps
   ```
 
 ]
-
-Each container name is prefixed with the node it's running on.
 
 ---
 
@@ -5240,8 +5316,7 @@ Deploying a new version (difficulty: easy)
 
 Zero-downtime deployment (difficulty: medium)
 
-- Isolate stateful services
-  <br/>(like we did earlier for Redis)
+- Isolate stateful services (like we did earlier for Redis) 
 
 - Do blue/green deployment:
 
@@ -5373,13 +5448,9 @@ the host (yet).
 
 .exercise[
 
-- Create a mount point:
+- Create a mount point and mount Consul as a local filesystem:
   ```bash
   mkdir ~/consul
-  ```
-
-- Mount Consul as a local filesystem:
-  ```bash
   consulfs localhost:8500 ~/consul
   ```
 
@@ -5393,8 +5464,7 @@ Leave this running in the foreground.
 
 - Use standard UNIX commands
 
-- Don't try to preserve permissions, though
-  <br/>(`consulfs` doesn't store those)
+- Don't try to preserve permissions, though (`consulfs` doesn't store permissions)
 
 .exercise[
 
@@ -5497,7 +5567,7 @@ At this point, `ls -l ~/consul` should show `docker` and
 - Until now, the Swarm manager was a SPOF
   <br/>(Single Point Of Failure)
 
-- Swarm has experimental support for replication
+- Swarm has support for replication
 
 - When replication is enabled, you deploy multiple (identical) managers
 
@@ -5657,53 +5727,28 @@ Look at the output of `docker info` every few seconds.
 - If the containers can't be rescheduled (constraints issue),
   <br/>they are lost (there is no reconciliation loop yet)
 
-- As of Swarm 1.1.0, this is an *experimental* feature
-  <br/>(To enable it, you must pass the
-  `--experimental` flag when you start Swarm itself!)
+- In Swarm 1.1, this is an *experimental* feature
+  <br/>(To enable it, you must pass the `--experimental` flag when you start Swarm itself!)
+
+- In Swarm 1.2, you don't need the `--experimental` flag anymore
 
 ---
 
-## Working around flag order
+## About Swarm generic flags
 
-- The flag must be *before* the Swarm command
-  <br/>(i.e. `docker run swarm --experimental manage ...`)
+- Some flags like `--experimental` and `--debug` must be *before* the Swarm command
+  <br/>(i.e. `docker run swarm --debug manage ...`)
 
 - We cannot use Docker Machine to pass that flag ☹
   <br/>(Machine adds flags *after* the Swarm command)
 
-- Instead, we will use the Swarm image `jpetazzo/swarm:experimental`:
+- Instead, we can use a custom Swarm image:
   ```dockerfile
   FROM swarm
-  ENTRYPOINT ["/swarm", "--experimental"]
+  ENTRYPOINT ["/swarm", "--debug"]
   ```
 
 - We can tell Machine to use this with `--swarm-image`
-
----
-
-## Reconfigure Swarm [one more time](https://www.youtube.com/watch?v=FGBhQbmPwH8)
-
-.exercise[
-
-- Redeploy Swarm with `--experimental`:
-
-  ```bash
-    for N in 1 2 3 4 5; do
-      ssh node$N docker rm -f swarm-agent swarm-agent-master
-      docker-machine rm -f node$N
-    done
-    grep node[12345] /etc/hosts | grep -v ^127 |
-    while read IPADDR NODENAME; do
-      docker-machine create --driver generic \
-        --engine-opt cluster-store=consul://localhost:8500 \
-        --engine-opt cluster-advertise=eth0:2376 \
-        --swarm --swarm-master --swarm-image jpetazzo/swarm:experimental \
-        --swarm-discovery consul://localhost:8500  \
-        --swarm-opt replication --swarm-opt advertise=$IPADDR:3376 \
-        --generic-ssh-user docker --generic-ip-address $IPADDR $NODENAME
-    done
-  ```
-]
 
 ---
 
@@ -5738,15 +5783,29 @@ Check that the container is up and running.
 .exercise[
 
 - Check on which node the container is running:
-  </br>.small[`NODE=$(docker inspect --format '{{.Node.Name}}' $CID)`]
+  </br>`NODE=$(docker inspect --format '{{.Node.Name}}' $CID)`
 
 - Reboot that node:
   <br/>`ssh $NODE sudo reboot`
 
 - Check that the container has been recheduled:
-  <br/>`docker ps`
+  <br/>`docker ps -a`
 
 ]
+
+---
+
+## Reboots
+
+- When rebooting a node, Docker is stopped cleanly, and containers are stopped
+
+- Our container is rescheduled, but not started
+
+- To simulate a "proper" failure, we can use the Chaos Monkey script instead
+
+```bash
+~/orchestration-workshop/bin/chaosmonkey $NODE <connect|disconnect|reboot>
+```
 
 ---
 
@@ -5755,6 +5814,10 @@ Check that the container is up and running.
 - There are some corner cases when the node is also
   the Swarm leader or the Consul leader; this is being improved
   right now!
+
+- The safest way to address for now this is to run the Consul
+  servers, the Swarm managers, and your containers, on
+  different nodes.
 
 - Swarm doesn't handle gracefully the fact that after the
   reboot, you have *two* containers named `highlander`,
@@ -5781,8 +5844,7 @@ Check that the container is up and running.
 
 ## "This is complicated"
 
-- The scripts used here are pretty simple
-  <br/>(each is less than 100 LOCs)
+- The scripts used here are pretty simple (each is less than 100 LOCs)
 
 - You can easily rewrite them in your favorite language,
   <br/>adapt and customize them, in a few hours of time
@@ -5796,7 +5858,7 @@ Check that the container is up and running.
   - Docker Cloud
     <br/>(manage your Docker nodes from a SAAS portal)
 
-  - Universal Control Plane
+  - Docker Datacenter
     <br/>(buzzword-compliant management solution:
     <br/>turnkey, enterprise-class, on-premise, etc.)
 
@@ -5826,7 +5888,7 @@ class: title
 
 # Thanks! <br/> Questions?
 
-### [@jpetazzo](https://twitter.com/jpetazzo) <br/> [@docker](https://twitter.com/docker)
+## [@jpetazzo](https://twitter.com/jpetazzo) <br/> [@docker](https://twitter.com/docker)
 
     </textarea>
     <script src="https://gnab.github.io/remark/downloads/remark-0.13.min.js" type="text/javascript">
