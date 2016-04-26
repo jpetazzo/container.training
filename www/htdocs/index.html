@@ -4623,6 +4623,15 @@ Note: Swarm might do that automatically for us in the future.
 
 - We can get rid of all the `ports` section, except for the web UI
 
+.exercise[
+
+- Go back to the dockercoins directory:
+  ```bash
+  cd ~/orchestration-workshop/dockercoins
+  ```
+
+]
+
 ---
 
 ## Our new Compose file
@@ -4668,6 +4677,7 @@ Copy-paste this into `docker-compose.yml`
   <br/>then build, tag, and push the application:
   ```bash
   export DOCKER_REGISTRY=localhost:5000
+  eval $(docker-machine env node1)
   ../bin/build-tag-push.py
   ```
 
@@ -4820,7 +4830,7 @@ Load-balanced DockerCoins
 
 .exercise[
 
-- Add the `rng` network to the Compose file:
+- Add the `rng` network to the Compose file, `docker-compose.yml-NNN`:
   ```yaml
     version: '2'
 
@@ -5203,6 +5213,7 @@ high availability
 
 - Be lazy and use the Docker image:
   ```bash
+  eval $(docker-machine env node1)
   docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
   ```
 ]
@@ -5291,9 +5302,9 @@ Leave this running in the foreground.
 
 ---
 
-## Mount Consul on another node
+## Install consulfs on another node
 
-- We will repeat the previous steps to mount `~/consul`
+- We will repeat the previous steps to install consulfs
 
 .exercise[
 
@@ -5302,10 +5313,28 @@ Leave this running in the foreground.
   ssh node2
   ```
 
-- Install `consulfs` and mount Consul:
+- Install `consulfs`:
   ```bash
   docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
+  ```
+
+]
+
+---
+
+## Mount Consul
+
+- The procedure is still the same as on the first node
+
+.exercise[
+
+- Create the mount point:
+  ```bash
   mkdir ~/consul
+  ```
+
+- Mount the filesystem:
+  ```bash
   consulfs localhost:8500 ~/consul &
   ```
 
@@ -5336,8 +5365,6 @@ At this point, `ls -l ~/consul` should show `docker` and
   ```
 
 ]
-
-.warning[Go back to node1 after this.]
 
 ---
 
@@ -5435,7 +5462,7 @@ the Consul cluster itself has a leader election;
 
 .exercise[
 
-- Remove the current configuration:
+- Remove the current configuration (remember to go back to node1!):
   ```bash
     for N in 1 2 3 4 5; do
       ssh node$N docker rm -f swarm-agent swarm-agent-master
