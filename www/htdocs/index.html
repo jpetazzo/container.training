@@ -75,7 +75,7 @@
         background-repeat: no-repeat;
         padding-left: 2em;
       }
-      .exercise {
+      .exercise, .notexercise {
         background-color: #eee;
         background-image: url("keyboard.png");
         background-size: 1.4em;
@@ -85,6 +85,11 @@
       }
       .exercise::before {
         content: "Exercise";
+        margin-left: 1.8em;
+      }
+      .notexercise::before {
+        content: "Actually not an exercise";
+        color: red;
         margin-left: 1.8em;
       }
       li p { line-height: 1.25em; }
@@ -3050,7 +3055,8 @@ in the discovery service hosted by Docker Inc.
 - Create your token, saving it preciously to disk as well:
 
   ```bash
-  TOKEN=$(docker run swarm create | tee token)
+  TOKEN=$(docker run swarm create | tee ~/token)
+  echo $TOKEN
   ```
 
 ]
@@ -3079,22 +3085,51 @@ in the discovery service hosted by Docker Inc.
 ## Swarm manager
 
 - Accepts Docker API requests
+
 - Communicates with the cluster nodes
+
 - Performs healthchecks, scheduling...
+
+---
+
+## Pre-flight checks
+
+- According to data gathered during previous workshops, the most
+  common ways to get the next part wrong are:
+
+  - provisioning from the wrong node
+
+  - provisioning from a terminal where `$TOKEN` is not set
 
 .exercise[
 
 - Double-check that you are on `node1`
 
-- Provision a node with Docker Machine:
-
-  <!--
-  ```placeholder
-  AA.BB.CC.DD $(getent hosts node1 | awk '{print $1}')
+- Double-check that the `$TOKEN` environment variable is set:
+  ```bash
+  echo $TOKEN
   ```
-  -->
+
+]
+
+---
+
+## Provision our first node with Docker Machine
+
+- If `$TOKEN` is set properly, we can move forward!
+
+.exercise[
+
+<!--
+```placeholder
+AA.BB.CC.DD $(getent hosts node1 | awk '{print $1}')
+```
+-->
+
+- Invoke Docker Machine with *all the flags*:
 
   ```bash
+    echo $TOKEN
     docker-machine create --driver generic \
       --swarm --swarm-master --swarm-discovery token://$TOKEN \
       --generic-ssh-user docker --generic-ip-address `AA.BB.CC.DD` node1
@@ -3272,7 +3307,7 @@ Name: node1
   -->
 
   ```bash
-    TOKEN=$(cat token)
+    TOKEN=$(cat ~/token)
     docker-machine create --driver generic \
       --swarm --swarm-discovery token://$TOKEN \
       --generic-ssh-user docker --generic-ip-address `AA.BB.CC.DD` node2
@@ -3281,8 +3316,6 @@ Name: node1
 ]
 
 Remember to replace AA.BB.CC.DD with the correct IP address.
-
-Repeat for all 4 nodes. (Pro tip: look for name/address mapping in `/etc/hosts`!)
 
 ---
 
@@ -3294,7 +3327,7 @@ Repeat for all 4 nodes. (Pro tip: look for name/address mapping in `/etc/hosts`!
 
 - Deploy nodes 3, 4, and 5:
   ```bash
-    TOKEN=$(cat token)
+    TOKEN=$(cat ~/token)
     grep node[345] /etc/hosts | grep -v ^127 |
     while read IPADDR NODENAME
     do docker-machine create --driver generic \
@@ -3403,384 +3436,6 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
 
 ---
 
-# Building our app on Swarm
-
-Before trying to build our app, we will remove previous images.
-
-.exercise[
-
-- Delete all images with "dockercoins" in the name:
-
-  ```bash
-  docker images |
-    grep dockercoins |
-    awk '{print $1}' |
-    xargs -r docker rmi -f
-  ```
-
-]
-
----
-
-## Building our app on Swarm
-
-- Compose now supports builds on Swarm (older versions would crash)
-
-.exercise[
-
-- Run `docker-compose build`
-
-- Try to start and scale the application:
-  ```bash
-  docker-compose up -d
-  docker-compose scale worker=10
-  docker-compose scale webui=2
-  ```
-
-]
-
-.warning[This is supposed to fail! Don't bang your head on the keyboard if it doesn't work!]
-
----
-
-## Caveats when building with Swarm
-
-- Containers are only scheduled where they were built
-
-  - cause: Swarm will not automatically copy images across nodes
-
-  - solution: distribute images through a registry (e.g. Docker Hub)
-
-- You can end up with inconsistent versions
-  <br/>(i.e. `dockercoins_rng:latest` being different on two nodes)
-
-  - cause: builds can happen on different nodes
-
-  - solution: always pin builds to the same node; use explicit version tags
-
-- Also, build caching doesn't work all the time
-
----
-
-## Why can't Swarm do this automatically for us?
-
-- Let's step back and think for a minute ...
-
-- What should `docker build` do on Swarm?
-
-  - build on one machine
-
-  - build everywhere ($$$)
-
-- After the build, what should `docker run` do?
-
-  - run where we built (how do we know where it is?)
-
-  - run on any machine that has the image
-
-- Could Compose+Swarm solve this automatically?
-
----
-
-## A few words about "sane defaults"
-
-- *It would be nice if Swarm could pick a node, and build there!*
-
-  - but which node should it pick?
-  - what if the build is very expensive?
-  - what if we want to distribute the build across nodes?
-  - what if we want to tag some builder nodes?
-  - ok but what if no node has been tagged?
-
-- *It would be nice if Swarm could automatically push images!*
-
-  - using the Docker Hub is an easy choice
-    <br/>(you just need an account)
-  - but some of us can't/won't use Docker Hub
-    <br/>(for compliance reasons or because no network access)
-
-.small[("Sane" defaults are nice only if we agree on the definition of "sane")]
-
----
-
-## The plan
-
-- Build locally
-
-- Tag images
-
-- Upload them to a registry
-
-- Update the Compose file to use those images
-
-*That's the purpose of the `build-tag-push.py` script!*
-
----
-
-## Which registry do we want to use?
-
-.small[
-
-- **Docker Hub**
-
-  - hosted by Docker Inc.
-  - requires an account (free, no credit card needed)
-  - images will be public (unless you pay)
-  - located in AWS EC2 us-east-1
-
-- **Docker Trusted Registry**
-
-  - self-hosted commercial product
-  - requires a subscription (free 30-day trial available)
-  - images can be public or private
-  - located wherever you want
-
-- **Docker open source registry**
-
-  - self-hosted barebones repository hosting
-  - doesn't require anything
-  - doesn't come with anything either
-  - located wherever you want
-]
-
----
-
-## Using Docker Hub
-
-- Set the `DOCKER_REGISTRY` environment variable to your Docker Hub user name
-  <br/>(the `build-tag-push.py` script prefixes each image name with that variable)
-
-- We will also see how to run the open source registry
-  <br/>(so use whatever option you want!)
-
-.exercise[
-
-<!--
-```meta
-^{
-```
--->
-
-- Set the following environment variable:
-  <br/>`export DOCKER_REGISTRY=jpetazzo`
-
-- (Use *your* Docker Hub login, of course!)
-
-- Log into the Docker Hub:
-  <br/>`docker login`
-
-<!--
-```meta
-^}
-```
--->
-
-]
-
----
-
-## Using Docker Trusted Registry
-
-If we wanted to use DTR, we would:
-
-- make sure we have a Docker Hub account
-- [activate a Docker Datacenter subscription](
-  https://hub.docker.com/enterprise/trial/)
-- install DTR on our machines
-- set `DOCKER_REGISTRY` to `dtraddress:port/user`
-
-*This is out of the scope of this workshop!*
-
----
-
-## Using open source registry
-
-- We need to run a `registry:2` container
-  <br/>(make sure you specify tag `:2` to run the new version!)
-
-- It will store images and layers to the local filesystem
-  <br/>(but you can add a config file to use S3, Swift, etc.)
-
-- Docker *requires* TLS when communicating with the registry,
-  unless for registries on `localhost` or with the Engine
-  flag `--insecure-registry`
-
-- We will run an ambassador on each node
-  of the cluster, redirecting `localhost:5000` to
-  the registry
-
----
-
-## Deploying our open source registry
-
-.exercise[
-
-- Start your registry on your Swarm cluster:
-  ```bash
-  eval $(docker-machine env node1 --swarm)
-  docker run -dP --name registry registry:2
-  ```
-
-- Start five ambassadors (one per node):
-  ```bash
-    for N in $(seq 1 5); do
-      docker run -d -p 5000:5000 jpetazzo/hamba \
-             5000 $(docker port registry 5000)
-    done
-  ```
-
-]
-
----
-
-## Testing our local registry
-
-- We can retag a small image, and push it to the registry
-
-.exercise[
-
-- Make sure we have the busybox image:
-  ```bash
-  docker pull busybox
-  ```
-
-- Retag the busybox image:
-  ```bash
-  docker tag busybox localhost:5000/busybox
-  ```
-
-- Push it:
-  ```bash
-  docker push localhost:5000/busybox
-  ```
-
-]
-
----
-
-## Using our local registry
-
-- The `build-tag-push.py` script uses the `DOCKER_REGISTRY`
-  environment variable
-
-.exercise[
-
-- Set the `DOCKER_REGISTRY` variable:
-  ```bash
-  export DOCKER_REGISTRY=localhost:5000
-  ```
-
-]
-
----
-
-## Build, Tag, And Push
-
-Let's inspect the source code of `build-tag-push.py` and run it.
-
-.warning[Make sure to run it against a single node!]
-
-.warning[Make sure to use the original Compose file!]
-
-.small[(We don't want the scaled RNG service, the custom logging driver, etc.)]
-
-.exercise[
-
-- Run `build-tag-push.py`:
-  ```bash
-  eval $(docker-machine env node1)
-  git checkout docker-compose.yml
-  ../bin/build-tag-push.py
-  ```
-
-]
-
-Inspect the `docker-compose.yml-NNN` file that it created.
-
----
-
-## Can we run this now?
-
-Let's try!
-
-.exercise[
-
-- Switch back to the Swarm cluster:
-  <br/>`eval $(docker-machine env node1 --swarm)`
-
-- Protip - set the `COMPOSE_FILE` variable:
-  <br/>`export COMPOSE_FILE=docker-compose.yml-NNN`
-
-- Bring up the application:
-  <br/>`docker-compose up`
-
-]
-
-.warning[This is *still* supposed to fail!]
-
---
-
-(╯°□°)╯︵ ┻━┻
-
----
-
-## Why do we get that weird error message?
-
-- Compose and Swarm do not collaborate
-  to establish *placement constraints*.
-
----
-
-## Simple container dependencies
-
-- Container A has a link to container B
-
-- Compose starts B first, then A
-
-- Swarm translates the link into a placement constraint:
-
-  - *"put A on the same node as B"*
-
-- Alles gut
-
----
-
-## Complex container dependencies
-
-- Container A has a link to containers B and C
-
-- Compose starts B and C first
-  <br/>(but that can be on different nodes!)
-
-- Compose starts A
-
-- Swarm translates the links into placements contraints
-
-  - *"put A on the same node as B"*
-  - *"put A on the same node as C"*
-
-- If B and C are on different nodes, that's impossible
-
-So, what do‽
-
----
-
-## A word on placement constraints
-
-- Swarm supports constraints
-
-- We could tell Swarm to put all our containers together
-
-- Linking would work
-
-- But all containers would end up on the same node
-
---
-
-- So having a cluster would be pointless!
-
----
-
 ## Connecting containers with Swarm (1/2)
 
 - Implement service discovery in the application
@@ -3823,6 +3478,8 @@ So, what do‽
 
 # Connecting containers with ambassadors
 
+- Hands off section (for information only!)
+
 - We will use one-tier, dynamic ambassadors
 
 - Each link to a service will be replaced by an ambassador
@@ -3857,34 +3514,13 @@ So, what do‽
 
 ---
 
-## Should we use `links` for our ambassadors?
-
-Technically, we could use links.
-
-- Before starting an app container:
-
-  start the ambassador(s) it needs
-
-- When starting an app container:
-
-  link it to its ambassador(s)
-
-But we wouldn't be able to use `docker-compose scale` anymore.
-
-(We would have to scale the ambassadors *first*,
-then add our client containers.)
-
----
-
 ## Network namespaces and `extra_hosts`
 
 This is our plan:
 
-- Replace each `link` with an `extra_host`,
-  <br/>pointing to the `127.127.X.X` address space
+- Replace each `link` with an `extra_host`, pointing to the `127.127.X.X` address space
 
-- Start app containers normally
-  <br/>(`docker-compose up`, `docker-compose scale`)
+- Start app containers normally (`docker-compose up`, `docker-compose scale`)
 
 - Start ambassadors after app containers are up:
 
@@ -3900,14 +3536,11 @@ This is our plan:
 
 - Replace all `links` with static `/etc/hosts` entries
 
-- Those entries will map to `127.127.0.X`
-  <br/>(with different `X` for each service)
+- Those entries will map to `127.127.0.X` (with different `X` for each service)
 
-- Example: `redis` will point to `127.127.0.2`
-  <br/>(instead of a container address)
+- Example: `redis` will point to `127.127.0.2` (instead of a container address)
 
-- Start all services; scale them if we want
-  <br/>(at this point, they will all fail to connect)
+- Start all services; scale them if we want (at this point, they will all fail to connect)
 
 - Start ambassadors in the services' namespace;
   <br/>each ambassador will listen on the right `127.127.0.X`
@@ -4001,7 +3634,7 @@ class: pic
 - When we ran `build-tag-push.py` earlier,
   <br/>it generated a new `docker-compose.yml-NNN` file.
 
-.exercise[
+.notexercise[
 
 - Run the first script to create a new YAML file:
   <br/>`../bin/link-to-ambassadors.py`
@@ -4025,7 +3658,7 @@ class: pic
 
 The application can now be started and scaled.
 
-.exercise[
+.notexercise[
 
 - Start the application:
   <br/>`docker-compose up -d`
@@ -4057,7 +3690,7 @@ After reading `$COMPOSE_FILE`, it will scan running containers, and compare:
 
 It will create missing ambassadors.
 
-.exercise[
+.notexercise[
 
 - Run the script!
   <br/>`../bin/create-ambassadors.py`
@@ -4087,7 +3720,7 @@ It will read `$COMPOSE_FILE` and gather:
 
 Then it configures all ambassadors with all found backends.
 
-.exercise[
+.notexercise[
 
 - Run it!
   <br/>`../bin/configure-ambassadors.py`
@@ -4106,7 +3739,7 @@ class: pic
 
 ## Check what we did
 
-.exercise[
+.notexercise[
 
 
 - Find out the address of the web UI:
@@ -4122,7 +3755,7 @@ class: pic
 
 - We will now add more containers.
 
-.exercise[
+.notexercise[
 
 - Scale worker and rng:
   ```bash
@@ -4150,7 +3783,7 @@ class: pic
 
 - The new containers don't have ambassadors at this point.
 
-.exercise[
+.notexercise[
 
 - Create the missing ambassadors with the script:
   ```bash
@@ -4178,7 +3811,7 @@ class: pic
 
 - The last step is to inject the updated configuration.
 
-.exercise[
+.notexercise[
 
 - Run the last script one more time:
   ```bash
@@ -4197,26 +3830,6 @@ class: pic
 ## Current state
 
 ![All ambassadors are here and configured](ambassadors/dockercoins-7.png)
-
----
-
-## Clean up
-
-- Before moving on, stop and remove all containers
-
-.exercise[
-
-- Terminate and remove all containers:
-  ```bash
-  docker-compose down
-  ```
-
-- Remove ambassadors:
-  ```bash
-  ../bin/delete-ambassadors.sh
-  ```
-
-]
 
 ---
 
@@ -4405,8 +4018,8 @@ This lets us run Consul itself in a container.
 
 - We will run Consul in containers
 
-- We will use a
-  [custom consul image](https://hub.docker.com/r/jpetazzo/consul/)
+- We will use the [Consul official image](
+  https://hub.docker.com/_/consul/) that was released *very recently*
 
 - We will tell Docker to automatically restart it on reboots
 
@@ -4414,50 +4027,62 @@ This lets us run Consul itself in a container.
 
 ---
 
-## Starting the first Consul node
+## A few words about `host` networking
 
-.exercise[
+- Consul needs to be aware of its actual IP address (seen by other nodes)
 
-- Make sure you're logged into `node1`,
-  with a clean environment:
+- It also binds a bunch of different ports
 
-  ```bash
-  unset DOCKER_HOST
-  ```
+- It makes sense (from a security point of view) to have Consul listening on localhost only
 
-- The first node must be started with the `-bootstrap` flag:
+  (and have "users", i.e. Engine, Swarm, etc. connect over localhost)
 
-  ```bash
-    CID=$(docker run --name consul_node1 \
-          -d --restart=always --net host \
-          jpetazzo/consul agent -server -bootstrap)
-  ```
+- Therefore, we will use `host` networking!
 
-]
+- Also: Docker Machine 0.6 starts the Swarm containers in `host` networking ...
+
+- ... but Docker Machine 0.7 doesn't (which is why we stick to 0.6 for now)
 
 ---
 
-## Starting the other Consul nodes
+## Consul fundamentals (if I must give you just one slide...)
 
-- Other nodes have to be started with the `-join AA.BB.CC.DD`
-  option, where AA.BB.CC.DD is the address of an existing node
+- Consul nodes can be "just an agent" or "server"
+
+- From the client's perspective, they behave the same
+
+- Only servers are members in the Raft consensus / leader election / etc
+
+  (non-server agents forward requests to a server)
+
+- All nodes (except maybe one) must be told the address of at least another node to join
+
+- At least the first nodes must know how many nodes to expect to have quorum
+
+- Consul can have only one "truth" at a time (hence the importance of quorum)
+
+---
+
+## Starting our Consul cluster
 
 .exercise[
 
-- Find the internal IP address of our first node:
+- Make sure you're logged into `node1`, and:
+
   ```bash
     IPADDR=$(ip a ls dev eth0 | sed -n 's,.*inet \(.*\)/.*,\1,p')
-  ```
-
-- Start the other nodes:
-  ```bash
-      for N in 2 3 4 5; do
-      ssh node$N docker run --name consul_node$N -d --restart=always \
-                --net host jpetazzo/consul agent -server -join $IPADDR
-      done
+    for N in 1 2 3 4 5; do
+      ssh node$N -- docker run -d --restart=always --name consul_node$N \
+                    -e CONSUL_BIND_INTERFACE=eth0 --net host consul \
+                    agent -server -retry-join $IPADDR -bootstrap-expect 3 \
+                    -ui -client 0.0.0.0
+    done
   ```
 
 ]
+
+Note: in production, you probably want to remove `-client 0.0.0.0` since it
+gives public access to your cluster! Also adapt `-bootstrap-expect` to your quorum.
 
 ---
 
@@ -4472,7 +4097,7 @@ This lets us run Consul itself in a container.
 
 - Ask Consul the list of members it knows:
   ```bash
-  docker run --net host --rm jpetazzo/consul members
+  docker run --net host --rm consul members
   ```
 
 - Ask Consul which node is the current leader:
@@ -4534,10 +4159,10 @@ This lets us run Consul itself in a container.
 - Create containers with names of blue and green
   things, on their respective networks:
   ```bash
-  docker run -d --name sky --net blue -m 3G redis
-  docker run -d --name navy --net blue -m 3G redis
-  docker run -d --name grass --net green -m 3G redis
-  docker run -d --name forest --net green -m 3G redis
+  docker run -d --net-alias things --name sky --net blue -m 3G redis
+  docker run -d --net-alias things --name navy --net blue -m 3G redis
+  docker run -d --net-alias things --name grass --net green -m 3G redis
+  docker run -d --net-alias things --name forest --net green -m 3G redis
   ```
 
 ]
@@ -4557,13 +4182,13 @@ This lets us run Consul itself in a container.
 - This will work:
 
   ```bash
-  docker exec -ti sky ping navy
+  docker run --rm --net blue alpine ping -c 3 navy
   ```
 
 - This will not:
 
   ```bash
-  docker exec -ti navy ping grass
+  docker run --rm --net blue alpine ping -c 3 grass
   ```
 
 ]
@@ -4578,13 +4203,13 @@ This lets us run Consul itself in a container.
 
 - Create a container that we want to be on both networks:
   ```bash
-  docker run -d --net blue --name turquoise nginx
+  docker run -d --net-alias things --net blue --name turquoise redis
   ```
 
 - Check connectivity:
   ```bash
-  docker exec -ti turquoise ping -c1 navy
-  docker exec -ti turquoise ping -c1 grass
+  docker exec -ti turquoise ping -c 3 navy
+  docker exec -ti turquoise ping -c 3 grass
   ```
   (First works; second doesn't)
 
@@ -4606,10 +4231,30 @@ This lets us run Consul itself in a container.
 
 - Check connectivity:
   ```bash
-  docker exec -ti turquoise ping -c1 navy
-  docker exec -ti turquoise ping -c1 grass
+  docker exec -ti turquoise ping -c 3 navy
+  docker exec -ti turquoise ping -c 3 grass
   ```
   (Both commands work now)
+
+]
+
+---
+
+## Network aliases
+
+- Each container was created with the network alias `things`
+
+- Network aliases are scoped by network
+
+.exercise[
+
+- Resolve the `things` alias from both networks:
+  ```bash
+    docker run --rm --net blue alpine sh -c \
+      "apk add --update drill && drill things"
+    docker run --rm --net green alpine sh -c \
+      "apk add --update drill && drill things"
+  ```
 
 ]
 
@@ -4647,8 +4292,8 @@ This lets us run Consul itself in a container.
 
 - Check connectivity:
   ```bash
-  docker exec -ti turquoise ping -c1 navy
-  docker exec -ti turquoise ping -c1 grass
+  docker exec -ti turquoise ping -c 3 navy
+  docker exec -ti turquoise ping -c 3 grass
   ```
   (First command fails, second one works)
 
@@ -4687,25 +4332,188 @@ This lets us run Consul itself in a container.
 
 ---
 
-# Using overlay networks with Compose
+# Building images with Swarm
 
-- Compose 1.5 had `--x-networking` flag
-  <br/>(enabling experimental support for overlay networks)
+- This is a relatively new feature (Compose ~1.5)
 
-- Compose 1.6 has a new Compose file format
-  <br/>(using the new format enables overlay networks support)
+- Builds are scheduled on random nodes
 
-- Compose will remain backward compatible with old files
+- This disrupts caching
 
-- Converting to new files is (ridiculously) easy
+- Independent builds will be fine, though
 
 ---
 
-## Our first "Compose v2" app
+## Caveats when building with Swarm
 
-- To deploy DockerCoins, we still need a local registry
+- Containers are only scheduled where they were built
 
-- Let's deploy a local registry using a Compose File v2!
+  - cause: Swarm will not automatically copy images across nodes
+
+  - solution: distribute images through a registry (e.g. Docker Hub)
+
+- You can end up with inconsistent versions
+  <br/>(i.e. `dockercoins_rng:latest` being different on two nodes)
+
+  - cause: builds can happen on different nodes
+
+  - solution: always pin builds to the same node; use explicit version tags
+
+- Also, build caching doesn't work all the time
+
+---
+
+## Why can't Swarm do this automatically for us?
+
+- Let's step back and think for a minute ...
+
+- What should `docker build` do on Swarm?
+
+  - build on one machine
+
+  - build everywhere ($$$)
+
+- After the build, what should `docker run` do?
+
+  - run where we built (how do we know where it is?)
+
+  - run on any machine that has the image
+
+- Could Compose+Swarm solve this automatically?
+
+---
+
+## A few words about "sane defaults"
+
+- *It would be nice if Swarm could pick a node, and build there!*
+
+  - but which node should it pick?
+  - what if the build is very expensive?
+  - what if we want to distribute the build across nodes?
+  - what if we want to tag some builder nodes?
+  - ok but what if no node has been tagged?
+
+- *It would be nice if Swarm could automatically push images!*
+
+  - using the Docker Hub is an easy choice
+    <br/>(you just need an account)
+  - but some of us can't/won't use Docker Hub
+    <br/>(for compliance reasons or because no network access)
+
+.small[("Sane" defaults are nice only if we agree on the definition of "sane")]
+
+---
+
+## The plan
+
+- Build on a single node (`node1`)
+
+- Tag images
+
+- Upload them to a registry
+
+- Update the Compose file to use those images
+
+*That's the purpose of the `build-tag-push.py` script!*
+
+---
+
+## Which registry do we want to use?
+
+.small[
+
+- **Docker Hub**
+
+  - hosted by Docker Inc.
+  - requires an account (free, no credit card needed)
+  - images will be public (unless you pay)
+  - located in AWS EC2 us-east-1
+
+- **Docker Trusted Registry**
+
+  - self-hosted commercial product
+  - requires a subscription (free 30-day trial available)
+  - images can be public or private
+  - located wherever you want
+
+- **Docker open source registry**
+
+  - self-hosted barebones repository hosting
+  - doesn't require anything
+  - doesn't come with anything either
+  - located wherever you want
+
+]
+
+---
+
+## Using Docker Hub
+
+- Set the `DOCKER_REGISTRY` environment variable to your Docker Hub user name
+  <br/>(the `build-tag-push.py` script prefixes each image name with that variable)
+
+- We will also see how to run the open source registry
+  <br/>(so use whatever option you want!)
+
+.exercise[
+
+<!--
+```meta
+^{
+```
+-->
+
+- Set the following environment variable:
+  <br/>`export DOCKER_REGISTRY=jpetazzo`
+
+- (Use *your* Docker Hub login, of course!)
+
+- Log into the Docker Hub:
+  <br/>`docker login`
+
+<!--
+```meta
+^}
+```
+-->
+
+]
+
+---
+
+## Using Docker Trusted Registry
+
+If we wanted to use DTR, we would:
+
+- make sure we have a Docker Hub account
+- [activate a Docker Datacenter subscription](
+  https://hub.docker.com/enterprise/trial/)
+- install DTR on our machines
+- set `DOCKER_REGISTRY` to `dtraddress:port/user`
+
+*This is out of the scope of this workshop!*
+
+---
+
+## Using open source registry
+
+- We need to run a `registry:2` container
+  <br/>(make sure you specify tag `:2` to run the new version!)
+
+- It will store images and layers to the local filesystem
+  <br/>(but you can add a config file to use S3, Swift, etc.)
+
+- Docker *requires* TLS when communicating with the registry,
+  unless for registries on `localhost` or with the Engine
+  flag `--insecure-registry`
+
+- Our strategy: run a reverse proxy on `localhost:5000` on each node
+
+---
+
+# Deploying a local registry
+
+- There is a Compose file for that
 
 .exercise[
 
@@ -4720,7 +4528,7 @@ Let's examine the `docker-compose.yml` file.
 
 ---
 
-## Our first Compose v2 file
+## Running a local registry with Compose
 
 ```yaml
 version: "2"
@@ -4754,11 +4562,6 @@ and network aliases.
 
 .exercise[
 
-- Make sure that `COMPOSE_FILE` is not set:
-  ```bash
-  unset COMPOSE_FILE
-  ```
-
 - Start the registry:
   ```bash
   docker-compose up -d
@@ -4779,7 +4582,9 @@ and network aliases.
 
 - Scale the registry:
   ```bash
-    docker-compose scale frontend=5
+    for N in $(seq 1 5); do
+      docker-compose scale frontend=$N
+    done
   ```
 
 ]
@@ -4788,19 +4593,34 @@ Note: Swarm might do that automatically for us in the future.
 
 ---
 
-## Converting the Compose file for DockerCoins
+## Testing our local registry
 
-- Services are no longer at the top level, but under a `services` section
+- We can retag a small image, and push it to the registry
 
-- There has to be a `version` key at the top level, with value `"2"` (as a string, not an integer)
+.exercise[
 
-- Links should be removed
+- Make sure we have the busybox image:
+  ```bash
+  docker pull busybox
+  ```
 
-- Fixed port mappings should be removed (until [docker/compose#2866](
-  https://github.com/docker/compose/issues/2866) is fixed)
+- Retag the busybox image:
+  ```bash
+  docker tag busybox localhost:5000/busybox
+  ```
 
-- There are other minor differences, but for our sample
-  app, that's all we have to worry about!
+- Push it:
+  ```bash
+  docker push localhost:5000/busybox
+  ```
+
+]
+
+---
+
+## Adapting our Compose file to run on Swarm
+
+- We can get rid of all the `ports` section, except for the web UI
 
 ---
 
@@ -4813,18 +4633,14 @@ version: '2'
 services:
   rng:
     build: rng
-    ports:
-      - 80
 
   hasher:
     build: hasher
-    ports:
-      - 80
 
   webui:
     build: webui
     ports:
-      - 80
+    - "8000:80"
 
   redis:
     image: redis
@@ -4841,12 +4657,9 @@ Copy-paste this into `docker-compose.yml`
 
 ## Use images, not builds
 
-- If we try to start the app like that, containers will only
-  run on nodes which have the images
+- We need to replace each `build` with an `image`
 
-- Like before: we need to replace `build` with `image`
-
-- We can re-use the `build-tag-push.py` script for that
+- We will use the `build-tag-push.py` script for that
 
 .exercise[
 
@@ -4872,6 +4685,7 @@ Copy-paste this into `docker-compose.yml`
 - Start the application:
   ```bash
   export COMPOSE_FILE=docker-compose.yml-`NNN`
+  eval $(docker-machine env node1 --swarm)
   docker-compose up -d
   ```
 
@@ -4902,7 +4716,7 @@ Copy-paste this into `docker-compose.yml`
 
 ---
 
-# Load balancing with overlay networks
+# Scaling workers
 
 - Scaling the `worker` service works out of the box
   (like before)
@@ -4922,7 +4736,8 @@ How can we scale that service?
 
 ---
 
-## The manual method
+## Load balancing with overlay networks, take 1
+
 
 - Replace `rng` with:
 
@@ -4931,28 +4746,24 @@ How can we scale that service?
   - a load balancer taking over the name `rng`,
     <br/>and spreading traffic accross all instances
 
-- You should have a sense of *déjà vu*
-
-- We did that in the beginning of the workshop
-
 - Can we do better?
-
----
-
-## The scripted method
-
-- We could write a script to automate those steps
-
---
-
-- *Can we do better?*
-
---
 
 - In a perfect world, we would like to do:
   ```bash
   docker-compose scale rng=10
   ```
+
+---
+
+## Load balancing with overlay networks, take 2
+
+- Scale `rng` and rely on DNS round robin records
+
+- Problem: the load might end up being totally unbalanced
+
+- We need to send `rng` traffic to an actual load balancer
+
+- This poses a naming problem
 
 ---
 
@@ -5111,10 +4922,9 @@ Load-balanced DockerCoins
 
 - Configure the load balancer:
   ```bash
-    docker run --rm \
-      --volumes-from dockercoins_rng-lb_1 \
-      --net container:dockercoins_rng-lb_1 \
-      jpetazzo/hamba reconfigure 80 dockercoins_rng_1 80
+    docker run --rm --volumes-from dockercoins_rng-lb_1 \
+                    --net container:dockercoins_rng-lb_1 \
+                    jpetazzo/hamba reconfigure 80 dockercoins_rng_1 80
   ```
 
 ]
@@ -5182,7 +4992,7 @@ configuration first.
 
 ---
 
-## Further automation with Engine 1.11 and round robin DNS
+## Use DNS to discover the addresses of all the backends
 
 - When multiple containers have the same network alias:
 
@@ -5192,55 +5002,66 @@ configuration first.
 
 - A "smart" client can use all records to implement load balancing
 
-- See script `add-load-balancer-v2.py` for an example
+- We can compose `jpetazzo/hamba` with a special-purpose container,
+  which will dynamically generate HAProxy's configuration when
+  the DNS records are updated
 
 ---
 
-# Going further
+## Introducing `jpetazzo/watchdns`
 
-Deploying a new version (difficulty: easy)
+- [100 lines of pure POSIX scriptery](
+  https://github.com/jpetazzo/watchdns/blob/master/watchdns)
 
-- Just re-run all the steps!
+- Resolves a given DNS name every second
 
-- However, Compose will re-create the containers
+- Each time the result changes, a new HAProxy configuration is generated
 
-- You will have to re-create ambassadors
-  <br/>(and configure them)
+- When used together with `--volumes-from` and `jpetazzo/hamba`, it
+  updates the configuration of an existing load balancer
 
-- You will have to cleanup old ambassadors
-  <br/>(left as an exercise for the reader)
-
-- You will experience a little bit of downtime
-
----
-
-## Going further
-
-Zero-downtime deployment (difficulty: medium)
-
-- Isolate stateful services (like we did earlier for Redis) 
-
-- Do blue/green deployment:
-
-  - deploy and scale version N
-
-  - point a "top-level" load balancer to the app
-
-  - deploy and scale version N+1
-
-  - put both apps in the "top-level" balancer
-
-  - slowly switch traffic over to app version N+1
+- Comes with a companion script, `add-load-balancer-v2.py`, to update
+  your Compose files
 
 ---
 
-## Going further
+## Using `jpetazzo/watchdns`
 
-Harder projects:
+.exercise[
 
-- Two-tier or three-tier ambassador deployments
+- First, revert the Compose file to remove the load balancer
 
-- Deploy to Mesos or Kubernetes
+- Then, run `add-load-balancer-v2.py`:
+  ```bash
+  ../bin/add-load-balancer-v2.py rng
+  ```
+
+- Inspect the resulting Compose file
+
+]
+
+---
+
+## Scaling with `watchdns`
+
+.exercise[
+
+- Start the application with the new sidekick containers:
+  ```bash
+  docker-compose up -d
+  ```
+
+- Scale `rng`:
+  ```bash
+  docker-compose scale rng=10
+  ```
+
+- Check logs:
+  ```bash
+  docker-compose logs rng-wd
+  ```
+
+]
 
 ---
 
@@ -5261,19 +5082,73 @@ networks that had been created for the application.
 
 ---
 
-class: pic
+## Comments
 
-![Here Be Dragons](dragons.jpg)
+- This is a very crude implementation of the pattern
+
+- A Go version would only be a bit longer, but use much less resources
+
+- When there are many backends, reacting quickly to change is less important
+
+  (i.e. it's not necessary to re-resolve records every second!)
+
+???
+
+# Going further
+
+Deploying a new version (difficulty: easy)
+
+- Just re-run all the steps!
+
+- However, Compose will re-create the containers
+
+- You will have to re-create ambassadors
+  <br/>(and configure them)
+
+- You will have to cleanup old ambassadors
+  <br/>(left as an exercise for the reader)
+
+- You will experience a little bit of downtime
+
+???
+
+## Going further
+
+Zero-downtime deployment (difficulty: medium)
+
+- Isolate stateful services (like we did earlier for Redis) 
+
+- Do blue/green deployment:
+
+  - deploy and scale version N
+
+  - point a "top-level" load balancer to the app
+
+  - deploy and scale version N+1
+
+  - put both apps in the "top-level" balancer
+
+  - slowly switch traffic over to app version N+1
+
+???
+
+## Going further
+
+Harder projects:
+
+- Two-tier or three-tier ambassador deployments
+
+- Deploy to Mesos or Kubernetes
 
 ---
 
-# Here be dragons
+class: title
 
-- So far, we've used stable features
-
-- We're going to explore experimental code
-
-- **Use at your own risk**
+Resiliency
+<br/>
+and
+<br/>
+high availability
 
 ---
 
@@ -5327,17 +5202,30 @@ class: pic
 
 - Be lazy and use the Docker image:
   ```bash
-  sudo docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
+  docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
   ```
 ]
 
 Note: the `jpetazzo/consulfs` image contains the
 `consulfs` binary.
+
 It copies it to `/target` (if `/target` is a volume).
 
-We need `consulfs` locally (not in a container) because
-we can't propagate a FUSE mount from a container to
-the host (yet).
+---
+
+## Can't we run consulfs in a container?
+
+- Yes we can!
+
+- The filesystem will be mounted in the container
+
+- It won't be visible outside of the container (from the host)
+
+- We can use *shared mounts* to propagate mounts from containers to Docker
+
+- But propagating from Docker to the host requires particular systemd flags
+
+- ... So we'll run it on the host for now
 
 ---
 
@@ -5362,11 +5250,15 @@ Leave this running in the foreground.
 
 ---
 
-## Copying our credentials to Consul
+## Checking our consulfs mount point
 
-- Use standard UNIX commands
+- All key/values will be visible:
 
-- Don't try to preserve permissions, though (`consulfs` doesn't store permissions)
+  - Swarm discovery
+
+  - overlay networks
+
+  - ... anything you put in Consul!
 
 .exercise[
 
@@ -5374,6 +5266,18 @@ Leave this running in the foreground.
   ```bash
   ls -l ~/consul/
   ```
+
+]
+
+---
+
+## Copying our credentials to Consul
+
+- Use standard UNIX commands
+
+- Don't try to preserve permissions, though (`consulfs` doesn't store permissions)
+
+.exercise[
 
 - Copy Machine credentials into Consul:
   ```bash
@@ -5398,10 +5302,10 @@ Leave this running in the foreground.
   ```
 
 - Install `consulfs` and mount Consul:
-  ```
-  sudo docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
+  ```bash
+  docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs
   mkdir ~/consul
-  consulfs localhost:8500 ~/consul
+  consulfs localhost:8500 ~/consul &
   ```
 
 ]
@@ -5420,13 +5324,13 @@ At this point, `ls -l ~/consul` should show `docker` and
 .exercise[
 
 - Create the symlink:
-  ```
+  ```bash
   mkdir -p ~/.docker/
   ln -s ~/consul/machine ~/.docker/
   ```
 
 - Check that all nodes are visible:
-  ```
+  ```bash
   docker-machine ls
   ```
 
@@ -5443,7 +5347,7 @@ At this point, `ls -l ~/consul` should show `docker` and
   serious havoc to your cluster anyway)
 
 - ConsulFS doesn't support *all* POSIX operations,
-  <br/>so a few things (like `mv`) will not work)
+  so a few things (like `mv`) will not work)
 
 - As a consequence, with Machine 0.6, you cannot
   run `docker-machine create` directly on top of ConsulFS
@@ -5459,7 +5363,8 @@ At this point, `ls -l ~/consul` should show `docker` and
   <br/>your cluster will be in a bad state anyway
 
 - You can still access each Docker Engine over the
-  local UNIX socket (and repair Consul that way)
+  local UNIX socket
+  <br/>(and repair Consul that way)
 
 
 ---
@@ -5495,8 +5400,8 @@ At this point, `ls -l ~/consul` should show `docker` and
   <br/>if you talk to a secondary, it forwards to the primary
 
 .warning[There is currently a bug when
-the Consul cluster itself has a leader election; see [docker/swarm#1782](
-https://github.com/docker/swarm/issues/1782).]
+the Consul cluster itself has a leader election;
+<br/>see [docker/swarm#1782](https://github.com/docker/swarm/issues/1782).]
 
 ---
 
@@ -5667,7 +5572,7 @@ Look at the output of `docker info` every few seconds.
 - Start a container with a rescheduling policy:
 
   ```bash
-  CID=$(docker run -d -e reschedule:on-node-failure nginx)
+  docker run --name highlander -d -e reschedule:on-node-failure nginx
   ```
 
 ]
@@ -5685,7 +5590,7 @@ Check that the container is up and running.
 .exercise[
 
 - Check on which node the container is running:
-  </br>`NODE=$(docker inspect --format '{{.Node.Name}}' $CID)`
+  </br>`NODE=$(docker inspect --format '{{.Node.Name}}' highlander)`
 
 - Reboot that node:
   <br/>`ssh $NODE sudo reboot`
@@ -5708,6 +5613,21 @@ Check that the container is up and running.
 ```bash
 ~/orchestration-workshop/bin/chaosmonkey $NODE <connect|disconnect|reboot>
 ```
+
+---
+
+## Cluster reconciliation
+
+- After the cluster rejoins, we can end up with duplicate containers
+
+.exercise[
+
+- Once the node is back, remove one of the extraneous containers:
+  ```bash
+  docker rm -f node`N`/highlander
+  ```
+
+]
 
 ---
 
@@ -5744,7 +5664,37 @@ Check that the container is up and running.
 
 ---
 
-## "This is complicated"
+## What's next?
+
+- November 2015: Compose 1.5 + Engine 1.9 =
+  <br/>first release with multi-host networking
+
+- January 2016: Compose 1.6 + Engine 1.10 =
+  <br/>embedded DNS server, experimental high availability
+
+- April 2016: Compose 1.7 + Engine 1.11 =
+  <br/>round robin DNS records, huge improvements in HA
+
+- Next release: another truckload of features
+
+- I will deliver this workshop about twice a month
+
+- Check out the GitHub repo for updated content!
+  <br/>(there is a tag for each big round of updates)
+
+---
+
+## High availability
+
+- Docker in general, and Swarm in particular, move *fast*
+
+- Current high availability features are not Chaos-Monkey proof (yet)
+
+- We (well, the Swarm team) is working to change that
+
+---
+
+## Overall complexity
 
 - The scripts used here are pretty simple (each is less than 100 LOCs)
 
@@ -5763,26 +5713,6 @@ Check that the container is up and running.
   - Docker Datacenter
     <br/>(buzzword-compliant management solution:
     <br/>turnkey, enterprise-class, on-premise, etc.)
-
----
-
-## What's next?
-
-- November 2015: Compose 1.5 + Engine 1.9 =
-  <br/>first release with multi-host networking
-
-- January 2016: Compose 1.6 + Engine 1.10 =
-  <br/>embedded DNS server, experimental high availability
-
-- April 2016: Compose 1.7 + Engine 1.11 =
-  <br/>round robin DNS records, huge improvements in HA
-
-- Next release: another truckload of features
-
-- I will deliver this workshop about twice a month
-
-- Check out the GitHub repo for updated content!
-  <br/>(there is a tag for each big round of updates)
 
 ---
 
