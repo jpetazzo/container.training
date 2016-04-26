@@ -1,18 +1,10 @@
 version: "2"
 
 services:
-  rng1:
-    build: rng
-  rng2:
-    build: rng
-  rng3:
-    build: rng
-
   rng:
-    image: jpetazzo/hamba
-    command: 80 rng1:80 rng2:80 rng3:80
+    build: rng
     ports:
-    - "8001:80"
+    - "80"
 
   hasher:
     build: hasher
@@ -27,8 +19,7 @@ services:
     - "./webui/files/:/files/"
 
   redis:
-    image: jpetazzo/hamba
-    command: 6379 AA.BB.CC.DD:EEEEE
+    image: redis
 
   worker:
     build: worker

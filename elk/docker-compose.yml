@@ -1,56 +1,55 @@
-elasticsearch:
-  image: elasticsearch
-  # If you need to acces ES directly, just uncomment those lines.
-  #ports:
-  #  - "9200:9200"
-  #  - "9300:9300"
+version: "2"
 
-logstash:
-  image: logstash
-  command: |
-    -e '
-    input {
-      # Default port is 12201/udp
-      gelf { }
-      # This generates one test event per minute.
-      # It is great for debugging, but you might
-      # want to remove it in production.
-      heartbeat { }
-    }
-    # The following filter is a hack!
-    # The "de_dot" filter would be better, but it
-    # is not pre-installed with logstash by default.
-    filter {
-      ruby {
-        code => "
-          event.to_hash.keys.each { |k| event[ k.gsub('"'.'"','"'_'"') ] = event.remove(k) if k.include?'"'.'"' }
-        "
-      }
-    }
-    output {
-      elasticsearch {
-        hosts => ["elasticsearch:9200"]
-      }
-      # This will output every message on stdout.
-      # It is great when testing your setup, but in
-      # production, it will probably cause problems;
-      # either by filling up your disks, or worse,
-      # by creating logging loops! BEWARE!
-      stdout {
-        codec => rubydebug
-      }
-    }'
-  ports:
-    - 12201/udp
-  links:
-    - elasticsearch
+services:
+  elasticsearch:
+    image: elasticsearch
+    # If you need to access ES directly, just uncomment those lines.
+    #ports:
+    #  - "9200:9200"
+    #  - "9300:9300"
 
-kibana:
-  image: kibana
-  ports:
-    - 5601
-  links:
-    - elasticsearch
-  environment:
-    ELASTICSEARCH_URL: http://elasticsearch:9200
+  logstash:
+    image: logstash
+    command: |
+      -e '
+      input {
+        # Default port is 12201/udp
+        gelf { }
+        # This generates one test event per minute.
+        # It is great for debugging, but you might
+        # want to remove it in production.
+        heartbeat { }
+      }
+      # The following filter is a hack!
+      # The "de_dot" filter would be better, but it
+      # is not pre-installed with logstash by default.
+      filter {
+        ruby {
+          code => "
+            event.to_hash.keys.each { |k| event[ k.gsub('"'.'"','"'_'"') ] = event.remove(k) if k.include?'"'.'"' }
+          "
+        }
+      }
+      output {
+        elasticsearch {
+          hosts => ["elasticsearch:9200"]
+        }
+        # This will output every message on stdout.
+        # It is great when testing your setup, but in
+        # production, it will probably cause problems;
+        # either by filling up your disks, or worse,
+        # by creating logging loops! BEWARE!
+        stdout {
+          codec => rubydebug
+        }
+      }'
+    ports:
+      - "12201:12201/udp"
+
+  kibana:
+    image: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
 

@@ -101,11 +101,7 @@ class: title
 
 ## Logistics
 
-- Hello! I'm `jerome at docker dot com`
-
-<!--
-  <br/>`aj at soulshake dot net`
--->
+- Hello! We're `jerome at docker dot com` and `aj at soulshake dot net`
 
 <!--
 Reminder, when updating the agenda: when people are told to show
@@ -118,25 +114,23 @@ at e.g. 9am, and start at 9:30.
 - Agenda:
 
 .small[
-- 09:00-09:15 hello and breakfast
-- 09:15-10:45 part 1
-- 10:45-11:00 coffee break
-- 11:00-12:30 part 2
-- 12:30-13:45 lunch break
-- 13:45-15:15 part 3
-- 15:15-15:30 coffee break
-- 15:30-17:00 part 4
+- 08:00-09:00 hello and breakfast
+- 09:00:10:25 part 1
+- 10:25-10:35 coffee break
+- 10:35-12:00 part 2
+- 12:00-13:00 lunch break
+- 13:00-14:25 part 3
+- 14:25-14:35 coffee break
+- 14:35-16:00 part 4
 ]
 
 <!-- - This will be FAST PACED, but DON'T PANIC! -->
 
-- All the content is publicly available
-  <br/>(slides, code samples, scripts)
+- All the content is publicly available (slides, code samples, scripts)
 
 <!--
 Remember to change:
 - the Gitter link below
-- the other Gitter link
 - the "tweet my speed" hashtag in DockerCoins HTML
 -->
 
@@ -589,6 +583,42 @@ Tip: use `^S` and `^Q` to pause/resume log output.
   - `--follow` must be specified explicitly
 
   - new containers are automatically picked up by `docker-compose logs`
+
+---
+
+## Compose file format version
+
+*Particularly relevant if you have used Compose before...*
+
+- Compose 1.6 introduced support for a new Compose file format (aka "v2")
+
+- Services are no longer at the top level, but under a `services` section
+
+- There has to be a `version` key at the top level, with value `"2"` (as a string, not an integer)
+
+- Containers are placed on a dedicated network, making links unnecessary
+
+- There are other minor differences, but upgrade is easy and straightforward
+
+---
+
+## Links, naming, and service discovery
+
+- Containers can have network aliases (resolvable through DNS)
+
+- Compose file version 2 makes each container reachable through its service name
+
+- Compose file version 1 requires "links" sections
+
+- Our code can connect to services using their short name
+
+  (instead of e.g. IP address or FQDN)
+
+---
+
+## Example in `worker/worker.py`
+
+![Service discovery](service-discovery.png)
 
 ---
 
@@ -1069,58 +1099,141 @@ WHY?!?
 
 # Scaling HTTP on a single node
 
-- We could try to scale with Compose:
+- We can try to scale with Compose:
 
   ```bash
   docker-compose scale rng=3
   ```
 
-- Since Engine 1.11, we get round-robin DNS records
+- This will result into an error, because our Compose file uses an explicit port
 
-  (i.e. resolving `rng` will yield the IP addresses of all 3 containers)
+- We cannot have multiple containers bound to the same port (here, 8001)
 
-- But many (most) resolvers will sort records
+- Compose *tries* to scale anyway
 
-- So we would get 3 instances ...
+  (because on a cluster, you *can* have multiple containers on the same public port)
 
-- ... But only one would serve traffic
+- Let's remove the explicit port mapping, and see what happens when we scale!
 
 ---
 
-## The plan
+## Removing explicit port from the Compose file
 
-<!--
-- Stop the `rng` service first
--->
+- We will replace `8001:80` with just `80`
 
-- Create multiple identical `rng` containers
-
-- Put a load balancer in front of them
-
-- Point other services to the load balancer
-
-???
-
-## Stopping `rng`
-
-- That's the easy part!
+- This will continue to make the service publicly available,
+  <br/>but on a port dynamically allocated by Docker
 
 .exercise[
 
-- Use `docker-compose` to stop `rng`:
+- Edit the `docker-compose.yml` file to change the ports section for `rng`:
+  ```yaml
+    rng:
+      ...
+      ports:
+      - "80"
+  ```
 
+<!--
+```edit
+cp docker-compose.yml-scaled docker-compose.yml
+```
+-->
+
+]
+
+Shortcut: `docker-compose.yml-portmap`
+
+---
+
+## Scaling up a network service with Compose
+
+- We changed the definition of the service (by removing the static port mapping),
+  <br/>so we must execute `docker-compose up` before scaling
+
+.exercise[
+
+- Refresh the `rng` service:
   ```bash
-  docker-compose stop rng
+  docker-compose up -d
+  ```
+
+- Scale the `rng` service:
+  ```bash
+  docker-compose scale rng=3
   ```
 
 ]
 
-Note: we do this first because we are about to remove
-`rng` from the Docker Compose file.
+---
 
-If we don't stop
-`rng` now, it will remain up and running, with Compose
-being unaware of its existence!
+## Results
+
+- In the web UI, you might see a performance increase ... or maybe not
+
+--
+
+- Since Engine 1.11, we get round-robin DNS records
+
+  (i.e. resolving `rng` will yield the IP addresses of all 3 containers)
+
+- Docker randomizes the records it sends
+
+- But many resolvers will sort them in unexpected ways
+
+- Depending on various factors, you could get:
+
+  - all traffic on a single container
+  - traffic perfectly balanced on all containers
+  - traffic unevenly balanced across containers
+
+---
+
+## Assessing DNS randomness
+
+- Let's see how our containers resolve DNS requests
+
+.exercise[
+
+- On each of our 10 scaled workers, execute 5 ping requests:
+  ```bash
+    for N in $(seq 1 10); do
+      echo PING__________$N
+      for I in $(seq 1 5); do
+        docker exec -ti dockercoins_worker_$N ping -c1 rng
+      done
+    done | grep PING
+  ```
+
+]
+
+(The 7th Might Surprise You!)
+
+---
+
+## DNS randomness
+
+- Other programs can yield different results
+
+- Same program on another distro can yield different results
+
+- Same source code with another libc or resolver can yield different results
+
+- Running the same test at different times can yield different results
+
+- Did I mention that Your Results May Vary?
+
+---
+
+## Implementing fair load balancing
+
+- Instead of relying on DNS round robin, let's use a proper load balancer
+
+- Ceate multiple identical `rng` services
+
+- Put a load balancer in front of them
+
+- Point other services to the load balancer
 
 ---
 
@@ -1146,6 +1259,7 @@ being unaware of its existence!
 That's all!
 
 Shortcut: `docker-compose.yml-scaled-rng`
+
 
 ---
 
@@ -1182,10 +1296,6 @@ Let's add our load balancer to the Compose file.
   ```yaml
   rng:
       image: jpetazzo/hamba
-      links:
-        - rng1
-        - rng2
-        - rng3
       command: 80 rng1 80 rng2 80 rng3 80
       ports:
         - "8001:80"
@@ -1207,6 +1317,9 @@ Shortcut: `docker-compose.yml-scaled-rng`
 
 .exercise[
 
+- Scale back `rng` to a single instance:
+  <br/>`docker-compose scale rng=1`
+
 - Start the new services:
   <br/>`docker-compose up -d`
 
@@ -1218,12 +1331,29 @@ Shortcut: `docker-compose.yml-scaled-rng`
 
 ]
 
-<!--
-If you get errors about port 8001, make sure that
-`rng` was stopped correctly and try again.
--->
+.warning[If you get errors, see next slide.]
 
 ---
+
+## Recovering from errors
+
+- If you scale a service that has an explicit port mapping, 
+you can end up with extra containers that are *created*,
+but not *started*, and will tie up resources
+
+- Those containers can prevent other containers from starting
+
+- If that happens, just remove those containers; for instance:
+
+  ```bash
+  docker-compose kill rng && docker-compose rm -f rng
+  ```
+
+- After removing the containers, you can `docker-compose up -d`
+  again and everything should work fine.
+
+---
+
 
 ## Results
 
@@ -1232,12 +1362,6 @@ If you get errors about port 8001, make sure that
 
 - Check the application performance in the web UI
   <br/>(it should improve if you have enough workers)
-
-*Note: if `worker` was scaled when you did `docker-compose up`,
-it probably took a while, because `worker` doesn't handle
-signals properly and Docker patiently waits 10 seconds for
-each `worker` instance to terminate. This would be much
-faster for a well-behaved application.*
 
 ---
 
@@ -1300,243 +1424,6 @@ faster for a well-behaved application.*
   - the code connects to host `redis`
   - `redis` must resolve to the address of our Redis service
   - the Redis service must listen on the default port (6379)
-
-???
-
-## Using host name injection to abstract service dependencies
-
-- It is possible to add host entries to a container
-
-- With the CLI:
-
-  ```bash
-  docker run --add-host redis:192.168.1.2 myservice...
-  ```
-
-- In a Compose file:
-
-  ```yaml
-  myservice:
-    image: myservice
-    extra_host:
-      redis: 192.168.1.2
-  ```
-
-- Docker exposes a DNS server to the container,
-  <br/>with a private view where `redis` resolves to `192.168.1.2`
-  (Before Engine 1.10, it created entries in `/etc/hosts`)
-
-???
-
-## The plan
-
-- Deploy our Redis service separately
-
-  - use the same `redis` image
-
-  - make sure that Redis server port (6379) is publicly accessible,
-    using port 6379 on the Docker host
-
-- Update our Docker Compose YAML file
-
-  - remove the `redis` section
-
-  - in the `links` section, remove `redis`
-
-  - instead, put a `redis` entry in `extra_hosts`
-
-Note: the code stays on the first node!
-<br/>(We do not need to copy the code to the other nodes.)
-
-???
-
-## Making Redis available on its default port
-
-There are two strategies.
-
-- `docker run -p 6379:6379 redis`
-
-  - the container has its own, isolated network stack
-  - Docker creates a port mapping rule through iptables
-  - slight performance overhead
-  - port number is explicit (visible through Docker API)
-
-- `docker run --net host redis`
-
-  - the container uses the network stack of the host
-  - when it binds to 6379/tcp, that's 6379/tcp on the host
-  - allows raw speed (no overhead due to iptables/bridge)
-  - port number is not visible through Docker API
-
-Choose wisely!
-
-???
-
-## Deploy Redis
-
-.exercise[
-
-- Start a new redis container, mapping port 6379 to 6379:
-
-  ```bash
-  docker run -d -p 6379:6379 redis
-  ```
-
-- Check that it's running with `docker ps`
-
-- Note the IP address of this Docker host
-
-- Try to connect to it (from anywhere):
-
-  ```bash
-  curl node1:6379
-  ```
-
-]
-
-The `ERR` messages are normal: Redis speaks Redis, not HTTP.
-
-???
-
-## Update `docker-compose.yml` (1/3)
-
-.exercise[
-
-- Comment out `redis`:
-
-  ```yaml
-  #redis:
-  #    image: redis
-  ```
-
-]
-
-???
-
-## Update `docker-compose.yml` (2/3)
-
-.exercise[
-
-- Update `worker`:
-
-  ```yaml
-  worker:
-    build: worker
-    extra_hosts:
-      redis: AA.BB.CC.DD
-    links:
-      - rng
-      - hasher
-  ```
-
-]
-
-Replace `AA.BB.CC.DD` with the IP address noted earlier.
-
-Shortcut: `docker-compose.yml-extra-hosts`
-<br/>(But you still have to replace `AA.BB.CC.DD`!)
-
-???
-
-## Update `docker-compose.yml` (3/3)
-
-.exercise[
-
-- Update `webui`:
-
-  ```yaml
-  webui:
-    build: webui
-    extra_hosts:
-      redis: AA.BB.CC.DD
-    ports:
-      - "8000:80"
-    volumes:
-      - "./webui/files/:/files/"
-  ```
-
-]
-
-(Replace `AA.BB.CC.DD` with the IP address noted earlier)
-
-???
-
-## Start the stack on the first machine
-
-- Nothing special to do here
-
-- Just bring up the application like we did before
-
-.exercise[
-
-- `docker-compose up -d`
-
-]
-
-- Check in the web browser that it's running correctly
-
-???
-
-## Start the stack on another machine
-
-- We will set the `DOCKER_HOST` variable
-
-- `docker-compose` will detect and use it
-
-- Our Docker hosts are listening on port 55555
-
-.exercise[
-
-- Set the environment variable:
-  <br/>`export DOCKER_HOST=tcp://node2:55555`
-
-- Start the stack:
-  <br/>`docker-compose up -d`
-
-- Check that it's running:
-  <br/>`docker-compose ps`
-
-]
-
-???
-
-## Scale!
-
-.exercise[
-
-- Keep an eye on the web UI
-
-- Create 20 workers on both nodes:
-  ```bash
-  for NODE in node1 node2; do
-    export DOCKER_HOST=tcp://$NODE:55555
-    docker-compose scale worker=20
-  done
-  ```
-
-]
-
-Note: of course, if we wanted, we could run on all five nodes.
-
-???
-
-## Cleanup
-
-- Let's remove what we did
-
-.exercise[
-
-- You can use the following scriptlet:
-
-  ```bash
-  for N in $(seq 1 5); do
-    export DOCKER_HOST=tcp://node$N:55555
-    docker ps -qa | xargs docker rm -f
-  done
-  unset DOCKER_HOST
-  ```
-
-]
 
 ---
 
@@ -1623,17 +1510,11 @@ class: pic
 
 .exercise[
 
-<!-- Following line to be commented out if we skip extra_hosts section -->
-<!--
-- Restore `links` as they were before in `webui` and `worker`
--->
-<!-- -->
-
 - Replace `redis` with an ambassador using `jpetazzo/hamba`:
   ```yaml
     redis:
       image: jpetazzo/hamba
-      command: 6379 `AA.BB.CC.DD EEEEE`
+      command: 6379 `AA.BB.CC.DD:EEEEE`
   ```
 
 <!--
@@ -1645,7 +1526,7 @@ cat docker-compose.yml-ambassador | sed "s/AA.BB.CC.DD/$(curl myip.enix.org/REMO
 ]
 
 Shortcut: `docker-compose.yml-ambassador`
-<br/>(But you still have to update `AA.BB.CC.DD EEEEE`!)
+<br/>(But you still have to update `AA.BB.CC.DD:EEEEE`!)
 
 ---
 
@@ -1678,9 +1559,20 @@ Shortcut: `docker-compose.yml-ambassador`
 - Our training VMs have been setup to accept API requests on port 55555
   <br/>(without authentication - this is very insecure, by the way!)
 
+- We will see later how to setup mutual authentication with certificates
+
+---
+
+## Setting the `DOCKER_HOST` environment variable
+
 .exercise[
 
-- Set the `DOCKER_HOST` variable to control `node2`, and execute a `docker` command:
+- Check how many containers are running on `node1`:
+  ```bash
+  docker ps
+  ```
+
+- Set the `DOCKER_HOST` variable to control `node2`, and compare:
   ```bash
   export DOCKER_HOST=tcp://node2:55555
   docker ps
@@ -1688,7 +1580,7 @@ Shortcut: `docker-compose.yml-ambassador`
 
 ]
 
-You shouldn't see any container running at this point.
+You shouldn't see any container running on `node2` at this point.
 
 ---
 
@@ -1956,23 +1848,21 @@ ways to deploy ambassadors.
 
 ---
 
-## Other multi-host communication mechanisms
+## Ambassadors and overlay networks
 
-- Overlay networks
+- Overlay networks allow direct multi-host communication
 
-  - weave, flannel, pipework ...
+- Ambassadors are still useful to implement other tasks:
 
-- Network plugins
-
-  - available since Engine 1.9
-
-- Allow a flat network for your containers
-
-- Often requires an extra service to deal with BUM packets (broadcast/unknown/multicast)
-
-  - e.g. a key/value store (Consul, Etcd, Zookeeper ...)
-
-- Load balancers and/or failover mechanisms still needed
+  - load balancing;
+  
+  - credentials injection;
+  
+  - instrumentation;
+  
+  - fail-over;
+  
+  - etc.
 
 ---
 
@@ -2107,6 +1997,28 @@ With containers, what are our options?
 
 ---
 
+# Starting more containers from your container
+
+- In a local environment, just bind-mount the Docker control socket:
+  ```bash
+  docker run -ti -v /var/run/docker.sock:/var/run/docker.sock docker
+  ```
+
+- Otherwise, you have to:
+
+  - set `DOCKER_HOST`,
+  - set `DOCKER_TLS_VERIFY` and `DOCKER_CERT_PATH` (if you use TLS),
+  - copy certificates to the container that will need API access.
+
+More resources on this topic:
+
+- [Do not use Docker-in-Docker for CI](
+  http://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/)
+- [One container to rule them all](
+  http://jpetazzo.github.io/2016/04/03/one-container-to-rule-them-all/)
+
+---
+
 # Docker events stream
 
 - Using the Docker API, we can get real-time
@@ -2167,7 +2079,7 @@ to the default `bridge` network.
 - Start two containers, with and without a `backup` label:
   ```bash
   docker run -d --name leweb nginx
-  docker run -d --name ledata --label backup=please redis
+  docker run -d --name ledata --label backup=hourly redis
   ```
 
 <!--
@@ -2194,7 +2106,7 @@ to the default `bridge` network.
 - List only containers where the `backup` label
   has a specific value:
   ```bash
-  docker ps --filter label=backup=please
+  docker ps --filter label=backup=hourly
   ```
 
 ]
@@ -2467,15 +2379,12 @@ in the output.
 - Our ELK stack exposes two public services:
   <br/>the Kibana web server, and the GELF UDP socket
 
+- They are both exposed on their default port numbers
+  <br/>(5601 for Kibana, 12201 for GELF)
+
 .exercise[
 
-- Check the port number for the Kibana UI:
-  ```bash
-  docker-compose ps kibana
-  ```
-
-- Open the UI in your browser
-  <br/>(Use the instance IP address and the public port number)
+- Open the UI in your browser: http://instance-address:5601/
 
 ]
 
@@ -2511,24 +2420,16 @@ in the output.
 
 - We will override the container logging driver
 
+- The GELF address is `127.0.0.1:12201`, because the Compose file
+  explicitly exposes the GELF socket on port 12201
+
 .exercise[
 
-- Check the port number for the GELF socket:
-  ```bash
-  docker-compose ps logstash
-  ```
-
-- Note the port number, and start our one-off container:
-
-  <!--
-  ```placeholder
-  EEEEE 32768
-  ```
-  -->
+- Start our one-off container:
 
   ```bash
     docker run --rm --log-driver gelf \
-           --log-opt gelf-address=udp://127.0.0.1:`EEEEE` \
+           --log-opt gelf-address=udp://127.0.0.1:12201 \
            alpine echo hello world
   ```
 
@@ -2566,7 +2467,7 @@ in the output.
   <br/>`cd ~/orchestration-workshop/dockercoins`
 
 - Stop and remove all DockerCoins containers:
-  <br/>`docker-compose kill && docker-compose rm -f`
+  <br/>`docker-compose kill && docker-compose down --remove-orphans`
 
 - Reset the Compose file:
   <br/>`git checkout docker-compose.yml`
@@ -2590,20 +2491,21 @@ in the output.
 - Edit the `docker-compose.yml` file, adding the following lines **to each container**:
 
   ```yaml
-    log_driver: gelf
-    log_opt:
-      gelf-address: "udp://127.0.0.1:`EEEEE`"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
   ```
 
 <!--
 ```edit
-cat docker-compose.yml-logging | sed "s/EEEEE/32768/" > docker-compose.yml
+cp docker-compose.yml-logging docker-compose.yml
 ```
 -->
 
 ]
 
-Shortcut: `docker-compose.yml-logging` (remember to update the port number!)
+Shortcut: `docker-compose.yml-logging`
 
 ---
 

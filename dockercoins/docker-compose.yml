@@ -1,29 +1,26 @@
-rng:
-  build: rng
-  ports:
-  - "8001:80"
+version: "2"
 
-hasher:
-  build: hasher
-  ports:
-  - "8002:80"
+services:
+  rng:
+    build: rng
+    ports:
+    - "8001:80"
 
-webui:
-  build: webui
-  links:
-  - redis
-  ports:
-  - "8000:80"
-  volumes:
-  - "./webui/files/:/files/"
+  hasher:
+    build: hasher
+    ports:
+    - "8002:80"
 
-redis:
-  image: redis
+  webui:
+    build: webui
+    ports:
+    - "8000:80"
+    volumes:
+    - "./webui/files/:/files/"
 
-worker:
-  build: worker
-  links:
-  - rng
-  - hasher
-  - redis
+  redis:
+    image: redis
+
+  worker:
+    build: worker
 
