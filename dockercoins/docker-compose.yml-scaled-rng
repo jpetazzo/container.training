@@ -11,6 +11,10 @@ services:
   rng:
     image: jpetazzo/hamba
     command: 80 rng1:80 rng2:80 rng3:80
+    depends_on:
+    - rng1
+    - rng2
+    - rng3
     ports:
     - "8001:80"
 
