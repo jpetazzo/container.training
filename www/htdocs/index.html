@@ -384,7 +384,7 @@ You are welcome to use the method that you feel the most comfortable with.
   subdirectory
 
 - Let's look at the general layout of the source code:
-  
+
   there is a Compose file [docker-compose.yml](
   https://github.com/jpetazzo/orchestration-workshop/blob/master/dockercoins/docker-compose.yml) ...
 
@@ -1303,6 +1303,10 @@ Let's add our load balancer to the Compose file.
   rng:
       image: jpetazzo/hamba
       command: 80 rng1 80 rng2 80 rng3 80
+      depends_on:
+        - rng1
+        - rng2
+        - rng3
       ports:
         - "8001:80"
   ```
@@ -1343,7 +1347,7 @@ Shortcut: `docker-compose.yml-scaled-rng`
 
 ## Recovering from errors
 
-- If you scale a service that has an explicit port mapping, 
+- If you scale a service that has an explicit port mapping,
 you can end up with extra containers that are *created*,
 but not *started*, and will tie up resources
 
@@ -1702,7 +1706,7 @@ Let's celebrate our success!
   - sharing files between host and containers (source...)
 
 - The `volumes` directive expands to an host path:
- 
+
   `/home/docker/orchestration-workshop/dockercoins/webui/files`
 
 - This host path exists on the local machine (not on the others)
@@ -1861,13 +1865,13 @@ ways to deploy ambassadors.
 - Ambassadors are still useful to implement other tasks:
 
   - load balancing;
-  
+
   - credentials injection;
-  
+
   - instrumentation;
-  
+
   - fail-over;
-  
+
   - etc.
 
 ---
@@ -1918,7 +1922,7 @@ class: title
 
   ```bash
     docker run --link myredis:redis \
-               --volumes-from myredis \
+               --volumes-from myredis:ro \
                -v /tmp/myredis:/output \
                -ti alpine sh
   ```
@@ -2247,7 +2251,7 @@ to the default `bridge` network.
 - If you provision your nodes with Docker Machine,
   you can set global logging flags (which will apply to all
   containers started by a given Engine) like this:
-  
+
   ```bash
   docker-machine create ... --engine-opt log-driver=...
   ```
@@ -2660,7 +2664,7 @@ volumes to the new containers, so data is preserved.
 
 # Network traffic analysis
 
-- We still have `myredis` running
+- We still have `dockercoins_redis_1` running
 
 - We will use *shared network namespaces* to perform network analysis
 
@@ -2868,7 +2872,7 @@ class: title
 - Consolidates multiple Docker hosts into a single one
 
 - You talk to Swarm using the Docker API
-  
+
   → you can use all existing tools: Docker CLI, Docker Compose, etc.
 
 - Swarm talks to your Docker Engines using the Docker API too
@@ -5127,7 +5131,7 @@ Deploying a new version (difficulty: easy)
 
 Zero-downtime deployment (difficulty: medium)
 
-- Isolate stateful services (like we did earlier for Redis) 
+- Isolate stateful services (like we did earlier for Redis)
 
 - Do blue/green deployment:
 
@@ -5160,6 +5164,17 @@ Resiliency
 and
 <br/>
 high availability
+
+---
+
+# What are our single points of failure?
+
+- The TLS certificates created by Machine are on `node1`
+
+- We have only one Swarm manager
+
+- If a node (running containers) is down or unreachable,
+  our application will be affected
 
 ---
 
