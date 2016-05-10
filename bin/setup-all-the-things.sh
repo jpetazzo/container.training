@@ -3,7 +3,7 @@ unset DOCKER_REGISTRY
 unset DOCKER_HOST
 unset COMPOSE_FILE
 
-SWARM_IMAGE=${SWARM_IMAGE:-swarm:1.2.0}
+SWARM_IMAGE=${SWARM_IMAGE:-swarm}
 
 prepare_1_check_ssh_keys () {
     for N in $(seq 1 5); do
@@ -87,18 +87,14 @@ setup_1_swarm () {
 }
 
 setup_2_consul () {
-    ssh node1 docker run --name consul_node1 \
-          -d --restart=always --net host \
-          jpetazzo/consul agent -server -bootstrap
-
     IPADDR=$(ssh node1 ip a ls dev eth0 |
              sed -n 's,.*inet \(.*\)/.*,\1,p')
 
-    # Start other Consul nodes
-    for N in 2 3 4 5; do
-    ssh node$N docker run --name consul_node$N \
-               -d --restart=always --net host \
-               jpetazzo/consul agent -server -join $IPADDR
+    for N in 1 2 3 4 5; do
+    ssh node$N -- docker run -d --restart=always --name consul_node$N \
+        -e CONSUL_BIND_INTERFACE=eth0 --net host consul \
+        agent -server -retry-join $IPADDR -bootstrap-expect 5 \
+        -ui -client 0.0.0.0
     done
 }
 
@@ -135,6 +131,36 @@ setup_6_add_lbs () {
     ~/orchestration-workshop/bin/add-load-balancer-v2.py hasher
 }
 
+setup_7_consulfs () {
+    dm_swarm
+    docker pull jpetazzo/consulfs
+    for N in $(seq 1 5); do
+        ssh node$N "docker run --rm -v /usr/local/bin:/target jpetazzo/consulfs"
+        ssh node$N mkdir -p ~/consul
+        ssh -f node$N "mountpoint ~/consul || consulfs localhost:8500 ~/consul"
+    done
+}
+
+setup_8_syncmachine () {
+    while ! mountpoint ~/consul; do
+      sleep 1
+    done
+    cp -r ~/.docker/machine ~/consul/
+    for N in $(seq 2 5); do
+        ssh node$N mkdir -p ~/.docker
+        ssh node$N "[ -L ~/.docker/machine ] || ln -s ~/consul/machine ~/.docker"
+    done
+}
+
+setup_9_elk () {
+    dm_swarm
+    cd ~/orchestration-workshop/elk
+    docker-compose up -d
+    for N in $(seq 1 5); do
+        docker-compose scale logstash=$N
+    done
+}
+
 setup_all () {
     setup_1_swarm
     setup_2_consul
@@ -142,6 +168,8 @@ setup_all () {
     setup_4_registry
     setup_5_btp_dockercoins
     setup_6_add_lbs
+    setup_7_consulfs
+    setup_8_syncmachine
     dm_swarm
 }
 
@@ -165,4 +193,9 @@ demo_1_compose_up () {
 grep -qs -- MAGICMARKER "$0" && { # Don't display this line in the function lis
     echo "You should source this file, then invoke the following functions:"
     grep -- '^[a-z].*{$' "$0" | cut -d" " -f1
+}
+
+show_swarm_primary () {
+    dm_swarm
+    docker info 2>/dev/null | grep -e ^Role -e ^Primary
 }
