@@ -100,7 +100,7 @@
 
 class: title
 
-# Docker <br/> Orchestration <br/> Workshop
+Docker <br/> Orchestration <br/> Workshop
 
 ---
 
@@ -114,7 +114,6 @@ up at 9am, they usually trickle in until 9:30am (except for paid
 training sessions). If you're not sure that people will be there
 on time, it's a good idea to have a breakfast with the attendees
 at e.g. 9am, and start at 9:30.
--->
 
 - Agenda:
 
@@ -129,7 +128,13 @@ at e.g. 9am, and start at 9:30.
 - 14:35-16:00 part 4
 ]
 
-<!-- - This will be FAST PACED, but DON'T PANIC! -->
+-->
+
+- The tutorial will run from 1:30pm to 5:00pm
+
+- There will be a break from 3:00pm to 3:30pm
+
+- This will be FAST PACED, but DON'T PANIC!
 
 - All the content is publicly available (slides, code samples, scripts)
 
@@ -139,14 +144,14 @@ Remember to change:
 - the "tweet my speed" hashtag in DockerCoins HTML
 -->
 
-- Experimental chat support on
+- Live feedback, questions, help on 
   [Gitter](http://container.training/chat)
 
 ---
 
 
 <!--
-grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
+grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 -->
 
 ## Outline (1/4)
@@ -155,43 +160,36 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 - VM environment
 - Our sample application
 - Running the application
-- Container port mapping
 - Identifying bottlenecks
-- Scaling HTTP on a single node
-- Put a load balancer on it
+- Scaling out
 - Connecting to containers on other hosts
 - Abstracting remote services with ambassadors
-- Various considerations about ambassadors
 
 ---
 
 ## Outline (2/4)
 
-- Docker for ops
-- Backups
-- Starting more containers from your container
-- Docker events stream
-- Attaching labels
-- Logs
-- Storing container logs in an ELK stack
-- Security upgrades
-- Network traffic analysis
+- Dynamic orchestration
+- Deploying Swarm
+- Picking a key/value store
+- Running containers on Swarm
+- Resource allocation
+- Multi-host networking
+- Building images with Swarm
+- Deploying a local registry
+- Scaling web services with Compose on Swarm
 
 ---
 
 ## Outline (3/4)
 
-- Dynamic orchestration
-- Hands-on Swarm
-- Deploying Swarm
-- Cluster discovery
-- Resource allocation
-- Connecting containers with ambassadors
-- Setting up Consul and overlay networks
-- Multi-host networking
-- Building images with Swarm
-- Deploying a local registry
-- Scaling workers
+- Logs
+- Setting up ELK to store container logs
+- Network traffic analysis
+- Backups
+- Controlling Docker from a container
+- Docker events stream
+- Security upgrades
 
 ---
 
@@ -256,7 +254,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'^C
 # VM environment
 
 - Each person gets 5 private VMs (not shared with anybody else)
-- They'll be up until tomorrow
+- They'll be up until tonight
 - You have a little card with login+password+IP addresses
 - You can automatically SSH from one VM to another
 
@@ -343,7 +341,7 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 1.12
+- Engine 1.11
 - Compose 1.7
 - Swarm 1.2
 - Machine 0.6
@@ -394,6 +392,42 @@ You are welcome to use the method that you feel the most comfortable with.
   - `hasher` = web service computing hash of POSTed data
   - `worker` = background process using `rng` and `hasher`
   - `webui` = web interface to watch progress
+
+---
+
+## Compose file format version
+
+*Particularly relevant if you have used Compose before...*
+
+- Compose 1.6 introduced support for a new Compose file format (aka "v2")
+
+- Services are no longer at the top level, but under a `services` section
+
+- There has to be a `version` key at the top level, with value `"2"` (as a string, not an integer)
+
+- Containers are placed on a dedicated network, making links unnecessary
+
+- There are other minor differences, but upgrade is easy and straightforward
+
+---
+
+## Links, naming, and service discovery
+
+- Containers can have network aliases (resolvable through DNS)
+
+- Compose file version 2 makes each container reachable through its service name
+
+- Compose file version 1 requires "links" sections
+
+- Our code can connect to services using their short name
+
+  (instead of e.g. IP address or FQDN)
+
+---
+
+## Example in `worker/worker.py`
+
+![Service discovery](service-discovery.png)
 
 ---
 
@@ -524,28 +558,6 @@ and displays aggregated logs.
 
 ---
 
-## Connecting to the web UI
-
-- The `webui` container exposes a web dashboard; let's view it
-
-.exercise[
-
-- Open http://[yourVMaddr]:8000/ (from a browser)
-
-]
-
-- The app actually has a constant, steady speed (3.33 coins/second)
-
-- The speed seems not-so-steady because:
-
-  - the worker doesn't update the counter after every loop, but up to once per second
-
-  - the speed is computed by the browser, checking the counter about once per second
-
-  - between two consecutive updates, the counter will increase either by 4, or by 0
-
----
-
 ## Viewing logs
 
 - The `docker-compose logs` command works like `docker logs`
@@ -592,231 +604,41 @@ Tip: use `^S` and `^Q` to pause/resume log output.
 
 ---
 
-## Compose file format version
+## Connecting to the web UI
 
-*Particularly relevant if you have used Compose before...*
-
-- Compose 1.6 introduced support for a new Compose file format (aka "v2")
-
-- Services are no longer at the top level, but under a `services` section
-
-- There has to be a `version` key at the top level, with value `"2"` (as a string, not an integer)
-
-- Containers are placed on a dedicated network, making links unnecessary
-
-- There are other minor differences, but upgrade is easy and straightforward
-
----
-
-## Links, naming, and service discovery
-
-- Containers can have network aliases (resolvable through DNS)
-
-- Compose file version 2 makes each container reachable through its service name
-
-- Compose file version 1 requires "links" sections
-
-- Our code can connect to services using their short name
-
-  (instead of e.g. IP address or FQDN)
-
----
-
-## Example in `worker/worker.py`
-
-![Service discovery](service-discovery.png)
-
----
-
-## Testing services in isolation
-
-- We will stop the `worker` service, and test `rng` and `hasher` alone
+- The `webui` container exposes a web dashboard; let's view it
 
 .exercise[
 
-- Stop the `worker` service:
-  ```bash
-  docker-compose stop worker
-  ```
-
-- Look at the logs of `rng` and `hasher`:
-  ```bash
-  docker-compose logs --tail 10 --follow
-  ```
-
-<!--
-```meta
-^Z
-```
--->
+- Open http://[yourVMaddr]:8000/ (from a browser)
 
 ]
 
-We will let Compose stream the logs,
-and open a new terminal.
+- The app actually has a constant, steady speed (3.33 coins/second)
+
+- The speed seems not-so-steady because:
+
+  - the worker doesn't update the counter after every loop, but up to once per second
+
+  - the speed is computed by the browser, checking the counter about once per second
+
+  - between two consecutive updates, the counter will increase either by 4, or by 0
 
 ---
 
-## Compose file location
+## Scaling up the application
 
-- What happens if you try to run Compose in `$HOME`?
+- Our goal is to make that performance graph go up (without changing a line of code!)
 
---
+- Before trying to scale the application, we'll figure out if we need more resources
 
-- Compose complains that it cannot find `docker-compose.yml`
+  (CPU, RAM...)
 
-- You need to go to the directory containing `docker-compose.yml`
-  <br/>...or use the `-f` option to give the path to the Compose file
-  <br/>...or set the `COMPOSE_FILE` environment variable
+- For that, we will use good old UNIX tools on our Docker node
 
-.exercise[
-
-- Go to the application directory:
-  ```bash
-  cd ~/orchestration-workshop/dockercoins
-  ```
-
-]
+<!-- FIXME add reference to cadvisor, snap, ...? -->
 
 ---
-
-## Locating port numbers for `rng` and `hasher`
-
-- We can see the port mapping for our services with:
-  ```bash
-  docker-compose ps
-  ```
-
-- Both services run on port 80 *in their respective container*
-
-- On the Docker host, they are mapped to ports 8001 and 8002
-
-- They are not exposed on port 80, because the Docker host has only one port 80
-
-- The mapping is done in `docker-compose.yml`
-
----
-
-# Container port mapping
-
-- `node1`, the Docker host, has only one port 80
-
-- If we give the one and only port 80 to the first
-  container who asks for it, we are in trouble when
-  another container needs it
-
-- Default behavior: containers are not "exposed"
-  <br/>(only reachable by the Docker host and other containers,
-  through their private address)
-
-- Container network services can be exposed:
-
-  - statically (you decide which host port to use)
-
-  - dynamically (Docker allocates a host port)
-
----
-
-## Declaring port mapping
-
-- Directly with the Docker Engine:
-  ```bash
-  docker run -d -p 8000:80 nginx
-  docker run -d -p 80 nginx
-  docker run -d -P nginx
-  ```
-
-- With Docker Compose, in the `docker-compose.yml` file:
-  ```yaml
-    rng:
-      …
-      ports:
-        - "8001:80"
-  ```
-
-→ port 8001 *on the host* maps to
-port 80 *in the container*
-
----
-
-## Testing the `rng` service
-
-Let's get random bytes of data!
-
-.exercise[
-
-- Check that the service is alive:
-  <br/>`curl localhost:8001`
-
-- Get 10 bytes of random data:
-  <br/>`curl localhost:8001/10`
-
-]
-
-If the binary data output messed up your terminal, fix it with `reset`.
-
----
-
-## Testing the `hasher` service
-
-.exercise[
-
-- Check that the `hasher` service is alive:
-  ```bash
-  curl localhost:8002
-  ```
-
-- Posting binary data requires some extra flags:
-
-  ```bash
-    curl -H "Content-type: application/octet-stream" \
-      --data-binary hello localhost:8002
-  ```
-
-]
-
----
-
-## Verifying the computed hash
-
-- This web service is essentially implementing `sha256sum` over HTTP
-
-.exercise[
-
-- Check that `sha256sum` yields the same result:
-  ```bash
-  echo -n hello | sha256sum
-  ```
-
-]
-
-- We specify `-n` to prevent `echo` from adding a trailing `\n`
-  <br/>(which would change the SHA digest)
-
----
-
-## Checking logs
-
-- The tests that we made should show up in the first window
-  <br/>(where `docker-compose logs` is still running)
-
-- We can now restart the `worker` service
-
-.exercise[
-
-- Start the `worker` container:
-  ```bash
-  docker-compose start worker
-  ```
-
-]
-
-In the web UI, the graph should go up again.
-
-How can we get that graph to go further up?
-
----
-
 
 ## Looking at resource usage
 
@@ -840,19 +662,42 @@ We have available resources.
 
 ## Scaling workers on a single node
 
-- Docker Compose supports scaling.red[*]
+- Docker Compose supports scaling
 - Let's scale `worker` and see what happens!
 
 .exercise[
 
-- Start 9 more `worker` containers:
+- Start one more `worker` container:
+  ```bash
+  docker-compose scale worker=2
+  ```
+
+- Look at the performance graph (it should show a x2 improvement)
+
+- Look at the aggregated logs of our containers (`worker_2` should show up)
+
+- Look at the impact on CPU load with e.g. top (it should be negligible)
+
+]
+
+---
+
+## Adding more workers
+
+- Great, let's add more workers and call it a day, then!
+
+.exercise[
+
+- Start eight more `worker` containers:
   ```bash
   docker-compose scale worker=10
   ```
 
-- Check the aggregated logs of those containers
+- Look at the performance graph: does it show a x10 improvement?
 
-- See the impact on CPU load (with top/htop), and on compute speed (with web UI)
+- Look at the aggregated logs of our containers
+
+- Look at the impact on CPU load and memory usage
 
 <!--
 ```bash
@@ -862,8 +707,6 @@ killall docker-compose
 -->
 
 ]
-
-.red[*]With some limitations, as we'll see later.
 
 ---
 
@@ -910,509 +753,22 @@ We will use `httping`.
 
 ---
 
-## Benchmarking in isolation
+## Let's draw hasty conclusions
 
-We will now use `ab`.
+- The bottleneck seems to be `rng`
 
-.exercise[
+- *What if* we don't have enough entropy and can't generate enough random numbers?
 
-- Stop the `worker` containers:
-  ```bash
-  docker-compose kill worker
-  ```
+- We need to scale out the `rng` service on multiple machines!
 
-]
-
----
-
-## Benchmarking `rng`
-
-We will send 50 requests, but with various levels of concurrency.
-
-.exercise[
-
-- Send 50 requests, with a single sequential client:
-  ```bash
-  ab -c 1 -n 50 localhost:8001/10
-  ```
-
-- Send 50 requests, with ten parallel clients:
-  ```bash
-  ab -c 10 -n 50 localhost:8001/10
-  ```
-
-]
-
----
-
-## Benchmark results for `rng`
-
-- In both cases, the benchmark takes ~5 seconds to complete
-
-- When serving requests sequentially, they each take 100ms
-
-- In the parallel scenario, the latency increased dramatically:
-
-  - one request is served in 100ms
-  - another is served in 200ms
-  - another is served in 300ms
-  - ...
-  - another is served in 1000ms
-
-- What about `hasher`?
-
----
-
-## Benchmarking `hasher`
-
-We will do the same tests for `hasher`.
-
-The command is slightly more complex, since we need to post random data.
-
-First, we need to put the POST payload in a temporary file.
-
-.exercise[
-
-- Generate 10 bytes of random data:
-  ```bash
-  curl localhost:8001/10 >/tmp/random
-  ```
-
-]
-
----
-
-## Benchmarking `hasher`
-
-Once again, we will send 50 requests, with different levels of concurrency.
-
-.exercise[
-
-- Send 50 requests with a sequential client:
-  ```bash
-    ab -c 1 -n 50 -T application/octet-stream \
-       -p /tmp/random localhost:8002/
-  ```
-
-- Send 50 requests with 10 parallel clients:
-  ```bash
-    ab -c 10 -n 50 -T application/octet-stream \
-       -p /tmp/random localhost:8002/
-  ```
-
-]
-
----
-
-## Benchmark results for `hasher`
-
-- The sequential benchmarks takes ~5 seconds to complete
-
-- The parallel benchmark takes less than 1 second to complete
-
-- In both cases, each request takes a bit more than 100ms to complete
-
-- Requests are a bit slower in the parallel benchmark
-
-- It looks like `hasher` is better equiped to deal with concurrency than `rng`
+Note: this is a fiction! We have enough entropy. But we need a pretext to scale out.
+<br/>(In fact, the code of `rng` uses `/dev/urandom`, which doesn't need entropy.)
 
 ---
 
 class: title
 
-Why?
-
----
-
-## Why does everything take (at least) 100ms?
-
---
-
-`rng` code:
-
-![RNG code screenshot](delay-rng.png)
-
---
-
-`hasher` code:
-
-![HASHER code screenshot](delay-hasher.png)
-
----
-
-class: title
-
-But ...
-
-WHY?!?
-
----
-
-## Why did we sprinkle this sample app with sleeps?
-
-- Deterministic performance
-  <br/>(regardless of instance speed, CPUs, I/O...)
-
---
-
-- Actual code sleeps all the time anyway
-
---
-
-- When your code makes a remote API call:
-
-  - it sends a request;
-
-  - it sleeps until it gets the response;
-
-  - it processes the response.
-
----
-
-## Why do `rng` and `hasher` behave differently?
-
-![Equations on a blackboard](equations.png)
-
---
-
-(Synchronous vs. asynchronous event processing)
-
----
-
-## How to make `rng` go faster
-
-- Obvious solution: comment out the `sleep` instruction
-
---
-
-- Unfortunately, in the real world, network latency exists
-
---
-
-- More realistic solution: use an asynchronous framework
-  <br/>(e.g. use gunicorn with gevent)
-
---
-
-- New rule: we can't change the code!
-
---
-
-- Solution: scale out `rng`
-  <br/>(dispatch `rng` requests on multiple instances)
-
----
-
-# Scaling HTTP on a single node
-
-- We can try to scale with Compose:
-
-  ```bash
-  docker-compose scale rng=3
-  ```
-
-- This will result into an error, because our Compose file uses an explicit port
-
-- We cannot have multiple containers bound to the same port (here, 8001)
-
-- Compose *tries* to scale anyway
-
-  (because on a cluster, you *can* have multiple containers on the same public port)
-
-- Let's remove the explicit port mapping, and see what happens when we scale!
-
----
-
-## Removing explicit port from the Compose file
-
-- We will replace `8001:80` with just `80`
-
-- This will continue to make the service publicly available,
-  <br/>but on a port dynamically allocated by Docker
-
-.exercise[
-
-- Edit the `docker-compose.yml` file to change the ports section for `rng`:
-  ```yaml
-    rng:
-      ...
-      ports:
-      - "80"
-  ```
-
-<!--
-```edit
-cp docker-compose.yml-scaled docker-compose.yml
-```
--->
-
-]
-
-Shortcut: `docker-compose.yml-portmap`
-
----
-
-## Scaling up a network service with Compose
-
-- We changed the definition of the service (by removing the static port mapping),
-  <br/>so we must execute `docker-compose up` before scaling
-
-.exercise[
-
-- Refresh the `rng` service:
-  ```bash
-  docker-compose up -d
-  ```
-
-- Scale the `rng` service:
-  ```bash
-  docker-compose scale rng=3
-  ```
-
-]
-
----
-
-## Results
-
-- In the web UI, you might see a performance increase ... or maybe not
-
---
-
-- Since Engine 1.11, we get round-robin DNS records
-
-  (i.e. resolving `rng` will yield the IP addresses of all 3 containers)
-
-- Docker randomizes the records it sends
-
-- But many resolvers will sort them in unexpected ways
-
-- Depending on various factors, you could get:
-
-  - all traffic on a single container
-  - traffic perfectly balanced on all containers
-  - traffic unevenly balanced across containers
-
----
-
-## Assessing DNS randomness
-
-- Let's see how our containers resolve DNS requests
-
-.exercise[
-
-- On each of our 10 scaled workers, execute 5 ping requests:
-  ```bash
-    for N in $(seq 1 10); do
-      echo PING__________$N
-      for I in $(seq 1 5); do
-        docker exec -ti dockercoins_worker_$N ping -c1 rng
-      done
-    done | grep PING
-  ```
-
-]
-
-(The 7th Might Surprise You!)
-
----
-
-## DNS randomness
-
-- Other programs can yield different results
-
-- Same program on another distro can yield different results
-
-- Same source code with another libc or resolver can yield different results
-
-- Running the same test at different times can yield different results
-
-- Did I mention that Your Results May Vary?
-
----
-
-## Implementing fair load balancing
-
-- Instead of relying on DNS round robin, let's use a proper load balancer
-
-- Create multiple identical `rng` services
-
-- Put a load balancer in front of them
-
-- Point other services to the load balancer
-
----
-
-## Scaling `rng`
-
-.exercise[
-
-- Replace the `rng` service with multiple copies of it:
-
-  ```yaml
-    rng1:
-      build: rng
-
-    rng2:
-      build: rng
-
-    rng3:
-      build: rng
-  ```
-
-]
-
-That's all!
-
-Shortcut: `docker-compose.yml-scaled-rng`
-
-
----
-
-## Introduction to `jpetazzo/hamba`
-
-- General purpose load balancer and traffic director
-
-- [Source code is available on GitHub](
-  https://github.com/jpetazzo/hamba)
-
-- [Public image is available on the Docker Hub](
-  https://hub.docker.com/r/jpetazzo/hamba/)
-
-- Generates a configuration file for HAProxy, then starts HAProxy
-
-- Parameters are provided on the command line; for instance:
-  ```bash
-  docker run -d -p 80 jpetazzo/hamba 80 www1:1234 www2:2345
-  docker run -d -p 80 jpetazzo/hamba 80 www1 1234 www2 2345
-  ```
-  Those two commands do the same thing: they start a load balancer
-  listening on port 80, and balancing traffic across www1:1234 and www2:2345
-
----
-
-# Put a load balancer on it
-
-Let's add our load balancer to the Compose file.
-
-.exercise[
-
-- Add the following section to the Compose file:
-
-  ```yaml
-  rng:
-      image: jpetazzo/hamba
-      command: 80 rng1 80 rng2 80 rng3 80
-      depends_on:
-        - rng1
-        - rng2
-        - rng3
-      ports:
-        - "8001:80"
-  ```
-
-<!--
-```edit
-cp docker-compose.yml-scaled-rng docker-compose.yml
-```
--->
-
-]
-
-Shortcut: `docker-compose.yml-scaled-rng`
-
----
-
-## Start the whole stack
-
-.exercise[
-
-- Scale back `rng` to a single instance:
-  <br/>`docker-compose scale rng=1`
-
-- Start the new services:
-  <br/>`docker-compose up -d`
-
-- Check worker logs:
-  <br/>`docker-compose logs worker`
-
-- Check load balancer logs:
-  <br/>`docker-compose logs rng`
-
-]
-
-.warning[If you get errors, see next slide.]
-
----
-
-## Recovering from errors
-
-- If you scale a service that has an explicit port mapping,
-you can end up with extra containers that are *created*,
-but not *started*, and will tie up resources
-
-- Those containers can prevent other containers from starting
-
-- If that happens, just remove those containers; for instance:
-
-  ```bash
-  docker-compose kill rng && docker-compose rm -f rng
-  ```
-
-- After removing the containers, you can `docker-compose up -d`
-  again and everything should work fine.
-
----
-
-
-## Results
-
-- Check the latency of `rng`
-  <br/>(it should have improved significantly!)
-
-- Check the application performance in the web UI
-  <br/>(it should improve if you have enough workers)
-
----
-
-## The good, the bad, the ugly
-
---
-
-- The good
-
-  We scaled a service, added a load balancer - without changing a single line of code.
-
---
-
-- The bad
-
-  We manually copy-pasted sections in `docker-compose.yml`.
-
-  Improvement: write scripts to transform the YAML file.
-
---
-
-- The ugly
-
-  If we scale up/down, we have to restart everything.
-
-  Improvement: reconfigure the load balancer dynamically.
-
----
-
-## Cleaning up
-
-- Before moving forward, let's clean up all those containers
-
-.exercise[
-
-- Use the `down` command to stop and remove containers:
-  ```bash
-  docker-compose down
-  ```
-
-]
+# Scaling out
 
 ---
 
@@ -1437,7 +793,7 @@ but not *started*, and will tie up resources
 
 ---
 
-# Using custom DNS mapping
+## Using custom DNS mapping
 
 - We could setup a Redis server on its default port
 
@@ -1513,6 +869,28 @@ class: pic
 ]
 
 - Note the IP address of the machine, and this port
+
+---
+
+## Introduction to `jpetazzo/hamba`
+
+- General purpose load balancer and traffic director
+
+- [Source code is available on GitHub](
+  https://github.com/jpetazzo/hamba)
+
+- [Public image is available on the Docker Hub](
+  https://hub.docker.com/r/jpetazzo/hamba/)
+
+- Generates a configuration file for HAProxy, then starts HAProxy
+
+- Parameters are provided on the command line; for instance:
+  ```bash
+  docker run -d -p 80 jpetazzo/hamba 80 www1:1234 www2:2345
+  docker run -d -p 80 jpetazzo/hamba 80 www1 1234 www2 2345
+  ```
+  Those two commands do the same thing: they start a load balancer
+  listening on port 80, and balancing traffic across www1:1234 and www2:2345
 
 ---
 
@@ -1662,21 +1040,6 @@ how to build once, and deploy the same build everywhere.
 
 ---
 
-## Social Media Moment
-
-Let's celebrate our success!
-
-(And the fact that we're just 2498349893849283948982 DockerCoins away from being able to afford a cup of coffee!)
-
-.exercise[
-
-- If you have a Twitter account, tweet your mining speed!
-  </br>(use the "Tweet this!" link below the graph☺)
-
-]
-
----
-
 ## A few words about development volumes
 
 - Try to access the web UI on another node
@@ -1715,7 +1078,7 @@ Let's celebrate our success!
 
 ---
 
-## Stop the app (but leave Redis running)
+## Stop the app
 
 - Let's use `docker-compose down`
 
@@ -1734,56 +1097,30 @@ Let's celebrate our success!
 
 ]
 
-(We need to keep the `myredis` container for
-our next section, which will be about backups!)
+---
+
+## Clean up the redis container
+
+- `docker-compose down` only removes containers defined with Compose
+
+.exercise[
+
+- Check that `myredis` is still there:
+  ```bash
+  unset DOCKER_HOST
+  docker ps
+  ```
+
+- Remove it:
+  ```bash
+  docker rm -f myredis
+  ```
+
+]
 
 ---
 
-# Various considerations about ambassadors
-
-- "But, ambassadors are adding an extra hop!"
-
---
-
-- Yes, but if you need load balancing, you need that hop
-
-- Ambassadors actually *save* one hop
-  <br/>(they act as local load balancers)
-
-  - traditional load balancer:
-    <br/>client ⇒ external LB ⇒ server (2 physical hops)
-
-  - ambassadors:
-    <br/>client → ambassador ⇒ server (1 physical hop)
-
---
-
-- Ambassadors are more reliable than traditional LBs
-  <br/>(they are colocated with their clients)
-
----
-
-## Inconvenients of ambassadors
-
-- Generic issues
-  <br/>(shared with any kind of load balancing / HA setup)
-
-  - extra logical hop (not transparent to the client)
-
-  - must assess backend health
-
-  - one more thing to worry about (!)
-
-- Specific issues
-
-  - load balancing fairness
-
-High-end load balancing solutions will rely on back pressure
-from the backends. This addresses the fairness issue.
-
----
-
-## There are many ways to deploy ambassadors
+## Considerations about ambassadors
 
 "Ambassador" is a design pattern.
 
@@ -1878,841 +1215,6 @@ ways to deploy ambassadors.
 
 class: title
 
-# Interlude <br/>
-
-# Docker for ops
-
----
-
-# Backups
-
-- Redis is still running (with name `myredis`)
-
-- We want to enable backups without touching it
-
-- We will use a special backup container:
-
-  - sharing the same volumes
-
-  - linked to it (to connect to it easily)
-
-  - possibly containing our backup tools
-
-- This works because the `redis` container image stores its data on a volume
-
----
-
-## Starting the backup container
-
-.exercise[
-
-- Make sure you're talking to the initial host:
-
-  ```bash
-  unset DOCKER_HOST
-  ```
-
-<!--
-```meta
-^{
-```
--->
-
-- Start the container:
-
-  ```bash
-    docker run --link myredis:redis \
-               --volumes-from myredis:ro \
-               -v /tmp/myredis:/output \
-               -ti alpine sh
-  ```
-
-- Look in `/data` in the container (that's where Redis puts its data dumps)
-]
-
----
-
-## Connecting to Redis
-
-- We need to tell Redis to perform a data dump *now*
-
-.exercise[
-
-- Connect to Redis:
-  ```bash
-  telnet redis 6379
-  ```
-
-- Issue commands `SAVE` then `QUIT`
-
-- Look at `/data` again (notice the time stamps)
-
-]
-
-- There should be a recent dump file now!
-
----
-
-## Getting the dump out of the container
-
-- We could use many things:
-
-  - s3cmd to copy to S3
-  - SSH to copy to a remote host
-  - gzip/bzip/etc before copying
-
-- We'll just copy it to the Docker host
-
-.exercise[
-
-- Copy the file from `/data` to `/output`
-
-- Exit the container
-
-- Look into `/tmp/myredis` (on the host)
-
-<!--
-```meta
-^}
-```
--->
-
-]
-
----
-
-## Scheduling backups
-
-In the "old world," we (generally) use cron.
-
-With containers, what are our options?
-
---
-
-- run `cron` on the Docker host, and put `docker run` in the crontab
-
---
-
-- run `cron` in the backup container, and make sure it keeps running
-  <br/>(e.g. with `docker run --restart=…`)
-
---
-
-- run `cron` in a container, and start backup containers from there
-
---
-
-- listen to the Docker events stream, automatically scheduling backups
-  <br/>when database containers are started
-
----
-
-# Starting more containers from your container
-
-- In a local environment, just bind-mount the Docker control socket:
-  ```bash
-  docker run -ti -v /var/run/docker.sock:/var/run/docker.sock docker
-  ```
-
-- Otherwise, you have to:
-
-  - set `DOCKER_HOST`,
-  - set `DOCKER_TLS_VERIFY` and `DOCKER_CERT_PATH` (if you use TLS),
-  - copy certificates to the container that will need API access.
-
-More resources on this topic:
-
-- [Do not use Docker-in-Docker for CI](
-  http://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/)
-- [One container to rule them all](
-  http://jpetazzo.github.io/2016/04/03/one-container-to-rule-them-all/)
-
----
-
-# Docker events stream
-
-- Using the Docker API, we can get real-time
-  notifications of everything happening in the Engine:
-
-  - container creation/destruction
-  - container start/stop
-  - container exit/signal/out of memory
-  - container attach/detach
-  - volume creation/destruction
-  - network creation/destruction
-  - connection/disconnection of containers
-
-(Networks will be covered a bit later!)
-
----
-
-## Subscribing to the events stream
-
-- This is done with `docker events`
-
-.exercise[
-
-- Get a stream of events:
-  ```bash
-  docker events
-  ```
-
-<!--
-```meta
-^Z
-```
--->
-
-- In a new terminal, do *anything*:
-  ```bash
-  docker run --rm alpine sleep 10
-  ```
-
-]
-
-You should see events for the lifecycle of the
-container, as well as its connection/disconnection
-to the default `bridge` network.
-
----
-
-# Attaching labels
-
-- You can attach arbitrary labels to engines and containers
-
-- You can read the value of those labels
-
-- You can use those labels as filters in some commands
-
-.exercise[
-
-- Start two containers, with and without a `backup` label:
-  ```bash
-  docker run -d --name leweb nginx
-  docker run -d --name ledata --label backup=hourly redis
-  ```
-
-<!--
-```meta
-^K
-```
--->
-
-]
-
----
-
-## Using labels as filters
-
-- `docker ps` can take a `--filter` argument
-
-.exercise[
-
-- List only containers that have a `backup` label:
-  ```bash
-  docker ps --filter label=backup
-  ```
-
-- List only containers where the `backup` label
-  has a specific value:
-  ```bash
-  docker ps --filter label=backup=hourly
-  ```
-
-]
-
----
-
-## Filtering events
-
-- On a large cluster, there will be *lots* of events
-  <br/>(especially when using short-lived containers)
-
-- `docker events` can also take a `--filter` argument
-
-.exercise[
-
-- Show events only for containers with a "backup" label:
-  ```bash
-  docker events --filter label=backup
-  ```
-
-<!--
-```meta
-^Z
-```
--->
-
-- In a different terminal, terminate our containers:
-  ```bash
-  docker kill leweb ledata
-  ```
-
-<!--
-```meta
-^K
-```
--->
-
-]
-
----
-
-## Using `docker ps` in scripts
-
-- The default output of `docker ps` has two flaws:
-
-  - it is not machine-readable
-  - some information is not shown
-
-- This can be changed with the `--format` flag
-
-.exercise[
-
-- List containers that have a `backup` label;
-  <br/>show their container ID, image, and the label:
-  ```bash
-    docker ps --filter label=backup \
-              --format '{{ .ID }} {{ .Image }} {{ .Label "backup" }}'
-  ```
-
-]
-
----
-
-# Logs
-
-- Two strategies:
-
-  - log to plain files on volumes
-
-  - log to stdout
-    <br/>(and use a logging driver)
-
----
-
-## Logging to plain files on volumes
-
-(Sorry, that part won't be hands-on!)
-
-- Start a container with `-v /logs`
-
-- Make sure that all log files are in `/logs`
-
-- To check logs, run e.g.
-
-  ```bash
-  docker run --volumes-from ... ubuntu sh -c "grep WARN /logs/*.log"
-  ```
-
-- Or just go interactive:
-
-  ```bash
-  docker run --volumes-from ... -ti ubuntu
-  ```
-
-- You can (should) start a log shipper that way
-
----
-
-## Logging to stdout
-
-- All containers should write to stdout/stderr
-
-- Docker will collect logs and pass them to a logging driver
-
-- Logging driver can specified globally, and per container
-  <br/>(changing it for a container overrides the global setting)
-
-- To change the global logging driver, pass extra flags to the daemon
-  <br/>(requires a daemon restart)
-
-- To override the logging driver for a container, pass extra flags to `docker run`
-
----
-
-## Specifying logging flags
-
-- `--log-driver`
-
-  *selects the driver*
-
-- `--log-opt key=val`
-
-  *adds driver-specific options*
-  <br/>*(can be repeated multiple times)*
-
-- The flags are identical for `docker daemon` and `docker run`
-
----
-
-## Logging flags in practice
-
-- If you provision your nodes with Docker Machine,
-  you can set global logging flags (which will apply to all
-  containers started by a given Engine) like this:
-
-  ```bash
-  docker-machine create ... --engine-opt log-driver=...
-  ```
-
-- Otherwise, use your favorite method to edit or manage configuration files
-
-- You can set per-container logging options in Compose files
-
----
-
-## Available drivers
-
-- json-file (default)
-
-- syslog (can send to UDP, TCP, TCP+TLS, UNIX sockets)
-
-- awslogs (AWS CloudWatch)
-
-- journald
-
-- gelf
-
-- fluentd
-
-- splunk
-
----
-
-## About json-file ...
-
-- It doesn't rotate logs by default, so your disks will fill up
-
-  (Unless you set `maxsize` *and* `maxfile` log options.)
-
-- It's the only one supporting logs retrieval
-
-  (If you want to use `docker logs`, `docker-compose logs`,
-  or fetch logs from the Docker API, you need json-file!)
-
-- This might change in the future
-
-  (But it's complex since there is no standard protocol
-  to *retrieve* log entries.)
-
-All about logging in the documentation:
-https://docs.docker.com/reference/logging/overview/
-
----
-
-# Storing container logs in an ELK stack
-
-*Important foreword: this is not an "official" or "recommended"
-setup; it is just an example. We do not endorse ELK, GELF,
-or the other elements of the stack more than others!*
-
-What we will do:
-
-- Spin up an ELK stack, with Compose
-
-- Gaze at the spiffy Kibana web UI
-
-- Manually send a few log entries over GELF
-
-- Reconfigure our DockerCoins app to send logs to ELK
-
----
-
-## What's in an ELK stack?
-
-- ELK is three components:
-
-  - ElasticSearch (to store and index log entries)
-
-  - Logstash (to receive log entries from various
-    sources, process them, and forward them to various
-    destinations)
-
-  - Kibana (to view/search log entries with a nice UI)
-
-- The only component that we will configure is Logstash
-
-- We will accept log entries using the GELF protocol
-
-- Log entries will be stored in ElasticSearch,
-  <br/>and displayed on Logstash's stdout for debugging
-
----
-
-## Starting our ELK stack
-
-- We will use a *separate* Compose file
-
-- The Compose file is in the `elk` directory
-
-.exercise[
-
-- Go to the `elk` directory:
-  ```bash
-  cd ~/orchestration-workshop/elk
-  ```
-
-- Start the ELK stack:
-  ```bash
-  docker-compose up -d
-  ```
-
-]
-
----
-
-## Checking that our ELK stack works
-
-- Our default Logstash configuration sends a test
-  message every minute
-
-- All messages are stored into ElasticSearch,
-  but also shown on Logstash stdout
-
-.exercise[
-
-- Look at Logstash stdout:
-  ```bash
-  docker-compose logs logstash
-  ```
-
-]
-
-After less than one minute, you should see a `"message" => "ok"`
-in the output.
-
----
-
-## Connect to Kibana
-
-- Our ELK stack exposes two public services:
-  <br/>the Kibana web server, and the GELF UDP socket
-
-- They are both exposed on their default port numbers
-  <br/>(5601 for Kibana, 12201 for GELF)
-
-.exercise[
-
-- Open the UI in your browser: http://instance-address:5601/
-
-]
-
----
-
-## "Configuring" Kibana
-
-- If you see a status page with a yellow item, wait a minute and reload
-  (Kibana is probably still initializing)
-
-- Kibana should offer you to "Configure an index pattern",
-  just click the "Create" button
-
-- Then:
-
-  - click "Discover" (in the top-left corner)
-  - click "Last 15 minutes" (in the top-right corner)
-  - click "Last 1 hour" (in the list in the middle)
-  - click "Auto-refresh" (top-right corner)
-  - click "5 seconds" (top-left of the list)
-
-- You should see a series of green bars (with one new green bar every minute)
-
----
-
-![Screenshot of Kibana](kibana.png)
-
----
-
-## Sending container output to Kibana
-
-- We will create a simple container displaying "hello world"
-
-- We will override the container logging driver
-
-- The GELF address is `127.0.0.1:12201`, because the Compose file
-  explicitly exposes the GELF socket on port 12201
-
-.exercise[
-
-- Start our one-off container:
-
-  ```bash
-    docker run --rm --log-driver gelf \
-           --log-opt gelf-address=udp://127.0.0.1:12201 \
-           alpine echo hello world
-  ```
-
-]
-
----
-
-## Visualizing container logs in Kibana
-
-- Less than 5 seconds later (the refresh rate of the UI),
-  the log line should be visible in the web UI
-
-- We can customize the web UI to be more readable
-
-.exercise[
-
-- In the left column, move the mouse over the following
-  columns, and click the "Add" button that appears:
-
-  - host
-  - container_name
-  - message
-
-]
-
----
-
-## Removing the old deployment of DockerCoins
-
-- Before redeploying DockerCoins, remove everything
-
-.exercise[
-
-- Go back to the dockercoins directory:
-  <br/>`cd ~/orchestration-workshop/dockercoins`
-
-- Stop and remove all DockerCoins containers:
-  <br/>`docker-compose kill && docker-compose down --remove-orphans`
-
-- Reset the Compose file:
-  <br/>`git checkout docker-compose.yml`
-
-- Point the Docker API to a single node:
-  <br/>`unset DOCKER_HOST`
-
-]
-
----
-
-## Add the logging driver to the Compose file
-
-- We need to add the logging section to each container
-
-- We need the GELF endpoint that we
-  got earlier with `docker-compose ps logstash`
-
-.exercise[
-
-- Edit the `docker-compose.yml` file, adding the following lines **to each container**:
-
-  ```yaml
-    logging:
-      driver: gelf
-      options:
-        gelf-address: "udp://127.0.0.1:12201"
-  ```
-
-<!--
-```edit
-cp docker-compose.yml-logging docker-compose.yml
-```
--->
-
-]
-
-Shortcut: `docker-compose.yml-logging`
-
----
-
-## Start the DockerCoins app
-
-.exercise[
-
-- Use Compose normally:
-  ```bash
-  docker-compose up -d
-  ```
-
-]
-
-If you look in the Kibana web UI, you will see log lines
-refreshed every 5 seconds.
-
-Note: to do interesting things (graphs, searches...) we
-would need to create indexes. This is beyond the scope
-of this workshop.
-
----
-
-## Logging in production
-
-- If we were using an ELK stack:
-
-  - scale ElasticSearch
-  - scale Logstash
-  - move away from UDP *or* put one Logstash per node
-  - interpose a Redis or Kafka queue
-
-- Configure your Engines to send all logs to ELK by default
-
-- Start the logging containers with a different logging system
-  <br/>(to avoid a logging loop)
-
-- Make sure you don't end up writing *all logs* on the nodes running Logstash!
-
----
-
-# Security upgrades
-
-- This section is not hands-on
-
-- Public Service Announcement
-
-- We'll discuss:
-
-  - how to upgrade the Docker daemon
-
-  - how to upgrade container images
-
----
-
-## Upgrading the Docker daemon
-
-- Stop all containers cleanly
-
-- Stop the Docker daemon
-
-- Upgrade the Docker daemon
-
-- Start the Docker daemon
-
-- Start all containers
-
-- This is like upgrading your Linux kernel, but it will get better
-
-(Docker Engine 1.11 is using containerd, which will ultimately allow seamless upgrades.)
-
----
-
-## In practice
-
-- Keep track of running containers before stopping the Engine:
-  ```bash
-  docker ps --no-trunc -q |
-  tee /tmp/running |
-  xargs -n1 -P10 docker stop
-  ```
-
-- Restart those containers after the Engine is running again:
-  ```bash
-  xargs docker start < /tmp/running
-  ```
-  <br/>(Run this multiple times if you have linked containers!)
-
----
-
-## Upgrading container images
-
-- When a vulnerability is announced:
-
-  - if it affects your base images: make sure they are fixed first
-
-  - if it affects downloaded packages: make sure they are fixed first
-
-  - re-pull base images
-
-  - rebuild
-
-  - restart containers
-
----
-
-## How do we know when to upgrade?
-
-- Subscribe to CVE notifications
-
-  - https://cve.mitre.org/
-
-  - your distros' security announcements
-
-- Check CVE status in official images
-  <br/>(tag [cve-tracker](
-  https://github.com/docker-library/official-images/labels/cve-tracker)
-  in [docker-library/official-images](
-  https://github.com/docker-library/official-images/labels/cve-tracker)
-  repo)
-
-- Coming soon: Project Nautilus
-  <br/>(see [this DC15EU presentation](
-  http://www.slideshare.net/Docker/official-repos-and-project-nautilus/26))
-
----
-
-## Upgrading with Compose
-
-Compose makes this particularly easy:
-```bash
-docker-compose build --pull --no-cache
-docker-compose up -d
-```
-
-This will automatically:
-
-- pull base images;
-- rebuild all container images;
-- bring up the new containers.
-
-Remember: Compose will automatically move our
-volumes to the new containers, so data is preserved.
-
----
-
-# Network traffic analysis
-
-- We still have `dockercoins_redis_1` running
-
-- We will use *shared network namespaces* to perform network analysis
-
-- Two containers sharing the same network namespace...
-
-  - have the same IP addresses
-
-  - have the same network interfaces
-
-- `eth0` is therefore the same in both containers
-
----
-
-## Install and start `ngrep`
-
-Ngrep uses libpcap (like tcpdump) to sniff network traffic.
-
-.exercise[
-
-<!--
-```meta
-^{
-```
--->
-
-- Start a container with the same network namespace:
-  <br/>`docker run --net container:dockercoins_redis_1 -ti alpine sh`
-
-- Install ngrep:
-  <br/>`apk update && apk add ngrep`
-
-- Run ngrep:
-  <br/>`ngrep -tpd eth0 -Wbyline . tcp`
-
-<!--
-```meta
-^}
-```
--->
-
-]
-
-You should see a stream of Redis requests and responses.
-
----
-
-class: title
-
 # Dynamic orchestration
 
 ---
@@ -2737,133 +1239,11 @@ class: title
 
 ---
 
-## Mesos (overview)
+class: pic
 
-- First presented in 2009
+## Hands-on Swarm
 
-- Initial goal: resource scheduler (two-level/pessimistic)
-
-  - top-level "master" knows the global cluster state
-
-  - "slave" nodes report status and resources to master
-
-  - master allocates resources to "frameworks"
-
-- Container support added recently (had to fit existing model)
-
-- Network and service discovery is complex
-
----
-
-## Mesos (in practice)
-
-- Super easy to setup a test cluster
-  <br/>(e.g. [minimesos](https://minimesos.org/) put all Mesos components in container)
-
-- Great to accommodate mixed workloads
-  <br/>(see Marathon, Chronos, Aurora, and many more)
-
-- "Meh" if you only want to run Docker containers
-
-- In production on clusters of thousands of nodes
-
-- Open source project; commercial support available
-
----
-
-## Kubernetes (overview)
-
-- Started in June 2014
-
-- Designed specifically as a platform for containers ("greenfield" design)
-
-  - "pods" = groups of containers sharing network/storage
-
-  - Scaling and HA managed by "replication controllers"
-
-  - extensive use of "tags" instead of e.g. tree hierarchy
-
-- Initially designed around Docker, but doesn't hesitate to diverge in a few places
-
----
-
-## Kubernetes (in practice)
-
-- Network and service discovery is powerful, but complex
-  <br/>.small[(different mechanisms within pod, between pods, for inbound traffic...)]
-
-- Initially designed around GCE
-  <br/>.small[(networking and persistence work better on GCE, but this is getting better)]
-
-- Tends to be loved by ops more than devs
-  <br/>.small[(but keep in mind that it's evolving quite as fast as Docker)]
-
-- Setting up a local development cluster is non-trivial
-  <br/>.small[(the easiest way is to stage it up on e.g. GKE)]
-
-- Bottom line: Kubernetes is not Docker!
-  <br/>.small[(different concepts, APIs, tooling, concepts, configuration files...)]
-
----
-
-## ECS (overview)
-
-- Amazon EC2 Container Service
-
-- "Bring your own instance"
-
-- "Native" container scheduler on AWS
-
-- Some integration with other AWS products
-
-- No extra component to operate
-
-- Defines new concepts:
-
-  - task
-  - task definition
-  - service
-
----
-
-## ECS (in practice)
-
-- Task definitions look like Compose files, but are significantly different
-
-- Integration with e.g. ELB is suboptimal
-  <br/>(ELB requires all backends to run on the same port)
-
-- Cluster deployment is made easier thanks to ECS CLI
-
-- Docker API gets partially exposed through ECS API, with some features lagging behind
-
-- Service discovery is painful
-
----
-
-## Nomad (overview)
-
-- Generic job scheduler
-  <br/>(not only for containers)
-
-- Desired state is stored in Consul
-
-- Nodes pull jobs from Consul
-
-- Scheduling happens in parallel
-
----
-
-## Nomad (in practice)
-
-*Disclaimer: I have little first-hand experience with Nomad!*
-
-- Does only one thing, but does it really well
-
-- Works with jobs, not applications, services, etc.
-
-- As I understand it: Nomad is an excellent building block,
-  <br/>but you need to add other components to deploy your apps
+![Swarm Logo](swarm.png)
 
 ---
 
@@ -2881,10 +1261,10 @@ class: title
 
 - Dispatches (schedules) your containers across the cluster, transparently
 
-- Open source and written in Go (like Docker)
+- Open source and written in Go (like the Docker Engine)
 
-- Started by two of the original Docker authors
-  ([@aluzzardi](https://twitter.com/aluzzardi) and [@vieux](https://twitter.com/vieux))
+- Initial design and implementation by [@aluzzardi](https://twitter.com/aluzzardi) and [@vieux](https://twitter.com/vieux),
+  who were also the authors of the first versions of the Docker Engine
 
 ---
 
@@ -2892,108 +1272,255 @@ class: title
 
 - Stable since November 2015
 
-- Initially for small setups, easy to setup
+- Easy to setup (compared to other orchestrators)
 
 - Tested with 1000 nodes + 50000 containers
   <br/>.small[(without particular tuning; see DockerCon EU opening keynotes!)]
 
-- Still easy to setup, but scales perfectly to larger deployments too
-
 - Requires a key/value store for advanced features
 
-- We'll see it in action!
-
-???
-
-## PAAS on Docker
-
-- The PAAS workflow: *just push code*
-  <br/>(inspired by Heroku, dotCloud...)
-
-- TL,DR: easier for devs, harder for ops,
-  <br/>some very opinionated choices
-
-- A few examples:
-  <br/>(Non-exhaustive list!!!)
-
-  - Cloud Foundry
-  - Deis
-  - Dokku
-  - Flynn
-  - Tsuru
-
-*Docker made it very easy to cobble your own PAAS.*
-
-???
-
-## A few other tools
-
-- Volume plugins (Convoy, Flocker...)
-
-  - manage/migrate stateful containers (and more)
-
-- Network plugins (Contiv, Weave...)
-
-  - overlay network so that containers can ping each other
-
-- Docker Cloud (Tutum), Docker UCP (Universal Control Plane)
-
-  - dashboards to manage fleets of Docker hosts
-
-... And many more!
+- Can use consul, etcd, or zookeeper
 
 ---
 
-class: title
+# Deploying Swarm
 
-# Hands-on Swarm
+- Components involved:
+
+  - cluster discovery mechanism
+    <br/>(so that the manager can learn about the nodes)
+
+  - Swarm manager
+    <br/>(your frontend to the cluster)
+
+  - Swarm agent
+    <br/>(runs on each node, registers it with service discovery)
 
 ---
 
-class: pic
+## Cluster discovery
 
-![Swarm Logo](swarm.png)
+- Possible backends:
+
+  - dynamic, self-hosted
+    <br/>(requires to run a Consul/Etcd/Zookeeper cluster)
+
+  - static, through command-line or file
+    <br/>(great for testing, or for private subnets, see [this article](
+    https://medium.com/on-docker/docker-swarm-flat-file-engine-discovery-2b23516c71d4#.6vp94h5wn)
+
+  - external, token-based
+    <br/>(dynamic; nothing to operate; relies on external service operated by Docker Inc.)
+
+---
+
+## Swarm agent
+
+- Used only for dynamic discovery (zk, etcd, consul, token)
+
+- Must run on each node
+
+- Every 20s (by default), tells to the discovery system:
+  
+  *"Hello, there is a Swarm node at A.B.C.D:EFGH"*
+
+- Must know the node's IP address
+  
+  (It cannot figure it out by itself, because it doesn't know whether to use public or private addresses)
+
+- The node continues to work even if the agent dies
+
+---
+
+## Swarm manager
+
+- Accepts Docker API requests
+
+- Communicates with the cluster nodes
+
+- Performs healthchecks, scheduling...
+
+---
+
+# Picking a key/value store
+
+- We are going to use a key/value store, and use it for:
+
+  - cluster membership discovery
+
+  - overlay networks backend
+  
+  - resilient storage of important credentials
+  
+  - Swarm leader election
+
+- We are going to use Consul, and run one Consul instance on each node
+
+  (That way, we can always access Consul over localhost)
+
+---
+
+## Do we really need a key/value store?
+
+- Cluster membership discovery doesn't *require* a key/value store
+
+  (We could use the token mechanism instead)
+
+- Network overlays don't *require* a key/value store
+
+  (We could use a plugin like Weave instead)
+
+- Credentials can be distributed through other mechanisms
+
+  (E.g. copying them to a private S3 bucket)
+
+- Swarm leader election, however, requires a key/value store
+
+---
+
+## Why are we using a key/value store, then?
+
+- Each aforementioned mechanism requires some reliable, distributed storage
+
+- If we don't use our own key/value store, we end up using *something else*:
+
+  - Docker Inc.'s centralized token discovery service
+
+  - [Weave's CRDT protocol](https://github.com/weaveworks/weave/wiki/IP-allocation-design)
+
+  - AWS S3 (or your cloud provider's equivalent, or some other file storage system)
+
+- Each of those is one extra potential point of failure
+
+- See for instance [Kyle Kingsbury's analysis of Chronos](https://aphyr.com/posts/326-jepsen-chronos) for an illustration of this problem
+
+- By operating our own key/value store, we have 1 extra service instead of 3 (or more)
+
+---
+
+## Should we always use a key/value store?
+
+--
+
+- No!
+
+--
+
+- If you don't want to operate your own key/value store, don't do it
+
+- You might be more comfortable using tokens + Weave + S3, for instance
+
+- You can also use static discovery
+
+- Maybe you don't even need overlay networks
+
+---
+
+## Why Consul?
+
+- Consul is not the "official" or best way to do this
+
+- This is an arbitrary decision made by Truly Yours
+
+- I *personally* find Consul easier to setup for a workshop like this
+
+- ... But Etcd and Zookeper will work too!
 
 ---
 
 ## Setting up our Swarm cluster
 
-- This can be done manually or with **Docker Machine**
+We need to:
 
-- Manual deployment:
+- create certificates,
 
-  - with TLS: certificate generation is painful
-    <br/>(needs dual-use certs)
+- distribute them on our nodes,
 
-  - without TLS: easier, but insecure
-    <br/>(unless you run on your internal/private network)
+- run the Swarm agent on every node,
 
-- Docker Machine deployment:
+- run the Swarm manager on `node1`,
 
-  - generates keys, certificates, and deploys them for you
+- reconfigure the Engine on each node to add extra flags (for overlay networks).
 
-  - can also create VMs
+That's a lot of work, so we'll use Docker Machine to automate this.
 
 ---
 
-## The Way Of The Machine
+## Using Docker Machine to setup a Swarm cluster
+
+- Docker Machine has two primary uses:
+
+  - provisioning cloud instances running the Docker Engine
+
+  - managing local Docker VMs within e.g. VirtualBox
+
+- It can also create Swarm clusters, and will:
+
+  - create and manage certificates
+
+  - automatically start swarm agent and manager containers
+
+- It comes with a special driver, `generic`, to (re)configure existing machines
+
+---
+
+## Setting up Docker Machine
 
 - Install `docker-machine` (single binary download)
 
+ (This is already done on your VMs!)
+
 - Set a few environment variables (cloud credentials)
+  ```bash
+  export AWS_ACCESS_KEY_ID=AKI...
+  export AWS_SECRET_ACCESS_KEY=...
+  export AWS_DEFAULT_REGION=eu-west-2
+  export DIGITALOCEAN_ACCESS_TOKEN=...
+  export DIGITALOCEAN_SIZE=2gb
+  export AZURE_SUBSCRIPTION_ID=...
+  ```
 
-- Create one or more machines:
-  <br/>`docker-machine create -d digitalocean node42`
+  (We already have 5 nodes, so we don't need to do this!)
 
-- List machines and their status:
-  <br/>`docker-machine ls`
+---
+
+## Creating nodes with Docker Machine
+
+- The only two mandatory parameters are the driver to use, and the machine name:
+  ```bash
+  docker-machine create -d digitalocean node42
+  ```
+
+- *Tons* of parameters can be specified; see [Docker Machine driver documentation](https://docs.docker.com/machine/drivers/)
+
+- To list machines and their status:
+  ```bash
+  docker-machine ls
+  ```
+
+- To destroy a machine:
+  ```bash
+  docker-machine rm node42
+  ```
+
+---
+
+## Communicating with nodes managed by Docker Machine
 
 - Select a machine for use:
-  <br/>`eval $(docker-machine env node42)`
-  <br/>(this will set a few environment variables)
+  ```bash
+  eval $(docker-machine env node42)
+  ```
+  This will set a few environment variables (at least `DOCKER_HOST`).
 
 - Execute regular commands with Docker, Compose, etc.
-  <br/>(they will pick up remote host address from environment)
+
+  (They will pick up remote host address from environment)
+
+- If you need to go under the hood, you can get SSH access:
+  ```bash
+  docker-machine ssh node42
+  ```
 
 ---
 
@@ -3015,156 +1542,69 @@ class: pic
 
 ---
 
-# Deploying Swarm
+## Setting up Swarm with Docker Machine
 
-- Components involved:
+When invoking Machine, we will provide three sets of parameters:
 
-  - cluster discovery mechanism
-    <br/>(so that the manager can learn about the nodes)
+- the machine driver to use (`generic`) and the SSH connection information
 
-  - Swarm manager
-    <br/>(your frontend to the cluster)
+- Swarm-specific options indicating the cluster membership discovery mechanism
 
-  - Swarm agent
-    <br/>(runs on each node, registers it with service discovery)
+- Extra flags to be passed to the Engine, to enable overlay networks
 
 ---
 
-# Cluster discovery
-
-- Possible backends:
-
-  - dynamic, self-hosted
-    <br/>(requires to run a Consul/Etcd/Zookeeper cluster)
-
-  - static, through command-line or file
-    <br/>(great for testing, or for private subnets, see [this article](
-    https://medium.com/on-docker/docker-swarm-flat-file-engine-discovery-2b23516c71d4#.6vp94h5wn)
-
-  - external, token-based
-    <br/>(dynamic; nothing to operate; relies on external service operated by Docker Inc.)
-
-- We will use the token mechanism
-
----
-
-## Generating our Swarm discovery token
-
-The token is a unique identifier, corresponding to a bucket
-in the discovery service hosted by Docker Inc.
-
-(You can consider it as a rendez-vous point for your cluster.)
+## Provisioning the first node
 
 .exercise[
 
-- Create your token, saving it preciously to disk as well:
+- Use the following command to provision the manager node:
 
-  ```bash
-  TOKEN=$(docker run swarm create | tee ~/token)
-  echo $TOKEN
+  <!--
+  ```placeholder
+  AA.BB.CC.DD $(getent hosts node1 | awk '{print $1}')
   ```
-
-]
-
----
-
-## Swarm agent
-
-- Used only for dynamic discovery (zk, etcd, consul, token)
-
-- Must run on each node
-
-- Every 20s (by default), tells to the discovery system:
-  </br>"Hello, there is a Swarm node at A.B.C.D:EFGH"
-
-- Must know the node's IP address
-  <br/>(sorry, it can't figure it out by itself, because
-  <br/>it doesn't know whether to use public or private addresses)
-
-- The node continues to work even if the agent dies
-
-- Automatically started by Docker Machine (when the `--swarm` option is passed)
-
----
-
-## Swarm manager
-
-- Accepts Docker API requests
-
-- Communicates with the cluster nodes
-
-- Performs healthchecks, scheduling...
-
----
-
-## Pre-flight checks
-
-- According to data gathered during previous workshops, the most
-  common ways to get the next part wrong are:
-
-  - provisioning from the wrong node
-
-  - provisioning from a terminal where `$TOKEN` is not set
-
-.exercise[
-
-- Double-check that you are on `node1`
-
-- Double-check that the `$TOKEN` environment variable is set:
-  ```bash
-  echo $TOKEN
-  ```
-
-]
-
----
-
-## Provision our first node with Docker Machine
-
-- If `$TOKEN` is set properly, we can move forward!
-
-.exercise[
-
-<!--
-```placeholder
-AA.BB.CC.DD $(getent hosts node1 | awk '{print $1}')
-```
--->
-
-- Invoke Docker Machine with *all the flags*:
+  -->
 
   ```bash
-    echo $TOKEN
     docker-machine create --driver generic \
-      --swarm --swarm-master --swarm-discovery token://$TOKEN \
+      --engine-opt cluster-store=consul://localhost:8500 \
+      --engine-opt cluster-advertise=eth0:2376 \
+      --swarm --swarm-master --swarm-discovery consul://localhost:8500 \
       --generic-ssh-user docker --generic-ip-address `AA.BB.CC.DD` node1
   ```
 
 ]
 
-(Don't forget to replace AA.BB.CC.DD with the node IP address!)
+---
+
+## Provisioning the other nodes
+
+- The command is almost the same, but without the `--swarm-master` flag
+
+- We will use a shell snippet for convenience
+
+.exercise[
+
+```bash
+  grep node[2345] /etc/hosts | grep -v ^127 |
+  while read IPADDR NODENAME
+  do docker-machine create --driver generic \
+     --engine-opt cluster-store=consul://localhost:8500 \
+     --engine-opt cluster-advertise=eth0:2376 \
+     --swarm --swarm-discovery consul://localhost:8500 \
+     --generic-ssh-user docker \
+     --generic-ip-address $IPADDR $NODENAME
+  done
+```
+
+]
 
 ---
 
-## Redundancy
+## Check what we did
 
-- The manager is a SPOF
-
-- If you lose the manager:
-
-  - you can't control the cluster anymore
-
-  - you can still control individual nodes
-
-  - you can start a new manager (at this point, it is stateless)
-
-- We'll setup active/passive redundancy later
-
----
-
-## Check our node
-
-Let's connect to the node *individually*.
+Let's connect to the first node *individually*.
 
 .exercise[
 
@@ -3179,6 +1619,27 @@ Let's connect to the node *individually*.
   ```bash
   docker version
   docker info
+  ```
+
+]
+
+In the output of `docker info`, we should see `Cluster store` and `Cluster advertise`.
+
+---
+
+## Interact with the node
+
+Let's try a few basic Docker commands on this node.
+
+.exercise[
+
+- Run a simple container:
+  ```bash
+  docker run --rm busybox echo hello world
+  ```
+
+- See running containers:
+  ```bash
   docker ps
   ```
 
@@ -3188,25 +1649,17 @@ Two containers should show up: the agent and the manager.
 
 ---
 
-## Check our (single-node) Swarm cluster
+## Connect to the Swarm cluster
 
-Let's connect to the manager instead.
+Now, let's try the same operations, but when talking to the Swarm manager.
 
 .exercise[
 
-- Select the Swarm manager with Machine
+- Select the Swarm manager with Machine:
 
   ```bash
   eval $(docker-machine env node1 --swarm)
   ```
-
-<!--
-```bash
-while ! docker info | grep -q "^Nodes: 1"; do
-  sleep 1
-done
-```
--->
 
 - Execute some Docker commands
 
@@ -3248,128 +1701,144 @@ Server:
 
 ## `docker info`
 
-Swarm gives cluster information, showing all nodes:
-
-.small[
-```
-Containers: 3
-Images: 6
-Role: primary
-Strategy: spread
-Filters: affinity, health, constraint, port, dependency
-Nodes: 1
- node1: 52.58.50.15:2376
-  └ Status: Healthy
-  └ Containers: 3
-  └ Reserved CPUs: 0 / 2
-  └ Reserved Memory: 0 B / 3.859 GiB
-  └ Labels: executiondriver=native-0.2,
-            kernelversion=4.2.0-30-generic,
-            operatingsystem=Ubuntu 15.10,
-            provider=generic,
-            storagedriver=aufs
-  └ Error: (none)
-  └ UpdatedAt: 2016-03-09T14:01:43Z
-Kernel Version: 4.2.0-30-generic
-Operating System: linux
-Architecture: amd64
-CPUs: 2
-Total Memory: 3.86 GiB
-Name: node1
-```
-]
+FIXME
 
 ---
 
-## `docker ps`
+## Why zero node?
 
-- This one should show nothing at this point
+- We haven't started Consul yet
 
-- The Swarm containers are hidden
+- Swarm discovery is not operationl
 
-- This avoids unneeded pollution
+- Swarm can't discover the nodes
 
-- This also avoids killing them by mistake
+Note: Docker will start (and be functional) without a K/V store.
 
-- We can still see them with `docker ps -a`, though
+This lets us run Consul itself in a container.
 
 ---
 
-## Add other nodes to the cluster
+## Adding Consul
 
-- Let's use *almost* the same command line (but without `--swarm-master`)
+- We will run Consul in containers
+
+- We will use the [Consul official image](
+  https://hub.docker.com/_/consul/) that was released *very recently*
+
+- We will tell Docker to automatically restart it on reboots
+
+- To simplify network setup, we will use `host` networking
+
+---
+
+## A few words about `host` networking
+
+- Consul needs to be aware of its actual IP address (seen by other nodes)
+
+- It also binds a bunch of different ports
+
+- It makes sense (from a security point of view) to have Consul listening on localhost only
+
+  (and have "users", i.e. Engine, Swarm, etc. connect over localhost)
+
+- Therefore, we will use `host` networking!
+
+- Also: Docker Machine 0.6 starts the Swarm containers in `host` networking ...
+
+- ... but Docker Machine 0.7 doesn't (which is why we stick to 0.6 for now)
+
+---
+
+## Consul fundamentals (if I must give you just one slide...)
+
+- Consul nodes can be "just an agent" or "server"
+
+- From the client's perspective, they behave the same
+
+- Only servers are members in the Raft consensus / leader election / etc
+
+  (non-server agents forward requests to a server)
+
+- All nodes must be told the address of at least another node to join
+
+  (except for the first node, where this is optional)
+
+- At least the first nodes must know how many nodes to expect to have quorum
+
+- Consul can have only one "truth" at a time (hence the importance of quorum)
+
+---
+
+## Starting our Consul cluster
 
 .exercise[
 
-- Stay on `node1` (it has keys and certificates now!)
-
-- Add another node with Docker Machine
-
-  <!--
-  ```placeholder
-  AA.BB.CC.DD $(getent hosts node2 | awk '{print $1}')
-  ```
-  -->
+- Make sure you're logged into `node1`, and:
 
   ```bash
-    TOKEN=$(cat ~/token)
-    docker-machine create --driver generic \
-      --swarm --swarm-discovery token://$TOKEN \
-      --generic-ssh-user docker --generic-ip-address `AA.BB.CC.DD` node2
-  ```
-
-]
-
-Remember to replace AA.BB.CC.DD with the correct IP address.
-
----
-
-## Scripting
-
-- We can automate the remaining nodes with a little shell script
-
-.exercise[
-
-- Deploy nodes 3, 4, and 5:
-  ```bash
-    TOKEN=$(cat ~/token)
-    grep node[345] /etc/hosts | grep -v ^127 |
-    while read IPADDR NODENAME
-    do docker-machine create --driver generic \
-      --swarm --swarm-discovery token://$TOKEN \
-      --generic-ssh-user docker \
-      --generic-ip-address $IPADDR $NODENAME
+    IPADDR=$(ip a ls dev eth0 | sed -n 's,.*inet \(.*\)/.*,\1,p')
+    for N in 1 2 3 4 5; do
+      ssh node$N -- docker run -d --restart=always --name consul_node$N \
+                    -e CONSUL_BIND_INTERFACE=eth0 --net host consul \
+                    agent -server -retry-join $IPADDR -bootstrap-expect 5 \
+                    -ui -client 0.0.0.0
     done
   ```
 
 ]
 
+Note: in production, you probably want to remove `-client 0.0.0.0` since it
+gives public access to your cluster! Also adapt `-bootstrap-expect` to your quorum.
+
 ---
 
-## Checking the state of our cluster
+## Check that our Consul cluster is up
+
+- With your browser, navigate to any instance on port 8500
+  <br/>(in "NODES" you should see the five nodes)
+
+- Let's run a couple of useful Consul commands
 
 .exercise[
 
-<!--
-```bash
-while ! docker info | grep -q "^Nodes: 5"; do
-  sleep 1
-done
-```
--->
-
-- Check that all nodes are here:
+- Ask Consul the list of members it knows:
   ```bash
-  docker info
+  docker run --net host --rm consul members
   ```
-]
 
-If less than 5 nodes show up, just retry every few seconds: the
-nodes need some time to register themselves with the service discovery mechanism.
+- Ask Consul which node is the current leader:
+  ```bash
+  curl localhost:8500/v1/status/leader
+  ```
+
+]
 
 ---
 
-## Running containers on Swarm
+## Check that our Swarm cluster is up
+
+.exercise[
+
+- Try again the `docker info` from earlier:
+
+  ```bash
+  eval $(docker-machine env --swarm node1)
+  docker info
+  docker ps
+  ```
+
+]
+
+All nodes should be visible. (If not, give them a minute or two to register.)
+
+The Consul containers should be visible.
+
+The Swarm containers, however, are hidden by Swarm (unless you use `docker ps -a`).
+
+---
+
+# Running containers on Swarm
 
 Try to run a few `busybox` containers.
 
@@ -3441,697 +1910,6 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
 
 ---
 
-## Connecting containers with Swarm (1/2)
-
-- Implement service discovery in the application
-
-  - requires extensive code changes
-
-  - doesn't require extra services or containers
-
-  - provides load balancing and failover
-
-- Inject service addresses in environment variables
-
-  - requires minimal code changes
-
-  - doesn't require extra services or containers
-
-  - doesn't provide load balancing and failover
-
----
-
-## Connecting containers with Swarm (2/2)
-
-- Ambassadors
-
-  - don't require code changes
-
-  - require additional containers
-
-  - provide load balancing and failover
-
-- Overlay networks
-
-  - don't require code changes
-
-  - don't require extra services or containers
-
-  - doesn't provide load balancing and failover (yet)
-
----
-
-# Connecting containers with ambassadors
-
-- Hands off section (for information only!)
-
-- We will use one-tier, dynamic ambassadors
-
-- Each link to a service will be replaced by an ambassador
-
-- Each ambassador will be placed in the network namespace
-  of the service using the ambassador
-
-- Ambassadors will be dynamically reconfigured when
-  linked services are updated
-
----
-
-## Revisiting `jpetazzo/hamba`
-
-- Configuration is stored in a *volume*
-
-- A watcher process looks for configuration updates,
-  <br/>and restarts HAProxy when needed
-
-- It can be started without configuration:
-
-  ```bash
-  docker run --name amba jpetazzo/hamba run
-  ```
-
-- There is a helper to inject a new configuration:
-
-  ```bash
-  docker run --rm --volumes-from amba jpetazzo/hamba \
-         reconfigure 80 backend1 port1 backend2 port2 ...
-  ```
-
----
-
-## Network namespaces and `extra_hosts`
-
-This is our plan:
-
-- Replace each `link` with an `extra_host`, pointing to the `127.127.X.X` address space
-
-- Start app containers normally (`docker-compose up`, `docker-compose scale`)
-
-- Start ambassadors after app containers are up:
-
-  - ambassadors bind to `127.127.X.X`
-
-  - they share their client's network namespace
-
-- Reconfigure ambassadors each time something changes
-
----
-
-## Our plan for service discovery
-
-- Replace all `links` with static `/etc/hosts` entries
-
-- Those entries will map to `127.127.0.X` (with different `X` for each service)
-
-- Example: `redis` will point to `127.127.0.2` (instead of a container address)
-
-- Start all services; scale them if we want (at this point, they will all fail to connect)
-
-- Start ambassadors in the services' namespace;
-  <br/>each ambassador will listen on the right `127.127.0.X`
-
-- Gather all backend addresses and configure ambassadors
-
-.warning[Services should try to reconnect!]
-
----
-
-## "Design for failure," they said
-
-- When the containers are started, the network is not ready
-
-- First connection attempts **will fail**
-
-- App should try to reconnect
-
-- It is OK to crash and restart
-
-- Exponential back-off is nice
-
----
-
-## Pictures worth 1000 words
-
-- In the following diagrams, we are connecting a
-  `www` service to a `redis` service through
-  an ambassador.
-
----
-
-class: pic
-
-![](ambassadors/simple-1.png)
-
----
-
-class: pic
-
-![](ambassadors/simple-2.png)
-
----
-
-class: pic
-
-![](ambassadors/simple-3.png)
-
----
-
-class: pic
-
-![](ambassadors/simple-4.png)
-
----
-
-class: pic
-
-![](ambassadors/simple-5.png)
-
----
-
-class: pic
-
-![](ambassadors/simple-6.png)
-
----
-
-## Our tools
-
-- `link-to-ambassadors.py`
-
-  - replaces all `links` with `extra_hosts` entries
-
-- `create-ambassadors.py`
-
-  - scans running containers
-  - allocates `127.127.X.X` addresses
-  - starts (unconfigured) ambassadors
-
-- `configure-ambassadors.py`
-
-  - scans running containers
-  - gathers backend addresses
-  - sends configuration to ambassadors
-
----
-
-## Convert links to ambassadors
-
-- When we ran `build-tag-push.py` earlier,
-  <br/>it generated a new `docker-compose.yml-NNN` file.
-
-.notexercise[
-
-- Run the first script to create a new YAML file:
-  <br/>`../bin/link-to-ambassadors.py`
-
-]
-
-In the Compose file, all links have been replaced
-by `extra_hosts` sections.
-
----
-
-class: pic
-
-## Current state
-
-![Two empty hosts](ambassadors/dockercoins-1.png)
-
----
-
-## Bring up the application
-
-The application can now be started and scaled.
-
-.notexercise[
-
-- Start the application:
-  <br/>`docker-compose up -d`
-
-]
-
-Note: you can scale everything as you like, *except Redis*,
-because it is stateful.
-
----
-
-class: pic
-
-## Current state
-
-![Containers are running, but disconnected](ambassadors/dockercoins-2.png)
-
----
-
-## Create the ambassadors
-
-This has to be executed each time you create new services
-or scale up existing ones.
-
-After reading `$COMPOSE_FILE`, it will scan running containers, and compare:
-
-- the list of app containers,
-- the list of ambassadors.
-
-It will create missing ambassadors.
-
-.notexercise[
-
-- Run the script!
-  <br/>`../bin/create-ambassadors.py`
-
-]
-
----
-
-class: pic
-
-## Current state
-
-![Ambassadors are started, but unconfigured](ambassadors/dockercoins-3.png)
-
----
-
-## Configure the ambassadors
-
-All ambassadors are created but they still need configuration.
-
-That's the purpose of the last script.
-
-It will read `$COMPOSE_FILE` and gather:
-
-- the list of app backends,
-- the list of ambassadors.
-
-Then it configures all ambassadors with all found backends.
-
-.notexercise[
-
-- Run it!
-  <br/>`../bin/configure-ambassadors.py`
-
-]
-
----
-
-class: pic
-
-## Current state
-
-![Ambassadors are configured](ambassadors/dockercoins-4.png)
-
----
-
-## Check what we did
-
-.notexercise[
-
-
-- Find out the address of the web UI:
-  <br/>`docker-compose ps webui`
-
-- Point your browser to it
-
-]
-
----
-
-## Scale
-
-- We will now add more containers.
-
-.notexercise[
-
-- Scale worker and rng:
-  ```bash
-  docker-compose scale worker=5 rng=10
-  ```
-
-]
-
-The performance graph stays at the same level.
-
-If we look at the logs of the added workers, we will
-see screenfuls of "connection refused" exceptions.
-
----
-
-class: pic
-
-## Current state
-
-![New containers are there, but not ambassadors](ambassadors/dockercoins-5.png)
-
----
-
-## Add ambassadors
-
-- The new containers don't have ambassadors at this point.
-
-.notexercise[
-
-- Create the missing ambassadors with the script:
-  ```bash
-  ../bin/create-ambassadors.py
-  ```
-
-]
-
-The performance graph stays at the same level.
-
-If we look at the logs of the added workers, we will
-now see timeout errors instead of "connection refused."
-
----
-
-class: pic
-
-## Current state
-
-![Now ambassadors are here, but unconfigured](ambassadors/dockercoins-6.png)
-
----
-
-## Configure ambassadors
-
-- The last step is to inject the updated configuration.
-
-.notexercise[
-
-- Run the last script one more time:
-  ```bash
-  ../bin/configure-ambassadors.py
-  ```
-
-]
-
-Now the performance graph climbs up, and the worker
-logs show normal operation.
-
----
-
-class: pic
-
-## Current state
-
-![All ambassadors are here and configured](ambassadors/dockercoins-7.png)
-
----
-
-## A few words about those ambassadors
-
-- There is "a lot" of added complexity here
-  <br/>(5 scripts of almost 50 lines each!)
-
-- Snark aside, those scripts tap into those concepts:
-
-  - network namespaces
-  - dynamic load balancer reconfiguration
-  - sidekick containers that are *mandatory*
-  - ... and have to be managed manually
-
-- We are going to see an easier way to manage this!
-
----
-
-# Setting up Consul and overlay networks
-
-- We will reconfigure our Swarm cluster to enable overlays
-
-- We will deploy a Consul cluster
-
-- We will connect containers running on different machines
-
----
-
-## First, let's Clean All The Things!
-
-- We need to remove the old containers
-  <br/>(in particular the `swarm` agents and managers)
-
-.exercise[
-
-- The following snippet will nuke all containers on all hosts:
-
-  ```bash
-    for N in 1 2 3 4 5
-    do
-      ssh node$N "docker ps -qa | xargs -r docker rm -f"
-    done
-  ```
-
-(If it asks you to confirm SSH keys, just do it!)
-
-]
-
-Note: our Swarm cluster is now broken.
-
----
-
-## Remove old Machine information
-
-- We will use `docker-machine rm`
-
-- With the `generic` driver, this doesn't do anything (it just deletes local configuration)
-
-- With cloud/VM drivers, this would actually delete VMs
-
-.exercise[
-
-- Remove our nodes from Docker Machine config database:
-
-  ```bash
-    for N in 1 2 3 4 5
-    do
-      docker-machine rm -f node$N
-    done
-  ```
-
-]
-
----
-
-## Add extra options to our Engines
-
-- We need two new options for our engines:
-
-  - `cluster-store` (to indicate which key/value store to use)
-
-  - `cluster-advertise` (to indicate which IP address to register)
-
-- `cluster-store` will be `consul://localhost:8500`
-  <br/>(we will run one Consul node on each machine)
-
-- `cluster-advertise` will be `eth0:2376`
-  <br/>(Engine will automatically pick up eth0's IP address)
-
----
-
-## Reconfiguring Swarm clusters, the Docker way
-
-- The traditional way to reconfigure a service is to edit
-  its configuration (or init script), then restart
-
-- Instead, we can use Machine's `generic` driver to
-  redeploy with new parameters
-
-.exercise[
-
-- Re-provision the manager node:
-
-  <!--
-  ```placeholder
-  AA.BB.CC.DD $(getent hosts node1 | awk '{print $1}')
-  ```
-  -->
-
-  ```bash
-    docker-machine create --driver generic \
-      --engine-opt cluster-store=consul://localhost:8500 \
-      --engine-opt cluster-advertise=eth0:2376 \
-      --swarm --swarm-master --swarm-discovery consul://localhost:8500 \
-      --generic-ssh-user docker --generic-ip-address `AA.BB.CC.DD` node1
-  ```
-
-]
-
----
-
-## Reconfigure the other nodes
-
-- Once again, scripting to the rescue!
-
-.exercise[
-
-```bash
-  grep node[2345] /etc/hosts | grep -v ^127 |
-  while read IPADDR NODENAME
-  do docker-machine create --driver generic \
-     --engine-opt cluster-store=consul://localhost:8500 \
-     --engine-opt cluster-advertise=eth0:2376 \
-     --swarm --swarm-discovery consul://localhost:8500 \
-     --generic-ssh-user docker \
-     --generic-ip-address $IPADDR $NODENAME
-  done
-```
-
-]
-
----
-
-## Checking what we did
-
-.exercise[
-
-- Directly point the CLI to a node and check configuration:
-
-  ```bash
-  eval $(docker-machine env node1)
-  docker info
-  ```
-
-  (should show `Cluster store` and `Cluster advertise`)
-
-- Try to talk to the Swarm cluster:
-
-  ```bash
-  eval $(docker-machine env node1 --swarm)
-  docker info
-  ```
-
-  (should show zero node)
-
-]
-
----
-
-## Why zero node?
-
-- We haven't started Consul yet
-
-- Swarm discovery is not operationl
-
-- Swarm can't discover the nodes
-
-Note: Docker will start (and be functional) without a K/V store.
-
-This lets us run Consul itself in a container.
-
----
-
-## Adding Consul
-
-- We will run Consul in containers
-
-- We will use the [Consul official image](
-  https://hub.docker.com/_/consul/) that was released *very recently*
-
-- We will tell Docker to automatically restart it on reboots
-
-- To simplify network setup, we will use `host` networking
-
----
-
-## A few words about `host` networking
-
-- Consul needs to be aware of its actual IP address (seen by other nodes)
-
-- It also binds a bunch of different ports
-
-- It makes sense (from a security point of view) to have Consul listening on localhost only
-
-  (and have "users", i.e. Engine, Swarm, etc. connect over localhost)
-
-- Therefore, we will use `host` networking!
-
-- Also: Docker Machine 0.6 starts the Swarm containers in `host` networking ...
-
-- ... but Docker Machine 0.7 doesn't (which is why we stick to 0.6 for now)
-
----
-
-## Consul fundamentals (if I must give you just one slide...)
-
-- Consul nodes can be "just an agent" or "server"
-
-- From the client's perspective, they behave the same
-
-- Only servers are members in the Raft consensus / leader election / etc
-
-  (non-server agents forward requests to a server)
-
-- All nodes (except maybe one) must be told the address of at least another node to join
-
-- At least the first nodes must know how many nodes to expect to have quorum
-
-- Consul can have only one "truth" at a time (hence the importance of quorum)
-
----
-
-## Starting our Consul cluster
-
-.exercise[
-
-- Make sure you're logged into `node1`, and:
-
-  ```bash
-    IPADDR=$(ip a ls dev eth0 | sed -n 's,.*inet \(.*\)/.*,\1,p')
-    for N in 1 2 3 4 5; do
-      ssh node$N -- docker run -d --restart=always --name consul_node$N \
-                    -e CONSUL_BIND_INTERFACE=eth0 --net host consul \
-                    agent -server -retry-join $IPADDR -bootstrap-expect 3 \
-                    -ui -client 0.0.0.0
-    done
-  ```
-
-]
-
-Note: in production, you probably want to remove `-client 0.0.0.0` since it
-gives public access to your cluster! Also adapt `-bootstrap-expect` to your quorum.
-
----
-
-## Check that our Consul cluster is up
-
-- With your browser, navigate to any instance on port 8500
-  <br/>(in "NODES" you should see the five nodes)
-
-- Let's run a couple of useful Consul commands
-
-.exercise[
-
-- Ask Consul the list of members it knows:
-  ```bash
-  docker run --net host --rm consul members
-  ```
-
-- Ask Consul which node is the current leader:
-  ```bash
-  curl localhost:8500/v1/status/leader
-  ```
-
-]
-
----
-
-## Check that our Swarm cluster is up
-
-.exercise[
-
-- Try again the `docker info` from earlier:
-
-  ```bash
-  eval $(docker-machine env --swarm node1)
-  docker info
-  ```
-
-- Now all nodes should be visible
-  <br/>(Give them a minute or two to register)
-
-]
-
----
-
 # Multi-host networking
 
 - Docker 1.9 has the concept of *networks*
@@ -4146,7 +1924,23 @@ gives public access to your cluster! Also adapt `-bootstrap-expect` to your quor
 
 - The "overlay" driver lets networks span multiple hosts
 
-- Let's see that in action!
+- Containers can have "network aliases" resolvable through DNS
+
+---
+
+## Manipulating networks, names, and aliases
+
+- The preferred method is to let Compoes do the heavy lifting for us
+
+  (YAML-defined networking!)
+
+- But if we really need to, we can use the Docker CLI, with:
+
+  `docker network ...`
+
+  `docker run --net ... --net-alias ...`
+
+- The following slides illustrate those commands
 
 ---
 
@@ -4339,32 +2133,59 @@ gives public access to your cluster! Also adapt `-bootstrap-expect` to your quor
 
 # Building images with Swarm
 
-- This is a relatively new feature (Compose ~1.5)
+- Special care must be taken when building and running images
 
-- Builds are scheduled on random nodes
+- We *can* build images on Swarm (with `docker build` or `docker-compose build`)
 
-- This disrupts caching
+- One node will be picked at random, and the build will happen there
 
-- Independent builds will be fine, though
+- At the end of the build, the image will be present *only on that node*
 
 ---
 
-## Caveats when building with Swarm
+## Building on Swarm can yield inconsistent results
 
-- Containers are only scheduled where they were built
+- Builds are scheduled on random nodes
 
-  - cause: Swarm will not automatically copy images across nodes
+- Multiple builds and rebuilds can happen on different nodes
 
-  - solution: distribute images through a registry (e.g. Docker Hub)
+- If a build happens on a different node, the cache of the previous build cannot be used
 
-- You can end up with inconsistent versions
-  <br/>(i.e. `dockercoins_rng:latest` being different on two nodes)
+- Worse: you can have two different images with the same name on your cluster
 
-  - cause: builds can happen on different nodes
+---
 
-  - solution: always pin builds to the same node; use explicit version tags
+## Scaling won't work as expected
 
-- Also, build caching doesn't work all the time
+Consider the following scenario:
+
+- `docker-compose up`
+  <br/>
+  → each service is built on a node, and runs there
+
+- `docker-compose scale`
+  <br/>
+  → additional containers for this service can only be spawned where the image was built
+
+- `docker-compose up` (again)
+  <br/>
+  → services might be built (and started) on different nodes
+
+- `docker-compose scale`
+  <br/>
+   → containers can be spawned with both the new and old images
+
+---
+
+## Scaling correctly with Swarm
+
+- After building an image, it should be distributed to the cluster
+
+  (Or made available through a registry, so that nodes can download it automatically)
+
+- Instead of referencing images with the `:latest` tag, unique tags should be used
+
+  (Using e.g. timestamps, version numbers, or VCS hashes)
 
 ---
 
@@ -4413,13 +2234,13 @@ gives public access to your cluster! Also adapt `-bootstrap-expect` to your quor
 
 - Build on a single node (`node1`)
 
-- Tag images
+- Tag images with the current UNIX timestamp (for simplicity)
 
 - Upload them to a registry
 
 - Update the Compose file to use those images
 
-*That's the purpose of the `build-tag-push.py` script!*
+This is all automated with the `build-tag-push.py` script.
 
 ---
 
@@ -4604,13 +2425,9 @@ Note: Swarm might do that automatically for us in the future.
 
 .exercise[
 
-- Make sure we have the busybox image:
+- Make sure we have the busybox image, and retag it:
   ```bash
   docker pull busybox
-  ```
-
-- Retag the busybox image:
-  ```bash
   docker tag busybox localhost:5000/busybox
   ```
 
@@ -4677,8 +2494,12 @@ Copy-paste this into `docker-compose.yml`
 
 .exercise[
 
-- Set `DOCKER_REGISTRY` to use our local registry,
-  <br/>then build, tag, and push the application:
+- Set `DOCKER_REGISTRY` to use our local registry
+
+- Make sure that you are building on `node1`
+
+- Then run the script
+
   ```bash
   export DOCKER_REGISTRY=localhost:5000
   eval $(docker-machine env node1)
@@ -4692,8 +2513,6 @@ Copy-paste this into `docker-compose.yml`
 ## Run the application
 
 - At this point, our app is ready to run
-
-- We don't need ambassadors or extra containers
 
 .exercise[
 
@@ -4731,7 +2550,7 @@ Copy-paste this into `docker-compose.yml`
 
 ---
 
-# Scaling workers
+## Scaling workers
 
 - Scaling the `worker` service works out of the box
   (like before)
@@ -4745,52 +2564,331 @@ Copy-paste this into `docker-compose.yml`
 
 ]
 
-We will hit the bottleneck caused by the `rng` service.
+We will hit the same bottleneck as before.
 
-How can we scale that service?
+How can we address that?
 
 ---
 
-## Load balancing with overlay networks, take 1
+## Finding the real cause of the bottleneck
 
+- If time permits, we can benchmark `rng` and `hasher` to find out more
 
-- Replace `rng` with:
+- Otherwise, we'll fast-forward a bit
 
-  - multiple copies `rng1`, `rng2`, `rng3`, ...
+---
 
-  - a load balancer taking over the name `rng`,
-    <br/>and spreading traffic accross all instances
+## Benchmarking in isolation
 
-- Can we do better?
+- If we want the benchmark to be accurate, we need to make sure that `rng` and `hasher` are not receiving traffic
 
-- In a perfect world, we would like to do:
+.exercise[
+
+- Stop the `worker` containers:
   ```bash
-  docker-compose scale rng=10
+  docker-compose kill worker
   ```
 
+]
+
 ---
 
-## Load balancing with overlay networks, take 2
+## A better benchmarking tool
 
-- Scale `rng` and rely on DNS round robin records
+- Instead of `httping`, we will now use `ab` (Apache Bench)
 
-- Problem: the load might end up being totally unbalanced
+- We will install it in an `alpine` container placed on the network used by our application
 
-- We need to send `rng` traffic to an actual load balancer
+.exercise[
 
-- This poses a naming problem
+- Start an interactive `alpine` container on the `dockercoins_rng` network:
+  ```bash
+  docker run -ti --net dockercoins_default alpine sh
+  ```
+
+- Install `ab` with the `apache2-utils` package:
+  ```bash
+  apk add --update apache2-utils
+  ```
+
+]
+
+---
+
+## Benchmarking `rng`
+
+We will send 50 requests, but with various levels of concurrency.
+
+.exercise[
+
+- Send 50 requests, with a single sequential client:
+  ```bash
+  ab -c 1 -n 50 http://rng/10
+  ```
+
+- Send 50 requests, with ten parallel clients:
+  ```bash
+  ab -c 10 -n 50 http://rng/10
+  ```
+
+]
+
+---
+
+## Benchmark results for `rng`
+
+- In both cases, the benchmark takes ~5 seconds to complete
+
+- When serving requests sequentially, they each take 100ms
+
+- In the parallel scenario, the latency increased dramatically:
+
+  - one request is served in 100ms
+  - another is served in 200ms
+  - another is served in 300ms
+  - ...
+  - another is served in 1000ms
+
+- What about `hasher`?
+
+---
+
+## Benchmarking `hasher`
+
+We will do the same tests for `hasher`.
+
+The command is slightly more complex, since we need to post random data.
+
+First, we need to put the POST payload in a temporary file.
+
+.exercise[
+
+- Generate 10 bytes of random data:
+  ```bash
+  curl http://rng/10 >/tmp/random
+  ```
+
+]
+
+---
+
+## Benchmarking `hasher`
+
+Once again, we will send 50 requests, with different levels of concurrency.
+
+.exercise[
+
+- Send 50 requests with a sequential client:
+  ```bash
+    ab -c 1 -n 50 -T application/octet-stream \
+       -p /tmp/random http://hasher/
+  ```
+
+- Send 50 requests with 10 parallel clients:
+  ```bash
+    ab -c 10 -n 50 -T application/octet-stream \
+       -p /tmp/random http://hasher/
+  ```
+
+]
+
+---
+
+## Benchmark results for `hasher`
+
+- The sequential benchmarks takes ~5 seconds to complete
+
+- The parallel benchmark takes less than 1 second to complete
+
+- In both cases, each request takes a bit more than 100ms to complete
+
+- Requests are a bit slower in the parallel benchmark
+
+- It looks like `hasher` is better equiped to deal with concurrency than `rng`
+
+---
+
+class: title
+
+Why?
+
+---
+
+## Why does everything take (at least) 100ms?
+
+--
+
+`rng` code:
+
+![RNG code screenshot](delay-rng.png)
+
+--
+
+`hasher` code:
+
+![HASHER code screenshot](delay-hasher.png)
+
+---
+
+class: title
+
+But ...
+
+WHY?!?
+
+---
+
+## Why did we sprinkle this sample app with sleeps?
+
+- Deterministic performance
+  <br/>(regardless of instance speed, CPUs, I/O...)
+
+--
+
+- Actual code sleeps all the time anyway
+
+--
+
+- When your code makes a remote API call:
+
+  - it sends a request;
+
+  - it sleeps until it gets the response;
+
+  - it processes the response.
+
+---
+
+## Why do `rng` and `hasher` behave differently?
+
+![Equations on a blackboard](equations.png)
+
+--
+
+(Synchronous vs. asynchronous event processing)
+
+---
+
+## How to make `rng` go faster
+
+- Obvious solution: comment out the `sleep` instruction
+
+--
+
+- Unfortunately, in the real world, network latency exists
+
+--
+
+- More realistic solution: use an asynchronous framework
+  <br/>(e.g. use gunicorn with gevent)
+
+--
+
+- Reminder: we can't change the code!
+
+--
+
+- Solution: scale out `rng`
+  <br/>(dispatch `rng` requests on multiple instances)
+
+---
+
+# Scaling web services with Compose on Swarm
+
+- We *can* scale network services with Compose
+
+- The result may or may not be satisfactory, though!
+
+.exercise[
+
+- Scale the `rng` service:
+  ```bash
+  docker-compose scale rng=5
+  ```
+
+]
+
+---
+
+## Results
+
+- In the web UI, you might see a performance increase ... or maybe not
+
+--
+
+- Since Engine 1.11, we get round-robin DNS records
+
+  (i.e. resolving `rng` will yield the IP addresses of all 3 containers)
+
+- Docker randomizes the records it sends
+
+- But many resolvers will sort them in unexpected ways
+
+- Depending on various factors, you could get:
+
+  - all traffic on a single container
+  - traffic perfectly balanced on all containers
+  - traffic unevenly balanced across containers
+
+---
+
+## Assessing DNS randomness
+
+- Let's see how our containers resolve DNS requests
+
+.exercise[
+
+- On each of our 10 scaled workers, execute 5 ping requests:
+  ```bash
+    for N in $(seq 1 10); do
+      echo PING__________$N
+      for I in $(seq 1 5); do
+        docker exec -ti dockercoins_worker_$N ping -c1 rng
+      done
+    done | grep PING
+  ```
+
+]
+
+(The 7th Might Surprise You!)
+
+---
+
+## DNS randomness
+
+- Other programs can yield different results
+
+- Same program on another distro can yield different results
+
+- Same source code with another libc or resolver can yield different results
+
+- Running the same test at different times can yield different results
+
+- Did I mention that Your Results May Vary?
+
+---
+
+## Implementing fair load balancing
+
+- Instead of relying on DNS round robin, let's use a proper load balancer
+
+- Use Compose to create multiple copies of the `rng` service
+
+- Put a load balancer in front of them
+
+- Point other services to the load balancer
 
 ---
 
 ## Naming problem
 
-- Service is called `rng`
+- The service is called `rng`
 
-- It therefore takes the network name `rng`
+- Therefore, it is reachable with the network name `rng`
 
-- Worker code connects to `rng`
+- Our application code (the `worker` service) connects to `rng`
 
-- So `rng` should point to the load balancer
+- So the name `rng` should resolve to the load balancer
 
 - What do‽
 
@@ -4876,9 +2974,7 @@ Load-balanced DockerCoins
 ## Adding the load balancer
 
 - The load balancer has to be in both networks: `rng` and `default`
-
 - In the `default` network, it must have the `rng` alias
-
 - We will use the `jpetazzo/hamba` image
 
 .exercise[
@@ -4903,8 +2999,7 @@ Load-balanced DockerCoins
 
 - This tells `hamba` to wait for an initial configuration
 
-- The load balancer will not be operational
-  <br/>(until we feed it its configuration)
+- The load balancer will not be operational (until we feed it its configuration)
 
 ---
 
@@ -5080,23 +3175,6 @@ configuration first.
 
 ---
 
-## Cleaning up
-
-.exercise[
-
-- Terminate containers and remove them:
-
-  ```bash
-  docker-compose down
-  ```
-
-]
-
-Note: `docker-compose down` also deletes the
-networks that had been created for the application.
-
----
-
 ## Comments
 
 - This is a very crude implementation of the pattern
@@ -5107,67 +3185,744 @@ networks that had been created for the application.
 
   (i.e. it's not necessary to re-resolve records every second!)
 
+---
+
+class: title
+
+# All things ops <br/> (logs, backups, and more)
+
+---
+
+# Logs
+
+- Two strategies:
+
+  - log to plain files on volumes
+
+  - log to stdout
+    <br/>(and use a logging driver)
+
+---
+
+## Logging to plain files on volumes
+
+(Sorry, that part won't be hands-on!)
+
+- Start a container with `-v /logs`
+
+- Make sure that all log files are in `/logs`
+
+- To check logs, run e.g.
+
+  ```bash
+  docker run --volumes-from ... ubuntu sh -c "grep WARN /logs/*.log"
+  ```
+
+- Or just go interactive:
+
+  ```bash
+  docker run --volumes-from ... -ti ubuntu
+  ```
+
+- You can (should) start a log shipper that way
+
+---
+
+## Logging to stdout
+
+- All containers should write to stdout/stderr
+
+- Docker will collect logs and pass them to a logging driver
+
+- Logging driver can specified globally, and per container
+  <br/>(changing it for a container overrides the global setting)
+
+- To change the global logging driver, pass extra flags to the daemon
+  <br/>(requires a daemon restart)
+
+- To override the logging driver for a container, pass extra flags to `docker run`
+
+---
+
+## Specifying logging flags
+
+- `--log-driver`
+
+  *selects the driver*
+
+- `--log-opt key=val`
+
+  *adds driver-specific options*
+  <br/>*(can be repeated multiple times)*
+
+- The flags are identical for `docker daemon` and `docker run`
+
+---
+
+## Logging flags in practice
+
+- If you provision your nodes with Docker Machine,
+  you can set global logging flags (which will apply to all
+  containers started by a given Engine) like this:
+
+  ```bash
+  docker-machine create ... --engine-opt log-driver=...
+  ```
+
+- Otherwise, use your favorite method to edit or manage configuration files
+
+- You can set per-container logging options in Compose files
+
+---
+
+## Available drivers
+
+- json-file (default)
+
+- syslog (can send to UDP, TCP, TCP+TLS, UNIX sockets)
+
+- awslogs (AWS CloudWatch)
+
+- journald
+
+- gelf
+
+- fluentd
+
+- splunk
+
+---
+
+## About json-file ...
+
+- It doesn't rotate logs by default, so your disks will fill up
+
+  (Unless you set `maxsize` *and* `maxfile` log options.)
+
+- It's the only one supporting logs retrieval
+
+  (If you want to use `docker logs`, `docker-compose logs`,
+  or fetch logs from the Docker API, you need json-file!)
+
+- This might change in the future
+
+  (But it's complex since there is no standard protocol
+  to *retrieve* log entries.)
+
+All about logging in the documentation:
+https://docs.docker.com/reference/logging/overview/
+
+---
+
+# Setting up ELK to store container logs
+
+*Important foreword: this is not an "official" or "recommended"
+setup; it is just an example. We do not endorse ELK, GELF,
+or the other elements of the stack more than others!*
+
+What we will do:
+
+- Spin up an ELK stack, with Compose
+
+- Gaze at the spiffy Kibana web UI
+
+- Manually send a few log entries over GELF
+
+- Reconfigure our DockerCoins app to send logs to ELK
+
+---
+
+## What's in an ELK stack?
+
+- ELK is three components:
+
+  - ElasticSearch (to store and index log entries)
+
+  - Logstash (to receive log entries from various
+    sources, process them, and forward them to various
+    destinations)
+
+  - Kibana (to view/search log entries with a nice UI)
+
+- The only component that we will configure is Logstash
+
+- We will accept log entries using the GELF protocol
+
+- Log entries will be stored in ElasticSearch,
+  <br/>and displayed on Logstash's stdout for debugging
+
+---
+
+## Starting our ELK stack
+
+- We will use a *separate* Compose file
+
+- The Compose file is in the `elk` directory
+
+.exercise[
+
+- Go to the `elk` directory:
+  ```bash
+  cd ~/orchestration-workshop/elk
+  ```
+
+- Start the ELK stack:
+  ```bash
+  docker-compose up -d
+  ```
+
+]
+
+---
+
+## Making sure that each node has a local logstash
+
+- We will configure each container to send logs to `localhost:12201`
+
+- We need to make sure that each node has a logstash container listening on port 12201
+
+.exercise[
+
+- Scale the `logstash` service to 5 instances (one per node):
+  ```bash
+    for N in $(seq 1 5); do
+      docker-compose scale logstash=$N
+    done
+  ```
+
+]
+
+---
+
+## Checking that our ELK stack works
+
+- Our default Logstash configuration sends a test
+  message every minute
+
+- All messages are stored into ElasticSearch,
+  but also shown on Logstash stdout
+
+.exercise[
+
+- Look at Logstash stdout:
+  ```bash
+  docker-compose logs logstash
+  ```
+
+]
+
+After less than one minute, you should see a `"message" => "ok"`
+in the output.
+
+---
+
+## Connect to Kibana
+
+- Our ELK stack exposes two public services:
+  <br/>the Kibana web server, and the GELF UDP socket
+
+- They are both exposed on their default port numbers
+  <br/>(5601 for Kibana, 12201 for GELF)
+
+.exercise[
+
+- Check the address of the node running kibana:
+  ```bash
+  docker-compose ps
+  ```
+
+- Open the UI in your browser: http://instance-address:5601/
+
+]
+
+---
+
+## "Configuring" Kibana
+
+- If you see a status page with a yellow item, wait a minute and reload
+  (Kibana is probably still initializing)
+
+- Kibana should offer you to "Configure an index pattern",
+  just click the "Create" button
+
+- Then:
+
+  - click "Discover" (in the top-left corner)
+  - click "Last 15 minutes" (in the top-right corner)
+  - click "Last 1 hour" (in the list in the middle)
+  - click "Auto-refresh" (top-right corner)
+  - click "5 seconds" (top-left of the list)
+
+- You should see a series of green bars (with one new green bar every minute)
+
+---
+
+![Screenshot of Kibana](kibana.png)
+
+---
+
+## Sending container output to Kibana
+
+- We will create a simple container displaying "hello world"
+
+- We will override the container logging driver
+
+- The GELF address is `127.0.0.1:12201`, because the Compose file
+  explicitly exposes the GELF socket on port 12201
+
+.exercise[
+
+- Start our one-off container:
+
+  ```bash
+    docker run --rm --log-driver gelf \
+           --log-opt gelf-address=udp://127.0.0.1:12201 \
+           alpine echo hello world
+  ```
+
+]
+
+---
+
+## Visualizing container logs in Kibana
+
+- Less than 5 seconds later (the refresh rate of the UI),
+  the log line should be visible in the web UI
+
+- We can customize the web UI to be more readable
+
+.exercise[
+
+- In the left column, move the mouse over the following
+  columns, and click the "Add" button that appears:
+
+  - host
+  - container_name
+  - message
+
+]
+
+---
+
+## Add the logging driver to the Compose file
+
+- We need to add the logging section to each container
+
+.exercise[
+
+- Edit the `docker-compose.yml-NNN` file, adding the following lines **to each container**:
+
+  ```yaml
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
+  ```
+
+]
+
+There is also a script, `../bin/add-logging.py`, to do that automatically.
+
+---
+
+## Update the DockerCoins app
+
+.exercise[
+
+- Use Compose normally:
+  ```bash
+  docker-compose up -d
+  ```
+
+]
+
+If you look in the Kibana web UI, you will see log lines
+refreshed every 5 seconds.
+
+Note: to do interesting things (graphs, searches...) we
+would need to create indexes. This is beyond the scope
+of this workshop.
+
+---
+
+## Logging in production
+
+- If we were using an ELK stack:
+
+  - scale ElasticSearch
+  - interpose a Redis or Kafka queue to deal with bursts
+
+- Configure your Engines to send all logs to ELK by default
+
+- Start the logging containers with a different logging system
+  <br/>(to avoid a logging loop)
+
+- Make sure you don't end up writing *all logs* on the nodes running Logstash!
+
+---
+
+# Network traffic analysis
+
+- We want to inspect the network traffic entering/leaving `dockercoins_redis_1`
+
+- We will use *shared network namespaces* to perform network analysis
+
+- Two containers sharing the same network namespace...
+
+  - have the same IP addresses
+
+  - have the same network interfaces
+
+- `eth0` is therefore the same in both containers
+
+---
+
+## Install and start `ngrep`
+
+Ngrep uses libpcap (like tcpdump) to sniff network traffic.
+
+.exercise[
+
+<!--
+```meta
+^{
+```
+-->
+
+- Start a container with the same network namespace:
+  <br/>`docker run --net container:dockercoins_redis_1 -ti alpine sh`
+
+- Install ngrep:
+  <br/>`apk update && apk add ngrep`
+
+- Run ngrep:
+  <br/>`ngrep -tpd eth0 -Wbyline . tcp`
+
+<!--
+```meta
+^}
+```
+-->
+
+]
+
+You should see a stream of Redis requests and responses.
+
+---
+
+# Backups
+
+- We want to enable backups for `dockercoins_redis_1`
+
+- We don't want to install extra software in this container
+
+- We will use a special backup container:
+
+  - sharing the same volumes
+
+  - using the same network stack (to connect to it easily)
+
+  - possibly containing our backup tools
+
+- This works because the `redis` container image stores its data on a volume
+
+---
+
+## Starting the backup container
+
+- We will use the `--net container:` option to be able to connect locally
+
+- We will use the `--volumes-from` option to access the container's persistent data
+
+.exercise[
+
+<!--
+```meta
+^{
+```
+-->
+
+- Start the container:
+
+  ```bash
+    docker run --net container:dockercoins_redis_1 \
+               --volumes-from dockercoins_redis_1:ro \
+               -v /tmp/myredis:/output \
+               -ti alpine sh
+  ```
+
+- Look in `/data` in the container (that's where Redis puts its data dumps)
+]
+
+---
+
+## Connecting to Redis
+
+- We need to tell Redis to perform a data dump *now*
+
+.exercise[
+
+- Connect to Redis:
+  ```bash
+  telnet localhost 6379
+  ```
+
+- Issue commands `SAVE` then `QUIT`
+
+- Look at `/data` again (notice the time stamps)
+
+]
+
+- There should be a recent dump file now!
+
+---
+
+## Getting the dump out of the container
+
+- We could use many things:
+
+  - s3cmd to copy to S3
+  - SSH to copy to a remote host
+  - gzip/bzip/etc before copying
+
+- We'll just copy it to the Docker host
+
+.exercise[
+
+- Copy the file from `/data` to `/output`
+
+- Exit the container
+
+- Look into `/tmp/myredis` (on the host)
+
+<!--
+```meta
+^}
+```
+-->
+
+]
+
+---
+
+## Scheduling backups
+
+In the "old world," we (generally) use cron.
+
+With containers, what are our options?
+
+--
+
+- run `cron` on the Docker host, and put `docker run` in the crontab
+
+--
+
+- run `cron` in the backup container, and make sure it keeps running
+  <br/>(e.g. with `docker run --restart=…`)
+
+--
+
+- run `cron` in a container, and start backup containers from there
+
+--
+
+- listen to the Docker events stream, automatically scheduling backups
+  <br/>when database containers are started
+
+---
+
+# Controlling Docker from a container
+
+- In a local environment, just bind-mount the Docker control socket:
+  ```bash
+  docker run -ti -v /var/run/docker.sock:/var/run/docker.sock docker
+  ```
+
+- Otherwise, you have to:
+
+  - set `DOCKER_HOST`,
+  - set `DOCKER_TLS_VERIFY` and `DOCKER_CERT_PATH` (if you use TLS),
+  - copy certificates to the container that will need API access.
+
+More resources on this topic:
+
+- [Do not use Docker-in-Docker for CI](
+  http://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/)
+- [One container to rule them all](
+  http://jpetazzo.github.io/2016/04/03/one-container-to-rule-them-all/)
+
+---
+
+# Docker events stream
+
+- Using the Docker API, we can get real-time
+  notifications of everything happening in the Engine:
+
+  - container creation/destruction
+  - container start/stop
+  - container exit/signal/out of memory
+  - container attach/detach
+  - volume creation/destruction
+  - network creation/destruction
+  - connection/disconnection of containers
+
+(Networks will be covered a bit later!)
+
+---
+
+## Subscribing to the events stream
+
+- This is done with `docker events`
+
+.exercise[
+
+- Get a stream of events:
+  ```bash
+  docker events
+  ```
+
+<!--
+```meta
+^Z
+```
+-->
+
+- In a new terminal, do *anything*:
+  ```bash
+  docker run --rm alpine sleep 10
+  ```
+
+]
+
+You should see events for the lifecycle of the
+container, as well as its connection/disconnection
+to the default `bridge` network.
+
+---
+
+## A few tools to use the events stream
+
+- [docker-spotter](https://github.com/discordianfish/docker-spotter)
+
+  Written in Go; simple building block to use directly in Shell scripts
+
+- [ahab](https://github.com/instacart/ahab)
+
+  Written in Python; available as a library; ships with a CLI tool
+
+---
+
+# Security upgrades
+
+- This section is not hands-on
+
+- Public Service Announcement
+
+- We'll discuss:
+
+  - how to upgrade the Docker daemon
+
+  - how to upgrade container images
+
+---
+
+## Upgrading the Docker daemon
+
+- Stop all containers cleanly
+
+- Stop the Docker daemon
+
+- Upgrade the Docker daemon
+
+- Start the Docker daemon
+
+- Start all containers
+
+- This is like upgrading your Linux kernel, but it will get better
+
+(Docker Engine 1.11 is using containerd, which will ultimately allow seamless upgrades.)
+
 ???
 
-# Going further
+## In practice
 
-Deploying a new version (difficulty: easy)
+- Keep track of running containers before stopping the Engine:
+  ```bash
+  docker ps --no-trunc -q |
+  tee /tmp/running |
+  xargs -n1 -P10 docker stop
+  ```
 
-- Just re-run all the steps!
+- Restart those containers after the Engine is running again:
+  ```bash
+  xargs docker start < /tmp/running
+  ```
+  <br/>(Run this multiple times if you have linked containers!)
 
-- However, Compose will re-create the containers
+---
 
-- You will have to re-create ambassadors
-  <br/>(and configure them)
+## Upgrading container images
 
-- You will have to cleanup old ambassadors
-  <br/>(left as an exercise for the reader)
+- When a vulnerability is announced:
 
-- You will experience a little bit of downtime
+  - if it affects your base images: make sure they are fixed first
 
-???
+  - if it affects downloaded packages: make sure they are fixed first
 
-## Going further
+  - re-pull base images
 
-Zero-downtime deployment (difficulty: medium)
+  - rebuild
 
-- Isolate stateful services (like we did earlier for Redis)
+  - restart containers
 
-- Do blue/green deployment:
+---
 
-  - deploy and scale version N
+## How do we know when to upgrade?
 
-  - point a "top-level" load balancer to the app
+- Subscribe to CVE notifications
 
-  - deploy and scale version N+1
+  - https://cve.mitre.org/
 
-  - put both apps in the "top-level" balancer
+  - your distros' security announcements
 
-  - slowly switch traffic over to app version N+1
+- Check CVE status in official images
+  <br/>(tag [cve-tracker](
+  https://github.com/docker-library/official-images/labels/cve-tracker)
+  in [docker-library/official-images](
+  https://github.com/docker-library/official-images/labels/cve-tracker)
+  repo)
 
-???
+- Use a container vulnerability scanner
+  <br/>(e.g. [Docker Security Scanning](https://blog.docker.com/2016/05/docker-security-scanning/))
 
-## Going further
+---
 
-Harder projects:
+## Upgrading with Compose
 
-- Two-tier or three-tier ambassador deployments
+Compose makes this particularly easy:
+```bash
+docker-compose build --pull --no-cache
+docker-compose up -d
+```
 
-- Deploy to Mesos or Kubernetes
+This will automatically:
+
+- pull base images;
+- rebuild all container images;
+- bring up the new containers.
+
+Remember: Compose will automatically move our
+volumes to the new containers, so data is preserved.
 
 ---
 
 class: title
 
-Resiliency
-<br/>
-and
-<br/>
-high availability
+# Resiliency <br/> and <br/> high availability
 
 ---
 
-# What are our single points of failure?
+## What are our single points of failure?
 
 - The TLS certificates created by Machine are on `node1`
 

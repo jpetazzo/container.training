@@ -194,7 +194,7 @@ sync_keys() {
 }
 
 suggest_amis() {
-    scripts/find-ubuntu-ami.sh -r $AWS_DEFAULT_REGION -a amd64 -v 15.10 -t hvm:ebs -N
+    scripts/find-ubuntu-ami.sh -r $AWS_DEFAULT_REGION -a amd64 -v 16.04 -t hvm:ebs -N
 }
 
 get_token() {
@@ -210,16 +210,19 @@ get_ami() {
     #AMI=$(suggest_amis | grep -v ^REGION | head -1 | awk '{print $7}')
     case $AWS_DEFAULT_REGION in
     eu-central-1)
-      AMI=ami-74a4bc18
+      AMI=ami-f0eb089f
       ;;
     eu-west-1)
-      AMI=ami-cda312be
-      ;;
-    us-west-2)
-      AMI=ami-495bbd29
+      AMI=ami-3079f543
       ;;
     us-east-1)
-      AMI=ami-1711387d
+      AMI=ami-840910ee
+      ;;
+    us-west-1)
+      AMI=ami-d8e996b8
+      ;;
+    us-west-2)
+      AMI=ami-fa82739a
       ;;
     esac
     echo $AMI
@@ -273,7 +276,7 @@ run_cli() {
         scripts/find-ubuntu-ami.sh -r $AWS_DEFAULT_REGION $*
         echo
         echo "Protip:"
-        echo "trainer ami -a amd64 -v 15.10 -t hvm:ebs -N | grep -v ^REGION | cut -d\" \" -f15"
+        echo "trainer ami -a amd64 -v 16.04 -t hvm:ebs -N | grep -v ^REGION | cut -d\" \" -f15"
         echo
         echo "Suggestions:"
         suggest_amis
