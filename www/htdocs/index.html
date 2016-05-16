@@ -1210,7 +1210,7 @@ ways to deploy ambassadors.
 
 - Reacts to container start/stop events
 
-- Adds/removes scaled services in distributed config DB (zookeeper, etcd, consul…)
+- Adds/removes scaled services in distributed config DB (Zookeeper, etcd, Consul…)
 
 - Another daemon listens to config DB events,
   <br/>adds/removes backends to load balancers configuration
@@ -1309,7 +1309,7 @@ class: pic
 
 - Requires a key/value store for advanced features
 
-- Can use consul, etcd, or zookeeper
+- Can use Consul, etcd, or Zookeeper
 
 ---
 
@@ -1333,7 +1333,7 @@ class: pic
 - Possible backends:
 
   - dynamic, self-hosted
-    <br/>(requires to run a Consul/Etcd/Zookeeper cluster)
+    <br/>(requires to run a Consul/etcd/Zookeeper cluster)
 
   - static, through command-line or file
     <br/>(great for testing, or for private subnets, see [this article](
@@ -1346,7 +1346,7 @@ class: pic
 
 ## Swarm agent
 
-- Used only for dynamic discovery (zk, etcd, consul, token)
+- Used only for dynamic discovery (ZK, etcd, Consul, token)
 
 - Must run on each node
 
@@ -1454,7 +1454,7 @@ class: pic
 
 - I *personally* find Consul easier to setup for a workshop like this
 
-- ... But Etcd and Zookeper will work too!
+- ... But etcd and Zookeper will work too!
 
 ---
 
@@ -4216,7 +4216,7 @@ At this point, `ls -l ~/consul` should show `docker` and
 ## Swarm leader election
 
 - The leader election mechanism relies on a key/value store
-  <br/>(consul, etcd, zookeeper)
+  <br/>(Consul, etcd, Zookeeper)
 
 - There is no requirement on the number of replicas
   <br/>(the quorum is achieved through the key/value store)
