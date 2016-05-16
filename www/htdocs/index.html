@@ -4476,19 +4476,115 @@ Check that the container is up and running.
 
 ---
 
+class: title
+
 # Conclusions
 
-- Bad news: we still have work to do to deploy our apps
+---
 
-  - it's not all unicorns, ponies, and rainbows
+## Swarm cluster deployment
 
-  - *no, Docker will not make your job obsolete*
+- We saw how to use Machine with the `generic` driver to turn
+  any set of machines into a Swarm cluster
 
-- Good news: a lot of hard things are becoming easier
+- This can trivially be adapted to provision cloud instances
+  on the fly (using "normal" drivers of Docker Machine)
 
-  - building, packaging, distributing apps
+- For auto-scaling, you can use e.g.:
 
-  - running distributed systems on clusters
+  - private admin-only network
+  
+  - no TLS
+  
+  - static discovery on a /24 to /20 network (depending on your needs)
+
+---
+
+## Key/value store
+
+- We saw an easy deployment method for Consul
+
+- This is good for 3 to 9 nodes
+
+- Remember: raft write performance *degrades* as you add nodes!
+
+- For bigger clusters:
+
+  - have e.g. 5 "static" server nodes
+
+  - put them in round robin DNS record set (or behind an ELB)
+
+  - run a normal agent on the other nodes
+
+---
+
+## App deployment
+
+- We saw how to transform a Compose file into a series of build artefacts
+
+  - using S3 or another object store is trivial
+
+- We saw how to programmatically add load balancing, logging
+
+- This can be improved further by using variable interpolation for the image tags
+
+- Rolling deploys are relatively straightforward, but:
+
+  - I recommend to aim directly for blue/green (or canary) deploy
+
+  - In the production stack, abstract stateful services with ambassadors
+
+---
+
+## Operations
+
+- We saw how to setup an ELK stack and send logs to it in a record time
+
+  *Important: this doesn't mean that operating ELK suddenly became an easy thing!*
+
+- We saw how to translate a few basic tasks to containerized environments
+
+  (Backups, network traffic analysis)
+
+- Debugging is surprisingly similar to what it used to be:
+
+  - remember that containerized processes are normal processes running on the host
+
+  - `docker exec` is your friend
+
+  - also: `docker run --net host --pid host -v /:/hostfs alpine chroot /hostfs`
+
+---
+
+## Things we haven't covered
+
+- Per-container system metrics (look at cAdvisor, Snap, Prometheus...)
+
+- Application metrics (continue to use whatever you were using before)
+
+- Supervision (whatever you were using before still works exactly the same way)
+
+- Tracking access to credentials and sensitive information (see Vault, Keywhiz...)
+
+- ...
+
+---
+
+## Resilience
+
+- We saw how to store important data (crendentials) in Consul
+
+- We saw how to achieve H/A for Swarm itself
+
+- Rescheduling policies give us basic H/A for containers
+
+- This will be improved in future releases
+
+- Docker in general, and Swarm in particular, move *fast*
+
+- Current high availability features are not Chaos-Monkey proof (yet)
+
+- We (well, the Swarm team) is working to change that
 
 ---
 
@@ -4509,16 +4605,6 @@ Check that the container is up and running.
 
 - Check out the GitHub repo for updated content!
   <br/>(there is a tag for each big round of updates)
-
----
-
-## High availability
-
-- Docker in general, and Swarm in particular, move *fast*
-
-- Current high availability features are not Chaos-Monkey proof (yet)
-
-- We (well, the Swarm team) is working to change that
 
 ---
 
