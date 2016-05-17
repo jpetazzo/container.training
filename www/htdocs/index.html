@@ -1015,12 +1015,11 @@ You shouldn't see any container running on `node2` at this point.
   docker-compose up -d
   ```
 
-- Check that it's running:
-  ```bash
-  docker-compose ps
-  ```
-
 ]
+
+Note: this will build the container images on `node2`, resulting
+in potentially different results from `node1`. We will see later
+how to use the same images across the whole cluster.
 
 ---
 
@@ -1043,8 +1042,7 @@ You shouldn't see any container running on `node2` at this point.
 
 ]
 
-Note: building the stack everywhere is not optimal. We will see later
-how to build once, and deploy the same build everywhere.
+Note: again, this will rebuild the container images on each node.
 
 ---
 
@@ -1711,19 +1709,19 @@ Swarm identifies itself clearly:
 
 ```
 Client:
- Version:      1.10.2
- API version:  1.22
- Go version:   go1.5.3
- Git commit:   c3959b1
- Built:        Mon Feb 22 21:40:35 2016
+ Version:      1.11.1
+ API version:  1.23
+ Go version:   go1.5.4
+ Git commit:   5604cbe
+ Built:        Tue Apr 26 23:38:55 2016
  OS/Arch:      linux/amd64
 
 Server:
- Version:      swarm/1.1.3
+ Version:      swarm/1.2.2
  API version:  1.22
- Go version:   go1.5.3
- Git commit:   7e9c6bd
- Built:        Wed Mar  2 00:15:12 UTC 2016
+ Go version:   go1.5.4
+ Git commit:   34e3da3
+ Built:        Mon May  9 17:03:22 UTC 2016
  OS/Arch:      linux/amd64
 ```
 
@@ -1731,8 +1729,36 @@ Server:
 
 ## `docker info`
 
-FIXME
+The output of `docker info` on Swarm shows a number of differences from
+the output on a single Engine:
 
+.small[
+```
+Containers: 0
+ Running: 0
+ Paused: 0
+ Stopped: 0
+Images: 0
+Server Version: swarm/1.2.2
+Role: primary
+Strategy: spread
+Filters: health, port, containerslots, dependency, affinity, constraint
+Nodes: 0
+Plugins: 
+ Volume: 
+ Network: 
+Kernel Version: 4.2.0-36-generic
+Operating System: linux
+Architecture: amd64
+CPUs: 0
+Total Memory: 0 B
+Name: node1
+Docker Root Dir: 
+Debug mode (client): false
+Debug mode (server): false
+WARNING: No kernel memory limit support
+```
+]
 ---
 
 ## Why zero node?
@@ -1922,6 +1948,21 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
 
 ---
 
+## Removing our Redis containers
+
+- Let's use a little bit of shell scripting
+
+.exercise[
+
+- Remove all containers using the redis image:
+  ```bash
+  docker ps | awk '/redis/ {print $1}' | xargs docker rm -f
+  ```
+
+]
+
+---
+
 ## Things to know about resource allocation
 
 - `docker info` shows resource allocation for each node
@@ -1980,8 +2021,8 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
 
 - Create two networks, *blue* and *green*:
   ```bash
-  docker network create --driver overlay blue
-  docker network create --driver overlay green
+  docker network create blue
+  docker network create green
   docker network ls
   ```
 
@@ -2002,7 +2043,7 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
 
 .exercise[
 
-- Check that our containers are on different networks:
+- Check that our containers are on different nodes:
 
   ```bash
   docker ps
@@ -2079,10 +2120,8 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
 
 - Resolve the `things` alias from both networks:
   ```bash
-    docker run --rm --net blue alpine sh -c \
-      "apk add --update drill && drill things"
-    docker run --rm --net green alpine sh -c \
-      "apk add --update drill && drill things"
+    docker run --rm --net blue alpine nslookup things
+    docker run --rm --net green alpine nslookup things
   ```
 
 ]
@@ -2116,7 +2155,6 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
   (its original network):
   ```bash
   docker network disconnect blue turquoise
-  docker network connect green turquoise
   ```
 
 - Check connectivity:
@@ -2367,6 +2405,12 @@ If we wanted to use DTR, we would:
 
 ---
 
+## Registry frontends and backend
+
+![Registry frontends](registry-frontends.png)
+
+---
+
 # Deploying a local registry
 
 - There is a Compose file for that
@@ -2594,7 +2638,9 @@ Copy-paste this into `docker-compose.yml`
 
 ]
 
-We will hit the same bottleneck as before.
+Check that workers are on different nodes.
+
+However, we hit the same bottleneck as before.
 
 How can we address that?
 
@@ -2693,8 +2739,9 @@ First, we need to put the POST payload in a temporary file.
 
 .exercise[
 
-- Generate 10 bytes of random data:
+- Install curl in the container, and generate 10 bytes of random data:
   ```bash
+  apk add curl
   curl http://rng/10 >/tmp/random
   ```
 
@@ -2830,6 +2877,11 @@ WHY?!?
 - The result may or may not be satisfactory, though!
 
 .exercise[
+
+- Restart the `worker` service:
+  ```bash
+  docker-compose start worker
+  ```
 
 - Scale the `rng` service:
   ```bash
@@ -3044,13 +3096,13 @@ Load-balanced DockerCoins
 
 - See that `worker` is complaining:
   ```bash
-  docker-compose logs worker
+  docker-compose logs --tail 100 --follow worker
   ```
 ]
 
 ---
 
-## Configure the load balancer
+## Add one backend to the load balancer
 
 - Multiple solutions:
 
@@ -3073,27 +3125,7 @@ The application should now be working correctly.
 
 ---
 
-## Scale the application
-
-- Use `docker-compose scale` as planned
-
-.exercise[
-
-- Scale `rng`:
-  ```bash
-  docker-compose scale rng=10
-  ```
-
-]
-
-Of course, the graph doesn't change *yet*.
-
-We need to add the new backends to the load balancer
-configuration first.
-
----
-
-## Reconfigure the load balancer
+## Add all backends to the load balancer
 
 - The command is similar to the one before
 
@@ -3107,7 +3139,7 @@ configuration first.
       --volumes-from dockercoins_rng-lb_1 \
       --net container:dockercoins_rng-lb_1 \
       jpetazzo/hamba reconfigure 80 \
-      $(for N in $(seq 1 10); do
+      $(for N in $(seq 1 5); do
           echo dockercoins_rng_$N:80
         done)
   ```
@@ -3398,6 +3430,7 @@ What we will do:
 
 - Start the ELK stack:
   ```bash
+  unset COMPOSE_FILE
   docker-compose up -d
   ```
 
@@ -3534,6 +3567,23 @@ in the output.
 
 ---
 
+## Switching back to the DockerCoins application
+
+.exercise[
+
+- Go back to the dockercoins directory:
+  ```bash
+  cd ~/orchestration-workshop/dockercoins
+  ```
+
+- Set the `COMPOSE_FILE` variable:
+  ```bash
+  export COMPOSE_FILE=docker-compose.yml-`NNN`
+  ```
+
+]
+
+---
 ## Add the logging driver to the Compose file
 
 - We need to add the logging section to each container
@@ -3795,8 +3845,6 @@ More resources on this topic:
   - volume creation/destruction
   - network creation/destruction
   - connection/disconnection of containers
-
-(Networks will be covered a bit later!)
 
 ---
 
@@ -4566,7 +4614,7 @@ class: title
 
 - Tracking access to credentials and sensitive information (see Vault, Keywhiz...)
 
-- ...
+- ... (tell me what I should cover in future workshops!) ...
 
 ---
 
