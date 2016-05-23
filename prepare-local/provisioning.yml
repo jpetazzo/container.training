@@ -3,6 +3,7 @@
   sudo: true
   vars_files:
     - vagrant.yml
+
   tasks:
 
     - name: clean up the home folder
@@ -37,8 +38,7 @@
         repo: "{{ item }}"
         state: present
       with_items:
-        - deb http://http.debian.net/debian wheezy-backports main
-        - deb https://apt.dockerproject.org/repo {{ ansible_lsb.id|lower }}-{{ ansible_lsb.codename }} main
+        - deb https://apt.dockerproject.org/repo ubuntu-trusty main
 
     - name: installing docker
       apt:
@@ -76,28 +76,16 @@
         name: virtualenv
         state: latest
 
-    - name: creating docker-compose folder
+    - name: Install Docker Compose via PIP
+      pip: name=docker-compose
+
+    - name:
       file:
-        path: /opt/docker-compose
-        state: directory
-      register: docker_compose_folder
-
-    - name: creating virtualenv for docker-compose
-      shell: virtualenv /opt/docker-compose
-      when: docker_compose_folder is defined and docker_compose_folder.changed
-
-    - name: installing docker-compose
-      pip:
-        name: docker-compose
-        state: latest
-        virtualenv: /opt/docker-compose
-
-    - name: making the docker-compose command available to user
-      lineinfile:
-        dest: .bashrc
-        line: "alias docker-compose='/opt/docker-compose/bin/docker-compose'"
-        state: present
-        regexp: '^alias docker-compose=.*$'
+        path="/usr/local/bin/docker-compose"
+        state=file
+        mode=0755
+        owner=vagrant
+        group=docker
 
     - name: building the /etc/hosts file with all nodes
       lineinfile:
@@ -140,3 +128,5 @@
           line: "127.0.0.1 localhost {{ inventory_hostname }}"
         - regexp: '^127\.0\.1\.1'
           line: "127.0.1.1 {{ inventory_hostname }}"
+
+
