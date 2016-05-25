@@ -41,6 +41,7 @@ Virtualbox, Vagrant and Ansible
 Run the following commands:
 
     $ vagrant up
+    $ chmod 600 private-key
     $ ansible-playbook provisioning.yml
 
 And that's it! Now you should be able to ssh on `node1` using:

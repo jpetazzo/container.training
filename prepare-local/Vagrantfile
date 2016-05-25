@@ -25,7 +25,7 @@ Vagrant.configure('2') do |config|
   check_dependency 'vagrant-vbguest'
 
   config.vm.box     = settings['default_box']
-  config.vm.box_url = settings['default_box_url']
+#  config.vm.box_url = settings['default_box_url']
   config.ssh.forward_agent = true
   config.ssh.insert_key = settings['ssh_insert_key']
   config.vm.box_check_update = true
