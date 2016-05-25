@@ -2514,6 +2514,26 @@ Note: Swarm might do that automatically for us in the future.
 
 ---
 
+## Checking what's on our local registry
+
+- The registry API has endpoints to query what's there
+
+.exercise[
+
+- Ensure that our busybox image is now in the local registry:
+  ```bash
+  curl http://localhost:5000/v2/_catalog
+  ```
+
+]
+
+The curl command should output:
+```json
+{"repositories":["busybox"]}
+```
+
+---
+
 ## Adapting our Compose file to run on Swarm
 
 - We can get rid of all the `ports` section, except for the web UI
