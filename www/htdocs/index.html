@@ -75,7 +75,7 @@
         background-repeat: no-repeat;
         padding-left: 2em;
       }
-      .exercise, .notexercise {
+      .exercise {
         background-color: #eee;
         background-image: url("keyboard.png");
         background-size: 1.4em;
@@ -85,11 +85,6 @@
       }
       .exercise::before {
         content: "Exercise";
-        margin-left: 1.8em;
-      }
-      .notexercise::before {
-        content: "Actually not an exercise";
-        color: red;
         margin-left: 1.8em;
       }
       li p { line-height: 1.25em; }
@@ -130,9 +125,9 @@ at e.g. 9am, and start at 9:30.
 
 -->
 
-- The tutorial will run from 1:30pm to 5:00pm
+- The tutorial will run from 1:20pm to 4:40pm
 
-- There will be a break from 3:00pm to 3:30pm
+- There will be a break from 3:00pm to 3:15pm
 
 - This will be FAST PACED, but DON'T PANIC!
 
@@ -154,7 +149,7 @@ Remember to change:
 grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 -->
 
-## Outline (1/4)
+## Chapter 1: getting started
 
 - Pre-requirements
 - VM environment
@@ -167,7 +162,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 ---
 
-## Outline (2/4)
+## Chapter 2: Swarm setup and deployment
 
 - Dynamic orchestration
 - Deploying Swarm
@@ -181,7 +176,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 ---
 
-## Outline (3/4)
+## Chapter 3: Docker for Ops
 
 - Logs
 - Setting up ELK to store container logs
@@ -193,7 +188,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 ---
 
-## Outline (4/4)
+## Chapter 4: high availability (additional content)
 
 - Distributing Machine credentials
 - Highly available Swarm managers
@@ -584,7 +579,7 @@ and displays aggregated logs.
 
 Tip: use `^S` and `^Q` to pause/resume log output.
 
----
+???
 
 ## Upgrading from Compose 1.6
 
@@ -791,7 +786,7 @@ class: title
   - `redis` must resolve to the address of our Redis service
   - the Redis service must listen on the default port (6379)
 
----
+???
 
 ## Using custom DNS mapping
 
@@ -820,11 +815,13 @@ There is a Compose file option for that: `extra_hosts`.
 
 # Abstracting remote services with ambassadors
 
+<!--
+
 - What if we can't/won't run Redis on its default port?
 
 - What if we want to be able to move it easily?
 
---
+-->
 
 - We will use an ambassador
 
@@ -1154,10 +1151,22 @@ Note: again, this will rebuild the container images on each node.
 
 There are many ways to implement it.
 
+Others implementations include:
+
+- [interlock](https://github.com/ehazlett/interlock);
+- [registrator](http://gliderlabs.com/registrator/latest/);
+- [smartstack](http://nerds.airbnb.com/smartstack-service-discovery-cloud/);
+- [zuul](https://github.com/Netflix/zuul/wiki);
+- and more!
+
+<!--
+
 We will present three increasingly complex (but also powerful)
 ways to deploy ambassadors.
 
----
+-->
+
+???
 
 ## Single-tier ambassador deployment
 
@@ -1178,7 +1187,7 @@ ways to deploy ambassadors.
 
 - Example: this workshop
 
----
+???
 
 ## Two-tier ambassador deployment
 
@@ -1199,7 +1208,7 @@ ways to deploy ambassadors.
 
 - Example: interlock
 
----
+???
 
 ## Three-tier ambassador deployment
 
@@ -1961,7 +1970,7 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
 
 ]
 
----
+???
 
 ## Things to know about resource allocation
 
@@ -1978,6 +1987,12 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
   - containers have to be deleted to free up their resources
 
   - `docker update` can be used to change resource allocation on the fly
+
+---
+
+class: title
+
+# Setting up overlay networks
 
 ---
 
@@ -2063,7 +2078,7 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
 
 ]
 
----
+???
 
 ## Containers connected to multiple networks
 
@@ -2085,7 +2100,7 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
 
 ]
 
----
+???
 
 ## Dynamically connecting containers
 
@@ -2126,7 +2141,7 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
 
 ]
 
----
+???
 
 ## Under the hood
 
@@ -2143,7 +2158,7 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
 
 ]
 
----
+???
 
 ## Dynamically disconnecting containers
 
@@ -2174,8 +2189,14 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
 
 - Destroy containers:
 
+<!--
   ```bash
   docker rm -f sky navy grass forest turquoise
+  ```
+-->
+
+  ```bash
+  docker rm -f sky navy grass forest
   ```
 
 - Destroy networks:
@@ -2199,7 +2220,13 @@ On a cluster of 5 nodes with ~3.8 GB of RAM per node, Swarm will refuse to start
 
 ---
 
+class: title
+
 # Building images with Swarm
+
+---
+
+## Building images with Swarm
 
 - Special care must be taken when building and running images
 
@@ -2308,7 +2335,7 @@ Consider the following scenario:
 
 - Update the Compose file to use those images
 
-This is all automated with the `build-tag-push.py` script.
+This is all automated with the [`build-tag-push.py` script](https://github.com/jpetazzo/orchestration-workshop/blob/master/bin/build-tag-push.py).
 
 ---
 
@@ -3172,15 +3199,9 @@ The application should now be working correctly.
 
 - Nobody loves artisan YAML handy craft
 
-- This can be automated very easily
+- This can be scripted very easily
 
-- To make things easier, we can use a label:
-
-  *each container behind a load balancer will
-  have a `loadbalancer` label giving the name
-  of that loadbalancer*
-
-- See script `reconfigure-load-balancers.py` for an example
+- But can it be fully automated?
 
 ---
 
@@ -3212,8 +3233,7 @@ The application should now be working correctly.
 - When used together with `--volumes-from` and `jpetazzo/hamba`, it
   updates the configuration of an existing load balancer
 
-- Comes with a companion script, `add-load-balancer-v2.py`, to update
-  your Compose files
+- Comes with a companion script, [`add-load-balancer-v2.py`](https://github.com/jpetazzo/orchestration-workshop/blob/master/bin/add-load-balancer-v2.py), to update your Compose files
 
 ---
 
@@ -3621,7 +3641,7 @@ in the output.
 
 ]
 
-There is also a script, `../bin/add-logging.py`, to do that automatically.
+There is also a script, [`../bin/add-logging.py`](https://github.com/jpetazzo/orchestration-workshop/blob/master/bin/add-logging.py), to do that automatically.
 
 ---
 
