@@ -24,10 +24,9 @@ Required environment variables:
 
 If you have more than one workshop:
 
-    $ cp settings/settings.yaml settings/YOUR_WORKSHOP_NAME-settings.yaml
-    $ ln -s settings/YOUR_WORKSHOP_NAME-settings.yaml settings.yaml
+    $ cp settings/default.yaml settings/YOUR_WORKSHOP_NAME-settings.yaml
 
-Update the symlinked `settings.yaml` as needed. This is the file that will be used to generate cards.
+Then pass `settings/YOUR_WORKSHOP_NAME-settings.yaml` as an argument to `deploy`, `cards`, etc.
 
 ## Usage
 
@@ -41,10 +40,10 @@ Summary of steps to launch a batch of instances for a workshop:
 * `./trainer start N` (where `N` is the number of AWS instances to create)
 * `./trainer list` to view the list of tags
 * `./trainer list TAG` to view the instances with a given `TAG`
-* `./trainer deploy TAG` to run `scripts/postprep.rc` via parallel-ssh
+* `./trainer deploy TAG settings/somefile.yaml` to run `scripts/postprep.rc` via parallel-ssh
 * `./trainer pull-images TAG` to pre-pull a bunch of Docker images to the instances
 * `./trainer test TAG`
-* `./trainer cards TAG` to generate a PDF and an HTML file you can print and cut to hand out cards with connection information to attendees
+* `./trainer cards TAG settings/somefile.yaml` to generate a PDF and an HTML file you can print and cut to hand out cards with connection information to attendees
 
 `./trainer` will run locally if all its dependencies are fulfilled; otherwise it will run in a Docker container.
 
@@ -92,7 +91,7 @@ If you create new VMs, the symlinked file will be overwritten.
 
 Instances can be deployed manually using the `deploy` command:
 
-    $ ./trainer deploy TAG
+    $ ./trainer deploy TAG settings/somefile.yaml
 
 The `postprep.rc` file will be copied via parallel-ssh to all of the VMs and executed.
 
@@ -102,7 +101,7 @@ The `postprep.rc` file will be copied via parallel-ssh to all of the VMs and exe
 
 ### Generate cards
 
-    $ ./trainer cards TAG
+    $ ./trainer cards TAG settings/somefile.yaml
 
 ### List tags
 

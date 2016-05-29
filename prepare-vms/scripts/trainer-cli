@@ -54,7 +54,7 @@ deploy_tag(){
     echo "Finished deploying $TAG."
     echo "You may want to run one of the following commands:"
     echo "./trainer pull-images $TAG"
-    echo "./trainer cards $TAG settings.yaml"
+    echo "./trainer cards $TAG <settings/somefile.yaml>"
 }
 
 link_tag() {
@@ -89,7 +89,7 @@ pull_tag(){
     echo "Finished pulling images for $TAG"
 
     echo "You may now want to run:"
-    echo "./trainer cards $TAG settings.yaml"
+    echo "./trainer cards $TAG <settings/somefile.yaml>"
 }
 
 wait_until_tag_is_running() {
@@ -128,7 +128,7 @@ test_tag(){
     ip=$(shuf -n 1 $ips_file)
     test_vm $ip
     echo "Tests complete. You may want to run one of the following commands:"
-    echo "./trainer cards $TAG settings.yaml"
+    echo "./trainer cards $TAG <settings/somefile.yaml>"
 }
 
 test_vm() {
@@ -332,7 +332,7 @@ run_cli() {
         tag_is_reachable $TAG
         echo "You may be interested in running one of the following commands:"
         echo "./trainer ips $TAG"
-        echo "./trainer deploy $TAG settings.yaml"
+        echo "./trainer deploy $TAG <settings/somefile.yaml>"
         ;;
     opensg)
         aws ec2 authorize-security-group-ingress \
@@ -425,7 +425,7 @@ run_cli() {
         echo "$IPS" > tags/$TAG/ips.txt
         link_tag $TAG
         echo "To deploy or kill these instances, run one of the following:"
-        echo "./trainer deploy $TAG settings.yaml"
+        echo "./trainer deploy $TAG <settings/somefile.yaml>"
         echo "./trainer list $TAG"
         ;;
     status)
@@ -464,7 +464,7 @@ run_cli() {
         ;;
     *)
         echo "
-./trainer COMMAND [n-instances|tag|settings_file]
+./trainer <command> [n-instances|tag] [settings/file.yaml]
 
 Core commands:
   start        n              Start n instances

@@ -26,7 +26,5 @@ RUN pip install \
 
 WORKDIR $HOME
 RUN echo "alias ll='ls -lahF'" >> /root/.bashrc
-RUN echo "export PATH=$PATH:/root/bin" >> /root/.bashrc
-RUN mkdir -p /root/bin
-RUN ln -s /root/prepare-vms/scripts/trainer-cli /root/bin/trainer-cli
+ENTRYPOINT ["/root/prepare-vms/scripts/trainer-cli"]
 
