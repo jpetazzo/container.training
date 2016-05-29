@@ -7,7 +7,6 @@ prepare-vms:
         - /etc/localtime:/etc/localtime:ro
         - /tmp/.X11-unix:/tmp/.X11-unix
         - $SSH_AUTH_DIRNAME:$SSH_AUTH_DIRNAME
-        #- $SCRIPT_DIR/:/root/prepare-vms/
         - $PWD/:/root/prepare-vms/
     environment:
         SCRIPT_DIR: /root/prepare-vms
@@ -22,4 +21,3 @@ prepare-vms:
         AWS_VPC_ID: ${AWS_VPC_ID}
         USER: ${USER}
     entrypoint: /root/prepare-vms/scripts/trainer-cli
-    #entrypoint: bash
