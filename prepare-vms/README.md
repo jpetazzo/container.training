@@ -1,27 +1,18 @@
 # Trainer tools to prepare VMs for Docker workshops
 
-There are several options for using these tools:
+## 1. Prerequisites
 
-### Clone the repo
+* [Docker](https://docs.docker.com/engine/installation/)
+* [Docker Compose](https://docs.docker.com/compose/install/)
 
-    $ git clone https://github.com/soulshake/prepare-vms.git
-    $ cd prepare-vms
+## 2. Clone the repo
+
+    $ git clone https://github.com/jpetazzo/orchestration-workshop.git
+    $ cd orchestration-workshop/prepare-vms
     $ docker-compose build
-    $ mkdir $HOME/bin && ln -s `pwd`/trainer $HOME/bin/trainer
+    $ ./trainer <commands>  # See "Summary of commands" section below
 
-### Via the image
-
-    $ docker pull soulshake/prepare-vms
-
-### Submodule
-
-This repo can be added as a submodule in the repo of the Docker workshop:
-
-    $ git submodule add https://github.com/soulshake/prepare-vms.git
-
-## Setup
-
-### Export needed envvars
+## 3. Preparing the environment
 
 Required environment variables:
 
@@ -29,45 +20,52 @@ Required environment variables:
 * `AWS_SECRET_ACCESS_KEY`
 * `AWS_DEFAULT_REGION`
 
-
-
-### Update settings.yaml
+### 4. Update settings.yaml
 
 If you have more than one workshop:
 
-    $ cp settings.yaml settings/YOUR_WORKSHOP_NAME-settings.yaml
-    $ ln -s settings/YOUR_WORKSHOP_NAME-settings.yaml `pwd`/settings.yaml
+    $ cp settings/default.yaml settings/YOUR_WORKSHOP_NAME-settings.yaml
 
-Update the `settings.yaml` as needed. This is the file that will be used to generate cards.
+Then pass `settings/YOUR_WORKSHOP_NAME-settings.yaml` as an argument to `deploy`, `cards`, etc.
 
 ## Usage
 
-### Summary
-
-Summary of steps to launch a batch of instances for a workshop:
-
-* Export the environment variables needed by the AWS CLI (see **Requirements** below)
-* `trainer start NUMBER_OF_VMS` to create AWS instances
-* `trainer deploy TAG` to run `scripts/postprep.rc` via parallel-ssh
-* `trainer pull-images TAG` to pre-pull a bunch of Docker images 
-* `trainer test TAG`
-* `trainer cards TAG` to generate a PDF and an HTML file you can print
+### Summary of commands
 
 The `trainer` script can be executed directly.
 
+Summary of steps to launch a batch of instances for a workshop:
+
+* Export the environment variables needed by the AWS CLI (see **2. Preparing the environment** above)
+* `./trainer start N` (where `N` is the number of AWS instances to create)
+* `./trainer list` to view the list of tags
+* `./trainer list TAG` to view the instances with a given `TAG`
+* `./trainer deploy TAG settings/somefile.yaml` to run `scripts/postprep.rc` via parallel-ssh
+* `./trainer pull-images TAG` to pre-pull a bunch of Docker images to the instances
+* `./trainer test TAG`
+* `./trainer cards TAG settings/somefile.yaml` to generate a PDF and an HTML file you can print and cut to hand out cards with connection information to attendees
+
+`./trainer` will run locally if all its dependencies are fulfilled; otherwise it will run in a Docker container.
+
 It will check for the necessary environment variables. Then, if all its dependencies are installed
 locally, it will execute `trainer-cli`. If not, it will look for a local Docker image
-tagged `soulshake/trainer-tools`. If found, it will run in a container. If not found,
-the user will be prompted to either install the missing dependencies or download
-the Docker image.
+tagged `preparevms_prepare-vms` (created automatically when you run `docker-compose build`).
+If found, it will run in a container. If not found, the user will be prompted to
+either install the missing dependencies or run `docker-compose build`.
 
 ## Detailed usage
 
 ### Start some VMs
 
-    $ trainer start 10
+    $ ./trainer start 10
 
 A few things will happen:
+
+* Your local SSH key will be synced
+* AWS instances will be created and tagged
+* A directory will be created
+
+Details below.
 
 #### Sync of SSH keys
 
@@ -93,31 +91,31 @@ If you create new VMs, the symlinked file will be overwritten.
 
 Instances can be deployed manually using the `deploy` command:
 
-    $ trainer deploy TAG
+    $ ./trainer deploy TAG settings/somefile.yaml
 
 The `postprep.rc` file will be copied via parallel-ssh to all of the VMs and executed.
 
 ### Pre-pull images
 
-    $ trainer pull-images TAG
+    $ ./trainer pull-images TAG
 
 ### Generate cards
 
-    $ trainer cards TAG
+    $ ./trainer cards TAG settings/somefile.yaml
 
 ### List tags
 
-    $ trainer list
+    $ ./trainer list
 
 ### List VMs
 
-    $ trainer list TAG
+    $ ./trainer list TAG
 
 This will print a human-friendly list containing some information about each instance.
 
 ### Stop and destroy VMs
 
-    $ trainer stop TAG
+    $ ./trainer stop TAG
 
 ## ToDo
 

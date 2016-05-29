@@ -7,7 +7,7 @@ export AWS_DEFAULT_OUTPUT=text
 
 greet() {
     hello=$(aws iam get-user --query 'User.UserName')
-    echo "Greetings, $hello!"
+    echo "Greetings, $hello/${USER}!"
 }
 
 deploy_hq(){
@@ -53,8 +53,8 @@ deploy_tag(){
     source scripts/postprep.rc
     echo "Finished deploying $TAG."
     echo "You may want to run one of the following commands:"
-    echo "trainer pull-images $TAG"
-    echo "trainer cards $TAG"
+    echo "./trainer pull-images $TAG"
+    echo "./trainer cards $TAG <settings/somefile.yaml>"
 }
 
 link_tag() {
@@ -69,7 +69,6 @@ pull_tag(){
     TAG=$1
     need_tag $TAG
     link_tag $TAG
-    cards_file=ips.html
     if [ ! -s $IPS_FILE ]; then
         echo "Nonexistent or empty IPs file $IPS_FILE"
     fi
@@ -90,7 +89,7 @@ pull_tag(){
     echo "Finished pulling images for $TAG"
 
     echo "You may now want to run:"
-    echo "trainer cards $TAG"
+    echo "./trainer cards $TAG <settings/somefile.yaml>"
 }
 
 wait_until_tag_is_running() {
@@ -129,7 +128,7 @@ test_tag(){
     ip=$(shuf -n 1 $ips_file)
     test_vm $ip
     echo "Tests complete. You may want to run one of the following commands:"
-    echo "trainer cards $TAG"
+    echo "./trainer cards $TAG <settings/somefile.yaml>"
 }
 
 test_vm() {
@@ -149,7 +148,6 @@ test_vm() {
         "docker-machine version" \
         "docker images" \
         "docker ps" \
-        "which fig" \
         "curl --silent localhost:55555" \
         "sudo ls -la /mnt/ | grep docker" \
         "env" \
@@ -276,7 +274,7 @@ run_cli() {
         scripts/find-ubuntu-ami.sh -r $AWS_DEFAULT_REGION $*
         echo
         echo "Protip:"
-        echo "trainer ami -a amd64 -v 16.04 -t hvm:ebs -N | grep -v ^REGION | cut -d\" \" -f15"
+        echo "./trainer ami -a amd64 -v 16.04 -t hvm:ebs -N | grep -v ^REGION | cut -d\" \" -f15"
         echo
         echo "Suggestions:"
         suggest_amis
@@ -333,8 +331,8 @@ run_cli() {
         describe_tag $TAG
         tag_is_reachable $TAG
         echo "You may be interested in running one of the following commands:"
-        echo "trainer ips $TAG"
-        echo "trainer deploy $TAG <settings/somefile.yaml>"
+        echo "./trainer ips $TAG"
+        echo "./trainer deploy $TAG <settings/somefile.yaml>"
         ;;
     opensg)
         aws ec2 authorize-security-group-ingress \
@@ -427,8 +425,8 @@ run_cli() {
         echo "$IPS" > tags/$TAG/ips.txt
         link_tag $TAG
         echo "To deploy or kill these instances, run one of the following:"
-        echo "trainer deploy $TAG <settings/somefile.yml>"
-        echo "trainer list $TAG"
+        echo "./trainer deploy $TAG <settings/somefile.yaml>"
+        echo "./trainer list $TAG"
         ;;
     status)
         greet && echo
@@ -466,7 +464,7 @@ run_cli() {
         ;;
     *)
         echo "
-trainer COMMAND [n-instances|tag]
+./trainer <command> [n-instances|tag] [settings/file.yaml]
 
 Core commands:
   start        n              Start n instances
@@ -485,7 +483,7 @@ Extras:
 
 Beta:
   ami                         Look up Amazon Machine Images
-  cards                       Generate cards
+  cards        FILE           Generate cards
   opensg                      Modify AWS security groups
 "
         ;;
