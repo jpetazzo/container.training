@@ -22,10 +22,6 @@ Required environment variables:
 
 ### 4. Update settings.yaml
 
-If you have more than one workshop:
-
-    $ cp settings/default.yaml settings/YOUR_WORKSHOP_NAME-settings.yaml
-
 Then pass `settings/YOUR_WORKSHOP_NAME-settings.yaml` as an argument to `deploy`, `cards`, etc.
 
 ## Usage

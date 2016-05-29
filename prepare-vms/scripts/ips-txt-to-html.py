@@ -13,7 +13,7 @@ def prettify(l):
     return ret
 
 
-# Read settings from settings.yaml
+# Read settings from user-provided settings file
 with open(sys.argv[1]) as f:
     data = f.read()
 
