@@ -4315,8 +4315,8 @@ At this point, `ls -l ~/consul` should show `docker` and
 - You can issue API requests to any manager:
   <br/>if you talk to a secondary, it forwards to the primary
 
-.warning[There is currently a bug when
-the Consul cluster itself has a leader election;
+.warning[Until recently there was a bug when
+the Consul cluster itself had a leader election;
 <br/>see [docker/swarm#1782](https://github.com/docker/swarm/issues/1782).]
 
 ---
