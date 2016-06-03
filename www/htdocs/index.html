@@ -204,7 +204,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
   - on Linux, OS X, FreeBSD... you are probably all set
 
   - on Windows, get [putty](http://www.putty.org/),
-  [Git BASH](https://msysgit.github.io/), or
+  [Git BASH](https://git-for-windows.github.io/), or
   [MobaXterm](http://mobaxterm.mobatek.net/)
 
 - Basic Docker knowledge
@@ -1344,7 +1344,7 @@ class: pic
 
   - static, through command-line or file
     <br/>(great for testing, or for private subnets, see [this article](
-    https://medium.com/on-docker/docker-swarm-flat-file-engine-discovery-2b23516c71d4#.6vp94h5wn)
+    https://medium.com/on-docker/docker-swarm-flat-file-engine-discovery-2b23516c71d4#.6vp94h5wn))
 
   - external, token-based
     <br/>(dynamic; nothing to operate; relies on external service operated by Docker Inc.)
@@ -1770,7 +1770,7 @@ WARNING: No kernel memory limit support
 ]
 ---
 
-## Why zero node?
+## Why zero nodes?
 
 - We haven't started Consul yet
 
@@ -3019,7 +3019,7 @@ WHY?!?
 
 - So the name `rng` should resolve to the load balancer
 
-- What do‽
+- What should we do‽
 
 ---
 
@@ -3197,7 +3197,7 @@ The application should now be working correctly.
 
 ## Automating the process
 
-- Nobody loves artisan YAML handy craft
+- Nobody loves artisan YAML handicraft
 
 - This can be scripted very easily
 
@@ -4315,8 +4315,8 @@ At this point, `ls -l ~/consul` should show `docker` and
 - You can issue API requests to any manager:
   <br/>if you talk to a secondary, it forwards to the primary
 
-.warning[There is currently a bug when
-the Consul cluster itself has a leader election;
+.warning[Until recently there was a bug when
+the Consul cluster itself had a leader election;
 <br/>see [docker/swarm#1782](https://github.com/docker/swarm/issues/1782).]
 
 ---
@@ -4608,7 +4608,7 @@ class: title
 
 ## App deployment
 
-- We saw how to transform a Compose file into a series of build artefacts
+- We saw how to transform a Compose file into a series of build artifacts
 
   - using S3 or another object store is trivial
 
