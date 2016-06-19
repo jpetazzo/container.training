@@ -352,10 +352,8 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 1.12-rc-something
-- Compose 1.7
-- Swarm 1.2
-- Machine 0.6
+- Engine 1.12-rc2
+- Compose 1.8-rc1
 
 .exercise[
 
@@ -363,8 +361,6 @@ You are welcome to use the method that you feel the most comfortable with.
   ```bash
   docker version
   docker-compose -v
-  docker run --rm swarm -version
-  docker-machine -v
   ```
 
 ]
@@ -476,6 +472,7 @@ class: pic
 - Clone the repository on `node1`:
   ```bash
   git clone git://github.com/jpetazzo/orchestration-workshop
+  git checkout dockercon
   ```
 
 ]
@@ -760,6 +757,21 @@ We will use `httping`.
 
 Note: this is a fiction! We have enough entropy. But we need a pretext to scale out.
 <br/>(In fact, the code of `rng` uses `/dev/urandom`, which doesn't need entropy.)
+
+---
+
+## Clean up
+
+- Before moving on, let's remove those containers
+
+.exercise[
+
+- Tell Compose to remove everything:
+  ```bash
+  docker-compose down
+  ```
+
+]
 
 ---
 
@@ -1155,7 +1167,7 @@ As we could see, nodes can join automatically or be approved manually; in both c
 
 - Promote a couple of nodes to be managers:
   ```
-  docker promote XXX YYY
+  docker node promote XXX YYY
   ```
 
 ]
@@ -1243,6 +1255,8 @@ You can only control the Swarm through a manager node.
   ```
 
 ]
+
+Go back to `node1` afterwards.
 
 ---
 
@@ -2328,7 +2342,7 @@ If only we could do a rolling upgrade!
 - Set an alias so that swarmctl can run as root and use the right control socket:
   ```bash
     alias \
-      swarmctl='sudo swarmctl --socket /var/run/docker/cluster/docker-swarmd.sock'
+      swarmctl='sudo swarmctl --socket /var/lib/docker/swarm/control.sock'
   ```
 
 ]
@@ -2485,7 +2499,8 @@ What we will do:
 - Create the Logstash service:
   ```bash
   docker service create --network logging --name logstash \
-         -e LOGSPOUT=ignore logstash -e "$(cat logstash.conf)"
+         -e LOGSPOUT=ignore logstash \
+         -e "$(cat ~/orchestration-workshop/elk/logstash.conf)"
   ```
 
 ]
@@ -2518,7 +2533,7 @@ What we will do:
 
 - Get the ID of the Logstash container:
   ```bash
-  CID=$(docker ps -q --filter label=com.docker.swarm.service=logstash)
+  CID=$(docker ps -q --filter label=com.docker.swarm.service.name=logstash)
   ```
 
 - View the logs:
@@ -2594,34 +2609,6 @@ You should see the heartbeat messages:
 
 ---
 
-## Visualizing container logs in Kibana
-
-<!--
-- Less than 5 seconds later (the refresh rate of the UI),
-  the log line should be visible in the web UI
--->
-
-- We can customize the web UI to be more readable
-
-.exercise[
-
-- In the left column, move the mouse over the following
-  columns, and click the "Add" button that appears:
-
-<!--
-  - host
-  - container_name
-  - message
--->
-
-  - logsource
-  - program
-  - message
-
-]
-
----
-
 ## Setting up Logspout
 
 - Logspout connects to the Docker control socket
@@ -2651,7 +2638,27 @@ You should see the heartbeat messages:
 
 - Container logs should be showing up!
 
+- We can customize the web UI to be more readable
+
+.exercise[
+
+- In the left column, move the mouse over the following
+  columns, and click the "Add" button that appears:
+
+<!--
+  - host
+  - container_name
+  - message
+-->
+
+  - logsource
+  - program
+  - message
+
+]
+
 ---
+
 
 ## Controlling Docker from a container
 
