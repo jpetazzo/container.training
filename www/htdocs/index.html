@@ -105,7 +105,7 @@ Docker <br/> Orchestration <br/> Workshop
 - Hello! We're `jerome at docker dot com` and `aj at soulshake dot net`
 -->
 
-- Hi Captains my Captains! I'm `jerome at docker dot com`
+- Hello! I'm `jerome at docker dot com`
 
 <!--
 Reminder, when updating the agenda: when people are told to show
@@ -158,44 +158,30 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 - Our sample application
 - Running the application
 - Identifying bottlenecks
-- Scaling out
-- Connecting to containers on other hosts
-- Abstracting remote services with ambassadors
 
 ---
 
-## Chapter 2: Setting up our cluster
+## Chapter 2: Scaling out
 
-- Dynamic orchestration
-- Deploying Swarm
-- Picking a key/value store
-- Running containers on Swarm
-- Resource allocation
-- Multi-host networking
-- Building images with Swarm
+- SwarmKit
+- Creating our first Swarm
+- Running our first Swarm service
+
+---
+
+## Chapter 3: our app on Swarm
+
 - Deploying a local registry
-- Scaling web services with Compose on Swarm
+- Overlay networks
 
 ---
 
-## Chapter 3: Docker for Ops
+## Chapter 4: operating the Swarm
 
-- Logs
+- Breaking into an overlay network
+- Rolling updates
+- Centralized logging
 - Setting up ELK to store container logs
-- Network traffic analysis
-- Backups
-- Controlling Docker from a container
-- Docker events stream
-- Security upgrades
-
----
-
-## Chapter 4: high availability (additional content)
-
-- Distributing Machine credentials
-- Highly available Swarm managers
-- Highly available containers
-- Conclusions
 
 ---
 
@@ -777,7 +763,7 @@ Note: this is a fiction! We have enough entropy. But we need a pretext to scale 
 
 class: title
 
-# Scaling out
+#  Scaling out
 
 ---
 
@@ -2689,7 +2675,7 @@ More resources on this topic:
 
 ---
 
-# Last words
+#  Last words
 
 - You can leave Swarm mode with `docker swarm leave`
 
