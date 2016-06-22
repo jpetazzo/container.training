@@ -1,43 +1,38 @@
-rng1:
+version: "2"
+
+services:
+  rng1:
+    build: rng
+  rng2:
+    build: rng
+  rng3:
     build: rng
 
-rng2:
-    build: rng
-
-rng3:
-    build: rng
-
-rng0:
+  rng:
     image: jpetazzo/hamba
-    links:
-      - rng1
-      - rng2
-      - rng3
-    command: 80 rng1 80 rng2 80 rng3 80
+    command: 80 rng1:80 rng2:80 rng3:80
+    depends_on:
+    - rng1
+    - rng2
+    - rng3
     ports:
-      - "8001:80"
+    - "8001:80"
 
-hasher:
+  hasher:
     build: hasher
     ports:
-      - "8002:80"
+    - "8002:80"
 
-webui:
+  webui:
     build: webui
-    links:
-      - redis
     ports:
-      - "8000:80"
+    - "8000:80"
     volumes:
-      - "./webui/files/:/files/"
+    - "./webui/files/:/files/"
 
-redis:
+  redis:
     image: redis
 
-worker:
+  worker:
     build: worker
-    links:
-      - rng0:rng
-      - hasher:hasher
-      - redis
 

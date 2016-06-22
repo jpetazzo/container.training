@@ -1,0 +1,12 @@
+version: "2"
+services:
+  bootstrap:
+    image: jpetazzo/consul
+    command: agent -server -bootstrap
+    container_name: bootstrap
+  server:
+    image: jpetazzo/consul
+    command: agent -server -join bootstrap -join server
+  client:
+    image: jpetazzo/consul
+    command: members -rpc-addr server:8400

@@ -1,0 +1,35 @@
+# This file is passed by trainer-cli to scripts/ips-txt-to-html.py
+
+workshop_name: Docker fundamentals
+workshop_short_name: Docker     # appears on VM connection cards
+repo: https://github.com/docker/docker-fundamentals
+
+instance_login: docker
+instance_password: training
+
+clustersize: 1  # Number of VMs per cluster
+pagesize: 15    # Number of cards to print per page
+
+#background_image: https://myapps.developer.ubuntu.com/site_media/appmedia/2014/12/swarm.png
+background_image: http://www.yellosoft.us/public/images/docker.png
+#background_image: ../media/swarm.png
+
+# To be printed on the cards:
+blurb: >
+    Here is the connection information to your very own 
+       {cluster_or_machine} for this {workshop_name} workshop. You can connect 
+       to {this_or_each} VM with any SSH client.
+
+       Your {machine_is_or_machines_are}:
+
+# {url} will be replaced by the script
+footer: >
+    <p>For slides, chat and other useful links, see: </p>
+    <center>{url}</center>
+
+url: http://container.training/
+
+engine_version: get.docker.com
+compose_version: 1.7.1
+machine_version: 0.6.0
+swarm_version: 1.2.2

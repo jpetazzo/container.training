@@ -1,0 +1,42 @@
+---
+vagrant:
+  default_box: ubuntu/trusty64
+  default_box_check_update: true
+  ssh_insert_key: false
+  min_memory: 256
+  min_cores: 1
+
+instances:
+
+  - hostname: node1
+    private_ip: 10.10.10.10
+    memory: 1512
+    cores: 1
+    mounts:
+      - host_path: ../
+        guest_path: /home/vagrant/orchestration-workshop
+        owner: vagrant
+        group: vagrant
+
+  - hostname: node2
+    private_ip: 10.10.10.20
+    memory: 512
+    cores: 1
+
+  - hostname: node3
+    private_ip: 10.10.10.30
+    memory: 512
+    cores: 1
+
+  - hostname: node4
+    private_ip: 10.10.10.40
+    memory: 512
+    cores: 1
+
+  - hostname: node5
+    private_ip: 10.10.10.50
+    memory: 512
+    cores: 1
+
+
+

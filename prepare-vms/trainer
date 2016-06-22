@@ -1,0 +1,80 @@
+#!/bin/bash
+
+TRAINER_IMAGE="preparevms_prepare-vms"
+
+DEPENDENCIES="
+    aws
+    ssh
+    curl
+    jq
+    pssh
+    wkhtmltopdf
+    man
+    "
+
+ENVVARS="
+    AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION
+    SSH_AUTH_SOCK
+    "
+
+check_envvars() {
+    STATUS=0
+    for envvar in $ENVVARS; do
+        if [ -z "${!envvar}" ]; then
+            echo "Please set environment variable $envvar."
+            STATUS=1
+            unset $envvar
+        fi
+    done
+    return $STATUS
+}
+
+check_dependencies() {
+    STATUS=0
+    for dependency in $DEPENDENCIES ; do
+         if ! command -v $dependency >/dev/null; then
+             echo "Could not find dependency $dependency."
+             STATUS=1
+         fi
+    done
+    return $STATUS
+}
+
+check_ssh_auth_sock() {
+    if [ -z $SSH_AUTH_SOCK ]; then
+        echo -n "SSH_AUTH_SOCK envvar not set, so its parent directory can't be "
+        echo "mounted as a volume in a container."
+        echo "Try running the command below and trying again:"
+        echo "eval \$(ssh-agent) && ssh-add"
+        exit 1
+    fi
+}
+
+check_image() {
+    docker inspect $TRAINER_IMAGE >/dev/null 2>&1
+}
+
+# Get the script's real directory, whether we're being called directly or via a symlink
+if [ -L "$0" ]; then
+    export SCRIPT_DIR=$(dirname $(readlink "$0"))
+else
+    export SCRIPT_DIR=$(dirname "$0")
+fi
+cd "$SCRIPT_DIR"
+
+check_envvars || exit 1
+
+if check_dependencies; then
+    scripts/trainer-cli "$@"
+elif check_image; then
+    check_ssh_auth_sock
+    export SSH_AUTH_DIRNAME=$(dirname $SSH_AUTH_SOCK)
+    docker-compose run prepare-vms "$@"
+else
+    echo "Some dependencies are missing, and docker image $TRAINER_IMAGE doesn't exist locally."
+    echo "Please do one of the following: "
+    echo "- run \`docker-compose build\`"
+    echo "- install missing dependencies"
+fi

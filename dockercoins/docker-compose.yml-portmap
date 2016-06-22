@@ -1,0 +1,26 @@
+version: "2"
+
+services:
+  rng:
+    build: rng
+    ports:
+    - "80"
+
+  hasher:
+    build: hasher
+    ports:
+    - "8002:80"
+
+  webui:
+    build: webui
+    ports:
+    - "8000:80"
+    volumes:
+    - "./webui/files/:/files/"
+
+  redis:
+    image: redis
+
+  worker:
+    build: worker
+

@@ -1,0 +1,12 @@
+version: "2"
+
+services:
+  backend:
+    image: registry:2
+  frontend:
+    image: jpetazzo/hamba
+    command: 5000 backend:5000
+    ports:
+      - "127.0.0.1:5000:5000"
+    depends_on:
+      - backend
