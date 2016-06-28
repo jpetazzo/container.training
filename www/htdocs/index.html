@@ -2300,14 +2300,12 @@ If only we could do a rolling upgrade!
 - Download, compile, install SwarmKit with this one-liner:
   ```bash
   docker run -v /usr/local/bin:/go/bin golang \
-         go get github.com/docker/swarmkit/...
+         go get `-v` github.com/docker/swarmkit/...
   ```
 
 ]
 
---
-
-(CONTAINERS!)
+(Remove `-v` if you don't like verbose things!)
 
 ---
 
