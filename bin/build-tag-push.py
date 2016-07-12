@@ -16,9 +16,11 @@ if not registry:
 # Get the name of the current directory.
 project_name = os.path.basename(os.path.realpath("."))
 
-# Generate a Docker image tag, using the UNIX timestamp.
-# (i.e. number of seconds since January 1st, 1970)
-version = str(int(time.time()))
+# Version used to tag the generated Docker image, using the UNIX timestamp or the given version.
+if "VERSION" not in os.environ:
+    version = str(int(time.time()))
+else:
+    version = os.environ["VERSION"]
 
 # Execute "docker-compose build" and abort if it fails.
 subprocess.check_call(["docker-compose", "-f", "docker-compose.yml", "build"])
@@ -33,7 +35,7 @@ push_operations = dict()
 for service_name, service in compose_file.services.items():
     if "build" in service:
         compose_image = "{}_{}".format(project_name, service_name)
-        registry_image = "{}/{}_{}:{}".format(registry, project_name, service_name, version)
+        registry_image = "{}/{}:{}".format(registry, compose_image, version)
         # Re-tag the image so that it can be uploaded to the registry.
         subprocess.check_call(["docker", "tag", compose_image, registry_image])
         # Spawn "docker push" to upload the image.
