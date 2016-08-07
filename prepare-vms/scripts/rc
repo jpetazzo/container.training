@@ -11,8 +11,9 @@ pssh () {
     }
 
     echo "[parallel-ssh] $@"
+    export PSSH=$(which pssh || which parallel-ssh)
 
-    parallel-ssh -h $HOSTFILE -l ubuntu \
+    $PSSH -h $HOSTFILE -l ubuntu \
     --par 100 \
     -O LogLevel=ERROR \
     -O UserKnownHostsFile=/dev/null \
