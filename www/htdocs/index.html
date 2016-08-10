@@ -332,8 +332,8 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 1.12-rc2
-- Compose 1.8-rc1
+- Engine 1.12
+- Compose 1.8
 
 .exercise[
 
@@ -452,7 +452,6 @@ class: pic
 - Clone the repository on `node1`:
   ```bash
   git clone git://github.com/jpetazzo/orchestration-workshop
-  git checkout dockercon
   ```
 
 ]
@@ -868,7 +867,7 @@ You can refer to the [NOMENCLATURE](https://github.com/docker/swarmkit/blob/mast
 - Try a Swarm-specific command:
   ```
   $ docker node ls
-  Error response from daemon: this node is not participating as a Swarm manager
+  Error response from daemon: This node is not a swarm manager. [...]
   ```
 
 ]
@@ -883,7 +882,7 @@ You can refer to the [NOMENCLATURE](https://github.com/docker/swarmkit/blob/mast
 
 - .warning[DO NOT execute `docker swarm init` on multiple nodes!]
 
-  You would have multiple disjoint cluster.
+  You would have multiple disjoint clusters.
 
 .exercise[
 
@@ -893,6 +892,29 @@ You can refer to the [NOMENCLATURE](https://github.com/docker/swarmkit/blob/mast
   ```
 
 ]
+
+---
+
+## Token generation
+
+- In the output of `docker swarm init`, we have a message
+  confirming that our node is now the (single) manager:
+
+  ```
+  Swarm initialized: current node (8jud...) is now a manager.
+  ```
+
+- Docker also generated two security tokens (like passphrases or
+  passwords) for our cluster, and shows us the commands to use
+  on other nodes to add them to the cluster using those security
+  tokens:
+
+  ```
+    To add a worker to this swarm, run the following command:
+      docker swarm join \
+      --token SWMTKN-1-59fl4ak4nqjmao1ofttrc4eprhrola2l87... \
+      172.31.4.182:2377
+  ```
 
 ---
 
@@ -911,11 +933,10 @@ The output should include:
 
 ```
 Swarm: active
- NodeID: d1kf12wtm4gabh9fjzbukbu50
- IsManager: Yes
- Managers: 1
- Nodes: 1
- CACertHash: sha256:330cf7e8e50a0af5d0990c1e078c709...
+ NodeID: 8jud7o8dax3zxbags3f8yox4b
+ Is Manager: true
+ ClusterID: 2vcw2oa9rjps3a24m91xhvv0c
+ ...
 ```
 
 ---
@@ -935,8 +956,8 @@ Swarm: active
 
 The output should look like the following:
 ```
-ID             NAME             MEMBERSHIP  STATUS  AVAILABILITY  MANAGER STATUS
-d1kf...12wt *  ip-172-31-25-65  Accepted    Ready   Active        Leader
+ID             HOSTNAME         STATUS  AVAILABILITY  MANAGER STATUS
+8jud...ox4b *  ip-172-31-4-182  Ready   Active        Leader
 ```
 
 ---
@@ -947,19 +968,84 @@ d1kf...12wt *  ip-172-31-25-65  Accepted    Ready   Active        Leader
 
 - Let's add `node2`!
 
+- We need the token that was shown earlier
+
+--
+
+- You wrote it down, right?
+
+--
+
+- Don't panic, we can easily see it again 😏
+
+---
+
+## Adding nodes to the Swarm
+
 .exercise[
 
-- Log into `node2` and join the cluster:
+- Show the token again:
   ```bash
-  ssh node2 docker swarm join node1:2377
+  docker swarm join-token worker
   ```
 
-- Check that the node is here indeed:
+- Log into `node2`:
+  ```bash
+  ssh node2
+  ```
+
+- Copy paste the `docker swarm join ...` command
+  <br/>(that was displayed just before)
+
+]
+
+---
+
+## Check that the node was added correctly
+
+- Stay logged into `node2`!
+
+.exercise[
+
+- We can still use `docker info` to verify that the node is part of the Swarm:
+  ```bash
+  $ docker info | grep ^Swarm
+  ```
+
+]
+
+- However, Swarm commands will not work; try, for instance:
+  ```
+  docker node ls
+  ```
+
+- This is because the node that we added is currently a *worker*
+
+- Only *managers* can accept Swarm-specific commands
+
+---
+
+## View our two-node cluster
+
+- Let's go back to `node1` and see what our cluster looks like
+
+.exercise[
+
+- Logout from `node2` (with `exit` or `Ctrl-D` or ...)
+
+- View the cluster from `node1`, which is a manager:
   ```bash
   docker node ls
   ```
 
 ]
+
+The output should be similar to the following:
+```
+ID             HOSTNAME         STATUS  AVAILABILITY  MANAGER STATUS
+8jud...ox4b *  ip-172-31-4-182  Ready   Active        Leader
+ehb0...4fvx    ip-172-31-4-180  Ready   Active
+```
 
 ---
 
@@ -974,7 +1060,8 @@ d1kf...12wt *  ip-172-31-25-65  Accepted    Ready   Active        Leader
 
 - Set `DOCKER_HOST` and add `node3` to the Swarm:
   ```bash
-  DOCKER_HOST=tcp://node3:55555 docker swarm join node1:2377
+    DOCKER_HOST=tcp://node3:55555 docker swarm join \
+      --token $(docker swarm join-token -q worker) node1:2377
   ```
 
 - Check that the node is here:
@@ -983,136 +1070,6 @@ d1kf...12wt *  ip-172-31-25-65  Accepted    Ready   Active        Leader
   ```
 
 ]
-
----
-
-## Controlling who can join the cluster
-
-- By default, any node can join the cluster
-
-- Let's change that and require a password for new nodes
-
-.exercise[
-
-- Update the cluster configuration:
-  ```bash
-  docker swarm update --secret I_love_ponies
-  ```
-
-]
-
----
-
-## Checking the cluster configuration
-
-- We can see the cluster parameters with `docker swarm inspect`
-
-.exercise[
-
-- Check that the secret is now in place:
-  ```bash
-  docker swarm inspect
-  ```
-
-]
-
-A hashed `"Secret"` field should show up twice in the `"Policies"` section.
-
----
-
-## Joining a password-protected cluster
-
-- Let's try to add a node to this cluster
-
-  (Without providing a password)
-  
-.exercise[
-
-- Try to add node4 to the cluster:
-  ```bash
-  ssh node4 docker swarm join node1:2377
-  ```
-
-]
-
-The node will be denied right away.
-
----
-
-## Specifying the password when joining
-
-- The `docker swarm join` command also takes the `--secret` flag
-
-.exercise[
-
-- Try again, with the right secret:
-  ```bash
-  ssh node4 docker swarm join node1:2377 --secret I_love_ponies
-  ```
-
-- Check that the node is now in the cluster:
-  ```bash
-  docker node ls
-  ```
-
-]
-
----
-
-## Enabling manual vetting of nodes
-
-- You can also decide to approve each node before they can join the Swarm
-
-- This can be enabled independently of secrets
-
-.exercise[
-
-- Disable auto-accept mode, and remove the secret password:
-  ```bash
-  docker swarm update --auto-accept none --secret ""
-  ```
-
-]
-
-Note: to disable the password, we specified an empty string.
-
----
-
-## Manually accepting nodes into the cluster
-
-.exercise[
-
-- Try to get `node5` to join:
-  ```bash
-  ssh node5 docker swarm join node1:2377
-  ```
-
-]
-
-You will see a message telling that the node is *pending*.
-
----
-
-## Seeing pending nodes and accepting them in the cluster
-
-- We will use the `docker node` command 
-
-.exercise[
-
-- See nodes (including `node5` which is currently pending):
-  ```bash
-  docker node ls
-  ```
-
-- Accept `node5` in the cluster:
-  ```
-  docker node accept XXX
-  ```
-
-]
-
-Note: you don't have to type the node ID in full; the first characters
-are enough.
 
 ---
 
@@ -1126,11 +1083,9 @@ All communication is encrypted over TLS.
 
 The node keys and certificates are automatically renewed on regular intervals (by default, 90 days; this is tunable with `docker swarm update`).
 
-As we could see, nodes can join automatically or be approved manually; in both cases, this can be done with or without a pre-shared secret; and this policy can be changed during the lifecycle of the cluster without restarting or breaking anything.
-
 ---
 
-## Promoting nodes to be managers
+## Promoting a node to be manager
 
 - Right now, we have only one manager (node1)
 
@@ -1145,7 +1100,7 @@ As we could see, nodes can join automatically or be approved manually; in both c
   docker node ls
   ```
 
-- Promote a couple of nodes to be managers:
+- Promote a node to be manager:
   ```
   docker node promote XXX YYY
   ```
