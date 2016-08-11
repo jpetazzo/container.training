@@ -1085,7 +1085,7 @@ The node keys and certificates are automatically renewed on regular intervals (b
 
 ---
 
-## Promoting a node to be manager
+## Adding more manager nodes
 
 - Right now, we have only one manager (node1)
 
@@ -1095,14 +1095,12 @@ The node keys and certificates are automatically renewed on regular intervals (b
 
 .exercise[
 
-- See the current list of nodes:
-  ```
-  docker node ls
-  ```
-
-- Promote a node to be manager:
-  ```
-  docker node promote XXX YYY
+- Add nodes 4 and 5 to the cluster as *managers* (instead of simple *workers*):
+  ```bash
+    for N in 4 5; do
+      DOCKER_HOST=tcp://node$N:55555 docker swarm join \
+        --token $(docker swarm join-token -q manager) node1:2377
+    done
   ```
 
 ]
@@ -1128,7 +1126,29 @@ On non-manager nodes:
 <br/>you will get an error message telling you that
 the node is not a manager.
 
-You can only control the Swarm through a manager node.
+As we saw earlier, you can only control the Swarm through a manager node.
+
+---
+
+## Promoting nodes
+
+- Instead of adding a manager node, we can also promote existing workers
+
+- Nodes can be promoted (and demoted) at any time
+
+.exercise[
+
+- See the current list of nodes:
+  ```
+  docker node ls
+  ```
+
+- Promote the two worker nodes to be managers:
+  ```
+  docker node promote XXX YYY
+  ```
+
+]
 
 ---
 
@@ -1147,7 +1167,7 @@ You can only control the Swarm through a manager node.
 
 - Check where the container was created:
   ```bash
-  docker service tasks <serviceID>
+  docker service ps <serviceID>
   ```
 
 ]
@@ -1160,7 +1180,7 @@ You can only control the Swarm through a manager node.
   <br/>(unless it was scheduled on the current node)
 
 - Look up the `NODE` on which the container is running
-  (in the output of the `docker service tasks` command)
+  (in the output of the `docker service ps` command)
 
 .exercise[
 
@@ -1233,8 +1253,7 @@ Go back to `node1` afterwards.
   <br/>(vs. 32768 for single container mapping)
 
 - You can indicate two port numbers to set the public port number
-
-  (Just like with `docker run -p`)
+  <br/>(just like with `docker run -p`)
 
 ---
 
@@ -1250,7 +1269,7 @@ Go back to `node1` afterwards.
 
 - Check what's going on:
   ```bash
-  watch docker service tasks search
+  watch docker service ps search
   ```
 
 ]
@@ -1261,7 +1280,7 @@ Go back to `node1` afterwards.
 
 - If you are fast enough, you will be able to see multiple states:
 
-  - accepted (the task has been assigned to a specific node)
+  - assigned (the task has been assigned to a specific node)
   - preparing (right now, this mostly means "pulling the image")
   - running
 
