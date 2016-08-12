@@ -1602,25 +1602,39 @@ The curl command should now output:
 
 ---
 
-## Can you spot the difference?
+## Can you spot the differences?
 
-The `dockercoins` network is different from the other ones.
+The networks `dockercoins` and `ingress` are different from the other ones.
 
 Can you see how?
 
 --
 
-It is using a different kind of ID, reflecting that it's a SwarmKit object
-instead of a "classic" Docker Engine object.
+- They are using a different kind of ID, reflecting the fact that they
+  are SwarmKit objects instead of "classic" Docker Engine objects.
+
+- They're *scope* is "swarm" instead of "local".
+
+- They are using the overlay driver.
 
 ---
 
 ## Caveats
 
-.warning[As I type those lines (i.e. before boarding the plane to Seattle),
-it is not possible yet to join an overlay network with `docker run --net ...`;
-this might or might not be enabled in the future. We will see how to cope
+.warning[It is currently not possible to join an overlay network with `docker run --net ...`;
+this might or might not change in the future. We will see how to cope
 with this limitation.]
+
+*Why is that?*
+
+Placing a container on a network requires allocating an IP address for this container.
+
+The allocation must be done by a manager node (worker nodes cannot update Raft's data structures).
+
+As a result, `docker run --net ...` would only work on manager nodes.
+
+Moreover, it would significantly alter the code path for `docker run`, even in classic mode.
+<br/>(That could be a bad thing if it's not done very carefully!)
 
 ---
 
@@ -1671,7 +1685,7 @@ with this limitation.]
 
 - Repeatedly display the status of all our services:
   ```bash
-  watch "docker service ls -q | xargs -n1 docker service tasks"
+  watch "docker service ls -q | xargs -n1 docker service ps"
   ```
 
 - Stop it once everything is running
@@ -1686,36 +1700,17 @@ with this limitation.]
 
 - Let's reconfigure it to publish a port
 
-- **Unfortunately,** dynamic port update doesn't work yet
-
-  (So we will `rm` and re-`create` the service instead)
-
-.exercise[
-
-- Destroy the existing `webui` service and recreate it with the published port:
-  ```bash
-  docker service rm webui
-  docker service create --network dockercoins --name webui \
-         --publish 8000:80 $DOCKER_REGISTRY/dockercoins_webui:$TAG
-  ```
-
-]
-
-???
-
 .exercise[
 
 - Update `webui` so that we can connect to it from outside:
   ```bash
-  docker service update webui --publish 8000:80
-  ```
-
-- Check as it's updated:
-  ```bash
-  watch docker service tasks webui
+  docker service update webui --publish-add 8000:5000
   ```
 
 ]
+
+Note: to "de-publish" a port, you would have to specify the container port.
+</br>(i.e. in that case, `--publish-rm 5000`)
 
 ---
 
@@ -1752,7 +1747,7 @@ You should see the performance peaking at 10 hashes/s (like before).
 
 ---
 
-## Scaling the `rng` service
+## Global scheduling
 
 - We want to utilize as best as we can the entropy generators
   on our nodes
@@ -1761,11 +1756,25 @@ You should see the performance peaking at 10 hashes/s (like before).
 
 - SwarmKit has a special scheduling mode for that, let's use it
 
+- We cannot enable/disable global scheduling on an existing service
+
+- We have to destroy and re-create the `rng` service
+
+---
+
+## Scaling the `rng` service
+
 .exercise[
 
-- Enable *global scheduling* for the `rng` service:
+- Remove the existing `rng` service:
   ```bash
-  docker service update rng --mode global
+  docker service rm rng
+  ```
+
+- Re-create the `rng` service with *global scheduling*:
+  ```bash
+    docker service create --name rng --network dockercoins --mode global \
+      $DOCKER_REGISTRY/dockercoins_rng:$TAG
   ```
 
 - Look at the result in the web UI
