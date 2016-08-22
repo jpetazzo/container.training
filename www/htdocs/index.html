@@ -1933,7 +1933,10 @@ It is a virtual IP address (VIP) for the `rng` service.
 
 ]
 
-It doesn't respond to ping at this point. (This might change in the future.)
+It *should* ping. (But this might change in the future.)
+
+Current behavior for VIPs is to ping when there is a backend available on the same machine.
+(Again: this might change in the future.)
 
 ---
 
@@ -2150,7 +2153,7 @@ WHY?!?
 
 - Check that they're running:
   ```bash
-  docker service tasks worker
+  docker service ps worker
   ```
 
 ]
@@ -2202,16 +2205,17 @@ Note how the build and push were fast (because caching).
 
 - Look at our service status:
   ```bash
-  watch -n1 "docker service tasks worker -a | grep -v Shutdown.*Shutdown"
+  watch -n1 "docker service ps worker | grep -v Shutdown.*Shutdown"
   ```
 
 ]
 
-- `-a` gives us all tasks, including the one whose current or desired state is `Shutdown`
+- `docker service ps worker` gives us all tasks
+  <br/>(including the one whose current or desired state is `Shutdown`)
 
 - Then we filter out the tasks whose current **and** desired state is `Shutdown`
 
-- Future versions will have fancy filters to make that less tinkerish
+- Future versions might have fancy filters to make that less tinkerish
 
 ---
 
@@ -2228,9 +2232,7 @@ Note how the build and push were fast (because caching).
 
 ]
 
-SwarmKit updates all instances at the same time.
-
-If only we could do a rolling upgrade!
+By default, SwarmKit does a rolling upgrade, one instance at a time.
 
 ---
 
@@ -2253,6 +2255,25 @@ If only we could do a rolling upgrade!
   ```
 
 ]
+
+---
+
+## Timeline of an upgrade
+
+- SwarmKit will upgrade N instances at a time
+  <br/>(following the `update-parallelism` parameter)
+
+- New tasks are created, and their desired state is set to `Ready`
+  <br/>.small[(this pulls the image if necessary, ensures resource availability, creates the container ... without starting it)]
+
+- If the new tasks fail to get to `Ready` state, go back to the previous step
+  <br/>.small[(SwarmKit will try again and again, until the situation is addressed or desired state is updated)]
+
+- When the new tasks are `Ready`, it sets the old tasks desired state to `Shutdown`
+
+- When the old tasks are `Shutdown`, it starts the new tasks
+
+- Then it waits for the `update-delay`, and continues with the next batch of instances
 
 ---
 
