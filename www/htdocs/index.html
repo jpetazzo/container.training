@@ -1704,13 +1704,13 @@ Moreover, it would significantly alter the code path for `docker run`, even in c
 
 - Update `webui` so that we can connect to it from outside:
   ```bash
-  docker service update webui --publish-add 8000:5000
+  docker service update webui --publish-add 8000:80
   ```
 
 ]
 
 Note: to "de-publish" a port, you would have to specify the container port.
-</br>(i.e. in that case, `--publish-rm 5000`)
+</br>(i.e. in that case, `--publish-rm 80`)
 
 ---
 
@@ -2376,19 +2376,18 @@ Error: grpc: failed to unmarshal the received message proto: wrong wireType = 0
 
 - We are going to deploy an ELK stack
 
-- It will accept logs over a syslog socket
+- It will accept logs over a GELF socket
 
-- We will deploy a logspout container on every node
-
-- Logspout will detect containers as they are started, and funnel their logs to logstash
+- We will update our services to send logs through the GELF logging driver
 
 ---
 
 # Setting up ELK to store container logs
 
 *Important foreword: this is not an "official" or "recommended"
-setup; it is just an example. We do not endorse ELK, logspout,
-or the other elements of the stack more than others!*
+setup; it is just an example. We used ELK in this demo because
+it's a popular setup and we keep being asked about it; but you
+will have equal success with Fluent or other logging stacks!*
 
 What we will do:
 
@@ -2396,9 +2395,9 @@ What we will do:
 
 - Gaze at the spiffy Kibana web UI
 
-- Manually send a few log entries over syslog
+- Manually send a few log entries using one-shot containers
 
-- Add logspout to send all container output to ELK
+- Setup our containers to send their logs to Logstash
 
 ---
 
@@ -2461,7 +2460,7 @@ What we will do:
 - Create the Kibana service:
   ```bash
   docker service create --network logging --name kibana --publish 5601:5601 \
-         -e LOGSPOUT=ignore -e ELASTICSEARCH_URL=http://elasticsearch:9200 kibana
+         -e ELASTICSEARCH_URL=http://elasticsearch:9200 kibana
   ```
 
 ]
@@ -2470,7 +2469,7 @@ What we will do:
 
 ## Setting up Logstash
 
-- Logstash needs some configuration to listen to syslog messages and send them to elasticsearch
+- Logstash needs some configuration to listen to GELF messages and send them to ElasticSearch
 
 - We could author a custom image bundling this configuration
 
@@ -2480,9 +2479,8 @@ What we will do:
 
 - Create the Logstash service:
   ```bash
-  docker service create --network logging --name logstash \
-         -e LOGSPOUT=ignore logstash \
-         -e "$(cat ~/orchestration-workshop/elk/logstash.conf)"
+    docker service create --network logging --name logstash -p 12201:12201/udp \
+           logstash -e "$(cat ~/orchestration-workshop/elk/logstash.conf)"
   ```
 
 ]
@@ -2497,7 +2495,7 @@ What we will do:
 
 - Lookup the node running the Logstash container:
   ```bash
-  docker service tasks logstash
+  docker service ps logstash
   ```
 
 - Log into that node:
@@ -2538,25 +2536,45 @@ You should see the heartbeat messages:
 
 ---
 
-## Testing the syslog receiver
+## Testing the GELF receiver
 
-- In a new window, we will generate a syslog message
+- In a new window, we will generate a logging message
 
-- We will use the `logger` standard utility
-
-- We will run it in a service connected to the `logging` network
-
-- We don't want it to be restarted forever, so we will do that in a one-shot container
+- We will use a one-off container, and Docker's GELF logging driver
 
 .exercise[
 
 - Send a test message:
   ```bash
-  docker service create --network logging --restart-condition none debian \
-         logger -n logstash -P 51415 hello world
+    docker run --log-driver gelf --log-opt gelf-address=udp://127.0.0.1:12201 \
+           --rm alpine echo hello
+  ```
+]
+
+The test message should show up in the logstash container logs.
+
+---
+
+## Sending logs from a service
+
+- We were sending from a "classic" container so far; let's send logs from a service instead
+
+- We're lucky: the parameters (`--log-driver` and `--log-opt`) are exactly the same!
+
+- We will use the `--restart-condition` flag so that the container doesn't restart forever
+
+.exercise[
+
+- Send a test message:
+  ```bash
+    docker service create --restart-condition none \
+           --log-driver gelf --log-opt gelf-address=udp://127.0.0.1:12201 \
+           alpine echo hello
   ```
 
 ]
+
+The test message should show up as well in the logstash container logs.
 
 ---
 
@@ -2591,26 +2609,27 @@ You should see the heartbeat messages:
 
 ---
 
-## Setting up Logspout
+## Updating our services to use GELF
 
-- Logspout connects to the Docker control socket
+- We will now inform our Swarm to add GELF logging to all our services
 
-- Using the Docker events API, it automatically detects new containers
+- This is done with the `docker service update` command
 
-- Using the Docker logging API, it streams logs of all containers to its outputs
-
-- We will run a logspout container on each node (using global scheduling), and bind-mount the Docker control socket into the logspout container
+- The logging flags are the same as before
 
 .exercise[
 
-- Create the logspout service:
+- Enable GELF logging for all our *stateless* services:
   ```bash
-    docker service create --network logging --name logspout --mode global \
-      --mount source=/var/run/docker.sock,type=bind,target=/var/run/docker.sock \
-      -e SYSLOG_FORMAT=rfc3164 gliderlabs/logspout syslog://logstash:51415
+    for SERVICE in hasher rng webui worker; do
+      docker service update $SERVICE \
+             --log-driver gelf --log-opt gelf-address=udp://127.0.0.1:12201
+    done
   ```
 
 ]
+
+After ~15 seconds, you should see the log messages in Kibana.
 
 ---
 
@@ -2641,6 +2660,21 @@ You should see the heartbeat messages:
 
 ---
 
+## .warning[Don't update stateful services!]
+
+- When a service changes, SwarmKit replaces existing container with new ones
+
+- This is fine for stateless services
+
+- But if you update a stateful service, its data will be lost in the process
+
+- The solution is to make sure that the data resides on a volume ...
+
+- ... And to use a global volume driver
+
+- If we updated our Redis service, all our DockerCoins would be lost
+
+---
 
 ## Controlling Docker from a container
 
