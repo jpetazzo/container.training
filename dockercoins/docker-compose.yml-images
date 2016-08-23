@@ -1,0 +1,30 @@
+version: "2"
+
+services:
+  rng:
+    build: rng
+    image: ${REPOSITORY_SLASH}rng${COLON_TAG}
+    ports:
+    - "8001:80"
+
+  hasher:
+    build: hasher
+    image: ${REPOSITORY_SLASH}hasher${COLON_TAG}
+    ports:
+    - "8002:80"
+
+  webui:
+    build: webui
+    image: ${REPOSITORY_SLASH}webui${COLON_TAG}
+    ports:
+    - "8000:80"
+    volumes:
+    - "./webui/files/:/files/"
+
+  redis:
+    image: redis
+
+  worker:
+    build: worker
+    image: ${REPOSITORY_SLASH}worker${COLON_TAG}
+
