@@ -332,7 +332,7 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 1.12
+- Engine 1.12.1
 - Compose 1.8
 
 .exercise[
@@ -2668,15 +2668,368 @@ After ~15 seconds, you should see the log messages in Kibana.
 
 - But if you update a stateful service, its data will be lost in the process
 
-- The solution is to make sure that the data resides on a volume ...
-
-- ... And to use a global volume driver
-
 - If we updated our Redis service, all our DockerCoins would be lost
 
 ---
 
-## Controlling Docker from a container
+# Dealing with stateful services
+
+- First of all, you need to make sure that the data files are on a *volume*
+
+- Volumes are host directories that are mounted to the container's filesystem
+
+- These host directories can be backed by the ordinary, plain host filesystem ...
+
+- ... Or by distributed/networked filesystems
+
+- In the latter scenario, in case of node failure, the data is safe elsewhere ...
+
+- ... And the container can be restarted on another node without data loss
+
+---
+
+## Building a stateful service experiment
+
+- We will use a redis service
+
+- We will expose it on port 10000 to access it easily
+
+.exercise[
+
+- Start the redis service:
+  ```bash
+  docker service create --name stateful -p 10000:6379 redis
+  ```
+
+- Check that we can connect to it (replace XX.XX.XX.XX with any node's IP address):
+  ```bash
+  docker run --rm redis redis-cli -h `XX.XX.XX.XX` -p 10000 info server
+  ```
+
+]
+
+---
+
+## Accessing our redis service easily
+
+- Typing that whole command is going to be tedious
+
+.exercise[
+
+- Define a shell alias to make our lives easier:
+  ```bash
+  alias redis='docker run --rm redis redis-cli -h `XX.XX.XX.XX` -p 10000'
+  ```
+
+- Try it:
+  ```bash
+  redis info server
+  ```
+
+]
+
+---
+
+## Basic redis commands
+
+.exercise[
+
+- Check that the `foo` key doesn't exist:
+  ```bash
+  redis get foo
+  ```
+
+- Set it to `bar`:
+  ```bash
+  redis set foo bar
+  ```
+
+- Check that it exists now:
+  ```bash
+  redis get foo
+  ```
+
+]
+
+---
+
+## Local volumes vs. global volumes
+
+- Global volumes exist in a single namespace
+
+- A global volume can be mounted on any node.red[*]
+  <br/>.small[(bar some restrictions specific to the volume driver in use; e.g. using an EBS-backed volume on a GCE/EC2 mixed cluster.)]
+
+- Attaching a global volume to a container allows to start the container anywhere
+  <br/>(and retain its data wherever you start it!)
+
+- Global volumes require extra *plugins* (Flocker, Portworx...)
+
+- Docker doesn't come with a default global volume driver at this point
+
+- Therefore, we will fall back on *local volumes*
+
+---
+
+## Local volumes
+
+- We will use the default volume driver, `local`
+
+- As the name implies, the `local` volume driver manages *local* volumes
+
+- Since local volumes are (duh!) *local*, we need to pin our container to a specific host
+
+- We will do that with a *constraint*
+
+.exercise[
+
+- Add a placement constraint to our service:
+  ```bash
+  docker service update stateful --constraint-add node.hostname==$HOSTNAME
+  ```
+
+]
+
+---
+
+## Where is our data?
+
+- If we look for our `foo` key, it's gone!
+
+.exercise[
+
+- Check the `foo` key:
+  ```bash
+  redis get foo
+  ```
+
+- Adding a constraint caused the service to be restarted, *even if it didn't have to move*:
+  ```bash
+  docker service ps stateful
+  ```
+
+]
+
+---
+
+## Setting the key again
+
+- Since our database was wiped out, let's populate it again
+
+.exercise[
+
+- Set `foo` again:
+  ```bash
+  redis set foo bar
+  ```
+
+- Check that it's there:
+  ```bash
+  redis get foo
+  ```
+
+]
+
+---
+
+## Making sure that redis correctly persists data
+
+- Before going further, we need to make sure that redis correctly saves to disk
+
+.exercise[
+
+- Restart the container:
+  ```bash
+    CID=$(docker ps -q --filter label=com.docker.swarm.service.name=stateful)
+    docker restart $CID
+  ```
+
+- Check the `foo` key:
+  ```bash
+  redis get foo
+  ```
+
+]
+
+--
+
+(╯°□°）╯︵ ┻━┻)
+
+---
+
+## Instructing redis to save data on restarts
+
+- The default configuration that comes with the `redis` image doesn't save on shutdown
+
+  (See [this issue](https://github.com/docker-library/redis/issues/4) for some hints about what's happening)
+
+- Let's add an extra flag to enable AOF persistence
+
+.exercise[
+
+- Add `--appendonly yes` to redis starting flags:
+  ```bash
+  docker service update stateful --args "--appendonly yes"
+  ```
+
+]
+
+Note: we can achieve the same result by enabling RDB snapshots instead.
+<br/>
+See http://redis.io/topics/persistence for more details about redis persistence.
+
+---
+
+## Checking persistence across container restarts
+
+.exercise[
+
+- Set the `foo` key once again:
+  ```bash
+  redis set foo bar
+  ```
+
+- Restart the container:
+  ```bash
+  CID=$(docker ps -q --filter label=com.docker.swarm.service.name=stateful)
+  docker restart $CID
+  ```
+
+- Check that `foo` is still there:
+  ```bash
+  redis get foo
+  ```
+
+]
+
+---
+
+## Service updates cause containers to be replaced
+
+- Let's try to make a trivial update to the service and see what happens
+
+.exercise[
+
+- Check the current list of volumes:
+  ```bash
+  docker volume ls
+  ```
+
+- Set a memory limit to our Redis service:
+  ```bash
+  docker service update stateful --limit-memory 100M
+  ```
+
+]
+
+Note: all changes trigger the creation of a new task, and therefore a replacement of the existing container;
+even when it is not strictly technically necessary.
+
+---
+
+## Services volumes are ephemeral
+
+- What happened to our data?
+
+.exercise[
+
+- The `foo` key is (once again) gone:
+  ```bash
+  redis get foo
+  ```
+
+- The volume has been recycled, too:
+  ```bash
+  docker volume ls
+  ```
+
+]
+
+---
+
+## Assigning a persistent volume to the container
+
+- Let's add an explicit volume mount to our service, referencing a named volume
+
+.exercise[
+
+- Update the service with a volume mount:
+  ```bash
+    docker service update stateful \
+           --mount-add type=volume,source=foobarstore,target=/data
+  ```
+
+- Check the new volume list:
+  ```bash
+  docker volume ls
+  ```
+
+]
+
+Note: the `local` volume driver automatically creates volumes.
+
+---
+
+## Checking that persistence actually works across service updates
+
+.exercise[
+
+- Store something in the `foo` key:
+  ```bash
+  redis set foo barbar
+  ```
+
+- Update the service with another trivial change:
+  ```bash
+  docker service update stateful --limit-memory 200M
+  ```
+
+- Check that `foo` is still set:
+  ```bash
+  redis get foo
+  ```
+
+]
+
+---
+
+## Recap
+
+- The service must commit its state to disk when being shutdown
+
+  (Shutdown = being sent a `TERM` signal)
+
+- The state must be written on files located on a volume
+
+- That volume must be specified to be persistent
+
+- If using a local volume, the service must also be pinned to a specific node
+
+  (And losing that node means losing the data, unless there are other backups)
+
+---
+
+## Cleaning up
+
+.exercise[
+
+- Remove the stateful service:
+  ```bash
+  docker service rm stateful
+  ```
+
+- Remove the associated volume:
+  ```bash
+  docker volume rm foobarstore
+  ```
+
+]
+
+Note: we could keep the volume around if we wanted.
+
+---
+
+# Controlling Docker from a container
 
 - In a local environment, just bind-mount the Docker control socket:
   ```bash
