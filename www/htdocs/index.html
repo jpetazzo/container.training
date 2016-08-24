@@ -3319,17 +3319,74 @@ More resources on this topic:
 
 ---
 
-#  Last words
+# Node management
+
+- SwarmKit allows to change (almost?) everything on-the-fly
+
+- Nothing should require a global restart
+
+---
+
+## Node availability
+
+```bash
+docker node update <node-name> --availability <active|pause|drain>
+```
+
+- Active = schedule tasks on this node (default)
+
+- Pause = don't schedule new tasks on this node; existing tasks are not affected
+
+  You can use it to troubleshoot a node without disrupting existing tasks
+
+  It can also be used (in conjunction with labels) to reserve resources 
+
+- Drain = don't schedule new tasks on this node; existing tasks are moved away
+
+  This is just like crashing the node, but containers get a chance to shutdown cleanly
+
+---
+
+## Managers and workers
+
+- Nodes can be promoted to manager with `docker node promote`
+
+- Nodes can be demoted to worker with `docker node demote`
+
+- This can also be done with `docker node update <node> --role <manager|worker>`
+
+- Reminder: this has to be done from a manager node
+  <br/>(workers cannot promote themselves)
+
+---
+
+## Removing nodes
 
 - You can leave Swarm mode with `docker swarm leave`
 
-- `docker inspect` is being extended to support services, tasks...
+- Nodes are drained before being removed (i.e. all tasks are rescheduled somewhere else)
 
-- `docker node update XXX --availability <active|pause|drain>`
+- Managers cannot leave (they have to be demoted first)
 
-- Healthchecks
+- After leaving, a node still shows up in `docker node ls` (in `Down` state)
 
-- Bundles
+- When a node is `Down`, you can remove it with `docker node rm` (from a manager node)
+
+---
+
+## Join tokens and automation
+
+- If you have used Docker 1.12-RC: join tokens are now mandatory!
+
+- You cannot specify your own token (SwarmKit generates it)
+
+- If you need to change the token: `docker swarm join-token --rotate ...`
+
+- To automate cluster deployment:
+
+  - have a seed node do `docker swarm init` if it's not already in Swarm mode
+
+  - propagate the token to the other nodes (secure bucket, facter, ohai...)
 
 ---
 
