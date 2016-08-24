@@ -101,11 +101,11 @@ Docker <br/> Orchestration <br/> Workshop
 
 ## Logistics
 
-<!--
 - Hello! We're `jerome at docker dot com` and `aj at soulshake dot net`
--->
 
+<!--
 - Hello! I'm `jerome at docker dot com`
+-->
 
 <!--
 Reminder, when updating the agenda: when people are told to show
@@ -113,25 +113,27 @@ up at 9am, they usually trickle in until 9:30am (except for paid
 training sessions). If you're not sure that people will be there
 on time, it's a good idea to have a breakfast with the attendees
 at e.g. 9am, and start at 9:30.
+-->
 
 - Agenda:
 
 .small[
-- 08:00-09:00 hello and breakfast
-- 09:00:10:25 part 1
-- 10:25-10:35 coffee break
-- 10:35-12:00 part 2
-- 12:00-13:00 lunch break
-- 13:00-14:25 part 3
-- 14:25-14:35 coffee break
-- 14:35-16:00 part 4
+- 09:00-09:15 hello
+- 09:15-10:45 part 1
+- 10:45-11:00 coffee break
+- 11:00-12:30 part 2
+- 12:30-13:30 lunch break
+- 13:30-15:00 part 3
+- 15:00-15:15 coffee break
+- 15:15-16:45 part 4
+- 16:45-17:30 Q&A
 ]
 
--->
-
+<!--
 - The tutorial will run from 1pm to 5pm
 
 - There will be a break at 2:45pm (stop me if I don't!)
+-->
 
 - All the content is publicly available (slides, code samples, scripts)
 
@@ -197,20 +199,13 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 - Some Docker knowledge
 
-  (If you're here, you definitely qualify ☺)
-
-<!--
   (but that's OK if you're not a Docker expert!)
--->
-
 
 ---
 
 ## Nice-to-haves
 
 - [GitHub](https://github.com/join) account
-  <br/>(if you want to fork the repo)
-
   <br/>(if you want to fork the repo; also used to join Gitter)
 
 - [Gitter](https://gitter.im/) account
@@ -296,7 +291,8 @@ wait
 
 - When we will use the other nodes, we will do it mostly through the Docker API
 
-- We will use SSH only for the initial setup and a few "out of band" operations (checking internal logs, debugging...)
+- We will use SSH only for the initial setup and a few "out of band" operations
+  <br/>(checking internal logs, debugging...)
 
 ---
 
@@ -414,7 +410,7 @@ class: pic
 
 ![DockerCoins logo](dockercoins.png)
 
-(DockerCoins 2016 logo courtesy of @XtlCnslt and @ndeloof. Thanks!)
+(DockerCoins 2016 logo courtesy of [@XtlCnslt](https://twitter.com/xtlcnslt) and [@ndeloof](https://twitter.com/ndeloof). Thanks!)
 
 ---
 
@@ -797,6 +793,28 @@ class: title
 
 ---
 
+## Where is the key/value store?
+
+- All other orchestration systems use a key/value store
+
+  (k8s→etcd, nomad→consul, mesos→zookeeper, etc.)
+
+- SwarmKit stores information directly in Raft
+
+- Analogy courtesy of [@aluzzardi](https://twitter.com/aluzzardi):
+
+  *It's like B-Trees and RDBMS. They are different layers, often
+  associated. But you don't need to bring up a full SQL server when
+  all you need is to index some data.*
+
+- As a result, the orchestrator has direct access to the data
+
+  (the main copy of the data is stored in the orchestrator's memory)
+
+- Simpler, easier to deploy and operate; also faster
+
+---
+
 ## SwarmKit concepts (1/2)
 
 - A *cluster* will be at least one *node* (preferably more)
@@ -904,10 +922,10 @@ You can refer to the [NOMENCLATURE](https://github.com/docker/swarmkit/blob/mast
   Swarm initialized: current node (8jud...) is now a manager.
   ```
 
-- Docker also generated two security tokens (like passphrases or
-  passwords) for our cluster, and shows us the commands to use
-  on other nodes to add them to the cluster using those security
-  tokens:
+- Docker generated two security tokens (like passphrases or passwords) for our cluster
+
+- The CLI shows us the command to use on other nodes to add them to the cluster using the "worker"
+  security token:
 
   ```
     To add a worker to this swarm, run the following command:
@@ -1698,6 +1716,24 @@ Moreover, it would significantly alter the code path for `docker run`, even in c
 
 - We need to connect to the `webui` service, but it is not publishing any port
 
+- Let's re-create the `webui` service, but publish its port 80 this time
+
+.exercise[
+
+- Remove the `webui` service:
+  ```bash
+  docker service rm webui
+  ```
+
+- Re-create it:
+  ```bash
+    docker service create --network dockercoins --name webui \
+           -p 8000:80 $DOCKER_REGISTRY/dockercoins_webui:$TAG
+  ```
+
+]
+
+<!--
 - Let's reconfigure it to publish a port
 
 .exercise[
@@ -1711,6 +1747,7 @@ Moreover, it would significantly alter the code path for `docker run`, even in c
 
 Note: to "de-publish" a port, you would have to specify the container port.
 </br>(i.e. in that case, `--publish-rm 80`)
+-->
 
 ---
 
@@ -1780,6 +1817,8 @@ You should see the performance peaking at 10 hashes/s (like before).
 - Look at the result in the web UI
 
 ]
+
+Note: if the hash rate goes to zero and doesn't climb back up, try to `rm` and `create` again.
 
 ---
 
@@ -2646,21 +2685,23 @@ After ~15 seconds, you should see the log messages in Kibana.
 - In the left column, move the mouse over the following
   columns, and click the "Add" button that appears:
 
-<!--
   - host
   - container_name
   - message
--->
 
+<!--
   - logsource
   - program
   - message
+-->
 
 ]
 
 ---
 
 ## .warning[Don't update stateful services!]
+
+- Why didn't we update the Redis service as well?
 
 - When a service changes, SwarmKit replaces existing container with new ones
 
@@ -2757,8 +2798,8 @@ After ~15 seconds, you should see the log messages in Kibana.
 
 - Global volumes exist in a single namespace
 
-- A global volume can be mounted on any node.red[*]
-  <br/>.small[(bar some restrictions specific to the volume driver in use; e.g. using an EBS-backed volume on a GCE/EC2 mixed cluster.)]
+- A global volume can be mounted on any node
+  <br/>.small[(bar some restrictions specific to the volume driver in use; e.g. using an EBS-backed volume on a GCE/EC2 mixed cluster)]
 
 - Attaching a global volume to a container allows to start the container anywhere
   <br/>(and retain its data wherever you start it!)
@@ -3314,7 +3355,9 @@ More resources on this topic:
 
 - You can tell Docker to place a given service on a manager node, using constraints:
   ```bash
-  docker service create --name autoscaler --constraint node.role==manager ...
+    docker service create \
+      --mount source=/var/run/docker.sock,type=bind,target=/var/run/docker.sock \
+      --name autoscaler --constraint node.role==manager ...
   ```
 
 ---
