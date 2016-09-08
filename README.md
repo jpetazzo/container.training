@@ -17,16 +17,11 @@ at multiple conferences and events like:
 
 ## Slides
 
-The slides are in the `www/htdocs` directory.
+The slides are in the `docs` directory.
 
-The recommended way to view them is to:
+To view them locally open `docs/index.html` in your browser.
 
-- have a Docker host
-- clone this repository to your Docker host
-- `cd www && docker-compose up -d`
-- this will start a web server on port 80
-- point your browser at your Docker host and enjoy
-
+To view them online open https://jpetazzo.github.io/orchestration-workshop/ in your browser.
 
 ## Sample code
 
