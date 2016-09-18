@@ -99,14 +99,18 @@ Docker <br/> Orchestration <br/> Workshop
 
 ---
 
-## Logistics
+## Intros
 
-- Hello! We're `jerome at docker dot com` and `aj at soulshake dot net`
+- Hello! We are:
 
-<!--
-- Hello! I'm `jerome at docker dot com`
--->
+  AJ ([@s0ulshake](https://twitter.com/s0ulshake))
 
+  Jerome ([@jpetazzo](https://twitter.com/jpetazzo))
+
+  Shawn ([@drizzt51](https://twitter.com/drizzt51))
+
+  Tiffany ([@tiffanyfayj](https://twitter.com/tiffanyfayj))
+  
 <!--
 Reminder, when updating the agenda: when people are told to show
 up at 9am, they usually trickle in until 9:30am (except for paid
@@ -115,6 +119,11 @@ on time, it's a good idea to have a breakfast with the attendees
 at e.g. 9am, and start at 9:30.
 -->
 
+---
+
+## Agenda
+
+<!--
 - Agenda:
 
 .small[
@@ -128,23 +137,29 @@ at e.g. 9am, and start at 9:30.
 - 15:15-16:45 part 4
 - 16:45-17:30 Q&A
 ]
-
-<!--
-- The tutorial will run from 1pm to 5pm
-
-- There will be a break at 2:45pm (stop me if I don't!)
 -->
 
+- The tutorial will run from 9am to 12:30pm
+
+- This will be fast-paced, but DON'T PANIC!
+  
+- There will be a break at 10:30am (stop us if we don't!)
+  
+  *Rumor says that caffeinated beverages might be served in "Sutton Complex Foyer"*
+
 - All the content is publicly available (slides, code samples, scripts)
+
+- Live feedback, questions, help on
+  [Gitter](http://container.training/chat)
+
+- Shawn is doing a [4-hour version of this](http://sched.co/8Gfp) at #cdatx
+  <br/>([Container Days Austin](http://www.containerdaysaustin.com/2016/), October 14-15)
 
 <!--
 Remember to change:
 - the link below
 - the "tweet my speed" hashtag in DockerCoins HTML
 -->
-
-- Live feedback, questions, help on
-  [Gitter](http://container.training/chat)
 
 ---
 
@@ -199,6 +214,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
   - on Linux, OS X, FreeBSD... you are probably all set
 
   - on Windows, get [putty](http://www.putty.org/),
+  Microsoft [Win32 OpenSSH](https://github.com/PowerShell/Win32-OpenSSH/wiki/Install-Win32-OpenSSH),
   [Git BASH](https://git-for-windows.github.io/), or
   [MobaXterm](http://mobaxterm.mobatek.net/)
 
@@ -206,7 +222,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
   (but that's OK if you're not a Docker expert!)
 
----
+???
 
 ## Nice-to-haves
 
@@ -369,7 +385,7 @@ You are welcome to use the method that you feel the most comfortable with.
   - `worker` = background process using `rng` and `hasher`
   - `webui` = web interface to watch progress
 
----
+???
 
 ## Compose file format version
 
@@ -532,7 +548,7 @@ and displays aggregated logs.
 
 `docker-compose ps` also shows the ports exposed by the application.
 
----
+???
 
 ## Viewing logs
 
@@ -606,13 +622,15 @@ Tip: use `^S` and `^Q` to pause/resume log output.
 
 - Our goal is to make that performance graph go up (without changing a line of code!)
 
+???
+
 - Before trying to scale the application, we'll figure out if we need more resources
 
   (CPU, RAM...)
 
 - For that, we will use good old UNIX tools on our Docker node
 
----
+???
 
 ## Looking at resource usage
 
@@ -871,10 +889,11 @@ You can refer to the [NOMENCLATURE](https://github.com/docker/swarmkit/blob/mast
 
 - The SwarmKit API is also exposed (on a separate socket)
 
----
-
+???
 
 ## Illustration
+
+![Illustration](swarm-mode.png)
 
 ---
 
@@ -1022,7 +1041,7 @@ ID             HOSTNAME         STATUS  AVAILABILITY  MANAGER STATUS
 
 ]
 
----
+???
 
 ## Check that the node was added correctly
 
@@ -1203,7 +1222,7 @@ As we saw earlier, you can only control the Swarm through a manager node.
   <br/>(unless it was scheduled on the current node)
 
 - Look up the `NODE` on which the container is running
-  (in the output of the `docker service ps` command)
+  <br/>(in the output of the `docker service ps` command)
 
 .exercise[
 
@@ -1450,7 +1469,7 @@ We just have to adapt this to our application, which has 4 services!
 
 ]
 
----
+???
 
 ## Using Docker Hub
 
@@ -1484,7 +1503,7 @@ We just have to adapt this to our application, which has 4 services!
 
 ]
 
----
+???
 
 ## Using Docker Trusted Registry
 
@@ -1508,14 +1527,18 @@ If we wanted to use DTR, we would:
 - It will store images and layers to the local filesystem
   <br/>(but you can add a config file to use S3, Swift, etc.)
 
+<!--
+
 - Docker *requires* TLS when communicating with the registry
 
   - unless for registries on `localhost`
 
   - or with the Engine flag `--insecure-registry`
 
+<!-- -->
+
 - Our strategy: publish the registry container on port 5000,
-  <br/>and connect to it through `localhost:5000` on each node
+  <br/>so that it's available through `localhost:5000` on each node
 
 ---
 
@@ -1700,7 +1723,7 @@ Moreover, it would significantly alter the code path for `docker run`, even in c
 
 ]
 
----
+???
 
 ## Wait for our application to be up
 
@@ -1769,6 +1792,10 @@ Note: to "de-publish" a port, you would have to specify the container port.
 - Point your browser to any node, on port 8000
 
 ]
+
+You might have to wait a bit for the container to be up and running.
+
+Check its status with `docker service ps webui`.
 
 ---
 
@@ -1857,9 +1884,15 @@ class: title
 
 ---
 
+## Troubleshooting overlay networks
+
+<!--
+
 ## Finding the real cause of the bottleneck
 
 - We want to debug our app as we scale `worker` up and down
+
+-->
 
 - We want to run tools like `ab` or `httping` on the internal network
 
@@ -2004,7 +2037,7 @@ Current behavior for VIPs is to ping when there is a backend available on the sa
 
 - You change this with `docker service create --endpoint-mode [VIP|DNSRR]`
 
----
+???
 
 ## Testing and benchmarking our service
 
@@ -2028,7 +2061,7 @@ Current behavior for VIPs is to ping when there is a backend available on the sa
 Wait until the workers are stopped (check with `docker service ls`)
 before continuing.
 
----
+???
 
 ## Benchmarking `rng`
 
@@ -2048,7 +2081,7 @@ We will send 50 requests, but with various levels of concurrency.
 
 ]
 
----
+???
 
 ## Benchmark results for `rng`
 
@@ -2058,7 +2091,7 @@ We will send 50 requests, but with various levels of concurrency.
 
 - What about `hasher`?
 
----
+???
 
 ## Benchmarking `hasher`
 
@@ -2077,7 +2110,7 @@ First, we need to put the POST payload in a temporary file.
 
 ]
 
----
+???
 
 ## Benchmarking `hasher`
 
@@ -2097,7 +2130,7 @@ Once again, we will send 50 requests, with different levels of concurrency.
 
 ]
 
----
+???
 
 ## Benchmark results for `hasher`
 
@@ -2111,29 +2144,29 @@ Once again, we will send 50 requests, with different levels of concurrency.
 
 - It looks like `hasher` is better equiped to deal with concurrency than `rng`
 
----
+???
 
 class: title
 
 Why?
 
----
+???
 
 ## Why does everything take (at least) 100ms?
 
---
+??
 
 `rng` code:
 
 ![RNG code screenshot](delay-rng.png)
 
---
+??
 
 `hasher` code:
 
 ![HASHER code screenshot](delay-hasher.png)
 
----
+???
 
 class: title
 
@@ -2141,18 +2174,18 @@ But ...
 
 WHY?!?
 
----
+???
 
 ## Why did we sprinkle this sample app with sleeps?
 
 - Deterministic performance
   <br/>(regardless of instance speed, CPUs, I/O...)
 
---
+??
 
 - Actual code sleeps all the time anyway
 
---
+??
 
 - When your code makes a remote API call:
 
@@ -2162,13 +2195,13 @@ WHY?!?
 
   - it processes the response.
 
----
+???
 
 ## Why do `rng` and `hasher` behave differently?
 
 ![Equations on a blackboard](equations.png)
 
---
+??
 
 (Synchronous vs. asynchronous event processing)
 
@@ -2186,7 +2219,7 @@ WHY?!?
 
 - ... update our service to use the new image
 
----
+???
 
 ## But first...
 
@@ -2463,7 +2496,7 @@ What we will do:
 
 - The only component that we will configure is Logstash
 
-- We will accept log entries using the syslog protocol
+- We will accept log entries using the GELF protocol
 
 - Log entries will be stored in ElasticSearch,
   <br/>and displayed on Logstash's stdout for debugging
@@ -2719,6 +2752,32 @@ After ~15 seconds, you should see the log messages in Kibana.
 - But if you update a stateful service, its data will be lost in the process
 
 - If we updated our Redis service, all our DockerCoins would be lost
+
+---
+
+## Important afterword
+
+**This is not a "production-grade" setup.**
+
+It is just an educational example. We did setup a single
+ElasticSearch instance and a single Logstash instance. 
+
+In a production setup, you need an ElasticSearch cluster
+(both for capacity and availability reasons). You also
+need multiple Logstash instances.
+
+And if you want to withstand
+bursts of logs, you need some kind of message queue:
+Redis if you're cheap, Kafka is you want to make sure
+that you don't drop messages on the floor. Good luck.
+
+---
+
+class: title
+
+#  Additional content
+
+## (Just in case we got *really strong* coffee at the break)
 
 ---
 
