@@ -186,7 +186,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 - Dealing with stateful services
 - Scripting image building and pushing
-- Docker Application Bundles
+- Distributed Application Bundles
 - Controlling Docker from a container
 - Node management
 
@@ -3169,7 +3169,7 @@ You can also directly use the file `docker-compose.yml-images`.
 
 ---
 
-# Docker Application Bundles
+# Distributed Application Bundles
 
 - The previous section showed us how to streamline image build and push
 
@@ -3181,11 +3181,11 @@ You can also directly use the file `docker-compose.yml-images`.
 
 ---
 
-## What is a Docker Application Bundle?
+## What is a Distributed Application Bundle?
 
 - Conceptually similar to a Compose file, but for Swarm clusters
 
-- A Docker Application Bundle is a JSON payload describing the services
+- A Distributed Application Bundle is a JSON payload describing the services
 
 - It's typically stored as `<stackname>.dab`
 
