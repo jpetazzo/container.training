@@ -10,9 +10,7 @@ instance_password: training
 clustersize: 1  # Number of VMs per cluster
 pagesize: 15    # Number of cards to print per page
 
-#background_image: https://myapps.developer.ubuntu.com/site_media/appmedia/2014/12/swarm.png
-background_image: http://www.yellosoft.us/public/images/docker.png
-#background_image: ../media/swarm.png
+background_image: https://www.docker.com/sites/default/files/Engine.png
 
 # To be printed on the cards:
 blurb: >
