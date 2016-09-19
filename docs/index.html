@@ -105,7 +105,7 @@ Docker <br/> Orchestration <br/> Workshop
 
   AJ ([@s0ulshake](https://twitter.com/s0ulshake))
 
-  Jerome ([@jpetazzo](https://twitter.com/jpetazzo))
+  Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
 
   Shawn ([@drizzt51](https://twitter.com/drizzt51))
 
@@ -198,6 +198,8 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 ---
 
 ## Chapter 4: deeper in Swarm
+
+(Additional/optional/bonus content!)
 
 - Dealing with stateful services
 - Scripting image building and pushing
@@ -801,6 +803,7 @@ class: title
 ## SwarmKit features
 
 - Highly-available, distributed store based on Raft
+  <br/>(more on next slide)
 
 - *Services* managed with a *declarative API*
   <br/>(implementing *desired state* and *reconciliation loop*)
@@ -2390,7 +2393,10 @@ By default, SwarmKit does a rolling upgrade, one instance at a time.
 
 ]
 
-(Remove `-v` if you don't like verbose things!)
+Remove `-v` if you don't like verbose things.
+
+Shameless promo: for more Go and Docker love, check
+[this blog post](http://jpetazzo.github.io/2016/09/09/go-docker/)!
 
 ---
 
@@ -2554,7 +2560,7 @@ What we will do:
 
 - We could author a custom image bundling this configuration
 
-- We can also pass the configuration on the command line
+- We can also pass the [configuration](https://github.com/jpetazzo/orchestration-workshop/blob/master/elk/logstash.conf) on the command line
 
 .exercise[
 
@@ -2912,12 +2918,16 @@ class: title
   redis get foo
   ```
 
-- Adding a constraint caused the service to be restarted, *even if it didn't have to move*:
+- Adding a constraint caused the service to be redeployed:
   ```bash
   docker service ps stateful
   ```
 
 ]
+
+Note: even if the constraint ends up being a no-op (i.e. not
+moving the service), the service gets redeployed.
+This ensures consistent behavior.
 
 ---
 
@@ -2941,81 +2951,31 @@ class: title
 
 ---
 
-## Making sure that Redis correctly persists data
-
-- Before going further, we need to make sure that Redis correctly saves to disk
-
-.exercise[
-
-- Restart the container:
-  ```bash
-    CID=$(docker ps -q --filter label=com.docker.swarm.service.name=stateful)
-    docker restart $CID
-  ```
-
-- Check the `foo` key:
-  ```bash
-  redis get foo
-  ```
-
-]
-
---
-
-(╯°□°）╯︵ ┻━┻)
-
----
-
-## Instructing Redis to save data on restarts
-
-- The default configuration that comes with the `redis` image doesn't save on shutdown
-
-  (See [this issue](https://github.com/docker-library/redis/issues/4) for some hints about what's happening)
-
-- Let's add an extra flag to enable AOF persistence
-
-.exercise[
-
-- Add `--appendonly yes` to Redis starting flags:
-  ```bash
-  docker service update stateful --args "--appendonly yes"
-  ```
-
-]
-
-Note: we can achieve the same result by enabling RDB snapshots instead.
-<br/>
-See http://redis.io/topics/persistence for more details about Redis persistence.
-
----
-
-## Checking persistence across container restarts
-
-.exercise[
-
-- Set the `foo` key once again:
-  ```bash
-  redis set foo bar
-  ```
-
-- Restart the container:
-  ```bash
-  CID=$(docker ps -q --filter label=com.docker.swarm.service.name=stateful)
-  docker restart $CID
-  ```
-
-- Check that `foo` is still there:
-  ```bash
-  redis get foo
-  ```
-
-]
-
----
-
 ## Service updates cause containers to be replaced
 
 - Let's try to make a trivial update to the service and see what happens
+
+.exercise[
+
+- Set a memory limit to our Redis service:
+  ```bash
+  docker service update stateful --limit-memory 100M
+  ```
+
+- Try to get the `foo` key one more time:
+  ```bash
+  redis get foo
+  ```
+
+]
+
+The key is blank again!
+
+---
+
+## Service volumes are ephemeral by default
+
+- Let's highlight what's going on with volumes!
 
 .exercise[
 
@@ -3024,32 +2984,32 @@ See http://redis.io/topics/persistence for more details about Redis persistence.
   docker volume ls
   ```
 
-- Set a memory limit to our Redis service:
+- Carry a minor update to our Redis service:
   ```bash
-  docker service update stateful --limit-memory 100M
+  docker service update stateful --limit-memory 200M
   ```
 
 ]
 
-Note: all changes trigger the creation of a new task, and therefore a replacement of the existing container;
+Again: all changes trigger the creation of a new task, and therefore a replacement of the existing container;
 even when it is not strictly technically necessary.
 
 ---
 
-## Services volumes are ephemeral
+## The data is gone again
 
 - What happened to our data?
 
 .exercise[
 
-- The `foo` key is (once again) gone:
-  ```bash
-  redis get foo
-  ```
-
-- The volume has been recycled, too:
+- The list of volumes is slightly different:
   ```bash
   docker volume ls
+  ```
+
+- And as you can expect, the `foo` key is gone:
+  ```bash
+  redis get foo
   ```
 
 ]
@@ -3088,9 +3048,9 @@ Note: the `local` volume driver automatically creates volumes.
   redis set foo barbar
   ```
 
-- Update the service with another trivial change:
+- Update the service with yet another trivial change:
   ```bash
-  docker service update stateful --limit-memory 200M
+  docker service update stateful --limit-memory 300M
   ```
 
 - Check that `foo` is still set:
@@ -3104,7 +3064,7 @@ Note: the `local` volume driver automatically creates volumes.
 
 ## Recap
 
-- The service must commit its state to disk when being shutdown
+- The service must commit its state to disk when being shutdown.red[*]
 
   (Shutdown = being sent a `TERM` signal)
 
@@ -3115,6 +3075,9 @@ Note: the `local` volume driver automatically creates volumes.
 - If using a local volume, the service must also be pinned to a specific node
 
   (And losing that node means losing the data, unless there are other backups)
+
+.footnote[<br/>.red[*]Until recently, the Redis image didn't automatically
+persist data. Beware!]
 
 ---
 
@@ -3505,7 +3468,15 @@ class: title
 
 # Thanks! <br/> Questions?
 
+<!--
 ## [@jpetazzo](https://twitter.com/jpetazzo) <br/> [@docker](https://twitter.com/docker)
+-->
+
+## AJ ([@s0ulshake](https://twitter.com/s0ulshake)) — Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) <br/> Shawn ([@drizzt51](https://twitter.com/drizzt51)) — Tiffany ([@tiffanyfayj](https://twitter.com/tiffanyfayj))
+
+### Reminder 1: lunch will be in "Rhinelander", same floor as the tutorials.
+
+### Reminder 2: Shawn is doing a [4-hour version of this](http://sched.co/8Gfp) at #cdatx ([Container Days Austin](http://www.containerdaysaustin.com/2016/), October 14-15)
 
     </textarea>
     <script src="remark-0.13.min.js" type="text/javascript">
