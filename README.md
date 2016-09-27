@@ -14,14 +14,19 @@ at multiple conferences and events like:
 - Zenika, Paris (2016, February)
 - Container Solutions, Amsterdam (2016, February)
 
+## How this repo is organized
+- **dockercoins**
+  - compose files and source code for the dockercoins sample apps used throughout the workshop
+- **docs**
+  - presentation slide deck, using https://remarkjs.com
+- **prepare-vms**
+  - scripts for automating the creation of AWS instances for students
 
-## Slides
-
-The slides are in the `docs` directory.
-
-To view them locally open `docs/index.html` in your browser.
-
-To view them online open https://jpetazzo.github.io/orchestration-workshop/ in your browser.
+## Slide Deck
+- The slides are in the `docs` directory.
+- To view them locally open `docs/index.html` in your browser. It works offline too.
+- To view them online open https://jpetazzo.github.io/orchestration-workshop/ in your browser.
+- They use https://remarkjs.com to allow simple markdown in a html file that remark will transform into a presentation in the browser.
 
 ## Sample code
 
@@ -36,18 +41,20 @@ To see it in action:
 
 ## Running the workshop
 
-WARNING: those instructions are incomplete. Consider
-them as notes quickly drafted on a napkin rather than
-proper documentation!
+General timeline of planning a workshop
+
+- Run through slides, doing the hands-on to be sure you understand the different `dockercoins` repo's and the steps we go through to get to a full Swarm Mode cluster of many containers.
+- This workshop expects 5 servers per student. You can get away with as little as 2 servers per student, but you'll need to change the slide deck to accomidate.
+- AWS is our most tested process for generating student machines. In `prepare-vms` you'll find scripts to create EC2 instances, install docker, pre-pull images, and even print "cards" to place at each students seat with IP's and username/password.
+- Be sure to test creating *all* your needed servers a week before workshop. You'll likely hit AWS limits in the region closest to your class, and it sometimes takes days to get AWS to raise those limits with a support ticket.
+- Typically we create the servers the day before or morning of workshop, and leave them up the rest of day after workshop. If creating hundreds of servers, you'll likely want to run all these `trainer` commands from a dedicated instance you have in same region as instances you want to create.
+- Remember you'll need to print the "cards" for students, so you'll need to create instances while you have a way to print them.
 
 
 ### Creating the VMs
 
-I use the `trainctl` script from the `docker-fundamentals`
-repository. Sorry if you don't have that!
+`prepare-vms/trainer` is the script that gets you most of what you need for setting up instances. See `prepare-vms/README.md` for more info.
 
-After starting the VMs, use the `trainctl ips` command
-to dump the list of IP addresses into a file named `ips.txt`.
 
 
 ### Generating the printed cards
