@@ -1,0 +1,29 @@
+{
+    "version": 1,
+    "schedule": {
+        "type": "simple",
+        "interval": "1s"
+    },
+    "max-failures": 10,
+    "workflow": {
+        "collect": {
+            "metrics": {
+                "/intel/linux/docker/*/cpu_stats/cpu_usage/total_usage": {},
+                "/intel/linux/docker/*/memory_stats/usage/usage": {}
+            },
+            "process": null,
+            "publish": [
+                {
+                    "plugin_name": "influx",                            
+                    "config": {
+                        "host": "HOST_IP",
+                        "port": 8086,
+                        "database": "snap",
+                        "user": "admin",
+                        "password": "admin"
+                    }
+                }
+            ]                                            
+        }
+    }
+}
