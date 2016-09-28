@@ -1,0 +1,36 @@
+# This file is passed by trainer-cli to scripts/ips-txt-to-html.py
+
+workshop_name: Docker Orchestration
+workshop_short_name: orchestration
+repo: https://github.com/jpetazzo/orchestration-workshop
+url: http://container.training/ # moreinfo link printed on cards
+
+#engine_version: experimental.docker.com #extra features that may change/runaway
+#engine_version: test.docker.com
+engine_version: get.docker.com #prod release
+compose_version: 1.8.1
+machine_version: 0.8.2
+swarm_version: 1.2.5
+
+# for now these are hard coded in script, and only used for printing cards
+instance_login: docker
+instance_password: training
+
+# 12 per page works well, but is quite small text
+clustersize: 5  # Number of VMs per cluster
+pagesize: 12    # Number of cards to print per page
+
+background_image: https://raw.githubusercontent.com/jpetazzo/orchestration-workshop/master/prepare-vms/media/swarm.png
+
+# To be printed on the cards:
+blurb: >
+    Here is the connection information to your very own
+       {cluster_or_machine} for this {workshop_name} workshop. You can connect
+       to {this_or_each} VM with any SSH client.
+
+       Your {machine_is_or_machines_are}:
+
+# {url} will be replaced by the script
+footer: >
+    <p>For slides, chat and other useful links, see: </p>
+    <center>{url}</center>

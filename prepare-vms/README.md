@@ -1,67 +1,113 @@
-# Trainer tools to prepare VMs for Docker workshops
+# Trainer tools to create and prepare VMs for Docker workshops on AWS
 
-## 1. Prerequisites
+## Prerequisites
 
-* [Docker](https://docs.docker.com/engine/installation/)
-* [Docker Compose](https://docs.docker.com/compose/install/)
+- [Docker](https://docs.docker.com/engine/installation/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
 
-## 2. Clone the repo
+## General Workflow
+
+- fork/clone repo
+- set required environment variables for AWS
+- create your own setting file from `settings/example.yaml`
+- run `./trainer` commands to create instances, install docker, setup each users environment in node1, other management tasks
+- run `./trainer cards` command to generate PDF for printing handouts of each users host IP's and login info
+
+## Clone/Fork the Repo, and Build the Tools Image
+
+The Docker Compose file here is used to build a image with all the dependencies to run the `./trainer` commands and optional tools. Each run of the script will check if you have those dependencies locally on your host, and will only use the container if you're [missing a dependency](jpetazzo/orchestration-workshop/blob/master/prepare-vms/trainer#L5).
 
     $ git clone https://github.com/jpetazzo/orchestration-workshop.git
     $ cd orchestration-workshop/prepare-vms
     $ docker-compose build
-    $ ./trainer <commands>  # See "Summary of commands" section below
 
-## 3. Preparing the environment
+## Preparing to Run `./trainer`
 
-Required environment variables:
+### Required AWS Permissions/Info
 
-* `AWS_ACCESS_KEY_ID`
-* `AWS_SECRET_ACCESS_KEY`
-* `AWS_DEFAULT_REGION`
+- Initial assumptions are you're using a root account. If you'd like to use a IAM user, it will need  `AmazonEC2FullAccess` and `IAMReadOnlyAccess`.
+- Using a non-default VPC or Security Group isn't supported out of box yet, but until then you can [customize the `trainer-cli` script](jpetazzo/orchestration-workshop/blob/master/prepare-vms/scripts/trainer-cli#L396-L401).
+- These instances will assign the default VPC Security Group, which does not open any ports from Internet by default. So you'll need to add Inbound rules for `SSH | TCP | 22 | 0.0.0.0/0` and `Custom TCP Rule | TCP | 8000 - 8002 | 0.0.0.0/0`, or run `./trainer opensg` which opens up all ports.
 
-### 4. Update settings.yaml
+### Required Environment Variables
 
-Then pass `settings/YOUR_WORKSHOP_NAME-settings.yaml` as an argument to `deploy`, `cards`, etc.
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `AWS_DEFAULT_REGION`
 
-## Usage
+### Update/copy `settings/example.yaml`
 
-### Summary of commands
+Then pass `settings/YOUR_WORKSHOP_NAME-settings.yaml` as an argument to `trainer deploy`, `trainer cards`, etc.
 
-The `trainer` script can be executed directly.
+./trainer cards 2016-09-28-00-33-bret settings/orchestration.yaml
 
-Summary of steps to launch a batch of instances for a workshop:
+## `./trainer` Usage
 
-* Export the environment variables needed by the AWS CLI (see **2. Preparing the environment** above)
-* `./trainer start N` (where `N` is the number of AWS instances to create)
-* `./trainer list` to view the list of tags
-* `./trainer list TAG` to view the instances with a given `TAG`
-* `./trainer deploy TAG settings/somefile.yaml` to run `scripts/postprep.rc` via parallel-ssh
-* `./trainer pull-images TAG` to pre-pull a bunch of Docker images to the instances
-* `./trainer test TAG`
-* `./trainer cards TAG settings/somefile.yaml` to generate a PDF and an HTML file you can print and cut to hand out cards with connection information to attendees
+```
+./trainer <command> [n-instances|tag] [settings/file.yaml]
 
-`./trainer` will run locally if all its dependencies are fulfilled; otherwise it will run in a Docker container.
+Core commands:
+  start        n              Start n instances
+  list         [TAG]          If a tag is provided, list its VMs. Otherwise, list tags.
+  deploy       TAG            Deploy all instances with a given tag
+  pull-images  TAG            Pre-pull docker images. Run only after deploying.
+  stop         TAG            Stop and delete instances tagged TAG
 
-It will check for the necessary environment variables. Then, if all its dependencies are installed
-locally, it will execute `trainer-cli`. If not, it will look for a local Docker image
-tagged `preparevms_prepare-vms` (created automatically when you run `docker-compose build`).
-If found, it will run in a container. If not found, the user will be prompted to
-either install the missing dependencies or run `docker-compose build`.
+Extras:
+  ips          TAG            List all IPs of instances with a given tag (updates ips.txt)
+  ids          TAG/TOKEN      List all instance IDs with a given tag
+  shell                       Get a shell in the trainer container
+  status       TAG            Print information about this tag and its VMs
+  tags                        List all tags (per-region)
+  retag        TAG/TOKEN TAG  Retag instances with a new tag
 
-## Detailed usage
+Beta:
+  ami                         Look up Amazon Machine Images
+  cards        FILE           Generate cards
+  opensg                      Modify AWS security groups
+```
 
-### Start some VMs
+### Summary of What `./trainer` Does For You
 
-    $ ./trainer start 10
+- Used to manage bulk AWS instances for you without needing to use AWS cli or gui.
+- Can manage multiple "tags" or groups of instances, which are tracked in `prepare-vms/tags/`
+- Can also create PDF/HTML for printing student info for instance IP's and login.
+- The `./trainer` script can be executed directly.
+- It will run locally if all its dependencies are fulfilled; otherwise it will run in the Docker container you created with `docker-compose build` (preparevms_prepare-vms).
+- During `start` it will add your default local SSH key to all instances under the `ubuntu` user.
+- During `deploy` it will create the `docker` user with password `training`, which is printing on the cards for students. For now, this is hard coded.
 
-A few things will happen:
+### Example Steps to Launch a Batch of Instances for a Workshop
 
-* Your local SSH key will be synced
-* AWS instances will be created and tagged
-* A directory will be created
+- Export the environment variables needed by the AWS CLI (see **Required Environment Variables** above)
+- Run `./trainer start N` Creates `N` EC2 instances
+  - Your local SSH key will be synced to instances under `ubuntu` user
+  - AWS instances will be created and tagged based on date, and IP's stored in `prepare-vms/tags/`
+- Run `./trainer deploy TAG settings/somefile.yaml` to run `scripts/postprep.rc` via parallel-ssh
+  - If it errors or times out, you should be able to rerun
+  - Requires good connection to run all the parallel SSH connections, up to 100 parallel (ProTip: create dedicated management instance in same AWS region where you run all these utils from)
+- Run `./trainer pull-images TAG` to pre-pull a bunch of Docker images to the instances
+- Run `./trainer cards TAG settings/somefile.yaml` generates PDF/HTML files to print and cut and hand out to students
+- *Have a great workshop*
+- Run `./trainer stop TAG` to terminate instances.
 
-Details below.
+## Other Tools
+
+### Deploying your SSH key to all the machines
+
+- Make sure that you have SSH keys loaded (`ssh-add -l`).
+- Source `rc`.
+- Run `pcopykey`.
+
+
+### Installing extra packages
+
+- Source `postprep.rc`.
+  (This will install a few extra packages, add entries to
+  /etc/hosts, generate SSH keys, and deploy them on all hosts.)
+
+
+## Even More Details
 
 #### Sync of SSH keys
 
@@ -83,7 +129,7 @@ This ips.txt file will be created in the $TAG/ directory and a symlink will be p
 
 If you create new VMs, the symlinked file will be overwritten.
 
-## Deployment
+#### Deployment
 
 Instances can be deployed manually using the `deploy` command:
 
@@ -91,29 +137,29 @@ Instances can be deployed manually using the `deploy` command:
 
 The `postprep.rc` file will be copied via parallel-ssh to all of the VMs and executed.
 
-### Pre-pull images
+#### Pre-pull images
 
     $ ./trainer pull-images TAG
 
-### Generate cards
+#### Generate cards
 
     $ ./trainer cards TAG settings/somefile.yaml
 
-### List tags
+#### List tags
 
     $ ./trainer list
 
-### List VMs
+#### List VMs
 
     $ ./trainer list TAG
 
 This will print a human-friendly list containing some information about each instance.
 
-### Stop and destroy VMs
+#### Stop and destroy VMs
 
     $ ./trainer stop TAG
 
 ## ToDo
 
-  * Don't write to bash history in system() in postprep 
-  * compose, etc version inconsistent (int vs str)
+  - Don't write to bash history in system() in postprep
+  - compose, etc version inconsistent (int vs str)
