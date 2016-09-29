@@ -116,7 +116,7 @@ To see it in action:
 
 `prepare-vms/trainer` is the script that gets you most of what you need for
 setting up instances. See
-[prepare-vms/README.md](/jpetazzo/orchestration-workshop/tree/master/prepare-vms)
+[prepare-vms/README.md](prepare-vms)
 for all the info on tools and scripts.
 
 ### Content for Different Workshop Durations
