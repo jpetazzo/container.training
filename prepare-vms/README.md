@@ -15,7 +15,7 @@
 
 ## Clone/Fork the Repo, and Build the Tools Image
 
-The Docker Compose file here is used to build a image with all the dependencies to run the `./trainer` commands and optional tools. Each run of the script will check if you have those dependencies locally on your host, and will only use the container if you're [missing a dependency](jpetazzo/orchestration-workshop/blob/master/prepare-vms/trainer#L5).
+The Docker Compose file here is used to build a image with all the dependencies to run the `./trainer` commands and optional tools. Each run of the script will check if you have those dependencies locally on your host, and will only use the container if you're [missing a dependency](trainer#L5).
 
     $ git clone https://github.com/jpetazzo/orchestration-workshop.git
     $ cd orchestration-workshop/prepare-vms
@@ -26,7 +26,7 @@ The Docker Compose file here is used to build a image with all the dependencies 
 ### Required AWS Permissions/Info
 
 - Initial assumptions are you're using a root account. If you'd like to use a IAM user, it will need  `AmazonEC2FullAccess` and `IAMReadOnlyAccess`.
-- Using a non-default VPC or Security Group isn't supported out of box yet, but until then you can [customize the `trainer-cli` script](jpetazzo/orchestration-workshop/blob/master/prepare-vms/scripts/trainer-cli#L396-L401).
+- Using a non-default VPC or Security Group isn't supported out of box yet, but until then you can [customize the `trainer-cli` script](scripts/trainer-cli#L396-L401).
 - These instances will assign the default VPC Security Group, which does not open any ports from Internet by default. So you'll need to add Inbound rules for `SSH | TCP | 22 | 0.0.0.0/0` and `Custom TCP Rule | TCP | 8000 - 8002 | 0.0.0.0/0`, or run `./trainer opensg` which opens up all ports.
 
 ### Required Environment Variables
