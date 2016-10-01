@@ -107,8 +107,6 @@ Docker <br/> Orchestration <br/> Workshop
 
   Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
 
-  Shawn ([@drizzt51](https://twitter.com/drizzt51))
-
   Tiffany ([@tiffanyfayj](https://twitter.com/tiffanyfayj))
   
 <!--
@@ -139,21 +137,16 @@ at e.g. 9am, and start at 9:30.
 ]
 -->
 
-- The tutorial will run from 9am to 12:30pm
+- The tutorial will run from 1pm to 5pm
 
 - This will be fast-paced, but DON'T PANIC!
   
-- There will be a break at 10:30am (stop us if we don't!)
-  
-  *Rumor says that caffeinated beverages might be served in "Sutton Complex Foyer"*
+- We will do short breaks for coffee + QA every hour
 
 - All the content is publicly available (slides, code samples, scripts)
 
 - Live feedback, questions, help on
   [Gitter](http://container.training/chat)
-
-- Shawn is doing a [4-hour version of this](http://sched.co/8Gfp) at #cdatx
-  <br/>([Container Days Austin](http://www.containerdaysaustin.com/2016/), October 14-15)
 
 <!--
 Remember to change:
@@ -162,7 +155,6 @@ Remember to change:
 -->
 
 ---
-
 
 <!--
 grep '^# ' index.html | grep -v '<br' | tr '#' '-'
@@ -351,8 +343,8 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 1.12.1
-- Compose 1.8
+- Engine 1.12.2-rc1
+- Compose 1.8.1
 
 .exercise[
 
@@ -821,11 +813,14 @@ class: title
 
 ## Where is the key/value store?
 
-- All other orchestration systems use a key/value store
-
-  (k8s→etcd, nomad→consul, mesos→zookeeper, etc.)
+- Many other orchestration systems use a key/value store
+  <br/>
+  (k8s→etcd, mesos→zookeeper, etc.)
 
 - SwarmKit stores information directly in Raft
+  <br/>
+  (Nomad is similar; thanks [@cbednarski](https://twitter.com/@cbednarski),
+  [@diptanu](https://twitter.com/diptanu) and others for point it out!)
 
 - Analogy courtesy of [@aluzzardi](https://twitter.com/aluzzardi):
 
@@ -834,7 +829,7 @@ class: title
   all you need is to index some data.*
 
 - As a result, the orchestrator has direct access to the data
-
+  <br/>
   (the main copy of the data is stored in the orchestrator's memory)
 
 - Simpler, easier to deploy and operate; also faster
@@ -1126,7 +1121,8 @@ When further nodes join the Swarm, they are issued their own keypair, signed by 
 
 All communication is encrypted over TLS.
 
-The node keys and certificates are automatically renewed on regular intervals (by default, 90 days; this is tunable with `docker swarm update`).
+The node keys and certificates are automatically renewed on regular intervals
+<br/>(by default, 90 days; this is tunable with `docker swarm update`).
 
 ---
 
@@ -2640,7 +2636,7 @@ You should see the heartbeat messages:
 
 The test message should show up in the logstash container logs.
 
----
+???
 
 ## Sending logs from a service
 
@@ -2783,7 +2779,7 @@ class: title
 
 #  Additional content
 
-## (Just in case we got *really strong* coffee at the break)
+## (Might require unhealthy amounts of coffee and/or Club Mate)
 
 ---
 
@@ -3472,11 +3468,7 @@ class: title
 ## [@jpetazzo](https://twitter.com/jpetazzo) <br/> [@docker](https://twitter.com/docker)
 -->
 
-## AJ ([@s0ulshake](https://twitter.com/s0ulshake)) — Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) <br/> Shawn ([@drizzt51](https://twitter.com/drizzt51)) — Tiffany ([@tiffanyfayj](https://twitter.com/tiffanyfayj))
-
-### Reminder 1: lunch will be in "Rhinelander", same floor as the tutorials.
-
-### Reminder 2: Shawn is doing a [4-hour version of this](http://sched.co/8Gfp) at #cdatx ([Container Days Austin](http://www.containerdaysaustin.com/2016/), October 14-15)
+## AJ ([@s0ulshake](https://twitter.com/s0ulshake)) <br/> Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) <br/> Tiffany ([@tiffanyfayj](https://twitter.com/tiffanyfayj))
 
     </textarea>
     <script src="remark-0.13.min.js" type="text/javascript">
