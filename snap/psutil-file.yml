@@ -1,0 +1,21 @@
+---
+  version: 1
+  schedule:
+    type: "simple"
+    interval: "1s"
+  max-failures: 10
+  workflow:
+    collect:
+      metrics:
+        /intel/psutil/load/load1: {}
+        /intel/psutil/load/load15: {}
+        /intel/psutil/load/load5: {}
+        /intel/psutil/vm/available: {}
+        /intel/psutil/vm/free: {}
+        /intel/psutil/vm/used: {}
+      config:
+      publish:
+        -
+            plugin_name: "file"
+            config:
+                file: "/tmp/snap-psutil-file.log"

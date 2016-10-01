@@ -201,6 +201,13 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 ---
 
+## Chapter 5: metrics
+
+- Setting up Snap to collect and publish metric data
+- Using InfluxDB and Grafana for storage and display
+
+---
+
 # Pre-requirements
 
 - Computer with network connection and SSH client
@@ -3457,6 +3464,520 @@ docker node update <node-name> --availability <active|pause|drain>
   - have a seed node do `docker swarm init` if it's not already in Swarm mode
 
   - propagate the token to the other nodes (secure bucket, facter, ohai...)
+
+---
+
+class: title
+
+# Metrics
+
+---
+
+## Which metrics will we collect?
+
+- node metrics (e.g. cpu, ram, disk space)
+
+- container metrics (e.g. memory used, processes, network traffic going in and out)
+
+---
+
+## Tools
+
+We will use three open source Go projects for metric collection, publishing, storing, and visualization:
+
+- Intel Snap: telemetry framework to collect, process, and publish metric data
+
+- InfluxDB: database
+
+- Grafana: graph visuals
+
+---
+
+## Snap 
+
+- [www.github.com/intelsdi-x/snap](www.github.com/intelsdi-x/snap)
+
+- Can collect, process, and publish metric data
+
+- Doesn’t store metrics
+
+- Works as a daemon
+
+- Offloads collecting, processing, and publishing to plugins
+
+- Have to configure it to use the plugins and collect the metrics you want
+
+- Docs: https://github.com/intelsdi-x/snap/blob/master/docs/
+
+---
+
+## InfluxDB
+
+- Since Snap doesn't have have a database, we need one
+
+- It's specifically for time series
+
+---
+
+## Grafana
+
+- Since neither Snap or InfluxDB can show graphs, we're using Grafana
+
+---
+
+## Getting and setting up Snap
+
+- This will get Snap on all nodes
+
+.exercise[
+
+```bash
+docker service create --restart-condition=none --mode global \
+--mount type=bind,source=/usr/local/bin,target=/usr/local/bin \
+--mount type=bind,source=/opt,target=/opt centos sh -c '
+SNAPVER=v0.16.1-beta
+RELEASEURL=https://github.com/intelsdi-x/snap/releases/download/$SNAPVER
+curl -sSL $RELEASEURL/snap-$SNAPVER-linux-amd64.tar.gz | tar -C /opt -zxf-
+curl -sSL $RELEASEURL/snap-plugins-$SNAPVER-linux-amd64.tar.gz | tar -C /opt -zxf-
+ln -s snap-$SNAPVER /opt/snap
+for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done'
+```
+
+]
+
+---
+
+## `snapd`- Snap daemon
+
+- Application made up of a REST API, control module, and scheduler module
+
+.exercise[
+
+- Start `snapd` with plugin trust disabled and log level set to debug
+  ```bash
+  snapd -t 0 -l 1
+  ```
+
+]
+
+- More resources:
+
+  https://github.com/intelsdi-x/snap/blob/master/docs/SNAPD.md
+  https://github.com/intelsdi-x/snap/blob/master/docs/SNAPD_CONFIGURATION.md
+
+---
+
+## `snapctl` - loading plugins
+
+- First, open a new window
+
+.exercise[
+
+- Load the psutil collector plugin
+  ```bash
+  snapctl plugin load /opt/snap/plugin/snap-plugin-collector-psutil
+  ```
+
+- Load the file publisher plugin
+  ```bash
+  snapctl plugin load /opt/snap/plugin/snap-plugin-publisher-mock-file
+  ```
+
+]
+
+---
+
+## `snapctl` - see what you loaded and can collect
+
+.exercise[
+
+- See your loaded plugins
+  ```bash
+  snapctl plugin list
+  ```
+
+- See the metrics you can collect
+  ```bash
+  snapctl metric list
+  ```
+
+]
+
+---
+
+## `snapctl` - tasks
+
+- To start collecting/processing/publishing metric data, you need to create a task
+
+- For this workshop we will be using just the task manifest
+
+- Tasks can be written in JSON or YAML and the metrics you want to collect are listed in the task file
+
+- Some plugins, such as the Docker collector, allow for wildcards which is denoted by a star (see snap/docker-influxdb.json)
+
+- More resources:
+  https://github.com/intelsdi-x/snap/blob/master/docs/TASKS.md
+
+---
+
+## `snapctl` - task manifest
+
+```json
+---
+  version: 1
+  schedule:
+    type: "simple" # collect on a set interval
+    interval: "1s" # of every 1s
+  max-failures: 10
+  workflow: 
+    collect: # first collect
+      metrics: # metrics to collect
+        /intel/psutil/load/load1: {} 
+      config: # there is no configuration
+      publish: # after collecting, publish
+        -
+            plugin_name: "file" # use the file publisher
+            config:
+                file: "/tmp/snap-psutil-file.log" # write to this file
+```
+
+---
+
+## `snapctl` - starting a task
+
+.exercise[
+
+- Using the task manifest in the snap directory, start a task to collect metrics from psutil and publish them to a file.
+
+  ```bash
+  cd ~/orchestration-workshop/snap
+  snapctl task create -t psutil-file.yml
+  ```
+
+]
+
+  The output should look like the following:
+  ```
+    Using task manifest to create task
+    Task created
+    ID: 240435e8-a250-4782-80d0-6fff541facba
+    Name: Task-240435e8-a250-4782-80d0-6fff541facba
+    State: Running
+  ```
+
+---
+
+## `snapctl` - see the tasks
+
+.exercise[
+
+- Using the task in the snap directory start a task to collect metrics from psutil and publish them to a file.
+
+  ```bash
+  snapctl task list
+  ```
+
+]
+
+The output should look like the following:
+  ```
+    ID           NAME              STATE     HIT MISS FAIL CREATED  LAST FAILURE
+    24043...acba Task-24043...acba Running   4   0    0    2:34PM   8-13-2016
+  ```
+---
+
+## Check file
+
+.exercise[
+
+```bash
+tail -f /tmp/snap-psutil-file.log
+```
+
+]
+
+To exit, hit `^C`
+
+---
+
+## `snapctl` - watch metrics
+
+- Watch will stream the metrics you are collecting to STDOUT
+
+.exercise[
+
+```bash
+snapctl task watch <ID>
+```
+
+]
+
+To exit, hit `^C`
+
+---
+
+## `snapctl` - stop the task
+
+.exercise[
+
+- Using the ID name, stop the task
+
+  ```bash
+  snapctl task stop <ID>
+  ```
+
+]
+
+---
+
+## Stopping snap
+
+- Just hit `^C` in the terminal window with `snapd` running and snap will stop and all plugins will be unloaded and tasks stopped
+
+
+---
+
+## Snap Tribe Mode
+
+- Tribe is Snap's clustering mechanism
+
+- Nodes can join agreements and in these, they share the same loaded plugins and running tasks
+
+- We will use it to load the Docker collector and InfluxDB publisher on all nodes and run our task
+
+- If we didn't use Tribe, we would have to go to every node and manually load the plugins and start the task
+
+- More resources:
+  https://github.com/intelsdi-x/snap/blob/master/docs/TRIBE.md
+
+---
+
+## Start `snapd` with Tribe Mode enabled
+
+- On your first node, start snap in tribe mode
+
+.exercise[
+
+```bash
+snapd --tribe -t 0 -l 1
+```
+
+]
+
+---
+
+## Create first Tribe agreement
+
+.exercise[
+
+```bash
+snapctl agreement create docker-influxdb
+```
+
+]
+
+The output should look like the following:
+
+```
+  Name             Number of Members       plugins      tasks
+  docker-influxdb  0                       0            0
+```
+
+---
+
+## Join running snapd to agreement
+
+.exercise[
+
+```bash
+snapctl agreement join docker-influxdb $HOSTNAME
+```
+]
+
+The output should look like the following:
+```
+  Name             Number of Members       plugins         tasks      
+  docker-influxdb  1                       0               0
+```
+
+---
+
+## Start a container on every node
+
+- The Docker plugin requires at least one container to be started, so to ensure that happens, on node 1 create a global service (you need all nodes to be in a swarm)
+
+- If there a specific container you'd rather use, feel free to do so
+
+.exercise[
+
+```bash
+docker service create --mode global alpine ping 8.8.8.8
+```
+
+]
+
+---
+
+## Start InfluxDB and Grafana containers
+
+- Start up containers with InfluxDB and Grafana using docker-compose on node 1
+
+.exercise[
+
+```bash
+cd influxdb-grafana
+docker-compose up
+```
+
+]
+
+---
+
+## Set up InfluxDB
+
+- Go to `http://<NODE1_IP>:8083`
+
+- Create a new database called snap with the query `CREATE DATABASE "snap"` 
+
+- Switch to the snap database on the top right
+---
+
+## Load Docker collector and InfluxDB publisher
+
+.exercise[
+
+- Load Docker collector 
+
+  ```bash
+  snapctl plugin load /opt/snap/plugin/snap-plugin-collector-docker
+  ```
+
+- Load InfluxDB publisher
+
+  ```bash
+  snapctl plugin load /opt/snap/plugin/snap-plugin-publisher-influxdb
+  ```
+
+]
+
+---
+
+## Start task
+
+.exercise[
+
+- Using a task manifest file, create a task using the Docker collector to gather container metrics and send them to the InfluxDB publisher plugin
+
+- Replace HOST_IP in docker-influxdb.json with the NODE1_IP address
+
+  ```bash
+  snapctl task create -t docker-influxdb.json
+  ```
+
+]
+
+---
+
+# Restarting a task
+
+- This is only necessary if the task becomes disabled
+
+.exercise[
+
+- Enable the task
+
+  ```bash
+  snapctl task enable <ID>
+  ```
+
+- Start the task
+  ```bash
+  snapctl task start <ID>
+  ```
+
+]
+
+---
+
+# See metrics in InfluxDB
+
+- To see what metrics you're able to collect from (these should match `snapctl metric list`) use the `SHOW MEASUREMENTS` query
+
+- To see more information from one of the metrics use something like the following with one of the metrics between the quotes:
+
+```
+  SELECT * FROM "intel/linux/docker/025fd8c5dc0c/cpu_stats/cpu_usage/total_usage"
+```
+
+---
+
+## Set up Grafana
+
+- Go to `http://<NODE1_IP>:3000`
+
+- If it asks for a username/password they're both `admin`
+
+- Click the Grafana logo -> Data Sources -> Add data source
+
+---
+
+## Add Grafana data source
+
+- Change the Type to InfluxDB
+
+- Name : influxdb
+
+- Check the default box
+
+- Url: `http://<NODE1_IP>:8086`
+
+- Access: direct
+
+- Database: snap
+
+---
+
+## Create graphs in Grafana
+
+- Click the Grafana logo -> Dashboards -> new
+
+- Click on a green bar on the left -> add panel -> graph
+
+- Click anywhere on the new line that says SELECT, then click select measurement and pick one of the metrics to display
+
+- You can add the source (this is the hostname of each node) and filter by that if you want
+
+- Click on "Last 6 hours" in the top right and change it to last 5 minutes and the update rate to 5s
+
+---
+
+## Add more nodes to the Tribe
+
+- This will load the plugins from node 1 on the other nodes and start the same task
+
+.exercise[
+
+- Start snapd in tribe mode on all nodes
+
+  ```bash
+  for N in 2 3 4 5; do ssh -f node$N snapd --tribe -t 0 -l 1 --log-path /tmp \
+  --tribe-node-name node$N --tribe-seed node1:6000; done
+  ```
+
+- Join the agreement
+
+  ```bash
+  for N in 2 3 4 5; do ssh node$N snapctl agreement join docker-influxdb node$N; \
+  done
+  ```
+
+]
+
+---
+
+## InfluxDB and Grafana updates
+
+- Now if you look at InfluxDB you should see metrics from the other nodes if you look at SHOW MEASUREMENTS again and can add these to your Grafana dashboard
 
 ---
 
