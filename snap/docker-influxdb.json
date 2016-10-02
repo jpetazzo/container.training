@@ -8,15 +8,15 @@
     "workflow": {
         "collect": {
             "metrics": {
-                "/intel/linux/docker/*/cpu_stats/cpu_usage/total_usage": {},
-                "/intel/linux/docker/*/memory_stats/usage/usage": {}
+                "/intel/docker/*/stats/cgroups/cpu_stats/cpu_usage/total_usage": {},
+                "/intel/docker/*/stats/cgroups/memory_stats/usage/usage": {}
             },
             "process": null,
             "publish": [
                 {
                     "plugin_name": "influx",                            
                     "config": {
-                        "host": "HOST_IP",
+                        "host": "127.0.0.1",
                         "port": 8086,
                         "database": "snap",
                         "user": "admin",
