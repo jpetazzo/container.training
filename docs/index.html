@@ -1754,6 +1754,7 @@ Moreover, it would significantly alter the code path for `docker run`, even in c
 
 - We need to connect to the `webui` service, but it is not publishing any port
 
+<!--
 - Let's re-create the `webui` service, but publish its port 80 this time
 
 .exercise[
@@ -1770,8 +1771,8 @@ Moreover, it would significantly alter the code path for `docker run`, even in c
   ```
 
 ]
+-->
 
-<!--
 - Let's reconfigure it to publish a port
 
 .exercise[
@@ -1785,7 +1786,6 @@ Moreover, it would significantly alter the code path for `docker run`, even in c
 
 Note: to "de-publish" a port, you would have to specify the container port.
 </br>(i.e. in that case, `--publish-rm 80`)
--->
 
 ---
 
@@ -2042,6 +2042,25 @@ Current behavior for VIPs is to ping when there is a backend available on the sa
   this service
 
 - You change this with `docker service create --endpoint-mode [VIP|DNSRR]`
+
+---
+
+## Looking up VIP backends
+
+- You can also resolve a special name: `tasks.<name>`
+
+- It will give you the IP addresses of the containers for a given service
+
+.exercise[
+
+- Obtain the IP addresses of the containers for the `rng` service:
+  ```bash
+  drill tasks.rng
+  ```
+
+]
+
+This should list 5 IP addresses.
 
 ???
 
@@ -3210,7 +3229,7 @@ To exit, hit `^C`
                   apk add --no-cache openssh-client &&
                   ssh -o StrictHostKeyChecking=no -i /sshkey docker@172.17.0.1 \
                       sudo snapd -t 0 -l 1 --tribe --tribe-seed node1:6000
-           "
+           " # If you copy-paste that block, don't forget that final quote :-)
    ```
 
 ]
@@ -3355,6 +3374,8 @@ this breaks a few things.]
   ```
   CREATE DATABASE "snap"
   ```
+
+- In the top-right corner, select "Database: snap"
 
 ]
 
@@ -3809,12 +3830,9 @@ even when it is not strictly technically necessary.
   docker volume ls
   ```
 
-- And as you can expect, the `foo` key is gone:
-  ```bash
-  redis get foo
-  ```
-
 ]
+
+(You should see one extra volume.)
 
 ---
 
