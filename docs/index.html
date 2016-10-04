@@ -201,13 +201,6 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 ---
 
-## Chapter 5: metrics
-
-- Setting up Snap to collect and publish metric data
-- Using InfluxDB and Grafana for storage and display
-
----
-
 # Pre-requirements
 
 - Computer with network connection and SSH client
@@ -3106,7 +3099,7 @@ The output should look like the following:
   ```
 ---
 
-## Viewing our tasks dollars at work
+## Viewing our task dollars at work
 
 - The task is using a very simple publisher, `mock-file`
 
@@ -3141,7 +3134,7 @@ snapctl task watch <ID>
 
 To exit, hit `^C`
 
----
+???
 
 ## Stopping a task
 
@@ -3541,8 +3534,7 @@ In HTTP settings, fill as follows:
 
 In InfluxDB details, fill as follows:
 - Database = "snap"
-- User = "admin"
-- Password = "admin"
+- Leave user and password blank
 
 Finally, click on "add", you should see a green message saying "Success - Data source is working".
 If you see an orange box (sometimes without a message), it means that you got something wrong. Triple check everything again.
