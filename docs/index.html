@@ -177,15 +177,15 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 - Running our first Swarm service
 - Deploying a local registry
 - Overlay networks
+- Breaking into an overlay network
 
 ---
 
 ## Chapter 3: operating the Swarm
 
-- Breaking into an overlay network
 - Rolling updates
 - Centralized logging
-- Setting up ELK to store container logs
+- Metrics collection
 
 ---
 
@@ -3599,6 +3599,27 @@ Congratulations, you are viewing the CPU usage of a single container!
 ---
 
 ![Screenshot showing the end result](grafana-add-graph.png)
+
+---
+
+## Prometheus
+
+- Prometheus is another metrics collection system
+
+- Snap *pushes* metrics; Prometheus *pulls* them
+
+- The *Prometheus server* pulls, stores, and displays metrics
+
+- Its configuration defines a list of *exporter* endpoints
+  <br/>(that list can be dynamic, using e.g. Consul, DNS, Etcd...)
+
+- The exporters expose metrics over HTTP using a simple line-oriented format
+
+- A few days ago, I managed to corner Prometheus maintainer 
+  [@juliusvolz](https://twitter.com/juliusvolz) and we deployed Prometheus on a
+  Swarm cluster, gathering node and container metrics!
+
+  (You can expect a blog post and updated chapter soon!)
 
 ---
 
