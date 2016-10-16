@@ -2672,7 +2672,7 @@ What we will do:
 
 - Create the ElasticSearch service:
   ```bash
-  docker service create --network logging --name elasticsearch elasticsearch
+  docker service create --network logging --name elasticsearch elasticsearch:2.4
   ```
 
 ]
@@ -2695,7 +2695,7 @@ What we will do:
 - Create the Kibana service:
   ```bash
   docker service create --network logging --name kibana --publish 5601:5601 \
-         -e ELASTICSEARCH_URL=http://elasticsearch:9200 kibana
+         -e ELASTICSEARCH_URL=http://elasticsearch:9200 kibana:4.6
   ```
 
 ]
@@ -2715,7 +2715,7 @@ What we will do:
 - Create the Logstash service:
   ```bash
     docker service create --network logging --name logstash -p 12201:12201/udp \
-           logstash -e "$(cat ~/orchestration-workshop/elk/logstash.conf)"
+           logstash:2.4 -e "$(cat ~/orchestration-workshop/elk/logstash.conf)"
   ```
 
 ]
