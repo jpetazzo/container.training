@@ -123,18 +123,6 @@ system("echo 1000000 | sudo tee /proc/sys/net/nf_conntrack_max")
 # This will install the latest Docker.
 system("curl --silent https://{}/ | grep -v '( set -x; sleep 20 )' | sudo sh".format(ENGINE_VERSION))
 
-# Make sure that the daemon listens on 55555 (for orchestration workshop).
-# To test, run: export DOCKER_HOST=tcp://localhost:55555 ; docker ps
-# or, run "curl localhost:55555" (it should return 404 not found). If it tells you connection refused, that's a bad sign
-system("sudo sed -i 's,-H fd://$,-H fd:// -H tcp://0.0.0.0:55555,' /lib/systemd/system/docker.service")
-system("sudo systemctl daemon-reload")
-
-# There seems to be a bug in the systemd scripts; so work around it.
-# See https://github.com/docker/docker/issues/18444
-# If docker is already running, need to do a restart
-system("curl --silent localhost:55555 || sudo systemctl restart docker ")  # does this work? if not, next line should cover it
-system("sudo systemctl start docker || true")
-
 ### Install docker-compose
 #system("sudo pip install -U docker-compose=={}".format(COMPOSE_VERSION))
 system("sudo curl -sSL -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/{}/docker-compose-{}-{}".format(COMPOSE_VERSION, platform.system(), platform.machine()))
@@ -154,7 +142,6 @@ system("while ! sudo -u docker docker version ; do sleep 2; done")
 ### Install Swarm
 system("docker pull swarm:{}".format(SWARM_VERSION))
 system("docker tag -f swarm:{} swarm".format(SWARM_VERSION))
-
 
 ### BEGIN CLUSTERING ###
 
@@ -206,4 +193,7 @@ pssh "sudo -u docker [ -f /home/docker/.ssh/id_rsa ] || ssh -o StrictHostKeyChec
 pssh "grep docker@ /home/docker/.ssh/authorized_keys \
     || cat /home/docker/.ssh/id_rsa.pub \
         | sudo -u docker tee -a /home/docker/.ssh/authorized_keys"
+
+# On node1, create and deploy TLS certs using Docker Machine
+pssh "if grep -q node1 /tmp/node; then grep ' node' /etc/hosts | xargs -n2 sudo -H -u docker docker-machine create -d generic --generic-ssh-user docker --generic-ip-address; fi"
 

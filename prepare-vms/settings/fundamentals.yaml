@@ -28,6 +28,6 @@ footer: >
 url: http://container.training/
 
 engine_version: get.docker.com
-compose_version: 1.7.1
-machine_version: 0.6.0
-swarm_version: 1.2.2
+compose_version: 1.8.1
+machine_version: 0.8.2
+swarm_version: latest

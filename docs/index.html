@@ -345,6 +345,7 @@ You are welcome to use the method that you feel the most comfortable with.
 
 - Engine 1.12.2-rc1
 - Compose 1.8.1
+- Machine 0.8.2
 
 .exercise[
 
@@ -352,6 +353,7 @@ You are welcome to use the method that you feel the most comfortable with.
   ```bash
   docker version
   docker-compose -v
+  docker-machine -v
   ```
 
 ]
@@ -1093,15 +1095,143 @@ ehb0...4fvx    ip-172-31-4-180  Ready   Active
 
 - We don't have to SSH into the other nodes, we can use the Docker API
 
-- Our nodes (for this workshop) expose the Docker API over port 55555,
-  without authentication (DO NOT DO THIS IN PRODUCTION; FOR EDUCATIONAL USE ONLY)
+- Our nodes expose the Docker API over port 2376/tcp,
+  <br/>
+  protected by TLS mutual authentication
+
+- To connect to other nodes with the Docker API, we will use Docker Machine
+
+  (Our nodes have been suitably pre-configured to be controlled through `node1`)
+
+---
+
+## Docker Machine
+
+- Docker Machine has two primary uses:
+
+  - provisioning cloud instances running the Docker Engine
+
+  - managing local Docker VMs within e.g. VirtualBox
+
+- Docker Machine is purely optional
+
+- It makes it easy to create, upgrade, manage... Docker hosts:
+
+  - on your favorite cloud provider
+  
+  - locally (e.g. to test clustering, or different versions)
+  
+  - across different cloud providers
+
+---
+
+## Docker Machine basic usage
+
+- We will learn two commands:
+
+  - `docker-machine ls` (list existing hosts)
+
+  - `docker-machine env` (switch to a specific host)
 
 .exercise[
 
-- Set `DOCKER_HOST` and add `node3` to the Swarm:
+- List configured hosts:
   ```bash
-    DOCKER_HOST=tcp://node3:55555 docker swarm join \
-      --token $(docker swarm join-token -q worker) node1:2377
+  docker-machine ls
+  ```
+
+]
+
+You should see your 5 nodes.
+
+---
+
+## How did we make our 5 nodes show up there?
+
+*For the curious...*
+
+- This was done by our VM provisioning scripts
+
+- After setting up everything else, `node1` adds the 5 nodes
+  to the local Docker Machine configuration
+  (located in `$HOME/.docker/machine`)
+
+- Nodes are added using [Docker Machine generic driver](https://docs.docker.com/machine/drivers/generic/)
+
+  (It skips machine provisioning and jumps straight to the configuration phase)
+
+- Docker Machine creates TLS certificates and deploys them to the nodes through SSH
+
+---
+
+## Using Docker Machine to communicate with a node
+
+- To select a node, use `eval $(docker-machine nodeX)`
+
+- This sets a number of environment variables
+
+- To unset these variables, use `eval $(docker-machine -u)`
+
+.exercise[
+
+- View the variables used by Docker Machine:
+  ```bash
+  docker-machine env node3
+  ```
+
+]
+
+---
+
+## Getting the token
+
+- First, let's store the join token in a variable
+
+.exercise[
+
+- Make sure we talk to the local node:
+  ```bash
+  eval $(docker-machine env -u)
+  ```
+
+- Get the join token:
+  ```bash
+  TOKEN=$(docker swarm join-token -q worker)
+  ```
+
+]
+
+---
+
+## Adding a node through the Docker API
+
+- Now, let's use Docker Machine to switch to `node3` and add it to the cluster
+
+.exercise[
+
+- Communicate with `node3`:
+  ```bash
+  eval $(docker-machine env node3)
+  ```
+
+- Add `node3` to the Swarm:
+  ```bash
+  docker swarm join --token $TOKEN node1:2377
+  ```
+
+]
+
+---
+
+## Checking that our node is here
+
+- We have to go back to the local node first
+
+.exercise[
+
+- Reset the environment variables:
+  ```bash
+  eval $(docker-machine env -u)
   ```
 
 - Check that the node is here:
@@ -1136,11 +1266,12 @@ The node keys and certificates are automatically renewed on regular intervals
 
 .exercise[
 
-- Add nodes 4 and 5 to the cluster as *managers* (instead of simple *workers*):
+- Get the manager token and use it to add nodes 4 and 5 to the cluster:
   ```bash
+    TOKEN=$(docker swarm join-token -q manager)
     for N in 4 5; do
-      DOCKER_HOST=tcp://node$N:55555 docker swarm join \
-        --token $(docker swarm join-token -q manager) node1:2377
+      eval $(docker-machine env node$N)
+      docker swarm join --token $TOKEN node1:2377
     done
   ```
 
@@ -1350,8 +1481,10 @@ Go back to `node1` afterwards.
 
 ]
 
-Each request should be served by a different ElasticSearch instance.
+You might get a few `Connection refused` errors; just keep trying.
 
+Each request should be served by a different ElasticSearch instance.
+<br/>
 (You will see each instance advertising a different name.)
 
 ---
