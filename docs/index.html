@@ -998,8 +998,8 @@ Swarm: active
 
 The output should look like the following:
 ```
-ID             HOSTNAME         STATUS  AVAILABILITY  MANAGER STATUS
-8jud...ox4b *  ip-172-31-4-182  Ready   Active        Leader
+ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
+8jud...ox4b *  node1     Ready   Active        Leader
 ```
 
 ---
@@ -1084,9 +1084,9 @@ ID             HOSTNAME         STATUS  AVAILABILITY  MANAGER STATUS
 
 The output should be similar to the following:
 ```
-ID             HOSTNAME         STATUS  AVAILABILITY  MANAGER STATUS
-8jud...ox4b *  ip-172-31-4-182  Ready   Active        Leader
-ehb0...4fvx    ip-172-31-4-180  Ready   Active
+ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
+8jud...ox4b *  node1     Ready   Active        Leader
+ehb0...4fvx    node2     Ready   Active
 ```
 
 ---
@@ -1118,9 +1118,9 @@ ehb0...4fvx    ip-172-31-4-180  Ready   Active
 - It makes it easy to create, upgrade, manage... Docker hosts:
 
   - on your favorite cloud provider
-  
+
   - locally (e.g. to test clustering, or different versions)
-  
+
   - across different cloud providers
 
 ---
@@ -1358,7 +1358,7 @@ As we saw earlier, you can only control the Swarm through a manager node.
 
 - Log into the node:
   ```bash
-  ssh ip-172-31-XXX-XXX
+  ssh nodeX
   ```
 
 ]
@@ -2735,7 +2735,7 @@ What we will do:
 
 - Log into that node:
   ```bash
-  ssh ip-172-31-XXX-XXX
+  ssh nodeX
   ```
 
 ]
@@ -3072,7 +3072,7 @@ curl -sSL $RELEASEURL/snap-plugins-$SNAPVER-linux-amd64.tar.gz |
      tar -C /opt -zxf-
 ln -s snap-$SNAPVER /opt/snap
 for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
-'
+' If you copy-paste that block, don't forget that final quote :-)
 ```
 
 ]
@@ -3375,7 +3375,7 @@ To exit, hit `^C`
 
 ]
 
-This should show the 5 nodes with their hostnames (`ip-172-31-...`).
+This should show the 5 nodes with their hostnames.
 
 ---
 
@@ -3626,7 +3626,7 @@ the task (it will delete+re-create on all nodes).
 
 - Create the Grafana service:
   ```bash
-  docker service create --name grafana --publish 3000:3000 grafana/grafana
+  docker service create --name grafana --publish 3000:3000 grafana/grafana:3.1.1
   ```
 
 ]
@@ -3740,19 +3740,226 @@ Congratulations, you are viewing the CPU usage of a single container!
 
 - The exporters expose metrics over HTTP using a simple line-oriented format
 
-- A few days ago, I managed to corner Prometheus co-founder 
-  [@juliusvolz](https://twitter.com/juliusvolz) and we deployed Prometheus on a
-  Swarm cluster, gathering node and container metrics!
-
-  (You can expect a blog post and updated chapter soon!)
+  (An optimized format using protobuf is also possible)
 
 ---
 
-class: title
+## It's all about the `/metrics`
 
-#  Additional content
+- This is was the *node exporter* looks like:
 
-## (Might require unhealthy amounts of coffee and/or Club Mate)
+  http://demo.robustperception.io:9100/metrics
+
+- Prometheus itself exposes its own internal metrics, too:
+
+  http://demo.robustperception.io:9090/metrics
+
+- A *Prometheus server* will *scrape* URLs like these
+
+---
+
+## Collecting metrics with Prometheus on Swarm
+
+- We will run two *global services* (i.e. scheduled on all our nodes):
+
+  - the Prometheus *node exporter* to get node metrics
+
+  - Google's cAdvisor to get container metrics
+
+- We will run a Prometheus server to scrape these exporters
+
+- The Prometheus server will be configured to use DNS service discovery
+
+- We will use `tasks.<servicename>` for service discovery
+
+- All these services will be placed on a private internal network
+
+---
+
+## Creating an overlay network for Prometheus
+
+- This is the easiest step ☺
+
+.exercise[
+
+- Create an overlay network:
+  ```bash
+  docker network create --driver overlay prom
+  ```
+
+]
+
+---
+
+## Running the node exporter
+
+- The node exporter *should* run directly on the hosts
+- However, it can run from a container, if configured properly
+  <br/>
+  (it needs to access the host's filesystems, in particular /proc and /sys)
+
+.exercise[
+
+- Start the node exporter:
+  ```bash
+    docker service create --name node --mode global --network prom \
+     --mount type=bind,source=/proc,target=/host/proc \
+     --mount type=bind,source=/sys,target=/host/sys \
+     --mount type=bind,source=/,target=/rootfs \
+     prom/node-exporter \
+      -collector.procfs /host/proc \
+      -collector.sysfs /host/proc \
+      -collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)"
+   ```
+
+]
+
+---
+
+## Running cAdvisor
+
+- Likewise, cAdvisor *should* run directly on the hosts
+
+- But it can run in containers, if configured properly
+
+.exercise[
+
+- Start the cAdvisor collector:
+  ```bash
+    docker service create --name cadvisor --network prom --mode global \
+      --mount type=bind,source=/,target=/rootfs \
+      --mount type=bind,source=/var/run,target=/var/run \
+      --mount type=bind,source=/sys,target=/sys \
+      --mount type=bind,source=/var/lib/docker,target=/var/lib/docker \
+      google/cadvisor:latest
+  ```
+
+]
+
+---
+
+## Configuring the Prometheus server
+
+This will be our configuration file for Prometheus:
+
+```yaml
+global:
+  scrape_interval: 1s
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: 'node'
+    dns_sd_configs:
+      - names: ['tasks.node']
+        type: 'A'
+        port: 9100
+  - job_name: 'cadvisor'
+    dns_sd_configs:
+      - names: ['tasks.cadvisor']
+        type: 'A'
+        port: 8080
+```
+
+---
+
+## Passing the configuration to the Prometheus server
+
+- We need to provide our custom configuration to the Prometheus server
+
+- The easiest solution is to create a custom image bundling this configuration
+
+- We will use a very simple Dockerfile:
+  ```dockerfile
+  FROM prom/prometheus
+  COPY prometheus.yml /etc/prometheus/prometheus.yml
+  ```
+
+  (The configuration file, and the Dockerfile, are in the `prom` subdirectory)
+
+- We will build this image, and push it to our local registry
+
+- Then we will create a service using this image
+
+---
+
+## Building our custom Prometheus image
+
+- We will use the local registry started previously on localhost:5000
+
+.exercise[
+
+- Build the image using the provided Dockerfile:
+  ```bash
+  docker build -t localhost:5000/prometheus ~/orchestration-workshop/prom
+  ```
+
+- Push the image to our local registry:
+  ```bash
+  docker push localhost:5000/prometheus
+  ```
+
+]
+
+---
+
+## Running our custom Prometheus image
+
+- That's the only service that needs to be published
+
+  (If we want to access Prometheus from outside!)
+
+.exercise[
+
+- Start the Prometheus server:
+  ```bash
+    docker service create --network prom --name prom \
+           --publish 9090:9090 localhost:5000/prometheus
+  ```
+
+]
+
+---
+
+## Checking our Prometheus server
+
+- First, let's make sure that Prometheus is correctly scraping all metrics
+
+.exercise[
+
+- Connect to `http://<any.node.address>:9090`
+
+- Click on "status", then "targets"
+
+]
+
+You should see 11 endpoints (5 cadvisor, 5 node, 1 prometheus).
+
+Their state should be "UP".
+
+---
+
+## Displaying metrics directly from Prometheus
+
+- This is easy ... if you are familiar with PromQL
+
+.exercise[
+
+- Click on "Graph", and in "expression", paste the following:
+  ```
+    sum without (cpu) (
+      irate(
+        container_cpu_usage_seconds_total{
+          container_label_com_docker_swarm_task_name="influxdb.1",
+          id=~"/docker/.*"
+          }[1m]
+      )
+    )
+  ```
+
+- Click on the blue "Execute" button and on the "Graph" tab just below
+
+]
 
 ---
 
