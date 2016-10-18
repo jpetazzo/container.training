@@ -208,19 +208,19 @@ get_ami() {
     #AMI=$(suggest_amis | grep -v ^REGION | head -1 | awk '{print $7}')
     case $AWS_DEFAULT_REGION in
     eu-central-1)
-      AMI=ami-4d2bc622
+      AMI=ami-6f7c8200
       ;;
     eu-west-1)
-      AMI=ami-bdb13bce
+      AMI=ami-bf83cecc
       ;;
     us-east-1)
-      AMI=ami-3ffc1052
+      AMI=ami-34663323
       ;;
     us-west-1)
-      AMI=ami-bdb13bce
+      AMI=ami-5d551d3d
       ;;
     us-west-2)
-      AMI=ami-b33dc0d3
+      AMI=ami-43d40e23
       ;;
     esac
     echo $AMI
