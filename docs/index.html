@@ -3213,8 +3213,7 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
 
 ## Our first task manifest
 
-```json
----
+```yaml
   version: 1
   schedule:
     type: "simple" # collect on a set interval
