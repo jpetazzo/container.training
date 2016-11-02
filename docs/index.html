@@ -4038,9 +4038,13 @@ Their state should be "UP".
   docker service create --name stateful -p 10000:6379 redis
   ```
 
-- Check that we can connect to it (replace XX.XX.XX.XX with any node's IP address):
+- Check that we can connect to it.
   ```bash
-  docker run --rm redis redis-cli -h `XX.XX.XX.XX` -p 10000 info server
+  IP_ADDRESS=$(ifconfig eth0 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1)
+  ```
+		
+  ```bash
+  docker run --rm redis redis-cli -h $IP_ADDRESS -p 10000 info server
   ```
 
 ]
@@ -4055,7 +4059,7 @@ Their state should be "UP".
 
 - Define a shell alias to make our lives easier:
   ```bash
-  alias redis='docker run --rm redis redis-cli -h `XX.XX.XX.XX` -p 10000'
+  alias redis='docker run --rm redis redis-cli -h $IP_ADDRESS -p 10000'
   ```
 
 - Try it:
