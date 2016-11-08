@@ -131,9 +131,9 @@ aws ec2 authorize-security-group-ingress --group-name docker-machine --protocol 
 ```
 
 
-### MicroSoft Azure
+### Microsoft Azure
 
-You have to retrive your subscription ID, and set the following environment
+You have to retrieve your subscription ID, and set the following environment
 variables:
 
 ```bash

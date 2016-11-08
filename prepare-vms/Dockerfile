@@ -24,7 +24,7 @@ RUN pip install \
     PyYAML \
     termcolor
 
-WORKDIR $HOME
+WORKDIR $$HOME
 RUN echo "alias ll='ls -lahF'" >> /root/.bashrc
 ENTRYPOINT ["/root/prepare-vms/scripts/trainer-cli"]
 
