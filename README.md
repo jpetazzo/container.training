@@ -1,25 +1,87 @@
-# Orchestration at Scale with Docker
+# Docker Orchestration Workshop
 
-This is the material for the "Docker orchestration workshop"
-written and delivered by Jérôme Petazzoni (and possibly others)
-at multiple conferences and events like:
+This is the material (slides, scripts, demo app, and other
+code samples) for the "Docker orchestration workshop"
+written and delivered by Jérôme Petazzoni (and lots of others)
+non-stop since June 2015.
 
-- QCON, New York City (2015, June)
-- KCDC, Kansas City (2015, June)
-- JDEV, Bordeaux (2015, July)
-- OSCON, Portland (2015, July)
-- StrangeLoop, Saint Louis (2015, September)
-- LISA, Washington D.C. (2015, November)
-- SCALE, Pasadena (2016, January)
-- Zenika, Paris (2016, February)
-- Container Solutions, Amsterdam (2016, February)
 
 ## Content
 
 - Chapter 1: Getting Started: running apps with docker-compose
 - Chapter 2: Scaling out with Swarm Mode
-- Chapter 3: Operating the Swarm (networks, updates, logging)
+- Chapter 3: Operating the Swarm (networks, updates, logging, metrics)
 - Chapter 4: Deeper in Swarm (stateful services, scripting, DAB's)
+
+
+## Quick start (or, "I want to try it!")
+
+This workshop is designed to be *hands on*, i.e. to give you a step-by-step
+guide where you will build your own Docker cluster, and use it to deploy
+a sample application.
+
+The easiest way to follow the workshop is to attend it when it is delivered
+by an instructor. In that case, the instructor will generally give you
+credentials (IP addresses, login, password) to connect to your own cluster
+of virtual machines; and the [slides](http://jpetazzo.github.io/orchestration-workshop)
+assume that you have your own cluster indeed.
+
+If you want to follow the workshop on your own, and want to have your
+own cluster, we have multiple solutions for you!
+
+
+### Using [play-with-docker](http://play-with-docker.com/)
+
+This method is very easy to get started (you don't need any extra account
+or resources!) but will require a bit of adaptation from the workshop slides.
+
+To get started, go to [play-with-docker](http://play-with-docker.com/), and
+click on _ADD NEW INSTANCE_ five times. You will get five "docker-in-docker"
+containers, all on a private network. These are your five nodes for the workshop!
+
+When the instructions in the slides tell you to "SSH on node X", just go to
+the tab corresponding to that node.
+
+The nodes are not directly reachable from outside; so when the slides tell
+you to "connect to the IP address of your node on port XYZ" you will have
+to work around using one of the following methods.
+
+- You can use a proxy provided by Play-With-Docker. When the slides
+  instruct you to connect to nodeX on port ABC, instead, you will connect
+  to http://play-with-docker.com/XXX.XXX.XXX.XXX:ABC, where XXX.XXX.XXX.XXX
+  is the IP address of nodeX.
+- You can use ngrok. _I'm not familiar with ngrok, so I will try to update
+  these instructions later to give more details; but feel free to submit a
+  PR if you feel like it!_
+
+Note that the instances provided by Play-With-Docker have a short lifespan
+(a few hours only), so if you want to do the workshop over multiple sessions,
+you will have to start over each time ... Or create your own cluster with
+one of the methods described below.
+
+
+### Using Docker Machine to create your own cluster
+
+This method requires a bit more work to get started, but you get a permanent
+cluster, with less limitations.
+
+You will need Docker Machine (if you have Docker Mac, Docker Windows, or
+the Docker Toolbox, you're all set already). You will also need:
+
+- credentials for a cloud provider (e.g. API keys or tokens),
+- or a local install of VirtualBox or VMware (or anything supported
+  by Docker Machine).
+
+Full instructions are in the [prepare-machine](prepare-machine) subdirectory.
+
+
+### Using our scripts to mass-create a bunch of clusters
+
+Since we often deliver the workshop during conferences or similar events,
+we have scripts to automate the creation of a bunch of clusters using
+AWS EC2. If you want to create multiple clusters and have EC2 credits,
+check the [prepare-vms](prepare-vms) directory for more information.
+
 
 ## How This Repo is Organized
 
@@ -32,8 +94,11 @@ at multiple conferences and events like:
 - **prepare-local**
   - untested scripts for automating the creation of local virtualbox VM's
   (could use your help validating)
+- **prepare-machine**
+  - instructions explaining how to use Docker Machine to create VMs
 - **prepare-vms**
   - scripts for automating the creation of AWS instances for students
+
 
 ## Slide Deck
 
@@ -47,6 +112,7 @@ at multiple conferences and events like:
 - They use https://remarkjs.com to allow simple markdown in a html file that
   remark will transform into a presentation in the browser.
 
+
 ## Sample App: Dockercoins!
 
 The sample app is in the `dockercoins` directory. It's used during all chapters
@@ -58,7 +124,14 @@ To see it in action:
 - this will build and start all the services
 - the web UI will be available on port 8000
 
+
+*If you just want to run the workshop for yourself, you can stop reading
+here. If you want to deliver the workshop for others (i.e. if you
+want to become an instructor), keep reading!*
+
+
 ## Running the Workshop
+
 
 ### General timeline of planning a workshop
 
@@ -151,6 +224,27 @@ content but you also know to skip during presentation.
 - Last 15-30 minutes is for stateful services, DAB files, and questions.
 
 
+## Past events
+
+Since its inception, this workshop has been delivered dozens of times,
+to thousands of people, and has continuously evolved. This is a short
+history of the first times it was delivered. Look also in the "tags"
+of this repository: they all correspond to successive iterations of
+this workshop. If you attended a past version of the workshop, you
+can use these tags to see what has changed since then.
+
+- QCON, New York City (2015, June)
+- KCDC, Kansas City (2015, June)
+- JDEV, Bordeaux (2015, July)
+- OSCON, Portland (2015, July)
+- StrangeLoop, Saint Louis (2015, September)
+- LISA, Washington D.C. (2015, November)
+- SCALE, Pasadena (2016, January)
+- Zenika, Paris (2016, February)
+- Container Solutions, Amsterdam (2016, February)
+- ... and much more!
+
+
 # Problems? Bugs? Questions?
 
 If there is a bug and you can fix it: submit a PR.
@@ -170,3 +264,4 @@ conference or for your company: contact me (jerome
 at docker dot com).
 
 Thank you!
+
