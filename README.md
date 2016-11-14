@@ -53,12 +53,12 @@ your nodes, just follow these instructions:
 - you should see the ngrok CLI
 - when it says "Tunnel Status: online", you're set!
 - browse to http://????????.ngrok.io, it will route to port 8000
-- you can stop ngrok with Ctrl-C, or put it in the background with
-  Ctrl-P Ctrl-Q
-- if you put ngrok in the background, you can reattach or kill
-  its container like any other container
-- you can also use `tmux` on your node, and keep each ngrok
-  instance running in its own tmux pane
+- you can stop ngrok with Ctrl-C
+- if you want to keep ngrok runing in the background, we recommend
+  that you use `tmux`
+- NOTE: there might be a bug right now with play-with-docker and
+  Ctrl-P Ctrl-Q, so we don't recommend that you try to detach from
+  the ngrok container! Sorry...
 
 <!--
 
