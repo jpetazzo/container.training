@@ -44,15 +44,30 @@ the tab corresponding to that node.
 
 The nodes are not directly reachable from outside; so when the slides tell
 you to "connect to the IP address of your node on port XYZ" you will have
-to work around using one of the following methods.
+to use a different method.
+
+We suggest to use ngrok. When you need to expose, say, port 8000 on one of
+your nodes, just follow these instructions:
+
+- on that node, run `docker run --net host -ti jpetazzo/ngrok http 8000`
+- you should see the ngrok CLI
+- when it says "Tunnel Status: online", you're set!
+- browse to http://????????.ngrok.io, it will route to port 8000
+- you can stop ngrok with Ctrl-C, or put it in the background with
+  Ctrl-P Ctrl-Q
+- if you put ngrok in the background, you can reattach or kill
+  its container like any other container
+- you can also use `tmux` on your node, and keep each ngrok
+  instance running in its own tmux pane
+
+<!--
 
 - You can use a proxy provided by Play-With-Docker. When the slides
   instruct you to connect to nodeX on port ABC, instead, you will connect
   to http://play-with-docker.com/XXX.XXX.XXX.XXX:ABC, where XXX.XXX.XXX.XXX
   is the IP address of nodeX.
-- You can use ngrok. _I'm not familiar with ngrok, so I will try to update
-  these instructions later to give more details; but feel free to submit a
-  PR if you feel like it!_
+
+-->
 
 Note that the instances provided by Play-With-Docker have a short lifespan
 (a few hours only), so if you want to do the workshop over multiple sessions,
