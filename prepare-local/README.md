@@ -13,6 +13,7 @@ Virtualbox, Vagrant and Ansible
 - Virtualbox: https://www.virtualbox.org/wiki/Downloads
 
 - Vagrant: https://www.vagrantup.com/downloads.html
+  - install vagrant-vbguest plugin (https://github.com/dotless-de/vagrant-vbguest)
 
 - Ansible:
   - install Ansible's prerequisites:
