@@ -17,7 +17,7 @@ Virtualbox, Vagrant and Ansible
 - Ansible:
   - install Ansible's prerequisites:
 
-          $ sudo pip install paramiko PyYAML Jinja2 httplib2 six
+          $ sudo pip install paramiko PyYAML Jinja2 httplib2 six pycrypto
 
   - clone the Ansible repository and checkout to a stable version
     (don't forget the `--recursive` argument when cloning!):
