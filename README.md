@@ -46,19 +46,20 @@ The nodes are not directly reachable from outside; so when the slides tell
 you to "connect to the IP address of your node on port XYZ" you will have
 to use a different method.
 
-We suggest to use ngrok. When you need to expose, say, port 8000 on one of
-your nodes, just follow these instructions:
+We suggest to use "supergrok", a container offering a NGINX+ngrok combo to
+expose your services. To use it, just start (on any of your nodes) the
+`jpetazzo/supergrok` image. The image will output further instructions:
 
-- on that node, run `docker run --net host -ti jpetazzo/ngrok http 8000`
-- you should see the ngrok CLI
-- when it says "Tunnel Status: online", you're set!
-- browse to http://????????.ngrok.io, it will route to port 8000
-- you can stop ngrok with Ctrl-C
-- if you want to keep ngrok runing in the background, we recommend
-  that you use `tmux`
-- NOTE: there might be a bug right now with play-with-docker and
-  Ctrl-P Ctrl-Q, so we don't recommend that you try to detach from
-  the ngrok container! Sorry...
+```
+docker run --name supergrok -d jpetazzo/supergrok
+docker logs --follow supergrok
+```
+
+The logs of the container will give you a tunnel address and explain you
+how to connected to exposed services. That's all you need to do!
+
+We are also working on a native proxy, embedded to Play-With-Docker.
+Stay tuned!
 
 <!--
 
