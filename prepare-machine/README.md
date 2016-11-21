@@ -1,5 +1,4 @@
-# Setting up your own cluster
-
+# Setting up your own cluster 
 If you want to go through this orchestration workshop on your own,
 you will need a cluster of Docker nodes.
 
@@ -180,10 +179,10 @@ done
 (The command takes a while. Be patient.)
 
 
-### Local VirtualBox
+### Local VirtualBox or VMware Fusion
 
 If you want to run with local VMs, set the environment variable
-`MACHINE_DRIVER` to `virtualbox` and create your nodes:
+`MACHINE_DRIVER` to `virtualbox` or `vmwarefusion` and create your nodes:
 
 ```bash
 export MACHINE_DRIVER=virtualbox
