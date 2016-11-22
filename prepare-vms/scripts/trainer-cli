@@ -208,19 +208,22 @@ get_ami() {
     #AMI=$(suggest_amis | grep -v ^REGION | head -1 | awk '{print $7}')
     case $AWS_DEFAULT_REGION in
     eu-central-1)
-      AMI=ami-6f7c8200
+      AMI=ami-82cf0aed
       ;;
     eu-west-1)
-      AMI=ami-bf83cecc
+      AMI=ami-07174474
       ;;
     us-east-1)
-      AMI=ami-34663323
+      AMI=ami-45b69e52
+      ;;
+    us-east-2)
+      AMI=ami-1b772d7e
       ;;
     us-west-1)
-      AMI=ami-5d551d3d
+      AMI=ami-dab5e0ba
       ;;
     us-west-2)
-      AMI=ami-43d40e23
+      AMI=ami-9ee24ffe
       ;;
     esac
     echo $AMI
@@ -396,7 +399,7 @@ run_cli() {
         result=$(aws ec2 run-instances \
             --key-name $AWS_KEY_NAME \
             --count $2 \
-            --instance-type c3.large \
+            --instance-type t2.medium \
             --client-token $TOKEN \
             --image-id $AMI)
         reservation_id=$(echo "$result" | head -1 | awk '{print $2}' )
