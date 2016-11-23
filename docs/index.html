@@ -1213,11 +1213,11 @@ You should see your 5 nodes.
 
 ## Using Docker Machine to communicate with a node
 
-- To select a node, use `eval $(docker-machine nodeX)`
+- To select a node, use `eval $(docker-machine env nodeX)`
 
 - This sets a number of environment variables
 
-- To unset these variables, use `eval $(docker-machine -u)`
+- To unset these variables, use `eval $(docker-machine env -u)`
 
 .exercise[
 
