@@ -65,6 +65,24 @@ In the official environment, Docker Machine and Docker
 Compose are installed on your nodes. If you use Docker
 Machine you will have to install at least Docker Compose.
 
+The easiest way to install Compose (verified to work
+with the EC2 and VirtualBox drivers, and probably others
+as well) is do use `docker-machine ssh` to connect
+to your node, then run the following command:
+
+```bash
+sudo curl -L \
+  https://github.com/docker/compose/releases/download/1.9.0/docker-compose-`uname -s`-`uname -m` \
+  -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+Note that it is not necessary (or even useful) to
+install Docker Machine on your nodes, since if you're
+following that guide, you already have Machine on
+your local computer. ☺
+
+
 ### IP addresses
 
 In some environments, your nodes will have multiple
@@ -129,6 +147,21 @@ following CLI command:
 ```bash
 aws ec2 authorize-security-group-ingress --group-name docker-machine --protocol -1 --cidr 0.0.0.0/0
 ```
+
+If Docker Machine fails, complaining that it cannot find
+the default VPC or subnet, this could be because you have
+an "old" EC2 account (created before the introduction of EC2
+VPC) and your account has no default VPC. In that case,
+you will have to create a VPC, a subnet in that VPC,
+and use the corresponding Machine flags (`--amazonec2-vpc-id`
+and `--amazonec2-subnet-id`) or environment variables
+(`AWS_VPC_ID` and `AWS_SUBNET_ID`) to tell Machine what to use.
+
+You will get similar error messages if you *have* set these
+flags (or environment variables) but the VPC (or subnets)
+indicated do not exist. This can happen if you frequently
+switch between different EC2 accounts, and forget that you
+have set the `AWS_VPC_ID` or `AWS_SUBNET_ID`.
 
 
 ### Microsoft Azure
