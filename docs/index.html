@@ -2706,12 +2706,10 @@ The current upgrade will continue at a faster pace.
 
 ## Building `swarmctl`
 
-- I thought I would enjoy a 1-minute break at this point
-
-- So we are going to compile SwarmKit (including `swarmctl`)
+- We are going to install a Go compiler, then download SwarmKit source and build it
 
 .exercise[
-- Download, compile, install SwarmKit with this one-liner:
+- Download, compile, and install SwarmKit with this one-liner:
   ```bash
   docker run -v /usr/local/bin:/go/bin golang \
          go get `-v` github.com/docker/swarmkit/...
@@ -2723,6 +2721,9 @@ Remove `-v` if you don't like verbose things.
 
 Shameless promo: for more Go and Docker love, check
 [this blog post](http://jpetazzo.github.io/2016/09/09/go-docker/)!
+
+Note: in the unfortunate event of SwarmKit *master* branch being broken,
+the build might fail. In that case, just skip the `swarmctl` section.
 
 ---
 
@@ -2742,7 +2743,7 @@ Shameless promo: for more Go and Docker love, check
 
 ]
 
-(Note: with Docker 1.12, that control socket is in `/var/lib/docker/swarm/control.sock`)
+(Note: with Docker 1.12, that control socket was in `/var/lib/docker/swarm/control.sock`)
 
 ---
 
