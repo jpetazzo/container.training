@@ -1268,6 +1268,10 @@ You should see your 5 nodes.
 
 ]
 
+Note: it can be useful to use a [custom shell prompt](
+https://github.com/jpetazzo/orchestration-workshop/blob/master/prepare-vms/scripts/postprep.rc#L68)
+reflecting the `DOCKER_HOST` variable.
+
 ---
 
 ## Checking that our node is here
@@ -1290,16 +1294,88 @@ You should see your 5 nodes.
 
 ---
 
-## Under the hood
+## Under the hood: docker swarm init
 
-When we do `docker swarm init`, a TLS root CA is created. Then a keypair is issued for the first node, and signed by the root CA.
+When we do `docker swarm init`:
 
-When further nodes join the Swarm, they are issued their own keypair, signed by the root CA, and they also receive the root CA public key and certificate.
+- a keypair is created for the root CA of our Swarm
 
-All communication is encrypted over TLS.
+- a keypair is created for the first node
 
-The node keys and certificates are automatically renewed on regular intervals
-<br/>(by default, 90 days; this is tunable with `docker swarm update`).
+- a certificate is issued for this node
+
+- the join tokens are created
+
+---
+
+## Under the hood: join tokens
+
+There is one token to *join as a worker*, and another to *join as a manager*.
+
+The join tokens have two parts:
+
+- a secret key (preventing unauthorized nodes from joining)
+
+- a fingerprint of the root CA certificate (preventing MITM attacks)
+
+If a token is compromised, it can be rotated instantly with:
+```
+docker swarm join-token --rotate <worker|manager>
+```
+
+---
+
+## Under the hood: docker swarm join
+
+When a node joins the Swarm:
+
+- it is issued its own keypair, signed by the root CA
+
+- if the node is a manager:
+
+  - it joins the Raft consensus
+  - it connects to the current leader
+  - it accepts connections from worker nodes
+
+- if the node is a worker:
+
+  - it connects to one of the managers (leader or follower)
+
+---
+
+## Under the hood: cluster communication
+
+- The *control plane* is encrypted over TLS
+
+- Keys and certificates are automatically renewed on regular intervals
+
+  (90 days by default; tunable with `docker swarm update`)
+
+- The *data plane* (communication between containers) is not encrypted by default
+
+  (but this can be activated on a by-network basis, using IPSEC,
+  leveraging hardware crypto if available)
+
+---
+
+## Under the hood: I want to know more!
+
+Revisit SwarmKit concepts:
+
+- Docker 1.12 Swarm Mode Deep Dive Part 1: Topology
+  ([video](https://www.youtube.com/watch?v=dooPhkXT9yI))
+
+- Docker 1.12 Swarm Mode Deep Dive Part 2: Orchestration
+  ([video](https://www.youtube.com/watch?v=_F6PSP-qhdA))
+
+Some presentations from the Docker Distributed Systems Summit in Berlin:
+
+- Heart of the SwarmKit: Topology Management
+  ([slides](https://speakerdeck.com/aluzzardi/heart-of-the-swarmkit-topology-management))
+
+- Heart of the SwarmKit: Store, Topology & Object Model
+  ([slides](http://www.slideshare.net/Docker/heart-of-the-swarmkit-store-topology-object-model))
+  ([video](https://www.youtube.com/watch?v=EmePhjGnCXY))
 
 ---
 
@@ -1403,9 +1479,12 @@ As we saw earlier, you can only control the Swarm through a manager node.
 
 .exercise[
 
-- Log into the node:
+- Log into the node *or* use Docker Machine to talk to it:
   ```bash
   ssh nodeX
+  ```
+  ```bash
+  eval $(docker-machine env nodeX)
   ```
 
 ]
@@ -1413,8 +1492,6 @@ As we saw earlier, you can only control the Swarm through a manager node.
 ---
 
 ## Viewing the logs of the container
-
-- We need to be logged into the node running the container
 
 .exercise[
 
@@ -1428,9 +1505,12 @@ As we saw earlier, you can only control the Swarm through a manager node.
   docker logs <containerID>
   ```
 
-]
+- Go back to `node1` afterwards by logging out of SSH, or by running:
+  ```bash
+  eval $(docker-machine env -u)
+  ```
 
-Go back to `node1` afterwards.
+]
 
 ---
 
@@ -1483,7 +1563,7 @@ Go back to `node1` afterwards.
 - Create an ElasticSearch service (and give it a name while we're at it):
   ```bash
   docker service create --name search --publish 9200:9200 --replicas 7 \
-         elasticsearch
+         elasticsearch:2
   ```
 
 - Check what's going on:
@@ -1850,20 +1930,19 @@ Can you see how?
 
 ## Caveats
 
-.warning[It is currently not possible to join an overlay network with `docker run --net ...`;
-this might or might not change in the future. We will see how to cope
-with this limitation.]
+.warning[In Docker 1.12, you cannot join an overlay network with `docker run --net ...`.]
+
+Starting with version 1.13, you can, if the network was created with the `--attachable` flag.
 
 *Why is that?*
 
 Placing a container on a network requires allocating an IP address for this container.
 
-The allocation must be done by a manager node (worker nodes cannot update Raft's data structures).
+The allocation must be done by a manager node (worker nodes cannot update Raft data).
 
-As a result, `docker run --net ...` would only work on manager nodes.
+As a result, `docker run --net ...` requires collaboration with manager nodes.
 
-Moreover, it would significantly alter the code path for `docker run`, even in classic mode.
-<br/>(That could be a bad thing if it's not done very carefully!)
+It alters the code path for `docker run`, so it is allowed only under strict circumstances.
 
 ---
 
@@ -2075,9 +2154,13 @@ class: title
 
 - We want to run tools like `ab` or `httping` on the internal network
 
-- .warning[This will be very hackish]
+--
 
-  (Better techniques and tools might become available in the future!)
+- Ah, if only we had created our overlay network with the `--attachable` flag ...
+
+--
+
+- Oh well, let's use this as an excuse to introduce New Ways To Do Things
 
 ---
 
@@ -2405,6 +2488,23 @@ WHY?!?
 
 ---
 
+## Global scheduling → global debugging
+
+- Traditional approach:
+
+  - log into a node
+  - install our Swiss Army Knife (if necessary)
+  - troubleshoot things
+
+- Proposed alternative:
+
+  - put our Swiss Army Knife in a container (e.g. [nicolaka/netshoot](https://hub.docker.com/r/nicolaka/netshoot/))
+  - run tests from multiple locations at the same time
+
+(This becomes practical with the `docker service log` command, available by enabling experimental features.)
+
+---
+
 # Rolling updates
 
 - We want to release a new version of the worker
@@ -2484,7 +2584,7 @@ Note how the build and push were fast (because caching).
 
 - Look at our service status:
   ```bash
-  watch -n1 "docker service ps worker | grep -v Shutdown.*Shutdown"
+  watch -n1 "docker service ps worker -a | grep -v Shutdown.*Shutdown"
   ```
 
 ]
@@ -2528,9 +2628,26 @@ By default, SwarmKit does a rolling upgrade, one instance at a time.
   docker service update worker --update-parallelism 2 --update-delay 5s
   ```
 
+]
+
+The current upgrade will continue at a faster pace.
+
+---
+
+## Rolling back
+
+- At any time (e.g. before the upgrade is complete), we can rollback
+
+.exercise[
+
 - Rollback to the previous image:
   ```bash
   docker service update worker --image $DOCKER_REGISTRY/dockercoins_worker:v0.1
+  ```
+
+- With Docker 1.13, we can also revert to the previous service specification:
+  ```bash
+  docker service update worker --rollback
   ```
 
 ]
@@ -2556,6 +2673,20 @@ By default, SwarmKit does a rolling upgrade, one instance at a time.
 
 ---
 
+## Getting task information for a given node
+
+- You can see all the tasks assigned to a node with `docker node ps`
+
+- It shows the *desired state* and *current state* of each task
+
+- `docker node ps` shows info about the current node
+
+- `docker node ps <node_name_or_id>` shows info for another node
+
+- `docker node ps -a` includes stopped and failed tasks
+
+---
+
 ## Getting cluster-wide task information
 
 - The Docker API doesn't expose this directly (yet)
@@ -2575,12 +2706,10 @@ By default, SwarmKit does a rolling upgrade, one instance at a time.
 
 ## Building `swarmctl`
 
-- I thought I would enjoy a 1-minute break at this point
-
-- So we are going to compile SwarmKit (including `swarmctl`)
+- We are going to install a Go compiler, then download SwarmKit source and build it
 
 .exercise[
-- Download, compile, install SwarmKit with this one-liner:
+- Download, compile, and install SwarmKit with this one-liner:
   ```bash
   docker run -v /usr/local/bin:/go/bin golang \
          go get `-v` github.com/docker/swarmkit/...
@@ -2592,6 +2721,9 @@ Remove `-v` if you don't like verbose things.
 
 Shameless promo: for more Go and Docker love, check
 [this blog post](http://jpetazzo.github.io/2016/09/09/go-docker/)!
+
+Note: in the unfortunate event of SwarmKit *master* branch being broken,
+the build might fail. In that case, just skip the `swarmctl` section.
 
 ---
 
@@ -2606,10 +2738,12 @@ Shameless promo: for more Go and Docker love, check
 - Set an alias so that swarmctl can run as root and use the right control socket:
   ```bash
     alias \
-      swarmctl='sudo swarmctl --socket /var/lib/docker/swarm/control.sock'
+      swarmctl='sudo swarmctl --socket /var/run/docker/swarm/control.sock'
   ```
 
 ]
+
+(Note: with Docker 1.12, that control socket was in `/var/lib/docker/swarm/control.sock`)
 
 ---
 
@@ -3119,7 +3253,7 @@ curl -sSL $RELEASEURL/snap-plugins-$SNAPVER-linux-amd64.tar.gz |
      tar -C /opt -zxf-
 ln -s snap-$SNAPVER /opt/snap
 for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
-' If you copy-paste that block, don't forget that final quote :-)
+' If you copy-paste that block, do not forget that final quote ☺
 ```
 
 ]
@@ -4696,7 +4830,7 @@ class: title
 -->
 
     </textarea>
-    <script src="remark-0.13.min.js" type="text/javascript">
+    <script src="remark-0.14.min.js" type="text/javascript">
     </script>
     <script type="text/javascript">
       var slideshow = remark.create({
