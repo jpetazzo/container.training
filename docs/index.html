@@ -804,7 +804,8 @@ class: title
 
 ## SwarmKit features
 
-- Highly-available, distributed store based on Raft
+- Highly-available, distributed store based on [Raft](
+  https://en.wikipedia.org/wiki/Raft_(computer_science))
   <br/>(more on next slide)
 
 - *Services* managed with a *declarative API*
@@ -823,11 +824,11 @@ class: title
 
 ## Where is the key/value store?
 
-- Many other orchestration systems use a key/value store
+- Many orchestration systems use a key/value store backed by a consensus algorithm
   <br/>
-  (k8s→etcd, mesos→zookeeper, etc.)
+  (k8s→etcd→Raft, mesos→zookeeper→ZAB, etc.)
 
-- SwarmKit stores information directly in Raft
+- SwarmKit implements the Raft algorithm directly
   <br/>
   (Nomad is similar; thanks [@cbednarski](https://twitter.com/@cbednarski),
   [@diptanu](https://twitter.com/diptanu) and others for point it out!)
