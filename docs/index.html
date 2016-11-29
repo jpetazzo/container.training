@@ -214,14 +214,21 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
   (but that's OK if you're not a Docker expert!)
 
-???
+---
 
 ## Nice-to-haves
 
 - [GitHub](https://github.com/join) account
   <br/>(if you want to fork the repo; also used to join Gitter)
 
+<!--
+
 - [Gitter](https://gitter.im/) account
+  <br/>(to join the conversation during the workshop)
+
+-->
+
+- [Slack](FIXME) account
   <br/>(to join the conversation during the workshop)
 
 - [Docker Hub](https://hub.docker.com) account
@@ -244,7 +251,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 - This is the stuff you're supposed to do!
 - Go to [container.training](http://container.training/) to view these slides
 - Join the chat room on
-  [Gitter](http://container.training/chat)
+  [Slack](http://container.training/chat)
 
 ]
 
@@ -380,6 +387,7 @@ You are welcome to use the method that you feel the most comfortable with.
   - `webui` = web interface to watch progress
 
 ???
+---
 
 ## Compose file format version
 
@@ -543,6 +551,7 @@ and displays aggregated logs.
 `docker-compose ps` also shows the ports exposed by the application.
 
 ???
+---
 
 ## Viewing logs
 
@@ -571,6 +580,7 @@ and displays aggregated logs.
 Tip: use `^S` and `^Q` to pause/resume log output.
 
 ???
+---
 
 ## Upgrading from Compose 1.6
 
@@ -616,7 +626,7 @@ Tip: use `^S` and `^Q` to pause/resume log output.
 
 - Our goal is to make that performance graph go up (without changing a line of code!)
 
-???
+--
 
 - Before trying to scale the application, we'll figure out if we need more resources
 
@@ -624,7 +634,7 @@ Tip: use `^S` and `^Q` to pause/resume log output.
 
 - For that, we will use good old UNIX tools on our Docker node
 
-???
+---
 
 ## Looking at resource usage
 
@@ -888,6 +898,7 @@ You can refer to the [NOMENCLATURE](https://github.com/docker/swarmkit/blob/mast
 - The SwarmKit API is also exposed (on a separate socket)
 
 ???
+---
 
 ## Illustration
 
@@ -979,7 +990,7 @@ Examples:
 
 ```bash
 docker swarm init --advertise-addr 10.0.9.2
-docker swarm init --advertise-addr eth0:23777
+docker swarm init --advertise-addr eth0:7777
 ```
 
 ---
@@ -1089,6 +1100,7 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
 ]
 
 ???
+---
 
 ## Check that the node was added correctly
 
@@ -1729,6 +1741,7 @@ We just have to adapt this to our application, which has 4 services!
 ]
 
 ???
+---
 
 ## Using Docker Hub
 
@@ -1763,6 +1776,7 @@ We just have to adapt this to our application, which has 4 services!
 ]
 
 ???
+---
 
 ## Using Docker Trusted Registry
 
@@ -1786,7 +1800,7 @@ If we wanted to use DTR, we would:
 - It will store images and layers to the local filesystem
   <br/>(but you can add a config file to use S3, Swift, etc.)
 
-<!--
+<!-- -->
 
 - Docker *requires* TLS when communicating with the registry
 
@@ -1982,6 +1996,7 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 ]
 
 ???
+---
 
 ## Wait for our application to be up
 
@@ -2133,6 +2148,70 @@ Let's treat ourselves with a nice pat on the back!
 --
 
 And carry on, we have much more to see and learn!
+
+---
+
+## Interlude: making our app "Swarm-ready"
+
+This app was written in June 2015. (One year before Swarm mode was released.)
+
+What did we change to make it compatible with Swarm mode?
+
+--
+
+.exercise[
+
+- Go to the app directory:
+  ```bash
+  cd ~/orchestration-workshop/dockercoins
+  ```
+
+- See modifications in the code:
+  ```bash
+  git log -p --since "4-JUL-2015" -- . ':!*.yml*' ':!*.html'
+  ```
+
+]
+
+---
+
+## What did we change in our app since its inception?
+
+- Compose files
+
+- HTML file (it contains an embedded contextual tweet)
+
+- Dockerfiles (to switch to smaller images)
+
+- That's it!
+
+--
+
+*We didn't change a single line of code in this app since it was written.*
+
+--
+
+*The images that were [built in June 2015](
+https://hub.docker.com/r/jpetazzo/dockercoins_worker/tags/)
+(when the app was written) can still run today ...
+<br/>... in Swarm mode (distributed across a cluster, with load balancing) ...
+<br/>... without any modification.*
+
+---
+
+## How did we design our app in the first place?
+
+- [Twelve-Factor App](https://12factor.net/) principles
+
+- Service discovery using DNS names
+
+  - Initially implemented as "links"
+
+  - Then "ambassadors"
+
+  - And now "services"
+
+- Existing apps might require more changes!
 
 ---
 
