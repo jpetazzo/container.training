@@ -3917,7 +3917,6 @@ the task (it will delete+re-create on all nodes).
 
 Fill the form exactly as follows:
 - Name = "snap"
-- Tick the "default" checkbox
 - Type = "InfluxDB"
 
 In HTTP settings, fill as follows:
@@ -3984,6 +3983,16 @@ Congratulations, you are viewing the CPU usage of a single container!
 ---
 
 ![Screenshot showing the end result](grafana-add-graph.png)
+
+---
+
+## Before moving on ...
+
+- Leave that tab open!
+
+- We are going to setup *another* metrics system
+
+- ... And then compare both graphs side by side
 
 ---
 
@@ -4131,7 +4140,7 @@ scrape_configs:
 
 - We will use a very simple Dockerfile:
   ```dockerfile
-  FROM prom/prometheus
+  FROM prom/prometheus:v1.4.1
   COPY prometheus.yml /etc/prometheus/prometheus.yml
   ```
 
@@ -4210,8 +4219,7 @@ Their state should be "UP".
     sum without (cpu) (
       irate(
         container_cpu_usage_seconds_total{
-          container_label_com_docker_swarm_task_name="influxdb.1",
-          id=~"/docker/.*"
+          container_label_com_docker_swarm_service_name="influxdb"
           }[1m]
       )
     )
@@ -4220,6 +4228,223 @@ Their state should be "UP".
 - Click on the blue "Execute" button and on the "Graph" tab just below
 
 ]
+
+---
+
+## Building the query from scratch
+
+- We are going to build the same query from scratch
+
+- This doesn't intend to be a detailed PromQL course
+
+- This is merely so that you (I) can pretend to know how the previous query works
+  <br/>so that your coworkers (you) can be suitably impressed (or not)
+
+  (Or, so that we can build other queries if necessary, or adapt if cAdvisor,
+  Prometheus, or anything else changes and requires editing the query!)
+
+---
+
+## Displaying a raw metric for *all* containers
+
+- Click on the "Graph" tab on top
+
+  *This takes us to a blank dashboard*
+
+- Click on the "Insert metric at cursor" drop down, and select `container_cpu_usage_seconds_total`
+
+  *This puts the metric name in the query box*
+
+- Click on "Execute"
+
+  *This fills a table of measurements below*
+
+- Click on "Graph" (next to "Console")
+
+  *This replaces the table of measurements with a series of graphs (after a few seconds)*
+
+---
+
+## Selecting metrics for a specific service
+
+- Hover over the lines in the graph
+
+  (Look for the ones that have labels like `container_label_com_docker_...`)
+
+- Edit the query, adding a condition between curly braces:
+
+  .small[`container_cpu_usage_seconds_total{container_label_com_docker_swarm_service_name="influxdb"}`]
+
+- Click on "Execute"
+
+  *Now we should see only one line per CPU*
+
+- If you want to select by container ID, you can use a regex match: `id=~"/docker/c4bf.*"`
+
+- You can also specify multiple conditions by separating them with commas
+
+---
+
+## Turn counters into rates
+
+- What we see is the total amount of CPU used (in seconds)
+
+- We want to see a *rate* (CPU time used / real time)
+
+- To get a moving average over 1 minute periods, enclose the current expression within:
+
+  ```
+  rate ( ... { ... } [1m] )
+  ```
+
+  *This should turn our steadily-increasing CPU counter into a wavy graph*
+
+- To get an instantaneous rate, use `irate` instead of `rate`
+
+  (The time window is then used to limit how far behind to look for data if data points
+  are missing in case of scrape failure; see [here](https://www.robustperception.io/irate-graphs-are-better-graphs/) for more details!)
+
+  *This should show spikes that were previously invisible because they were smoothed out*
+
+---
+
+## Aggregate multiple data series
+
+- We have one graph per CPU; we want to sum them
+
+- Enclose the whole expression within:
+
+  ```
+  sum ( ... )
+  ```
+
+  *We now see a single graph*
+
+- If we have multiple containers we can also collapse just the CPU dimension:
+
+  ```
+  sum without (cpu) ( ... )
+  ```
+
+  *This shows the same graph, but preserves the other labels*
+
+- Congratulations, you wrote your first PromQL expression from scratch!
+
+  (I'd like to thank [Johannes Ziemke](https://twitter.com/discordianfish) and
+  [Julius Volz](https://twitter.com/juliusvolz) for their help with Prometheus!)
+
+---
+
+## Comparing Snap and Prometheus data
+
+- If you haven't setup Snap, InfluxDB, and Grafana, skip this section
+
+- If you have closed the Grafana tab, you might have to re-setup a new dashboard
+
+  (Unless you saved it before navigating it away)
+
+- To re-do the setup, just follow again the instructions from the previous chapter
+
+---
+
+## Add Prometheus as a data source in Grafana
+
+.exercise[
+
+- In a new tab, connect to Grafana (port 3000)
+
+- Click on the Grafana logo (the orange spiral in the top-left corner)
+
+- Click on "Data Sources"
+
+- Click on the green "Add data source" button
+
+]
+
+We see the same input form that we filled earlier to connect to InfluxDB.
+
+---
+
+## Connecting to Prometheus from Grafana
+
+.exercise[
+
+- Enter "prom" in the name field
+
+- Select "Prometheus" as the source type
+
+- Enter http://(node IP address):9090 in the Url field
+
+- Select "direct" as the access method
+
+- Click on "Save and test"
+
+]
+
+Again, we should see a green box telling us "Data source is working."
+
+Otherwise, double-check every field and try again!
+
+---
+
+## Adding the Prometheus data to our dashboard
+
+.exercise[
+
+- Go back to the the tab where we had our first Grafana dashboard
+
+- Click on the blue "Add row" button in the lower right corner
+
+- Click on the green tab on the left; select "Add panel" and "Graph"
+
+]
+
+This takes us to the graph editor that we used earlier.
+
+---
+
+## Querying Prometheus data from Grafana
+
+The editor is a bit less friendly than the one we used for InfluxDB.
+
+.exercise[
+
+- Select "prom" as Panel data source
+
+- Paste the query in the query field:
+  ```
+    sum without (cpu, id) ( irate (
+      container_cpu_usage_seconds_total{
+        container_label_com_docker_swarm_service_name="influxdb"}[1m] ) )
+  ```
+
+- Click outside of the query field to confirm
+
+- Close the row editor by clicking the "X" in the top right area
+
+]
+
+---
+
+## Interpreting results
+
+- The two graphs *should* be similar
+
+- Protip: align the time references!
+
+.exercise[
+
+- Click on the clock in the top right corner
+
+- Select "last 30 minutes"
+
+- Click on "Zoom out"
+
+- Now press the right arrow key (hold it down and watch the CPU usage increase!)
+
+]
+
+*Adjusting units is left as an exercise for the reader.*
 
 ---
 

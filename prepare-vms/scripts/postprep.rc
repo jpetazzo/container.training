@@ -1,7 +1,7 @@
 pssh -I tee /tmp/settings.yaml < $SETTINGS
 
+pssh sudo apt-get update
 pssh sudo apt-get install -y python-setuptools
-
 pssh sudo easy_install pyyaml
 
 pssh -I tee /tmp/postprep.py <<EOF
