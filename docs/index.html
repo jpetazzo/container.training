@@ -5107,6 +5107,48 @@ docker node update <node-name> --availability <active|pause|drain>
 
 ---
 
+## Disk space management: `docker system df`
+
+- Shows disk usage for images, containers, and volumes
+
+- Breaks down between *active* and *reclaimable* categories
+
+.exercise[
+
+- Check how much disk space is used at the end of the workshop:
+  ```bash
+  docker system df
+  ```
+
+]
+
+Note: `docker system` is new in Docker Engine 1.13.
+
+---
+
+## Reclaiming unused resources: `docker system prune`
+
+- Removes stopped containers
+
+- Removes dangling images (that don't have a tag associated anymore)
+
+- Removes orphaned volumes
+
+- Removes empty networks
+
+.exercise[
+
+- Try it:
+  ```bash
+  docker system prune -f
+  ```
+
+]
+
+Note: `docker system prune -a` will also remove *unused* images.
+
+---
+
 class: title
 
 # Thanks! <br/> Questions?
