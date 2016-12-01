@@ -2132,6 +2132,22 @@ Note: if the hash rate goes to zero and doesn't climb back up, try to `rm` and `
 
 ---
 
+## Why do we have to re-create the service to enable global scheduling?
+
+- Enabling it dynamically would make rolling updates semantics very complex
+
+- This might change in the future (after all, it was possible in 1.12 RC!)
+
+- As of Docker Engine 1.13, other parameters requiring to `rm`/`create` the service are:
+
+  - service name
+
+  - hostname
+
+  - network
+
+---
+
 ## Checkpoint
 
 - We've seen how to set up a Swarm
@@ -2324,8 +2340,6 @@ I don't need to SSH to another node.
   ```
 
 ]
-
-Note: we could also use a pre-built image, e.g. `nicolaka/netshoot`
 
 ---
 
