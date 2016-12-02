@@ -5065,6 +5065,61 @@ More resources on this topic:
 
 ---
 
+## Constraints and global services
+
+(New in Docker Engine 1.13)
+
+- By default, global services run on *all* nodes
+  ```bash
+  docker service create --mode global ...
+  ```
+
+- You can specify constraints for global services
+
+- These services will run only on the node satisfying the constraints
+
+- For instance, this service will run on all manager nodes:
+  ```bash
+  docker service create --mode global --constraint node.role==manager ...
+  ```
+
+---
+
+## Constraints and dynamic scheduling
+
+(New in Docker Engine 1.13)
+
+- If constraints change, services are started/stopped accordingly
+
+  (e.g., `--constraint node.role==manager` and nodes are promoted/demoted)
+
+- This is particularly useful with labels:
+  ```bash
+  docker node update node1 --label-add defcon=five
+  docker service create --constraint node.labels.defcon==five ...
+  docker node update node2 --label-add defcon=five
+  docker node update node1 --label-rm defcon=five
+  ```
+
+---
+
+## Shortcomings of dynamic scheduling
+
+.warning[If a service becomes "unschedulable" (constraints can't be satisfied):]
+
+- It won't be scheduled automatically when constraints are satisfiable again
+
+- You will have to update the service; you can do a no-op udate with:
+  ```bash
+  docker service update ... --force
+  ```
+
+.warning[Docker will silently ignore attemps to remove a non-existent label or constraint]
+
+- It won't warn you if you typo when removing a label or constraint!
+
+---
+
 # Node management
 
 - SwarmKit allows to change (almost?) everything on-the-fly
