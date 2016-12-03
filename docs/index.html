@@ -35,6 +35,7 @@
       .small { font-size: 70%; }
       .big { font-size: 140%; }
       .underline { text-decoration: underline; }
+      .strike { text-decoration: line-through; }
       .pic {
         vertical-align: middle;
         text-align: center;
@@ -185,6 +186,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 ## Chapter 3: operating the Swarm
 
 - Rolling updates
+- Secrets management and encryption at rest
 - Centralized logging
 - Metrics collection
 
@@ -3000,6 +3002,277 @@ the build might fail. In that case, just skip the `swarmctl` section.
 ```
 Error: grpc: failed to unmarshal the received message proto: wrong wireType = 0
 ```
+
+---
+
+# Secrets management and encryption at rest
+
+- Secrets management = selectively and securely bring secrets to services
+
+- Encryption at rest = protect against storage theft or prying
+
+- Remember: control plane is always encrypted and secured through mutual TLS
+
+- Remember: data plane can easily be encrypted if needed
+
+  (Not encrypted by default for performance reasons)
+
+---
+
+## Secret management
+
+(New in Docker Engine 1.13)
+
+- Docker has a "secret safe" (secure key→value store)
+
+- You can create as many secrets as you like
+
+- You can associate secrets to services
+
+- Secrets are exposed as plain files
+
+- Secrets are immutable (at least in Docker Engine 1.13)
+
+---
+
+## Creating secrets
+
+- Must specify a name for the secret; and the secret itself
+
+.exercise[
+
+- Assign [one of the four most commonly used passwords](https://www.youtube.com/watch?v=0Jx8Eay5fWQ) to a secret called `hackme`:
+  ```bash
+  echo love | docker secret create hackme
+  ```
+
+- Assign some random alphanumeric characters to another secret:
+  ```bash
+  base64 /dev/urandom | head -c16 | docker secret create arewesecureyet
+  ```
+
+]
+
+Note: in the latter case, we don't even know the secret at this point. But Swarm does.
+
+---
+
+## Using secrets
+
+- Secrets must be handed explicitly to services
+
+.exercise[
+
+- Create a dummy service with both secrets:
+  ```bash
+    docker service create \
+           --secret hackme --secret arewesecureyet \
+           --name dummyservice --mode global \
+           alpine sleep 1000000000
+  ```
+
+]
+
+We use a global service to make sure that there will be an instance on the local node.
+
+---
+
+## Accessing secrets
+
+- Secrets are materialized on `/run/secrets` (which is an in-memory filesystem)
+
+.exercise[
+
+- Find the ID of the container for the dummy service:
+  ```bash
+  CID=$(docker ps -q --filter label=com.docker.swarm.service.name=dummyservice)
+  ```
+
+- Enter the container:
+  ```bash
+  docker exec -ti $CID sh
+  ```
+
+- Check the files in `/run/secrets`
+
+]
+
+---
+
+## Current limitations
+
+- You can't change a secret
+
+  (You have to delete and re-create it)
+
+- You can't delete a secret if it's in use
+
+- You can add a secret to a service with `docker service update --secret-add`
+
+  (But this will redeploy the service; it won't add the secret on the fly)
+
+---
+
+## Secrets in practice
+
+- Can be (ab)used to hold whole configuration files if needed
+
+- Plan ahead for rotation: don't use a secret file directly
+
+  - add a timestamp or serial number: `mysqlpass_2016-12-25_23:58:10`
+
+  - in your entrypoint, create a symlink to the most recent file:
+    ```bash
+    ln -s $(ls -r mysqlpass_* | head -1) mysqlpass
+    ```
+
+---
+
+## Encryption at rest
+
+- A Swarm cluster can be "locked"
+
+- When a cluster is "locked", on-disk data is encrypted with a passphrase
+
+- Starting or restarting a locked manager requires the passphrase
+
+- This protects against theft or unauthorized access
+
+  (e.g. stealing a physical machine, a backup, or prying on a remote or virtual volume)
+
+---
+
+## Locking a Swarm cluster
+
+- This is achieved through the `docker swarm update` command
+
+.exercise[
+
+- Lock our cluster:
+  ```bash
+  docker swarm update --autolock=true
+  ```
+
+]
+
+This will display the unlock key. Copy-paste it somewhere safe.
+
+---
+
+## Locked state
+
+- If we restart a manager, it will now be locked
+
+.exercise[
+
+- Restart the local Engine:
+  ```bash
+  sudo systemctl restart docker
+  ```
+
+]
+
+Note: if you are doing the workshop on your own, using nodes
+that you [provisioned yourself](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-machine) or with [Play-With-Docker](http://play-with-docker.com/), you might have to use a different method to restart the Engine.
+
+---
+
+## Checking that our node is locked
+
+- Manager commands (requiring access to crypted data) will fail
+
+- Other commands are OK
+
+.exercise[
+
+- Try a few basic commands:
+  ```bash
+  docker ps
+  docker run alpine echo ♥
+  docker node ls
+  ```
+
+]
+
+(The last command should fail, and it will tell you how to unlock this node.)
+
+---
+
+## Checking the state of the node programmatically
+
+- The state of the node shows up in the output of `docker info`
+
+.exercise[
+
+- Check the output of `docker info`:
+  ```bash
+  docker info
+  ```
+  
+- Can't see it? Too verbose? Grep to the rescue!
+  ```bash
+  docker info | grep ^Swarm
+  ```
+
+]
+
+---
+
+## Unlocking a node
+
+- You will need the secret token that we obtained when enabling auto-lock earlier
+
+.exercise[
+
+- Unlock the node:
+  ```bash
+  docker swarm unlock
+  ```
+
+- Copy-paste the secret token that we got earlier
+
+- Check that manager commands now work correctly:
+  ```bash
+  docker node ls
+  ```
+
+]
+
+---
+
+## Managing the secret key
+
+- If the key is compromised, you can change it and re-encrypt with a new key:
+  ```bash
+  docker swarm unlock-key --rotate
+  ```
+  
+- If you lost the key, you can get it as long as you have at least one unlocked node:
+  ```bash
+  docker swarm unlock-key -q
+  ```
+
+Note: if you rotate the key while some nodes are locked, without saving the previous key, those nodes won't be able to rejoin.
+
+Note: if somebody steals both your disks and your key, .strike[you're doomed! Doooooomed!]
+<br/>you can block the compromised node with `docker node demote` and `docker node rm`.
+
+---
+
+## Unlocking the cluster permanently
+
+- If you want to remove the secret key, disable auto-lock
+
+.exercise[
+
+- Revert to a non-encrypted cluster:
+  ```bash
+  docker swarm update --autolock=false
+  ```
+
+]
+
+Note: if some nodes are in locked state at that moment, you will need the previous unlock key to get them back online.
 
 ---
 
