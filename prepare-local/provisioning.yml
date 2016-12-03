@@ -93,7 +93,7 @@
         line: "{{ item.private_ip }} {{ item.hostname }}"
         regexp: "^{{ item.private_ip }} {{ item.hostname }}$"
         state: present
-      with_items: instances
+      with_items: "{{ instances }}"
 
     - name: copying the ssh key to the nodes
       copy:
