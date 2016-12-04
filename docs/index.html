@@ -3013,11 +3013,14 @@ Error: grpc: failed to unmarshal the received message proto: wrong wireType = 0
 
 - Encryption at rest = protect against storage theft or prying
 
-- Remember: control plane is always encrypted and secured through mutual TLS
+- Remember:
 
-- Remember: data plane can easily be encrypted if needed
+  - control plane is authenticated through mutual TLS, certs rotated every 90 days
 
-  (Not encrypted by default for performance reasons)
+  - control plane is encrypted with AES-GCM, keys rotated every 12 hours
+
+  - data plane is not encrypted by default (for performance reasons),
+    <br/>but we saw earlier how to enable that with a single flag
 
 ---
 
@@ -3029,9 +3032,11 @@ Error: grpc: failed to unmarshal the received message proto: wrong wireType = 0
 
 - You can associate secrets to services
 
-- Secrets are exposed as plain files
+- Secrets are exposed as plain text files, but kept in memory only (using `tmpfs`)
 
-- Secrets are immutable (at least in Docker Engine 1.13)
+- Secrets are immutable (at least in Engine 1.13)
+
+- Secrets have a max size of 500 KB
 
 ---
 
@@ -3099,17 +3104,24 @@ We use a global service to make sure that there will be an instance on the local
 
 ---
 
-## Current limitations
+## Rotating secrets
 
 - You can't change a secret
 
-  (You have to delete and re-create it)
-
-- You can't delete a secret if it's in use
+  (Sounds annoying at first; but allows clean rollbacks if a secret update goes wrong)
 
 - You can add a secret to a service with `docker service update --secret-add`
 
-  (But this will redeploy the service; it won't add the secret on the fly)
+  (This will redeploy the service; it won't add the secret on the fly)
+
+- Secrets can be mapped to different names
+
+- The following example exposes a secret in `/run/secrets/password`;
+  <br/>then changes the content of that file to be another secret:
+  ```bash
+  docker service create --secret hackme:password ...
+  docker service update ... --secret-add arewesecureyet:password
+  ```
 
 ---
 
@@ -3117,28 +3129,35 @@ We use a global service to make sure that there will be an instance on the local
 
 - Can be (ab)used to hold whole configuration files if needed
 
-- Plan ahead for rotation: don't use a secret file directly
+- If you intend to rotate secret `foo`, call it `foo.N` instead, and map it to `foo`
 
-  - add a timestamp or serial number: `mysqlpass_2016-12-25_23:58:10`
+  (N can be a serial, a timestamp...)
 
-  - in your entrypoint, create a symlink to the most recent file:
-    ```bash
-    ln -s $(ls -r mysqlpass_* | head -1) mysqlpass
-    ```
+  ```bash
+  docker service create --secret foo.N:foo ...
+  ```
+
+- For more details and examples, [check the upcoming documentation](https://github.com/docker/docker.github.io/pull/568)
 
 ---
 
 ## Encryption at rest
 
+- Swarm data is always encrypted
+
 - A Swarm cluster can be "locked"
 
-- When a cluster is "locked", on-disk data is encrypted with a passphrase
+- When a cluster is "locked", the encryption key is protected with a passphrase
 
 - Starting or restarting a locked manager requires the passphrase
 
-- This protects against theft or unauthorized access
+- This protects against:
 
-  (e.g. stealing a physical machine, a backup, or prying on a remote or virtual volume)
+  - theft (stealing a physical machine, a disk, a backup tape...)
+
+  - unauthorized access (to e.g. a remote or virtual volume)
+
+  - some vulnerabilities (like path traversal)
 
 ---
 
@@ -3208,7 +3227,7 @@ that you [provisioned yourself](https://github.com/jpetazzo/orchestration-worksh
   ```bash
   docker info
   ```
-  
+
 - Can't see it? Too verbose? Grep to the rescue!
   ```bash
   docker info | grep ^Swarm
@@ -3246,7 +3265,7 @@ that you [provisioned yourself](https://github.com/jpetazzo/orchestration-worksh
   ```bash
   docker swarm unlock-key --rotate
   ```
-  
+
 - If you lost the key, you can get it as long as you have at least one unlocked node:
   ```bash
   docker swarm unlock-key -q
@@ -3272,7 +3291,10 @@ Note: if somebody steals both your disks and your key, .strike[you're doomed! Do
 
 ]
 
-Note: if some nodes are in locked state at that moment, you will need the previous unlock key to get them back online.
+Note: if some nodes are in locked state at that moment (or if they are offline/restarting
+while you disabled autolock), they still need the previous unlock key to get back online.
+
+For more information about locking, you can check the [upcoming documentation](https://github.com/docker/docker.github.io/pull/694).
 
 ---
 
