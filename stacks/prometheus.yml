@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+
+  prometheus:
+    build: ../prom
+    image: localhost:5000/prom
+    ports:
+      - "9090:9090"
+
+  node:
+    image: prom/node-exporter
+    command: -collector.procfs /host/proc -collector.sysfs /host/proc -collector.filesystem.ignored-mount-points "^(sys|proc|dev|host|etc)($$|/)"
+    deploy:
+      mode: global
+    volumes:
+      - "/proc:/host/proc"
+      - "/sys:/host/sys"
+      - "/:/rootfs"
+
+  cadvisor:
+    image: google/cadvisor
+    deploy:
+      mode: global
+    volumes:
+      - "/:/rootfs"
+      - "/var/run:/var/run"
+      - "/sys:/sys"
+      - "/var/lib/docker:/var/lib/docker"
+

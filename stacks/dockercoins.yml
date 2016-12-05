@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  rng:
+    build: dockercoins/rng
+    image: ${REGISTRY_SLASH-localhost:5000/}rng${COLON_TAG-:latest}
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://localhost:12201
+    deploy:
+      mode: global
+
+  hasher:
+    build: dockercoins/hasher
+    image: ${REGISTRY_SLASH-localhost:5000/}hasher${COLON_TAG-:latest}
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://localhost:12201
+
+  webui:
+    build: dockercoins/webui
+    image: ${REGISTRY_SLASH-localhost:5000/}webui${COLON_TAG-:latest}
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://localhost:12201
+    ports:
+    - "8000:80"
+
+  redis:
+    image: redis
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://localhost:12201
+
+  worker:
+    build: dockercoins/worker
+    image: ${REGISTRY_SLASH-localhost:5000/}worker${COLON_TAG-:latest}
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://localhost:12201
+    deploy:
+      replicas: 10
+
