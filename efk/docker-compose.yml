@@ -1,0 +1,24 @@
+version: "2"
+
+services:
+  elasticsearch:
+    image: elasticsearch
+    # If you need to access ES directly, just uncomment those lines.
+    #ports:
+    #  - "9200:9200"
+    #  - "9300:9300"
+
+  fluentd:
+    #build: fluentd
+    image: jpetazzo/fluentd:v0.1
+    ports:
+      - "127.0.0.1:24224:24224"
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
