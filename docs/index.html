@@ -144,10 +144,10 @@ at e.g. 9am, and start at 9:30.
 
 - We will do short breaks for coffee + QA every hour
 
-- All the content is publicly available (slides, code samples, scripts)
-
 - Live feedback, questions, help on
   [Gitter](http://container.training/chat)
+
+- All the content is publicly available (slides, code samples, scripts)
 
 <!--
 Remember to change:
@@ -243,9 +243,9 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 - The whole workshop is hands-on
 
-- I will show Docker 1.12 in action
+- We will see Docker 1.13 in action
 
-- I invite you to reproduce what I do
+- You are invited to reproduce all the demos
 
 - All hands-on sections are clearly identified, like the gray rectangle below
 
@@ -262,9 +262,33 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 # VM environment
 
+- To follow along, you need a cluster of five Docker Engines
+
+- If you are doing this with an instructor, see next slide
+
+- If you are doing (or re-doing) this on your own, you can:
+
+  - create your own cluster (local or cloud VMs) with Docker Machine
+    ([instructions](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-machine))
+
+  - use [Play-With-Docker](http://play-with-docker.com) ([instructions](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker))
+
+  - create a bunch of clusters for you and your friends
+    ([instructions](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-vms))
+
+---
+
+class: pic
+
+![You get five VMs](you-get-five-vms.jpg)
+
+---
+
+## You get five VMs
+
 - Each person gets 5 private VMs (not shared with anybody else)
-- They'll be up until tonight
-- You have a little card with login+password+IP addresses
+- They'll remain up until the day after the tutorial
+- You should have a little card with login+password+IP addresses
 - You can automatically SSH from one VM to another
 
 .exercise[
@@ -303,6 +327,24 @@ wait
 -->
 
 ]
+
+---
+
+## If doing or re-doing the workshop on your own ...
+
+- If you use Play-With-Docker:
+
+  - you can't SSH to the machines
+
+  - you access the terminal directly in your browser
+
+  - exposing services requires something like ngrok
+
+- If you use VMs deployed with Docker Machine:
+
+  - you won't have pre-authorized SSH keys to bounce across machines
+
+  - you won't have host aliases
 
 ---
 
@@ -351,9 +393,9 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 1.12.2-rc1
-- Compose 1.8.1
-- Machine 0.8.2
+- Engine 1.13-rc
+- Compose 1.9.0
+- Machine 0.9.0
 
 .exercise[
 
