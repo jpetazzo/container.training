@@ -221,6 +221,9 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 ## Nice-to-haves
 
+- [Mosh](https://mosh.org/) if your internet connection tends to lose packets
+  <br/>(available with `(apt|yum|brew) install mosh`; then use it instead of SSH)
+
 - [GitHub](https://github.com/join) account
   <br/>(if you want to fork the repo; also used to join Gitter)
 
@@ -313,7 +316,7 @@ wait
 ```
 -->
 
-- Log into the first VM (`node1`)
+- Log into the first VM (`node1`) with SSH or MOSH
 - Check that you can SSH (without password) to `node2`:
   ```bash
   ssh node2
@@ -395,7 +398,7 @@ You are welcome to use the method that you feel the most comfortable with.
 
 - Engine 1.13-rc
 - Compose 1.9.0
-- Machine 0.9.0
+- Machine 0.9-rc
 
 .exercise[
 

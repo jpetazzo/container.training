@@ -214,7 +214,7 @@ get_ami() {
       AMI=ami-07174474
       ;;
     us-east-1)
-      AMI=ami-45b69e52
+      AMI=ami-2808313f
       ;;
     us-east-2)
       AMI=ami-1b772d7e
