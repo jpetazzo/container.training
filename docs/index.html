@@ -99,16 +99,20 @@ class: title
 Docker <br/> Orchestration <br/> Workshop
 
 ???
+---
 
 ## Intros
 
-- Hello! We are:
-
+- Hello! We are
   AJ ([@s0ulshake](https://twitter.com/s0ulshake))
-
+  &
   Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
 
-  Tiffany ([@tiffanyfayj](https://twitter.com/tiffanyfayj))
+--
+
+- This is our collective Docker knowledge:
+
+  ![Bell Curve](bell-curve.jpg)
 
 <!--
 Reminder, when updating the agenda: when people are told to show
@@ -119,11 +123,13 @@ at e.g. 9am, and start at 9:30.
 -->
 
 ???
+---
 
 ## Agenda
 
 <!--
 - Agenda:
+-->
 
 .small[
 - 09:00-09:15 hello
@@ -134,24 +140,26 @@ at e.g. 9am, and start at 9:30.
 - 13:30-15:00 part 3
 - 15:00-15:15 coffee break
 - 15:15-16:45 part 4
-- 16:45-17:30 Q&A
+- 16:45-17:00 Q&A
 ]
+
+<!--
+- The tutorial will run from 1pm to 5pm
+- This will be fast-paced, but DON'T PANIC!
+- We will do short breaks for coffee + QA every hour
 -->
 
-- The tutorial will run from 1pm to 5pm
-
-- This will be fast-paced, but DON'T PANIC!
-
-- We will do short breaks for coffee + QA every hour
+- Feel free to interrupt for questions at any time
 
 - Live feedback, questions, help on
-  [Gitter](http://container.training/chat)
+  [Slack](http://container.training/chat)
+  ([get an invite](http://lisainvite.herokuapp.com/))
 
 - All the content is publicly available (slides, code samples, scripts)
 
 <!--
 Remember to change:
-- the link below
+- the link above
 - the "tweet my speed" hashtag in DockerCoins HTML
 -->
 
@@ -235,7 +243,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 -->
 
-- [Slack](FIXME) account
+- [Slack](http://lisainvite.herokuapp.com/) account
   <br/>(to join the conversation during the workshop)
 
 - [Docker Hub](https://hub.docker.com) account
@@ -342,7 +350,9 @@ wait
 
   - you access the terminal directly in your browser
 
-  - exposing services requires something like ngrok
+  - exposing services requires something like
+    [ngrok](https://ngrok.com/)
+    or [supergrok](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker)
 
 - If you use VMs deployed with Docker Machine:
 
@@ -776,6 +786,28 @@ killall docker-compose
 
 ---
 
+## Accessing internal services
+
+- `rng` and `hasher` are exposed on ports 8001 and 8002
+
+- This is declared in the Compose file:
+
+  ```yaml
+    ...
+    rng:
+      build: rng
+      ports:
+      - "8001:80"
+
+    hasher:
+      build: hasher
+      ports:
+      - "8002:80"
+    ...
+  ```
+
+---
+
 ## Measuring latency under load
 
 We will use `httping`.
@@ -807,7 +839,10 @@ We will use `httping`.
 - We need to scale out the `rng` service on multiple machines!
 
 Note: this is a fiction! We have enough entropy. But we need a pretext to scale out.
-<br/>(In fact, the code of `rng` uses `/dev/urandom`, which doesn't need entropy.)
+
+(In fact, the code of `rng` uses `/dev/urandom`, which never runs out of entropy...
+<br/>
+...and is [just as good as `/dev/random`](http://www.slideshare.net/PacSecJP/filippo-plain-simple-reality-of-entropy).)
 
 ---
 
@@ -912,6 +947,12 @@ class: title
 
 ---
 
+## Illustration
+
+![Illustration](swarm-mode.svg)
+
+---
+
 ## SwarmKit concepts (2/2)
 
 - The *managers* expose the SwarmKit API
@@ -933,7 +974,7 @@ You can refer to the [NOMENCLATURE](https://github.com/docker/swarmkit/blob/mast
 
 ## Swarm Mode
 
-- Docker Engine 1.12 features SwarmKit integration
+- Since version 1.12, Docker Engine embeds SwarmKit
 
 - The Docker CLI features three new commands:
 
@@ -947,18 +988,11 @@ You can refer to the [NOMENCLATURE](https://github.com/docker/swarmkit/blob/mast
 
 - The SwarmKit API is also exposed (on a separate socket)
 
-???
----
-
-## Illustration
-
-![Illustration](swarm-mode.svg)
-
 ---
 
 ## You need to enable Swarm mode to use the new stuff
 
-- By default, everything runs as usual
+- By default, all this new code is inactive
 
 - Swarm Mode can be enabled, "unlocking" SwarmKit functions
   <br/>(services, out-of-the-box overlay networks, etc.)
@@ -966,12 +1000,18 @@ You can refer to the [NOMENCLATURE](https://github.com/docker/swarmkit/blob/mast
 .exercise[
 
 - Try a Swarm-specific command:
-  ```
-  $ docker node ls
-  Error response from daemon: This node is not a swarm manager. [...]
+  ```bash
+  docker node ls
   ```
 
 ]
+
+--
+
+You will get an error message:
+```
+Error response from daemon: This node is not a swarm manager. [...]
+```
 
 ---
 
@@ -1160,7 +1200,7 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
 
 - We can still use `docker info` to verify that the node is part of the Swarm:
   ```bash
-  $ docker info | grep ^Swarm
+  docker info | grep ^Swarm
   ```
 
 ]
@@ -1407,11 +1447,11 @@ When a node joins the Swarm:
 
 ## Under the hood: cluster communication
 
-- The *control plane* is encrypted over TLS
+- The *control plane* is encrypted with AES-GCM; keys are rotated every 12 hours
 
-- Keys and certificates are automatically renewed on regular intervals
+- Authentication is done with mutual TLS; certificates are rotated every 90 days
 
-  (90 days by default; tunable with `docker swarm update`)
+  (`docker swarm update` allows to change this delay or to use an external CA)
 
 - The *data plane* (communication between containers) is not encrypted by default
 
@@ -1506,6 +1546,75 @@ As we saw earlier, you can only control the Swarm through a manager node.
   ```
 
 ]
+
+---
+
+## How many managers to we need?
+
+- 2N+1 nodes can (and will) tolerate N failures
+  <br/>(you can have an even number of managers, but there is no point)
+
+--
+
+- 1 manager = no failure
+
+- 3 managers = 1 failure
+
+- 5 managers = 2 failures (or 1 failure during 1 maintenance)
+
+- 7 managers and more = now you might be overdoing it a little bit
+
+---
+
+## Why not have *all* nodes be managers?
+
+- Intuitively, it's harder to reach consensus in larger groups
+
+- With Raft, each write needs to be acknowledged by the majority of nodes
+
+- More nodes = more chance that we will have to wait for some laggard
+
+- Bigger network = more latency
+
+---
+
+## What would McGyver do?
+
+- If some of your machines are more than 10ms away from each other,
+  <br/>
+  try to break them down in multiple clusters
+  (keeping internal latency low)
+
+- Groups of up to 9 nodes: all of them are managers
+
+- Groups of 10 nodes and up: pick 5 "stable" nodes to be managers
+
+- Groups of more than 100 nodes: watch your managers' CPU and RAM
+
+- Groups of more than 1000 nodes:
+
+  - if you can afford to have fast, stable managers, add more of them
+  - otherwise, break down your nodes in multiple clusters
+
+---
+
+## What's the upper limit?
+
+- We don't know!
+
+- Internal testing at Docker Inc.: 1000-10000 nodes is fine
+
+  - deployed to a single cloud region
+
+  - one of the main take-aways was *"you're gonna need a bigger manager"*
+
+- Testing by the community: [4700 heterogenous nodes all over the 'net](https://sematext.com/blog/2016/11/14/docker-swarm-lessons-from-swarm3k/)
+
+  - it just works
+
+  - more nodes require more CPU; more containers require more RAM
+
+  - scheduling of large jobs (70000 containers) is slow, though (working on it!)
 
 ---
 
@@ -1625,7 +1734,7 @@ As we saw earlier, you can only control the Swarm through a manager node.
 - Create an ElasticSearch service (and give it a name while we're at it):
   ```bash
   docker service create --name search --publish 9200:9200 --replicas 7 \
-         elasticsearch:2
+         elasticsearch`:2`
   ```
 
 - Check what's going on:
@@ -1634,6 +1743,10 @@ As we saw earlier, you can only control the Swarm through a manager node.
   ```
 
 ]
+
+Note: don't forget the **:2**!
+
+The latest version of the ElasticSearch image won't start without mandatory configuration.
 
 ---
 
@@ -1795,13 +1908,7 @@ We just have to adapt this to our application, which has 4 services!
 
 ## Using Docker Hub
 
-- Set the `DOCKER_REGISTRY` environment variable to your Docker Hub user name
-  <br/>(the `build-tag-push.py` script prefixes each image name with that variable)
-
-- We will also see how to run the open source registry
-  <br/>(so use whatever option you want!)
-
-.exercise[
+*If we wanted to use the Docker Hub...*
 
 <!--
 ```meta
@@ -1809,13 +1916,17 @@ We just have to adapt this to our application, which has 4 services!
 ```
 -->
 
-- Set the following environment variable:
-  <br/>`export DOCKER_REGISTRY=jpetazzo`
+- We would set the following environment variable:
+  ```bash
+  export DOCKER_REGISTRY=jpetazzo`
+  ```
 
-- (Use *your* Docker Hub login, of course!)
+  (Using *our* Docker Hub login, of course!)
 
-- Log into the Docker Hub:
-  <br/>`docker login`
+- And we would log into the Docker Hub:
+  ```bash
+  docker login
+  ```
 
 <!--
 ```meta
@@ -1830,13 +1941,16 @@ We just have to adapt this to our application, which has 4 services!
 
 ## Using Docker Trusted Registry
 
-If we wanted to use DTR, we would:
+*If we wanted to use DTR, we would...*
 
-- make sure we have a Docker Hub account
-- [activate a Docker Datacenter subscription](
+- Make sure we have a Docker Hub account
+
+- [Activate a Docker Datacenter subscription](
   https://hub.docker.com/enterprise/trial/)
-- install DTR on our machines
-- set `DOCKER_REGISTRY` to `dtraddress:port/user`
+
+- Install DTR on our machines
+
+- Set `DOCKER_REGISTRY` to `dtraddress:port/user`
 
 *This is out of the scope of this workshop!*
 
@@ -2119,6 +2233,10 @@ Note: to "de-publish" a port, you would have to specify the container port.
 You might have to wait a bit for the container to be up and running.
 
 Check its status with `docker service ps webui`.
+
+Protip: use `docker service ps webui -a` to see *all* tasks.
+<br/>
+(Otherwise you only see the ones currently running.)
 
 ---
 
@@ -2423,7 +2541,12 @@ It is a virtual IP address (VIP) for the `rng` service.
 
 It *should* ping. (But this might change in the future.)
 
-Current behavior for VIPs is to ping when there is a backend available on the same machine.
+With Engine 1.12: VIPs respond to ping if a
+backend is available on the same machine.
+
+With Engine 1.13: VIPs respond to ping if a
+backend is available anywhere.
+
 (Again: this might change in the future.)
 
 ---
@@ -2714,18 +2837,23 @@ WHY?!?
 
 - We will use `ngrep`, which allows to grep for network traffic
 
-- We will run it in a container (because we can!)
-
-- We will use host networking to sniff the host's traffic
+- We will run it in a container, using host networking to access the host's interfaces
 
 .exercise[
 
 - Sniff network traffic and display all packets containing "HTTP":
   ```bash
-  docker run --net host nicolaka/netshoot ngrep -tpd eth0 HTTP
+  docker run --net host jpetazzo/netshoot ngrep -tpd eth0 HTTP
   ```
 
 ]
+
+--
+
+Seeing tons of HTTP request? Shutdown your DockerCoins workers:
+```bash
+docker service update worker --replicas=0
+```
 
 ---
 
@@ -2873,7 +3001,12 @@ Note how the build and push were fast (because caching).
 
 .exercise[
 
-- In the other window, update the service to the new image:
+- In the other window, bring back the workers (if you had stopped them earlier):
+  ```bash
+  docker service update worker --replicas 10
+  ```
+
+- Then, update the service to the new image:
   ```bash
   docker service update worker --image $IMAGE
   ```
@@ -2920,6 +3053,8 @@ The current upgrade will continue at a faster pace.
   ```
 
 ]
+
+Note: if you updated the roll-out parallelism, *rollback* will not rollback to the previous image; it will rollback to the previous roll-out cadence.
 
 ---
 
@@ -3330,7 +3465,7 @@ Note: if somebody steals both your disks and your key, .strike[you're doomed! Do
 
 .exercise[
 
-- Revert to a non-encrypted cluster:
+- Permanently unlock the cluster:
   ```bash
   docker swarm update --autolock=false
   ```
@@ -4492,6 +4627,8 @@ Congratulations, you are viewing the CPU usage of a single container!
 
 - A *Prometheus server* will *scrape* URLs like these
 
+  (It can also use protobuf to avoid the overhead of parsing line-oriented formats!)
+
 ---
 
 ## Collecting metrics with Prometheus on Swarm
@@ -5061,7 +5198,7 @@ The editor is a bit less friendly than the one we used for InfluxDB.
 
 - Adding a constraint caused the service to be redeployed:
   ```bash
-  docker service ps stateful
+  docker service ps stateful -a
   ```
 
 ]
@@ -5515,6 +5652,11 @@ It doesn't work!?!
 - Upgrade Compose, using the `master` branch:
   ```bash
   pip install git+git://github.com/docker/compose
+  ```
+
+- Re-hash our `$PATH`:
+  ```bash
+  hash docker-compose
   ```
 
 ]
