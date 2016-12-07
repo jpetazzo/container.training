@@ -15,7 +15,7 @@ Vagrant.configure('2') do |config|
     unless Vagrant.has_plugin?(plugin_name)
       puts "Vagrant [" + plugin_name + "] is required but is not installed\n" +
            "please check if you have the plugin with the following command:\n" +
-           "    $ vagrand plugin list\n" +
+           "    $ vagrant plugin list\n" +
            "If needed install the plugin:\n" +
            "    $ vagrant plugin install " + plugin_name + "\n"
       abort "Missing [" + plugin_name + "] plugin\n\n"
