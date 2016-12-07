@@ -24,7 +24,7 @@
 
     - name: installing dependencies
       apt:
-        name: apt-transport-https,ca-certificates,python-pip,tmux,httping
+        name: apt-transport-https,ca-certificates,python-pip,tmux,httping,linux-image-extra-virtual
         state: present
         update_cache: true
 
@@ -115,6 +115,16 @@
       hostname:
         name: "{{ inventory_hostname }}"
 
+    - name: download and install docker-machine
+      get_url:
+        url:  https://github.com/docker/machine/releases/download/{{ item.docker_machine_version }}/docker-machine-{{ item.kernel_uname }}-{{ item.machine }}
+        dest: /usr/local/bin/docker-machine
+        mode: 0755
+      with_items:
+        - docker_machine_version: v0.8.0
+          kernel_uname: Linux
+          machine : x86_64
+
     - name: adjusting the /etc/hosts to the new hostname
       lineinfile:
         dest: /etc/hosts
@@ -129,4 +139,10 @@
         - regexp: '^127\.0\.1\.1'
           line: "127.0.1.1 {{ inventory_hostname }}"
 
-
+    - name: Copying the setup-docker-machine.sh script
+      copy:
+        src: setup-docker-machine.sh
+        dest: /home/vagrant/setup-docker-machine.sh
+        mode: 0755
+        group: root
+        owner: vagrant
