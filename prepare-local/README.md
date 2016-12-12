@@ -95,3 +95,11 @@ been provided that can be run on node1 to fully configure this:
   `known_hosts` file with:
 
       $ ssh-keygen -f "~/.ssh/known_hosts" -R 10.10.10.10 -R 10.10.10.20 -R 10.10.10.30 -R 10.10.10.40 -R 10.10.10.50
+
+- Depending on system load, Ansible may have difficulties configuring all
+  machines.  It is possible that one or more of the nodes will stop responding
+  before Ansible times out and removes it from the configuration.  If this happens
+  you will need to rerun the ansible-playbook command.  It is advisable to restart
+  your VMs in this situation
+  
+      $ vagrant halt; vagrant up
