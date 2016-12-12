@@ -62,7 +62,17 @@ The source code of this repo will be mounted at `~/orchestration-workshop`
 will reflect inside the instance.
 
 
-## 3. Possible problems and solutions
+## 3. Setup docker-machine
+
+In the normal cloud-based setup fromthe prepare-vms directory, the 5 nodes
+are automatically added to docker-machine for easy access between the nodes.
+In this setup we need to manually configure docker-machine.  A script has
+been provided that can be run on node1 to fully configure this:
+
+    $ ssh vagrant@10.10.10.10 -i private-key setup-docker-machine.sh
+
+
+## 4. Possible problems and solutions
 
 - Depending on the Vagrant version, `sudo apt-get install bsdtar` may be needed
 
