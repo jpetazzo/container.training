@@ -45,6 +45,10 @@ Run the following commands:
     $ chmod 600 private-key
     $ ansible-playbook provisioning.yml
 
+Restart your VMs to force the Ansible configurations to be enabled:
+
+    $ vagrant halt; vagrant up
+
 And that's it! Now you should be able to ssh on `node1` using:
 
     $ ssh vagrant@10.10.10.10 -i private-key
