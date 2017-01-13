@@ -408,7 +408,7 @@ You are welcome to use the method that you feel the most comfortable with.
 ## Brand new versions!
 
 - Engine 1.13-rc
-- Compose 1.9.0
+- Compose 1.10-rc
 - Machine 0.9-rc
 
 .exercise[
@@ -1498,6 +1498,7 @@ Some presentations from the Docker Distributed Systems Summit in Berlin:
       eval $(docker-machine env node$N)
       docker swarm join --token $TOKEN node1:2377
     done
+    eval $(docker-machine env -u)
   ```
 
 ]
@@ -1776,18 +1777,42 @@ The latest version of the ElasticSearch image won't start without mandatory conf
 
 .exercise[
 
-- Repeat the following command a few times:
+- Try the following command:
   ```bash
   curl localhost:9200
   ```
 
 ]
 
-You might get a few `Connection refused` errors; just keep trying.
+(If you get `Connection refused`: congratulations, you are very fast indeed! Just try again.)
 
-Each request should be served by a different ElasticSearch instance.
-<br/>
-(You will see each instance advertising a different name.)
+ElasticSearch serves a little JSON document with some basic information
+about this instance; including a randomly-generated super-hero name.
+
+---
+
+## Test the load balancing
+
+- If we repeat our `curl` command multiple times, we will see different names
+
+.exercise[
+
+- Send 10 requests, and see which instances serve them:
+  ```bash
+    for N in $(seq 1 10); do
+      curl -s localhost:9200 | jq .name
+    done
+  ```
+
+]
+
+--
+
+Each request is served by one of the 7 instances, in rotation.
+
+Note: if you try this in your browser, you will probably see the same
+instance name over and over, because your browser (unlike curl) will try
+to re-use the same connection.
 
 ---
 
