@@ -3247,12 +3247,26 @@ Error: grpc: failed to unmarshal the received message proto: wrong wireType = 0
 
 - Assign [one of the four most commonly used passwords](https://www.youtube.com/watch?v=0Jx8Eay5fWQ) to a secret called `hackme`:
   ```bash
-  echo love | docker secret create hackme
+  echo love | docker secret create hackme -
   ```
 
-- Assign some random alphanumeric characters to another secret:
+]
+
+If the secret is in a file, you can simply pass the path to the file.
+
+(The special path `-` indicates to read from the standard input.)
+
+---
+
+## Creating better secrets
+
+- Picking lousy passwords always leads to security breaches
+
+.exercise[
+
+- Let's craft a better password, and assign it to another secret:
   ```bash
-  base64 /dev/urandom | head -c16 | docker secret create arewesecureyet
+  base64 /dev/urandom | head -c16 | docker secret create arewesecureyet -
   ```
 
 ]
@@ -3313,14 +3327,55 @@ We use a global service to make sure that there will be an instance on the local
 
   (This will redeploy the service; it won't add the secret on the fly)
 
-- Secrets can be mapped to different names
+- You can remove a secret with `docker service update --secret-rm`
 
-- The following example exposes a secret in `/run/secrets/password`;
-  <br/>then changes the content of that file to be another secret:
+- Secrets can be mapped to different names by expressing them with a micro-format:
   ```bash
-  docker service create --secret hackme:password ...
-  docker service update ... --secret-add arewesecureyet:password
+  docker service create --secret source=secretname,target=filename
   ```
+
+---
+
+## Changing our insecure password
+
+- We want to replace our `hackme` secret with a better one
+
+.exercise[
+
+- Remove the insecure `hackme` secret:
+  ```bash
+  docker service update dummyservice --secret-rm hackme
+  ```
+
+- Add our better secret instead:
+  ```bash
+  docker service update dummyservice \
+         --secret-add source=arewesecureyet,target=hackme
+  ```
+
+]
+
+Wait for the service to be fully updated with e.g. `watch docker service ps dummyservice`.
+
+---
+
+## Checking that our password is now stronger
+
+- We will use the power of `docker exec`!
+
+.exercise[
+
+- Get the ID of the new container:
+  ```bash
+  CID=$(docker ps -q --filter label=com.docker.swarm.service.name=dummyservice)
+  ```
+
+- Check the contents of the secret files:
+  ```bash
+  docker exec $CID grep -r . /run/secrets
+  ```
+
+]
 
 ---
 
@@ -3333,7 +3388,13 @@ We use a global service to make sure that there will be an instance on the local
   (N can be a serial, a timestamp...)
 
   ```bash
-  docker service create --secret foo.N:foo ...
+  docker service create --secret source=foo.N,target=foo ...
+  ```
+
+- You can update (remove+add) a secret in a single command:
+
+  ```bash
+  docker service update ... --secret-rm foo.M --secret-add source=foo.N,target=foo
   ```
 
 - For more details and examples, [check the upcoming documentation](https://github.com/docker/docker.github.io/pull/568)
