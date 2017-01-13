@@ -1941,25 +1941,19 @@ We just have to adapt this to our application, which has 4 services!
 ```
 -->
 
-- We would set the following environment variable:
-  ```bash
-  export DOCKER_REGISTRY=jpetazzo`
-  ```
-
-  (Using *our* Docker Hub login, of course!)
-
-- And we would log into the Docker Hub:
+- We would log into the Docker Hub:
   ```bash
   docker login
   ```
+
+- And in the following slides, we would use our Docker Hub login
+  (e.g. `jpetazzo`) instead of the registry address (i.e. `localhost:5000`)
 
 <!--
 ```meta
 ^}
 ```
 -->
-
-]
 
 ???
 ---
@@ -1975,7 +1969,7 @@ We just have to adapt this to our application, which has 4 services!
 
 - Install DTR on our machines
 
-- Set `DOCKER_REGISTRY` to `dtraddress:port/user`
+- Use `dtraddress:port/user` instead of the registry address
 
 *This is out of the scope of this workshop!*
 
@@ -2210,25 +2204,6 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 - We need to connect to the `webui` service, but it is not publishing any port
 
-<!--
-- Let's re-create the `webui` service, but publish its port 80 this time
-
-.exercise[
-
-- Remove the `webui` service:
-  ```bash
-  docker service rm webui
-  ```
-
-- Re-create it:
-  ```bash
-    docker service create --network dockercoins --name webui \
-           -p 8000:80 $DOCKER_REGISTRY/dockercoins_webui:$TAG
-  ```
-
-]
--->
-
 - Let's reconfigure it to publish a port
 
 .exercise[
@@ -2245,6 +2220,28 @@ Note: to "de-publish" a port, you would have to specify the container port.
 
 ---
 
+## What happens when we modify a service?
+
+- Let's find out what happened to our `webui` service
+
+.exercise[
+
+- Look at the tasks and containers associated to `webui`:
+  ```bash
+  docker service ps webui
+  ```
+]
+
+--
+
+The first version of the service (the one that was not exposed) has been shutdown.
+
+It has been replaced by the new version, with port 80 accessible from outside.
+
+(This will be discussed with more details in the section about stateful services.)
+
+---
+
 ## Connect to the web UI
 
 - The web UI is now available on port 8000, *on all the nodes of the cluster*
@@ -2258,10 +2255,6 @@ Note: to "de-publish" a port, you would have to specify the container port.
 You might have to wait a bit for the container to be up and running.
 
 Check its status with `docker service ps webui`.
-
-Protip: use `docker service ps webui -a` to see *all* tasks.
-<br/>
-(Otherwise you only see the ones currently running.)
 
 ---
 
@@ -3006,7 +2999,7 @@ Note how the build and push were fast (because caching).
 
 - Look at our service status:
   ```bash
-  watch -n1 "docker service ps worker -a | grep -v Shutdown.*Shutdown"
+  watch -n1 "docker service ps worker | grep -v Shutdown.*Shutdown"
   ```
 
 ]
