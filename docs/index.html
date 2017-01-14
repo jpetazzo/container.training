@@ -3401,6 +3401,24 @@ Wait for the service to be fully updated with e.g. `watch docker service ps dumm
 
 ---
 
+## A reminder about *scope*
+
+- When someone has access to the Docker API, they can access *everything*
+
+- In other words, if your developers are using the Docker API to deploy on the dev cluster ...
+
+  ... and the dev cluster is the same as the prod cluster ...
+
+  ... it means that your devs have access to your production data, passwords, etc.
+
+- How can this be avoided?
+
+  - separate clusters
+
+  - extra layer of abstraction (scripts, hooks, or full-blown PAAS)
+
+---
+
 ## Encryption at rest
 
 - Swarm data is always encrypted
@@ -5301,7 +5319,7 @@ The editor is a bit less friendly than the one we used for InfluxDB.
 
 - Adding a constraint caused the service to be redeployed:
   ```bash
-  docker service ps stateful -a
+  docker service ps stateful
   ```
 
 ]
@@ -5740,15 +5758,13 @@ Our registry is not *exactly* identical to the one deployed with `docker service
 
 --
 
-It doesn't work!?!
+If it doesn't work, make sure that you have Compose 1.10.
 
 ---
 
 ## Upgrading Compose
 
-- Compose file format version 3 is not supported in Compose 1.9
-
-- We have to use 1.10 (which is not released yet)
+- This is only necessary if you have an older version of Compose
 
 .exercise[
 
