@@ -55,6 +55,11 @@
       .remark-container.remark-term-mode .remark-terms-area {
           display: block;
       }
+
+      .remark-container.remark-term-mode .remark-preview-area {
+          display: block;
+      }
+
       .remark-slide-content { padding: 1em 2.5em 1em 2.5em; }
 
       .remark-slide-content { font-size: 25px; }
@@ -6278,7 +6283,7 @@ class: title
             var termMode = body.classList.contains('remark-term-mode');
             evt = evt || window.event;
             if (evt.ctrlKey && evt.keyCode == 190) {
-                body.classList.toggle('remark-term-mode')
+                body.classList.toggle('remark-term-mode');
                 slideshow.update();
                 if (!termMode) {
                     slideshow.pause();
