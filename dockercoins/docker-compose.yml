@@ -1,18 +1,24 @@
-version: "2"
+version: "3"
 
 services:
   rng:
-    build: rng
+    image: user/dockercoins_rng
+    networks:
+    - dockercoins
     ports:
     - "8001:80"
 
   hasher:
-    build: hasher
+    image: user/dockercoins_hasher
+    networks:
+    - dockercoins
     ports:
     - "8002:80"
 
   webui:
-    build: webui
+    image: user/dockercoins_webui
+    networks:
+    - dockercoins
     ports:
     - "8000:80"
     volumes:
@@ -20,7 +26,13 @@ services:
 
   redis:
     image: redis
+    networks:
+    - dockercoins
 
   worker:
-    build: worker
+    image: user/dockercoins_worker
+    networks:
+    - dockercoins
 
+networks:
+    dockercoins:
