@@ -2,21 +2,21 @@ version: "3"
 
 services:
   rng:
-    image: user/dockercoins_rng
+    image: user/dockercoins_rng:1.0
     networks:
     - dockercoins
     ports:
     - "8001:80"
 
   hasher:
-    image: user/dockercoins_hasher
+    image: user/dockercoins_hasher:1.0
     networks:
     - dockercoins
     ports:
     - "8002:80"
 
   webui:
-    image: user/dockercoins_webui
+    image: user/dockercoins_webui:1.0
     networks:
     - dockercoins
     ports:
@@ -28,7 +28,7 @@ services:
     - dockercoins
 
   worker:
-    image: user/dockercoins_worker
+    image: user/dockercoins_worker:1.0
     networks:
     - dockercoins
 
