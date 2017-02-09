@@ -3403,19 +3403,45 @@ Wait for the service to be fully updated with e.g. `watch docker service ps dumm
 
 ## A reminder about *scope*
 
+- Out of the box, Docker API access is "all or nothing"
+
 - When someone has access to the Docker API, they can access *everything*
 
-- In other words, if your developers are using the Docker API to deploy on the dev cluster ...
+- If your developers are using the Docker API to deploy on the dev cluster ...
 
   ... and the dev cluster is the same as the prod cluster ...
 
   ... it means that your devs have access to your production data, passwords, etc.
 
-- How can this be avoided?
+- This can easily be avoided
 
-  - separate clusters
+---
 
-  - extra layer of abstraction (scripts, hooks, or full-blown PAAS)
+## Fine-grained API access control
+
+A few solutions, by increasing order of flexibility:
+
+- Use separate clusters for different security perimeters
+
+  (And different credentials for each cluster)
+
+--
+
+- Add an extra layer of abstraction (sudo scripts, hooks, or full-blown PAAS)
+
+--
+
+- Enable [authorization plugins]
+
+  - each API request is vetted by your plugin(s)
+
+  - by default, the *subject name* in the client TLS certificate is used as user name
+
+  - example: [user and permission management] in [UCP]
+
+[authorization plugins]: https://docs.docker.com/engine/extend/plugins_authorization/
+[UCP]: https://docs.docker.com/datacenter/ucp/2.0/guides/
+[user and permission management]: https://docs.docker.com/datacenter/ucp/2.0/guides/user-management/
 
 ---
 
