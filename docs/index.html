@@ -204,7 +204,6 @@ Remember to change:
   details
 
 ???
----
 
 <!--
 grep '^# ' index.html | grep -v '<br' | tr '#' '-'
@@ -219,7 +218,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 - Identifying bottlenecks
 - Introducing SwarmKit
 
----
+???
 
 ## Chapter 2: scaling out our app on Swarm
 
@@ -230,7 +229,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 - Breaking into an overlay network
 - Securing overlay networks
 
----
+???
 
 ## Chapter 3: operating the Swarm
 
@@ -239,7 +238,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 - [Centralized logging](#logging)
 - Metrics collection
 
----
+???
 
 ## Chapter 4: deeper in Swarm
 
@@ -254,7 +253,9 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 # Pre-requirements
 
-- Computer with network connection and SSH client
+- Computer with internet connection and a web browser
+
+- For instructor-led workshops: an SSH client to connect to remote machines
 
   - on Linux, OS X, FreeBSD... you are probably all set
 
@@ -262,6 +263,9 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
   Microsoft [Win32 OpenSSH](https://github.com/PowerShell/Win32-OpenSSH/wiki/Install-Win32-OpenSSH),
   [Git BASH](https://git-for-windows.github.io/), or
   [MobaXterm](http://mobaxterm.mobatek.net/)
+
+- For self-paced learning: SSH is not necessary if you use
+  [Play-With-Docker](http://www.play-with-docker.com/)
 
 - Some Docker knowledge
 
@@ -271,8 +275,8 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 ## Nice-to-haves
 
-- [Mosh](https://mosh.org/) if your internet connection tends to lose packets
-  <br/>(available with `(apt|yum|brew) install mosh`; then use it instead of SSH)
+- [Mosh](https://mosh.org/) instead of SSH, if your internet connection tends to lose packets
+  <br/>(available with `(apt|yum|brew) install mosh`; then connect with `mosh user@host`)
 
 - [GitHub](https://github.com/join) account
   <br/>(if you want to fork the repo; also used to join Gitter)
@@ -284,7 +288,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 -->
 
-- [Slack](http://lisainvite.herokuapp.com/) account
+- [Slack](https://community.docker.com/registrations/groups/4316) account
   <br/>(to join the conversation during the workshop)
 
 - [Docker Hub](https://hub.docker.com) account
@@ -387,11 +391,15 @@ wait
 
 - If you use Play-With-Docker:
 
-  - you can't SSH to the machines
+  - you don't need to SSH to the machines
+    <br/>(just click on the node that you want to control in the left tab bar)
 
-  - you access the terminal directly in your browser
+  - Play-With-Docker automagically detects exposed ports
+    <br/>(and displays them as little badges with port numbers, above the terminal)
 
-  - exposing services requires something like
+  - You can access HTTP services by clicking on the port numbers
+
+  - exposing TCP services requires something like
     [ngrok](https://ngrok.com/)
     or [supergrok](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker)
 
@@ -411,7 +419,7 @@ wait
 
 - When we will use the other nodes, we will do it mostly through the Docker API
 
-- We will use SSH only for the initial setup and a few "out of band" operations
+- We will log into other nodes only for initial setup and a few "out of band" operations
   <br/>(checking internal logs, debugging...)
 
 ---
@@ -448,9 +456,9 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 1.13-rc
-- Compose 1.10-rc
-- Machine 0.9-rc
+- Engine 1.13
+- Compose 1.10
+- Machine 0.9
 
 .exercise[
 
@@ -462,6 +470,24 @@ You are welcome to use the method that you feel the most comfortable with.
   ```
 
 ]
+
+---
+
+class: title
+
+All right!
+<br/>
+We're all set.
+<br/>
+Let's do this.
+
+---
+
+name: part-1
+
+class: title
+
+Part 1
 
 ---
 
@@ -706,7 +732,7 @@ Tip: use `^S` and `^Q` to pause/resume log output.
 
 .exercise[
 
-- Open http://[yourVMaddr]:8000/ (from a browser)
+- With a web browser, connect to `node1` on port 8000
 
 ]
 
@@ -1220,12 +1246,9 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
   docker swarm join-token worker
   ```
 
-- Log into `node2`:
-  ```bash
-  ssh node2
-  ```
+- Switch to `node2`
 
-- Copy paste the `docker swarm join ...` command
+- Copy-paste the `docker swarm join ...` command
   <br/>(that was displayed just before)
 
 ]
@@ -1235,7 +1258,7 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
 
 ## Check that the node was added correctly
 
-- Stay logged into `node2`!
+- Stay on `node2` for now!
 
 .exercise[
 
@@ -1263,7 +1286,7 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
 
 .exercise[
 
-- Logout from `node2` (with `exit` or `Ctrl-D` or ...)
+- Switch back to `node1`
 
 - View the cluster from `node1`, which is a manager:
   ```bash
@@ -1285,13 +1308,18 @@ ehb0...4fvx    node2     Ready   Active
 
 - We don't have to SSH into the other nodes, we can use the Docker API
 
-- Our nodes expose the Docker API over port 2376/tcp,
-  <br/>
-  protected by TLS mutual authentication
+- If you are using Play-With-Docker:
 
-- To connect to other nodes with the Docker API, we will use Docker Machine
+  - the nodes expose the Docker API over port 2375/tcp, without authentication
 
-  (Our nodes have been suitably pre-configured to be controlled through `node1`)
+  - we will connect by setting the `DOCKER_HOST` environment variable
+
+- Otherwise:
+
+  - the nodes expose the Docker API over port 2376/tcp, with TLS mutual authentication
+
+  - we will use Docker Machine to set the correct environment variables
+    <br/>(the nodes have been suitably pre-configured to be controlled through `node1`)
 
 ---
 
@@ -1393,15 +1421,37 @@ You should see your 5 nodes.
 
 ---
 
-## Adding a node through the Docker API
+## Change the node targeted by the Docker CLI
 
-- Now, let's use Docker Machine to switch to `node3` and add it to the cluster
+- We need to set the right environment variables to communicate with `node3`
 
 .exercise[
 
-- Communicate with `node3`:
+- If you're using Play-With-Docker:
+  ```bash
+  export DOCKER_HOST=tcp://node3:2375
+  ```
+
+- Otherwise, use Docker Machine:
   ```bash
   eval $(docker-machine env node3)
+  ```
+
+]
+
+---
+
+## Adding a node through the Docker API
+
+Note: it can be useful to use a [custom shell prompt](
+https://github.com/jpetazzo/orchestration-workshop/blob/master/prepare-vms/scripts/postprep.rc#L68)
+reflecting the `DOCKER_HOST` variable.
+
+.exercise[
+
+- Check which node we're talking to:
+  ```bash
+  docker info | grep ^Name
   ```
 
 - Add `node3` to the Swarm:
@@ -1411,22 +1461,33 @@ You should see your 5 nodes.
 
 ]
 
-Note: it can be useful to use a [custom shell prompt](
-https://github.com/jpetazzo/orchestration-workshop/blob/master/prepare-vms/scripts/postprep.rc#L68)
-reflecting the `DOCKER_HOST` variable.
-
 ---
 
-## Checking that our node is here
+## Going back to the local node
 
-- We have to go back to the local node first
+- We need to revert the environment variable(s) that we had set previously
 
 .exercise[
 
-- Reset the environment variables:
+- If you're using Play-With-Docker, just clear `DOCKER_HOST`:
+  ```bash
+  unset DOCKER_HOST
+  ```
+
+- Otherwise, use Docker Machine to reset all the relevant variables:
   ```bash
   eval $(docker-machine env -u)
   ```
+
+]
+
+---
+
+## Checking the composition of our cluster
+
+- Now that we're talking to `node1` again, we can use management commands
+
+.exercise[
 
 - Check that the node is here:
   ```bash
@@ -1530,19 +1591,42 @@ Some presentations from the Docker Distributed Systems Summit in Berlin:
 
 - Let's make our cluster highly available
 
-.exercise[
+- Can you write a tiny script to automatically retrieve the manager token,
+  <br/>and automatically add remaining nodes to the cluster?
 
-- Get the manager token and use it to add nodes 4 and 5 to the cluster:
-  ```bash
-    TOKEN=$(docker swarm join-token -q manager)
-    for N in 4 5; do
-      eval $(docker-machine env node$N)
-      docker swarm join --token $TOKEN node1:2377
-    done
-    eval $(docker-machine env -u)
-  ```
+--
 
-]
+- Hint: we want to use `for N in $(seq 4 5) ...`
+
+---
+
+## Adding more managers
+
+With Play-With-Docker:
+
+```bash
+TOKEN=$(docker swarm join-token -q manager)
+for N in $(seq 4 5); do
+  export DOCKER_HOST=tcp://node$N:2375
+  docker swarm join --token $TOKEN node1:2377
+done
+unset DOCKER_HOST
+```
+
+---
+
+## Adding more managers
+
+With Docker Machine:
+
+```bash
+TOKEN=$(docker swarm join-token -q manager)
+for N in $(seq 4 5); do
+  eval $(docker-machine env node$N)
+  docker swarm join --token $TOKEN node1:2377
+done
+eval $(docker-machine env -u)
+```
 
 ---
 
@@ -1552,7 +1636,7 @@ Some presentations from the Docker Distributed Systems Summit in Berlin:
 
 - Try the following command on a few different nodes:
   ```bash
-  ssh nodeX docker node ls
+  docker node ls
   ```
 
 ]
@@ -1566,6 +1650,20 @@ On non-manager nodes:
 the node is not a manager.
 
 As we saw earlier, you can only control the Swarm through a manager node.
+
+---
+
+## Play-With-Docker node status icon
+
+- If you're using Play-With-Docker, you get node status icons
+
+- Node status icons are displayed left of the node name
+
+- No icon = no Swarm mode detected
+
+- Solid blue icon = Swarm manager detected
+
+- Blue outline icon = Swarm worker detected
 
 ---
 
@@ -1692,13 +1790,9 @@ As we saw earlier, you can only control the Swarm through a manager node.
 
 .exercise[
 
-- Log into the node *or* use Docker Machine to talk to it:
-  ```bash
-  ssh nodeX
-  ```
-  ```bash
-  eval $(docker-machine env nodeX)
-  ```
+- If you use Play-With-Docker, switch to that node's tab, or set `DOCKER_HOST`
+
+- Otherwise, `ssh` into tht node or use `$(eval docker-machine env node...)`
 
 ]
 
@@ -1718,10 +1812,7 @@ As we saw earlier, you can only control the Swarm through a manager node.
   docker logs <containerID>
   ```
 
-- Go back to `node1` afterwards by logging out of SSH, or by running:
-  ```bash
-  eval $(docker-machine env -u)
-  ```
+- Go back to `node1` afterwards
 
 ]
 
@@ -1797,7 +1888,9 @@ The latest version of the ElasticSearch image won't start without mandatory conf
 - If you are fast enough, you will be able to see multiple states:
 
   - assigned (the task has been assigned to a specific node)
+
   - preparing (right now, this mostly means "pulling the image")
+
   - running
 
 - When a task is terminated (stopped, killed...) it cannot be restarted
@@ -1847,13 +1940,70 @@ about this instance; including a randomly-generated super-hero name.
 
 ]
 
---
+Note: if you don't have `jq` on your Play-With-Docker instance, just install it:
+```bash
+apk add --no-cache jq
+```
+
+---
+
+## Load balancing results
+
+Traffic is handled by our clusters [TCP routing mesh](
+https://docs.docker.com/engine/swarm/ingress/).
 
 Each request is served by one of the 7 instances, in rotation.
 
-Note: if you try this in your browser, you will probably see the same
+Note: if you try to access the service from your browser,
+you will probably see the same
 instance name over and over, because your browser (unlike curl) will try
 to re-use the same connection.
+
+---
+
+## Under the hood of the TCP routing mesh
+
+- Load balancing is done by IPVS
+
+- IPVS is a high-performance, in-kernel load balancer
+
+- It's been around for a long time (merged in the kernel since 2.4)
+
+- Each node runs a local load balancer
+
+  (Allowing connections to be routed directly to the destination,
+  without extra hops)
+
+---
+
+## Managing inbound traffic
+
+There are many ways to deal with inbound traffic on a Swarm cluster.
+
+- Put all (or a subset) of your nodes in a DNS `A` record
+
+- Assign your nodes (or a subet) to an ELB
+
+- Use a virtual IP and make sure that it is assigned to an "alive" node
+
+- etc.
+
+---
+
+## Managing HTTP traffic
+
+- The TCP routing mesh doesn't parse HTTP headers
+
+- If you want to place multiple HTTP services on port 80, you need something more
+
+- You can setup NGINX or HAProxy on port 80 to do the virtual host switching
+
+- Docker Universal Control Plane provides its own [HTTP routing mesh](
+  https://docs.docker.com/datacenter/ucp/2.1/guides/admin/configure/use-domain-names-to-access-services/)
+
+  - add a specific label starting with `com.docker.ucp.mesh.http` to your services
+
+  - labels are detected automatically and dynamically update the configuration
 
 ---
 
@@ -2289,7 +2439,9 @@ It has been replaced by the new version, with port 80 accessible from outside.
 
 .exercise[
 
-- Point your browser to any node, on port 8000
+- If you're using Play-With-Docker, just click on the `(8000)` badge
+
+- Otherwise, point your browser to any node, on port 8000
 
 ]
 
@@ -2374,27 +2526,7 @@ Note: if the hash rate goes to zero and doesn't climb back up, try to `rm` and `
 
 ---
 
-## Checkpoint
-
-- We've seen how to set up a Swarm
-
-- We've used it to host our own registry
-
-- We've built our app container images
-
-- We've used the registry to host those images
-
-- We've deployed and scaled our application
-
-Let's treat ourselves with a nice pat on the back!
-
---
-
-And carry on, we have much more to see and learn!
-
----
-
-## Interlude: making our app "Swarm-ready"
+## How did we make our app "Swarm-ready"?
 
 This app was written in June 2015. (One year before Swarm mode was released.)
 
@@ -2455,6 +2587,30 @@ https://hub.docker.com/r/jpetazzo/dockercoins_worker/tags/)
   - And now "services"
 
 - Existing apps might require more changes!
+
+---
+
+## Summary
+
+- We've seen how to set up a Swarm
+
+- We've used it to host our own registry
+
+- We've built our app container images
+
+- We've used the registry to host those images
+
+- We've deployed and scaled our application
+
+- Awesome job, team!
+
+---
+
+name: part-2
+
+class: title
+
+Part 2
 
 ---
 
