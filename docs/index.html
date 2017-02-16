@@ -2590,6 +2590,509 @@ https://hub.docker.com/r/jpetazzo/dockercoins_worker/tags/)
 
 ---
 
+# Scripting image building and pushing
+
+- Earlier, we used some rather crude shell loops to build and push images
+
+- Compose (and clever environment variables) can help us to make that easier
+
+- When using Compose file version 2, you can specify *both* `build` and `image`:
+
+```yaml
+version: "2"
+
+services:
+
+  webapp:
+    build: src/
+    image: jpetazzo/webapp:${TAG}
+```
+
+Note: Compose tolerates empty (or unset) environment variables, but in this example,
+`TAG` *must* be set, because `jpetazzo/webapp:` is not a valid image name.
+
+---
+
+## Updating the Compose file to specify image tags
+
+- Let's update the Compose file for DockerCoins to make it easier to push it to our registry
+
+.exercise[
+
+- Go back to the `dockercoins` directory:
+  ```bash
+  cd ~/orchestration-workshop/dockercoins
+  ```
+
+- Edit `docker-compose.yml`, and update each service to add an `image` directive as follows:
+  ```yaml
+    rng:
+      build: rng
+      `image: ${REGISTRY_SLASH}rng${COLON_TAG}`
+  ```
+
+]
+
+You can also directly use the file `docker-compose.yml-images`.
+
+---
+
+## Use the new Compose file
+
+- We need to set `REGISTRY_SLASH` and `COLON_TAG` variables
+
+- Then we can use Compose to `build` and `push`
+
+.exercise[
+
+- Set environment variables:
+  ```bash
+  export REGISTRY_SLASH=localhost:5000/
+  export COLON_TAG=:v0.01
+  ```
+
+- Build and push with Compose:
+  ```bash
+  docker-compose build
+  docker-compose push
+  ```
+
+]
+
+---
+
+## Why the weird variable names?
+
+- It would be more intuitive to have:
+  ```bash
+  REGISTRY=localhost:5000
+  TAG=v0.01
+  ```
+
+- But then, when the variables are not set, the image names would be invalid
+
+  (they would look like .red[`/rng:`])
+
+- Putting the slash and the colon in the variables allows to use the Compose file
+  even when the variables are not set
+
+- The variable names (might) remind you that you have to put the trailing slash and heading colon
+
+---
+
+# Integration with Compose
+
+- The previous section showed us how to streamline image build and push
+
+- We will now see how to streamline service creation
+
+  (i.e. get rid of the `for SERVICE in ...; do docker service create ...` part)
+
+---
+
+## Compose file version 3
+
+(New in Docker Engine 1.13)
+
+- Almost identical to version 2
+
+- Can be directly used by a Swarm cluster through `docker stack ...` commands
+
+- Introduces a `deploy` section to pass Swarm-specific parameters
+
+- Resource limits are moved to this `deploy` section
+
+- See [here](https://github.com/aanand/docker.github.io/blob/8524552f99e5b58452fcb1403e1c273385988b71/compose/compose-file.md#upgrading) for the complete list of changes
+
+- Supersedes *Distributed Application Bundles*
+
+  (JSON payload describing an application; could be generated from a Compose file)
+
+---
+
+## Removing everything
+
+- Before deploying using "stacks," let's get a clean slate
+
+.exercise[
+
+- Remove *all* the services:
+  ```bash
+  docker service ls -q | xargs docker service rm
+  ```
+
+]
+
+---
+
+## Our first stack
+
+We need a registry to move images around.
+
+Before, we deployed it with the following command:
+
+```bash
+docker service create --publish 5000:5000 registry:2
+```
+
+Now, we are going to deploy it with the following stack file:
+
+```yaml
+version: "3"
+
+services:
+  registry:
+    image: registry:2
+    ports:
+      - "5000:5000"
+```
+
+---
+
+## Checking our stack files
+
+- All the stack files that we will use are in the `stacks` directory
+
+.exercise[
+
+- Go to the `stacks` directory:
+  ```bash
+  cd ~/orchestration-workshop/stacks
+  ```
+
+- Check `registry.yml`:
+  ```bash
+  cat registry.yml
+  ```
+
+]
+
+---
+
+## Deploying our first stack
+
+- All stack manipulation commands start with `docker stack`
+
+- Under the hood, they map to `docker service` commands
+
+- Stacks have a *name* (which also serves as a namespace)
+
+- Stacks are specified with the aforementioned Compose file format version 3
+
+.exercise[
+
+- Deploy our local registry:
+  ```bash
+  docker stack deploy registry --compose-file registry.yml
+  ```
+
+]
+
+---
+
+## Inspecting stacks
+
+- `docker stack ps` shows the detailed state of all services of a stack
+
+.exercise[
+
+- Check that our registry is running correctly:
+  ```bash
+  docker stack ps registry
+  ```
+
+- Confirm that we get the same output with the following command:
+  ```bash
+  docker service ps registry_registry
+  ```
+
+]
+
+---
+
+## Specifics of stack deployment
+
+Our registry is not *exactly* identical to the one deployed with `docker service create`!
+
+- Each stack gets its own overlay network
+
+- Services of the task are connected to this network
+  <br/>(unless specified differently in the Compose file)
+
+- Services get network aliases matching their name in the Compose file
+  <br/>(just like when Compose brings up an app specified in a v2 file)
+
+- Services are explicitly named `<stack_name>_<service_name>`
+
+- Services and tasks also get an internal label indicating which stack they belong to
+
+---
+
+## Building and pushing stack services
+
+- We are going to use the `build` + `image` trick that we showed earlier:
+
+  ```bash
+  docker-compose -f my_stack_file.yml build
+  docker-compose -f my_stack_file.yml push
+  docker stack deploy my_stack --compose-file my_stack_file.yml
+  ```
+
+.exercise[
+
+- Try it:
+  ```bash
+  docker-compose -f dockercoins.yml build
+  ```
+
+]
+
+--
+
+If it doesn't work, make sure that you have Compose 1.10.
+
+---
+
+## Upgrading Compose
+
+- This is only necessary if you have an older version of Compose
+
+.exercise[
+
+- Upgrade Compose, using the `master` branch:
+  ```bash
+  pip install git+git://github.com/docker/compose
+  ```
+
+- Re-hash our `$PATH`:
+  ```bash
+  hash docker-compose
+  ```
+
+]
+
+---
+
+## Trying again
+
+- We can now build and push our container images
+
+.exercise[
+
+- Build our application:
+  ```bash
+  docker-compose -f dockercoins.yml build
+  ```
+
+- Push the images to our registry:
+  ```bash
+  docker-compose -f dockercoins.yml push
+  ```
+
+]
+
+Let's have a look at the `dockercoins.yml` file while this is building and pushing.
+
+---
+
+```yaml
+version: "3"
+
+services:
+  rng:
+    build: dockercoins/rng
+    image: ${REGISTRY_SLASH-localhost:5000/}rng${COLON_TAG-:latest}
+    deploy:
+      mode: global
+  ...
+  redis:
+    image: redis
+  ...
+  worker:
+    build: dockercoins/worker
+    image: ${REGISTRY_SLASH-localhost:5000/}worker${COLON_TAG-:latest}
+    ...
+    deploy:
+      replicas: 10
+```
+
+???
+
+## What's this `logging` section?
+
+- This application stack is setup to send logs to a local GELF receiver
+
+- We will use another "ready-to-use" Compose file to deploy an ELK stack
+
+- We won't give much more details about the ELK stack right now
+
+  (But there is a chapter dedicated to it in another part!)
+
+- A given container can have only one logging driver at a time (for now)
+
+- As a result, the `gelf` driver is superseding the default `json-file` driver
+
+- ... Which means that the output of these containers won't show up in `docker logs`
+
+---
+
+## Deploying the application
+
+- Now that the images are on the registry, we can deploy our application stack
+
+.exercise[
+
+- Create the application stack:
+  ```bash
+  docker stack deploy dockercoins --compose-file dockercoins.yml
+  ```
+
+]
+
+We can now connect to any of our nodes on port 8000, and we will see the familiar hashing speed graph.
+
+???
+
+## Deploying the logging stack
+
+- We are going to deploy an ELK stack
+
+- We won't tell you much more about ELK (for now!)
+
+.exercise[
+
+- Deploy the logging stack:
+  ```bash
+  docker stack deploy elk --compose-file elk.yml
+  ```
+
+]
+
+???
+
+## Accessing the logging stack
+
+- At the end of `elk.yml`, we have:
+
+```yaml
+  kibana:
+    image: kibana:4
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+```
+
+- Kibana (the web frontend for the logging stack) is exposed on port 5601
+
+.exercise[
+
+- With your web browser, connect to port 5601
+
+- Click around until you see your containers' logs!
+
+]
+
+???
+
+.exercise[
+
+- Deploy Prometheus, cAdvisor, and the node exporter, just like we deployed DockerCoins:
+  ```bash
+  docker-compose -f prometheus.yml build
+  docker-compose -f prometheus.yml push
+  docker stack deploy prometheus --compose-file prometheus.yml
+  ```
+
+]
+
+Look at `prometheus.yml` while it's building and pushing.
+
+???
+
+```yaml
+version: "3"
+
+services:
+
+  prometheus:
+    build: ../prom
+    image: localhost:5000/prom
+    ports:
+      - "9090:9090"
+
+  node:
+    ...
+
+  cadvisor:
+    image: google/cadvisor
+    deploy:
+      mode: global
+    volumes:
+      - "/:/rootfs"
+      - "/var/run:/var/run"
+      - "/sys:/sys"
+      - "/var/lib/docker:/var/lib/docker"
+```
+
+???
+
+## Accessing our new metrics stack
+
+.exercise[
+
+- Go to any node, port 9090
+
+- Check that data scraping works (click on "status", then "targets")
+
+- Select a metric from the "insert metric at cursor" dropdown
+
+- Execute!
+
+]
+
+---
+
+## Maintaining multiple environments
+
+There are many ways to handle variations between environments.
+
+- Compose loads `docker-compose.yml` and (if it exists) `docker-compose.override.yml`
+
+- Compose can load alternate file(s) by setting the `-f` flag or the `COMPOSE_FILE` environment variable
+
+- Compose files can *extend* other Compose files, selectively including services:
+
+  ```yaml
+    web:
+      extends:
+        file: common-services.yml
+        service: webapp
+  ```
+
+See [this documentation page](https://docs.docker.com/compose/extends/) for more details about these techniques.
+
+
+---
+
+## Good to know ...
+
+- Compose file version 3 adds the `deploy` section
+
+- Compose file version 3.1 adds support for secrets
+
+- You can re-run `docker stack deploy` to update a stack
+
+- ... But unsupported features will be wiped each time you redeploy (!)
+
+  (This will likely be fixed/improved soon)
+
+- `extends` doesn't work with `docker stack deploy`
+
+  (But you can use `docker-compose config` to "flatten" your configuration)
+
+---
+
 ## Summary
 
 - We've seen how to set up a Swarm
@@ -2601,6 +3104,8 @@ https://hub.docker.com/r/jpetazzo/dockercoins_worker/tags/)
 - We've used the registry to host those images
 
 - We've deployed and scaled our application
+
+- We've seen how to use Compose to streamline deployments
 
 - Awesome job, team!
 
@@ -2614,9 +3119,46 @@ Part 2
 
 ---
 
-class: title
+## Before we start ...
 
-#  Operating the Swarm
+The following exercises assume that you have a 5-nodes Swarm cluster.
+
+If you come here from a previous tutorial and still have your cluster: great!
+
+Otherwise: check [part 1](#part-1) to learn how to setup your own cluster.
+
+We pick up exactly where we left you, so we assume that you have:
+
+- a five nodes Swarm cluster,
+
+- a self-hosted registry,
+
+- DockerCoins up and running.
+
+The next slide has a cheat sheet if you need to set that up in a pinch.
+
+---
+
+## Catching up
+
+Assuming you have 5 nodes provided by
+[Play-With-Docker](http://www.play-with-docker/), do this from `node1`:
+
+```bash
+docker swarm init --advertise-addr eth0
+TOKEN=$(docker swarm join-token -q manager)
+for N in $(seq 2 5); do
+  DOCKER_HOST=tcp://node$N:2375 docker swarm join --token $TOKEN node1:2377
+done
+git clone git://github.com/jpetazzo/orchestration-workshop
+cd orchestration-workshop/stacks
+docker stack deploy --compose-file registry.yml registry
+docker-compose -f dockercoins.yml build
+docker-compose -f dockercoins.yml push
+docker stack deploy --compose-file dockercoins.yml dockercoins
+```
+
+You should now be able to connect to port 8000 and see the DockerCoins web UI.
 
 ---
 
@@ -2652,7 +3194,7 @@ class: title
 
 - Start a "do nothing" container using our favorite Swiss-Army distro:
   ```bash
-    docker service create --network dockercoins --name debug --mode global \
+    docker service create --network dockercoins_default --name debug --mode global \
            alpine sleep 1000000000
   ```
 
@@ -2817,7 +3359,7 @@ This should list 5 IP addresses.
 
 - Open another window, and stop the workers, to test in isolation:
   ```bash
-  docker service update worker --replicas 0
+  docker service update dockercoins_worker --replicas 0
   ```
 
 ]
@@ -3067,7 +3609,7 @@ WHY?!?
 
 Seeing tons of HTTP request? Shutdown your DockerCoins workers:
 ```bash
-docker service update worker --replicas=0
+docker service update dockercoins_worker --replicas=0
 ```
 
 ---
@@ -3173,8 +3715,8 @@ However, when you run the second one, only `#` will show up.
 
 - Build the new image:
   ```bash
-  IMAGE=localhost:5000/dockercoins_worker:v0.01
-  docker build -t $IMAGE worker
+  IMAGE=localhost:5000/worker:v0.01
+  docker build -t $IMAGE ~/orchestration-workshop/dockercoins/worker
   ```
 
 - Push it to the registry:
@@ -3218,12 +3760,12 @@ Note how the build and push were fast (because caching).
 
 - In the other window, bring back the workers (if you had stopped them earlier):
   ```bash
-  docker service update worker --replicas 10
+  docker service update dockercoins_worker --replicas 10
   ```
 
 - Then, update the service to the new image:
   ```bash
-  docker service update worker --image $IMAGE
+  docker service update dockercoins_worker --image $IMAGE
   ```
 
 ]
@@ -3242,7 +3784,8 @@ By default, SwarmKit does a rolling upgrade, one instance at a time.
 
 - Change the parallelism to 2 and the delay to 5 seconds:
   ```bash
-  docker service update worker --update-parallelism 2 --update-delay 5s
+    docker service update dockercoins_worker \
+      --update-parallelism 2 --update-delay 5s
   ```
 
 ]
@@ -3259,12 +3802,13 @@ The current upgrade will continue at a faster pace.
 
 - Rollback to the previous image:
   ```bash
-  docker service update worker --image $DOCKER_REGISTRY/dockercoins_worker:v0.1
+    docker service update dockercoins_worker \
+      --image $DOCKER_REGISTRY/dockercoins_worker:v0.1
   ```
 
 - With Docker 1.13, we can also revert to the previous service specification:
   ```bash
-  docker service update worker --rollback
+  docker service update dockercoins_worker --rollback
   ```
 
 ]
@@ -3594,7 +4138,7 @@ Wait for the service to be fully updated with e.g. `watch docker service ps dumm
   docker service update ... --secret-rm foo.M --secret-add source=foo.N,target=foo
   ```
 
-- For more details and examples, [check the upcoming documentation](https://github.com/docker/docker.github.io/pull/568)
+- For more details and examples, [check the documentation](https://docs.docker.com/engine/swarm/secrets/)
 
 ---
 
@@ -3934,10 +4478,7 @@ What we will do:
   docker service ps logstash
   ```
 
-- Log into that node:
-  ```bash
-  ssh nodeX
-  ```
+- Connect to that node
 
 ]
 
@@ -4043,9 +4584,15 @@ You can also set `--restart-delay`, `--restart-max-attempts`, and `--restart-win
 
 - The Kibana web UI is exposed on cluster port 5601
 
-- Open the UI in your browser: http://instance-address:5601/
+.exercise[
 
-  (Remember: you can use any instance address!)
+- Connect to port 5601 of your cluster
+
+  - if you're using Play-With-Docker, click on the (5601) badge above the terminal
+
+  - otherwise, open http://(any-node-address):5601/ with your browser
+
+]
 
 ---
 
@@ -4083,7 +4630,7 @@ You can also set `--restart-delay`, `--restart-max-attempts`, and `--restart-win
 - Enable GELF logging for all our *stateless* services:
   ```bash
     for SERVICE in hasher rng webui worker; do
-      docker service update $SERVICE \
+      docker service update dockercoins_$SERVICE \
              --log-driver gelf --log-opt gelf-address=udp://127.0.0.1:12201
     done
   ```
@@ -4537,6 +5084,23 @@ To exit, hit `^C`
 
 ## Running Snap itself on every node
 
+- Snap runs in the foreground, so you need to use `&` or start it in tmux
+
+.exercise[
+
+- Run the following command *on every node:*
+  ```bash
+  snapd -t 0 -l 1 --tribe --tribe-seed node1:6000
+  ```
+
+]
+
+If you're *not* using Play-With-Docker, there is another way to start Snap!
+
+---
+
+## Starting a daemon through SSH
+
 .warning[Hackety hack ahead!]
 
 - We will create a *global service*
@@ -4568,6 +5132,8 @@ To exit, hit `^C`
    ```
 
 ]
+
+Remember: this *does not work* with Play-With-Docker (which doesn't have SSH).
 
 ---
 
@@ -4703,7 +5269,7 @@ this breaks a few things.]
 
 .exercise[
 
-- Connect to http://any.node.address:8083/
+- Open port 8083 with your browser
 
 - Enter the following query in the query box:
   ```
@@ -4846,7 +5412,7 @@ the task (it will delete+re-create on all nodes).
 
 .exercise[
 
-- Go to http://any.node.address:3000/
+- Open port 3000 with your browser
 
 - Identify with "admin" as the username and password
 
@@ -4869,7 +5435,7 @@ Fill the form exactly as follows:
 - Type = "InfluxDB"
 
 In HTTP settings, fill as follows:
-- Url = "http://any.node.address:8086"
+- Url = "http://(IP.address.of.any.node):8086"
 - Access = "direct"
 - Leave HTTP Auth untouched
 
@@ -5147,7 +5713,7 @@ scrape_configs:
 
 .exercise[
 
-- Connect to `http://<any.node.address>:9090`
+- Open port 9090 with your browser
 
 - Click on "status", then "targets"
 
@@ -5324,7 +5890,7 @@ We see the same input form that we filled earlier to connect to InfluxDB.
 
 - Select "Prometheus" as the source type
 
-- Enter http://(node IP address):9090 in the Url field
+- Enter http://(IP.address.of.any.node):9090 in the Url field
 
 - Select "direct" as the access method
 
@@ -5723,466 +6289,6 @@ Note: we could keep the volume around if we wanted.
 
 ---
 
-# Scripting image building and pushing
-
-- Earlier, we used some rather crude shell loops to build and push images
-
-- Compose (and clever environment variables) can help us to make that easier
-
-- When using Compose file version 2, you can specify *both* `build` and `image`:
-
-```yaml
-version: "2"
-
-services:
-
-  webapp:
-    build: src/
-    image: jpetazzo/webapp:${TAG}
-```
-
-Note: Compose tolerates empty (or unset) environment variables, but in this example,
-`TAG` *must* be set, because `jpetazzo/webapp:` is not a valid image name.
-
----
-
-## Updating the Compose file to specify image tags
-
-- Let's update the Compose file for DockerCoins to make it easier to push it to our registry
-
-.exercise[
-
-- Go back to the `dockercoins` directory:
-  ```bash
-  cd ~/orchestration-workshop/dockercoins
-  ```
-
-- Edit `docker-compose.yml`, and update each service to add an `image` directive as follows:
-  ```yaml
-    rng:
-      build: rng
-      `image: ${REGISTRY_SLASH}rng${COLON_TAG}`
-  ```
-
-]
-
-You can also directly use the file `docker-compose.yml-images`.
-
----
-
-## Use the new Compose file
-
-- We need to set `REGISTRY_SLASH` and `COLON_TAG` variables
-
-- Then we can use Compose to `build` and `push`
-
-.exercise[
-
-- Set environment variables:
-  ```bash
-  export REGISTRY_SLASH=localhost:5000/
-  export COLON_TAG=:v0.01
-  ```
-
-- Build and push with Compose:
-  ```bash
-  docker-compose build
-  docker-compose push
-  ```
-
-]
-
----
-
-## Why the weird variable names?
-
-- It would be more intuitive to have:
-  ```bash
-  REGISTRY=localhost:5000
-  TAG=v0.01
-  ```
-
-- But then, when the variables are not set, the image names would be invalid
-
-  (they would look like .red[`/rng:`])
-
-- Putting the slash and the colon in the variables allows to use the Compose file
-  even when the variables are not set
-
-- The variable names (might) remind you that you have to put the trailing slash and heading colon
-
----
-
-# Integration with Compose
-
-- The previous section showed us how to streamline image build and push
-
-- We will now see how to streamline service creation
-
-  (i.e. get rid of the `for SERVICE in ...; do docker service create ...` part)
-
-.warning[This is experimental and subject to change!]
-
----
-
-## Compose file version 3
-
-(New in Docker Engine 1.13)
-
-- Almost identical to version 2
-
-- Can be directly used by a Swarm cluster through `docker stack ...` commands
-
-- Introduces a `deploy` section to pass Swarm-specific parameters
-
-- Resource limits are moved to this `deploy` section
-
-- See [here](https://github.com/aanand/docker.github.io/blob/8524552f99e5b58452fcb1403e1c273385988b71/compose/compose-file.md#upgrading) for the complete list of changes
-
-- Supersedes *Distributed Application Bundles*
-
-  (JSON payload describing an application; could be generated from a Compose file)
-
----
-
-## Removing everything
-
-- Before deploying using "stacks," let's get a clean slate
-
-.exercise[
-
-- Remove *all* the services:
-  ```bash
-  docker service ls -q | xargs docker service rm
-  ```
-
-]
-
----
-
-## Our first stack
-
-We need a registry to move images around.
-
-Before, we deployed it with the following command:
-
-```bash
-docker service create --publish 5000:5000 registry:2
-```
-
-Now, we are going to deploy it with the following stack file:
-
-```yaml
-version: "3"
-
-services:
-  registry:
-    image: registry:2
-    ports:
-      - "5000:5000"
-```
-
----
-
-## Checking our stack files
-
-- All the stack files that we will use are in the `stacks` directory
-
-.exercise[
-
-- Go to the `stacks` directory:
-  ```bash
-  cd ~/orchestration-workshop/stacks
-  ```
-
-- Check `registry.yml`:
-  ```bash
-  cat registry.yml
-  ```
-
-]
-
----
-
-## Deploying our first stack
-
-- All stack manipulation commands start with `docker stack`
-
-- Under the hood, they map to `docker service` commands
-
-- Stacks have a *name* (which also serves as a namespace)
-
-- Stacks are specified with the aforementioned Compose file format version 3
-
-.exercise[
-
-- Deploy our local registry:
-  ```bash
-  docker stack deploy registry --compose-file registry.yml
-  ```
-
-]
-
----
-
-## Inspecting stacks
-
-- `docker stack ps` shows the detailed state of all services of a stack
-
-.exercise[
-
-- Check that our registry is running correctly:
-  ```bash
-  docker stack ps registry
-  ```
-
-- Confirm that we get the same output with the following command:
-  ```bash
-  docker service ps registry_registry
-  ```
-
-]
-
----
-
-## Specifics of stack deployment
-
-Our registry is not *exactly* identical to the one deployed with `docker service create`!
-
-- Each stack gets its own overlay network
-
-- Services of the task are connected to this network
-  <br/>(unless specified differently in the Compose file)
-
-- Services get network aliases matching their name in the Compose file
-  <br/>(just like when Compose brings up an app specified in a v2 file)
-
-- Services are explicitly named `<stack_name>_<service_name>`
-
-- Services and tasks also get an internal label indicating which stack they belong to
-
----
-
-## Building and pushing stack services
-
-- We are going to use the `build` + `image` trick that we showed earlier:
-
-  ```bash
-  docker-compose -f my_stack_file.yml build
-  docker-compose -f my_stack_file.yml push
-  docker stack deploy my_stack --compose-file my_stack_file.yml
-  ```
-
-.exercise[
-
-- Try it:
-  ```bash
-  docker-compose -f dockercoins.yml build
-  ```
-
-]
-
---
-
-If it doesn't work, make sure that you have Compose 1.10.
-
----
-
-## Upgrading Compose
-
-- This is only necessary if you have an older version of Compose
-
-.exercise[
-
-- Upgrade Compose, using the `master` branch:
-  ```bash
-  pip install git+git://github.com/docker/compose
-  ```
-
-- Re-hash our `$PATH`:
-  ```bash
-  hash docker-compose
-  ```
-
-]
-
----
-
-## Trying again
-
-- We can now build and push our container images
-
-.exercise[
-
-- Build our application:
-  ```bash
-  docker-compose -f dockercoins.yml build
-  ```
-
-- Push the images to our registry:
-  ```bash
-  docker-compose -f dockercoins.yml push
-  ```
-
-]
-
-Let's have a look at the `dockercoins.yml` file while this is building and pushing.
-
----
-
-```yaml
-version: "3"
-
-services:
-  rng:
-    build: dockercoins/rng
-    image: ${REGISTRY_SLASH-localhost:5000/}rng${COLON_TAG-:latest}
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://localhost:12201
-    deploy:
-      mode: global
-  ...
-  redis:
-    image: redis
-  ...
-  worker:
-    build: dockercoins/worker
-    image: ${REGISTRY_SLASH-localhost:5000/}worker${COLON_TAG-:latest}
-    ...
-    deploy:
-      replicas: 10
-```
-
----
-
-## Deploying the application
-
-- Now that the images are on the registry, we can deploy our application stack
-
-.exercise[
-
-- Create the application stack:
-  ```bash
-  docker stack deploy dockercoins --compose-file dockercoins.yml
-  ```
-
-]
-
-We can now connect to any of our nodes on port 8000, and we will see the familiar hashing speed graph.
-
----
-
-## Deploying the metrics stack
-
-- Remember these super long obscure `docker service create` commands we did earlier?
-
---
-
-- Neither do I!
-
---
-
-.exercise[
-
-- Deploy Prometheus, cAdvisor, and the node exporter, just like we deployed DockerCoins:
-  ```bash
-  docker-compose -f prometheus.yml build
-  docker-compose -f prometheus.yml push
-  docker stack deploy prometheus --compose-file prometheus.yml
-  ```
-
-]
-
-Look at `prometheus.yml` while it's building and pushing.
-
----
-
-```yaml
-version: "3"
-
-services:
-
-  prometheus:
-    build: ../prom
-    image: localhost:5000/prom
-    ports:
-      - "9090:9090"
-
-  node:
-    ...
-
-  cadvisor:
-    image: google/cadvisor
-    deploy:
-      mode: global
-    volumes:
-      - "/:/rootfs"
-      - "/var/run:/var/run"
-      - "/sys:/sys"
-      - "/var/lib/docker:/var/lib/docker"
-```
-
----
-
-## Accessing our new metrics stack
-
-.exercise[
-
-- Go to any node, port 9090
-
-- Check that data scraping works (click on "status", then "targets")
-
-- Select a metric from the "insert metric at cursor" dropdown
-
-- Execute!
-
-]
-
----
-
-## Caveats
-
-- Compose file format v3 is very new, and not written in the stone yet
-
-- It exists because nobody wants to maintain redundant files if they can avoid it
-
-- Some features are not fully supported yet:
-
-  - logging, see [#29116](https://github.com/docker/docker/issues/29116)
-
-  - secrets
-
-- You can re-run `docker stack deploy` to update a stack
-
-- ... But unsupported features will be wiped each time you redeploy (!)
-
-  (This will likely be fixed/improved soon)
-
----
-
-## Maintaining multiple environments
-
-There are many ways to handle variations between environments.
-
-- Compose loads `docker-compose.yml` and (if it exists) `docker-compose.override.yml`
-
-- Compose can load alternate file(s) by setting the `-f` flag or the `COMPOSE_FILE` environment variable
-
-- Compose files can *extend* other Compose files, selectively including services:
-
-  ```yaml
-    web:
-      extends:
-        file: common-services.yml
-        service: webapp
-  ```
-
-See [this documentation page](https://docs.docker.com/compose/extends/) for more details about these techniques.
-
----
-
 # Controlling Docker from a container
 
 - In a local environment, just bind-mount the Docker control socket:
@@ -6431,7 +6537,7 @@ It makes it easy to come back later and check what has changed since you did it!
 
 class: title
 
-# Thanks! <br/> Questions?
+# Thanks! <!-- <br/> Questions? -->
 
 <!--
 ## [@jpetazzo](https://twitter.com/jpetazzo) <br/> [@docker](https://twitter.com/docker)
