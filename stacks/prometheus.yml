@@ -4,7 +4,7 @@ services:
 
   prometheus:
     build: ../prom
-    image: localhost:5000/prom
+    image: 127.0.0.1:5000/prom
     ports:
       - "9090:9090"
 

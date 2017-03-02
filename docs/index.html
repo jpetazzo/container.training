@@ -2138,7 +2138,7 @@ We just have to adapt this to our application, which has 4 services!
   ```
 
 - And in the following slides, we would use our Docker Hub login
-  (e.g. `jpetazzo`) instead of the registry address (i.e. `localhost:5000`)
+  (e.g. `jpetazzo`) instead of the registry address (i.e. `127.0.0.1:5000`)
 
 <!--
 ```meta
@@ -2178,14 +2178,14 @@ We just have to adapt this to our application, which has 4 services!
 
 - Docker *requires* TLS when communicating with the registry
 
-  - unless for registries on `localhost`
+  - unless for registries on `127.0.0.0/8` (i.e. `localhost`)
 
   - or with the Engine flag `--insecure-registry`
 
 <!-- -->
 
 - Our strategy: publish the registry container on port 5000,
-  <br/>so that it's available through `localhost:5000` on each node
+  <br/>so that it's available through `127.0.0.1:5000` on each node
 
 ---
 
@@ -2203,7 +2203,7 @@ We just have to adapt this to our application, which has 4 services!
 
 - Try the following command, until it returns `{"repositories":[]}`:
   ```bash
-  curl localhost:5000/v2/_catalog
+  curl 127.0.0.1:5000/v2/_catalog
   ```
 
 ]
@@ -2221,12 +2221,12 @@ We just have to adapt this to our application, which has 4 services!
 - Make sure we have the busybox image, and retag it:
   ```bash
   docker pull busybox
-  docker tag busybox localhost:5000/busybox
+  docker tag busybox 127.0.0.1:5000/busybox
   ```
 
 - Push it:
   ```bash
-  docker push localhost:5000/busybox
+  docker push 127.0.0.1:5000/busybox
   ```
 
 ]
@@ -2241,7 +2241,7 @@ We just have to adapt this to our application, which has 4 services!
 
 - Ensure that our busybox image is now in the local registry:
   ```bash
-  curl http://localhost:5000/v2/_catalog
+  curl http://127.0.0.1:5000/v2/_catalog
   ```
 
 ]
@@ -2263,7 +2263,7 @@ The curl command should now output:
 
 - And run this little for loop:
   ```bash
-    DOCKER_REGISTRY=localhost:5000
+    DOCKER_REGISTRY=127.0.0.1:5000
     TAG=v0.1
     for SERVICE in hasher rng webui worker; do
       docker-compose build $SERVICE
@@ -2359,7 +2359,7 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 - Start the other services:
   ```bash
-  DOCKER_REGISTRY=localhost:5000
+  DOCKER_REGISTRY=127.0.0.1:5000
   TAG=v0.1
   for SERVICE in hasher rng webui worker; do
     docker service create --network dockercoins --name $SERVICE \
@@ -2647,7 +2647,7 @@ You can also directly use the file `docker-compose.yml-images`.
 
 - Set environment variables:
   ```bash
-  export REGISTRY_SLASH=localhost:5000/
+  export REGISTRY_SLASH=127.0.0.1:5000/
   export COLON_TAG=:v0.01
   ```
 
@@ -2665,7 +2665,7 @@ You can also directly use the file `docker-compose.yml-images`.
 
 - It would be more intuitive to have:
   ```bash
-  REGISTRY=localhost:5000
+  REGISTRY=127.0.0.1:5000
   TAG=v0.01
   ```
 
@@ -2901,7 +2901,7 @@ version: "3"
 services:
   rng:
     build: dockercoins/rng
-    image: ${REGISTRY_SLASH-localhost:5000/}rng${COLON_TAG-:latest}
+    image: ${REGISTRY_SLASH-127.0.0.1:5000/}rng${COLON_TAG-:latest}
     deploy:
       mode: global
   ...
@@ -2910,7 +2910,7 @@ services:
   ...
   worker:
     build: dockercoins/worker
-    image: ${REGISTRY_SLASH-localhost:5000/}worker${COLON_TAG-:latest}
+    image: ${REGISTRY_SLASH-127.0.0.1:5000/}worker${COLON_TAG-:latest}
     ...
     deploy:
       replicas: 10
@@ -3017,7 +3017,7 @@ services:
 
   prometheus:
     build: ../prom
-    image: localhost:5000/prom
+    image: 127.0.0.1:5000/prom
     ports:
       - "9090:9090"
 
@@ -3715,7 +3715,7 @@ However, when you run the second one, only `#` will show up.
 
 - Build the new image:
   ```bash
-  IMAGE=localhost:5000/worker:v0.01
+  IMAGE=127.0.0.1:5000/worker:v0.01
   docker build -t $IMAGE ~/orchestration-workshop/dockercoins/worker
   ```
 
@@ -5671,18 +5671,18 @@ scrape_configs:
 
 ## Building our custom Prometheus image
 
-- We will use the local registry started previously on localhost:5000
+- We will use the local registry started previously on 127.0.0.1:5000
 
 .exercise[
 
 - Build the image using the provided Dockerfile:
   ```bash
-  docker build -t localhost:5000/prometheus ~/orchestration-workshop/prom
+  docker build -t 127.0.0.1:5000/prometheus ~/orchestration-workshop/prom
   ```
 
 - Push the image to our local registry:
   ```bash
-  docker push localhost:5000/prometheus
+  docker push 127.0.0.1:5000/prometheus
   ```
 
 ]
@@ -5700,7 +5700,7 @@ scrape_configs:
 - Start the Prometheus server:
   ```bash
     docker service create --network prom --name prom \
-           --publish 9090:9090 localhost:5000/prometheus
+           --publish 9090:9090 127.0.0.1:5000/prometheus
   ```
 
 ]
