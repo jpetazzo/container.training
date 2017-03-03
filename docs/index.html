@@ -4,6 +4,7 @@
     <base target="_blank">
     <title>Docker Orchestration Workshop</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="xterm.css" />
     <style type="text/css">
       @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
       @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
@@ -20,6 +21,45 @@
         text-decoration: none;
         color: blue;
       }
+
+      code[class*="."] {
+          cursor: pointer;
+      }
+
+      .remark-terms-area {
+        background: #fff;
+        bottom: 0;
+        background-color: #d7d8d2;
+        display: none;
+        left: 52%;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+
+      .remark-container {
+        overflow: auto;
+      }
+
+      .term {
+          height: 200px;
+          width: 100%;
+      }
+      .remark-container.remark-term-mode .remark-slides-area {
+        top: 2%;
+        left: 2%;
+        height: 47.25%;
+        width: 48%;
+      }
+
+      .remark-container.remark-term-mode .remark-terms-area {
+          display: block;
+      }
+
+      .remark-container.remark-term-mode .remark-preview-area {
+          display: block;
+      }
+
       .remark-slide-content { padding: 1em 2.5em 1em 2.5em; }
 
       .remark-slide-content { font-size: 25px; }
@@ -524,9 +564,13 @@ You are welcome to use the method that you feel the most comfortable with.
 .exercise[
 
 - Check all installed versions:
-  ```bash
+  ```.term1
   docker version
+  ```
+  ```.term2
   docker-compose -v
+  ```
+  ```.term3
   docker-machine -v
   ```
 
@@ -6655,12 +6699,42 @@ class: title
 -->
 
     </textarea>
-    <script src="remark-0.14.min.js" type="text/javascript">
-    </script>
+    <div class="remark-terms-area">
+        <div class="term1 term"></div>
+        <div class="term2 term"></div>
+        <div class="term3 term"></div>
+        <div class="term4 term"></div>
+        <div class="term5 term"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+    <script src="xterm.js"></script>
+    <script src="fit.js"></script>
+    <script src="sdk.js"></script>
+    <script src="remark-0.14.min.js" type="text/javascript"></script>
     <script type="text/javascript">
       var slideshow = remark.create({
         ratio: '16:9',
         highlightSpans: true
+      }, function(){
+        pwd.newSession(['.term1', '.term2', '.term3', '.term4', '.term5']);
+        var body = document.querySelector('body');
+        body.onkeydown = function(evt) {
+            var termMode = body.classList.contains('remark-term-mode');
+            evt = evt || window.event;
+            if (evt.ctrlKey && evt.keyCode == 190) {
+                body.classList.toggle('remark-term-mode');
+                slideshow.update();
+                if (!termMode) {
+                    slideshow.pause();
+                } else {
+                    slideshow.resume();
+                }
+            } else if (evt.keyCode == 39 && termMode) {
+                slideshow.gotoNextSlide();
+            } else if (evt.keyCode == 37 && termMode) {
+                slideshow.gotoPreviousSlide();
+            }
+        };
       });
     </script>
   </body>
