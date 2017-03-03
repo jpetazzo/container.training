@@ -98,7 +98,7 @@ class: title
 
 Docker <br/> Orchestration <br/> Workshop
 
-???
+---
 
 ## Intros
 
@@ -107,7 +107,23 @@ Docker <br/> Orchestration <br/> Workshop
   &
   Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
 
-???--
+--
+
+- Who are you?
+
+--
+
+  - first time attending SCALE?
+
+--
+
+  - already attended Docker workshops at SCALE?
+
+--
+
+- Special thanks to SCALE ...
+
+???
 
 - This is our collective Docker knowledge:
 
@@ -163,6 +179,30 @@ Remember to change:
 
 ---
 
+## Disclaimer
+
+- This will be slightly different from the posted abstract
+
+- Lots of things happened between the CFP and today
+
+--
+
+  - Docker 1.13
+
+--
+
+  - Docker 17.03
+
+--
+
+- There is enough content here for a whole day
+
+- We will cover about a half of the whole program
+
+- And I'll give you ways to continue learning on your own, should you choose to!
+
+???
+
 ## A brief introduction
 
 - This was initially written to support in-person,
@@ -181,7 +221,7 @@ Remember to change:
   [StackOverflow](http://stackoverflow.com/questions/tagged/docker),
   and other outlets
 
----
+???
 
 ## Hands on, you shall practice
 
@@ -300,7 +340,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 - The whole workshop is hands-on
 
-- We will see Docker 1.13 in action
+- We will see Docker 17.03 in action
 
 - You are invited to reproduce all the demos
 
@@ -311,7 +351,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 - This is the stuff you're supposed to do!
 - Go to [container.training](http://container.training/) to view these slides
 - Join the chat room on
-  [Slack](http://container.training/chat)
+  [Gitter](http://container.training/chat)
 
 ]
 
@@ -321,9 +361,15 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 - To follow along, you need a cluster of five Docker Engines
 
+<!--
+
 - If you are doing this with an instructor, see next slide
 
 - If you are doing (or re-doing) this on your own, you can:
+
+-->
+
+- You can ...
 
   - create your own cluster (local or cloud VMs) with Docker Machine
     ([instructions](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-machine))
@@ -333,7 +379,7 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
   - create a bunch of clusters for you and your friends
     ([instructions](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-vms))
 
----
+???
 
 class: pic
 
@@ -341,7 +387,11 @@ class: pic
 
 ---
 
+<!--
 ## You get five VMs
+-->
+
+## Some of you get five VMs
 
 - Each person gets 5 private VMs (not shared with anybody else)
 - They'll remain up until the day after the tutorial
@@ -387,9 +437,16 @@ wait
 
 ---
 
+<!--
 ## If doing or re-doing the workshop on your own ...
 
+
 - If you use Play-With-Docker:
+-->
+
+## Everybody else use Play-With-Docker!
+
+- Main differences:
 
   - you don't need to SSH to the machines
     <br/>(just click on the node that you want to control in the left tab bar)
@@ -403,11 +460,15 @@ wait
     [ngrok](https://ngrok.com/)
     or [supergrok](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker)
 
+<!--
+
 - If you use VMs deployed with Docker Machine:
 
   - you won't have pre-authorized SSH keys to bounce across machines
 
   - you won't have host aliases
+
+-->
 
 ---
 
@@ -456,8 +517,8 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 1.13
-- Compose 1.10
+- Engine 17.03
+- Compose 1.11
 - Machine 0.9
 
 .exercise[
@@ -470,6 +531,53 @@ You are welcome to use the method that you feel the most comfortable with.
   ```
 
 ]
+
+---
+
+## Wait, what, 17.03 ?!?
+
+--
+
+- Docker inc. [announced yesterday](https://blog.docker.com/2017/03/docker-enterprise-edition/)
+  Docker Enterprise Edition
+
+--
+
+- Docker EE:
+
+  - $$$
+  - certification for select distros, clouds, and plugins
+  - advanced management features (fine-grained access control, security scanning...)
+
+- Docker CE:
+
+  - free
+  - available through Docker Mac, Docker Windows, and major Linux distros
+  - perfect for individuals and small organizations
+
+---
+
+## Why?
+
+- More readable for enterprise users
+
+  (i.e. the very nice folks who are kind enough to pay us big $$$ for our stuff)
+
+- No impact for the community
+
+  (beyond CE/EE suffix and version numbering change)
+
+- Both trains leverage the same open source components
+
+  (containerd, libcontainer, SwarmKit...)
+
+- More predictible release schedule (see next slide)
+
+---
+
+class: pic
+
+![Docker CE/EE release cycle](lifecycle.png)
 
 ---
 
@@ -706,7 +814,6 @@ and displays aggregated logs.
 Tip: use `^S` and `^Q` to pause/resume log output.
 
 ???
----
 
 ## Upgrading from Compose 1.6
 
