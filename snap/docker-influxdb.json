@@ -2,7 +2,7 @@
     "version": 1,
     "schedule": {
         "type": "simple",
-        "interval": "1s"
+        "interval": "10s"
     },
     "max-failures": 10,
     "workflow": {

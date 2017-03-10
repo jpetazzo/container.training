@@ -100,6 +100,8 @@ Docker <br/> Orchestration <br/> Workshop
 
 ---
 
+class: in-person
+
 ## Intros
 
 - Hello! We are
@@ -109,21 +111,7 @@ Docker <br/> Orchestration <br/> Workshop
 
 --
 
-- Who are you?
-
---
-
-  - first time attending SCALE?
-
---
-
-  - already attended Docker workshops at SCALE?
-
---
-
-- Special thanks to SCALE ...
-
-???
+class: in-person
 
 - This is our collective Docker knowledge:
 
@@ -137,7 +125,9 @@ on time, it's a good idea to have a breakfast with the attendees
 at e.g. 9am, and start at 9:30.
 -->
 
-???
+---
+
+class: in-person
 
 ## Agenda
 
@@ -166,8 +156,7 @@ at e.g. 9am, and start at 9:30.
 - Feel free to interrupt for questions at any time
 
 - Live feedback, questions, help on
-  [Slack](http://container.training/chat)
-  ([get an invite](http://lisainvite.herokuapp.com/))
+  [Gitter](http://container.training/chat)
 
 - All the content is publicly available (slides, code samples, scripts)
 
@@ -179,21 +168,17 @@ Remember to change:
 
 ---
 
+class: in-person
+
 ## Disclaimer
 
 - This will be slightly different from the posted abstract
 
 - Lots of things happened between the CFP and today
 
---
-
   - Docker 1.13
 
---
-
   - Docker 17.03
-
---
 
 - There is enough content here for a whole day
 
@@ -201,7 +186,7 @@ Remember to change:
 
 - And I'll give you ways to continue learning on your own, should you choose to!
 
-???
+---
 
 ## A brief introduction
 
@@ -313,6 +298,8 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 ---
 
+class: in-person
+
 ## Nice-to-haves
 
 - [Mosh](https://mosh.org/) instead of SSH, if your internet connection tends to lose packets
@@ -321,15 +308,11 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 - [GitHub](https://github.com/join) account
   <br/>(if you want to fork the repo; also used to join Gitter)
 
-<!--
-
 - [Gitter](https://gitter.im/) account
   <br/>(to join the conversation during the workshop)
 
--->
-
 - [Slack](https://community.docker.com/registrations/groups/4316) account
-  <br/>(to join the conversation during the workshop)
+  <br/>(to join the conversation after the workshop)
 
 - [Docker Hub](https://hub.docker.com) account
   <br/>(it's one way to distribute images on your Swarm cluster)
@@ -357,19 +340,15 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 ---
 
+class: in-person
+
 # VM environment
 
 - To follow along, you need a cluster of five Docker Engines
 
-<!--
-
 - If you are doing this with an instructor, see next slide
 
 - If you are doing (or re-doing) this on your own, you can:
-
--->
-
-- You can ...
 
   - create your own cluster (local or cloud VMs) with Docker Machine
     ([instructions](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-machine))
@@ -379,19 +358,17 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
   - create a bunch of clusters for you and your friends
     ([instructions](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-vms))
 
-???
+---
 
-class: pic
+class: pic, in-person
 
 ![You get five VMs](you-get-five-vms.jpg)
 
 ---
 
-<!--
-## You get five VMs
--->
+class: in-person
 
-## Some of you get five VMs
+## You get five VMs
 
 - Each person gets 5 private VMs (not shared with anybody else)
 - They'll remain up until the day after the tutorial
@@ -437,14 +414,19 @@ wait
 
 ---
 
-<!--
+class: in-person
+
 ## If doing or re-doing the workshop on your own ...
 
+---
 
-- If you use Play-With-Docker:
--->
+class: self-paced
 
-## Everybody else use Play-With-Docker!
+## How to get your own Docker nodes?
+
+- Use [Play-With-Docker](http://www.play-with-docker.com/)!
+
+--
 
 - Main differences:
 
@@ -469,6 +451,30 @@ wait
   - you won't have host aliases
 
 -->
+
+---
+
+class: self-paced
+
+## Using Play-With-Docker
+
+- Open a new browser tab to [www.play-with-docker.com](http://www.play-with-docker.com/)
+
+- Confirm that you're not a robot
+
+- Click on "ADD NEW INSTANCE": congratulations, you have your first Docker node!
+
+- When you will need more nodes, just click on "ADD NEW INSTANCE" again
+
+- Note the countdown in the corner; when it expires, your instances are destroyed
+
+- If you give your URL to somebody else, they can access your nodes too
+  <br/>
+  (You can use that for pair programming, or to get help from a mentor)
+
+- Loving it? Not loving it? Tell it to the wonderful authors,
+  [@marcosnils](https://twitter.com/marcosnils) &
+  [@xetorthio](https://twitter.com/xetorthio)!
 
 ---
 
@@ -538,7 +544,7 @@ You are welcome to use the method that you feel the most comfortable with.
 
 --
 
-- Docker inc. [announced yesterday](https://blog.docker.com/2017/03/docker-enterprise-edition/)
+- Docker inc. [recently announced](https://blog.docker.com/2017/03/docker-enterprise-edition/)
   Docker Enterprise Edition
 
 --
@@ -620,8 +626,9 @@ Part 1
   - `worker` = background process using `rng` and `hasher`
   - `webui` = web interface to watch progress
 
-???
 ---
+
+class: extra-details
 
 ## Compose file format version
 
@@ -784,8 +791,9 @@ and displays aggregated logs.
 
 `docker-compose ps` also shows the ports exposed by the application.
 
-???
 ---
+
+class: extra-details
 
 ## Viewing logs
 
@@ -813,7 +821,9 @@ and displays aggregated logs.
 
 Tip: use `^S` and `^Q` to pause/resume log output.
 
-???
+---
+
+class: extra-details
 
 ## Upgrading from Compose 1.6
 
@@ -1360,8 +1370,9 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
 
 ]
 
-???
 ---
+
+class: extra-details
 
 ## Check that the node was added correctly
 
@@ -1450,6 +1461,18 @@ ehb0...4fvx    node2     Ready   Active
 
 ---
 
+class: self-paced
+
+## If you're using Play-With-Docker ...
+
+- You won't need to use Docker Machine
+
+- Instead, to "talk" to another node, we'll just set `DOCKER_HOST`
+
+- You can skip the exercises telling you to do things with Docker Machine!
+
+---
+
 ## Docker Machine basic usage
 
 - We will learn two commands:
@@ -1470,6 +1493,8 @@ ehb0...4fvx    node2     Ready   Active
 You should see your 5 nodes.
 
 ---
+
+class: in-person
 
 ## How did we make our 5 nodes show up there?
 
@@ -2226,8 +2251,9 @@ We just have to adapt this to our application, which has 4 services!
 
 ]
 
-???
 ---
+
+class: extra-details
 
 ## Using Docker Hub
 
@@ -2253,8 +2279,9 @@ We just have to adapt this to our application, which has 4 services!
 ```
 -->
 
-???
 ---
+
+class: extra-details
 
 ## Using Docker Trusted Registry
 
@@ -3450,7 +3477,9 @@ backend is available anywhere.
 
 This should list 5 IP addresses.
 
-???
+---
+
+class: extra-details
 
 ## Testing and benchmarking our service
 
@@ -3474,7 +3503,9 @@ This should list 5 IP addresses.
 Wait until the workers are stopped (check with `docker service ls`)
 before continuing.
 
-???
+---
+
+class: extra-details
 
 ## Benchmarking `rng`
 
@@ -3494,7 +3525,9 @@ We will send 50 requests, but with various levels of concurrency.
 
 ]
 
-???
+---
+
+class: extra-details
 
 ## Benchmark results for `rng`
 
@@ -3504,7 +3537,9 @@ We will send 50 requests, but with various levels of concurrency.
 
 - What about `hasher`?
 
-???
+---
+
+class: extra-details
 
 ## Benchmarking `hasher`
 
@@ -3523,7 +3558,9 @@ First, we need to put the POST payload in a temporary file.
 
 ]
 
-???
+---
+
+class: extra-details
 
 ## Benchmarking `hasher`
 
@@ -3543,7 +3580,9 @@ Once again, we will send 50 requests, with different levels of concurrency.
 
 ]
 
-???
+---
+
+class: extra-details
 
 ## Benchmark results for `hasher`
 
@@ -3557,48 +3596,44 @@ Once again, we will send 50 requests, with different levels of concurrency.
 
 - It looks like `hasher` is better equiped to deal with concurrency than `rng`
 
-???
+---
 
-class: title
+class: extra-details, title
 
 Why?
 
-???
+---
+
+class: extra-details
 
 ## Why does everything take (at least) 100ms?
-
-??
 
 `rng` code:
 
 ![RNG code screenshot](delay-rng.png)
 
-??
-
 `hasher` code:
 
 ![HASHER code screenshot](delay-hasher.png)
 
-???
+---
 
-class: title
+class: extra-details, title
 
 But ...
 
 WHY?!?
 
-???
+---
+
+class: extra-details
 
 ## Why did we sprinkle this sample app with sleeps?
 
 - Deterministic performance
   <br/>(regardless of instance speed, CPUs, I/O...)
 
-??
-
 - Actual code sleeps all the time anyway
-
-??
 
 - When your code makes a remote API call:
 
@@ -3608,13 +3643,13 @@ WHY?!?
 
   - it processes the response.
 
-???
+---
+
+class: extra-details, in-person
 
 ## Why do `rng` and `hasher` behave differently?
 
 ![Equations on a blackboard](equations.png)
-
-??
 
 (Synchronous vs. asynchronous event processing)
 
@@ -3778,7 +3813,9 @@ However, when you run the second one, only `#` will show up.
 
 - ... update our service to use the new image
 
-???
+---
+
+class: extra-details
 
 ## But first...
 
@@ -4637,7 +4674,6 @@ You should see the heartbeat messages:
 
 The test message should show up in the logstash container logs.
 
-???
 ---
 
 ## Sending logs from a service
@@ -4734,12 +4770,22 @@ You can also set `--restart-delay`, `--restart-max-attempts`, and `--restart-win
 
 .exercise[
 
+<!--
+
 - Enable GELF logging for all our *stateless* services:
   ```bash
     for SERVICE in hasher rng webui worker; do
       docker service update dockercoins_$SERVICE \
              --log-driver gelf --log-opt gelf-address=udp://127.0.0.1:12201
     done
+  ```
+
+-->
+
+- Enable GELF logging for the `rng` service:
+  ```bash
+    docker service update dockercoins_rng
+           --log-driver gelf --log-opt gelf-address=udp://127.0.0.1:12201
   ```
 
 ]
@@ -4777,7 +4823,7 @@ After ~15 seconds, you should see the log messages in Kibana.
 
 ## .warning[Don't update stateful services!]
 
-- Why didn't we update the Redis service as well?
+- What would have happened if we had updated the Redis service?
 
 - When a service changes, SwarmKit replaces existing container with new ones
 
@@ -4804,6 +4850,10 @@ And if you want to withstand
 bursts of logs, you need some kind of message queue:
 Redis if you're cheap, Kafka if you want to make sure
 that you don't drop messages on the floor. Good luck.
+
+If you want to learn more about the GELF driver,
+have a look at [this blog post](
+http://jpetazzo.github.io/2017/01/20/docker-logging-gelf/).
 
 ---
 
@@ -4855,7 +4905,21 @@ http://jpetazzo.github.io/2013/10/08/docker-containers-metrics/
 
 ## Tools
 
-We will use three open source Go projects for our metrics pipeline:
+We will build *two* different metrics pipelines:
+
+- One based on Intel Snap,
+
+- Another based on Prometheus.
+
+If you're using Play-With-Docker, skip the exercises
+relevant to Intel Snap (we rely on a SSH server to deploy,
+and PWD doesn't have that yet).
+
+---
+
+## First metrics pipeline
+
+We will use three open source Go projects for our first metrics pipeline:
 
 - Intel Snap
 
@@ -5737,7 +5801,7 @@ This will be our configuration file for Prometheus:
 
 ```yaml
 global:
-  scrape_interval: 1s
+  scrape_interval: 10s
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
@@ -6655,12 +6719,13 @@ class: title
 -->
 
     </textarea>
-    <script src="remark-0.14.min.js" type="text/javascript">
+    <script src="remark.js" type="text/javascript">
     </script>
     <script type="text/javascript">
       var slideshow = remark.create({
         ratio: '16:9',
-        highlightSpans: true
+        highlightSpans: true,
+        excludedClasses: ["in-person"]
       });
     </script>
   </body>
