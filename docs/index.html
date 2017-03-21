@@ -1531,15 +1531,19 @@ class: in-person
 
 ]
 
+(This shows which variables *would* be set by Docker Machine; but it doesn't change them.)
+
 ---
 
 ## Getting the token
 
 - First, let's store the join token in a variable
 
+- This must be done from a manager
+
 .exercise[
 
-- Make sure we talk to the local node:
+- Make sure we talk to the local node, or `node1`:
   ```bash
   eval $(docker-machine env -u)
   ```
@@ -1573,18 +1577,32 @@ class: in-person
 
 ---
 
-## Adding a node through the Docker API
+## Checking which node we're talking to
+
+- Let's use the Docker API to ask "who are you?" to the remote node
+
+.exercise[
+
+- Extract the node name from the output of `docker info`:
+  ```bash
+  docker info | grep ^Name
+  ```
+
+]
+
+This should tell us that we are talking to `node3`.
 
 Note: it can be useful to use a [custom shell prompt](
 https://github.com/jpetazzo/orchestration-workshop/blob/master/prepare-vms/scripts/postprep.rc#L68)
 reflecting the `DOCKER_HOST` variable.
 
-.exercise[
+---
 
-- Check which node we're talking to:
-  ```bash
-  docker info | grep ^Name
-  ```
+## Adding a node through the Docker API
+
+- We are going to use the same `docker swarm join` command as before
+
+.exercise[
 
 - Add `node3` to the Swarm:
   ```bash
@@ -1612,6 +1630,8 @@ reflecting the `DOCKER_HOST` variable.
   ```
 
 ]
+
+From that point, we are communicating with `node1` again.
 
 ---
 
