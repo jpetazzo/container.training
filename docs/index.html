@@ -221,44 +221,76 @@ class: in-person
 grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 -->
 
+---
+
+class: in-person
+
 ## Chapter 1: getting started
 
 - Pre-requirements
+
 - VM environment
+
 - Our sample application
+
 - Running the application
+
 - Identifying bottlenecks
+
 - Introducing SwarmKit
 
-???
+---
+
+class: in-person
 
 ## Chapter 2: scaling out our app on Swarm
 
 - Creating our first Swarm
-- Running our first Swarm service
-- Deploying a local registry
-- Overlay networks
-- Breaking into an overlay network
-- Securing overlay networks
 
-???
+- Docker Machine
+
+- Running our first Swarm service
+
+- Deploying a local registry
+
+- Overlay networks
+
+- Global scheduling
+
+- Scripting image building and pushing
+
+- Integration with Compose
+
+---
+
+class: in-person
 
 ## Chapter 3: operating the Swarm
 
+- Breaking into an overlay network
+
+- Securing overlay networks
+
 - Rolling updates
-- Secrets management and encryption at rest
+
+- (Secrets management and encryption at rest)
+
 - [Centralized logging](#logging)
+
 - Metrics collection
 
-???
+---
 
-## Chapter 4: deeper in Swarm
+class: in-person
+
+## Chapter 4: bonus material
 
 - Dealing with stateful services
-- Scripting image building and pushing
-- Integration with Compose
+
 - Controlling Docker from a container
+
 - Node management
+
 - What's next?
 
 ---
@@ -1427,7 +1459,7 @@ ehb0...4fvx    node2     Ready   Active
 
 ---
 
-## Docker Machine
+# Docker Machine
 
 - Docker Machine has two primary uses:
 
@@ -2625,7 +2657,7 @@ You should see the performance peaking at 10 hashes/s (like before).
 
 ---
 
-## Global scheduling
+# Global scheduling
 
 - We want to utilize as best as we can the entropy generators
   on our nodes
