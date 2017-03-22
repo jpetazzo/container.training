@@ -10,8 +10,7 @@ instance_password: training
 clustersize: 5  # Number of VMs per cluster
 pagesize: 12    # Number of cards to print per page
 
-background_image: https://www.docker.com/sites/default/files/Engine.png
-#background_image: ../media/swarm.png
+background_image: https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png
 
 # To be printed on the cards:
 blurb: >
@@ -29,6 +28,6 @@ footer: >
 url: http://container.training/
 
 engine_version: get.docker.com
-compose_version: 1.8.1
-machine_version: 0.8.2
+compose_version: 1.11.2
+machine_version: 0.10.0
 swarm_version: latest
