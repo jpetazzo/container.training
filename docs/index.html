@@ -3902,7 +3902,7 @@ Note how the build and push were fast (because caching).
 
 - Look at our service status:
   ```bash
-  watch -n1 "docker service ps worker | grep -v Shutdown.*Shutdown"
+  watch -n1 "docker service ps dockercoins_worker | grep -v Shutdown.*Shutdown"
   ```
 
 ]
@@ -6564,7 +6564,7 @@ More resources on this topic:
   docker service update ... --force
   ```
 
-.warning[Docker will silently ignore attemps to remove a non-existent label or constraint]
+.warning[Docker will silently ignore attempts to remove a non-existent label or constraint]
 
 - It won't warn you if you typo when removing a label or constraint!
 
