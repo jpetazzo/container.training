@@ -4390,7 +4390,7 @@ name: namespaces
 
 ## Security Level Up: User Namespaces
 
-Lets increase the default security of containers on `node1` to run as non-root user.
+Lets increase the default security of containers on `node3` to run as non-root user.
 
 ** Namespaces **
 
@@ -4420,28 +4420,27 @@ Once enabled, containers can't:
 - Use `--read-only` container filesystem (a Linux kernel restriction)
 - Use some external (volume or graph) drivers which can't do user mappings
 
-.footnote[
-.red[*] 
-This is "phase 1" of user namespaces, where all containers are same user (not ideal if you run untrusted code for others on shared hardware). One day, it'll hopefully have UID-per-container. #hardproblems]
+.footnote[.red[*] This is "phase 1" of user namespaces, where all containers are same user (not ideal if you run untrusted code for others on shared hardware). One day, it'll hopefully have UID-per-container. #hardproblems]
 
 ---
 
 class: namespaces
 
-## Remove `node1` From Swarm
+## Remove `node3` From Swarm
 
 - We need to add a startup setting to dockerd daemon to enable User Namespaces
 - However *this will reset dockerd config*. Why? Because User Namespaces will make new locked down dir for docker files/settings/cache/swarm
 - So, IRL, enable user-namespaces before you deploy servers
-- Here we'll need add `node1` back to Swarm once we've reconfigured it
+- Here we'll need add `node3` back to Swarm once we've reconfigured it
+- NOTE: for this lesson, make sure `node3` doesn't have registry on it (`docker stack ps registry`). If so, pick another node
 
 .exercise[
 
 - removes manager role, reschedules services, removes node from swarm
 ```bash
-docker node demote node1 
-docker swarm leave 
-ssh node2 docker node rm -f node1
+docker node demote node3 
+ssh node3 docker swarm leave 
+docker node rm -f node3
 ```
 ]
 
@@ -4456,6 +4455,7 @@ We need to create custom daemon config. Lets do it with JSON!
 .exercise[
 
 ```bash
+ssh node3
 echo '{"userns-remap": "default"}' | sudo tee /etc/docker/daemon.json
 sudo systemctl restart docker
 ```
@@ -4472,7 +4472,7 @@ sudo ls -al /var/lib/docker
 
 class: namespaces
 
-## Add `node1` Back To Swarm
+## Add `node3` Back To Swarm
 
 Get our manager token from another node (same token as before)
 
@@ -4480,16 +4480,17 @@ Get our manager token from another node (same token as before)
 ```bash
 ssh node2 docker swarm join-token manager
 ```
-]
 
-- Now lets run a test container from `node1` and see the process UID
+- Now lets run a test container from `node3` and see the process UID
 
-.exercise[
 ```bash
 docker run -d --name lockdown alpine sleep 300
 docker top lockdown
 ps aux
 ```
+
+- `exit` back to node1 when finished
+
 ]
 
 ---
