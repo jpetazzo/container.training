@@ -1952,9 +1952,47 @@ As we saw earlier, you can only control the Swarm through a manager node.
 
 ---
 
+## `--detach` for service creation
+
+(New in Docker Engine 17.05)
+
+If you are running Docker 17.05, you will see the following message:
+
+```
+Since --detach=false was not specified, tasks will be created in the background.
+In a future release, --detach=false will become the default.
+```
+
+Let's ignore it for now; but we'll come back to it in just a few minutes!
+
+---
+
 ## Checking service logs
 
-- Docker 1.13/17.03 has `docker service logs`, but it's an experimental feature
+(New in Docker Engine 17.05)
+
+- Just like `docker logs` shows the output of a specific local container ...
+
+- ... `docker service logs` shows the output of all the containers of a specific service
+
+.exercise[
+
+- Check the output of our ping command:
+  ```bash
+  docker service logs <serviceID>
+  ```
+
+]
+
+Flags `--follow` and `--tail` are available, as well as a few others.
+
+Note: by default, when a container is destroyed (e.g. when scaling down), its logs are lost.
+
+---
+
+## Before Docker Engine 17.05
+
+- Docker 1.13/17.03/17.04 have `docker service logs` as an experimental feature
   <br/>(available only when enabling the experimental feature flag)
 
 - We have to use `docker logs`, which only works on local containers
@@ -2005,8 +2043,7 @@ As we saw earlier, you can only control the Swarm through a manager node.
 
 ## Scale our service
 
-- Services can be scaled in a pinch with the `docker service update`
-  command
+- Services can be scaled in a pinch with the `docker service update` command
 
 .exercise[
 
@@ -2021,6 +2058,29 @@ As we saw earlier, you can only control the Swarm through a manager node.
   ```
 
 ]
+
+---
+
+## View deployment progress
+
+(New in Docker Engine 17.05)
+
+- Commands that create/update/delete services can run with `--detach=false`
+
+- The CLI will show the status of the command, and exit once it's done working
+
+.exercise[
+
+- Scale the service to ensure 3 copies per node:
+  ```bash
+  docker service update <serviceID> --replicas 15 --detach=false
+  ```
+
+]
+
+Note: `--detach=false` will eventually become the default.
+
+With older versions, you can use e.g.: `watch docker service ps <serviceID>`
 
 ---
 
@@ -2052,12 +2112,7 @@ As we saw earlier, you can only control the Swarm through a manager node.
 - Create an ElasticSearch service (and give it a name while we're at it):
   ```bash
   docker service create --name search --publish 9200:9200 --replicas 7 \
-         elasticsearch`:2`
-  ```
-
-- Check what's going on:
-  ```bash
-  watch docker service ps search
+         --detach=false elasticsearch`:2`
   ```
 
 ]
@@ -2070,11 +2125,13 @@ The latest version of the ElasticSearch image won't start without mandatory conf
 
 ## Tasks lifecycle
 
-- If you are fast enough, you will be able to see multiple states:
+- During the deployment, you will be able to see multiple states:
 
   - assigned (the task has been assigned to a specific node)
 
-  - preparing (right now, this mostly means "pulling the image")
+  - preparing (this mostly means "pulling the image")
+
+  - starting
 
   - running
 
