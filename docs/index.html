@@ -26,6 +26,10 @@
       .remark-slide-content h1 { font-size: 50px; }
       .remark-slide-content h2 { font-size: 50px; }
       .remark-slide-content h3 { font-size: 25px; }
+      .footnote {
+        position: absolute;
+        bottom: 3em;
+      }
       .remark-code { font-size: 25px; }
       .small .remark-code { font-size: 16px; }
 
@@ -4378,6 +4382,115 @@ class: secrets
   ```
 
 - For more details and examples, [check the documentation](https://docs.docker.com/engine/swarm/secrets/)
+
+---
+
+class: namespaces
+name: namespaces
+
+## Security Level Up: User Namespaces
+
+Lets increase the default security of containers on `node1` to run as non-root user.
+
+** Namespaces **
+
+- Kernel feature, always on in Docker
+- Fundamental part of Docker that isolates every container
+
+--
+
+** *User* Namespaces ** (1.10+)
+
+- Optional additional feature
+- Containers run as non-root user (UID:GID)
+- Root user inside container mapped to non-root outside
+- Enabled at daemon level, but only affects containers
+- Selectively disabled per container with `--userns=host`
+- Not the same as running non-root inside container
+
+---
+
+class: namespaces
+
+## User Namespaces Caveats
+
+Once enabled, containers can't:
+- Share PID or NET namespaces with the host (no `--pid=host` or `--network=host`)
+- Use `--privileged` mode flag on docker run (unless also specifying `--userns=host`)
+- Use `--read-only` container filesystem (a Linux kernel restriction)
+- Use some external (volume or graph) drivers which can't do user mappings
+
+.footnote[
+.red[*] 
+This is "phase 1" of user namespaces, where all containers are same user (not ideal if you run untrusted code for others on shared hardware). One day, it'll hopefully have UID-per-container. #hardproblems]
+
+---
+
+class: namespaces
+
+## Remove `node1` From Swarm
+
+- We need to add a startup setting to dockerd daemon to enable User Namespaces
+- However *this will reset dockerd config*. Why? Because User Namespaces will make new locked down dir for docker files/settings/cache/swarm
+- So, IRL, enable user-namespaces before you deploy servers
+- Here we'll need add `node1` back to Swarm once we've reconfigured it
+
+.exercise[
+
+- removes manager role, reschedules services, removes node from swarm
+```bash
+docker node demote node1 
+docker swarm leave 
+ssh node2 docker node rm -f node1
+```
+]
+
+---
+
+class: namespaces
+
+## Add Namespaces to daemon.json
+
+We need to create custom daemon config. Lets do it with JSON!
+
+.exercise[
+
+```bash
+echo '{"userns-remap": "default"}' | sudo tee /etc/docker/daemon.json
+sudo systemctl restart docker
+```
+
+- Notice the new docker path and permissions
+
+```bash
+docker info | grep var/lib
+sudo ls -al /var/lib/docker
+```
+]
+
+---
+
+class: namespaces
+
+## Add `node1` Back To Swarm
+
+Get our manager token from another node (same token as before)
+
+.exercise[
+```bash
+ssh node2 docker swarm join-token manager
+```
+]
+
+- Now lets run a test container from `node1` and see the process UID
+
+.exercise[
+```bash
+docker run -d --name lockdown alpine sleep 300
+docker top lockdown
+ps aux
+```
+]
 
 ---
 
