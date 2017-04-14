@@ -192,7 +192,7 @@ sync_keys() {
 }
 
 suggest_amis() {
-    scripts/find-ubuntu-ami.sh -r $AWS_DEFAULT_REGION -a amd64 -v 16.04 -t hvm:ebs -N
+    scripts/find-ubuntu-ami.sh -r $AWS_DEFAULT_REGION -a amd64 -v 16.04 -t hvm:ebs -N -q
 }
 
 get_token() {
@@ -203,30 +203,7 @@ get_token() {
 }
 
 get_ami() {
-    # using find-ubuntu-ami script in `trainer-tools/scripts`:
-    #AMI=$(./scripts/find-ubuntu-ami.sh -r $AWS_DEFAULT_REGION -a amd64 -v 15.10 -t hvm:ebs -N | grep -v ^REGION | head -1 | awk '{print $7}')
-    #AMI=$(suggest_amis | grep -v ^REGION | head -1 | awk '{print $7}')
-    case $AWS_DEFAULT_REGION in
-    eu-central-1)
-      AMI=ami-82cf0aed
-      ;;
-    eu-west-1)
-      AMI=ami-07174474
-      ;;
-    us-east-1)
-      AMI=ami-2808313f
-      ;;
-    us-east-2)
-      AMI=ami-1b772d7e
-      ;;
-    us-west-1)
-      AMI=ami-dab5e0ba
-      ;;
-    us-west-2)
-      AMI=ami-9ee24ffe
-      ;;
-    esac
-    echo $AMI
+    suggest_amis | head -1
 }
 
 
