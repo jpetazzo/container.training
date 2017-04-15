@@ -2249,6 +2249,52 @@ There are many ways to deal with inbound traffic on a Swarm cluster.
 
 ---
 
+## Visualize container placement
+
+- Let's leverage the Docker API!
+
+- [Mano Marks](https://twitter.com/manomarks) wrote a simple-yet-beautiful-and-powerful
+  Swarm visualization tool
+
+.exercise[
+
+- Clone this fork, because it has a Compose file:
+  ```bash
+  git clone git://github.com/jpetazzo/docker-swarm-visualizer
+  ```
+
+- Build and run the Swarm visualizer:
+  ```bash
+  cd docker-swarm-visualizer
+  docker-compose up -d
+  ```
+
+]
+
+---
+
+## Connect to the visualization webapp
+
+- It runs a web server on port 8080
+
+.exercise[
+
+- Point your browser to port 8080 of any node of the Swarm
+
+  (If you use Play-With-Docker, click on the (8080) badge)
+
+]
+
+- The webapp updates the display automatically (you don't need to reload the page)
+
+- It only shows Swarm services (not standalone containers)
+
+- It shows when nodes go down
+
+- It has some glitches (it's not Carrier-Grade Enterprise-Compliant ISO-9001 software)
+
+---
+
 ## Terminate our services
 
 - Before moving on, we will remove those services
