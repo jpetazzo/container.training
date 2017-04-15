@@ -4042,7 +4042,7 @@ Note how the build and push were fast (because caching).
 
 ## Watching the deployment process
 
-- We will need to open a new window for this
+- We will need to open a new terminal for this
 
 .exercise[
 
@@ -4058,7 +4058,7 @@ Note how the build and push were fast (because caching).
 
 - Then we filter out the tasks whose current **and** desired state is `Shutdown`
 
-- Future versions might have fancy filters to make that less tinkerish
+- There is also a `--filter` option, but it doesn't allow (yet) to specify that filter
 
 ---
 
@@ -4083,6 +4083,7 @@ Note how the build and push were fast (because caching).
 By default, SwarmKit does a rolling upgrade, one instance at a time.
 
 ---
+
 
 ## Changing the upgrade policy
 
