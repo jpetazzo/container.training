@@ -3834,7 +3834,77 @@ class: extra-details, in-person
   - put our Swiss Army Knife in a container (e.g. [nicolaka/netshoot](https://hub.docker.com/r/nicolaka/netshoot/))
   - run tests from multiple locations at the same time
 
-(This becomes practical with the `docker service log` command, available by enabling experimental features.)
+(This becomes very practical with the `docker service log` command, available since 17.05.)
+
+---
+
+## Measuring network conditions on the whole cluster
+
+- Since we have built-in, cluster-wide discovery, it's relatively straightforward
+  to monitor the whole cluster automatically
+
+- [Alexandros Mavrogiannis](https://github.com/alexmavr) wrote
+  [Swarm NBT](https://github.com/alexmavr/swarm-nbt), a tool doing exactly that!
+
+.exercise[
+
+- Start Swarm NBT:
+  ```bash
+    docker run --rm -v inventory:/inventory \
+           -v /var/run/docker.sock:/var/run/docker.sock \
+           alexmavr/swarm-nbt start
+  ```
+
+]
+
+Note: in this mode, Swarm NBT connects to the Docker API socket,
+and issues additional API requests to start all the components it needs.
+
+---
+
+## Viewing network conditions with Prometheus
+
+- Swarm NBT relies on Prometheus to scrape and store data
+
+- We can directly consume the Prometheus endpoint to view telemetry data
+
+.exercise[
+
+- Point your browser to any Swarm node, on port 9090
+
+  (If you're using Play-With-Docker, click on the (9090) badge)
+
+- In the drop-down, select `icmp_rtt_gauge_seconds`
+
+- Click on "Graph"
+
+]
+
+You are now seeing ICMP latency across your cluster.
+
+---
+
+class: in-person
+
+## Viewing network conditions with Grafana
+
+- If you are using a "real" cluster (not Play-With-Docker) you can use Grafana
+
+.exercise[
+
+- Point your browser to Grafana, on port 3000 on any Swarm node
+- Login with username `admin` and password `admin`
+- Click on the top-left menu and browse to Data Sources
+- Create a prometheus datasource with any name
+- Point it to http://<any-node-IP>:9090
+- Set access to "direct" and leave credentials blank
+- Click on the top-left menu, highlight "Dashboards" and select the "Import" option
+- Copy-paste [this JSON payload](
+  https://raw.githubusercontent.com/alexmavr/swarm-nbt/master/grafana.json),
+  then use the Prometheus Data Source defined before
+- Poke around the dashboard that magically appeared!
+
+]
 
 ---
 
