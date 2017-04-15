@@ -98,9 +98,16 @@
   <body>
     <textarea id="source">
 
-class: title
+class: pic
 
-Docker <br/> Orchestration <br/> Workshop
+![Welcome to DockerCon!](dockercon17.png)
+
+**Docker Advanced Orchestration Workshop**
+
+---
+
+class: title
+Docker <br/> Advanced <br/> Orchestration <br/> Workshop
 
 ---
 
@@ -108,204 +115,39 @@ class: in-person
 
 ## Intros
 
-- Hello! We are
-  AJ ([@s0ulshake](https://twitter.com/s0ulshake))
-  &
-  Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
+Hello! We are
 
---
-
-class: in-person
-
-- This is our collective Docker knowledge:
-
-  ![Bell Curve](bell-curve.jpg)
-
-<!--
-Reminder, when updating the agenda: when people are told to show
-up at 9am, they usually trickle in until 9:30am (except for paid
-training sessions). If you're not sure that people will be there
-on time, it's a good idea to have a breakfast with the attendees
-at e.g. 9am, and start at 9:30.
--->
-
-<!--
-- Agenda:
--->
-
-.small[
-- 09:00-09:15 hello
-- 09:15-10:45 part 1
-- 10:45-11:00 coffee break
-- 11:00-12:30 part 2
-- 12:30-13:30 lunch break
-- 13:30-15:00 part 3
-- 15:00-15:15 coffee break
-- 15:15-16:45 part 4
-- 16:45-17:00 Q&A
-]
-
-<!--
-- The tutorial will run from 1pm to 5pm
-- This will be fast-paced, but DON'T PANIC!
-- We will do short breaks for coffee + QA every hour
--->
-
-- Feel free to interrupt for questions at any time
-
-- Live feedback, questions, help on [Gitter](chat)
-
-- All the content is publicly available (slides, code samples, scripts)
+- Bret Fisher ([@bretfisher](https://twitter.com/bretfisher))
+- Everett Towes ([@everett_toews](https://twitter.com/everett_toews))
+- Scott Coulton ([@scottcoulton](https://twitter.com/scottcoulton))
+- Antonis Kalipetis ([@akalipetis](https://twitter.com/akalipetis))
+  
+.footnote[.red[*] (based on the great work by Jérôme 
+  ([@jpetazzo](https://twitter.com/jpetazzo) and many others!)]
 
 ---
 
 class: in-person
 
-## Disclaimer
+## The Plan
 
-- This will be slightly different from the posted abstract
+    - 2:00-2:45 hello and refresher on swarm
+    - 2:45-3:20 deploy our app in services and stacks
+    - 3:20-3:30 10 minute break
+    - 3:30-4:45 blue/green deploy, secrets, ELK, monitoring 
+    - 4:45-5:00 Q&A
 
-- Lots of things happened between the CFP and today
+- Resources at [bretfisher.com/dockercon17](http://www.bretfisher.com/dockercon17)
+    - Live feedback, questions, help on [DockerCon Slack](https://dockercon.slack.com/messages/)
+    - All the content is publicly available (slides, code samples, scripts)
 
-  - Docker 1.13
-
-  - Docker 17.03
-
-- There is enough content here for a whole day
-
-- We will cover about a half of the whole program
-
-- And I'll give you ways to continue learning on your own, should you choose to!
-
----
-
-## A brief introduction
-
-- This was initially written to support in-person,
-  instructor-led workshops and tutorials
-
-- You can also follow along on your own, at your own pace
-
-- We included as much information as possible in these slides
-
-- We recommend having a mentor to help you ...
-
-- ... Or be comfortable spending some time reading the Docker
- [documentation](https://docs.docker.com/) ...
-
-- ... And looking for answers in the [Docker forums](forums.docker.com),
-  [StackOverflow](http://stackoverflow.com/questions/tagged/docker),
-  and other outlets
-
----
-
-class: self-paced
-
-## Hands on, you shall practice
-
-- Nobody ever became a Jedi by spending their lives reading Wookiepedia
-
-- Likewise, it will take more than merely *reading* these slides
-  to make you an expert
-
-- These slides include *tons* of exercises
-
-- They assume that you have access to a cluster of Docker nodes
-
-- If you are attending a workshop or tutorial:
-  <br/>you will be given specific instructions to access your cluster
-
-- If you are doing this on your own:
-  <br/>you can use
-  [Play-With-Docker](http://www.play-with-docker.com/) and
-  read [these instructions](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker) for extra
-  details
-
-???
-
-<!--
-grep '^# ' index.html | grep -v '<br' | tr '#' '-'
--->
-
----
-
-class: in-person
-
-## Chapter 1: getting started
-
-- Pre-requirements
-
-- VM environment
-
-- Our sample application
-
-- Running the application
-
-- Identifying bottlenecks
-
-- Introducing SwarmKit
-
----
-
-class: in-person
-
-## Chapter 2: scaling out our app on Swarm
-
-- Creating our first Swarm
-
-- Docker Machine
-
-- Running our first Swarm service
-
-- Deploying a local registry
-
-- Overlay networks
-
-- Global scheduling
-
-- Scripting image building and pushing
-
-- Integration with Compose
-
----
-
-class: in-person
-
-## Chapter 3: operating the Swarm
-
-- Breaking into an overlay network
-
-- Securing overlay networks
-
-- Rolling updates
-
-- (Secrets management and encryption at rest)
-
-- [Centralized logging](#logging)
-
-- Metrics collection
-
----
-
-class: in-person
-
-## Chapter 4: bonus material
-
-- Dealing with stateful services
-
-- Controlling Docker from a container
-
-- Node management
-
-- What's next?
+- Feel free to interrupt for questions at any time (me or TA's)
 
 ---
 
 # Pre-requirements
 
-- Computer with internet connection and a web browser
-
-- For instructor-led workshops: an SSH client to connect to remote machines
+- Browser and SSH client to connect to your VM's
 
   - on Linux, OS X, FreeBSD... you are probably all set
 
@@ -314,33 +156,11 @@ class: in-person
   [Git BASH](https://git-for-windows.github.io/), or
   [MobaXterm](http://mobaxterm.mobatek.net/)
 
-- For self-paced learning: SSH is not necessary if you use
-  [Play-With-Docker](http://www.play-with-docker.com/)
+  - If you have connection issues with SSH, try [MOSH](https://mosh.org/) which we have installed on servers. Install with apt/yum/brew `install mosh` and then connect similar to ssh: (mosh user@host)
 
-- Some Docker knowledge
+- Some Docker/Compose knowledge and hopefully Swarm basics (this *is* Advanced right?)
 
   (but that's OK if you're not a Docker expert!)
-
----
-
-class: in-person
-
-## Nice-to-haves
-
-- [Mosh](https://mosh.org/) instead of SSH, if your internet connection tends to lose packets
-  <br/>(available with `(apt|yum|brew) install mosh`; then connect with `mosh user@host`)
-
-- [GitHub](https://github.com/join) account
-  <br/>(if you want to fork the repo; also used to join Gitter)
-
-- [Gitter](https://gitter.im/) account
-  <br/>(to join the conversation during the workshop)
-
-- [Slack](https://community.docker.com/registrations/groups/4316) account
-  <br/>(to join the conversation after the workshop)
-
-- [Docker Hub](https://hub.docker.com) account
-  <br/>(it's one way to distribute images on your Swarm cluster)
 
 ---
 
@@ -348,7 +168,7 @@ class: in-person
 
 - The whole workshop is hands-on
 
-- We will see Docker 17.03 in action
+- We will see Docker 17.04 in action
 
 - You are invited to reproduce all the demos
 
@@ -357,30 +177,8 @@ class: in-person
 .exercise[
 
 - This is the stuff you're supposed to do!
-- Go to [container.training](http://container.training/) to view these slides
-- Join the [chat room](chat)
 
 ]
-
----
-
-class: in-person
-
-# VM environment
-
-- To follow along, you need a cluster of five Docker Engines
-
-- If you are doing this with an instructor, see next slide
-
-- If you are doing (or re-doing) this on your own, you can:
-
-  - create your own cluster (local or cloud VMs) with Docker Machine
-    ([instructions](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-machine))
-
-  - use [Play-With-Docker](http://play-with-docker.com) ([instructions](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker))
-
-  - create a bunch of clusters for you and your friends
-    ([instructions](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-vms))
 
 ---
 
@@ -438,70 +236,6 @@ wait
 
 ---
 
-class: in-person
-
-## If doing or re-doing the workshop on your own ...
-
----
-
-class: self-paced
-
-## How to get your own Docker nodes?
-
-- Use [Play-With-Docker](http://www.play-with-docker.com/)!
-
---
-
-- Main differences:
-
-  - you don't need to SSH to the machines
-    <br/>(just click on the node that you want to control in the left tab bar)
-
-  - Play-With-Docker automagically detects exposed ports
-    <br/>(and displays them as little badges with port numbers, above the terminal)
-
-  - You can access HTTP services by clicking on the port numbers
-
-  - exposing TCP services requires something like
-    [ngrok](https://ngrok.com/)
-    or [supergrok](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker)
-
-<!--
-
-- If you use VMs deployed with Docker Machine:
-
-  - you won't have pre-authorized SSH keys to bounce across machines
-
-  - you won't have host aliases
-
--->
-
----
-
-class: self-paced
-
-## Using Play-With-Docker
-
-- Open a new browser tab to [www.play-with-docker.com](http://www.play-with-docker.com/)
-
-- Confirm that you're not a robot
-
-- Click on "ADD NEW INSTANCE": congratulations, you have your first Docker node!
-
-- When you will need more nodes, just click on "ADD NEW INSTANCE" again
-
-- Note the countdown in the corner; when it expires, your instances are destroyed
-
-- If you give your URL to somebody else, they can access your nodes too
-  <br/>
-  (You can use that for pair programming, or to get help from a mentor)
-
-- Loving it? Not loving it? Tell it to the wonderful authors,
-  [@marcosnils](https://twitter.com/marcosnils) &
-  [@xetorthio](https://twitter.com/xetorthio)!
-
----
-
 ## We will (mostly) interact with node1 only
 
 - Unless instructed, **all commands must be run from the first VM, `node1`**
@@ -515,41 +249,10 @@ class: self-paced
 
 ---
 
-## Terminals
-
-Once in a while, the instructions will say:
-<br/>"Open a new terminal."
-
-There are multiple ways to do this:
-
-- create a new window or tab on your machine, and SSH into the VM;
-
-- use screen or tmux on the VM and open a new window from there.
-
-You are welcome to use the method that you feel the most comfortable with.
-
----
-
-## Tmux cheatsheet
-
-- Ctrl-b c → creates a new window
-- Ctrl-b n → go to next window
-- Ctrl-b p → go to previous window
-- Ctrl-b " → split window top/bottom
-- Ctrl-b % → split window left/right
-- Ctrl-b Alt-1 → rearrange windows in columns
-- Ctrl-b Alt-2 → rearrange windows in rows
-- Ctrl-b arrows → navigate to other windows
-- Ctrl-b d → detach session
-- tmux attach → reattach to session
-
----
-
 ## Brand new versions!
 
-- Engine 17.03
-- Compose 1.11
-- Machine 0.10
+- Engine 17.05
+- Compose 1.12
 
 .exercise[
 
@@ -557,16 +260,17 @@ You are welcome to use the method that you feel the most comfortable with.
   ```bash
   docker version
   docker-compose -v
-  docker-machine -v
   ```
 
 ]
 
 ---
 
-## Wait, what, 17.03 ?!?
+## Wait, what, 17.05 ?!?
 
 --
+
+- New versioning scheme: `YY.MM` of expected release (like Ubuntu or SaltStack)
 
 - Docker inc. [recently announced](https://blog.docker.com/2017/03/docker-enterprise-edition/)
   Docker Enterprise Edition
@@ -589,19 +293,21 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Why?
 
-- More readable for enterprise users
+- My [TL;DR Blog Post](http://bretfisher.com/docker-version-name-change-highlights/)
 
-  (i.e. the very nice folks who are kind enough to pay us big $$$ for our stuff)
+- More digestible for enterprise users, planned release cycle & support
 
-- No impact for the community
+- Community version isn't changing
 
   (beyond CE/EE suffix and version numbering change)
 
-- Both trains leverage the same open source components
+- Both editions leverage the same open source components, EE adds optional software on top (UCP, DTR, Security Scanning, etc.)
 
   (containerd, libcontainer, SwarmKit...)
 
-- More predictible release schedule (see next slide)
+- Both downloadable via [store.docker.com](https://store.docker.com)
+
+- Bonus: Edge gives us monthly feature releases and Stable gets backported fixes
 
 ---
 
@@ -621,461 +327,17 @@ Let's do this.
 
 ---
 
-name: part-1
-
-class: title, self-paced
-
-Part 1
-
----
-
-# Our sample application
-
-- Visit the GitHub repository with all the materials of this workshop:
-  <br/>https://github.com/jpetazzo/orchestration-workshop
-
-- The application is in the [dockercoins](
-  https://github.com/jpetazzo/orchestration-workshop/tree/master/dockercoins)
-  subdirectory
-
-- Let's look at the general layout of the source code:
-
-  there is a Compose file [docker-compose.yml](
-  https://github.com/jpetazzo/orchestration-workshop/blob/master/dockercoins/docker-compose.yml) ...
-
-  ... and 4 other services, each in its own directory:
-
-  - `rng` = web service generating random bytes
-  - `hasher` = web service computing hash of POSTed data
-  - `worker` = background process using `rng` and `hasher`
-  - `webui` = web interface to watch progress
-
----
-
-class: extra-details
-
-## Compose file format version
-
-*Particularly relevant if you have used Compose before...*
-
-- Compose 1.6 introduced support for a new Compose file format (aka "v2")
-
-- Services are no longer at the top level, but under a `services` section
-
-- There has to be a `version` key at the top level, with value `"2"` (as a string, not an integer)
-
-- Containers are placed on a dedicated network, making links unnecessary
-
-- There are other minor differences, but upgrade is easy and straightforward
-
----
-
-## Links, naming, and service discovery
-
-- Containers can have network aliases (resolvable through DNS)
-
-- Compose file version 2 makes each container reachable through its service name
-
-- Compose file version 1 requires "links" sections
-
-- Our code can connect to services using their short name
-
-  (instead of e.g. IP address or FQDN)
-
----
-
-## Example in `worker/worker.py`
-
-![Service discovery](service-discovery.png)
-
----
-
-## What's this application?
-
----
-
-class: pic
-
-![DockerCoins logo](dockercoins.png)
-
-(DockerCoins 2016 logo courtesy of [@XtlCnslt](https://twitter.com/xtlcnslt) and [@ndeloof](https://twitter.com/ndeloof). Thanks!)
-
----
-
-## What's this application?
-
-- It is a DockerCoin miner! 💰🐳📦🚢
-
-- No, you can't buy coffee with DockerCoins
-
-- How DockerCoins works:
-
-  - `worker` asks to `rng` to give it random bytes
-  - `worker` feeds those random bytes into `hasher`
-  - each hash starting with `0` is a DockerCoin
-  - DockerCoins are stored in `redis`
-  - `redis` is also updated every second to track speed
-  - you can see the progress with the `webui`
-
----
-
-## Getting the application source code
-
-- We will clone the GitHub repository
-
-- The repository also contains scripts and tools that we will use through the workshop
-
-.exercise[
-
-<!--
-```bash
-[ -d orchestration-workshop ] && mv orchestration-workshop orchestration-workshop.$$
-```
--->
-
-- Clone the repository on `node1`:
-  ```bash
-  git clone git://github.com/jpetazzo/orchestration-workshop
-  ```
-
-]
-
-(You can also fork the repository on GitHub and clone your fork if you prefer that.)
-
----
-
-# Running the application
-
-Without further ado, let's start our application.
-
-.exercise[
-
-- Go to the `dockercoins` directory, in the cloned repo:
-  ```bash
-  cd ~/orchestration-workshop/dockercoins
-  ```
-
-- Use Compose to build and run all containers:
-  ```bash
-  docker-compose up
-  ```
-
-]
-
-Compose tells Docker to build all container images (pulling
-the corresponding base images), then starts all containers,
-and displays aggregated logs.
-
----
-
-## Lots of logs
-
-- The application continuously generates logs
-
-- We can see the `worker` service making requests to `rng` and `hasher`
-
-- Let's put that in the background
-
-.exercise[
-
-- Stop the application by hitting `^C`
-
-<!--
-```meta
-^C
-```
--->
-
-]
-
-- `^C` stops all containers by sending them the `TERM` signal
-
-- Some containers exit immediately, others take longer
-  <br/>(because they don't handle `SIGTERM` and end up being killed after a 10s timeout)
-
----
-
-## Restarting in the background
-
-- Many flags and commands of Compose are modeled after those of `docker`
-
-.exercise[
-
-- Start the app in the background with the `-d` option:
-  ```bash
-  docker-compose up -d
-  ```
-
-- Check that our app is running with the `ps` command:
-  ```bash
-  docker-compose ps
-  ```
-
-]
-
-`docker-compose ps` also shows the ports exposed by the application.
-
----
-
-class: extra-details
-
-## Viewing logs
-
-- The `docker-compose logs` command works like `docker logs`
-
-.exercise[
-
-- View all logs since container creation and exit when done:
-  ```bash
-  docker-compose logs
-  ```
-
-- Stream container logs, starting at the last 10 lines for each container:
-  ```bash
-  docker-compose logs --tail 10 --follow
-  ```
-
-<!--
-```meta
-^C
-```
--->
-
-]
-
-Tip: use `^S` and `^Q` to pause/resume log output.
-
----
-
-class: extra-details
-
-## Upgrading from Compose 1.6
-
-.warning[The `logs` command has changed between Compose 1.6 and 1.7!]
-
-- Up to 1.6
-
-  - `docker-compose logs` is the equivalent of `logs --follow`
-
-  - `docker-compose logs` must be restarted if containers are added
-
-- Since 1.7
-
-  - `--follow` must be specified explicitly
-
-  - new containers are automatically picked up by `docker-compose logs`
-
----
-
-## Connecting to the web UI
-
-- The `webui` container exposes a web dashboard; let's view it
-
-.exercise[
-
-- With a web browser, connect to `node1` on port 8000
-
-]
-
-- The app actually has a constant, steady speed (3.33 coins/second)
-
-- The speed seems not-so-steady because:
-
-  - the worker doesn't update the counter after every loop, but up to once per second
-
-  - the speed is computed by the browser, checking the counter about once per second
-
-  - between two consecutive updates, the counter will increase either by 4, or by 0
-
----
-
-## Scaling up the application
-
-- Our goal is to make that performance graph go up (without changing a line of code!)
-
---
-
-- Before trying to scale the application, we'll figure out if we need more resources
-
-  (CPU, RAM...)
-
-- For that, we will use good old UNIX tools on our Docker node
-
----
-
-## Looking at resource usage
-
-- Let's look at CPU, memory, and I/O usage
-
-.exercise[
-
-- run `top` to see CPU and memory usage (you should see idle cycles)
-
-- run `vmstat 3` to see I/O usage (si/so/bi/bo)
-  <br/>(the 4 numbers should be almost zero, except `bo` for logging)
-
-]
-
-We have available resources.
-
-- Why?
-- How can we use them?
-
----
-
-## Scaling workers on a single node
-
-- Docker Compose supports scaling
-- Let's scale `worker` and see what happens!
-
-.exercise[
-
-- Start one more `worker` container:
-  ```bash
-  docker-compose scale worker=2
-  ```
-
-- Look at the performance graph (it should show a x2 improvement)
-
-- Look at the aggregated logs of our containers (`worker_2` should show up)
-
-- Look at the impact on CPU load with e.g. top (it should be negligible)
-
-]
-
----
-
-## Adding more workers
-
-- Great, let's add more workers and call it a day, then!
-
-.exercise[
-
-- Start eight more `worker` containers:
-  ```bash
-  docker-compose scale worker=10
-  ```
-
-- Look at the performance graph: does it show a x10 improvement?
-
-- Look at the aggregated logs of our containers
-
-- Look at the impact on CPU load and memory usage
-
-<!--
-```bash
-sleep 5
-killall docker-compose
-```
--->
-
-]
-
----
-
-# Identifying bottlenecks
-
-- You should have seen a 3x speed bump (not 10x)
-
-- Adding workers didn't result in linear improvement
-
-- *Something else* is slowing us down
-
---
-
-- ... But what?
-
---
-
-- The code doesn't have instrumentation
-
-- Let's use state-of-the-art HTTP performance analysis!
-  <br/>(i.e. good old tools like `ab`, `httping`...)
-
----
-
-## Accessing internal services
-
-- `rng` and `hasher` are exposed on ports 8001 and 8002
-
-- This is declared in the Compose file:
-
-  ```yaml
-    ...
-    rng:
-      build: rng
-      ports:
-      - "8001:80"
-
-    hasher:
-      build: hasher
-      ports:
-      - "8002:80"
-    ...
-  ```
-
----
-
-## Measuring latency under load
-
-We will use `httping`.
-
-.exercise[
-
-- Check the latency of `rng`:
-  ```bash
-  httping -c 10 localhost:8001
-  ```
-
-- Check the latency of `hasher`:
-  ```bash
-  httping -c 10 localhost:8002
-  ```
-
-]
-
-`rng` has a much higher latency than `hasher`.
-
----
-
-## Let's draw hasty conclusions
-
-- The bottleneck seems to be `rng`
-
-- *What if* we don't have enough entropy and can't generate enough random numbers?
-
-- We need to scale out the `rng` service on multiple machines!
-
-Note: this is a fiction! We have enough entropy. But we need a pretext to scale out.
-
-(In fact, the code of `rng` uses `/dev/urandom`, which never runs out of entropy...
-<br/>
-...and is [just as good as `/dev/random`](http://www.slideshare.net/PacSecJP/filippo-plain-simple-reality-of-entropy).)
-
----
-
-## Clean up
-
-- Before moving on, let's remove those containers
-
-.exercise[
-
-- Tell Compose to remove everything:
-  ```bash
-  docker-compose down
-  ```
-
-]
-
----
-
 class: title
 
-#  Scaling out
+SwarmKit and
+<br/>
+Swarm Services
+
+## (a review)
 
 ---
 
-# SwarmKit
+# SwarmKit and Swarm Review
 
 - [SwarmKit](https://github.com/docker/swarmkit) is an open source
   toolkit to build multi-node systems
@@ -1096,8 +358,7 @@ class: title
 
 ## SwarmKit features
 
-- Highly-available, distributed store based on [Raft](
-  https://en.wikipedia.org/wiki/Raft_(computer_science))
+- Highly-available, distributed store based on [Raft](https://raft.github.io/)
   <br/>(more on next slide)
 
 - *Services* managed with a *declarative API*
@@ -1277,9 +538,6 @@ If Docker tells you that it `could not choose an IP address to advertise`, see n
 - If your nodes have multiple IP addresses, pick an address which is reachable
   *by every other node* of the Swarm
 
-- If you are using [play-with-docker](http://play-with-docker.com/), use the IP
-  address shown next to the node name
-
   .small[(This is the address of your node on your private internal overlay network.
   The other address that you might see is the address of your node on the
   `docker_gwbridge` network, which is used for outbound traffic.)]
@@ -1389,6 +647,10 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
 
 - Switch to `node2`
 
+  ```bash
+  ssh node2
+  ```
+
 - Copy-paste the `docker swarm join ...` command
   <br/>(that was displayed just before)
 
@@ -1396,39 +658,25 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
 
 ---
 
-class: extra-details
+## Lets use bash script to add rest of nodes
 
-## Check that the node was added correctly
-
-- Stay on `node2` for now!
+Exit back to `node1` and lets quickly add the rest as workers
 
 .exercise[
 
-- We can still use `docker info` to verify that the node is part of the Swarm:
-  ```bash
-  docker info | grep ^Swarm
-  ```
-
+```bash
+TOKEN=$(docker swarm join-token -q worker)
+for N in $(seq 3 5); do
+  ssh "node$N" docker swarm join --token "$TOKEN" node1:2377
+done
+```
 ]
-
-- However, Swarm commands will not work; try, for instance:
-  ```
-  docker node ls
-  ```
-
-- This is because the node that we added is currently a *worker*
-
-- Only *managers* can accept Swarm-specific commands
 
 ---
 
-## View our two-node cluster
-
-- Let's go back to `node1` and see what our cluster looks like
+## View our five-node cluster
 
 .exercise[
-
-- Switch back to `node1`
 
 - View the cluster from `node1`, which is a manager:
   ```bash
@@ -1442,235 +690,8 @@ The output should be similar to the following:
 ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
 8jud...ox4b *  node1     Ready   Active        Leader
 ehb0...4fvx    node2     Ready   Active
+...
 ```
-
----
-
-## Adding nodes using the Docker API
-
-- We don't have to SSH into the other nodes, we can use the Docker API
-
-- If you are using Play-With-Docker:
-
-  - the nodes expose the Docker API over port 2375/tcp, without authentication
-
-  - we will connect by setting the `DOCKER_HOST` environment variable
-
-- Otherwise:
-
-  - the nodes expose the Docker API over port 2376/tcp, with TLS mutual authentication
-
-  - we will use Docker Machine to set the correct environment variables
-    <br/>(the nodes have been suitably pre-configured to be controlled through `node1`)
-
----
-
-# Docker Machine
-
-- Docker Machine has two primary uses:
-
-  - provisioning cloud instances running the Docker Engine
-
-  - managing local Docker VMs within e.g. VirtualBox
-
-- Docker Machine is purely optional
-
-- It makes it easy to create, upgrade, manage... Docker hosts:
-
-  - on your favorite cloud provider
-
-  - locally (e.g. to test clustering, or different versions)
-
-  - across different cloud providers
-
----
-
-class: self-paced
-
-## If you're using Play-With-Docker ...
-
-- You won't need to use Docker Machine
-
-- Instead, to "talk" to another node, we'll just set `DOCKER_HOST`
-
-- You can skip the exercises telling you to do things with Docker Machine!
-
----
-
-## Docker Machine basic usage
-
-- We will learn two commands:
-
-  - `docker-machine ls` (list existing hosts)
-
-  - `docker-machine env` (switch to a specific host)
-
-.exercise[
-
-- List configured hosts:
-  ```bash
-  docker-machine ls
-  ```
-
-]
-
-You should see your 5 nodes.
-
----
-
-class: in-person
-
-## How did we make our 5 nodes show up there?
-
-*For the curious...*
-
-- This was done by our VM provisioning scripts
-
-- After setting up everything else, `node1` adds the 5 nodes
-  to the local Docker Machine configuration
-  (located in `$HOME/.docker/machine`)
-
-- Nodes are added using [Docker Machine generic driver](https://docs.docker.com/machine/drivers/generic/)
-
-  (It skips machine provisioning and jumps straight to the configuration phase)
-
-- Docker Machine creates TLS certificates and deploys them to the nodes through SSH
-
----
-
-## Using Docker Machine to communicate with a node
-
-- To select a node, use `eval $(docker-machine env nodeX)`
-
-- This sets a number of environment variables
-
-- To unset these variables, use `eval $(docker-machine env -u)`
-
-.exercise[
-
-- View the variables used by Docker Machine:
-  ```bash
-  docker-machine env node3
-  ```
-
-]
-
-(This shows which variables *would* be set by Docker Machine; but it doesn't change them.)
-
----
-
-## Getting the token
-
-- First, let's store the join token in a variable
-
-- This must be done from a manager
-
-.exercise[
-
-- Make sure we talk to the local node, or `node1`:
-  ```bash
-  eval $(docker-machine env -u)
-  ```
-
-- Get the join token:
-  ```bash
-  TOKEN=$(docker swarm join-token -q worker)
-  ```
-
-]
-
----
-
-## Change the node targeted by the Docker CLI
-
-- We need to set the right environment variables to communicate with `node3`
-
-.exercise[
-
-- If you're using Play-With-Docker:
-  ```bash
-  export DOCKER_HOST=tcp://node3:2375
-  ```
-
-- Otherwise, use Docker Machine:
-  ```bash
-  eval $(docker-machine env node3)
-  ```
-
-]
-
----
-
-## Checking which node we're talking to
-
-- Let's use the Docker API to ask "who are you?" to the remote node
-
-.exercise[
-
-- Extract the node name from the output of `docker info`:
-  ```bash
-  docker info | grep ^Name
-  ```
-
-]
-
-This should tell us that we are talking to `node3`.
-
-Note: it can be useful to use a [custom shell prompt](
-https://github.com/jpetazzo/orchestration-workshop/blob/master/prepare-vms/scripts/postprep.rc#L68)
-reflecting the `DOCKER_HOST` variable.
-
----
-
-## Adding a node through the Docker API
-
-- We are going to use the same `docker swarm join` command as before
-
-.exercise[
-
-- Add `node3` to the Swarm:
-  ```bash
-  docker swarm join --token $TOKEN node1:2377
-  ```
-
-]
-
----
-
-## Going back to the local node
-
-- We need to revert the environment variable(s) that we had set previously
-
-.exercise[
-
-- If you're using Play-With-Docker, just clear `DOCKER_HOST`:
-  ```bash
-  unset DOCKER_HOST
-  ```
-
-- Otherwise, use Docker Machine to reset all the relevant variables:
-  ```bash
-  eval $(docker-machine env -u)
-  ```
-
-]
-
-From that point, we are communicating with `node1` again.
-
----
-
-## Checking the composition of our cluster
-
-- Now that we're talking to `node1` again, we can use management commands
-
-.exercise[
-
-- Check that the node is here:
-  ```bash
-  docker node ls
-  ```
-
-]
 
 ---
 
@@ -1765,101 +786,13 @@ Some presentations from the Docker Distributed Systems Summit in Berlin:
 
 - If we lose it, we're SOL
 
-- Let's make our cluster highly available
-
-- Can you write a tiny script to automatically retrieve the manager token,
-  <br/>and automatically add remaining nodes to the cluster?
-
---
-
-- Hint: we want to use `for N in $(seq 4 5) ...`
-
----
-
-## Adding more managers
-
-With Play-With-Docker:
-
-```bash
-TOKEN=$(docker swarm join-token -q manager)
-for N in $(seq 4 5); do
-  export DOCKER_HOST=tcp://node$N:2375
-  docker swarm join --token $TOKEN node1:2377
-done
-unset DOCKER_HOST
-```
-
----
-
-## Adding more managers
-
-With Docker Machine:
-
-```bash
-TOKEN=$(docker swarm join-token -q manager)
-for N in $(seq 4 5); do
-  eval $(docker-machine env node$N)
-  docker swarm join --token $TOKEN node1:2377
-done
-eval $(docker-machine env -u)
-```
-
----
-
-## You can control the Swarm from any manager node
+- Let's make our cluster highly available by promoting workers to managers
 
 .exercise[
 
-- Try the following command on a few different nodes:
-  ```bash
-  docker node ls
-  ```
-
-]
-
-On manager nodes:
-<br/>you will see the list of nodes, with a `*` denoting
-the node you're talking to.
-
-On non-manager nodes:
-<br/>you will get an error message telling you that
-the node is not a manager.
-
-As we saw earlier, you can only control the Swarm through a manager node.
-
----
-
-## Play-With-Docker node status icon
-
-- If you're using Play-With-Docker, you get node status icons
-
-- Node status icons are displayed left of the node name
-
-  - No icon = no Swarm mode detected
-  - Solid blue icon = Swarm manager detected
-  - Blue outline icon = Swarm worker detected
-
-![Play-With-Docker icons](pwd-icons.png)
-
----
-
-## Promoting nodes
-
-- Instead of adding a manager node, we can also promote existing workers
-
-- Nodes can be promoted (and demoted) at any time
-
-.exercise[
-
-- See the current list of nodes:
-  ```
-  docker node ls
-  ```
-
-- Promote the two worker nodes to be managers:
-  ```
-  docker node promote XXX YYY
-  ```
+```bash
+docker node promote node4 node5
+```
 
 ]
 
@@ -1958,50 +891,19 @@ As we saw earlier, you can only control the Swarm through a manager node.
 
 ## Checking service logs
 
-- Docker 1.13/17.03 has `docker service logs`, but it's an experimental feature
+- Service logs pulls logs from all nodes to view on one manager cli
+
+- Docker 1.13+ has `docker service logs`, but it was an experimental feature
   <br/>(available only when enabling the experimental feature flag)
 
-- We have to use `docker logs`, which only works on local containers
-
-- We will have to connect to the node running our container
-  <br/>(unless it was scheduled locally, of course)
-
----
-
-## Looking up where our container is running
-
-- The `docker service ps` command told us where our container was scheduled
+- But in 17.05 it's graduated (at least in RC1) and we can now use it out-of-the-box!
 
 .exercise[
-
-- Look up the `NODE` on which the container is running:
-  ```bash
-  docker service ps <serviceID>
-  ```
-
-- If you use Play-With-Docker, switch to that node's tab, or set `DOCKER_HOST`
-
-- Otherwise, `ssh` into tht node or use `$(eval docker-machine env node...)`
-
-]
-
----
-
-## Viewing the logs of the container
-
-.exercise[
-
-- See that the container is running and check its ID:
-  ```bash
-  docker ps
-  ```
 
 - View its logs:
   ```bash
-  docker logs <containerID>
+  docker service logs <servicename>
   ```
-
-- Go back to `node1` afterwards
 
 ]
 
@@ -2010,7 +912,9 @@ As we saw earlier, you can only control the Swarm through a manager node.
 ## Scale our service
 
 - Services can be scaled in a pinch with the `docker service update`
-  command
+command
+
+- In 1.13+ the default is to spread out tasks across workers
 
 .exercise[
 
@@ -2086,6 +990,9 @@ The latest version of the ElasticSearch image won't start without mandatory conf
 
   (A replacement task will be created)
 
+- Full list of task states: new, pending, assigned, accepted, prepairing, ready,
+starting, running, completed, shutdown, failed, rejected
+
 ---
 
 ![diagram showing what happens during docker service create, courtesy of @aluzzardi](docker-service-create.svg)
@@ -2129,10 +1036,6 @@ about this instance; including a randomly-generated super-hero name.
 
 ]
 
-Note: if you don't have `jq` on your Play-With-Docker instance, just install it:
-```bash
-apk add --no-cache jq
-```
 
 ---
 
@@ -2223,6 +1126,89 @@ class: title
 
 ---
 
+# Our sample application
+
+- Visit the GitHub repository with all the materials of this workshop:
+  <br/>https://github.com/bretfisher/orchestration-workshop
+
+- The application is in the [dockercoins](
+  https://github.com/bretfisher/orchestration-workshop/tree/master/dockercoins)
+  subdirectory
+
+- Let's look at the general layout of the source code:
+
+  there is a Compose file [docker-compose.yml](
+  https://github.com/bretfisher/orchestration-workshop/blob/master/dockercoins/docker-compose.yml) ...
+
+  ... and 4 other services, each in its own directory:
+
+  - `rng` = web service generating random bytes
+  - `hasher` = web service computing hash of POSTed data
+  - `worker` = background process using `rng` and `hasher`
+  - `webui` = web interface to watch progress
+
+---
+
+## What's this application?
+
+---
+
+class: pic
+
+![DockerCoins logo](dockercoins.png)
+
+(DockerCoins 2017 logo courtesy of [@XtlCnslt](https://twitter.com/xtlcnslt) and [@ndeloof](https://twitter.com/ndeloof). Thanks!)
+
+---
+
+## What's this application?
+
+- It is a DockerCoin miner! 💰🐳📦🚢
+
+- No, you can't buy coffee with DockerCoins
+
+- How DockerCoins works:
+
+  - `worker` asks to `rng` to give it random bytes
+  - `worker` feeds those random bytes into `hasher`
+  - each hash starting with `0` is a DockerCoin
+  - DockerCoins are stored in `redis`
+  - `redis` is also updated every second to track speed
+  - you can see the progress with the `webui`
+
+---
+
+class: pic
+
+![scaleout image](dockercoins-multi-node.png)
+
+---
+
+## Getting the application source code
+
+- We will clone the GitHub repository
+
+- The repository also contains scripts and tools that we will use through the workshop
+
+.exercise[
+
+<!--
+```bash
+[ -d orchestration-workshop ] && mv orchestration-workshop orchestration-workshop.$$
+```
+-->
+
+- Clone the repository on `node1`:
+  ```bash
+  git clone git://github.com/bretfisher/orchestration-workshop
+  ```
+
+]
+
+(You can also fork the repository on GitHub and clone your fork if you prefer that.)
+
+---
+
 ## What's on the menu?
 
 In this part, we will cover:
@@ -2258,9 +1244,9 @@ If we had only one service (built from a `Dockerfile` in the
 current directory), our workflow could look like this:
 
 ```
-docker build -t jpetazzo/doublerainbow:v0.1 .
-docker push jpetazzo/doublerainbow:v0.1
-docker service create jpetazzo/doublerainbow:v0.1
+docker build -t bretfisher/doublerainbow:v0.1 .
+docker push bretfisher/doublerainbow:v0.1
+docker service create bretfisher/doublerainbow:v0.1
 ```
 
 We just have to adapt this to our application, which has 4 services!
@@ -2269,7 +1255,7 @@ We just have to adapt this to our application, which has 4 services!
 
 ## The plan
 
-- Build on our local node (`node1`)
+- Build on our local node (`node1`) (not something we'd normally do in a prod swarm with docker-compose, better to do on CI service)
 
 - Tag images with a version number
 
@@ -2328,7 +1314,7 @@ class: extra-details
   ```
 
 - And in the following slides, we would use our Docker Hub login
-  (e.g. `jpetazzo`) instead of the registry address (i.e. `127.0.0.1:5000`)
+  (e.g. `bretfisher`) instead of the registry address (i.e. `127.0.0.1:5000`)
 
 <!--
 ```meta
@@ -2447,6 +1433,7 @@ The curl command should now output:
 ## Build, tag, and push our application container images
 
 - Scriptery to the rescue!
+- be sure your in the `~/orchestration-workshop/dockercoins/` dir
 
 .exercise[
 
@@ -2868,6 +1855,14 @@ You can also directly use the file `docker-compose.yml-images`.
   even when the variables are not set
 
 - The variable names (might) remind you that you have to put the trailing slash and heading colon
+
+---
+
+class: title
+
+Stacks
+
+## (production grade compose files)
 
 ---
 
@@ -3949,7 +2944,8 @@ Note how the build and push were fast (because caching).
 
 - Look at our service status:
   ```bash
-  watch -n1 "docker service ps dockercoins_worker | grep -v Shutdown.*Shutdown"
+  watch -n1 docker service ps -f desired-state=ready \ 
+         -f desired-state=running dockercoins_worker
   ```
 
 ]
@@ -3957,9 +2953,7 @@ Note how the build and push were fast (because caching).
 - `docker service ps worker` gives us all tasks
   <br/>(including the one whose current or desired state is `Shutdown`)
 
-- Then we filter out the tasks whose current **and** desired state is `Shutdown`
-
-- Future versions might have fancy filters to make that less tinkerish
+- Then we `--filter` or `-f` to only show states of `Ready` or `Running`
 
 ---
 
@@ -4416,8 +3410,11 @@ class: namespaces
 
 Once enabled, containers can't:
 - Share PID or NET namespaces with the host (no `--pid=host` or `--network=host`)
+
 - Use `--privileged` mode flag on docker run (unless also specifying `--userns=host`)
+
 - Use `--read-only` container filesystem (a Linux kernel restriction)
+
 - Use some external (volume or graph) drivers which can't do user mappings
 
 .footnote[.red[*] This is "phase 1" of user namespaces, where all containers are same user (not ideal if you run untrusted code for others on shared hardware). One day, it'll hopefully have UID-per-container. #hardproblems]
@@ -4448,7 +3445,7 @@ docker node rm -f node3
 
 class: namespaces
 
-## Add Namespaces to daemon.json
+## Add Namespaces to `daemon.json`
 
 We need to create custom daemon config. Lets do it with JSON!
 
@@ -6950,7 +5947,7 @@ class: title
       var slideshow = remark.create({
         ratio: '16:9',
         highlightSpans: true,
-        excludedClasses: ["in-person"]
+        excludedClasses: [ ]
       });
     </script>
   </body>
