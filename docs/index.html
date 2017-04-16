@@ -131,11 +131,11 @@ class: in-person
 
 ## The Plan
 
-    - 2:00-2:45 hello and refresher on swarm
-    - 2:45-3:20 deploy our app in services and stacks
-    - 3:20-3:30 10 minute break
-    - 3:30-4:45 blue/green deploy, secrets, ELK, monitoring 
-    - 4:45-5:00 Q&A
+    - 2:00-3:00 refresher on swarm and 2017 changes so far
+    - 3:00-3:30 deploy our app in services and stacks
+    - 3:30-3:40 10 minute break
+    - 3:40-4:50 blue/green deploy, secrets, ELK, monitoring 
+    - 4:50-5:00 Q&A
 
 - Resources at [bretfisher.com/dockercon17](http://www.bretfisher.com/dockercon17)
     - Live feedback, questions, help on [DockerCon Slack](https://dockercon.slack.com/messages/)
@@ -1477,23 +1477,6 @@ The curl command should now output:
 
 ---
 
-## Can you spot the differences?
-
-The networks `dockercoins` and `ingress` are different from the other ones.
-
-Can you see how?
-
---
-
-- They are using a different kind of ID, reflecting the fact that they
-  are SwarmKit objects instead of "classic" Docker Engine objects.
-
-- Their *scope* is `swarm` instead of `local`.
-
-- They are using the overlay driver.
-
----
-
 ## Caveats
 
 .warning[In Docker 1.12, you cannot join an overlay network with `docker run --net ...`.]
@@ -1617,9 +1600,7 @@ It has been replaced by the new version, with port 80 accessible from outside.
 
 .exercise[
 
-- If you're using Play-With-Docker, just click on the `(8000)` badge
-
-- Otherwise, point your browser to any node, on port 8000
+- Point your browser to any node, on port 8000
 
 ]
 
@@ -1645,8 +1626,6 @@ Check its status with `docker service ps webui`.
 - Check the result in the web UI
 
 ]
-
-You should see the performance peaking at 10 hashes/s (like before).
 
 ---
 
@@ -1768,96 +1747,6 @@ https://hub.docker.com/r/jpetazzo/dockercoins_worker/tags/)
 
 ---
 
-# Scripting image building and pushing
-
-- Earlier, we used some rather crude shell loops to build and push images
-
-- Compose (and clever environment variables) can help us to make that easier
-
-- When using Compose file version 2, you can specify *both* `build` and `image`:
-
-```yaml
-version: "2"
-
-services:
-
-  webapp:
-    build: src/
-    image: jpetazzo/webapp:${TAG}
-```
-
-Note: Compose tolerates empty (or unset) environment variables, but in this example,
-`TAG` *must* be set, because `jpetazzo/webapp:` is not a valid image name.
-
----
-
-## Updating the Compose file to specify image tags
-
-- Let's update the Compose file for DockerCoins to make it easier to push it to our registry
-
-.exercise[
-
-- Go back to the `dockercoins` directory:
-  ```bash
-  cd ~/orchestration-workshop/dockercoins
-  ```
-
-- Edit `docker-compose.yml`, and update each service to add an `image` directive as follows:
-  ```yaml
-    rng:
-      build: rng
-      `image: ${REGISTRY_SLASH}rng${COLON_TAG}`
-  ```
-
-]
-
-You can also directly use the file `docker-compose.yml-images`.
-
----
-
-## Use the new Compose file
-
-- We need to set `REGISTRY_SLASH` and `COLON_TAG` variables
-
-- Then we can use Compose to `build` and `push`
-
-.exercise[
-
-- Set environment variables:
-  ```bash
-  export REGISTRY_SLASH=127.0.0.1:5000/
-  export COLON_TAG=:v0.01
-  ```
-
-- Build and push with Compose:
-  ```bash
-  docker-compose build
-  docker-compose push
-  ```
-
-]
-
----
-
-## Why the weird variable names?
-
-- It would be more intuitive to have:
-  ```bash
-  REGISTRY=127.0.0.1:5000
-  TAG=v0.01
-  ```
-
-- But then, when the variables are not set, the image names would be invalid
-
-  (they would look like .red[`/rng:`])
-
-- Putting the slash and the colon in the variables allows to use the Compose file
-  even when the variables are not set
-
-- The variable names (might) remind you that you have to put the trailing slash and heading colon
-
----
-
 class: title
 
 Stacks
@@ -1868,9 +1757,15 @@ Stacks
 
 # Integration with Compose
 
-- The previous section showed us how to streamline image build and push
+- We can use docker-compose on local machines and CI to streamline image building/pushing
 
-- We will now see how to streamline service creation
+- But docker-compose doesn't understand Swarm concepts like services
+
+- In 1.13/17.03, Swarm Stacks now understand docker-compose.yml files!
+
+- The docker-compose.yml is the *bridge* between dev docker-compose cli and prod swarm cli
+
+- We will now see how to streamline service/network creation and management
 
   (i.e. get rid of the `for SERVICE in ...; do docker service create ...` part)
 
@@ -2029,49 +1924,6 @@ Our registry is not *exactly* identical to the one deployed with `docker service
 - Try it:
   ```bash
   docker-compose -f dockercoins.yml build
-  ```
-
-]
-
---
-
-If it doesn't work, make sure that you have Compose 1.10.
-
----
-
-## Upgrading Compose
-
-- This is only necessary if you have an older version of Compose
-
-.exercise[
-
-- Upgrade Compose, using the `master` branch:
-  ```bash
-  pip install git+git://github.com/docker/compose
-  ```
-
-- Re-hash our `$PATH`:
-  ```bash
-  hash docker-compose
-  ```
-
-]
-
----
-
-## Trying again
-
-- We can now build and push our container images
-
-.exercise[
-
-- Build our application:
-  ```bash
-  docker-compose -f dockercoins.yml build
-  ```
-
-- Push the images to our registry:
-  ```bash
   docker-compose -f dockercoins.yml push
   ```
 
