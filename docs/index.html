@@ -3848,6 +3848,12 @@ http://jpetazzo.github.io/2013/10/08/docker-containers-metrics/
 
 ---
 
+class: pic
+
+![prometheus design](prometheus.svg)
+
+---
+
 ## It's all about the `/metrics`
 
 - This is was the *node exporter* looks like:
@@ -4276,7 +4282,7 @@ Their state should be "UP".
 - Attaching a global volume to a container allows to start the container anywhere
   <br/>(and retain its data wherever you start it!)
 
-- Global volumes require extra *plugins* (Flocker, Portworx...)
+- Global volumes require extra *plugins* (REX-Ray, Flocker, Portworx...)
 
 - Docker doesn't come with a default global volume driver at this point
 
@@ -4614,49 +4620,6 @@ docker node update <node-name> --availability <active|pause|drain>
 
 ---
 
-## Managers and workers
-
-- Nodes can be promoted to manager with `docker node promote`
-
-- Nodes can be demoted to worker with `docker node demote`
-
-- This can also be done with `docker node update <node> --role <manager|worker>`
-
-- Reminder: this has to be done from a manager node
-  <br/>(workers cannot promote themselves)
-
----
-
-## Removing nodes
-
-- You can leave Swarm mode with `docker swarm leave`
-
-- Nodes are drained before being removed (i.e. all tasks are rescheduled somewhere else)
-
-- Managers cannot leave (they have to be demoted first)
-
-- After leaving, a node still shows up in `docker node ls` (in `Down` state)
-
-- When a node is `Down`, you can remove it with `docker node rm` (from a manager node)
-
----
-
-## Join tokens and automation
-
-- If you have used Docker 1.12-RC: join tokens are now mandatory!
-
-- You cannot specify your own token (SwarmKit generates it)
-
-- If you need to change the token: `docker swarm join-token --rotate ...`
-
-- To automate cluster deployment:
-
-  - have a seed node do `docker swarm init` if it's not already in Swarm mode
-
-  - propagate the token to the other nodes (secure bucket, facter, ohai...)
-
----
-
 ## Disk space management: `docker system df`
 
 - Shows disk usage for images, containers, and volumes
@@ -4726,8 +4689,6 @@ class: title
 
 - Stabilize Compose/Swarm integration
 
-- Refine Snap deployment
-
 - Healthchecks
 
 - Demo at least one volume plugin
@@ -4744,12 +4705,22 @@ It makes it easy to come back later and check what has changed since you did it!
 
 class: title
 
+# Questions?
+
+## For your friends: 
+## 90% off my Docker Course during DockerCon [dockermastery.com](http://dockermastery.com)
+
+---
+
+class: title
+
 # Thanks! <!-- <br/> Questions? -->
 
-<!--
-## [@jpetazzo](https://twitter.com/jpetazzo) <br/> [@docker](https://twitter.com/docker)
--->
-
+## Bret Fisher [bretfisher.com](https://www.bretfisher.com) ([@bretfisher](https://twitter.com/bretfisher)) 
+## Everett Towes ([@everett_toews](https://twitter.com/everett_toews))
+## Scott Coulton ([@scottcoulton](https://twitter.com/scottcoulton))
+## Antonis Kalipetis ([@akalipetis](https://twitter.com/akalipetis))
+ 
 <!--
 ## AJ ([@s0ulshake](https://twitter.com/s0ulshake)) <br/> Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) <br/> Tiffany ([@tiffanyfayj](https://twitter.com/tiffanyfayj))
 -->
