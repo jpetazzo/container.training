@@ -1791,6 +1791,15 @@ Stacks
 
 ---
 
+## Stack notes
+
+- Best practice: one deployed with stack, probably should update with stacks
+    - Don't touch services/networks/volumes manually
+    - Next stack deploy for updating will reset your change
+    - (learnings from CloudFormation pains)
+
+---
+
 ## Removing everything
 
 - Before deploying using "stacks," let's get a clean slate
@@ -2827,6 +2836,31 @@ Note: if you updated the roll-out parallelism, *rollback* will not rollback to t
 
 ---
 
+## Update With Rollback Can Be Fancy (WIP)
+
+```bash
+docker service create --name nginx --replicas 5 nginx
+
+docker service update \
+  --update-delay 5s \
+  --update-failure-action rollback \
+  --update-max-failure-ratio .25 \
+  --update-monitor 5s \
+  --update-parallelism 1 \
+  --rollback-delay 5s \
+  --rollback-failure-action pause \
+  --rollback-max-failure-ratio .5 \
+  --rollback-monitor 5s \
+  --rollback-parallelism 0 \
+  --health-cmd "if (( RANDOM % 2 )); then exit 0;fi;" \
+  --health-interval 1s \
+  --health-retries 1 \
+  --image nginx:1.11.12 \
+  nginx
+```
+
+---
+
 ## Timeline of an upgrade
 
 - SwarmKit will upgrade N instances at a time
@@ -3202,7 +3236,38 @@ ps aux
 
 ---
 
-## A reminder about *scope*
+## AppArmor
+
+There are three or more ways to limit the capabilities of your containers
+
+- AppArmor is a Linux security module that lets us restrict a processes' capabilities via a config file
+
+- Restrict network access, raw sockets, and file permissions and execution
+
+- Docker enables by default with a [good default template](https://github.com/docker/docker/blob/master/profiles/apparmor/template.go)
+
+- Like most things Docker, we can replace default with our own
+
+- We can override `docker-default` policy with `--security-opt apparmor=nginx`
+
+---
+
+## AppArmor: #latenight
+
+- We won't do a demo today, lack of time, and also, doesn't yet work with swarm
+
+- But [It's coming](https://github.com/docker/docker/pull/32339#pullrequestreview-31624577)
+
+- Challange is for lots of these security configs, is getting the config file out to swarm nodes
+
+--
+
+- But you can do a great demo on your own on [docs.docker.com/engine/security/apparmor](https://docs.docker.com/engine/security/apparmor/)
+
+
+---
+
+## A reminder about Swarm API *scope*
 
 - Out of the box, Docker API access is "all or nothing"
 
@@ -4664,13 +4729,13 @@ Note: `docker system prune -a` will also remove *unused* images.
 
 class: title
 
-# What's next?
-
-## (What to expect in future versions of this workshop)
+# Wrapping Up
 
 ---
 
-## Implemented and stable, but out of scope
+## What's Next?
+
+Implemented and stable, but out of scope
 
 - [Docker Content Trust](https://docs.docker.com/engine/security/trust/content_trust/) and
   [Notary](https://github.com/docker/notary) (image signature and verification)
@@ -4689,7 +4754,7 @@ class: title
 
 - Stabilize Compose/Swarm integration
 
-- Healthchecks
+- More Healthchecks and Swarm Update with Rollback
 
 - Demo at least one volume plugin
   <br/>(bonus points if it's a distributed storage system)
@@ -4700,6 +4765,21 @@ Reminder: there is a tag for each iteration of the content
 in the Github repository.
 
 It makes it easy to come back later and check what has changed since you did it!
+
+---
+
+## Related Content This Week That's Awesome 
+
+- Compose New Hotness! Full Lifecycle with Compose files
+    - Tues 1:20pm - All the New Docker Compose Goodness: Antonis Kalipetis
+
+- Whaleprint - Open Source Project by Captains: more Ops automation for Swarm
+    - Wed 1pm - From Docker Zero to Hackathon Winner: Jimena Tapia
+
+- Awesome dive into Swam, including (a surprise) swarm logs and backup
+    - Tues 2:55pm - Everything You Thought You Already Knew About Orchestration: Laura Frank
+
+- So Much More...
 
 ---
 
