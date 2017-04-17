@@ -76,6 +76,12 @@
         background-repeat: no-repeat;
         padding-left: 2em;
       }
+      .blackbelt {
+      	background-image: url("blackbelt.png");
+      	background-size: 1.5em;
+      	background-repeat: no-repeat;
+      	padding-left: 2em;
+      }
       .exercise {
         background-color: #eee;
         background-image: url("keyboard.png");
@@ -104,10 +110,14 @@ class: in-person
 
 ## Intros
 
-- Hello! We are
+- Hello!
+
+<!--
+ We are
   AJ ([@s0ulshake](https://twitter.com/s0ulshake))
   &
   Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
+-->
 
 --
 
@@ -130,15 +140,14 @@ at e.g. 9am, and start at 9:30.
 -->
 
 .small[
-- 09:00-09:15 hello
-- 09:15-10:45 part 1
-- 10:45-11:00 coffee break
-- 11:00-12:30 part 2
-- 12:30-13:30 lunch break
-- 13:30-15:00 part 3
-- 15:00-15:15 coffee break
-- 15:15-16:45 part 4
-- 16:45-17:00 Q&A
+- 14:00-14:05 hello
+- 14:05-14:50 part 1
+- 14:50-15:00 tea/coffee break + Q&A
+- 15:00-15:50 part 2
+- 15:50-16:00 more tea/coffee + Q&A
+- 16:00-16:50 part 3
+- 16:50-17:00 no tea/coffee, still Q&A
+- 17:00-23:59 kombucha, beers, and more
 ]
 
 <!--
@@ -149,11 +158,25 @@ at e.g. 9am, and start at 9:30.
 
 - Feel free to interrupt for questions at any time
 
-- Live feedback, questions, help on [Gitter](chat)
+- Live feedback, questions, help on [Slack](chat)
 
 - All the content is publicly available (slides, code samples, scripts)
 
+.blackbelt[GOTTA CATCH'EM ALL! (The black belt track references!)]
+
 ---
+
+## .blackbelt[Tuesday 16:15]
+
+Cgroups in Go...
+
+Namespaces in Go...
+
+Reminder: *Cgroups + Namespaces = Containers*
+
+Liz Rice will craft some artisanal, organic, non-GMO containers in Go! ✨
+
+???
 
 class: in-person
 
@@ -217,8 +240,6 @@ class: self-paced
   read [these instructions](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker) for extra
   details
 
-???
-
 <!--
 grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 -->
@@ -267,25 +288,25 @@ class: in-person
 
 class: in-person
 
-## Chapter 3: operating the Swarm
+## Chapter 3: operating the Swarm (advanced material)
 
-- Breaking into an overlay network
+- (Breaking into an overlay network)
 
-- Securing overlay networks
+- (Securing overlay networks)
 
-- Rolling updates
+- (Rolling updates)
 
 - (Secrets management and encryption at rest)
 
-- [Centralized logging](#logging)
+- ([Centralized logging](#logging))
 
-- Metrics collection
+- (Metrics collection)
 
 ---
 
 class: in-person
 
-## Chapter 4: bonus material
+## Chapter 4: exploring Swarm
 
 - Dealing with stateful services
 
@@ -543,8 +564,8 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 17.03
-- Compose 1.11
+- Engine 17.05
+- Compose 1.12
 - Machine 0.10
 
 .exercise[
@@ -560,7 +581,7 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ---
 
-## Wait, what, 17.03 ?!?
+## Wait, what, 17.05 ?!?
 
 --
 
@@ -670,9 +691,9 @@ class: extra-details
 
 - Containers can have network aliases (resolvable through DNS)
 
-- Compose file version 2 makes each container reachable through its service name
+- Compose file version 2+ makes each container reachable through its service name
 
-- Compose file version 1 requires "links" sections
+- Compose file version 1 required "links" sections
 
 - Our code can connect to services using their short name
 
@@ -987,6 +1008,20 @@ killall docker-compose
 
 - Let's use state-of-the-art HTTP performance analysis!
   <br/>(i.e. good old tools like `ab`, `httping`...)
+
+---
+
+## .blackbelt[Wednesday 13:30]
+
+Do you want to know exactly what your code is doing?
+
+Down to the microsecond?
+
+.small[(I want to say nanosecond but I don't want to be too presomptuous)]
+
+Flame graphs! Performance counters! Kernel tracing!
+
+Brendan Gregg will share with us the secrets of container peformance analysis.
 
 ---
 
@@ -1752,6 +1787,20 @@ Some presentations from the Docker Distributed Systems Summit in Berlin:
 - Heart of the SwarmKit: Store, Topology & Object Model
   ([slides](http://www.slideshare.net/Docker/heart-of-the-swarmkit-store-topology-object-model))
   ([video](https://www.youtube.com/watch?v=EmePhjGnCXY))
+
+---
+
+## .blackbelt[Tuesday 14:55]
+
+What is this "quorum" thing exactly?
+
+How does raft *actually* work?
+
+Can I blow up a Swarm cluster to bits and rebuild it from scratch?
+
+Docker Captain Laura Frank will answer all these questions!
+
+*"I dyed my hair red with the blood of offline manager nodes."*
 
 ---
 
@@ -3484,7 +3533,7 @@ You should now be able to connect to port 8000 and see the DockerCoins web UI.
 
 ---
 
-# Breaking into an overlay network
+# (Breaking into an overlay network)
 
 - We will create a dummy placeholder service on our network
 
@@ -3908,7 +3957,7 @@ class: in-person
 
 ---
 
-# Securing overlay networks
+# (Securing overlay networks)
 
 - By default, overlay networks are using plain VXLAN encapsulation
 
@@ -4037,7 +4086,31 @@ However, when you run the second one, only `#` will show up.
 
 ---
 
-# Rolling updates
+## .blackbelt[Tuesday 11:45]
+
+In a galaxy far far away ...
+
+--
+
+The Death Star has a REST API, and the Empire protects it with L7 security policies ...
+
+--
+
+Wait, what?
+
+--
+
+Thomas Graf will present BPF and XDP, which are some *really cool* kernel tech.
+
+Then he'll show how Cilium leverages them to implement L7 security policies.
+
+Also he might or might not blow up Death Stars.
+
+.small[(In other news, BPF and XDP are also used by Facebook to achieve 10x performance improvements over IPVS LB.)]
+
+---
+
+# (Rolling updates)
 
 - We want to release a new version of the worker
 
@@ -4217,8 +4290,6 @@ Note: if you updated the roll-out parallelism, *rollback* will not rollback to t
 
 ---
 
-class: swarmctl
-
 ## Getting task information for a given node
 
 - You can see all the tasks assigned to a node with `docker node ps`
@@ -4235,7 +4306,7 @@ class: swarmctl
 
 class: swarmtools
 
-## SwarmKit debugging tools
+# SwarmKit debugging tools
 
 - The SwarmKit repository comes with debugging tools
 
@@ -4456,6 +4527,26 @@ Reminder: this is a very low-level tool, requiring a knowledge of SwarmKit's int
 
   - data plane is not encrypted by default (for performance reasons),
     <br/>but we saw earlier how to enable that with a single flag
+
+---
+
+## .blackbelt[Wednesday 11:15]
+
+*"Docker takes security seriously."*
+
+--
+
+Well, *everybody* takes security seriously, don't they?
+
+--
+
+*"We don't give a 💩 about security!"* (Said no company ever)
+
+--
+
+Come see how we reaccommodate security bugs, *one patch at a time*.
+
+With Michael Crosby, maintainer of the Engine, libcontainer, runc, containerd ...
 
 ---
 
@@ -5242,6 +5333,24 @@ http://jpetazzo.github.io/2017/01/20/docker-logging-gelf/).
 
 ---
 
+## .blackbelt[Tuesday 17:10]
+
+You want to implement surveillance?
+
+I mean – metrics collection?
+
+Gather CPU, RAM, I/O, etc. for all your nodes and containers?
+
+But also applications and business metrics?
+
+Julius Volz will show you what Prometheus can do for you!
+
+(Spoiler alert: a lot!)
+
+---
+
+class: metrics
+
 # Metrics collection
 
 - We want to gather metrics in a central place
@@ -5251,6 +5360,8 @@ http://jpetazzo.github.io/2017/01/20/docker-logging-gelf/).
 - We want a nice interface to view them (graphs)
 
 ---
+
+class: metrics
 
 ## Node metrics
 
@@ -5267,6 +5378,8 @@ http://jpetazzo.github.io/2017/01/20/docker-logging-gelf/).
 - ... and much more!
 
 ---
+
+class: metrics
 
 ## Container metrics
 
@@ -5288,6 +5401,8 @@ http://jpetazzo.github.io/2013/10/08/docker-containers-metrics/
 
 ---
 
+class: metrics
+
 ## Tools
 
 We will build *two* different metrics pipelines:
@@ -5301,6 +5416,8 @@ relevant to Intel Snap (we rely on a SSH server to deploy,
 and PWD doesn't have that yet).
 
 ---
+
+class: metrics
 
 ## First metrics pipeline
 
@@ -5320,6 +5437,8 @@ We will use three open source Go projects for our first metrics pipeline:
 
 ---
 
+class: metrics
+
 ## Snap
 
 - [github.com/intelsdi-x/snap](https://github.com/intelsdi-x/snap)
@@ -5338,6 +5457,8 @@ We will use three open source Go projects for our first metrics pipeline:
 
 ---
 
+class: metrics
+
 ## InfluxDB
 
 - Snap doesn't store metrics data
@@ -5354,6 +5475,8 @@ We will use three open source Go projects for our first metrics pipeline:
 
 ---
 
+class: metrics
+
 ## Grafana
 
 - Snap cannot show graphs
@@ -5365,6 +5488,8 @@ We will use three open source Go projects for our first metrics pipeline:
 - Grafana can read data from InfluxDB and display it as graphs
 
 ---
+
+class: metrics
 
 ## Getting and setting up Snap
 
@@ -5382,6 +5507,8 @@ We will use three open source Go projects for our first metrics pipeline:
 - This service will effectively install Snap on the hosts
 
 ---
+
+class: metrics
 
 ## The Snap installer service
 
@@ -5408,6 +5535,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
 
 ---
 
+class: metrics
+
 ## First contact with `snapd`
 
 - The core of Snap is `snapd`, the Snap daemon
@@ -5429,6 +5558,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
   https://github.com/intelsdi-x/snap/blob/master/docs/SNAPD_CONFIGURATION.md
 
 ---
+
+class: metrics
 
 ## Using `snapctl` to interact with `snapd`
 
@@ -5452,6 +5583,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
 
 ---
 
+class: metrics
+
 ## Checking what we've done
 
 - Good to know: Docker CLI uses `ls`, Snap CLI uses `list`
@@ -5471,6 +5604,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
 ]
 
 ---
+
+class: metrics
 
 ## Actually collecting metrics: introducing *tasks*
 
@@ -5493,6 +5628,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
 
 ---
 
+class: metrics
+
 ## Our first task manifest
 
 ```yaml
@@ -5514,6 +5651,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
 ```
 
 ---
+
+class: metrics
 
 ## Creating our first task
 
@@ -5541,6 +5680,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
 
 ---
 
+class: metrics
+
 ## Checking existing tasks
 
 .exercise[
@@ -5559,6 +5700,8 @@ The output should look like the following:
     24043...acba Task-24043...acba Running   4   0    0    2:34PM   8-13-2016
   ```
 ---
+
+class: metrics
 
 ## Viewing our task dollars at work
 
@@ -5579,6 +5722,8 @@ To exit, hit `^C`
 
 ---
 
+class: metrics
+
 ## Debugging tasks
 
 - When a task is not directly writing to a local file, use `snapctl task watch`
@@ -5597,6 +5742,8 @@ To exit, hit `^C`
 
 ---
 
+class: metrics
+
 ## Stopping snap
 
 - Our Snap deployment has a few flaws:
@@ -5609,15 +5756,21 @@ To exit, hit `^C`
 
 --
 
+class: metrics
+
 - We want to change that!
 
 --
+
+class: metrics
 
 - But first, go back to the terminal where `snapd` is running, and hit `^C`
 
 - All tasks will be stopped; all plugins will be unloaded; Snap will exit
 
 ---
+
+class: metrics
 
 ## Snap Tribe Mode
 
@@ -5638,6 +5791,8 @@ To exit, hit `^C`
 
 ---
 
+class: metrics
+
 ## Running Snap itself on every node
 
 - Snap runs in the foreground, so you need to use `&` or start it in tmux
@@ -5655,6 +5810,8 @@ If you're *not* using Play-With-Docker, there is another way to start Snap!
 
 ---
 
+class: metrics
+
 ## Starting a daemon through SSH
 
 .warning[Hackety hack ahead!]
@@ -5669,6 +5826,8 @@ If you're *not* using Play-With-Docker, there is another way to start Snap!
 - Once logged on the node, the service starts snapd with Tribe Mode enabled
 
 ---
+
+class: metrics
 
 ## Running Snap itself on every node
 
@@ -5693,6 +5852,8 @@ Remember: this *does not work* with Play-With-Docker (which doesn't have SSH).
 
 ---
 
+class: metrics
+
 ## Viewing the members of our tribe
 
 - If everything went fine, Snap is now running in tribe mode
@@ -5709,6 +5870,8 @@ Remember: this *does not work* with Play-With-Docker (which doesn't have SSH).
 This should show the 5 nodes with their hostnames.
 
 ---
+
+class: metrics
 
 ## Create an agreement
 
@@ -5731,6 +5894,8 @@ The output should look like the following:
 ```
 
 ---
+
+class: metrics
 
 ## Instruct all nodes to join the agreement
 
@@ -5756,6 +5921,8 @@ The last bit of output should look like the following:
 
 ---
 
+class: metrics
+
 ## Start a container on every node
 
 - The Docker plugin requires at least one container to be started
@@ -5774,6 +5941,8 @@ The last bit of output should look like the following:
 ]
 
 ---
+
+class: metrics
 
 ## Running InfluxDB
 
@@ -5794,6 +5963,8 @@ The last bit of output should look like the following:
 - We will just publish the first two
 
 ---
+
+class: metrics
 
 ## Creating the InfluxDB service
 
@@ -5818,6 +5989,8 @@ on port 8083.
 this breaks a few things.]
 
 ---
+
+class: metrics
 
 ## Setting up InfluxDB
 
@@ -5859,6 +6032,8 @@ Note: the InfluxDB query language *looks like* SQL but it's not.
 
 ---
 
+class: metrics
+
 ## Load Docker collector and InfluxDB publisher
 
 - We will load plugins on the local node
@@ -5884,6 +6059,8 @@ Note: the InfluxDB query language *looks like* SQL but it's not.
 
 ---
 
+class: metrics
+
 ## Start a simple collection task
 
 - Again, we will create a task on the local node
@@ -5907,6 +6084,8 @@ container.
 
 ---
 
+class: metrics
+
 ## If things go wrong...
 
 Note: if a task runs into a problem (e.g. it's trying to publish
@@ -5924,6 +6103,8 @@ This must be done *per node*. Alternatively, you can delete+re-create
 the task (it will delete+re-create on all nodes).
 
 ---
+
+class: metrics
 
 ## Check that metric data shows up in InfluxDB
 
@@ -5947,6 +6128,8 @@ the task (it will delete+re-create on all nodes).
 
 ---
 
+class: metrics
+
 ## Deploy Grafana
 
 - We will use an almost-official image, `grafana/grafana`
@@ -5963,6 +6146,8 @@ the task (it will delete+re-create on all nodes).
 ]
 
 ---
+
+class: metrics
 
 ## Set up Grafana
 
@@ -5981,6 +6166,8 @@ the task (it will delete+re-create on all nodes).
 ]
 
 ---
+
+class: metrics
 
 ## Add InfluxDB as a data source for Grafana
 
@@ -6006,9 +6193,13 @@ If you see an orange box (sometimes without a message), it means that you got so
 
 ---
 
+class: metrics
+
 ![Screenshot showing how to fill the form](grafana-add-source.png)
 
 ---
+
+class: metrics
 
 ## Create a dashboard in Grafana
 
@@ -6032,6 +6223,8 @@ At this point, you should see a sample graph showing up.
 
 ---
 
+class: metrics
+
 ## Setting up a graph in Grafana
 
 .exercise[
@@ -6053,9 +6246,13 @@ Congratulations, you are viewing the CPU usage of a single container!
 
 ---
 
+class: metrics
+
 ![Screenshot showing the end result](grafana-add-graph.png)
 
 ---
+
+class: metrics
 
 ## Before moving on ...
 
@@ -6066,6 +6263,8 @@ Congratulations, you are viewing the CPU usage of a single container!
 - ... And then compare both graphs side by side
 
 ---
+
+class: metrics
 
 ## Prometheus
 
@@ -6084,6 +6283,8 @@ Congratulations, you are viewing the CPU usage of a single container!
 
 ---
 
+class: metrics
+
 ## It's all about the `/metrics`
 
 - This is was the *node exporter* looks like:
@@ -6099,6 +6300,8 @@ Congratulations, you are viewing the CPU usage of a single container!
   (It can also use protobuf to avoid the overhead of parsing line-oriented formats!)
 
 ---
+
+class: metrics
 
 ## Collecting metrics with Prometheus on Swarm
 
@@ -6118,6 +6321,8 @@ Congratulations, you are viewing the CPU usage of a single container!
 
 ---
 
+class: metrics
+
 ## Creating an overlay network for Prometheus
 
 - This is the easiest step ☺
@@ -6132,6 +6337,8 @@ Congratulations, you are viewing the CPU usage of a single container!
 ]
 
 ---
+
+class: metrics
 
 ## Running the node exporter
 
@@ -6158,6 +6365,8 @@ Congratulations, you are viewing the CPU usage of a single container!
 
 ---
 
+class: metrics
+
 ## Running cAdvisor
 
 - Likewise, cAdvisor *should* run directly on the hosts
@@ -6179,6 +6388,8 @@ Congratulations, you are viewing the CPU usage of a single container!
 ]
 
 ---
+
+class: metrics
 
 ## Configuring the Prometheus server
 
@@ -6205,6 +6416,8 @@ scrape_configs:
 
 ---
 
+class: metrics
+
 ## Passing the configuration to the Prometheus server
 
 - We need to provide our custom configuration to the Prometheus server
@@ -6224,6 +6437,8 @@ scrape_configs:
 - Then we will create a service using this image
 
 ---
+
+class: metrics
 
 ## Building our custom Prometheus image
 
@@ -6245,6 +6460,8 @@ scrape_configs:
 
 ---
 
+class: metrics
+
 ## Running our custom Prometheus image
 
 - That's the only service that needs to be published
@@ -6263,6 +6480,8 @@ scrape_configs:
 
 ---
 
+class: metrics
+
 ## Checking our Prometheus server
 
 - First, let's make sure that Prometheus is correctly scraping all metrics
@@ -6280,6 +6499,8 @@ You should see 11 endpoints (5 cadvisor, 5 node, 1 prometheus).
 Their state should be "UP".
 
 ---
+
+class: metrics
 
 ## Displaying metrics directly from Prometheus
 
@@ -6304,6 +6525,8 @@ Their state should be "UP".
 
 ---
 
+class: metrics
+
 ## Building the query from scratch
 
 - We are going to build the same query from scratch
@@ -6317,6 +6540,8 @@ Their state should be "UP".
   Prometheus, or anything else changes and requires editing the query!)
 
 ---
+
+class: metrics
 
 ## Displaying a raw metric for *all* containers
 
@@ -6338,6 +6563,8 @@ Their state should be "UP".
 
 ---
 
+class: metrics
+
 ## Selecting metrics for a specific service
 
 - Hover over the lines in the graph
@@ -6357,6 +6584,8 @@ Their state should be "UP".
 - You can also specify multiple conditions by separating them with commas
 
 ---
+
+class: metrics
 
 ## Turn counters into rates
 
@@ -6380,6 +6609,8 @@ Their state should be "UP".
   *This should show spikes that were previously invisible because they were smoothed out*
 
 ---
+
+class: metrics
 
 ## Aggregate multiple data series
 
@@ -6408,6 +6639,8 @@ Their state should be "UP".
 
 ---
 
+class: metrics
+
 ## Comparing Snap and Prometheus data
 
 - If you haven't setup Snap, InfluxDB, and Grafana, skip this section
@@ -6419,6 +6652,8 @@ Their state should be "UP".
 - To re-do the setup, just follow again the instructions from the previous chapter
 
 ---
+
+class: metrics
 
 ## Add Prometheus as a data source in Grafana
 
@@ -6437,6 +6672,8 @@ Their state should be "UP".
 We see the same input form that we filled earlier to connect to InfluxDB.
 
 ---
+
+class: metrics
 
 ## Connecting to Prometheus from Grafana
 
@@ -6460,6 +6697,8 @@ Otherwise, double-check every field and try again!
 
 ---
 
+class: metrics
+
 ## Adding the Prometheus data to our dashboard
 
 .exercise[
@@ -6475,6 +6714,8 @@ Otherwise, double-check every field and try again!
 This takes us to the graph editor that we used earlier.
 
 ---
+
+class: metrics
 
 ## Querying Prometheus data from Grafana
 
@@ -6499,6 +6740,8 @@ The editor is a bit less friendly than the one we used for InfluxDB.
 
 ---
 
+class: metrics
+
 ## Interpreting results
 
 - The two graphs *should* be similar
@@ -6520,6 +6763,8 @@ The editor is a bit less friendly than the one we used for InfluxDB.
 *Adjusting units is left as an exercise for the reader.*
 
 ---
+
+class: metrics
 
 ## More resources on container metrics
 
@@ -7071,11 +7316,31 @@ class: title
 
 ---
 
+## .blackbelt[Wednesday 14:25]
+
+Don't get hacked!
+
+.small[(Especially by sketchy Russian groups, since it leads to privilege escalation and compromises Democracy. Just saying.)]
+
+Sign images!
+
+Require multiple keys for signature!
+
+Revoke compromised keys and reissue new ones easily!
+
+Prevent replay attacks and use of obsolete vulnerable software!
+
+Justin Cappos will tell you all about *securing the software supply chain!*
+
+.small[(This is Infosec! It's Very Important! Therefore I Am Allowed To Use Lots Of Exclamation Marks!)]
+
+---
+
 ## Work in progress
 
-- Stabilize Compose/Swarm integration
-
+<!--
 - Refine Snap deployment
+-->
 
 - Healthchecks
 
@@ -7110,7 +7375,7 @@ class: title
       var slideshow = remark.create({
         ratio: '16:9',
         highlightSpans: true,
-        excludedClasses: ["in-person"]
+        excludedClasses: ["self-paced", "extra-details", "metrics", "swarmtools", "secrets", "encryption-at-rest"]
       });
     </script>
   </body>
