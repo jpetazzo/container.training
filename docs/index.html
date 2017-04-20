@@ -2266,7 +2266,9 @@ There are many ways to deal with inbound traffic on a Swarm cluster.
 - Build and run the Swarm visualizer:
   ```bash
   cd docker-swarm-visualizer
-  docker-compose up -d
+  docker service create --name=viz --publish=8080:8080/tcp --constraint=node.role==manager \
+  --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+  dockersamples/visualizer  
   ```
 
 ]
