@@ -2555,6 +2555,8 @@ The curl command should now output:
 
 - And run this little for loop:
   ```bash
+    cd orchestration-workshop/dockercoins
+
     DOCKER_REGISTRY=127.0.0.1:5000
     TAG=v0.1
     for SERVICE in hasher rng webui worker; do
