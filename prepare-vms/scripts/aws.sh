@@ -66,20 +66,24 @@ aws_display_instances_by_tag() {
         fi
 }
 
+aws_get_instance_ids_by_filter() {
+    FILTER=$1
+    aws ec2 describe-instances --filters $FILTER \
+        --query Reservations[*].Instances[*].InstanceId \
+        --output text | tr "\t" "\n"
+}
+
+
 aws_get_instance_ids_by_client_token() {
     TOKEN=$1
     need_tag $TOKEN
-    aws ec2 describe-instances --filters "Name=client-token,Values=$TOKEN" \
-        | grep ^INSTANCE \
-        | awk '{print $8}'
+    aws_get_instance_ids_by_filter Name=client-token,Values=$TOKEN
 }
 
 aws_get_instance_ids_by_tag() {
     TAG=$1
     need_tag $TAG
-    aws ec2 describe-instances --filters "Name=tag:Name,Values=$TAG" \
-        | grep ^INSTANCE \
-        | awk '{print $8}'
+    aws_get_instance_ids_by_filter Name=tag:Name,Values=$TAG
 }
 
 aws_get_instance_ips_by_tag() {
