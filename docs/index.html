@@ -2255,18 +2255,17 @@ There are many ways to deal with inbound traffic on a Swarm cluster.
 
 ---
 
+name: here
+
 ## Visualize container placement
 
 - Let's leverage the Docker API!
 
-- [Mano Marks](https://twitter.com/manomarks) wrote a simple-yet-beautiful-and-powerful
-  Swarm visualization tool
-
 .exercise[
 
-- Clone this fork, because it has a Compose file:
+- Get the source code of this simple-yet-beautiful visualization app:
   ```bash
-  git clone git://github.com/jpetazzo/docker-swarm-visualizer
+  git clone git://github.com/dockersamples/docker-swarm-visualizer
   ```
 
 - Build and run the Swarm visualizer:
@@ -2276,6 +2275,12 @@ There are many ways to deal with inbound traffic on a Swarm cluster.
   ```
 
 ]
+
+Credits: the visualization code was written by
+[Francisco Miranda](https://github.com/maroshii)).
+<br/>
+[Mano Marks](https://twitter.com/manomarks) adapted
+it to Swarm and maintains it.
 
 ---
 
