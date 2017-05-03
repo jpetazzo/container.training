@@ -4,22 +4,12 @@ source scripts/cli.sh
 
 aws_display_tags(){
     # Print all "Name" tags in our region with their instance count
-    echo "[#] [Status] [Tag]" | awk '{ printf " %7s %8s %10s \n", $1, $2, $3}'
-    aws ec2 describe-instances --filter "Name=tag:Name,Values=[*]" \
-            --query "Reservations[*].Instances[*].[{Tags:Tags[0].Value,State:State.Name}]" \
-        | awk '{ printf " %-13s %-10s %-1s\n", $1, $2, $3}' \
-        | uniq -c \
-        | sort -k 3
-}
-
-aws_display_tokens(){
-    # Print all tokens in our region with their instance count
-    echo "[#] [Token] [Tag]" | awk '{ printf " %7s %12s %30s\n", $1, $2, $3}'
-                            # --query 'Volumes[*].{ID:VolumeId,AZ:AvailabilityZone,Size:Size}'
-    aws ec2 describe-instances --output text \
-            --query 'Reservations[*].Instances[*].{ClientToken:ClientToken,Tags:Tags[0].Value}' \
-        | awk '{ printf " %7s %12s %50s\n", $1, $2, $3}' \
-        | sort \
+    echo "[#] [Status] [Token] [Tag]" \
+        | awk '{ printf " %7s %-12s %-25s %-25s\n", $1, $2, $3, $4}'
+    aws ec2 describe-instances \
+            --query "Reservations[*].Instances[*].[State.Name,ClientToken,Tags[0].Value]" \
+        | tr -d "\r" \
+        | awk '{ printf " %-12s %-25s %-25s\n", $1, $2, $3}' \
         | uniq -c \
         | sort -k 3
 }
@@ -70,7 +60,7 @@ aws_get_instance_ids_by_filter() {
     FILTER=$1
     aws ec2 describe-instances --filters $FILTER \
         --query Reservations[*].Instances[*].InstanceId \
-        --output text | tr "\t" "\n"
+        --output text | tr "\t" "\n" | tr -d "\r"
 }
 
 
