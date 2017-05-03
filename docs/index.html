@@ -2271,7 +2271,9 @@ name: here
 - Build and run the Swarm visualizer:
   ```bash
   cd docker-swarm-visualizer
-  docker-compose up -d
+  docker service create --name=viz --publish=8080:8080/tcp --constraint=node.role==manager \
+  --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+  dockersamples/visualizer  
   ```
 
 ]
@@ -2564,6 +2566,8 @@ The curl command should now output:
 
 - And run this little for loop:
   ```bash
+    cd orchestration-workshop/dockercoins
+
     DOCKER_REGISTRY=127.0.0.1:5000
     TAG=v0.1
     for SERVICE in hasher rng webui worker; do
