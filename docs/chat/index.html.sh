@@ -1,5 +1,5 @@
 #!/bin/sh
-LINK=https://gitter.im/jpetazzo/workshop-20170504-chicago
+LINK=https://gitter.im/jpetazzo/workshop-20170508-austin
 #LINK=https://dockercommunity.slack.com/messages/docker-mentor
 #LINK=https://usenix-lisa.slack.com/messages/docker
 sed "s,@@LINK@@,$LINK,g" >index.html <<EOF

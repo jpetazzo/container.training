@@ -27,7 +27,7 @@ footer: >
 
 url: http://container.training/
 
-engine_version: test.docker.com
+engine_version: get.docker.com
 compose_version: 1.13.0
 machine_version: 0.11.0
 swarm_version: latest
