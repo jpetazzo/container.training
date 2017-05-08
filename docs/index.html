@@ -547,7 +547,7 @@ You are welcome to use the method that you feel the most comfortable with.
 ## Brand new versions!
 
 - Engine 17.05
-- Compose 1.13
+- Compose 1.12
 - Machine 0.11
 
 .exercise[
@@ -2374,6 +2374,7 @@ There are many ways to deal with inbound traffic on a Swarm cluster.
 
 - Get the source code of this simple-yet-beautiful visualization app:
   ```bash
+  cd ~
   git clone git://github.com/dockersamples/docker-swarm-visualizer
   ```
 
@@ -2384,12 +2385,6 @@ There are many ways to deal with inbound traffic on a Swarm cluster.
   ```
 
 ]
-
-Credits: the visualization code was written by
-[Francisco Miranda](https://github.com/maroshii)).
-<br/>
-[Mano Marks](https://twitter.com/manomarks) adapted
-it to Swarm and maintains it.
 
 ---
 
@@ -2430,6 +2425,12 @@ it to Swarm and maintains it.
       --mount source=/var/run/docker.sock,type=bind,target=/var/run/docker.sock \
       --name viz --constraint node.role==manager ...
   ```
+
+Credits: the visualization code was written by
+[Francisco Miranda](https://github.com/maroshii).
+<br/>
+[Mano Marks](https://twitter.com/manomarks) adapted
+it to Swarm and maintains it.
 
 ---
 
@@ -2692,8 +2693,8 @@ class: manual-btp
 - Set `REGISTRY` and `TAG` environment variables to use our local registry
 - And run this little for loop:
   ```bash
-    REGISTRY=127.0.0.1:5000
-    TAG=v1
+    cd ~/orchestration-workshop/dockercoins
+    REGISTRY=127.0.0.1:5000 TAG=v1
     for SERVICE in hasher rng webui worker; do
       docker tag dockercoins_$SERVICE $REGISTRY/$SERVICE:$TAG
       docker push $REGISTRY/$SERVICE
@@ -4134,14 +4135,15 @@ class: extra-details
 
 .exercise[
 
-- Build the new image:
+- Go to the `stacks` directory:
   ```bash
-  docker-compose build
+  cd ~/orchestration-workshop/stacks
   ```
 
-- Push it to the registry:
+- Build and ship the new image:
   ```bash
-  docker-compose push
+  docker-compose -f dockercoins.yml build
+  docker-compose -f dockercoins.yml push
   ```
 
 ]
@@ -5304,7 +5306,7 @@ You can also set `--restart-delay`, `--restart-max-attempts`, and `--restart-win
 
 - Enable GELF logging for the `rng` service:
   ```bash
-    docker service update dockercoins_rng
+    docker service update dockercoins_rng \
            --log-driver gelf --log-opt gelf-address=udp://127.0.0.1:12201
   ```
 
@@ -5641,7 +5643,7 @@ class: prom-auto
   ```
   docker-compose -f prometheus.yml build
   docker-compose -f prometheus.yml push
-  docker-stack deploy prom -c prometheus.yml
+  docker stack deploy prom -c prometheus.yml
   ```
 
 ]
@@ -5674,7 +5676,7 @@ Their state should be "UP".
 
 - Click on "Graph", and in "expression", paste the following:
   ```
-    sum without (cpu) (
+    sum by (container_label_com_docker_swarm_node_id) (
       irate(
         container_cpu_usage_seconds_total{
           container_label_com_docker_swarm_service_name="dockercoins_worker"
@@ -5735,7 +5737,7 @@ Their state should be "UP".
 
 - Click on "Execute"
 
-  *Now we should see only one line per CPU*
+  *Now we should see one line per CPU per container*
 
 - If you want to select by container ID, you can use a regex match: `id=~"/docker/c4bf.*"`
 
@@ -5768,7 +5770,7 @@ Their state should be "UP".
 
 ## Aggregate multiple data series
 
-- We have one graph per CPU; we want to sum them
+- We have one graph per CPU per container; we want to sum them
 
 - Enclose the whole expression within:
 
@@ -5778,6 +5780,10 @@ Their state should be "UP".
 
   *We now see a single graph*
 
+---
+
+## Collapse dimensions
+
 - If we have multiple containers we can also collapse just the CPU dimension:
 
   ```
@@ -5785,6 +5791,14 @@ Their state should be "UP".
   ```
 
   *This shows the same graph, but preserves the other labels*
+
+- Or we can keep only a specific dimension:
+
+  ```
+  sum by (container_label_com_docker_swarm_node_id) ( ... )
+  ```
+
+  *This shows the CPU usage for a given service, for each node*
 
 - Congratulations, you wrote your first PromQL expression from scratch!
 
@@ -5835,9 +5849,9 @@ Their state should be "UP".
   docker service create --name stateful -p 10000:6379 redis
   ```
 
-- Check that we can connect to it (replace XX.XX.XX.XX with any node's IP address):
+- Check that we can connect to it:
   ```bash
-  docker run --rm redis redis-cli -h `XX.XX.XX.XX` -p 10000 info server
+  docker run --net host --rm redis redis-cli -p 10000 info server
   ```
 
 ]
@@ -5852,7 +5866,7 @@ Their state should be "UP".
 
 - Define a shell alias to make our lives easier:
   ```bash
-  alias redis='docker run --rm redis redis-cli -h `XX.XX.XX.XX` -p 10000'
+  alias redis='docker run --net host --rm redis redis-cli -p 10000'
   ```
 
 - Try it:
@@ -6117,6 +6131,39 @@ It's easy to make that mistake — __Trust me!__]
 ]
 
 Note: we could keep the volume around if we wanted.
+
+---
+
+## Should I run stateful services in containers?
+
+--
+
+Depending whom you ask, they'll tell you:
+
+--
+
+- certainly not, heathen!
+
+--
+
+- we've been running a few thousands PostgreSQL instances in containers ...
+  <br/>for a few years now ... in production ... is that bad?
+
+--
+
+- what's a container?
+
+--
+
+Perhaps a better question would be:
+
+*"Should I run stateful services?"*
+
+--
+
+- is it critical for my business?
+- is it my value-add?
+- or should I find somebody else to run them for me?
 
 ---
 
