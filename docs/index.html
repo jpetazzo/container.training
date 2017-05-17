@@ -49,8 +49,8 @@
         vertical-align: middle;
         text-align: center;
       }
-      .title h1 { font-size: 100px; }
-      .title p { font-size: 100px; }
+      .title h1 { font-size: 5em; }
+      .title p { font-size: 3em; }
       .quote {
         background: #eee;
         border-left: 10px solid #ccc;
@@ -89,6 +89,11 @@
         margin-left: 1.8em;
       }
       li p { line-height: 1.25em; }
+      div.extra-details {
+        background-image: url(extra-details.png);
+        background-position: 99.5% 1%;
+        background-size: 4%;
+      }
     </style>
   </head>
   <body>
@@ -135,31 +140,36 @@ class: in-person
 - Agenda:
 -->
 
+<!--
+
 .small[
-- 09:00-09:15 hello
-- 09:15-10:45 part 1
-- 10:45-11:00 coffee break
+- 09:00-10:30 part 1
+- 10:30-11:00 coffee break
 - 11:00-12:30 part 2
-- 12:30-13:30 lunch break
-- 13:30-15:00 part 3
-- 15:00-15:15 coffee break
-- 15:15-16:45 part 4
-- 16:45-17:00 Q&A
+- 12:00-13:00 lunch break
+- 13:00-14:30 part 3
+- 14:30-14:45 coffee break
+- 14:45-16:00 part 4
+- 16:00-16:01 Q&A
 ]
 
-<!--
-- The tutorial will run from 1pm to 5pm
-- This will be fast-paced, but DON'T PANIC!
-- We will do short breaks for coffee + QA every hour
 -->
+
+- The tutorial will run from 9:00am to 12:30pm
+
+- This will be fast-paced, but DON'T PANIC!
+
+- All the content is publicly available (slides, code samples, scripts)
+
+- There will be a coffee break at 10:30am
+  <br/>
+  (please remind me if I forget about it!)
 
 - Feel free to interrupt for questions at any time
 
 - Live feedback, questions, help on [Gitter](chat)
 
-- All the content is publicly available (slides, code samples, scripts)
-
----
+???
 
 class: in-person
 
@@ -550,7 +560,7 @@ You are welcome to use the method that you feel the most comfortable with.
 ## Brand new versions!
 
 - Engine 17.05
-- Compose 1.13
+- Compose 1.12
 - Machine 0.11
 
 .exercise[
@@ -575,6 +585,22 @@ You are welcome to use the method that you feel the most comfortable with.
 
 --
 
+- Docker 1.13 = Docker 17.03 (year.month, like Ubuntu)
+
+- Every month, there is a new "edge" release (with new features)
+
+- Every quarter, there is a new "stable" release
+
+- Docker CE releases are maintained 4+ months
+
+- Docker EE releases are maintained 12+ months
+
+---
+
+class: extra-details
+
+## Docker CE vs Docker EE
+
 - Docker EE:
 
   - $$$
@@ -588,6 +614,8 @@ You are welcome to use the method that you feel the most comfortable with.
   - perfect for individuals and small organizations
 
 ---
+
+class: extra-details
 
 ## Why?
 
@@ -1073,7 +1101,7 @@ Note: this is a fiction! We have enough entropy. But we need a pretext to scale 
 
 class: title
 
-#  Scaling out
+Scaling out
 
 ---
 
@@ -1086,11 +1114,15 @@ class: title
 
 - It is a plumbing part of the Docker ecosystem
 
+<!--
+
 - SwarmKit comes with two examples:
 
   - `swarmctl` (a CLI tool to "speak" the SwarmKit API)
 
   - `swarmd` (an agent that can federate existing Docker Engines into a Swarm)
+
+-->
 
 - SwarmKit/swarmd/swarmctl → libcontainer/containerd/container-ctr
 
@@ -1100,21 +1132,25 @@ class: title
 
 - Highly-available, distributed store based on [Raft](
   https://en.wikipedia.org/wiki/Raft_%28computer_science%29)
-  <br/>(more on next slide)
+  <br/>(avoids depending on an external store: easier to deploy; higher performance)
+
+- Dynamic reconfiguration of Raft without interrupting cluster operations
 
 - *Services* managed with a *declarative API*
   <br/>(implementing *desired state* and *reconciliation loop*)
 
-- Automatic TLS keying and signing
-
-- Dynamic promotion/demotion of nodes, allowing to change
-  how many nodes are actively part of the Raft consensus
-
 - Integration with overlay networks and load balancing
 
-- And much more!
+- Strong emphasis on security:
+
+  - automatic TLS keying and signing; automatic cert rotation
+  - full encryption of the data plane; automatic key rotation
+  - least privilege architecture (single-node compromise ≠ cluster compromise)
+  - on-disk encryption with optional passphrase
 
 ---
+
+class: extra-details
 
 ## Where is the key/value store?
 
@@ -1147,13 +1183,15 @@ class: title
 
 - A *node* can be a *manager* or a *worker*
 
-  (Note: in SwarmKit, *managers* are also *workers*)
-
-- A *manager* actively takes part in the Raft consensus
+- A *manager* actively takes part in the Raft consensus, and keeps the Raft log
 
 - You can talk to a *manager* using the SwarmKit API
 
 - One *manager* is elected as the *leader*; other managers merely forward requests to it
+
+- The *workers* get their instructions from the *managers*
+
+- Both *workers* and *managers* can run containers
 
 ---
 
@@ -1186,13 +1224,17 @@ You can refer to the [NOMENCLATURE](https://github.com/docker/swarmkit/blob/mast
 
 - Since version 1.12, Docker Engine embeds SwarmKit
 
-- The Docker CLI features three new commands:
+- All the SwarmKit features are "asleep" until you enable "Swarm Mode"
+
+- Examples of Swarm Mode commands:
 
   - `docker swarm` (enable Swarm mode; join a Swarm; adjust cluster parameters)
 
   - `docker node` (view nodes; promote/demote managers; manage nodes)
 
   - `docker service` (create and manage services)
+
+???
 
 - The Docker API exposes the same concepts
 
@@ -1244,9 +1286,15 @@ Error response from daemon: This node is not a swarm manager. [...]
 
 ]
 
+--
+
+class: advertise-addr
+
 If Docker tells you that it `could not choose an IP address to advertise`, see next slide!
 
 ---
+
+class: advertise-addr
 
 ## IP address to advertise
 
@@ -1267,6 +1315,8 @@ If Docker tells you that it `could not choose an IP address to advertise`, see n
   <br/>(otherwise, the default port 2377 will be used)
 
 ---
+
+class: advertise-addr
 
 ## Which IP address should be advertised?
 
@@ -1317,6 +1367,8 @@ docker swarm init --advertise-addr eth0:7777
   ```
 
 ---
+
+class: extra-details
 
 ## Checking that Swarm mode is enabled
 
@@ -1448,6 +1500,8 @@ ehb0...4fvx    node2     Ready   Active
 
 ---
 
+class: docker-machine
+
 ## Adding nodes using the Docker API
 
 - We don't have to SSH into the other nodes, we can use the Docker API
@@ -1466,6 +1520,8 @@ ehb0...4fvx    node2     Ready   Active
     <br/>(the nodes have been suitably pre-configured to be controlled through `node1`)
 
 ---
+
+class: docker-machine
 
 # Docker Machine
 
@@ -1487,7 +1543,7 @@ ehb0...4fvx    node2     Ready   Active
 
 ---
 
-class: self-paced
+class: self-paced, docker-machine
 
 ## If you're using Play-With-Docker ...
 
@@ -1498,6 +1554,8 @@ class: self-paced
 - You can skip the exercises telling you to do things with Docker Machine!
 
 ---
+
+class: docker-machine
 
 ## Docker Machine basic usage
 
@@ -1520,7 +1578,7 @@ You should see your 5 nodes.
 
 ---
 
-class: in-person
+class: in-person, docker-machine
 
 ## How did we make our 5 nodes show up there?
 
@@ -1539,6 +1597,8 @@ class: in-person
 - Docker Machine creates TLS certificates and deploys them to the nodes through SSH
 
 ---
+
+class: docker-machine
 
 ## Using Docker Machine to communicate with a node
 
@@ -1560,6 +1620,8 @@ class: in-person
 (This shows which variables *would* be set by Docker Machine; but it doesn't change them.)
 
 ---
+
+class: docker-machine
 
 ## Getting the token
 
@@ -1583,6 +1645,8 @@ class: in-person
 
 ---
 
+class: docker-machine
+
 ## Change the node targeted by the Docker CLI
 
 - We need to set the right environment variables to communicate with `node3`
@@ -1602,6 +1666,8 @@ class: in-person
 ]
 
 ---
+
+class: docker-machine
 
 ## Checking which node we're talking to
 
@@ -1624,6 +1690,8 @@ reflecting the `DOCKER_HOST` variable.
 
 ---
 
+class: docker-machine
+
 ## Adding a node through the Docker API
 
 - We are going to use the same `docker swarm join` command as before
@@ -1638,6 +1706,8 @@ reflecting the `DOCKER_HOST` variable.
 ]
 
 ---
+
+class: docker-machine
 
 ## Going back to the local node
 
@@ -1660,6 +1730,8 @@ reflecting the `DOCKER_HOST` variable.
 From that point, we are communicating with `node1` again.
 
 ---
+
+class: docker-machine
 
 ## Checking the composition of our cluster
 
@@ -1769,14 +1841,9 @@ Some presentations from the Docker Distributed Systems Summit in Berlin:
 
 - Let's make our cluster highly available
 
-- Can you write a tiny script to automatically retrieve the manager token,
-  <br/>and automatically add remaining nodes to the cluster?
-
---
-
-- Hint: we want to use `for N in $(seq 4 5) ...`
-
 ---
+
+class: self-paced
 
 ## Adding more managers
 
@@ -1793,6 +1860,8 @@ unset DOCKER_HOST
 
 ---
 
+class: docker-machine
+
 ## Adding more managers
 
 With Docker Machine:
@@ -1805,6 +1874,58 @@ for N in $(seq 4 5); do
 done
 eval $(docker-machine env -u)
 ```
+
+---
+
+class: in-person
+
+## Building our full cluster
+
+- We could SSH to nodes 3, 4, 5; and copy-paste the command
+
+--
+
+class: in-person
+
+- Or we could use the AWESOME POWER OF THE SHELL!
+
+--
+
+class: in-person
+
+![Mario Red Shell](mario-red-shell.png)
+
+--
+
+class: in-person
+
+- No, not *that* shell
+
+---
+
+class: in-person
+
+## Let's form like Swarm-tron
+
+- Let's get the token, and loop over the remaining nodes with SSH
+
+.exercise[
+
+- Obtain the manager token:
+  ```bash
+  TOKEN=$(docker swarm join-token -q manager)
+  ```
+
+- Loop over the 3 remaining nodes:
+  ```bash
+    for NODE in node3 node4 node5; do
+      ssh $NODE docker swarm join --token $TOKEN node1:2377
+    done
+  ```
+
+]
+
+[That was easy.](https://www.youtube.com/watch?v=3YmMNpbFjp0)
 
 ---
 
@@ -1831,6 +1952,8 @@ As we saw earlier, you can only control the Swarm through a manager node.
 
 ---
 
+class: self-paced
+
 ## Play-With-Docker node status icon
 
 - If you're using Play-With-Docker, you get node status icons
@@ -1845,11 +1968,13 @@ As we saw earlier, you can only control the Swarm through a manager node.
 
 ---
 
-## Promoting nodes
+## Dynamically changing the role of a node
 
-- Instead of adding a manager node, we can also promote existing workers
+- We can change the role of a node on the fly:
 
-- Nodes can be promoted (and demoted) at any time
+  `docker node promote XXX` → make XXX a manager
+  <br/>
+  `docker node demote XXX` → make XXX a worker
 
 .exercise[
 
@@ -1858,9 +1983,9 @@ As we saw earlier, you can only control the Swarm through a manager node.
   docker node ls
   ```
 
-- Promote the two worker nodes to be managers:
+- Promote any worker node to be a manager:
   ```
-  docker node promote XXX YYY
+  docker node promote <node_name_or_id>
   ```
 
 ]
@@ -1888,9 +2013,9 @@ As we saw earlier, you can only control the Swarm through a manager node.
 
 - Intuitively, it's harder to reach consensus in larger groups
 
-- With Raft, each write needs to be acknowledged by the majority of nodes
+- With Raft, writes have to go to (and be acknowledged by) all nodes
 
-- More nodes = more chance that we will have to wait for some laggard
+- More nodes = more network traffic
 
 - Bigger network = more latency
 
@@ -2008,6 +2133,8 @@ Note: by default, when a container is destroyed (e.g. when scaling down), its lo
 
 ---
 
+class: extra-details
+
 ## Looking up where our container is running
 
 - The `docker service ps` command told us where our container was scheduled
@@ -2026,6 +2153,8 @@ Note: by default, when a container is destroyed (e.g. when scaling down), its lo
 ]
 
 ---
+
+class: extra-details
 
 ## Viewing the logs of the container
 
@@ -2147,6 +2276,8 @@ The latest version of the ElasticSearch image won't start without mandatory conf
 
 ---
 
+class: extra-details
+
 ![diagram showing what happens during docker service create, courtesy of @aluzzardi](docker-service-create.svg)
 
 ---
@@ -2255,8 +2386,6 @@ There are many ways to deal with inbound traffic on a Swarm cluster.
 
 ---
 
-name: here
-
 ## Visualize container placement
 
 - Let's leverage the Docker API!
@@ -2265,6 +2394,7 @@ name: here
 
 - Get the source code of this simple-yet-beautiful visualization app:
   ```bash
+  cd ~
   git clone git://github.com/dockersamples/docker-swarm-visualizer
   ```
 
@@ -2275,12 +2405,6 @@ name: here
   ```
 
 ]
-
-Credits: the visualization code was written by
-[Francisco Miranda](https://github.com/maroshii)).
-<br/>
-[Mano Marks](https://twitter.com/manomarks) adapted
-it to Swarm and maintains it.
 
 ---
 
@@ -2303,6 +2427,30 @@ it to Swarm and maintains it.
 - It shows when nodes go down
 
 - It has some glitches (it's not Carrier-Grade Enterprise-Compliant ISO-9001 software)
+
+---
+
+## Why This Is More Important Than You Think
+
+- The visualizer accesses the Docker API *from within a container*
+
+- This is a common pattern: run container management tools *in containers*
+
+- Instead of viewing your cluster, this could take care of logging, metrics, autoscaling ...
+
+- We can run it within a service, too! We won't do it, but the command would look like:
+
+  ```bash
+    docker service create \
+      --mount source=/var/run/docker.sock,type=bind,target=/var/run/docker.sock \
+      --name viz --constraint node.role==manager ...
+  ```
+
+Credits: the visualization code was written by
+[Francisco Miranda](https://github.com/maroshii).
+<br/>
+[Mano Marks](https://twitter.com/manomarks) adapted
+it to Swarm and maintains it.
 
 ---
 
@@ -2329,21 +2477,19 @@ it to Swarm and maintains it.
 
 class: title
 
-#  Our app on Swarm
+Our app on Swarm
 
 ---
 
 ## What's on the menu?
 
-In this part, we will cover:
+In this part, we will:
 
-- building images for our app,
+- **build** images for our app,
 
-- shipping those images with a registry,
+- **ship** these images with a registry,
 
-- running them through the services concept,
-
-- enabling inter-container communication with overlay networks.
+- **run** services using these images.
 
 ---
 
@@ -2351,9 +2497,9 @@ In this part, we will cover:
 
 - When we do `docker-compose up`, images are built for our services
 
-- Those images are present only on the local node
+- These images are present only on the local node
 
-- We need those images to be distributed on the whole Swarm
+- We need these images to be distributed on the whole Swarm
 
 - The easiest way to achieve that is to use a Docker registry
 
@@ -2361,6 +2507,8 @@ In this part, we will cover:
   creating our services
 
 ---
+
+class: extra-details
 
 ## Build, ship, and run, for a single service
 
@@ -2381,9 +2529,7 @@ We just have to adapt this to our application, which has 4 services!
 
 - Build on our local node (`node1`)
 
-- Tag images with a version number
-
-  (timestamp; git hash; semantic...)
+- Tag images so that they are named `localhost:5000/servicename`
 
 - Upload them to a registry
 
@@ -2467,15 +2613,13 @@ class: extra-details
 
 ---
 
-## Using open source registry
+## Using the open source registry
 
 - We need to run a `registry:2` container
   <br/>(make sure you specify tag `:2` to run the new version!)
 
 - It will store images and layers to the local filesystem
   <br/>(but you can add a config file to use S3, Swift, etc.)
-
-<!-- -->
 
 - Docker *requires* TLS when communicating with the registry
 
@@ -2554,22 +2698,24 @@ The curl command should now output:
 
 ---
 
+class: manual-btp
+
 ## Build, tag, and push our application container images
 
-- Scriptery to the rescue!
+- Compose has named our images `dockercoins_XXX` for each service
+
+- We need to retag them (to `127.0.0.1:5000/XXX:v1`) and push them
 
 .exercise[
 
-- Set `DOCKER_REGISTRY` and `TAG` environment variables to use our local registry
-
+- Set `REGISTRY` and `TAG` environment variables to use our local registry
 - And run this little for loop:
   ```bash
-    DOCKER_REGISTRY=127.0.0.1:5000
-    TAG=v0.1
+    cd ~/orchestration-workshop/dockercoins
+    REGISTRY=127.0.0.1:5000 TAG=v1
     for SERVICE in hasher rng webui worker; do
-      docker-compose build $SERVICE
-      docker tag dockercoins_$SERVICE $DOCKER_REGISTRY/dockercoins_$SERVICE:$TAG
-      docker push $DOCKER_REGISTRY/dockercoins_$SERVICE
+      docker tag dockercoins_$SERVICE $REGISTRY/$SERVICE:$TAG
+      docker push $REGISTRY/$SERVICE
     done
   ```
 
@@ -2577,12 +2723,16 @@ The curl command should now output:
 
 ---
 
+class: manual-btp
+
 # Overlay networks
 
-- SwarmKit integrates with overlay networks, without requiring
-  an extra key/value store
+- SwarmKit integrates with overlay networks
 
-- Overlay networks are created the same way as before
+- Networks are created with `docker network create`
+
+- Make sure to specify that you want an *overlay* network
+  <br/>(otherwise you will get a local *bridge* network by default)
 
 .exercise[
 
@@ -2591,7 +2741,19 @@ The curl command should now output:
   docker network create --driver overlay dockercoins
   ```
 
-- Check existing networks:
+]
+
+---
+
+class: manual-btp
+
+## Viewing existing networks
+
+- Let's confirm that our network was created
+
+.exercise[
+
+- List existing networks:
   ```bash
   docker network ls
   ```
@@ -2599,6 +2761,8 @@ The curl command should now output:
 ]
 
 ---
+
+class: manual-btp
 
 ## Can you spot the differences?
 
@@ -2608,6 +2772,8 @@ Can you see how?
 
 --
 
+class: manual-btp
+
 - They are using a different kind of ID, reflecting the fact that they
   are SwarmKit objects instead of "classic" Docker Engine objects.
 
@@ -2616,6 +2782,8 @@ Can you see how?
 - They are using the overlay driver.
 
 ---
+
+class: manual-btp, extra-details
 
 ## Caveats
 
@@ -2635,6 +2803,8 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 ---
 
+class: manual-btp
+
 ## Run the application
 
 - First, create the `redis` service; that one is using a Docker Hub image
@@ -2650,6 +2820,8 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 ---
 
+class: manual-btp
+
 ## Run the other services
 
 - Then, start the other services one by one
@@ -2660,18 +2832,17 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 - Start the other services:
   ```bash
-  DOCKER_REGISTRY=127.0.0.1:5000
-  TAG=v0.1
+  REGISTRY=127.0.0.1:5000
+  TAG=v1
   for SERVICE in hasher rng webui worker; do
-    docker service create --network dockercoins --name $SERVICE \
-           $DOCKER_REGISTRY/dockercoins_$SERVICE:$TAG
+    docker service create --network dockercoins --detach=true \
+           --name $SERVICE $REGISTRY/$SERVICE:$TAG
   done
   ```
 
 ]
 
 ???
----
 
 ## Wait for our application to be up
 
@@ -2692,6 +2863,8 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 ---
 
+class: manual-btp
+
 ## Expose our application web UI
 
 - We need to connect to the `webui` service, but it is not publishing any port
@@ -2702,7 +2875,7 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 - Update `webui` so that we can connect to it from outside:
   ```bash
-  docker service update webui --publish-add 8000:80
+  docker service update webui --publish-add 8000:80 --detach=false
   ```
 
 ]
@@ -2711,6 +2884,8 @@ Note: to "de-publish" a port, you would have to specify the container port.
 </br>(i.e. in that case, `--publish-rm 80`)
 
 ---
+
+class: manual-btp
 
 ## What happens when we modify a service?
 
@@ -2725,6 +2900,8 @@ Note: to "de-publish" a port, you would have to specify the container port.
 ]
 
 --
+
+class: manual-btp
 
 The first version of the service (the one that was not exposed) has been shutdown.
 
@@ -2746,10 +2923,6 @@ It has been replaced by the new version, with port 80 accessible from outside.
 
 ]
 
-You might have to wait a bit for the container to be up and running.
-
-Check its status with `docker service ps webui`.
-
 ---
 
 ## Scaling the application
@@ -2762,7 +2935,7 @@ Check its status with `docker service ps webui`.
 
 - Bring up more workers:
   ```bash
-  docker service update worker --replicas 10
+  docker service update worker --replicas 10 --detach=false
   ```
 
 - Check the result in the web UI
@@ -2800,16 +2973,16 @@ You should see the performance peaking at 10 hashes/s (like before).
 - Re-create the `rng` service with *global scheduling*:
   ```bash
     docker service create --name rng --network dockercoins --mode global \
-      $DOCKER_REGISTRY/dockercoins_rng:$TAG
+      --detach=false $REGISTRY/rng:$TAG
   ```
 
 - Look at the result in the web UI
 
 ]
 
-Note: if the hash rate goes to zero and doesn't climb back up, try to `rm` and `create` again.
-
 ---
+
+class: extra-details
 
 ## Why do we have to re-create the service to enable global scheduling?
 
@@ -2888,96 +3061,6 @@ https://hub.docker.com/r/jpetazzo/dockercoins_worker/tags/)
   - And now "services"
 
 - Existing apps might require more changes!
-
----
-
-# Scripting image building and pushing
-
-- Earlier, we used some rather crude shell loops to build and push images
-
-- Compose (and clever environment variables) can help us to make that easier
-
-- When using Compose file version 2, you can specify *both* `build` and `image`:
-
-```yaml
-version: "2"
-
-services:
-
-  webapp:
-    build: src/
-    image: jpetazzo/webapp:${TAG}
-```
-
-Note: Compose tolerates empty (or unset) environment variables, but in this example,
-`TAG` *must* be set, because `jpetazzo/webapp:` is not a valid image name.
-
----
-
-## Updating the Compose file to specify image tags
-
-- Let's update the Compose file for DockerCoins to make it easier to push it to our registry
-
-.exercise[
-
-- Go back to the `dockercoins` directory:
-  ```bash
-  cd ~/orchestration-workshop/dockercoins
-  ```
-
-- Edit `docker-compose.yml`, and update each service to add an `image` directive as follows:
-  ```yaml
-    rng:
-      build: rng
-      `image: ${REGISTRY_SLASH}rng${COLON_TAG}`
-  ```
-
-]
-
-You can also directly use the file `docker-compose.images.yml`.
-
----
-
-## Use the new Compose file
-
-- We need to set `REGISTRY_SLASH` and `COLON_TAG` variables
-
-- Then we can use Compose to `build` and `push`
-
-.exercise[
-
-- Set environment variables:
-  ```bash
-  export REGISTRY_SLASH=127.0.0.1:5000/
-  export COLON_TAG=:v0.01
-  ```
-
-- Build and push with Compose:
-  ```bash
-  docker-compose build
-  docker-compose push
-  ```
-
-]
-
----
-
-## Why the weird variable names?
-
-- It would be more intuitive to have:
-  ```bash
-  REGISTRY=127.0.0.1:5000
-  TAG=v0.01
-  ```
-
-- But then, when the variables are not set, the image names would be invalid
-
-  (they would look like .red[`/rng:`])
-
-- Putting the slash and the colon in the variables allows to use the Compose file
-  even when the variables are not set
-
-- The variable names (might) remind you that you have to put the trailing slash and heading colon
 
 ---
 
@@ -3131,62 +3214,35 @@ Our registry is not *exactly* identical to the one deployed with `docker service
 
 ## Building and pushing stack services
 
-- We are going to use the `build` + `image` trick that we showed earlier:
+- When using Compose file version 2 and above, you can specify *both* `build` and `image`
 
-  ```bash
-  docker-compose -f my_stack_file.yml build
-  docker-compose -f my_stack_file.yml push
-  docker stack deploy my_stack --compose-file my_stack_file.yml
+- When both keys are present:
+
+  - Compose does "business as usual" (uses `build`)
+
+  - but the resulting image is named as indicated by the `image` key
+    <br/>
+    (instead of `<projectname>_<servicename>:latest`)
+
+  - it can be pushed to a registry with `docker-compose push`
+
+- Example:
+
+  ```yaml
+    webfront:
+      build: www
+      image: myregistry.company.net:5000/webfront
   ```
+
+---
+
+## Using Compose to build and push images
 
 .exercise[
 
 - Try it:
   ```bash
   docker-compose -f dockercoins.yml build
-  ```
-
-]
-
---
-
-If it doesn't work, make sure that you have Compose 1.10.
-
----
-
-## Upgrading Compose
-
-- This is only necessary if you have an older version of Compose
-
-.exercise[
-
-- Upgrade Compose, using the `master` branch:
-  ```bash
-  pip install git+git://github.com/docker/compose
-  ```
-
-- Re-hash our `$PATH`:
-  ```bash
-  hash docker-compose
-  ```
-
-]
-
----
-
-## Trying again
-
-- We can now build and push our container images
-
-.exercise[
-
-- Build our application:
-  ```bash
-  docker-compose -f dockercoins.yml build
-  ```
-
-- Push the images to our registry:
-  ```bash
   docker-compose -f dockercoins.yml push
   ```
 
@@ -3202,7 +3258,7 @@ version: "3"
 services:
   rng:
     build: dockercoins/rng
-    image: ${REGISTRY_SLASH-127.0.0.1:5000/}rng${COLON_TAG-:latest}
+    image: ${REGISTRY-127.0.0.1:5000}/rng:${TAG-latest}
     deploy:
       mode: global
   ...
@@ -3211,29 +3267,11 @@ services:
   ...
   worker:
     build: dockercoins/worker
-    image: ${REGISTRY_SLASH-127.0.0.1:5000/}worker${COLON_TAG-:latest}
+    image: ${REGISTRY-127.0.0.1:5000}/worker:${TAG-latest}
     ...
     deploy:
       replicas: 10
 ```
-
-???
-
-## What's this `logging` section?
-
-- This application stack is setup to send logs to a local GELF receiver
-
-- We will use another "ready-to-use" Compose file to deploy an ELK stack
-
-- We won't give much more details about the ELK stack right now
-
-  (But there is a chapter dedicated to it in another part!)
-
-- A given container can have only one logging driver at a time (for now)
-
-- As a result, the `gelf` driver is superseding the default `json-file` driver
-
-- ... Which means that the output of these containers won't show up in `docker logs`
 
 ---
 
@@ -3376,6 +3414,8 @@ See [this documentation page](https://docs.docker.com/compose/extends/) for more
 
 ---
 
+class: extra-details
+
 ## Good to know ...
 
 - Compose file version 3 adds the `deploy` section
@@ -3473,6 +3513,8 @@ You should now be able to connect to port 8000 and see the DockerCoins web UI.
 
 ---
 
+class: extra-details
+
 ## Troubleshooting overlay networks
 
 <!--
@@ -3487,9 +3529,13 @@ You should now be able to connect to port 8000 and see the DockerCoins web UI.
 
 --
 
+class: extra-details
+
 - Ah, if only we had created our overlay network with the `--attachable` flag ...
 
 --
+
+class: extra-details
 
 - Oh well, let's use this as an excuse to introduce New Ways To Do Things
 
@@ -3506,16 +3552,12 @@ You should now be able to connect to port 8000 and see the DockerCoins web UI.
 - Start a "do nothing" container using our favorite Swiss-Army distro:
   ```bash
     docker service create --network dockercoins_default --name debug \
-           --mode global alpine sleep 1000000000
+           --constraint node.hostname==$HOSTNAME alpine sleep 1000000000
   ```
 
 ]
 
-Why am I using global scheduling here? Because I'm lazy!
-<br/>
-With global scheduling, I'm *guaranteed* to have an instance on the local node.
-<br/>
-I don't need to SSH to another node.
+The `constraint` makes sure that the container will be created on the local node.
 
 ---
 
@@ -3832,6 +3874,8 @@ class: extra-details, in-person
 
 ---
 
+class: extra-details
+
 ## Global scheduling → global debugging
 
 - Traditional approach:
@@ -3848,6 +3892,8 @@ class: extra-details, in-person
 (This becomes very practical with the `docker service log` command, available since 17.05.)
 
 ---
+
+class: extra-details
 
 ## Measuring network conditions on the whole cluster
 
@@ -3873,6 +3919,8 @@ and issues additional API requests to start all the components it needs.
 
 ---
 
+class: extra-details
+
 ## Viewing network conditions with Prometheus
 
 - Swarm NBT relies on Prometheus to scrape and store data
@@ -3895,7 +3943,7 @@ You are now seeing ICMP latency across your cluster.
 
 ---
 
-class: in-person
+class: in-person, extra-details
 
 ## Viewing network conditions with Grafana
 
@@ -3903,11 +3951,12 @@ class: in-person
 
 .exercise[
 
+- Start Grafana with `docker service create -p 3000:3000 grafana`
 - Point your browser to Grafana, on port 3000 on any Swarm node
 - Login with username `admin` and password `admin`
 - Click on the top-left menu and browse to Data Sources
 - Create a prometheus datasource with any name
-- Point it to http://<any-node-IP>:9090
+- Point it to http://any-node-IP:9090
 - Set access to "direct" and leave credentials blank
 - Click on the top-left menu, highlight "Dashboards" and select the "Import" option
 - Copy-paste [this JSON payload](
@@ -4092,7 +4141,7 @@ class: extra-details
 
 - Locate the line that has a `sleep` instruction
 
-- Reduce the `sleep` from `0.1` to `0.01`
+- Increase the `sleep` from `0.1` to `1.0`
 
 - Save your changes and exit
 
@@ -4104,15 +4153,15 @@ class: extra-details
 
 .exercise[
 
-- Build the new image:
+- Go to the `stacks` directory:
   ```bash
-  IMAGE=127.0.0.1:5000/worker:v0.01
-  docker build -t $IMAGE ~/orchestration-workshop/dockercoins/worker
+  cd ~/orchestration-workshop/stacks
   ```
 
-- Push it to the registry:
+- Build and ship the new image:
   ```bash
-  docker push $IMAGE
+  docker-compose -f dockercoins.yml build
+  docker-compose -f dockercoins.yml push
   ```
 
 ]
@@ -4149,22 +4198,18 @@ Note how the build and push were fast (because caching).
 
 .exercise[
 
-- In the other window, bring back the workers (if you had stopped them earlier):
+- Update our application stack:
   ```bash
-  docker service update dockercoins_worker --replicas 10
-  ```
-
-- Then, update the service to the new image:
-  ```bash
-  docker service update dockercoins_worker --image $IMAGE
+  docker stack deploy dockercoins -c dockercoins.yml
   ```
 
 ]
 
+If you had stopped the workers earlier, this will automatically restart them.
+
 By default, SwarmKit does a rolling upgrade, one instance at a time.
 
 ---
-
 
 ## Changing the upgrade policy
 
@@ -4186,28 +4231,62 @@ The current upgrade will continue at a faster pace.
 
 ---
 
+## Changing the policy in the Compose file
+
+- The policy can also be updated in the Compose file
+
+- This is done by adding an `update_config` key under the `deploy` key:
+
+  ```yaml
+    deploy:
+      replicas: 10
+      update_config:
+        parallelism: 2
+        delay: 10s
+  ```
+
+---
+
 ## Rolling back
 
-- At any time (e.g. before the upgrade is complete), we can rollback
+- At any time (e.g. before the upgrade is complete), we can rollback:
+
+  - by editing the Compose file and redeploying;
+
+  - or with the special `--rollback` flag
 
 .exercise[
 
-- Rollback to the previous image:
-  ```bash
-    docker service update dockercoins_worker \
-      --image $DOCKER_REGISTRY/dockercoins_worker:v0.1
-  ```
-
-- With Docker 1.13, we can also revert to the previous service specification:
+- Try to rollback the service:
   ```bash
   docker service update dockercoins_worker --rollback
   ```
 
 ]
 
-Note: if you updated the roll-out parallelism, *rollback* will not rollback to the previous image; it will rollback to the previous roll-out cadence.
+What happens with the web UI graph?
 
 ---
+
+## The fine print with rollback
+
+- Rollback reverts to the previous service definition
+
+- If we visualize successive updates as a stack:
+
+  - it doesn't "pop" the latest update
+
+  - it "pushes" a copy of the previous update on top
+
+  - ergo, rolling back twice does nothing
+
+- "Service definition" includes rollout cadence
+
+- Each `docker service update` command = a new service definition
+
+---
+
+class: extra-details
 
 ## Timeline of an upgrade
 
@@ -4227,6 +4306,8 @@ Note: if you updated the roll-out parallelism, *rollback* will not rollback to t
 - Then it waits for the `update-delay`, and continues with the next batch of instances
 
 ---
+
+class: node-info
 
 ## Getting task information for a given node
 
@@ -4324,7 +4405,7 @@ class: swarmtools
 
 ---
 
-class: smarmtools
+class: swarmtools
 
 ## `swarmctl` in action
 
@@ -4435,7 +4516,7 @@ class: swarmtools
 
 - If you are using Play-With-Docker, you must use the musl linker:
   ```bash
-  /lib/ld-musl-x86_64.so.1 /usr/local/bin/swarm-rafttool -d /swarmdata/  dump-wal
+  /lib/ld-musl-x86_64.so.1 /usr/local/bin/swarm-rafttool -d /swarmdata/ dump-wal
   ```
 
 - Otherwise, you don't need the musl linker but you need to get root:
@@ -4940,6 +5021,8 @@ What we will do:
 
 ---
 
+class: elk-manual
+
 ## Setting up ELK
 
 - We need three containers: ElasticSearch, Logstash, Kibana
@@ -4961,6 +5044,8 @@ What we will do:
 ]
 
 ---
+
+class: elk-manual
 
 ## Setting up Kibana
 
@@ -4985,6 +5070,8 @@ What we will do:
 
 ---
 
+class: elk-manual
+
 ## Setting up Logstash
 
 - Logstash needs some configuration to listen to GELF messages and send them to ElasticSearch
@@ -5005,6 +5092,8 @@ What we will do:
 
 ---
 
+class: elk-manual
+
 ## Checking Logstash
 
 - Before proceeding, let's make sure that Logstash started properly
@@ -5021,6 +5110,8 @@ What we will do:
 ]
 
 ---
+
+class: elk-manual
 
 ## View Logstash logs
 
@@ -5039,6 +5130,61 @@ What we will do:
 ]
 
 You should see the heartbeat messages:
+.small[
+```json
+{      "message" => "ok",
+          "host" => "1a4cfb063d13",
+      "@version" => "1",
+    "@timestamp" => "2016-06-19T00:45:45.273Z"
+}
+```
+]
+
+---
+
+class: elk-auto
+
+## Deploying our ELK cluster
+
+- We will use a stack file
+
+.exercise[
+
+- Build, ship, and run our ELK stack:
+  ```bash
+  docker-compose -f elk.yml build
+  docker-compose -f elk.yml push
+  docker stack deploy elk -c elk.yml
+  ```
+
+]
+
+Note: the *build* and *push* steps are not strictly necessary, but they don't hurt!
+
+Let's have a look at the [Compose file](
+https://github.com/jpetazzo/orchestration-workshop/blob/master/stacks/elk.yml).
+
+---
+
+class: elk-auto
+
+## Checking that our ELK stack works correctly
+
+- Let's view the logs of logstash
+
+  (Who logs the loggers?)
+
+.exercise[
+
+- Stream logstash's logs:
+  ```bash
+  docker service logs --follow --tail 1 elk_logstash
+  ```
+
+]
+
+You should see the heartbeat messages:
+
 .small[
 ```json
 {      "message" => "ok",
@@ -5178,7 +5324,7 @@ You can also set `--restart-delay`, `--restart-max-attempts`, and `--restart-win
 
 - Enable GELF logging for the `rng` service:
   ```bash
-    docker service update dockercoins_rng
+    docker service update dockercoins_rng \
            --log-driver gelf --log-opt gelf-address=udp://127.0.0.1:12201
   ```
 
@@ -5297,6 +5443,8 @@ http://jpetazzo.github.io/2013/10/08/docker-containers-metrics/
 
 ---
 
+class: snap, prom
+
 ## Tools
 
 We will build *two* different metrics pipelines:
@@ -5310,6 +5458,8 @@ relevant to Intel Snap (we rely on a SSH server to deploy,
 and PWD doesn't have that yet).
 
 ---
+
+class: snap
 
 ## First metrics pipeline
 
@@ -5329,6 +5479,8 @@ We will use three open source Go projects for our first metrics pipeline:
 
 ---
 
+class: snap
+
 ## Snap
 
 - [github.com/intelsdi-x/snap](https://github.com/intelsdi-x/snap)
@@ -5347,6 +5499,8 @@ We will use three open source Go projects for our first metrics pipeline:
 
 ---
 
+class: snap
+
 ## InfluxDB
 
 - Snap doesn't store metrics data
@@ -5363,6 +5517,8 @@ We will use three open source Go projects for our first metrics pipeline:
 
 ---
 
+class: snap
+
 ## Grafana
 
 - Snap cannot show graphs
@@ -5374,6 +5530,8 @@ We will use three open source Go projects for our first metrics pipeline:
 - Grafana can read data from InfluxDB and display it as graphs
 
 ---
+
+class: snap
 
 ## Getting and setting up Snap
 
@@ -5391,6 +5549,8 @@ We will use three open source Go projects for our first metrics pipeline:
 - This service will effectively install Snap on the hosts
 
 ---
+
+class: snap
 
 ## The Snap installer service
 
@@ -5417,6 +5577,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
 
 ---
 
+class: snap
+
 ## First contact with `snapd`
 
 - The core of Snap is `snapd`, the Snap daemon
@@ -5438,6 +5600,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
   https://github.com/intelsdi-x/snap/blob/master/docs/SNAPD_CONFIGURATION.md
 
 ---
+
+class: snap
 
 ## Using `snapctl` to interact with `snapd`
 
@@ -5461,6 +5625,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
 
 ---
 
+class: snap
+
 ## Checking what we've done
 
 - Good to know: Docker CLI uses `ls`, Snap CLI uses `list`
@@ -5480,6 +5646,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
 ]
 
 ---
+
+class: snap
 
 ## Actually collecting metrics: introducing *tasks*
 
@@ -5502,6 +5670,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
 
 ---
 
+class: snap
+
 ## Our first task manifest
 
 ```yaml
@@ -5523,6 +5693,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
 ```
 
 ---
+
+class: snap
 
 ## Creating our first task
 
@@ -5550,6 +5722,8 @@ for BIN in snapd snapctl; do ln -s /opt/snap/bin/$BIN /usr/local/bin/$BIN; done
 
 ---
 
+class: snap
+
 ## Checking existing tasks
 
 .exercise[
@@ -5568,6 +5742,8 @@ The output should look like the following:
     24043...acba Task-24043...acba Running   4   0    0    2:34PM   8-13-2016
   ```
 ---
+
+class: snap
 
 ## Viewing our task dollars at work
 
@@ -5588,6 +5764,8 @@ To exit, hit `^C`
 
 ---
 
+class: snap
+
 ## Debugging tasks
 
 - When a task is not directly writing to a local file, use `snapctl task watch`
@@ -5605,6 +5783,8 @@ snapctl task watch <ID>
 To exit, hit `^C`
 
 ---
+
+class: snap
 
 ## Stopping snap
 
@@ -5628,6 +5808,8 @@ To exit, hit `^C`
 
 ---
 
+class: snap
+
 ## Snap Tribe Mode
 
 - Tribe is Snap's clustering mechanism
@@ -5647,6 +5829,8 @@ To exit, hit `^C`
 
 ---
 
+class: snap
+
 ## Running Snap itself on every node
 
 - Snap runs in the foreground, so you need to use `&` or start it in tmux
@@ -5664,6 +5848,8 @@ If you're *not* using Play-With-Docker, there is another way to start Snap!
 
 ---
 
+class: snap
+
 ## Starting a daemon through SSH
 
 .warning[Hackety hack ahead!]
@@ -5678,6 +5864,8 @@ If you're *not* using Play-With-Docker, there is another way to start Snap!
 - Once logged on the node, the service starts snapd with Tribe Mode enabled
 
 ---
+
+class: snap
 
 ## Running Snap itself on every node
 
@@ -5702,6 +5890,8 @@ Remember: this *does not work* with Play-With-Docker (which doesn't have SSH).
 
 ---
 
+class: snap
+
 ## Viewing the members of our tribe
 
 - If everything went fine, Snap is now running in tribe mode
@@ -5718,6 +5908,8 @@ Remember: this *does not work* with Play-With-Docker (which doesn't have SSH).
 This should show the 5 nodes with their hostnames.
 
 ---
+
+class: snap
 
 ## Create an agreement
 
@@ -5740,6 +5932,8 @@ The output should look like the following:
 ```
 
 ---
+
+class: snap
 
 ## Instruct all nodes to join the agreement
 
@@ -5765,6 +5959,8 @@ The last bit of output should look like the following:
 
 ---
 
+class: snap
+
 ## Start a container on every node
 
 - The Docker plugin requires at least one container to be started
@@ -5783,6 +5979,8 @@ The last bit of output should look like the following:
 ]
 
 ---
+
+class: snap
 
 ## Running InfluxDB
 
@@ -5803,6 +6001,8 @@ The last bit of output should look like the following:
 - We will just publish the first two
 
 ---
+
+class: snap
 
 ## Creating the InfluxDB service
 
@@ -5827,6 +6027,8 @@ on port 8083.
 this breaks a few things.]
 
 ---
+
+class: snap
 
 ## Setting up InfluxDB
 
@@ -5868,6 +6070,8 @@ Note: the InfluxDB query language *looks like* SQL but it's not.
 
 ---
 
+class: snap
+
 ## Load Docker collector and InfluxDB publisher
 
 - We will load plugins on the local node
@@ -5893,6 +6097,8 @@ Note: the InfluxDB query language *looks like* SQL but it's not.
 
 ---
 
+class: snap
+
 ## Start a simple collection task
 
 - Again, we will create a task on the local node
@@ -5917,6 +6123,8 @@ container.
 
 ---
 
+class: snap
+
 ## If things go wrong...
 
 Note: if a task runs into a problem (e.g. it's trying to publish
@@ -5934,6 +6142,8 @@ This must be done *per node*. Alternatively, you can delete+re-create
 the task (it will delete+re-create on all nodes).
 
 ---
+
+class: snap
 
 ## Check that metric data shows up in InfluxDB
 
@@ -5957,6 +6167,8 @@ the task (it will delete+re-create on all nodes).
 
 ---
 
+class: snap
+
 ## Deploy Grafana
 
 - We will use an almost-official image, `grafana/grafana`
@@ -5973,6 +6185,8 @@ the task (it will delete+re-create on all nodes).
 ]
 
 ---
+
+class: snap
 
 ## Set up Grafana
 
@@ -5991,6 +6205,8 @@ the task (it will delete+re-create on all nodes).
 ]
 
 ---
+
+class: snap
 
 ## Add InfluxDB as a data source for Grafana
 
@@ -6016,9 +6232,13 @@ If you see an orange box (sometimes without a message), it means that you got so
 
 ---
 
+class: snap
+
 ![Screenshot showing how to fill the form](grafana-add-source.png)
 
 ---
+
+class: snap
 
 ## Create a dashboard in Grafana
 
@@ -6042,6 +6262,8 @@ At this point, you should see a sample graph showing up.
 
 ---
 
+class: snap
+
 ## Setting up a graph in Grafana
 
 .exercise[
@@ -6063,9 +6285,13 @@ Congratulations, you are viewing the CPU usage of a single container!
 
 ---
 
+class: snap
+
 ![Screenshot showing the end result](grafana-add-graph.png)
 
 ---
+
+class: snap, prom
 
 ## Before moving on ...
 
@@ -6077,11 +6303,19 @@ Congratulations, you are viewing the CPU usage of a single container!
 
 ---
 
-## Prometheus
+class: snap, prom
+
+## Prometheus vs. Snap
 
 - Prometheus is another metrics collection system
 
 - Snap *pushes* metrics; Prometheus *pulls* them
+
+---
+
+class: prom
+
+## Prometheus components
 
 - The *Prometheus server* pulls, stores, and displays metrics
 
@@ -6093,6 +6327,8 @@ Congratulations, you are viewing the CPU usage of a single container!
   (An optimized format using protobuf is also possible)
 
 ---
+
+class: prom
 
 ## It's all about the `/metrics`
 
@@ -6109,6 +6345,8 @@ Congratulations, you are viewing the CPU usage of a single container!
   (It can also use protobuf to avoid the overhead of parsing line-oriented formats!)
 
 ---
+
+class: prom
 
 ## Collecting metrics with Prometheus on Swarm
 
@@ -6128,6 +6366,8 @@ Congratulations, you are viewing the CPU usage of a single container!
 
 ---
 
+class: prom
+
 ## Creating an overlay network for Prometheus
 
 - This is the easiest step ☺
@@ -6142,6 +6382,8 @@ Congratulations, you are viewing the CPU usage of a single container!
 ]
 
 ---
+
+class: prom
 
 ## Running the node exporter
 
@@ -6168,6 +6410,8 @@ Congratulations, you are viewing the CPU usage of a single container!
 
 ---
 
+class: prom
+
 ## Running cAdvisor
 
 - Likewise, cAdvisor *should* run directly on the hosts
@@ -6189,6 +6433,8 @@ Congratulations, you are viewing the CPU usage of a single container!
 ]
 
 ---
+
+class: prom
 
 ## Configuring the Prometheus server
 
@@ -6215,6 +6461,8 @@ scrape_configs:
 
 ---
 
+class: prom
+
 ## Passing the configuration to the Prometheus server
 
 - We need to provide our custom configuration to the Prometheus server
@@ -6234,6 +6482,8 @@ scrape_configs:
 - Then we will create a service using this image
 
 ---
+
+class: prom
 
 ## Building our custom Prometheus image
 
@@ -6255,6 +6505,8 @@ scrape_configs:
 
 ---
 
+class: prom
+
 ## Running our custom Prometheus image
 
 - That's the only service that needs to be published
@@ -6272,6 +6524,8 @@ scrape_configs:
 ]
 
 ---
+
+class: prom
 
 ## Checking our Prometheus server
 
@@ -6291,6 +6545,8 @@ Their state should be "UP".
 
 ---
 
+class: prom
+
 ## Displaying metrics directly from Prometheus
 
 - This is easy ... if you are familiar with PromQL
@@ -6299,10 +6555,10 @@ Their state should be "UP".
 
 - Click on "Graph", and in "expression", paste the following:
   ```
-    sum without (cpu) (
+    sum by (container_label_com_docker_swarm_node_id) (
       irate(
         container_cpu_usage_seconds_total{
-          container_label_com_docker_swarm_service_name="influxdb"
+          container_label_com_docker_swarm_service_name="dockercoins_worker"
           }[1m]
       )
     )
@@ -6313,6 +6569,8 @@ Their state should be "UP".
 ]
 
 ---
+
+class: prom
 
 ## Building the query from scratch
 
@@ -6327,6 +6585,8 @@ Their state should be "UP".
   Prometheus, or anything else changes and requires editing the query!)
 
 ---
+
+class: prom
 
 ## Displaying a raw metric for *all* containers
 
@@ -6348,6 +6608,8 @@ Their state should be "UP".
 
 ---
 
+class: prom
+
 ## Selecting metrics for a specific service
 
 - Hover over the lines in the graph
@@ -6356,17 +6618,19 @@ Their state should be "UP".
 
 - Edit the query, adding a condition between curly braces:
 
-  .small[`container_cpu_usage_seconds_total{container_label_com_docker_swarm_service_name="influxdb"}`]
+  .small[`container_cpu_usage_seconds_total{container_label_com_docker_swarm_service_name="dockercoins_worker"}`]
 
 - Click on "Execute"
 
-  *Now we should see only one line per CPU*
+  *Now we should see one line per CPU per container*
 
 - If you want to select by container ID, you can use a regex match: `id=~"/docker/c4bf.*"`
 
 - You can also specify multiple conditions by separating them with commas
 
 ---
+
+class: prom
 
 ## Turn counters into rates
 
@@ -6391,9 +6655,11 @@ Their state should be "UP".
 
 ---
 
+class: prom
+
 ## Aggregate multiple data series
 
-- We have one graph per CPU; we want to sum them
+- We have one graph per CPU per container; we want to sum them
 
 - Enclose the whole expression within:
 
@@ -6402,6 +6668,12 @@ Their state should be "UP".
   ```
 
   *We now see a single graph*
+
+---
+
+class: prom
+
+## Collapse dimensions
 
 - If we have multiple containers we can also collapse just the CPU dimension:
 
@@ -6418,6 +6690,8 @@ Their state should be "UP".
 
 ---
 
+class: prom, snap
+
 ## Comparing Snap and Prometheus data
 
 - If you haven't setup Snap, InfluxDB, and Grafana, skip this section
@@ -6429,6 +6703,8 @@ Their state should be "UP".
 - To re-do the setup, just follow again the instructions from the previous chapter
 
 ---
+
+class: prom, snap
 
 ## Add Prometheus as a data source in Grafana
 
@@ -6447,6 +6723,8 @@ Their state should be "UP".
 We see the same input form that we filled earlier to connect to InfluxDB.
 
 ---
+
+class: prom, snap
 
 ## Connecting to Prometheus from Grafana
 
@@ -6470,6 +6748,8 @@ Otherwise, double-check every field and try again!
 
 ---
 
+class: prom, snap
+
 ## Adding the Prometheus data to our dashboard
 
 .exercise[
@@ -6485,6 +6765,8 @@ Otherwise, double-check every field and try again!
 This takes us to the graph editor that we used earlier.
 
 ---
+
+class: prom, snap
 
 ## Querying Prometheus data from Grafana
 
@@ -6509,6 +6791,8 @@ The editor is a bit less friendly than the one we used for InfluxDB.
 
 ---
 
+class: prom, snap
+
 ## Interpreting results
 
 - The two graphs *should* be similar
@@ -6532,6 +6816,9 @@ The editor is a bit less friendly than the one we used for InfluxDB.
 ---
 
 ## More resources on container metrics
+
+- [Prometheus, a Whirlwind Tour](https://speakerdeck.com/copyconstructor/prometheus-a-whirlwind-tour),
+  an original overview of Prometheus
 
 - [Docker Swarm & Container Overview](https://grafana.net/dashboards/609),
   a custom dashboard for Grafana
@@ -6573,9 +6860,9 @@ The editor is a bit less friendly than the one we used for InfluxDB.
   docker service create --name stateful -p 10000:6379 redis
   ```
 
-- Check that we can connect to it (replace XX.XX.XX.XX with any node's IP address):
+- Check that we can connect to it:
   ```bash
-  docker run --rm redis redis-cli -h `XX.XX.XX.XX` -p 10000 info server
+  docker run --net host --rm redis redis-cli -p 10000 info server
   ```
 
 ]
@@ -6590,7 +6877,7 @@ The editor is a bit less friendly than the one we used for InfluxDB.
 
 - Define a shell alias to make our lives easier:
   ```bash
-  alias redis='docker run --rm redis redis-cli -h `XX.XX.XX.XX` -p 10000'
+  alias redis='docker run --net host --rm redis redis-cli -p 10000'
   ```
 
 - Try it:
@@ -6830,8 +7117,11 @@ Note: the `local` volume driver automatically creates volumes.
 
   (And losing that node means losing the data, unless there are other backups)
 
-.footnote[<br/>.red[*]Until recently, the Redis image didn't automatically
-persist data. Beware!]
+.footnote[<br/>
+.red[*]If you customize Redis configuration, make sure you
+persist data correctly!
+<br/>
+It's easy to make that mistake — __Trust me!__]
 
 ---
 
@@ -6855,6 +7145,41 @@ Note: we could keep the volume around if we wanted.
 
 ---
 
+## Should I run stateful services in containers?
+
+--
+
+Depending whom you ask, they'll tell you:
+
+--
+
+- certainly not, heathen!
+
+--
+
+- we've been running a few thousands PostgreSQL instances in containers ...
+  <br/>for a few years now ... in production ... is that bad?
+
+--
+
+- what's a container?
+
+--
+
+Perhaps a better question would be:
+
+*"Should I run stateful services?"*
+
+--
+
+- is it critical for my business?
+- is it my value-add?
+- or should I find somebody else to run them for me?
+
+---
+
+class: extra-details
+
 # Controlling Docker from a container
 
 - In a local environment, just bind-mount the Docker control socket:
@@ -6877,6 +7202,8 @@ More resources on this topic:
 
 ---
 
+class: extra-details
+
 ## Bind-mounting the Docker control socket
 
 - In Swarm mode, bind-mounting the control socket gives you access to the whole cluster
@@ -6889,6 +7216,8 @@ More resources on this topic:
   ```
 
 ---
+
+class: extra-details
 
 ## Constraints and global services
 
@@ -6910,6 +7239,8 @@ More resources on this topic:
 
 ---
 
+class: extra-details
+
 ## Constraints and dynamic scheduling
 
 (New in Docker Engine 1.13)
@@ -6928,6 +7259,8 @@ More resources on this topic:
 
 ---
 
+class: extra-details
+
 ## Shortcomings of dynamic scheduling
 
 .warning[If a service becomes "unschedulable" (constraints can't be satisfied):]
@@ -6945,6 +7278,8 @@ More resources on this topic:
 
 ---
 
+class: extra-details
+
 # Node management
 
 - SwarmKit allows to change (almost?) everything on-the-fly
@@ -6952,6 +7287,8 @@ More resources on this topic:
 - Nothing should require a global restart
 
 ---
+
+class: extra-details
 
 ## Node availability
 
@@ -6973,6 +7310,8 @@ docker node update <node-name> --availability <active|pause|drain>
 
 ---
 
+class: extra-details
+
 ## Managers and workers
 
 - Nodes can be promoted to manager with `docker node promote`
@@ -6985,6 +7324,8 @@ docker node update <node-name> --availability <active|pause|drain>
   <br/>(workers cannot promote themselves)
 
 ---
+
+class: extra-details
 
 ## Removing nodes
 
@@ -6999,6 +7340,8 @@ docker node update <node-name> --availability <active|pause|drain>
 - When a node is `Down`, you can remove it with `docker node rm` (from a manager node)
 
 ---
+
+class: extra-details
 
 ## Join tokens and automation
 
@@ -7015,6 +7358,8 @@ docker node update <node-name> --availability <active|pause|drain>
   - propagate the token to the other nodes (secure bucket, facter, ohai...)
 
 ---
+
+class: extra-details
 
 ## Disk space management: `docker system df`
 
@@ -7034,6 +7379,8 @@ docker node update <node-name> --availability <active|pause|drain>
 Note: `docker system` is new in Docker Engine 1.13.
 
 ---
+
+class: extra-details
 
 ## Reclaiming unused resources: `docker system prune`
 
@@ -7058,13 +7405,15 @@ Note: `docker system prune -a` will also remove *unused* images.
 
 ---
 
-class: title
+class: title, extra-details
 
 # What's next?
 
 ## (What to expect in future versions of this workshop)
 
 ---
+
+class: extra-details
 
 ## Implemented and stable, but out of scope
 
@@ -7080,6 +7429,8 @@ class: title
 - Network and storage plugins
 
 ---
+
+class: extra-details
 
 ## Work in progress
 
@@ -7101,16 +7452,28 @@ It makes it easy to come back later and check what has changed since you did it!
 
 ---
 
-class: title
+class: title, self-paced
 
-# Thanks! <!-- <br/> Questions? -->
+Thank you!
+
+---
+
+class: title, in-person
+
+That's all folks! <br/> Questions?
+
+.small[.small[
+
+Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) — [@docker](https://twitter.com/docker)
+
+AJ ([@s0ulshake](https://twitter.com/s0ulshake)) — *For hire!*
+<br/>
+`curl cv.soulshake.net`
+
+]]
 
 <!--
-## [@jpetazzo](https://twitter.com/jpetazzo) <br/> [@docker](https://twitter.com/docker)
--->
-
-<!--
-## AJ ([@s0ulshake](https://twitter.com/s0ulshake)) <br/> Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) <br/> Tiffany ([@tiffanyfayj](https://twitter.com/tiffanyfayj))
+<br/> Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) <br/> Tiffany ([@tiffanyfayj](https://twitter.com/tiffanyfayj))
 -->
 
     </textarea>
