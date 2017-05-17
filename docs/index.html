@@ -2021,6 +2021,8 @@ class: self-paced
 
 ---
 
+name: here
+
 ## What would McGyver do?
 
 - If some of your machines are more than 10ms away from each other,
@@ -2031,6 +2033,8 @@ class: self-paced
 - Groups of up to 9 nodes: all of them are managers
 
 - Groups of 10 nodes and up: pick 5 "stable" nodes to be managers
+  <br/>
+  (Cloud pro-tip: use separate auto-scaling groups for managers and workers)
 
 - Groups of more than 100 nodes: watch your managers' CPU and RAM
 
