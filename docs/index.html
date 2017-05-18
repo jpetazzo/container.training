@@ -99,9 +99,34 @@
   <body>
     <textarea id="source">
 
-class: title
+class: title, self-paced
 
 Docker <br/> Orchestration <br/> Workshop
+
+---
+
+class: title, in-person
+
+.small[
+
+Deploy and scale containers with Docker native, open source orchestration
+
+.small[.small[
+
+**Be kind to the WiFi!**
+
+*Use the 5G network*
+<br/>
+*Don't use your hotspot*
+<br/>
+*Don't stream videos from YouTube, Netflix, etc.
+<br/>(if you're bored, watch local content instead)*
+
+Thank you!
+
+]
+]
+]
 
 ---
 
@@ -155,7 +180,7 @@ class: in-person
 
 -->
 
-- The tutorial will run from 9:00am to 12:30pm
+- The tutorial will run from 9:00am to 12:20pm
 
 - This will be fast-paced, but DON'T PANIC!
 
@@ -335,7 +360,7 @@ class: in-person
 
 ---
 
-class: in-person
+class: in-person, extra-details
 
 ## Nice-to-haves
 
@@ -919,17 +944,37 @@ class: extra-details
 
 - With a web browser, connect to `node1` on port 8000
 
+- Remember: the `nodeX` aliases are valid only on the nodes themselves
+
+- In your browser, you need to enter the IP address of your node
+
 ]
 
-- The app actually has a constant, steady speed (3.33 coins/second)
+You should see a speed of approximately 4 hashes/second.
 
-- The speed seems not-so-steady because:
+More precisely: 4 hashes/second, with regular dips down to zero.
+<br/>This is because Jérôme is incapable of writing good frontend code.
+<br/>Don't ask. Seriously, don't ask. This is embarrassing.
 
-  - the worker doesn't update the counter after every loop, but up to once per second
+---
 
-  - the speed is computed by the browser, checking the counter about once per second
+class: extra-details
 
-  - between two consecutive updates, the counter will increase either by 4, or by 0
+## Why does the speed seem irregular?
+
+- The app actually has a constant, steady speed: 3.33 hashes/second
+  <br/>
+  (which corresponds to 1 hash every 0.3 seconds, for *reasons*)
+
+- The worker doesn't update the counter after every loop, but up to once per second
+
+- The speed is computed by the browser, checking the counter about once per second
+
+- Between two consecutive updates, the counter will increase either by 4, or by 0
+
+- The perceived speed will therefore be 4 - 4 - 4 - 0 - 4 - 4 - etc.
+
+*We told you to not ask!!!*
 
 ---
 
@@ -2402,6 +2447,22 @@ There are many ways to deal with inbound traffic on a Swarm cluster.
 
 ---
 
+## You should use labels
+
+- Labels are a great way to attach arbitrary information to services
+
+- Examples:
+
+  - HTTP vhost of a web app or web service
+
+  - backup schedule for a stateful service
+
+  - owner of a service (for billing, paging...)
+
+  - etc.
+
+---
+
 ## Visualize container placement
 
 - Let's leverage the Docker API!
@@ -3306,106 +3367,6 @@ services:
 
 We can now connect to any of our nodes on port 8000, and we will see the familiar hashing speed graph.
 
-???
-
-## Deploying the logging stack
-
-- We are going to deploy an ELK stack
-
-- We won't tell you much more about ELK (for now!)
-
-.exercise[
-
-- Deploy the logging stack:
-  ```bash
-  docker stack deploy elk --compose-file elk.yml
-  ```
-
-]
-
-???
-
-## Accessing the logging stack
-
-- At the end of `elk.yml`, we have:
-
-```yaml
-  kibana:
-    image: kibana:4
-    ports:
-      - "5601:5601"
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
-```
-
-- Kibana (the web frontend for the logging stack) is exposed on port 5601
-
-.exercise[
-
-- With your web browser, connect to port 5601
-
-- Click around until you see your containers' logs!
-
-]
-
-???
-
-.exercise[
-
-- Deploy Prometheus, cAdvisor, and the node exporter, just like we deployed DockerCoins:
-  ```bash
-  docker-compose -f prometheus.yml build
-  docker-compose -f prometheus.yml push
-  docker stack deploy prometheus --compose-file prometheus.yml
-  ```
-
-]
-
-Look at `prometheus.yml` while it's building and pushing.
-
-???
-
-```yaml
-version: "3"
-
-services:
-
-  prometheus:
-    build: ../prom
-    image: 127.0.0.1:5000/prom
-    ports:
-      - "9090:9090"
-
-  node:
-    ...
-
-  cadvisor:
-    image: google/cadvisor
-    deploy:
-      mode: global
-    volumes:
-      - "/:/rootfs"
-      - "/var/run:/var/run"
-      - "/sys:/sys"
-      - "/var/lib/docker:/var/lib/docker"
-```
-
-???
-
-## Accessing our new metrics stack
-
-.exercise[
-
-- Go to any node, port 9090
-
-- Check that data scraping works (click on "status", then "targets")
-
-- Select a metric from the "insert metric at cursor" dropdown
-
-- Execute!
-
-]
-
 ---
 
 ## Maintaining multiple environments
@@ -3529,7 +3490,7 @@ You should now be able to connect to port 8000 and see the DockerCoins web UI.
 
 ---
 
-class: extra-details
+class: netshoot, extra-details
 
 ## Troubleshooting overlay networks
 
@@ -3545,17 +3506,19 @@ class: extra-details
 
 --
 
-class: extra-details
+class: netshoot, extra-details
 
 - Ah, if only we had created our overlay network with the `--attachable` flag ...
 
 --
 
-class: extra-details
+class: netshoot, extra-details
 
 - Oh well, let's use this as an excuse to introduce New Ways To Do Things
 
 ---
+
+class: netshoot
 
 # Breaking into an overlay network
 
@@ -3577,6 +3540,8 @@ The `constraint` makes sure that the container will be created on the local node
 
 ---
 
+class: netshoot
+
 ## Entering the debug container
 
 - Once our container is started (which should be really fast because the alpine image is small), we can enter it (from any node)
@@ -3596,6 +3561,8 @@ The `constraint` makes sure that the container will be created on the local node
 ]
 
 ---
+
+class: netshoot
 
 ## Labels
 
@@ -3619,6 +3586,8 @@ The `constraint` makes sure that the container will be created on the local node
 
 ---
 
+class: netshoot
+
 ## Installing our debugging tools
 
 - Ideally, you would author your own image, with all your favorite tools, and use it instead of the base `alpine` image
@@ -3635,6 +3604,8 @@ The `constraint` makes sure that the container will be created on the local node
 ]
 
 ---
+
+class: netshoot
 
 ## Investigating the `rng` service
 
@@ -3653,6 +3624,8 @@ This give us one IP address. It is not the IP address of a container.
 It is a virtual IP address (VIP) for the `rng` service.
 
 ---
+
+class: netshoot
 
 ## Investigating the VIP
 
@@ -3677,6 +3650,8 @@ backend is available anywhere.
 
 ---
 
+class: netshoot
+
 ## What if I don't like VIPs?
 
 - Services can be published using two modes: VIP and DNSRR.
@@ -3694,6 +3669,8 @@ backend is available anywhere.
 - You change this with `docker service create --endpoint-mode [VIP|DNSRR]`
 
 ---
+
+class: netshoot
 
 ## Looking up VIP backends
 
@@ -3714,7 +3691,7 @@ This should list 5 IP addresses.
 
 ---
 
-class: extra-details
+class: netshoot, extra-details
 
 ## Testing and benchmarking our service
 
@@ -3740,7 +3717,7 @@ before continuing.
 
 ---
 
-class: extra-details
+class: netshoot, extra-details
 
 ## Benchmarking `rng`
 
@@ -3762,7 +3739,7 @@ We will send 50 requests, but with various levels of concurrency.
 
 ---
 
-class: extra-details
+class: netshoot, extra-details
 
 ## Benchmark results for `rng`
 
@@ -3774,7 +3751,7 @@ class: extra-details
 
 ---
 
-class: extra-details
+class: netshoot, extra-details
 
 ## Benchmarking `hasher`
 
@@ -3795,7 +3772,7 @@ First, we need to put the POST payload in a temporary file.
 
 ---
 
-class: extra-details
+class: netshoot, extra-details
 
 ## Benchmarking `hasher`
 
@@ -3817,7 +3794,7 @@ Once again, we will send 50 requests, with different levels of concurrency.
 
 ---
 
-class: extra-details
+class: netshoot, extra-details
 
 ## Benchmark results for `hasher`
 
@@ -3833,13 +3810,13 @@ class: extra-details
 
 ---
 
-class: extra-details, title
+class: netshoot, extra-details, title
 
 Why?
 
 ---
 
-class: extra-details
+class: netshoot, extra-details
 
 ## Why does everything take (at least) 100ms?
 
@@ -3853,7 +3830,7 @@ class: extra-details
 
 ---
 
-class: extra-details, title
+class: netshoot, extra-details, title
 
 But ...
 
@@ -3861,7 +3838,7 @@ WHY?!?
 
 ---
 
-class: extra-details
+class: netshoot, extra-details
 
 ## Why did we sprinkle this sample app with sleeps?
 
@@ -3880,7 +3857,7 @@ class: extra-details
 
 ---
 
-class: extra-details, in-person
+class: netshoot, extra-details, in-person
 
 ## Why do `rng` and `hasher` behave differently?
 
@@ -3890,7 +3867,7 @@ class: extra-details, in-person
 
 ---
 
-class: extra-details
+class: netshoot, extra-details
 
 ## Global scheduling → global debugging
 
@@ -3909,7 +3886,7 @@ class: extra-details
 
 ---
 
-class: extra-details
+class: nbt, extra-details
 
 ## Measuring network conditions on the whole cluster
 
@@ -3935,7 +3912,7 @@ and issues additional API requests to start all the components it needs.
 
 ---
 
-class: extra-details
+class: nbt, extra-details
 
 ## Viewing network conditions with Prometheus
 
@@ -3959,7 +3936,7 @@ You are now seeing ICMP latency across your cluster.
 
 ---
 
-class: in-person, extra-details
+class: nbt, in-person, extra-details
 
 ## Viewing network conditions with Grafana
 
@@ -3984,6 +3961,8 @@ class: in-person, extra-details
 
 ---
 
+class: ipsec
+
 # Securing overlay networks
 
 - By default, overlay networks are using plain VXLAN encapsulation
@@ -3999,6 +3978,8 @@ class: in-person, extra-details
   (Other drivers/plugins will use different mechanisms)
 
 ---
+
+class: ipsec
 
 ## Creating two networks: encrypted and not
 
@@ -4022,6 +4003,8 @@ class: in-person, extra-details
 
 ---
 
+class: ipsec
+
 ## Deploying a web server sitting on both networks
 
 - Let's use good old NGINX
@@ -4044,6 +4027,8 @@ class: in-person, extra-details
 
 ---
 
+class: ipsec
+
 ## Sniff HTTP traffic
 
 - We will use `ngrep`, which allows to grep for network traffic
@@ -4061,12 +4046,16 @@ class: in-person, extra-details
 
 --
 
+class: ipsec
+
 Seeing tons of HTTP request? Shutdown your DockerCoins workers:
 ```bash
 docker service update dockercoins_worker --replicas=0
 ```
 
 ---
+
+class: ipsec
 
 ## Check that we are, indeed, sniffing traffic
 
@@ -4088,6 +4077,8 @@ The ngrep container will display one `#` per packet traversing the network inter
 When you do the `curl`, you should see the HTTP request in clear text in the output.
 
 ---
+
+class: ipsec
 
 ## Try to sniff traffic across overlay networks
 
@@ -5814,9 +5805,13 @@ class: snap
 
 --
 
+class: snap
+
 - We want to change that!
 
 --
+
+class: snap
 
 - But first, go back to the terminal where `snapd` is running, and hit `^C`
 
@@ -6362,7 +6357,7 @@ class: prom
 
 ---
 
-class: prom
+class: prom-manual
 
 ## Collecting metrics with Prometheus on Swarm
 
@@ -6382,7 +6377,7 @@ class: prom
 
 ---
 
-class: prom
+class: prom-manual
 
 ## Creating an overlay network for Prometheus
 
@@ -6399,7 +6394,7 @@ class: prom
 
 ---
 
-class: prom
+class: prom-manual
 
 ## Running the node exporter
 
@@ -6426,7 +6421,7 @@ class: prom
 
 ---
 
-class: prom
+class: prom-manual
 
 ## Running cAdvisor
 
@@ -6450,7 +6445,7 @@ class: prom
 
 ---
 
-class: prom
+class: prom-manual
 
 ## Configuring the Prometheus server
 
@@ -6477,7 +6472,7 @@ scrape_configs:
 
 ---
 
-class: prom
+class: prom-manual
 
 ## Passing the configuration to the Prometheus server
 
@@ -6499,7 +6494,7 @@ class: prom
 
 ---
 
-class: prom
+class: prom-manual
 
 ## Building our custom Prometheus image
 
@@ -6521,7 +6516,7 @@ class: prom
 
 ---
 
-class: prom
+class: prom-manual
 
 ## Running our custom Prometheus image
 
@@ -6535,6 +6530,30 @@ class: prom
   ```bash
     docker service create --network prom --name prom \
            --publish 9090:9090 127.0.0.1:5000/prometheus
+  ```
+
+]
+
+---
+
+class: prom-auto
+
+## Deploying Prometheus on our cluster
+
+- We will use a stack definition (once again)
+
+.exercise[
+
+- Make sure we are in the stacks directory:
+  ```bash
+  cd ~/orchestration-workshop/stacks
+  ```
+
+- Build, ship, and run the Prometheus stack:
+  ```bash
+  docker-compose -f prometheus.yml build
+  docker-compose -f prometheus.yml push
+  docker stack deploy -c prometheus.yml
   ```
 
 ]
@@ -7499,7 +7518,8 @@ AJ ([@s0ulshake](https://twitter.com/s0ulshake)) — *For hire!*
       var slideshow = remark.create({
         ratio: '16:9',
         highlightSpans: true,
-        excludedClasses: ["in-person"]
+        excludedClasses: ["in-person", "elk-auto", "prom-auto"]
+        //excludedClasses: ["self-paced", "extra-details", "advertise-addr", "docker-machine", "netshoot", "sbt", "ipsec", "node-info", "swarmtools", "secrets", "encryption-at-rest", "elk-manual", "snap", "prom-manual"]
       });
     </script>
   </body>
