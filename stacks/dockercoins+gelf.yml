@@ -3,7 +3,7 @@ version: "3"
 services:
   rng:
     build: dockercoins/rng
-    image: ${REGISTRY_SLASH-127.0.0.1:5000/}rng${COLON_TAG-:latest}
+    image: ${REGISTRY-127.0.0.1:5000}/rng:${TAG-latest}
     logging:
       driver: gelf
       options:
@@ -13,7 +13,7 @@ services:
 
   hasher:
     build: dockercoins/hasher
-    image: ${REGISTRY_SLASH-127.0.0.1:5000/}hasher${COLON_TAG-:latest}
+    image: ${REGISTRY-127.0.0.1:5000}/hasher:${TAG-latest}
     logging:
       driver: gelf
       options:
@@ -21,7 +21,7 @@ services:
 
   webui:
     build: dockercoins/webui
-    image: ${REGISTRY_SLASH-127.0.0.1:5000/}webui${COLON_TAG-:latest}
+    image: ${REGISTRY-127.0.0.1:5000}/webui:${TAG-latest}
     logging:
       driver: gelf
       options:
@@ -38,7 +38,7 @@ services:
 
   worker:
     build: dockercoins/worker
-    image: ${REGISTRY_SLASH-127.0.0.1:5000/}worker${COLON_TAG-:latest}
+    image: ${REGISTRY-127.0.0.1:5000}/worker:${TAG-latest}
     logging:
       driver: gelf
       options:

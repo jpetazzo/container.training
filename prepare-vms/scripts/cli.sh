@@ -10,17 +10,8 @@ die () {
 need_tag(){
     TAG=$1
     if [ -z "$TAG" ]; then
-        echo "Please specify a tag. Here's the list: "
+        echo "Please specify a tag or token. Here's the list: "
         aws_display_tags
-        die
-    fi
-}
-
-need_token(){
-    TOKEN=$1
-    if [ -z "$TOKEN" ]; then
-        echo "Please specify a token. Here's the list: "
-        aws_display_tokens
         die
     fi
 }

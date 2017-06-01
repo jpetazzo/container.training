@@ -7,27 +7,26 @@ repo: https://github.com/jpetazzo/orchestration-workshop
 instance_login: docker
 instance_password: training
 
-clustersize: 5  # Number of VMs per cluster
+clustersize: 3  # Number of VMs per cluster
 pagesize: 12    # Number of cards to print per page
 
-background_image: https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png
+background_image: https://blog.docker.com/media/2015/08/notary.png
 
 # To be printed on the cards:
 blurb: >
-    Here is the connection information to your very own 
-       {cluster_or_machine} for this {workshop_name} workshop. You can connect 
-       to {this_or_each} VM with any SSH client.
-
-       Your {machine_is_or_machines_are}:
+    Here is the connection information to your
+    three Docker nodes for the Security
+    Workshop. You can connect to each VM with
+    any SSH client.
+       
+    Your {machine_is_or_machines_are}:
 
 # {url} will be replaced by the script
-footer: >
-    <p>For slides, chat and other useful links, see: </p>
-    <center>{url}</center>
+footer: ""
 
 url: http://container.training/
 
 engine_version: get.docker.com
 compose_version: 1.12.0
-machine_version: 0.11.0
+machine_version: 0.10.0
 swarm_version: latest
