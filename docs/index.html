@@ -115,15 +115,9 @@ Deploy and scale containers with Docker native, open source orchestration
 
 **Be kind to the WiFi!**
 
-*Use the 5G network*
-<br/>
-*Don't use your hotspot*
-<br/>
-*Don't stream videos from YouTube, Netflix, etc.
-<br/>(if you're bored, watch local content instead)*
-
 Thank you!
 
+Workshop Resources: [www.bretfisher.com/revconf2017](http://www.bretfisher.com/revconf2017) 
 ]
 ]
 ]
@@ -134,26 +128,11 @@ class: in-person
 
 ## Intros
 
-- Hello! We are
-  AJ ([@s0ulshake](https://twitter.com/s0ulshake))
-  &
-  Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
+- Hello! I'm 
+  Bret Fisher ([@bretfisher](https://twitter.com/bretfisher)) — *For hire!*
+  
+  [www.bretfisher.com](http://www.bretfisher.com)
 
---
-
-class: in-person
-
-- This is our collective Docker knowledge:
-
-  ![Bell Curve](bell-curve.jpg)
-
-<!--
-Reminder, when updating the agenda: when people are told to show
-up at 9am, they usually trickle in until 9:30am (except for paid
-training sessions). If you're not sure that people will be there
-on time, it's a good idea to have a breakfast with the attendees
-at e.g. 9am, and start at 9:30.
--->
 
 ---
 
@@ -180,19 +159,18 @@ class: in-person
 
 -->
 
-- The tutorial will run from 9:00am to 12:20pm
+- The tutorial will run from 2:30 to 5:15
 
 - This will be fast-paced, but DON'T PANIC!
 
 - All the content is publicly available (slides, code samples, scripts)
 
-- There will be a coffee break at 10:30am
+- There will be a coffee break at 3:30
   <br/>
   (please remind me if I forget about it!)
 
 - Feel free to interrupt for questions at any time
 
-- Live feedback, questions, help on [Gitter](chat)
 
 ???
 
@@ -214,7 +192,7 @@ class: in-person
 
 - And I'll give you ways to continue learning on your own, should you choose to!
 
----
+???
 
 ## A brief introduction
 
@@ -408,8 +386,6 @@ class: extra-details
 .exercise[
 
 - This is the stuff you're supposed to do!
-- Go to [container.training](http://container.training/) to view these slides
-- Join the [chat room](chat)
 
 ]
 
@@ -701,16 +677,16 @@ Part 1
 # Our sample application
 
 - Visit the GitHub repository with all the materials of this workshop:
-  <br/>https://github.com/jpetazzo/orchestration-workshop
+  <br/>https://github.com/bretfisher/orchestration-workshop
 
 - The application is in the [dockercoins](
-  https://github.com/jpetazzo/orchestration-workshop/tree/master/dockercoins)
+  https://github.com/bretfisher/orchestration-workshop/tree/master/dockercoins)
   subdirectory
 
 - Let's look at the general layout of the source code:
 
   there is a Compose file [docker-compose.yml](
-  https://github.com/jpetazzo/orchestration-workshop/blob/master/dockercoins/docker-compose.yml) ...
+  https://github.com/bretfisher/orchestration-workshop/blob/master/dockercoins/docker-compose.yml) ...
 
   ... and 4 other services, each in its own directory:
 
@@ -804,7 +780,7 @@ class: pic
 
 - Clone the repository on `node1`:
   ```bash
-  git clone git://github.com/jpetazzo/orchestration-workshop
+  git clone git://github.com/bretfisher/orchestration-workshop
   ```
 
 ]
@@ -7499,11 +7475,12 @@ That's all folks! <br/> Questions?
 
 .small[.small[
 
-Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) — [@docker](https://twitter.com/docker)
 
-AJ ([@s0ulshake](https://twitter.com/s0ulshake)) — *For hire!*
+Bret Fisher ([@bretfisher](https://twitter.com/bretfisher)) — *For hire!*
 <br/>
-`curl cv.soulshake.net`
+`www.bretfisher.com`
+
+90% off my Docker Mastery course for RevConf: [dockermastery.com](http://dockermastery.com)
 
 ]]
 
@@ -7518,7 +7495,7 @@ AJ ([@s0ulshake](https://twitter.com/s0ulshake)) — *For hire!*
       var slideshow = remark.create({
         ratio: '16:9',
         highlightSpans: true,
-        excludedClasses: ["in-person", "elk-auto", "prom-auto"]
+        excludedClasses: ["self-paced"]
         //excludedClasses: ["self-paced", "extra-details", "advertise-addr", "docker-machine", "netshoot", "sbt", "ipsec", "node-info", "swarmtools", "secrets", "encryption-at-rest", "elk-manual", "snap", "prom-manual"]
       });
     </script>
