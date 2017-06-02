@@ -657,6 +657,21 @@ class: pic
 
 ---
 
+## Recent Timeline of Ops Features
+
+- 2015 1.9 Overlay (multi-host) networking, network/IPAM plugins
+- 2016 1.10 Distributed DNS
+- 2016 1.11 DNS round robin load balancing
+- 2016 1.12 Swarm mode, routing mesh, encrypted networking, healthchecks
+- 2017 1.13 Stacks, Overlay attachable, image squash and compress
+- 2017 1.13 Swarm mode for Windows Server 2016
+- 2017 17.03 Secrets
+- 2017 17.04 Update rollback, topo-aware scheduling
+- 2017 17.06 Swarm configs, multi-stage image builds, service logs
+- 2017 17.06 Windows Swarm Overlay + Secrets
+
+---
+
 class: title
 
 All right!
@@ -4288,6 +4303,80 @@ class: extra-details
 - When the old tasks are `Shutdown`, it starts the new tasks
 
 - Then it waits for the `update-delay`, and continues with the next batch of instances
+
+---
+
+## Healthcheck and Auto Rollback
+
+- In 1.12.0 [HEALTHCHECK](https://docs.docker.com/engine/reference/builder/#healthcheck) support [was added](https://github.com/moby/moby/pull/23218) for Dockerfiles and Swarm Services
+
+- Put a command in there that dockerd will run, and exit code (=0 good, !=0 bad) of that command will determine if container/task is restarted based on bad exit.
+
+- Simple example: `HEALTHCHECK curl http://localhost` will look for HTTP 200 return from `localhost` inside the container, if 4xx or 5xx received (maybe others?) it will consider the container down.
+
+- `docker service update` watches `HEALTHCHECK` as it's rolling through tasks, and will rollback if needed
+
+---
+
+## Update + Healthcheck + Rollback Options
+
+Example of how we might control it all in a single update command. Also able to put in compose yml
+
+```bash
+docker service update \
+  --update-delay 5s \
+  --update-failure-action rollback \
+  --update-max-failure-ratio .25 \
+  --update-monitor 5s \
+  --update-parallelism 1 \
+  --rollback-delay 5s \
+  --rollback-failure-action pause \
+  --rollback-max-failure-ratio .5 \
+  --rollback-monitor 5s \
+  --rollback-parallelism 0 \
+  --health-cmd "curl http://localhost" \
+  --health-interval 2s \
+  --health-retries 1 \
+  --image nginx:1.11.12 \
+  nginx
+```
+
+---
+
+## Update + Healthcheck + Rollback Options
+
+```bash
+--health-cmd string                  Command to run to check health
+--health-interval duration           Time between running the check (ms|s|m|h)
+--health-retries int                 Consecutive failures needed to report unhealthy
+--health-start-period duration       Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)
+--health-timeout duration            Maximum time to allow one check to run (ms|s|m|h)
+--no-healthcheck                     Disable any container-specified HEALTHCHECK
+--restart-condition string           Restart when condition is met ("none"|"on-failure"|"any")
+--restart-delay duration             Delay between restart attempts (ns|us|ms|s|m|h)
+--restart-max-attempts uint          Maximum number of restarts before giving up
+--restart-window duration            Window used to evaluate the restart policy (ns|us|ms|s|m|h)
+--rollback                           Rollback to previous specification
+--rollback-delay duration            Delay between task rollbacks (ns|us|ms|s|m|h)
+--rollback-failure-action string     Action on rollback failure ("pause"|"continue")
+--rollback-max-failure-ratio float   Failure rate to tolerate during a rollback
+--rollback-monitor duration          Duration after each task rollback to monitor for failure (ns|us|ms|s|m|h)
+--rollback-order string              Rollback order ("start-first"|"stop-first")
+--rollback-parallelism uint          Maximum number of tasks rolled back simultaneously (0 to roll back all at once)
+--update-delay duration              Delay between updates (ns|us|ms|s|m|h)
+--update-failure-action string       Action on update failure ("pause"|"continue"|"rollback")
+--update-max-failure-ratio float     Failure rate to tolerate during an update
+--update-monitor duration            Duration after each task update to monitor for failure (ns|us|ms|s|m|h)
+--update-order string                Update order ("start-first"|"stop-first")
+--update-parallelism uint            Maximum number of tasks updated simultaneously (0 to update all at once)
+```
+
+---
+
+## ~~Watch Update Rollback~~ (Coming Soon)
+
+- Let's add a bug to `rng` so it fails healthcheck, then update and watch it rollback
+
 
 ---
 
