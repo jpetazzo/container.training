@@ -320,7 +320,7 @@ class: in-person
 
 - Computer with internet connection and a web browser
 
-- For instructor-led workshops: an SSH client to connect to remote machines
+- Option 1: SSH client to connect to remote machines
 
   - on Linux, OS X, FreeBSD... you are probably all set
 
@@ -329,8 +329,9 @@ class: in-person
   [Git BASH](https://git-for-windows.github.io/), or
   [MobaXterm](http://mobaxterm.mobatek.net/)
 
-- For self-paced learning: SSH is not necessary if you use
-  [Play-With-Docker](http://www.play-with-docker.com/)
+- Option 2: SSH is not necessary if you use Play-With-Docker: 
+  - My left side of room: http://host3.labs.play-with-docker.com
+  - My right side of room: http://host4.labs.play-with-docker.com
 
 - Some Docker knowledge
 
@@ -575,7 +576,7 @@ You are welcome to use the method that you feel the most comfortable with.
 ## Brand new versions!
 
 - Engine 17.05
-- Compose 1.12
+- Compose 1.13
 - Machine 0.11
 
 .exercise[
@@ -1533,7 +1534,7 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
 ehb0...4fvx    node2     Ready   Active
 ```
 
----
+???
 
 class: docker-machine
 
@@ -7478,7 +7479,7 @@ That's all folks! <br/> Questions?
 
 Bret Fisher ([@bretfisher](https://twitter.com/bretfisher)) — *For hire!*
 <br/>
-`www.bretfisher.com`
+[bretfisher.com](http://www.bretfisher.com)
 
 90% off my Docker Mastery course for RevConf: [dockermastery.com](http://dockermastery.com)
 
@@ -7495,7 +7496,7 @@ Bret Fisher ([@bretfisher](https://twitter.com/bretfisher)) — *For hire!*
       var slideshow = remark.create({
         ratio: '16:9',
         highlightSpans: true,
-        excludedClasses: ["self-paced"]
+        excludedClasses: ["self-paced", "docker-machine", "swarmtools", "elk-manual", "snap", "prom-manual"]
         //excludedClasses: ["self-paced", "extra-details", "advertise-addr", "docker-machine", "netshoot", "sbt", "ipsec", "node-info", "swarmtools", "secrets", "encryption-at-rest", "elk-manual", "snap", "prom-manual"]
       });
     </script>

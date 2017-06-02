@@ -8,7 +8,7 @@ instance_login: docker
 instance_password: training
 
 clustersize: 5  # Number of VMs per cluster
-pagesize: 6    # Number of cards to print per page
+pagesize: 12   # Number of cards to print per page
 
 background_image: https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png
 
