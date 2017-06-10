@@ -119,9 +119,9 @@ Docker <br/> Orchestration <br/> Workshop
 
 class: title, in-person
 
-.small[
+Deploying and scaling containerized Microservices with Docker and Swarm
 
-Deploy and scale containers with Docker native, open source orchestration
+<!--
 
 .small[.small[
 
@@ -138,7 +138,8 @@ Thank you!
 
 ]
 ]
-]
+
+-->
 
 ---
 
@@ -146,10 +147,17 @@ class: in-person
 
 ## Intros
 
+<!--
+
 - Hello! We are
   AJ ([@s0ulshake](https://twitter.com/s0ulshake))
   &
   Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
+
+-->
+
+- Hello! I am
+  Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) 🇫🇷 🇺🇸 .small[🇩🇪]
 
 --
 
@@ -173,34 +181,28 @@ class: in-person
 
 ## Agenda
 
-<!--
-- Agenda:
--->
+- 09:30-11:00 part 1
+- 11:00-11:30 coffee break
+- 11:30-13:00 part 2
+- 13:00-14:00 lunch break
+- 14:00-15:30 part 3
+- 15:30-16:00 coffee break
+- 16:00-17:30 part 4
+- 17:30-17:42 Q&A
 
 <!--
-
-.small[
-- 09:00-10:30 part 1
-- 10:30-11:00 coffee break
-- 11:00-12:30 part 2
-- 12:00-13:00 lunch break
-- 13:00-14:30 part 3
-- 14:30-14:45 coffee break
-- 14:45-16:00 part 4
-- 16:00-16:01 Q&A
-]
-
--->
 
 - The tutorial will run from 9:00am to 12:20pm
 
 - This will be fast-paced, but DON'T PANIC!
 
-- All the content is publicly available (slides, code samples, scripts)
-
 - There will be a coffee break at 10:30am
   <br/>
   (please remind me if I forget about it!)
+
+-->
+
+- All the content is publicly available (slides, code samples, scripts)
 
 - Feel free to interrupt for questions at any time
 
@@ -302,8 +304,6 @@ class: in-person
 
 - Creating our first Swarm
 
-- Docker Machine
-
 - Running our first Swarm service
 
 - Deploying a local registry
@@ -328,7 +328,7 @@ class: in-person
 
 - Rolling updates
 
-- (Secrets management and encryption at rest)
+- Secrets management
 
 - [Centralized logging](#logging)
 
@@ -610,9 +610,9 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 17.05
+- Engine 17.06-rc
 - Compose 1.12
-- Machine 0.11
+- Machine 0.12
 
 .exercise[
 
@@ -627,7 +627,7 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ---
 
-## Wait, what, 17.05 ?!?
+## Wait, what, 17.06 ?!?
 
 --
 
@@ -648,7 +648,7 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ---
 
-class: extra-details
+class: in-person, x-extra-details
 
 ## Docker CE vs Docker EE
 
@@ -663,6 +663,10 @@ class: extra-details
   - free
   - available through Docker Mac, Docker Windows, and major Linux distros
   - perfect for individuals and small organizations
+
+- Want more details? Check my talk tomorrow, 15:00, in Maritim A
+
+  .small["Use the Source or join the Dark Side: The Differences between Docker Community and Enterprise Edition"]
 
 ---
 
@@ -809,12 +813,15 @@ class: pic
 
 - How DockerCoins works:
 
-  - `worker` asks to `rng` to give it random bytes
-  - `worker` feeds those random bytes into `hasher`
-  - each hash starting with `0` is a DockerCoin
-  - DockerCoins are stored in `redis`
-  - `redis` is also updated every second to track speed
-  - you can see the progress with the `webui`
+  - `worker` asks to `rng` to generate a few random bytes
+
+  - `worker` feeds these random bytes into `hasher`
+
+  - and repeat for ever!
+
+  - every second, `worker` updates `redis` to indicate how many loops were done
+
+  - `webui` queries `redis`, and computes and exposes "hashing speed" in your browser
 
 ---
 
@@ -2184,7 +2191,7 @@ class: self-paced
 
 (New in Docker Engine 17.05)
 
-If you are running Docker 17.05, you will see the following message:
+If you are running Docker 17.05 or 17.06, you will see the following message:
 
 ```
 Since --detach=false was not specified, tasks will be created in the background.
@@ -4154,117 +4161,137 @@ However, when you run the second one, only `#` will show up.
 
 ---
 
-# Rolling updates
+# Updating services
 
-- We want to release a new version of the worker
+- We want to make changes to the web UI
 
-- We will edit the code ...
+- The process is as follows:
 
-- ... build the new image ...
+  - edit code
 
-- ... push it to the registry ...
+  - build new image
 
-- ... update our service to use the new image
+  - ship new image
 
----
-
-class: extra-details
-
-## But first...
-
-- Restart the workers
-
-.exercise[
-
-- Just scale back to 10 replicas:
-  ```bash
-  docker service update dockercoins_worker --replicas 10
-  ```
-
-- Check that they're running:
-  ```bash
-  docker service ps dockercoins_worker
-  ```
-
-]
+  - run new image
 
 ---
 
-## Making changes
+## Updating a single service
 
-.exercise[
+- To update a single service, we can do the following:
 
-- Edit `~/orchestration-workshop/dockercoins/worker/worker.py`
+  ```bash
+  REGISTRY=localhost:5000 TAG=v0.2
+  IMAGE=$REGISTRY/dockercoins_webui:$TAG
+  docker build -t $IMAGE webui/
+  docker push $IMAGE
+  docker service update dockercoins_webui --image $IMAGE
+  ```
 
-- Locate the line that has a `sleep` instruction
+- We need to update the `TAG` variable at each iteration
 
-- Increase the `sleep` from `0.1` to `1.0`
+- Updating the `TAG` variable is necessary to force the nodes to pull the new version
 
-- Save your changes and exit
-
-]
+  (Otherwise, a node which already has image tag `v0.2` will not download the new version,
+  because it's not aware that this version has changed on the registry)
 
 ---
 
-## Building and pushing the new image
+## Updating all the services that have changed
+
+- With the Compose integration, all we have to do is:
+
+  ```bash
+  export TAG=v0.2
+  docker-compose -f composefile.yml build
+  docker-compose -f composefile.yml push
+  docker stack deploy -c composefile.yml nameofstack
+  ```
+
+--
+
+- That's exactly the commands that we used earlier to deploy the app
+
+- We don't need to learn new commands!
+
+---
+
+## Updating the web UI
+
+- Let's make the numbers on the Y axis bigger!
 
 .exercise[
 
-- Go to the `stacks` directory:
-  ```bash
-  cd ~/orchestration-workshop/stacks
-  ```
+- Edit the file `webui/files/index.html`
 
-- Build and ship the new image:
+- Locate the `font-size` CSS attribute and increase it (at least double it)
+
+- Save and exit
+
+- Build, ship, and run:
   ```bash
+  export TAG=v0.2
   docker-compose -f dockercoins.yml build
   docker-compose -f dockercoins.yml push
+  docker stack deploy -c dockercoins.yml dockercoins
   ```
 
 ]
-
-Note how the build and push were fast (because caching).
 
 ---
 
-## Watching the deployment process
+## Viewing our changes
 
-- We will need to open a new terminal for this
+- Wait at least 10 seconds (for the new version to be deployed)
 
-.exercise[
+- Then reload the web UI
 
-- Look at our service status:
-  ```bash
-  watch -n1 "docker service ps dockercoins_worker | grep -v Shutdown.*Shutdown"
-  ```
-
-]
-
-- `docker service ps worker` gives us all tasks
-  <br/>(including the one whose current or desired state is `Shutdown`)
-
-- Then we filter out the tasks whose current **and** desired state is `Shutdown`
-
-- There is also a `--filter` option, but it doesn't allow (yet) to specify that filter
+- The legend on the left should now be bigger!
 
 ---
 
-## Updating to our new image
+## Rolling updates
 
-- Keep the `watch ...` command running!
+- Let's change a scaled service: `worker`
 
 .exercise[
 
-- Update our application stack:
+- Edit `worker/worker.py`
+
+- Locate the `sleep` instruction and change the delay
+
+- Build, ship, and run our changes:
   ```bash
-  docker stack deploy dockercoins -c dockercoins.yml
+  export TAG=v0.3
+  docker-compose -f dockercoins.yml build
+  docker-compose -f dockercoins.yml push
+  docker stack deploy -c dockercoins.yml dockercoins
   ```
 
 ]
 
-If you had stopped the workers earlier, this will automatically restart them.
+---
+
+## Viewing our update as it rolls out
+
+.exercise[
+
+- Check the status of the `dockercoins_worker` service:
+  ```bash
+  watch docker service ps dockercoins_worker
+  ```
+
+- Don't display the tasks that are shutdown:
+  ```bash
+  watch "docker service ps dockercoins_worker | grep -v Shutdown.*Shutdown"
+  ```
+
+]
 
 By default, SwarmKit does a rolling upgrade, one instance at a time.
+
+We should therefore see the workers being updated one by one.
 
 ---
 
@@ -4304,6 +4331,8 @@ The current upgrade will continue at a faster pace.
 
 ---
 
+class: extra-details
+
 ## Rolling back
 
 - At any time (e.g. before the upgrade is complete), we can rollback:
@@ -4324,6 +4353,8 @@ The current upgrade will continue at a faster pace.
 What happens with the web UI graph?
 
 ---
+
+class: extra-details
 
 ## The fine print with rollback
 
@@ -7807,8 +7838,8 @@ AJ ([@s0ulshake](https://twitter.com/s0ulshake)) — *For hire!*
       var slideshow = remark.create({
         ratio: '16:9',
         highlightSpans: true,
-        excludedClasses: ["in-person", "elk-auto", "prom-auto"]
-        //excludedClasses: ["self-paced", "extra-details", "advertise-addr", "docker-machine", "netshoot", "sbt", "ipsec", "node-info", "swarmtools", "secrets", "encryption-at-rest", "elk-manual", "snap", "prom-manual"]
+        //excludedClasses: ["in-person", "elk-auto", "prom-auto"]
+        excludedClasses: ["self-paced", "extra-details", "advertise-addr", "docker-machine", "netshoot", "sbt", "encryption-at-rest", "elk-manual", "snap", "prom-manual"]
       });
     </script>
   </body>
