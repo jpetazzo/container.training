@@ -31,22 +31,29 @@ STEP = 0
 START = time.time()
 
 def bold(msg):
-    return "{} {} {}".format("$(tput smso)", msg, "$(tput rmso)")
+    return "{} {} {}".format("", msg, "")
 
-def system(cmd):
+def system(cmd, ok_codes=[]):
     global STEP
     with open("/tmp/pp.status", "a") as f:
         t1 = time.time()
         f.write(bold("--- RUNNING [step {}] ---> {}...".format(STEP, cmd)))
         retcode = os.system(cmd)
-        if retcode:
-            retcode = bold(retcode)
         t2 = time.time()
         td = str(t2-t1)[:5]
-        f.write("[{}] in {}s\n".format(retcode, td))
+        f.write("[{}] in {}s\n".format(bold(retcode) if retcode else retcode, td))
         STEP += 1
     with open("/home/ubuntu/.bash_history", "a") as f:
         f.write("{}\n".format(cmd))
+    ret = {"retcode": retcode}
+    ret["cmd"] = cmd
+
+    # If we got a non-zero exit status that hasn't been whitelisted, raise an error
+    if ret["retcode"] != 0 and ret["retcode"] not in ok_codes:
+      msg = "The following command failed: {}\n".format(cmd)
+      msg += "The exit code was: {}".format(retcode)
+      raise Exception(msg)
+    return ret
 
 # On EC2, the ephemeral disk might be mounted on /mnt.
 # If /mnt is a mountpoint, place Docker workspace on it.
@@ -60,7 +67,7 @@ system("curl --silent {} > /tmp/ipv4".format(ipv4_retrieval_endpoint))
 ipv4 = open("/tmp/ipv4").read()
 
 # Add a "docker" user with password "training"
-system("sudo useradd -d /home/docker -m -s /bin/bash docker")
+system("sudo useradd -d /home/docker -m -s /bin/bash docker", ok_codes=[2304])
 system("echo docker:training | sudo chpasswd")
 
 # Helper for Docker prompt.
@@ -116,7 +123,7 @@ system("sudo apt-get -q update")
 system("sudo apt-get -qy install git jq python-pip")
 
 # increase the size of the conntrack table so we don't blow it up when going crazy with http load testing
-system("echo 1000000 | sudo tee /proc/sys/net/nf_conntrack_max")
+system("echo 1000000 | sudo tee /proc/sys/net/nf_conntrack_max", ok_codes=[256])
 
 #######################
 ### DOCKER INSTALLS ###
@@ -131,9 +138,10 @@ system("sudo apt-get -q update")
 system("sudo apt-get -qy install docker-ce")
 
 ### Install docker-compose
-#system("sudo pip install -U docker-compose=={}".format(COMPOSE_VERSION))
-system("sudo curl -sSL -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/{}/docker-compose-{}-{}".format(COMPOSE_VERSION, platform.system(), platform.machine()))
+compose_url = "https://github.com/docker/compose/releases/download/{}/docker-compose-{}-{}".format(COMPOSE_VERSION, platform.system(), platform.machine())
+system("sudo curl -sSL -o /usr/local/bin/docker-compose {}".format(compose_url))
 system("sudo chmod +x /usr/local/bin/docker-compose")
+system("docker-compose version")
 
 ### Install docker-machine
 system("sudo curl -sSL -o /usr/local/bin/docker-machine https://github.com/docker/machine/releases/download/v{}/docker-machine-{}-{}".format(MACHINE_VERSION, platform.system(), platform.machine()))
