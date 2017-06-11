@@ -28,6 +28,6 @@ footer: >
 url: http://container.training/
 
 engine_version: test
-compose_version: 1.12
+compose_version: 1.12.0
 machine_version: 0.12.0
 swarm_version: latest
