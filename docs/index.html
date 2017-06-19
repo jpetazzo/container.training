@@ -4329,8 +4329,18 @@ docker service update \
 
 ## ~~Watch Update Rollback~~ (Coming Soon)
 
+- Our `rng` Dockerfile had a HEALTHCHECK command already in it:
+
+```Bash
+HEALTHCHECK --interval=5s --timeout=3s \
+  CMD curl -f http://localhost/ || exit 1
+  ```
+- Swarm uses that to know task (container) is healthy.
+- `docker service update` also uses it for updates and rollback.
+  
 - Let's add a bug to `rng` so it fails healthcheck, then update and watch it rollback
 
+- open up dockercoins/rng/rng.py
 
 ---
 

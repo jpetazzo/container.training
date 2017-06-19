@@ -25,9 +25,9 @@ footer: >
     <p>For slides, chat and other useful links, see: </p>
     <center>{url}</center>
 
-url: http://www.bretfisher.com/revconf2017/
+url: http://www.bretfisher.com/velocity-sj17/
 
-engine_version: get.docker.com
+engine_version: test.docker.com
 compose_version: 1.13.0
 machine_version: 0.11.0
 swarm_version: latest
