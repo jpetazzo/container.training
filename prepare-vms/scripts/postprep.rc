@@ -123,7 +123,12 @@ system("echo 1000000 | sudo tee /proc/sys/net/nf_conntrack_max")
 #######################
 
 # This will install the latest Docker.
-system("curl --silent https://{}/ | grep -v '( set -x; sleep 20 )' | sudo sh".format(ENGINE_VERSION))
+#system("curl --silent https://{}/ | grep -v '( set -x; sleep 20 )' | sudo sh".format(ENGINE_VERSION))
+system("sudo apt-get -qy install apt-transport-https ca-certificates curl software-properties-common")
+system("curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -")
+system("sudo add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial {}'".format(ENGINE_VERSION))
+system("sudo apt-get -q update")
+system("sudo apt-get -qy install docker-ce")
 
 ### Install docker-compose
 #system("sudo pip install -U docker-compose=={}".format(COMPOSE_VERSION))
@@ -142,8 +147,8 @@ system("sudo apt-get -qy install python-setuptools pssh apache2-utils httping ht
 system("while ! sudo -u docker docker version ; do sleep 2; done")
 
 ### Install Swarm
-system("docker pull swarm:{}".format(SWARM_VERSION))
-system("docker tag -f swarm:{} swarm".format(SWARM_VERSION))
+#system("docker pull swarm:{}".format(SWARM_VERSION))
+#system("docker tag -f swarm:{} swarm".format(SWARM_VERSION))
 
 ### BEGIN CLUSTERING ###
 
@@ -197,5 +202,5 @@ pssh "grep docker@ /home/docker/.ssh/authorized_keys \
         | sudo -u docker tee -a /home/docker/.ssh/authorized_keys"
 
 # On node1, create and deploy TLS certs using Docker Machine
-pssh "if grep -q node1 /tmp/node; then grep ' node' /etc/hosts | xargs -n2 sudo -H -u docker docker-machine create -d generic --generic-ssh-user docker --generic-ip-address; fi"
+#pssh "if grep -q node1 /tmp/node; then grep ' node' /etc/hosts | xargs -n2 sudo -H -u docker docker-machine create -d generic --generic-ssh-user docker --generic-ip-address; fi"
 
