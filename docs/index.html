@@ -117,7 +117,7 @@ Deploy and scale containers with Docker native, open source orchestration
 
 Thank you!
 
-Workshop Resources: [www.bretfisher.com/revconf2017](http://www.bretfisher.com/revconf2017) 
+Workshop Resources: [www.bretfisher.com/velocity-sj17](http://www.bretfisher.com/velocity-sj17) 
 ]
 ]
 ]
@@ -128,11 +128,17 @@ class: in-person
 
 ## Intros
 
-- Hello! I'm 
-  Bret Fisher ([@bretfisher](https://twitter.com/bretfisher)) — *For hire!*
-  
-  [www.bretfisher.com](http://www.bretfisher.com)
+- Hello! we are your Docker Captains for this voyage! 🚢 ⚓️ 🐳:
 
+- Bret Fisher ([@bretfisher](https://twitter.com/bretfisher)) Indie DevOps [bretfisher.com](http://www.bretfisher.com) [dockermastery.com](http://dockermastery.com)
+
+- Laura Frank ([@rhein_wein](https://twitter.com/rhein_wein)) Director of Engineering [codeship.com](https://codeship.com/)
+
+- Tony Pujals "The Local!" ([@subfuzion](https://twitter.com/subfuzion)) Director of Cloud Engineering [appcelerator.com](http://www.appcelerator.com/)
+
+--
+
+- Come hang with us at "[Meet the Experts](https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/62701)" tomorrow at 11:25am at O'Reilly Booth
 
 ---
 
@@ -140,36 +146,17 @@ class: in-person
 
 ## Agenda
 
-<!--
-- Agenda:
--->
+- 1:30-3:00 Part 1: Compose and Swarm Intro
+- 3:00-3:30 Afternoon Break Sponsored by Google | West Lobby / LL Foyer
+- 3:30-4:45 Part 2: Swarm Awesome Sauce
+- 4:45+     QnA
+- 5:00+     Ignite in LL20 A/B
 
-<!--
-
-.small[
-- 09:00-10:30 part 1
-- 10:30-11:00 coffee break
-- 11:00-12:30 part 2
-- 12:00-13:00 lunch break
-- 13:00-14:30 part 3
-- 14:30-14:45 coffee break
-- 14:45-16:00 part 4
-- 16:00-16:01 Q&A
-]
-
--->
-
-- The tutorial will run from 2:30 to 5:15
+### NOTE:
 
 - This will be fast-paced, but DON'T PANIC!
-
 - All the content is publicly available (slides, code samples, scripts)
-
-- There will be a coffee break at 3:30
-  <br/>
-  (please remind me if I forget about it!)
-
-- Feel free to interrupt for questions at any time
+- Because of the size of this class, raise hand to ask TA questions, or ask in Chat
 
 
 ???
@@ -268,8 +255,6 @@ class: in-person
 
 - Creating our first Swarm
 
-- Docker Machine
-
 - Running our first Swarm service
 
 - Deploying a local registry
@@ -296,7 +281,7 @@ class: in-person
 
 - (Secrets management and encryption at rest)
 
-- [Centralized logging](#logging)
+- Centralized logging
 
 - Metrics collection
 
@@ -429,26 +414,6 @@ class: in-person
 
 .exercise[
 
-<!--
-```bash
-for N in $(seq 1 5); do
-  ssh -o StrictHostKeyChecking=no node$N true
-done
-for N in $(seq 1 5); do
-  (.
-  docker-machine rm -f node$N
-  ssh node$N "docker ps -aq | xargs -r docker rm -f"
-  ssh node$N sudo rm -f /etc/systemd/system/docker.service
-  ssh node$N sudo systemctl daemon-reload
-  echo Restarting node$N.
-  ssh node$N sudo systemctl restart docker
-  echo Restarted node$N.
-  ) &
-done
-wait
-```
--->
-
 - Log into the first VM (`node1`) with SSH or MOSH
 - Check that you can SSH (without password) to `node2`:
   ```bash
@@ -456,23 +421,9 @@ wait
   ```
 - Type `exit` or `^D` to come back to node1
 
-<!--
-```meta
-^D
-```
--->
-
 ]
 
 ---
-
-class: in-person
-
-## If doing or re-doing the workshop on your own ...
-
----
-
-class: self-paced
 
 ## How to get your own Docker nodes?
 
@@ -493,16 +444,6 @@ class: self-paced
   - exposing TCP services requires something like
     [ngrok](https://ngrok.com/)
     or [supergrok](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker)
-
-<!--
-
-- If you use VMs deployed with Docker Machine:
-
-  - you won't have pre-authorized SSH keys to bounce across machines
-
-  - you won't have host aliases
-
--->
 
 ---
 
@@ -575,7 +516,7 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 17.05
+- Engine 17.06-rc
 - Compose 1.13
 - Machine 0.11
 
@@ -592,7 +533,7 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ---
 
-## Wait, what, 17.05 ?!?
+## Wait, what, 17.06 ?!?
 
 --
 
@@ -1268,6 +1209,19 @@ class: extra-details
 - *Nodes* know which *tasks* should be running, and will start or stop containers accordingly (through the Docker Engine API)
 
 You can refer to the [NOMENCLATURE](https://github.com/docker/swarmkit/blob/master/design/nomenclature.md) in the SwarmKit repo for more details.
+
+---
+
+## Concepts in Layers of Abstraction
+
+Service <br/>
+&nbsp; &nbsp; |<br/>
+&nbsp; &nbsp; |<br/>
+Task(s)<br/>
+&nbsp; &nbsp; |<br/>
+&nbsp; &nbsp; |<br/>
+Container<br/>
+
 
 ---
 
