@@ -1999,16 +1999,20 @@ class: self-paced
 
 ## How many managers do we need?
 
+- Your manager cluster needs *quorum* to perform work. Quorum is basically a fancy word for majority
+
+- Quorum and fault tolerance are related
+
 - 2N+1 nodes can (and will) tolerate N failures
   <br/>(you can have an even number of managers, but there is no point)
 
 --
 
-- 1 manager = no failure
+- 1 manager = no failure (quorum is 1)
 
-- 3 managers = 1 failure
+- 3 managers = 1 failure (quorum is 2)
 
-- 5 managers = 2 failures (or 1 failure during 1 maintenance)
+- 5 managers = 2 failures (or 1 failure during 1 maintenance -- quorum is 3)
 
 - 7 managers and more = now you might be overdoing it a little bit
 
@@ -7286,8 +7290,6 @@ class: extra-details
 
 ## Constraints and global services
 
-(New in Docker Engine 1.13)
-
 - By default, global services run on *all* nodes
   ```bash
   docker service create --mode global ...
@@ -7307,8 +7309,6 @@ class: extra-details
 class: extra-details
 
 ## Constraints and dynamic scheduling
-
-(New in Docker Engine 1.13)
 
 - If constraints change, services are started/stopped accordingly
 
@@ -7340,6 +7340,27 @@ class: extra-details
 .warning[Docker will silently ignore attempts to remove a non-existent label or constraint]
 
 - It won't warn you if you typo when removing a label or constraint!
+
+---
+
+class: extra-details
+
+## Placement preferences
+
+(New in Docker 17.04)
+
+- Docker can spread work around all values of a specific label
+
+- You might have multiple values of the lable `region`. With a placement preference, you can spread work around to all values of `region`.
+
+
+  ```bash
+  docker service create ... --placement-pref ‘spread=node.labels.dc’
+  ```
+
+.warning[This is a soft preference!]
+
+- If you need something more restrictive, use `--constraint`
 
 ---
 
@@ -7403,6 +7424,34 @@ class: extra-details
 - After leaving, a node still shows up in `docker node ls` (in `Down` state)
 
 - When a node is `Down`, you can remove it with `docker node rm` (from a manager node)
+
+---
+
+class: extra-details
+
+## What happens when manager nodes fail?
+
+- If too many managers fail, your cluster will lose quorum and no work can be done
+
+- Simple recovery: bring the nodes back online via manual intervention. _Yes, maybe you try turning them off and on again._
+
+---
+
+class: extra-details
+
+## Losing quorum
+
+- You will encounter the (cryptic) error of `context deadline exceeded`
+
+- If no other stabilization actions are successful, you must force a new cluster on a healthy manager node
+
+```bash
+docker swarm init --force-new-cluster
+```
+
+- This will create a new cluster with one healthy manager
+
+- You need to promote new managers
 
 ---
 
