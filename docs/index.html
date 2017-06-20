@@ -4981,7 +4981,6 @@ Note: if somebody steals both your disks and your key, .strike[you're doomed! Do
 <br/>you can block the compromised node with `docker node demote` and `docker node rm`.
 
 ---
-
 class: encryption-at-rest
 
 ## Unlocking the cluster permanently
@@ -5001,6 +5000,26 @@ Note: if some nodes are in locked state at that moment (or if they are offline/r
 while you disabled autolock), they still need the previous unlock key to get back online.
 
 For more information about locking, you can check the [upcoming documentation](https://github.com/docker/docker.github.io/pull/694).
+
+---
+
+class: encryption-at-rest
+
+## Service configs
+
+- Config files can be mounted inside services’ containers, avoiding the need to bake configuration into images
+
+- Don't use these for secrets! Secrets are always redacted at the API level but configs are not
+
+```bash
+echo "aww yiss, a config!" | docker config create my_config -
+```
+
+- Then mount the config into a service to avoid writing an additional Dockerfile
+
+```bash
+docker service create --name test_cfg_mount --config source=my_config,target=/tmp/cfg alpine cat /tmp/cfg
+```
 
 ---
 
