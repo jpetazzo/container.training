@@ -4327,9 +4327,17 @@ docker service update \
 
 ---
 
-## ~~Watch Update Rollback~~ (Coming Soon)
+## Watch Update Rollback
 
-- Our `rng` Dockerfile had a HEALTHCHECK command already in it:
+- Let's add a bug to `rng` so it fails healthcheck, then update and watch it rollback
+
+- Open up `dockercoins/rng/rng.py` and change last line port `80` to `81`
+
+- This means that our healthcheck when we update service will expect port 80 (exposed port) but python app will be listening on 81
+
+- App in container will run fine, but healthcheck will fail, forcing Swarm to rollback the service update
+
+- Note that a container crashing doesn't need healthcheck to rollback, so we need to create a scenerio where app is running "but not behaving like healthcheck expects" 
 
 ```Bash
 HEALTHCHECK --interval=5s --timeout=3s \
@@ -4338,9 +4346,7 @@ HEALTHCHECK --interval=5s --timeout=3s \
 - Swarm uses that to know task (container) is healthy.
 - `docker service update` also uses it for updates and rollback.
   
-- Let's add a bug to `rng` so it fails healthcheck, then update and watch it rollback
 
-- open up dockercoins/rng/rng.py
 
 ---
 
