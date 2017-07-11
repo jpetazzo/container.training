@@ -4078,6 +4078,20 @@ When you do the `curl`, you should see the HTTP request in clear text in the out
 
 ---
 
+class: ipsec, extra-details
+
+## If you are using Play-With-Docker, Vagrant, etc.
+
+- You will probably have *two* network interfaces
+
+- One interface will be used for outbound traffic (to Google)
+
+- The other one will be used for internode traffic
+
+- You might have to adapt/relaunch the `ngrep` command to specify the right one!
+
+---
+
 class: ipsec
 
 ## Try to sniff traffic across overlay networks
