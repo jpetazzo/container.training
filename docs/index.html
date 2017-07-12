@@ -1896,9 +1896,15 @@ Some presentations from the Docker Distributed Systems Summit in Berlin:
 
 - Right now, we have only one manager (node1)
 
-- If we lose it, we're SOL
+- If we lose it, we lose quorum - and that's *very bad!*
 
-- Let's make our cluster highly available
+- Containers running on other nodes will be fine ...
+
+- But we won't be able to get or set anything related to the cluster
+
+- If the manager is permanently gone, we will have to do a manual repair!
+
+- Nobody wants to do that ... so let's make our cluster highly available
 
 ---
 
