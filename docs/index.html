@@ -109,14 +109,12 @@ class: title, in-person
 
 .small[
 
-Deploy and scale containers with Docker native, open source orchestration
+Deploying And Scaling Microservices <br/> In Containers With Docker Swarm
 
 .small[.small[
 
 **Be kind to the WiFi!**
 
-*Use the 5G network*
-<br/>
 *Don't use your hotspot*
 <br/>
 *Don't stream videos from YouTube, Netflix, etc.
@@ -128,7 +126,7 @@ Thank you!
 ]
 ]
 
----
+???
 
 class: in-person
 
@@ -139,7 +137,7 @@ class: in-person
   &
   Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
 
---
+???
 
 class: in-person
 
@@ -159,11 +157,11 @@ at e.g. 9am, and start at 9:30.
 
 class: in-person
 
-## Agenda
-
 <!--
-- Agenda:
+## Agenda
 -->
+
+## Intros
 
 <!--
 
@@ -180,19 +178,27 @@ class: in-person
 
 -->
 
-- The tutorial will run from 9:00am to 12:20pm
+- I'm 
+  Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
+
+- The tutorial will run from 3:30pm to 5pm
 
 - This will be fast-paced, but DON'T PANIC!
 
 - All the content is publicly available (slides, code samples, scripts)
 
+<!--
 - There will be a coffee break at 10:30am
   <br/>
   (please remind me if I forget about it!)
+-->
+
 
 - Feel free to interrupt for questions at any time
 
 - Live feedback, questions, help on [Gitter](chat)
+
+- There is an extended version of this workshop if you want to know more
 
 ???
 
@@ -268,6 +274,23 @@ grep '^# ' index.html | grep -v '<br' | tr '#' '-'
 
 class: in-person
 
+## Table of contents
+
+- Pre-requirements and VM environment
+- Running our sample application on a single node
+- When a single node is not enough: scaling out
+- Introducing SwarmKit concepts
+- Assembling our Swarm cluster
+- The meaning of the Docker motto: "Build, Ship, and Run"
+- Setting up a container registry
+- Deploying on our cluster
+- Rolling upgrades
+- A few words on "least privilege model"
+
+???
+
+class: in-person
+
 ## Chapter 1: getting started
 
 - Pre-requirements
@@ -282,7 +305,7 @@ class: in-person
 
 - Introducing SwarmKit
 
----
+???
 
 class: in-person
 
@@ -304,7 +327,7 @@ class: in-person
 
 - Integration with Compose
 
----
+???
 
 class: in-person
 
@@ -322,7 +345,7 @@ class: in-person
 
 - Metrics collection
 
----
+???
 
 class: in-person
 
@@ -489,19 +512,21 @@ wait
 
 ---
 
-class: in-person
+class: in-person, redo
 
 ## If doing or re-doing the workshop on your own ...
 
 ---
 
-class: self-paced
+class: self-paced, redo
 
 ## How to get your own Docker nodes?
 
 - Use [Play-With-Docker](http://www.play-with-docker.com/)!
 
 --
+
+class: redo
 
 - Main differences:
 
@@ -598,9 +623,9 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 17.05
+- Engine 17.06
 - Compose 1.12
-- Machine 0.11
+- Machine 0.12
 
 .exercise[
 
@@ -615,14 +640,20 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ---
 
-## Wait, what, 17.05 ?!?
+class: extra-details
+
+## From Docker 1.X to 17.Y ...
 
 --
 
-- Docker inc. [recently announced](https://blog.docker.com/2017/03/docker-enterprise-edition/)
-  Docker Enterprise Edition
+class: extra-details
+
+- Docker [now has two editions](https://blog.docker.com/2017/03/docker-enterprise-edition/):
+  Community and Enterprise
 
 --
+
+class: extra-details
 
 - Docker 1.13 = Docker 17.03 (year.month, like Ubuntu)
 
@@ -674,7 +705,7 @@ class: extra-details
 
 ---
 
-class: pic
+class: pic, extra-details
 
 ![Docker CE/EE release cycle](lifecycle.png)
 
@@ -750,6 +781,10 @@ class: extra-details
 - Our code can connect to services using their short name
 
   (instead of e.g. IP address or FQDN)
+
+- Network aliases are automatically namespaced
+
+  (i.e. you can have multiple apps declaring and using a service named `database`)
 
 ---
 
@@ -1172,18 +1207,6 @@ Scaling out
 - It is a reusable library, like libcontainer, libnetwork, vpnkit ...
 
 - It is a plumbing part of the Docker ecosystem
-
-<!--
-
-- SwarmKit comes with two examples:
-
-  - `swarmctl` (a CLI tool to "speak" the SwarmKit API)
-
-  - `swarmd` (an agent that can federate existing Docker Engines into a Swarm)
-
--->
-
-- SwarmKit/swarmd/swarmctl → libcontainer/containerd/container-ctr
 
 ---
 
@@ -1807,6 +1830,8 @@ class: docker-machine
 
 ---
 
+class: under-the-hood
+
 ## Under the hood: docker swarm init
 
 When we do `docker swarm init`:
@@ -1820,6 +1845,8 @@ When we do `docker swarm init`:
 - the join tokens are created
 
 ---
+
+class: under-the-hood
 
 ## Under the hood: join tokens
 
@@ -1837,6 +1864,8 @@ docker swarm join-token --rotate <worker|manager>
 ```
 
 ---
+
+class: under-the-hood
 
 ## Under the hood: docker swarm join
 
@@ -1856,6 +1885,8 @@ When a node joins the Swarm:
 
 ---
 
+class: under-the-hood
+
 ## Under the hood: cluster communication
 
 - The *control plane* is encrypted with AES-GCM; keys are rotated every 12 hours
@@ -1870,6 +1901,8 @@ When a node joins the Swarm:
   leveraging hardware crypto if available)
 
 ---
+
+class: under-the-hood
 
 ## Under the hood: I want to know more!
 
@@ -2108,6 +2141,8 @@ class: self-paced
 
 ---
 
+class: extra-details
+
 ## What's the upper limit?
 
 - We don't know!
@@ -2154,7 +2189,7 @@ class: self-paced
 
 (New in Docker Engine 17.05)
 
-If you are running Docker 17.05, you will see the following message:
+If you are running Docker 17.05+, you will see the following message:
 
 ```
 Since --detach=false was not specified, tasks will be created in the background.
@@ -2187,6 +2222,8 @@ Flags `--follow` and `--tail` are available, as well as a few others.
 Note: by default, when a container is destroyed (e.g. when scaling down), its logs are lost.
 
 ---
+
+class: extra-details
 
 ## Before Docker Engine 17.05
 
@@ -2325,6 +2362,8 @@ The latest version of the ElasticSearch image won't start without mandatory conf
 
 ---
 
+class: extra-details
+
 ## Tasks lifecycle
 
 - During the deployment, you will be able to see multiple states:
@@ -2436,6 +2475,8 @@ There are many ways to deal with inbound traffic on a Swarm cluster.
 
 ---
 
+class: btw-labels
+
 ## Managing HTTP traffic
 
 - The TCP routing mesh doesn't parse HTTP headers
@@ -2452,6 +2493,8 @@ There are many ways to deal with inbound traffic on a Swarm cluster.
   - labels are detected automatically and dynamically update the configuration
 
 ---
+
+class: btw-labels
 
 ## You should use labels
 
@@ -2620,6 +2663,8 @@ We just have to adapt this to our application, which has 4 services!
 
 ---
 
+class: extra-details
+
 ## Which registry do we want to use?
 
 .small[
@@ -2696,6 +2741,8 @@ class: extra-details
 
 ---
 
+class: extra-details
+
 ## Using the open source registry
 
 - We need to run a `registry:2` container
@@ -2716,6 +2763,8 @@ class: extra-details
   <br/>so that it's available through `127.0.0.1:5000` on each node
 
 ---
+
+class: manual-btp
 
 # Deploying a local registry
 
@@ -2740,6 +2789,8 @@ class: extra-details
 
 ---
 
+class: manual-btp
+
 ## Testing our local registry
 
 - We can retag a small image, and push it to the registry
@@ -2760,6 +2811,8 @@ class: extra-details
 ]
 
 ---
+
+class: manual-btp
 
 ## Checking what's on our local registry
 
@@ -2994,6 +3047,8 @@ It has been replaced by the new version, with port 80 accessible from outside.
 
 ---
 
+class: manual-btp
+
 ## Connect to the web UI
 
 - The web UI is now available on port 8000, *on all the nodes of the cluster*
@@ -3007,6 +3062,8 @@ It has been replaced by the new version, with port 80 accessible from outside.
 ]
 
 ---
+
+class: manual-btp
 
 ## Scaling the application
 
@@ -3029,6 +3086,8 @@ You should see the performance peaking at 10 hashes/s (like before).
 
 ---
 
+class: manual-btp
+
 # Global scheduling
 
 - We want to utilize as best as we can the entropy generators
@@ -3043,6 +3102,8 @@ You should see the performance peaking at 10 hashes/s (like before).
 - We have to destroy and re-create the `rng` service
 
 ---
+
+class: manual-btp
 
 ## Scaling the `rng` service
 
@@ -3065,7 +3126,7 @@ You should see the performance peaking at 10 hashes/s (like before).
 
 ---
 
-class: extra-details
+class: manual-btp, extra-details
 
 ## Why do we have to re-create the service to enable global scheduling?
 
@@ -3083,6 +3144,8 @@ class: extra-details
 
 ---
 
+class: swarm-ready
+
 ## How did we make our app "Swarm-ready"?
 
 This app was written in June 2015. (One year before Swarm mode was released.)
@@ -3090,6 +3153,8 @@ This app was written in June 2015. (One year before Swarm mode was released.)
 What did we change to make it compatible with Swarm mode?
 
 --
+
+class: swarm-ready
 
 .exercise[
 
@@ -3107,6 +3172,8 @@ What did we change to make it compatible with Swarm mode?
 
 ---
 
+class: swarm-ready
+
 ## What did we change in our app since its inception?
 
 - Compose files
@@ -3119,9 +3186,13 @@ What did we change to make it compatible with Swarm mode?
 
 --
 
+class: swarm-ready
+
 *We didn't change a single line of code in this app since it was written.*
 
 --
+
+class: swarm-ready
 
 *The images that were [built in June 2015](
 https://hub.docker.com/r/jpetazzo/dockercoins_worker/tags/)
@@ -3130,6 +3201,8 @@ https://hub.docker.com/r/jpetazzo/dockercoins_worker/tags/)
 <br/>... without any modification.*
 
 ---
+
+class: swarm-ready
 
 ## How did we design our app in the first place?
 
@@ -3146,6 +3219,8 @@ https://hub.docker.com/r/jpetazzo/dockercoins_worker/tags/)
 - Existing apps might require more changes!
 
 ---
+
+class: manual-btp
 
 # Integration with Compose
 
@@ -3177,6 +3252,8 @@ https://hub.docker.com/r/jpetazzo/dockercoins_worker/tags/)
 
 ---
 
+class: manual-btp
+
 ## Removing everything
 
 - Before deploying using "stacks," let's get a clean slate
@@ -3196,7 +3273,7 @@ https://hub.docker.com/r/jpetazzo/dockercoins_worker/tags/)
 
 We need a registry to move images around.
 
-Before, we deployed it with the following command:
+Without a stack file, it would be deployed with the following command:
 
 ```bash
 docker service create --publish 5000:5000 registry:2
@@ -3276,6 +3353,8 @@ services:
 ]
 
 ---
+
+class: manual-btp
 
 ## Specifics of stack deployment
 
@@ -3433,7 +3512,7 @@ class: extra-details
 
 - Awesome job, team!
 
----
+???
 
 class: title, in-person
 
@@ -4274,6 +4353,8 @@ The current upgrade will continue at a faster pace.
 
 ---
 
+class: extra-details
+
 ## Rolling back
 
 - At any time (e.g. before the upgrade is complete), we can rollback:
@@ -4294,6 +4375,8 @@ The current upgrade will continue at a faster pace.
 What happens with the web UI graph?
 
 ---
+
+class: extra-details
 
 ## The fine print with rollback
 
@@ -4748,7 +4831,7 @@ class: secrets
 
 ---
 
-class: secrets
+class: secrets, extra-details
 
 ## Secrets in practice
 
@@ -4772,6 +4855,8 @@ class: secrets
 
 ---
 
+class: api-scope
+
 ## A reminder about *scope*
 
 - Out of the box, Docker API access is "all or nothing"
@@ -4788,6 +4873,8 @@ class: secrets
 
 ---
 
+class: api-scope
+
 ## Fine-grained API access control
 
 A few solutions, by increasing order of flexibility:
@@ -4798,9 +4885,13 @@ A few solutions, by increasing order of flexibility:
 
 --
 
+class: api-scope
+
 - Add an extra layer of abstraction (sudo scripts, hooks, or full-blown PAAS)
 
 --
+
+class: api-scope
 
 - Enable [authorization plugins]
 
@@ -4990,6 +5081,8 @@ For more information about locking, you can check the [upcoming documentation](h
 
 ---
 
+class: elk
+
 name: logging
 
 # Centralized logging
@@ -5000,6 +5093,8 @@ name: logging
 
 --
 
+class: elk
+
 - We are going to deploy an ELK stack
 
 - It will accept logs over a GELF socket
@@ -5007,6 +5102,8 @@ name: logging
 - We will update our services to send logs through the GELF logging driver
 
 ---
+
+class: elk
 
 # Setting up ELK to store container logs
 
@@ -5026,6 +5123,8 @@ What we will do:
 - Set our containers up to send their logs to Logstash
 
 ---
+
+class: elk
 
 ## What's in an ELK stack?
 
@@ -5224,6 +5323,8 @@ You should see the heartbeat messages:
 
 ---
 
+class: elk
+
 ## Testing the GELF receiver
 
 - In a new window, we will generate a logging message
@@ -5242,6 +5343,8 @@ You should see the heartbeat messages:
 The test message should show up in the logstash container logs.
 
 ---
+
+class: elk
 
 ## Sending logs from a service
 
@@ -5265,9 +5368,13 @@ The test message should show up as well in the logstash container logs.
 
 --
 
+class: elk
+
 In fact, *multiple messages will show up, and continue to show up every few seconds!*
 
 ---
+
+class: elk
 
 ## Restart conditions
 
@@ -5290,6 +5397,8 @@ You can also set `--restart-delay`, `--restart-max-attempts`, and `--restart-win
 
 ---
 
+class: elk
+
 ## Connect to Kibana
 
 - The Kibana web UI is exposed on cluster port 5601
@@ -5305,6 +5414,8 @@ You can also set `--restart-delay`, `--restart-max-attempts`, and `--restart-win
 ]
 
 ---
+
+class: elk
 
 ## "Configuring" Kibana
 
@@ -5326,6 +5437,8 @@ You can also set `--restart-delay`, `--restart-max-attempts`, and `--restart-win
 - You should see a series of green bars (with one new green bar every minute)
 
 ---
+
+class: elk
 
 ## Updating our services to use GELF
 
@@ -5361,6 +5474,8 @@ After ~15 seconds, you should see the log messages in Kibana.
 
 ---
 
+class: elk
+
 ## Viewing container logs
 
 - Go back to Kibana
@@ -5388,6 +5503,8 @@ After ~15 seconds, you should see the log messages in Kibana.
 
 ---
 
+class: elk
+
 ## .warning[Don't update stateful services!]
 
 - What would have happened if we had updated the Redis service?
@@ -5401,6 +5518,8 @@ After ~15 seconds, you should see the log messages in Kibana.
 - If we updated our Redis service, all our DockerCoins would be lost
 
 ---
+
+class: elk
 
 ## Important afterword
 
@@ -5424,6 +5543,8 @@ http://jpetazzo.github.io/2017/01/20/docker-logging-gelf/).
 
 ---
 
+class: metrics
+
 # Metrics collection
 
 - We want to gather metrics in a central place
@@ -5433,6 +5554,8 @@ http://jpetazzo.github.io/2017/01/20/docker-logging-gelf/).
 - We want a nice interface to view them (graphs)
 
 ---
+
+class: metrics
 
 ## Node metrics
 
@@ -5449,6 +5572,8 @@ http://jpetazzo.github.io/2017/01/20/docker-logging-gelf/).
 - ... and much more!
 
 ---
+
+class: metrics
 
 ## Container metrics
 
@@ -6870,6 +6995,8 @@ class: prom, snap
 
 ---
 
+class: metrics
+
 ## More resources on container metrics
 
 - [Prometheus, a Whirlwind Tour](https://speakerdeck.com/copyconstructor/prometheus-a-whirlwind-tour),
@@ -6886,6 +7013,8 @@ class: prom, snap
 
 ---
 
+class: stateful
+
 # Dealing with stateful services
 
 - First of all, you need to make sure that the data files are on a *volume*
@@ -6901,6 +7030,8 @@ class: prom, snap
 - ... And the container can be restarted on another node without data loss
 
 ---
+
+class: stateful
 
 ## Building a stateful service experiment
 
@@ -6924,6 +7055,8 @@ class: prom, snap
 
 ---
 
+class: stateful
+
 ## Accessing our Redis service easily
 
 - Typing that whole command is going to be tedious
@@ -6943,6 +7076,8 @@ class: prom, snap
 ]
 
 ---
+
+class: stateful
 
 ## Basic Redis commands
 
@@ -6967,6 +7102,8 @@ class: prom, snap
 
 ---
 
+class: stateful
+
 ## Local volumes vs. global volumes
 
 - Global volumes exist in a single namespace
@@ -6984,6 +7121,8 @@ class: prom, snap
 - Therefore, we will fall back on *local volumes*
 
 ---
+
+class: stateful
 
 ## Local volumes
 
@@ -7005,6 +7144,8 @@ class: prom, snap
 ]
 
 ---
+
+class: stateful
 
 ## Where is our data?
 
@@ -7030,6 +7171,8 @@ This ensures consistent behavior.
 
 ---
 
+class: stateful
+
 ## Setting the key again
 
 - Since our database was wiped out, let's populate it again
@@ -7049,6 +7192,8 @@ This ensures consistent behavior.
 ]
 
 ---
+
+class: stateful
 
 ## Service updates cause containers to be replaced
 
@@ -7071,6 +7216,8 @@ This ensures consistent behavior.
 The key is blank again!
 
 ---
+
+class: stateful
 
 ## Service volumes are ephemeral by default
 
@@ -7095,6 +7242,8 @@ even when it is not strictly technically necessary.
 
 ---
 
+class: stateful
+
 ## The data is gone again
 
 - What happened to our data?
@@ -7111,6 +7260,8 @@ even when it is not strictly technically necessary.
 (You should see one extra volume.)
 
 ---
+
+class: stateful
 
 ## Assigning a persistent volume to the container
 
@@ -7135,6 +7286,8 @@ Note: the `local` volume driver automatically creates volumes.
 
 ---
 
+class: stateful
+
 ## Checking that persistence actually works across service updates
 
 .exercise[
@@ -7158,6 +7311,8 @@ Note: the `local` volume driver automatically creates volumes.
 
 ---
 
+class: stateful
+
 ## Recap
 
 - The service must commit its state to disk when being shutdown.red[*]
@@ -7180,6 +7335,8 @@ It's easy to make that mistake — __Trust me!__]
 
 ---
 
+class: stateful
+
 ## Cleaning up
 
 .exercise[
@@ -7200,32 +7357,46 @@ Note: we could keep the volume around if we wanted.
 
 ---
 
+class: stateful
+
 ## Should I run stateful services in containers?
 
 --
+
+class: stateful
 
 Depending whom you ask, they'll tell you:
 
 --
 
+class: stateful
+
 - certainly not, heathen!
 
 --
+
+class: stateful
 
 - we've been running a few thousands PostgreSQL instances in containers ...
   <br/>for a few years now ... in production ... is that bad?
 
 --
 
+class: stateful
+
 - what's a container?
 
 --
+
+class: stateful
 
 Perhaps a better question would be:
 
 *"Should I run stateful services?"*
 
 --
+
+class: stateful
 
 - is it critical for my business?
 - is it my value-add?
@@ -7521,9 +7692,11 @@ That's all folks! <br/> Questions?
 
 Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) — [@docker](https://twitter.com/docker)
 
+<!--
 AJ ([@s0ulshake](https://twitter.com/s0ulshake)) — *For hire!*
 <br/>
 `curl cv.soulshake.net`
+-->
 
 ]]
 
@@ -7538,8 +7711,8 @@ AJ ([@s0ulshake](https://twitter.com/s0ulshake)) — *For hire!*
       var slideshow = remark.create({
         ratio: '16:9',
         highlightSpans: true,
-        excludedClasses: ["in-person", "elk-auto", "prom-auto"]
-        //excludedClasses: ["self-paced", "extra-details", "advertise-addr", "docker-machine", "netshoot", "sbt", "ipsec", "node-info", "swarmtools", "secrets", "encryption-at-rest", "elk-manual", "snap", "prom-manual"]
+        //excludedClasses: ["in-person", "elk-auto", "prom-auto"]
+        excludedClasses: ["self-paced", "extra-details", "advertise-addr", "docker-machine", "netshoot", "sbt", "ipsec", "node-info", "swarmtools", "_secrets", "encryption-at-rest", "elk-manual", "snap", "prom", "prom-manual", "prom-auto", "redo", "under-the-hood", "btw-labels", "manual-btp", "swarm-ready", "api-scope", "elk", "elk-auto", "metrics", "stateful"]
       });
     </script>
   </body>
