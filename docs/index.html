@@ -2163,6 +2163,26 @@ class: extra-details
 
 ---
 
+## Real-life deployment methods
+
+--
+
+- Running commands manually over SSH
+
+--
+
+  (lol jk)
+
+--
+
+- Using your favorite configuration management tool
+
+- [Docker for AWS](https://docs.docker.com/docker-for-aws/#quickstart)
+
+- [Docker for Azure](https://docs.docker.com/docker-for-azure/)
+
+---
+
 # Running our first Swarm service
 
 - How do we run services? Simplified version:
@@ -4815,7 +4835,7 @@ Reminder: this is a very low-level tool, requiring a knowledge of SwarmKit's int
 
 - I cannot inspect or disrupt the network traffic of other containers
 
-  (e.g. no ARP spoofing)
+  (network information is provided by manager nodes; ARP spoofing is not possible)
 
 - I cannot infer the topology of the cluster and its number of nodes
 
@@ -4823,7 +4843,7 @@ Reminder: this is a very low-level tool, requiring a knowledge of SwarmKit's int
 
 ---
 
-## Security best practices for workload isolation
+## Guidelines for workload isolation leveraging least privilege model
 
 - Define security levels
 
@@ -4837,7 +4857,7 @@ Reminder: this is a very low-level tool, requiring a knowledge of SwarmKit's int
 
 ---
 
-# Secrets management and encryption at rest
+# Bonus material: secrets management and encryption at rest
 
 (New in Docker Engine 1.13)
 
@@ -7909,7 +7929,7 @@ AJ ([@s0ulshake](https://twitter.com/s0ulshake)) — *For hire!*
         ratio: '16:9',
         highlightSpans: true,
         //excludedClasses: ["in-person", "elk-auto", "prom-auto"]
-        excludedClasses: ["self-paced", "extra-details", "advertise-addr", "docker-machine", "netshoot", "sbt", "ipsec", "node-info", "swarmtools", "_secrets", "encryption-at-rest", "elk-manual", "snap", "prom", "prom-manual", "prom-auto", "redo", "under-the-hood", "btw-labels", "manual-btp", "swarm-ready", "api-scope", "elk", "elk-auto", "metrics", "stateful", "secrets"]
+        excludedClasses: ["self-paced", "extra-details", "advertise-addr", "docker-machine", "netshoot", "sbt", "ipsec", "node-info", "swarmtools", "_secrets", "encryption-at-rest", "elk-manual", "snap", "prom", "prom-manual", "prom-auto", "redo", "under-the-hood", "btw-labels", "manual-btp", "swarm-ready", "api-scope", "elk", "elk-auto", "metrics", "stateful"]
       });
     </script>
   </body>
