@@ -3374,6 +3374,72 @@ Our registry is not *exactly* identical to the one deployed with `docker service
 
 ---
 
+## Testing our local registry
+
+- Connecting to port 5000 *on any node of the cluster* routes us to the registry
+
+- Therefore, we can use `localhost:5000` or `127.0.0.1:5000` as our registry
+
+.exercise[
+
+- Issue the following API request to the registry:
+  ```bash
+  curl 127.0.0.1:5000/v2/_catalog
+  ```
+
+]
+
+It should return:
+
+```json
+{"repositories":[]}
+```
+
+If that doesn't work, retry a few times; perhaps the container is still starting.
+
+---
+
+## Pushing an image to our local registry
+
+- We can retag a small image, and push it to the registry
+
+.exercise[
+
+- Make sure we have the busybox image, and retag it:
+  ```bash
+  docker pull busybox
+  docker tag busybox 127.0.0.1:5000/busybox
+  ```
+
+- Push it:
+  ```bash
+  docker push 127.0.0.1:5000/busybox
+  ```
+
+]
+
+---
+
+## Checking what's on our local registry
+
+- The registry API has endpoints to query what's there
+
+.exercise[
+
+- Ensure that our busybox image is now in the local registry:
+  ```bash
+  curl http://127.0.0.1:5000/v2/_catalog
+  ```
+
+]
+
+The curl command should now output:
+```json
+{"repositories":["busybox"]}
+```
+
+---
+
 ## Building and pushing stack services
 
 - When using Compose file version 2 and above, you can specify *both* `build` and `image`
@@ -4203,9 +4269,9 @@ However, when you run the second one, only `#` will show up.
 
 ---
 
-# Rolling updates
+# Updating our services
 
-- We want to release a new version of the worker
+- We want to release a new version of the web UI
 
 - We will edit the code ...
 
@@ -4213,7 +4279,68 @@ However, when you run the second one, only `#` will show up.
 
 - ... push it to the registry ...
 
-- ... update our service to use the new image
+- ... update our stack to use the new image
+
+---
+
+## Making changes
+
+.exercise[
+
+- Edit `~/orchestration-workshop/dockercoins/webui/files/index.html`
+
+- Locate the line that has the `font-size` CSS update
+
+- Increase the size from 15 to 45
+
+- Save your changes and exit
+
+]
+
+---
+
+## Building and pushing the new image
+
+.exercise[
+
+- Go to the `stacks` directory:
+  ```bash
+  cd ~/orchestration-workshop/stacks
+  ```
+
+- Build and ship the new image:
+  ```bash
+  docker-compose -f dockercoins.yml build
+  docker-compose -f dockercoins.yml push
+  ```
+
+]
+
+Note how the build and push were fast (because caching).
+
+---
+
+## Watching the deployment process
+
+- We will need to open a new terminal for this
+
+.exercise[
+
+- Look at our service status:
+  ```bash
+  watch -n1 "docker service ps dockercoins_webui"
+  ```
+
+- In the other terminal, redeploy the application:
+  ```bash
+   docker stack deploy dockercoins -c dockercoins.yml
+   ```
+
+]
+
+It should take about 10 seconds for the updated container to be up and running.
+
+Reload the web UI in the browser: the Y axis on the left should have a bigger font.
 
 ---
 
@@ -4236,6 +4363,20 @@ class: extra-details
   ```
 
 ]
+
+---
+
+# Rolling updates
+
+- We want to release a new version of the worker
+
+- We will edit the code ...
+
+- ... build the new image ...
+
+- ... push it to the registry ...
+
+- ... update our stack to use the new image
 
 ---
 
@@ -4272,7 +4413,11 @@ class: extra-details
 
 ]
 
+<!--
 Note how the build and push were fast (because caching).
+-->
+
+This should feel familiar by now. 
 
 ---
 
@@ -4311,7 +4456,9 @@ Note how the build and push were fast (because caching).
 
 ]
 
+<!--
 If you had stopped the workers earlier, this will automatically restart them.
+-->
 
 By default, SwarmKit does a rolling upgrade, one instance at a time.
 
@@ -4637,6 +4784,56 @@ class: swarmtools
 ]
 
 Reminder: this is a very low-level tool, requiring a knowledge of SwarmKit's internals!
+
+---
+
+# Least privilege model
+
+- All the important data is stored in the "Raft log"
+
+- Managers nodes have read/write access to this data
+
+- Workers nodes have no access to this data
+
+- Workers only receive the minimum amount of data that they need:
+
+  - which services to run
+  - network configuration information for these services
+  - credentials for these services
+
+- Compromising a worker node does not give access to the full cluster
+
+---
+
+## What can I do if I compromise a worker node?
+
+- I can enter the containers running on that node
+
+- I can access the configuration and credentials used by these containers
+
+- I can inspect the network traffic of these containers
+
+- I cannot inspect or disrupt the network traffic of other containers
+
+  (e.g. no ARP spoofing)
+
+- I cannot infer the topology of the cluster and its number of nodes
+
+- I can only learn the IP addresses of the manager nodes
+
+---
+
+## Security best practices for workload isolation
+
+- Define security levels
+
+- Define security zones
+
+- Put managers in the highest security zone
+
+- Enforce workloads of a given security level to run in a given zone
+
+- Enforcement can be done with [Authorization Plugins](https://docs.docker.com/engine/extend/plugins_authorization/)
 
 ---
 
@@ -7712,7 +7909,7 @@ AJ ([@s0ulshake](https://twitter.com/s0ulshake)) — *For hire!*
         ratio: '16:9',
         highlightSpans: true,
         //excludedClasses: ["in-person", "elk-auto", "prom-auto"]
-        excludedClasses: ["self-paced", "extra-details", "advertise-addr", "docker-machine", "netshoot", "sbt", "ipsec", "node-info", "swarmtools", "_secrets", "encryption-at-rest", "elk-manual", "snap", "prom", "prom-manual", "prom-auto", "redo", "under-the-hood", "btw-labels", "manual-btp", "swarm-ready", "api-scope", "elk", "elk-auto", "metrics", "stateful"]
+        excludedClasses: ["self-paced", "extra-details", "advertise-addr", "docker-machine", "netshoot", "sbt", "ipsec", "node-info", "swarmtools", "_secrets", "encryption-at-rest", "elk-manual", "snap", "prom", "prom-manual", "prom-auto", "redo", "under-the-hood", "btw-labels", "manual-btp", "swarm-ready", "api-scope", "elk", "elk-auto", "metrics", "stateful", "secrets"]
       });
     </script>
   </body>
