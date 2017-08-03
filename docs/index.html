@@ -4779,25 +4779,43 @@ class: secrets
 class: namespaces
 name: namespaces
 
-## Security Level Up: User Namespaces
+# Improving isolation with User Namespaces
 
-Lets increase the default security of containers on `node3` to run as non-root user.
+- *Namespaces* are kernel mechanisms to compartimetalize the system
 
-** Namespaces **
+- There are different kind of namespaces: `pid`, `net`, `mnt`, `ipc`, `uts`, and `user`
 
-- Kernel feature, always on in Docker
-- Fundamental part of Docker that isolates every container
+- For a primer, see "Anatomy of a Container"
+  ([video](https://www.youtube.com/watch?v=sK5i-N34im8))
+  ([slides](https://www.slideshare.net/jpetazzo/cgroups-namespaces-and-beyond-what-are-containers-made-from-dockercon-europe-2015))
 
---
+- The *user namespace* allows to map UIDs between the containers and the host
 
-** *User* Namespaces ** (1.10+)
+- As a result, `root` in a container can map to a non-privileged user on the host
 
-- Optional additional feature
-- Containers run as non-root user (UID:GID)
-- Root user inside container mapped to non-root outside
-- Enabled at daemon level, but only affects containers
-- Selectively disabled per container with `--userns=host`
-- Not the same as running non-root inside container
+Note: even without user namespaces, `root` in a container cannot go wild on the host.
+<br/>
+It is mediated by capabilities, cgroups, namespaces, seccomp, LSMs...
+
+---
+
+class: namespaces
+
+## User Namespaces in Docker
+
+- Optional feature added in Docker Engine 1.10
+
+- Not enabled by default
+
+- Has to be enabled at Engine startup, and affects all containers
+
+- When enabled, `UID:GID` in containers are mapped to a different range on the host
+
+- Safer than switching to a non-root user (with `-u` or `USER`) in the container
+  <br/>
+  (Since with user namespaces, root escalation maps to a non-privileged user)
+
+- Can be selectively disabled per container by starting them with `--userns=host`
 
 ---
 
@@ -4805,84 +4823,195 @@ class: namespaces
 
 ## User Namespaces Caveats
 
-Once enabled, containers can't:
-- Share PID or NET namespaces with the host (no `--pid=host` or `--network=host`)
-- Use `--privileged` mode flag on docker run (unless also specifying `--userns=host`)
-- Use `--read-only` container filesystem (a Linux kernel restriction)
-- Use some external (volume or graph) drivers which can't do user mappings
+When user namespaces are enabled, containers cannot:
 
-.footnote[.red[*] This is "phase 1" of user namespaces, where all containers are same user (not ideal if you run untrusted code for others on shared hardware). One day, it'll hopefully have UID-per-container. #hardproblems]
+- Use the host's network namespace (with `docker run --network=host`)
+
+- Use the host's PID namespace (with `docker run --pid=host`)
+
+- Run in privileged mode (with `docker run --privileged`)
+
+... Unless user namespaces are disabled for the container, with flag `--userns=host`
+
+External volume and graph drivers that don't support user mapping might not work.
+
+All containers are currently mapped to the same UID:GID range.
+
+Some of these limitations might be lifted in the future!
 
 ---
 
 class: namespaces
 
-## Remove `node3` From Swarm
+## Filesystem ownership details
 
-- We need to add a startup setting to dockerd daemon to enable User Namespaces
-- However *this will reset dockerd config*. Why? Because User Namespaces will make new locked down dir for docker files/settings/cache/swarm
-- So, IRL, enable user-namespaces before you deploy servers
-- Here we'll need add `node3` back to Swarm once we've reconfigured it
-- NOTE: for this lesson, make sure `node3` doesn't have registry on it (`docker stack ps registry`). If so, pick another node
+When enabling user namespaces:
+
+- the UID:GID on disk (in the images and containers) has to match the *mapped* UID:GID
+
+- existing images and containers cannot work (their UID:GID would have to be changed)
+
+For practical reasons, when enabling user namespaces, the Docker Engine places containers and images (and everything else) in a different directory.
+
+As a resut, if you enable user namespaces on an existing installation:
+
+-  all containers and images (and e.g. Swarm data) disappear
+
+- *if a node is a member of a Swarm, it is then kicked out of the Swarm*
+
+-  everything will re-appear if you disable user namespaces again
+
+---
+
+class: namespaces
+
+## Picking a node
+
+- We will select a node where we will enable user namespaces
+
+- This node will have to be re-added to the Swarm
+
+- All containers and services running on this node will be rescheduled
+
+- Let's make sure that we do not pick the node running the registry!
 
 .exercise[
 
-- removes manager role, reschedules services, removes node from swarm
-```bash
-docker node demote node3 
-ssh node3 docker swarm leave 
-docker node rm -f node3
-```
+- Check on which node the registry is running:
+  ```bash
+  docker service ps registry
+  ```
+
+]
+
+Pick any other node (noted `nodeX` in the next slides).
+
+---
+
+class: namespaces
+
+## Logging into the right Engine
+
+.exercise[
+
+- Log into the right node:
+  ```bash
+  ssh node`X`
+  ```
+
 ]
 
 ---
 
 class: namespaces
 
-## Add Namespaces to daemon.json
-
-We need to create custom daemon config. Lets do it with JSON!
+## Configuring the Engine
 
 .exercise[
 
-```bash
-ssh node3
-echo '{"userns-remap": "default"}' | sudo tee /etc/docker/daemon.json
-sudo systemctl restart docker
+- Create a configuration file for the Engine:
+  ```bash
+  echo '{"userns-remap": "default"}' | sudo tee /etc/docker/daemon.json
+  ```
+
+- Restart the Engine:
+  ```bash
+  kill $(pidof dockerd)
+  ```
+
+]
+
+---
+
+class: namespaces 
+
+## Checking that User Namespaces are enabled
+
+.exercise[
+  - Notice the new Docker path:
+  ```bash
+  docker info | grep var/lib
+  ```
+
+  - Notice the new UID:GID permissions:
+  ```bash
+  sudo ls -l /var/lib/docker
+  ```
+
+]
+
+You should see a line like the following:
+```
+drwx------ 11 296608 296608 4096 Aug  3 05:11 296608.296608
 ```
 
-- Notice the new docker path and permissions
+---
 
-```bash
-docker info | grep var/lib
-sudo ls -al /var/lib/docker
-```
+class: namespaces
+
+## Add the node back to the Swarm
+
+.exercise[
+
+- Get our manager token from another node:
+  ```bash
+  ssh node`Y` docker swarm join-token manager
+  ```
+
+- Copy-paste the join command to the node
+
 ]
 
 ---
 
 class: namespaces
 
-## Add `node3` Back To Swarm
-
-Get our manager token from another node (same token as before)
+## Check the new UID:GID
 
 .exercise[
-```bash
-ssh node2 docker swarm join-token manager
-```
 
-- Now lets run a test container from `node3` and see the process UID
+- Run a background container on the node:
+  ```bash
+  docker run -d --name lockdown alpine sleep 1000000
+  ```
 
-```bash
-docker run -d --name lockdown alpine sleep 300
-docker top lockdown
-ps aux
-```
-
-- `exit` back to node1 when finished
+- Look at the processes in this container:
+  ```bash
+  docker top lockdown
+  ps faux
+  ```
 
 ]
+
+---
+
+class: namespaces
+
+## Comparing on-disk ownership with/without User Namespaces
+
+.exercise[
+
+- Compare the output of the two following commands:
+  ```bash
+  docker run alpine ls -l /
+  docker run --userns=host alpine ls -l /
+  ```
+
+]
+
+--
+
+class: namespaces
+
+In the first case, it looks like things belong to `root:root`.
+
+In the second case, we will see the "real" (on-disk) ownership.
+
+--
+
+class: namespaces
+
+Remember to get back to `node1` when finished!
 
 ---
 
