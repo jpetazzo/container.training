@@ -26,6 +26,10 @@
       .remark-slide-content h1 { font-size: 50px; }
       .remark-slide-content h2 { font-size: 50px; }
       .remark-slide-content h3 { font-size: 25px; }
+      .footnote {
+        position: absolute;
+        bottom: 3em;
+      }
       .remark-code { font-size: 25px; }
       .small .remark-code { font-size: 16px; }
 
@@ -115,9 +119,15 @@ Deploy and scale containers with Docker native, open source orchestration
 
 **Be kind to the WiFi!**
 
+*Use the 5G network*
+<br/>
+*Don't use your hotspot*
+<br/>
+*Don't stream videos from YouTube, Netflix, etc.
+<br/>(if you're bored, watch local content instead)*
+
 Thank you!
 
-Workshop Resources: [www.bretfisher.com/velocity-sj17](http://www.bretfisher.com/velocity-sj17) 
 ]
 ]
 ]
@@ -128,20 +138,26 @@ class: in-person
 
 ## Intros
 
-- Hello! we are your Docker Captains for this voyage! 🚢 ⚓️ 🐳:
-
-- Bret Fisher ([@bretfisher](https://twitter.com/bretfisher)) Indie DevOps [bretfisher.com](http://www.bretfisher.com) [dockermastery.com](http://dockermastery.com)
-
-- Laura Frank ([@rhein_wein](https://twitter.com/rhein_wein)) Director of Engineering [codeship.com](https://codeship.com/)
-
-- Tony Pujals "The Local!" ([@subfuzion](https://twitter.com/subfuzion)) Director of Cloud Engineering [appcelerator.com](http://www.appcelerator.com/)
+- Hello! We are
+  AJ ([@s0ulshake](https://twitter.com/s0ulshake))
+  &
+  Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
 
 --
 
-- Come hang with us at "[Meet the Experts](https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/62701)" tomorrow at 11:25am at O'Reilly Booth
+class: in-person
 
-- See Laura go through the technical details of orchestration engines tomorrow at 2:10pm in LL21 A/B "[Everthing you though you already new about orchestration](https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/58658)"
+- This is our collective Docker knowledge:
 
+  ![Bell Curve](bell-curve.jpg)
+
+<!--
+Reminder, when updating the agenda: when people are told to show
+up at 9am, they usually trickle in until 9:30am (except for paid
+training sessions). If you're not sure that people will be there
+on time, it's a good idea to have a breakfast with the attendees
+at e.g. 9am, and start at 9:30.
+-->
 
 ---
 
@@ -149,19 +165,38 @@ class: in-person
 
 ## Agenda
 
-- 1:30-3:00 Part 1: Compose and Swarm Intro
-- 3:00-3:30 Afternoon Break Sponsored by Google | West Lobby / LL Foyer
-- 3:30-4:45 Part 2: Swarm Awesome Sauce
-- 4:45+     QnA
-- 5:00+     Ignite in LL20 A/B
+<!--
+- Agenda:
+-->
 
-### NOTE:
+<!--
+
+.small[
+- 09:00-10:30 part 1
+- 10:30-11:00 coffee break
+- 11:00-12:30 part 2
+- 12:00-13:00 lunch break
+- 13:00-14:30 part 3
+- 14:30-14:45 coffee break
+- 14:45-16:00 part 4
+- 16:00-16:01 Q&A
+]
+
+-->
+
+- The tutorial will run from 9:00am to 12:20pm
 
 - This will be fast-paced, but DON'T PANIC!
-- All the content is publicly available (slides, code samples, scripts)
-- ProTip: Write down interesting slide numbers for reviewing later
-- Because of the size of this class, raise hand to ask TA questions, or ask in Chat
 
+- All the content is publicly available (slides, code samples, scripts)
+
+- There will be a coffee break at 10:30am
+  <br/>
+  (please remind me if I forget about it!)
+
+- Feel free to interrupt for questions at any time
+
+- Live feedback, questions, help on [Gitter](chat)
 
 ???
 
@@ -183,7 +218,7 @@ class: in-person
 
 - And I'll give you ways to continue learning on your own, should you choose to!
 
-???
+---
 
 ## A brief introduction
 
@@ -259,6 +294,8 @@ class: in-person
 
 - Creating our first Swarm
 
+- Docker Machine
+
 - Running our first Swarm service
 
 - Deploying a local registry
@@ -285,7 +322,7 @@ class: in-person
 
 - (Secrets management and encryption at rest)
 
-- Centralized logging
+- [Centralized logging](#logging)
 
 - Metrics collection
 
@@ -309,7 +346,7 @@ class: in-person
 
 - Computer with internet connection and a web browser
 
-- Option 1: SSH client to connect to remote machines
+- For instructor-led workshops: an SSH client to connect to remote machines
 
   - on Linux, OS X, FreeBSD... you are probably all set
 
@@ -318,8 +355,8 @@ class: in-person
   [Git BASH](https://git-for-windows.github.io/), or
   [MobaXterm](http://mobaxterm.mobatek.net/)
 
-- Option 2: SSH is not necessary if you use Play-With-Docker: 
-  http://ow.play-with-docker.com/
+- For self-paced learning: SSH is not necessary if you use
+  [Play-With-Docker](http://www.play-with-docker.com/)
 
 - Some Docker knowledge
 
@@ -337,7 +374,7 @@ class: in-person, extra-details
 - [GitHub](https://github.com/join) account
   <br/>(if you want to fork the repo; also used to join Gitter)
 
-- [Gitter](https://gitter.im/BretFisher/velocity-sj17) account
+- [Gitter](https://gitter.im/) account
   <br/>(to join the conversation during the workshop)
 
 - [Slack](https://community.docker.com/registrations/groups/4316) account
@@ -375,6 +412,8 @@ class: extra-details
 .exercise[
 
 - This is the stuff you're supposed to do!
+- Go to [container.training](http://container.training/) to view these slides
+- Join the [chat room](chat)
 
 ]
 
@@ -417,6 +456,26 @@ class: in-person
 
 .exercise[
 
+<!--
+```bash
+for N in $(seq 1 5); do
+  ssh -o StrictHostKeyChecking=no node$N true
+done
+for N in $(seq 1 5); do
+  (.
+  docker-machine rm -f node$N
+  ssh node$N "docker ps -aq | xargs -r docker rm -f"
+  ssh node$N sudo rm -f /etc/systemd/system/docker.service
+  ssh node$N sudo systemctl daemon-reload
+  echo Restarting node$N.
+  ssh node$N sudo systemctl restart docker
+  echo Restarted node$N.
+  ) &
+done
+wait
+```
+-->
+
 - Log into the first VM (`node1`) with SSH or MOSH
 - Check that you can SSH (without password) to `node2`:
   ```bash
@@ -424,17 +483,27 @@ class: in-person
   ```
 - Type `exit` or `^D` to come back to node1
 
+<!--
+```meta
+^D
+```
+-->
+
 ]
 
 ---
 
+class: in-person
+
+## If doing or re-doing the workshop on your own ...
+
+---
+
+class: self-paced
+
 ## How to get your own Docker nodes?
 
-- Use Play-With-Docker! NOTE: For today use [ow.play-with-docker.com](http://ow.play-with-docker.com/) which has more horsepower for the 180 ppl here and 10 hour timeouts!  
-
-- Loving it? Not loving it? Tell it to the wonderful authors,
-  [@marcosnils](https://twitter.com/marcosnils) &
-  [@xetorthio](https://twitter.com/xetorthio)!
+- Use [Play-With-Docker](http://www.play-with-docker.com/)!
 
 --
 
@@ -451,6 +520,16 @@ class: in-person
   - exposing TCP services requires something like
     [ngrok](https://ngrok.com/)
     or [supergrok](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker)
+
+<!--
+
+- If you use VMs deployed with Docker Machine:
+
+  - you won't have pre-authorized SSH keys to bounce across machines
+
+  - you won't have host aliases
+
+-->
 
 ---
 
@@ -523,8 +602,8 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 17.06-rc
-- Compose 1.13
+- Engine 17.05
+- Compose 1.12
 - Machine 0.11
 
 .exercise[
@@ -540,7 +619,7 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ---
 
-## Wait, what, 17.06 ?!?
+## Wait, what, 17.05 ?!?
 
 --
 
@@ -605,27 +684,6 @@ class: pic
 
 ---
 
-## Recent Timeline of Ops Features
-
-- 2015 1.9 Overlay (multi-host) networking, network/IPAM plugins
-- 2016 1.10 Distributed DNS
-- 2016 1.11 DNS round robin load balancing
-- 2016 1.12 Swarm mode, routing mesh, encrypted networking, healthchecks
-- 2017 1.13 Stacks, Overlay attachable, image squash and compress
-- 2017 1.13 Swarm mode for Windows Server 2016
-- 2017 17.03 Secrets
-- 2017 17.04 Update rollback, topo-aware scheduling
-- 2017 17.06 Swarm configs, multi-stage image builds, service logs
-- 2017 17.06 Windows Swarm Overlay + Secrets
-
----
-
-class: pic
-
-![Moby](moby.jpg)
-
----
-
 class: title
 
 All right!
@@ -647,16 +705,16 @@ Part 1
 # Our sample application
 
 - Visit the GitHub repository with all the materials of this workshop:
-  <br/>https://github.com/bretfisher/orchestration-workshop
+  <br/>https://github.com/jpetazzo/orchestration-workshop
 
 - The application is in the [dockercoins](
-  https://github.com/bretfisher/orchestration-workshop/tree/master/dockercoins)
+  https://github.com/jpetazzo/orchestration-workshop/tree/master/dockercoins)
   subdirectory
 
 - Let's look at the general layout of the source code:
 
   there is a Compose file [docker-compose.yml](
-  https://github.com/bretfisher/orchestration-workshop/blob/master/dockercoins/docker-compose.yml) ...
+  https://github.com/jpetazzo/orchestration-workshop/blob/master/dockercoins/docker-compose.yml) ...
 
   ... and 4 other services, each in its own directory:
 
@@ -750,7 +808,7 @@ class: pic
 
 - Clone the repository on `node1`:
   ```bash
-  git clone git://github.com/bretfisher/orchestration-workshop
+  git clone git://github.com/jpetazzo/orchestration-workshop
   ```
 
 ]
@@ -1225,19 +1283,6 @@ You can refer to the [NOMENCLATURE](https://github.com/docker/swarmkit/blob/mast
 
 ---
 
-## Concepts in Layers of Abstraction
-
-Service <br/>
-&nbsp; &nbsp; |<br/>
-&nbsp; &nbsp; |<br/>
-Task(s)<br/>
-&nbsp; &nbsp; |<br/>
-&nbsp; &nbsp; |<br/>
-Container<br/>
-
-
----
-
 ## Swarm Mode
 
 - Since version 1.12, Docker Engine embeds SwarmKit
@@ -1516,7 +1561,7 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
 ehb0...4fvx    node2     Ready   Active
 ```
 
-???
+---
 
 class: docker-machine
 
@@ -1855,9 +1900,15 @@ Some presentations from the Docker Distributed Systems Summit in Berlin:
 
 - Right now, we have only one manager (node1)
 
-- If we lose it, we're SOL
+- If we lose it, we lose quorum - and that's *very bad!*
 
-- Let's make our cluster highly available
+- Containers running on other nodes will be fine ...
+
+- But we won't be able to get or set anything related to the cluster
+
+- If the manager is permanently gone, we will have to do a manual repair!
+
+- Nobody wants to do that ... so let's make our cluster highly available
 
 ---
 
@@ -2012,26 +2063,18 @@ class: self-paced
 
 ## How many managers do we need?
 
-- Your manager cluster needs *quorum* to perform work. Quorum is basically a fancy word for majority 
-
-- Quorum and fault tolerance are related
-
 - 2N+1 nodes can (and will) tolerate N failures
   <br/>(you can have an even number of managers, but there is no point)
 
 --
 
-- 1 manager = no failure (quorum is 1)
+- 1 manager = no failure
 
-- 3 managers = 1 failure (quorum is 2)
+- 3 managers = 1 failure
 
-- 5 managers = 2 failures (or 1 failure during 1 maintenance -- quorum is 3)
+- 5 managers = 2 failures (or 1 failure during 1 maintenance)
 
 - 7 managers and more = now you might be overdoing it a little bit
-
-.footnote[.small[
-See Laura Frank [visualize raft quorum, from DockerCon on YouTube](https://www.youtube.com/watch?v=Qsv-q8WbIZY)
-]]
 
 ---
 
@@ -2067,10 +2110,6 @@ See Laura Frank [visualize raft quorum, from DockerCon on YouTube](https://www.y
   - if you can afford to have fast, stable managers, add more of them
   - otherwise, break down your nodes in multiple clusters
 
-
-  .footnote[.small[
-See Bret Fisher [give Swarm prod recommendations, from DockerCon on YouTube](https://www.youtube.com/watch?v=ZdUcKtg84T8)
-  ]]
 ---
 
 ## What's the upper limit?
@@ -4049,6 +4088,20 @@ When you do the `curl`, you should see the HTTP request in clear text in the out
 
 ---
 
+class: ipsec, extra-details
+
+## If you are using Play-With-Docker, Vagrant, etc.
+
+- You will probably have *two* network interfaces
+
+- One interface will be used for outbound traffic (to Google)
+
+- The other one will be used for internode traffic
+
+- You might have to adapt/relaunch the `ngrep` command to specify the right one!
+
+---
+
 class: ipsec
 
 ## Try to sniff traffic across overlay networks
@@ -4282,119 +4335,6 @@ class: extra-details
 - When the old tasks are `Shutdown`, it starts the new tasks
 
 - Then it waits for the `update-delay`, and continues with the next batch of instances
-
----
-
-## Healthcheck and Auto Rollback
-
-- In 1.12.0 [HEALTHCHECK](https://docs.docker.com/engine/reference/builder/#healthcheck) support [was added](https://github.com/moby/moby/pull/23218) for Dockerfiles and Swarm Services
-
-- Put a command in there that dockerd will run, and exit code (=0 good, !=0 bad) of that command will determine if container/task is restarted based on bad exit
-
-- Simple example: `HEALTHCHECK CMD curl http://localhost` will look for HTTP 200 return from `localhost` inside the container, if 4xx or 5xx received (maybe others?) it will consider the container down
-
-- Swarm uses that to know task (container) is healthy, and re-create task if needed.
-
-- `docker service update` watches `HEALTHCHECK` as it's rolling through tasks, and will rollback if needed
-
----
-
-## Update + Healthcheck + Rollback Options
-
-Example of how we might control some options in a single update command. Also able to put in compose yml
-
-```bash
-docker service update \
-  --update-delay 5s \
-  --update-failure-action rollback \
-  --update-max-failure-ratio .25 \
-  --update-monitor 5s \
-  --update-parallelism 1 \
-  --rollback-delay 5s \
-  --rollback-failure-action pause \
-  --rollback-max-failure-ratio .5 \
-  --rollback-monitor 5s \
-  --rollback-parallelism 0 \
-  --health-cmd "curl -f http://localhost/ || exit 1" \
-  --health-interval 2s \
-  --health-retries 1 \
-  --image nginx:1.11.12 \
-  nginx
-```
-
----
-
-## Update + Healthcheck + Rollback Options
-
-"batteries included, but swapable"
-
-.small[
-```bash
---health-cmd string                  Command to run to check health
---health-interval duration           Time between running the check (ms|s|m|h)
---health-retries int                 Consecutive failures needed to report unhealthy
---health-start-period duration       Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)
---health-timeout duration            Maximum time to allow one check to run (ms|s|m|h)
---no-healthcheck                     Disable any container-specified HEALTHCHECK
---restart-condition string           Restart when condition is met ("none"|"on-failure"|"any")
---restart-delay duration             Delay between restart attempts (ns|us|ms|s|m|h)
---restart-max-attempts uint          Maximum number of restarts before giving up
---restart-window duration            Window used to evaluate the restart policy (ns|us|ms|s|m|h)
---rollback                           Rollback to previous specification
---rollback-delay duration            Delay between task rollbacks (ns|us|ms|s|m|h)
---rollback-failure-action string     Action on rollback failure ("pause"|"continue")
---rollback-max-failure-ratio float   Failure rate to tolerate during a rollback
---rollback-monitor duration          Duration after each task rollback to monitor for failure (ns|us|ms|s|m|h)
---rollback-order string              Rollback order ("start-first"|"stop-first")
---rollback-parallelism uint          Maximum number of tasks rolled back simultaneously (0 to roll back all at once)
---update-delay duration              Delay between updates (ns|us|ms|s|m|h)
---update-failure-action string       Action on update failure ("pause"|"continue"|"rollback")
---update-max-failure-ratio float     Failure rate to tolerate during an update
---update-monitor duration            Duration after each task update to monitor for failure (ns|us|ms|s|m|h)
---update-order string                Update order ("start-first"|"stop-first")
---update-parallelism uint            Maximum number of tasks updated simultaneously (0 to update all at once)
-```
-]
-
----
-
-## Watch Update Rollback
-
-- Let's add a bug to `hasher`, update it with a healthcheck and watch it rollback
-
-- Open up `dockercoins/hasher/hasher.rb` and change line 6 port `80` to `81`
-
-- This means that our healthcheck when we update service will expect port 80 (exposed port) but python app will be listening on 81
-
-- App in container will run fine, but healthcheck will fail, forcing Swarm to rollback the service update
-
-- Note that a container crashing doesn't need healthcheck to rollback, so we need to create a scenerio where app is running "but not behaving like healthcheck expects" 
-
-
----
-
-## Update Commands
-
-We should see a live view of Swarm trying to update each task, while their healthchecks keep failing until it gets to "max-failure-ratio" and rollsback
-
-.exercise[
-
-```Bash
-docker-compose -f dockercoins.yml build hasher
-docker-compose -f dockercoins.yml push hasher
-
-docker service update \
---detach=false --update-delay 1s \
---update-failure-action rollback \
---update-max-failure-ratio .5 \
---update-monitor 3s --rollback-delay 1s \
---rollback-failure-action pause \
---health-cmd "curl -f http://localhost/ || exit 1" \
---health-interval 2s --health-retries 1 \
---image=127.0.0.1:5000/hasher dockercoins_hasher
-```
-
-]
 
 ---
 
@@ -4816,6 +4756,8 @@ class: secrets
 
 ## Secrets in practice
 
+- Can be (ab)used to hold whole configuration files if needed
+
 - If you intend to rotate secret `foo`, call it `foo.N` instead, and map it to `foo`
 
   (N can be a serial, a timestamp...)
@@ -4834,29 +4776,244 @@ class: secrets
 
 ---
 
-class: secrets
+class: namespaces
+name: namespaces
 
-## Service Configs (new in 17.06!)
+# Improving isolation with User Namespaces
 
-- Just like secrets, but can mount anywhere in container
+- *Namespaces* are kernel mechanisms to compartimetalize the system
 
-- Lets you avoid the need to bake configuration into images (e.g. nginx.conf)
+- There are different kind of namespaces: `pid`, `net`, `mnt`, `ipc`, `uts`, and `user`
 
-- Don't use for secrets! Secrets are redacted at the API level but configs are not
+- For a primer, see "Anatomy of a Container"
+  ([video](https://www.youtube.com/watch?v=sK5i-N34im8))
+  ([slides](https://www.slideshare.net/jpetazzo/cgroups-namespaces-and-beyond-what-are-containers-made-from-dockercon-europe-2015))
 
-```bash
-echo "aww yiss, a config!" | docker config create my_config -
+- The *user namespace* allows to map UIDs between the containers and the host
+
+- As a result, `root` in a container can map to a non-privileged user on the host
+
+Note: even without user namespaces, `root` in a container cannot go wild on the host.
+<br/>
+It is mediated by capabilities, cgroups, namespaces, seccomp, LSMs...
+
+---
+
+class: namespaces
+
+## User Namespaces in Docker
+
+- Optional feature added in Docker Engine 1.10
+
+- Not enabled by default
+
+- Has to be enabled at Engine startup, and affects all containers
+
+- When enabled, `UID:GID` in containers are mapped to a different range on the host
+
+- Safer than switching to a non-root user (with `-u` or `USER`) in the container
+  <br/>
+  (Since with user namespaces, root escalation maps to a non-privileged user)
+
+- Can be selectively disabled per container by starting them with `--userns=host`
+
+---
+
+class: namespaces
+
+## User Namespaces Caveats
+
+When user namespaces are enabled, containers cannot:
+
+- Use the host's network namespace (with `docker run --network=host`)
+
+- Use the host's PID namespace (with `docker run --pid=host`)
+
+- Run in privileged mode (with `docker run --privileged`)
+
+... Unless user namespaces are disabled for the container, with flag `--userns=host`
+
+External volume and graph drivers that don't support user mapping might not work.
+
+All containers are currently mapped to the same UID:GID range.
+
+Some of these limitations might be lifted in the future!
+
+---
+
+class: namespaces
+
+## Filesystem ownership details
+
+When enabling user namespaces:
+
+- the UID:GID on disk (in the images and containers) has to match the *mapped* UID:GID
+
+- existing images and containers cannot work (their UID:GID would have to be changed)
+
+For practical reasons, when enabling user namespaces, the Docker Engine places containers and images (and everything else) in a different directory.
+
+As a resut, if you enable user namespaces on an existing installation:
+
+-  all containers and images (and e.g. Swarm data) disappear
+
+- *if a node is a member of a Swarm, it is then kicked out of the Swarm*
+
+-  everything will re-appear if you disable user namespaces again
+
+---
+
+class: namespaces
+
+## Picking a node
+
+- We will select a node where we will enable user namespaces
+
+- This node will have to be re-added to the Swarm
+
+- All containers and services running on this node will be rescheduled
+
+- Let's make sure that we do not pick the node running the registry!
+
+.exercise[
+
+- Check on which node the registry is running:
+  ```bash
+  docker service ps registry
+  ```
+
+]
+
+Pick any other node (noted `nodeX` in the next slides).
+
+---
+
+class: namespaces
+
+## Logging into the right Engine
+
+.exercise[
+
+- Log into the right node:
+  ```bash
+  ssh node`X`
+  ```
+
+]
+
+---
+
+class: namespaces
+
+## Configuring the Engine
+
+.exercise[
+
+- Create a configuration file for the Engine:
+  ```bash
+  echo '{"userns-remap": "default"}' | sudo tee /etc/docker/daemon.json
+  ```
+
+- Restart the Engine:
+  ```bash
+  kill $(pidof dockerd)
+  ```
+
+]
+
+---
+
+class: namespaces 
+
+## Checking that User Namespaces are enabled
+
+.exercise[
+  - Notice the new Docker path:
+  ```bash
+  docker info | grep var/lib
+  ```
+
+  - Notice the new UID:GID permissions:
+  ```bash
+  sudo ls -l /var/lib/docker
+  ```
+
+]
+
+You should see a line like the following:
 ```
-
-- Then mount the config into a service to avoid writing an additional Dockerfile
-
-```bash
-docker service create --name test_cfg_mount \
-  --config source=my_config,target=/tmp/cfg alpine cat /tmp/cfg
+drwx------ 11 296608 296608 4096 Aug  3 05:11 296608.296608
 ```
 
 ---
 
+class: namespaces
+
+## Add the node back to the Swarm
+
+.exercise[
+
+- Get our manager token from another node:
+  ```bash
+  ssh node`Y` docker swarm join-token manager
+  ```
+
+- Copy-paste the join command to the node
+
+]
+
+---
+
+class: namespaces
+
+## Check the new UID:GID
+
+.exercise[
+
+- Run a background container on the node:
+  ```bash
+  docker run -d --name lockdown alpine sleep 1000000
+  ```
+
+- Look at the processes in this container:
+  ```bash
+  docker top lockdown
+  ps faux
+  ```
+
+]
+
+---
+
+class: namespaces
+
+## Comparing on-disk ownership with/without User Namespaces
+
+.exercise[
+
+- Compare the output of the two following commands:
+  ```bash
+  docker run alpine ls -l /
+  docker run --userns=host alpine ls -l /
+  ```
+
+]
+
+--
+
+class: namespaces
+
+In the first case, it looks like things belong to `root:root`.
+
+In the second case, we will see the "real" (on-disk) ownership.
+
+--
+
+class: namespaces
+
+Remember to get back to `node1` when finished!
+
+---
 
 ## A reminder about *scope*
 
@@ -5053,6 +5210,7 @@ Note: if somebody steals both your disks and your key, .strike[you're doomed! Do
 <br/>you can block the compromised node with `docker node demote` and `docker node rm`.
 
 ---
+
 class: encryption-at-rest
 
 ## Unlocking the cluster permanently
@@ -7361,6 +7519,8 @@ class: extra-details
 
 ## Constraints and global services
 
+(New in Docker Engine 1.13)
+
 - By default, global services run on *all* nodes
   ```bash
   docker service create --mode global ...
@@ -7380,6 +7540,8 @@ class: extra-details
 class: extra-details
 
 ## Constraints and dynamic scheduling
+
+(New in Docker Engine 1.13)
 
 - If constraints change, services are started/stopped accordingly
 
@@ -7411,27 +7573,6 @@ class: extra-details
 .warning[Docker will silently ignore attempts to remove a non-existent label or constraint]
 
 - It won't warn you if you typo when removing a label or constraint!
-
----
-
-class: extra-details
-
-## Placement preferences
-
-(New in Docker 17.04)
-
-- Docker can spread work around all values of a specific label
-
-- You might have multiple values of the lable `region`. With a placement preference, you can spread work around to all values of `region`.
-
-
-  ```bash
-  docker service create ... --placement-pref ‘spread=node.labels.dc’
-  ```
-
-.warning[This is a soft preference!]
-
-- If you need something more restrictive, use `--constraint`
 
 ---
 
@@ -7495,34 +7636,6 @@ class: extra-details
 - After leaving, a node still shows up in `docker node ls` (in `Down` state)
 
 - When a node is `Down`, you can remove it with `docker node rm` (from a manager node)
-
----
-
-class: extra-details
-
-## What happens when manager nodes fail?
-
-- If too many managers fail, your cluster will lose quorum and no work can be done
-
-- Simple recovery: bring the nodes back online via manual intervention. _Yes, maybe you try turning them off and on again._
-
----
-
-class: extra-details
-
-## Losing quorum
-
-- You will encounter the (cryptic) error of `context deadline exceeded`
-
-- If no other stabilization actions are successful, you must force a new cluster on a healthy manager node
-
-```bash
-docker swarm init --force-new-cluster
-```
-
-- This will create a new cluster with one healthy manager
-
-- You need to promote new managers
 
 ---
 
@@ -7647,17 +7760,15 @@ class: title, in-person
 
 That's all folks! <br/> Questions?
 
-.small[.small[.small[
+.small[.small[
 
-[Bret Fisher](https://twitter.com/bretfisher) - [Laura Frank](https://twitter.com/rhein_wein) - [Tony Pujals](https://twitter.com/subfuzion)
+Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) — [@docker](https://twitter.com/docker)
 
-"[Meet the Experts](https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/62701)" tomorrow at 11:25am at O'Reilly Booth
+AJ ([@s0ulshake](https://twitter.com/s0ulshake)) — *For hire!*
+<br/>
+`curl cv.soulshake.net`
 
-See Laura tomorrow at 2:10pm in LL21 A/B "[Everthing you though you already new about orchestration](https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/58658)"
-
-90% off my Docker Mastery course for Velocity: [dockermastery.com](http://dockermastery.com)
-
-]]]
+]]
 
 <!--
 <br/> Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) <br/> Tiffany ([@tiffanyfayj](https://twitter.com/tiffanyfayj))
@@ -7670,7 +7781,7 @@ See Laura tomorrow at 2:10pm in LL21 A/B "[Everthing you though you already new 
       var slideshow = remark.create({
         ratio: '16:9',
         highlightSpans: true,
-        excludedClasses: ["self-paced", "docker-machine", "swarmtools", "elk-manual", "snap", "prom-manual"]
+        excludedClasses: ["in-person", "elk-auto", "prom-auto"]
         //excludedClasses: ["self-paced", "extra-details", "advertise-addr", "docker-machine", "netshoot", "sbt", "ipsec", "node-info", "swarmtools", "secrets", "encryption-at-rest", "elk-manual", "snap", "prom-manual"]
       });
     </script>
