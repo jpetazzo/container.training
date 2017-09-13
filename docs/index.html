@@ -602,9 +602,8 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ## Brand new versions!
 
-- Engine 17.05
-- Compose 1.12
-- Machine 0.11
+- Docker CE 17.09
+- Compose 1.16
 
 .exercise[
 
@@ -619,11 +618,11 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ---
 
-## Wait, what, 17.05 ?!?
+## Wait, what, 17.09 ?!?
 
 --
 
-- Docker inc. [recently announced](https://blog.docker.com/2017/03/docker-enterprise-edition/)
+- Docker Inc. [announced](https://blog.docker.com/2017/03/docker-enterprise-edition/)
   Docker Enterprise Edition
 
 --
@@ -2156,9 +2155,9 @@ class: self-paced
 
 ## `--detach` for service creation
 
-(New in Docker Engine 17.05)
+(Released in Docker 17.05)
 
-If you are running Docker 17.05, you will see the following message:
+If you are running Docker 17.05+, you will see the following message:
 
 ```
 Since --detach=false was not specified, tasks will be created in the background.
@@ -2171,7 +2170,7 @@ Let's ignore it for now; but we'll come back to it in just a few minutes!
 
 ## Checking service logs
 
-(New in Docker Engine 17.05)
+(Released in Docker Engine 17.05)
 
 - Just like `docker logs` shows the output of a specific local container ...
 
@@ -2269,7 +2268,7 @@ class: extra-details
 
 ## View deployment progress
 
-(New in Docker Engine 17.05)
+(Released in Docker Engine 17.05)
 
 - Commands that create/update/delete services can run with `--detach=false`
 
@@ -3077,7 +3076,7 @@ class: extra-details
 
 - This might change in the future (after all, it was possible in 1.12 RC!)
 
-- As of Docker Engine 17.05, other parameters requiring to `rm`/`create` the service are:
+- Other parameters requiring to `rm`/`create` the service are:
 
   - service name
 
