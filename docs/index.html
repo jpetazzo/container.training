@@ -4337,6 +4337,159 @@ class: extra-details
 - Then it waits for the `update-delay`, and continues with the next batch of instances
 
 ---
+name: healthcheck
+
+## Healthcheck and Auto Rollback
+
+- In 1.12.0 [HEALTHCHECK](https://docs.docker.com/engine/reference/builder/#healthcheck) support [was added](https://github.com/moby/moby/pull/23218) for Dockerfiles and Swarm Services
+
+- Like a `RUN` but exit code (=0 good, !=0 bad) determines if container/task is restarted/recreated
+
+- Simple example: `HEALTHCHECK CMD curl http://localhost`
+  
+  - looks for HTTP 200 return inside container
+  
+  - if !=200 it considers container down
+
+  - `docker run` will restart container, Swarm re-creates task.
+
+- `docker service update` watches `HEALTHCHECK` as it's rolling through tasks, and will rollback if needed
+
+---
+
+## Update + Healthcheck + Rollback Options
+
+Example service update with some update, healthcheck and rollback options.
+
+```bash
+docker service update \
+  --update-delay 5s \
+  --update-failure-action rollback \
+  --update-max-failure-ratio .25 \
+  --update-monitor 5s \
+  --update-parallelism 1 \
+  --rollback-delay 5s \
+  --rollback-failure-action pause \
+  --rollback-max-failure-ratio .5 \
+  --rollback-monitor 5s \
+  --rollback-parallelism 0 \
+  --health-cmd "curl -f http://localhost/ || exit 1" \
+  --health-interval 2s \
+  --health-retries 1 \
+  --image your-custom-nginx:1.12 \
+  nginx-service-name
+```
+
+---
+
+## Update + Healthcheck + Rollback Options
+
+Example stack file with same options ([no rollback support yet](https://github.com/moby/moby/issues/32585))
+
+.small[
+```bash
+services:
+    nginx:
+        image: your-custom-nginx:1.12
+        deploy:
+            update_config:
+                delay: 5s
+                failure_action: rollback
+                max_failure_ratio: .25
+                monitor: 5s
+                parallelism: 1
+#             rollback_config:
+                # delay: 5s
+                # failure_action: pause
+                # max_failure_ratio: .5
+                # monitor: 5s
+                # parallelism: 0
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost"]
+            interval: 2s
+            retries: 1
+            ```
+]
+
+---
+
+## Update + Healthcheck + Rollback Options
+
+"batteries included, but swapable"
+
+.small[
+```bash
+--health-cmd string                  Command to run to check health
+--health-interval duration           Time between running the check (ms|s|m|h)
+--health-retries int                 Consecutive failures needed to report unhealthy
+--health-start-period duration       Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)
+--health-timeout duration            Maximum time to allow one check to run (ms|s|m|h)
+--no-healthcheck                     Disable any container-specified HEALTHCHECK
+--restart-condition string           Restart when condition is met ("none"|"on-failure"|"any")
+--restart-delay duration             Delay between restart attempts (ns|us|ms|s|m|h)
+--restart-max-attempts uint          Maximum number of restarts before giving up
+--restart-window duration            Window used to evaluate the restart policy (ns|us|ms|s|m|h)
+--rollback                           Rollback to previous specification
+--rollback-delay duration            Delay between task rollbacks (ns|us|ms|s|m|h)
+--rollback-failure-action string     Action on rollback failure ("pause"|"continue")
+--rollback-max-failure-ratio float   Failure rate to tolerate during a rollback
+--rollback-monitor duration          Duration after each task rollback to monitor for failure (ns|us|ms|s|m|h)
+--rollback-order string              Rollback order ("start-first"|"stop-first")
+--rollback-parallelism uint          Maximum number of tasks rolled back simultaneously (0 to roll back all at once)
+--update-delay duration              Delay between updates (ns|us|ms|s|m|h)
+--update-failure-action string       Action on update failure ("pause"|"continue"|"rollback")
+--update-max-failure-ratio float     Failure rate to tolerate during an update
+--update-monitor duration            Duration after each task update to monitor for failure (ns|us|ms|s|m|h)
+--update-order string                Update order ("start-first"|"stop-first")
+--update-parallelism uint            Maximum number of tasks updated simultaneously (0 to update all at once)
+```
+]
+
+---
+
+name: rollback
+
+## Watch Update Rollback
+
+- Let's add a bug to `hasher` and try to update the service!
+  - We'll change `hasher` to listen on port 81 rather then 80
+  - We'll also add a healthcheck that expects `hasher` to respond on 80
+
+- Container will run fine, but healthcheck will fail, forcing Swarm to rollback the service update
+
+- Note that a container crashing doesn't need healthcheck to rollback, so we need to create a scenerio where app is running "but not behaving like healthcheck expects" 
+
+.exercise[
+```Bash
+sed -i s/80/81/ dockercoins/hasher/hasher.rb
+```
+]
+
+---
+
+## Watch Update Rollback: Update Commands
+
+Build, push, and update our service. It will fail and rollback to previous version
+
+.exercise[
+
+```Bash
+docker-compose -f dockercoins.yml build hasher
+docker-compose -f dockercoins.yml push hasher
+
+docker service update \
+--detach=false --update-delay 1s \
+--update-failure-action rollback \
+--update-max-failure-ratio .5 \
+--update-monitor 3s --rollback-delay 1s \
+--health-cmd "curl -f http://localhost/ || exit 1" \
+--health-interval 2s --health-retries 1 \
+--image=127.0.0.1:5000/hasher dockercoins_hasher
+```
+
+]
+
+---
 
 class: node-info
 
