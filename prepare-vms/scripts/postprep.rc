@@ -31,7 +31,7 @@ STEP = 0
 START = time.time()
 
 def bold(msg):
-    return "{} {} {}".format("", msg, "")
+    return "{} {} {}".format("$(tput smso)", msg, "$(tput rmso)")
 
 def system(cmd, ok_codes=[]):
     global STEP
@@ -45,15 +45,14 @@ def system(cmd, ok_codes=[]):
         STEP += 1
     with open("/home/ubuntu/.bash_history", "a") as f:
         f.write("{}\n".format(cmd))
-    ret = {"retcode": retcode}
-    ret["cmd"] = cmd
 
     # If we got a non-zero exit status that hasn't been whitelisted, raise an error
-    if ret["retcode"] != 0 and ret["retcode"] not in ok_codes:
+    if retcode != 0 and retcode not in ok_codes:
       msg = "The following command failed: {}\n".format(cmd)
       msg += "The exit code was: {}".format(retcode)
       raise Exception(msg)
-    return ret
+
+    return dict(retcode=retcode, cmd=cmd)
 
 # On EC2, the ephemeral disk might be mounted on /mnt.
 # If /mnt is a mountpoint, place Docker workspace on it.
