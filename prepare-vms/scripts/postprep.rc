@@ -39,14 +39,18 @@ def system(cmd):
         t1 = time.time()
         f.write(bold("--- RUNNING [step {}] ---> {}...".format(STEP, cmd)))
         retcode = os.system(cmd)
-        if retcode:
-            retcode = bold(retcode)
         t2 = time.time()
         td = str(t2-t1)[:5]
-        f.write("[{}] in {}s\n".format(retcode, td))
+        f.write(bold("[{}] in {}s\n".format(retcode, td)))
         STEP += 1
     with open("/home/ubuntu/.bash_history", "a") as f:
         f.write("{}\n".format(cmd))
+    if retcode != 0:
+        msg = "The following command failed:\n"
+        msg+= cmd
+        msg+= "Exit code {} not in {}.".format(retcode, ok_codes)
+        raise(Exception(msg))
+
 
 # On EC2, the ephemeral disk might be mounted on /mnt.
 # If /mnt is a mountpoint, place Docker workspace on it.
@@ -115,9 +119,6 @@ system("sudo service ssh restart")
 system("sudo apt-get -q update")
 system("sudo apt-get -qy install git jq python-pip")
 
-# increase the size of the conntrack table so we don't blow it up when going crazy with http load testing
-system("echo 1000000 | sudo tee /proc/sys/net/nf_conntrack_max")
-
 #######################
 ### DOCKER INSTALLS ###
 #######################
@@ -134,10 +135,12 @@ system("sudo apt-get -qy install docker-ce")
 #system("sudo pip install -U docker-compose=={}".format(COMPOSE_VERSION))
 system("sudo curl -sSL -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/{}/docker-compose-{}-{}".format(COMPOSE_VERSION, platform.system(), platform.machine()))
 system("sudo chmod +x /usr/local/bin/docker-compose")
+system("docker-compose version")
 
 ### Install docker-machine
 system("sudo curl -sSL -o /usr/local/bin/docker-machine https://github.com/docker/machine/releases/download/v{}/docker-machine-{}-{}".format(MACHINE_VERSION, platform.system(), platform.machine()))
 system("sudo chmod +x /usr/local/bin/docker-machine")
+system("docker-machine version")
 
 system("sudo apt-get remove -y --purge dnsmasq-base")
 system("sudo apt-get -qy install python-setuptools pssh apache2-utils httping htop unzip mosh")
