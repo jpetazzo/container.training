@@ -4363,29 +4363,81 @@ class: extra-details
 - Then it waits for the `update-delay`, and continues with the next batch of instances
 
 ---
-name: healthcheck
 
-## Healthcheck and Auto Rollback
+name: healthchecks
 
-- In 1.12.0 [HEALTHCHECK](https://docs.docker.com/engine/reference/builder/#healthcheck) support [was added](https://github.com/moby/moby/pull/23218) for Dockerfiles and Swarm Services
+class: healthchecks
 
-- Like a `RUN` but exit code (=0 good, !=0 bad) determines if container/task is restarted/recreated
+# Health checks
 
-- Simple example: `HEALTHCHECK CMD curl http://localhost`
-  
-  - looks for HTTP 200 return inside container
-  
-  - if !=200 it considers container down
+(New in Docker Engine 1.12)
 
-  - `docker run` will restart container, Swarm re-creates task.
+- Commands that are executed on regular intervals in a container
 
-- `docker service update` watches `HEALTHCHECK` as it's rolling through tasks, and will rollback if needed
+- Must return 0 or 1 to indicate "all is good" or "something's wrong"
+
+- Must execute quickly (timeouts = failures)
+
+- Example:
+  ```bash
+  curl -f http://localhost/_ping || false
+  ```
+  - the `-f` flag ensures that `curl` returns non-zero for 404 and similar errors
+  - `|| false` ensures that any non-zero exit status gets mapped to 1
+  - `curl` must be installed in the container that is being checked
 
 ---
 
-## Update + Healthcheck + Rollback Options
+class: healthchecks
 
-Example service update with some update, healthcheck and rollback options.
+## Defining health checks
+
+- In a Dockerfile, with the [HEALTHCHECK](https://docs.docker.com/engine/reference/builder/#healthcheck) instruction
+  ```
+  HEALTHCHECK --interval=1s --timeout=3s CMD curl -f http://localhost/ || false
+  ```
+
+- From the command line, when running containers or services
+  ```
+  docker run --health-cmd "curl -f http://localhost/ || false" ...
+  docker service create --health-cmd "curl -f http://localhost/ || false" ...
+  ```
+
+- In Compose files, with a per-service [healthcheck](https://docs.docker.com/compose/compose-file/#healthcheck) section
+  ```yaml
+    www:
+      image: hellowebapp
+      healthcheck:
+        test: "curl -f https://localhost/ || false"
+        timeout: 3s
+  ```
+
+---
+
+class: healthcheck
+
+## Using health checks
+
+- With `docker run`, health checks are purely informative
+
+  - `docker ps` shows health status
+
+  - `docker inspect` has extra details (including health check command output)
+
+- With `docker service`:
+
+  - unhealthy tasks are terminated (i.e. the service is restarted)
+
+  - failed deployments can be rolled back automatically
+    <br/>(by setting *at least* the flag `--update-failure action rollback`)
+
+---
+
+class: healthcheck
+
+## Automated rollbacks
+
+Here is a comprehensive example using the CLI:
 
 ```bash
 docker service update \
@@ -4402,49 +4454,116 @@ docker service update \
   --health-cmd "curl -f http://localhost/ || exit 1" \
   --health-interval 2s \
   --health-retries 1 \
-  --image your-custom-nginx:1.12 \
-  nginx-service-name
+  --image yourimage:newversion \
+  yourservice
 ```
 
 ---
 
-## Update + Healthcheck + Rollback Options
+class: healthcheck
 
-Example stack file with same options ([no rollback support yet](https://github.com/moby/moby/issues/32585))
+## Implementing auto-rollback in practice
 
-.small[
-```bash
-services:
-    nginx:
-        image: your-custom-nginx:1.12
-        deploy:
-            update_config:
-                delay: 5s
-                failure_action: rollback
-                max_failure_ratio: .25
-                monitor: 5s
-                parallelism: 1
-#             rollback_config:
-                # delay: 5s
-                # failure_action: pause
-                # max_failure_ratio: .5
-                # monitor: 5s
-                # parallelism: 0
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost"]
-            interval: 2s
-            retries: 1
-            ```
+We will use the following Compose file (`stacks/dockercoins+healthchecks.yml`):
+
+```yaml
+...
+  hasher:
+    build: dockercoins/hasher
+    image: ${REGISTRY-127.0.0.1:5000}/hasher:${TAG-latest}
+    deploy:
+      replicas: 7
+      update_config:
+        delay: 5s
+        failure_action: rollback
+        max_failure_ratio: .5
+        monitor: 5s
+        parallelism: 1
+...
+```
+
+---
+
+class: healthcheck
+
+## Enabling auto-rollback
+
+.exercise[
+
+- Go to the `stacks` directory:
+  ```bash
+  cd ~/orchestration-workshop/
+  ```
+
+- Deploy the updated stack:
+  ```bash
+  docker deploy dockercoins --compose-file dockercoins+healthchecks.yml
+  ```
+
+]
+
+This will also scale the `hasher` service to 7 instances.
+
+---
+
+class: healthcheck
+
+## Visualizing a rolling update
+
+First, let's make an "innocent" change and deploy it.
+
+.exercise[
+
+- Update the `sleep` delay in the code:
+  ```bash
+  sed -i "s/sleep 0.1/sleep 0.2/" dockercoins/hasher/hasher.rb
+  ```
+
+- Build, ship, and run the new image:
+  ```bash
+  docker-compose -f dockercoins+healthchecks.yml build
+  docker-compose -f dockercoins+healthchecks.yml push
+  docker service update dockercoins_hasher \
+           --detach=false --image=127.0.0.1:5000/hasher:latest
+  ```
+
 ]
 
 ---
 
-## Update + Healthcheck + Rollback Options
+class: healthcheck
 
-"batteries included, but swapable"
+## Visualizing an automated rollback
+
+And now, a breaking change that will cause the health check to fail:
+
+.exercise[
+
+- Change the HTTP listening port:
+  ```bash
+  sed -i "s/80/81/" dockercoins/hasher/hasher.rb
+  ```
+
+- Build, ship, and run the new image:
+  ```bash
+  docker-compose -f dockercoins+healthchecks.yml build
+  docker-compose -f dockercoins+healthchecks.yml push
+  docker service update dockercoins_hasher \
+           --detach=false --image=127.0.0.1:5000/hasher:latest
+  ```
+
+]
+
+---
+
+class: healthcheck
+
+## Command-line options available for health checks, rollbacks, etc.
+
+Batteries included, but swappable
 
 .small[
-```bash
+```
 --health-cmd string                  Command to run to check health
 --health-interval duration           Time between running the check (ms|s|m|h)
 --health-retries int                 Consecutive failures needed to report unhealthy
@@ -4471,49 +4590,7 @@ services:
 ```
 ]
 
----
-
-name: rollback
-
-## Watch Update Rollback
-
-- Let's add a bug to `hasher` and try to update the service!
-  - We'll change `hasher` to listen on port 81 rather then 80
-  - We'll also add a healthcheck that expects `hasher` to respond on 80
-
-- Container will run fine, but healthcheck will fail, forcing Swarm to rollback the service update
-
-- Note that a container crashing doesn't need healthcheck to rollback, so we need to create a scenerio where app is running "but not behaving like healthcheck expects" 
-
-.exercise[
-```Bash
-sed -i s/80/81/ dockercoins/hasher/hasher.rb
-```
-]
-
----
-
-## Watch Update Rollback: Update Commands
-
-Build, push, and update our service. It will fail and rollback to previous version
-
-.exercise[
-
-```Bash
-docker-compose -f dockercoins.yml build hasher
-docker-compose -f dockercoins.yml push hasher
-
-docker service update \
---detach=false --update-delay 1s \
---update-failure-action rollback \
---update-max-failure-ratio .5 \
---update-monitor 3s --rollback-delay 1s \
---health-cmd "curl -f http://localhost/ || exit 1" \
---health-interval 2s --health-retries 1 \
---image=127.0.0.1:5000/hasher dockercoins_hasher
-```
-
-]
+Yup ... That's a lot of batteries!
 
 ---
 
