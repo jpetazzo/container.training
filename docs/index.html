@@ -802,16 +802,23 @@ class: pic
 
 - It is a DockerCoin miner! 💰🐳📦🚢
 
+--
+
 - No, you can't buy coffee with DockerCoins
+
+--
 
 - How DockerCoins works:
 
-  - `worker` asks to `rng` to give it random bytes
-  - `worker` feeds those random bytes into `hasher`
-  - each hash starting with `0` is a DockerCoin
-  - DockerCoins are stored in `redis`
-  - `redis` is also updated every second to track speed
-  - you can see the progress with the `webui`
+  - `worker` asks to `rng` to generate a few random bytes
+
+  - `worker` feeds these bytes into `hasher`
+
+  - and repeat forever!
+
+  - every second, `worker` updates `redis` to indicate how many loops were done
+
+  - `webui` queries `redis`, and computes and exposes "hashing speed" in your browser
 
 ---
 
@@ -2181,7 +2188,7 @@ class: self-paced
 
 (New in Docker Engine 17.05)
 
-If you are running Docker 17.05, you will see the following message:
+If you are running Docker 17.05 or later, you will see the following message:
 
 ```
 Since --detach=false was not specified, tasks will be created in the background.
@@ -4151,17 +4158,19 @@ However, when you run the second one, only `#` will show up.
 
 ---
 
-# Rolling updates
+# Updating services
 
-- We want to release a new version of the worker
+- We want to make changes to the web UI
 
-- We will edit the code ...
+- The process is as follows:
 
-- ... build the new image ...
+  - edit code
 
-- ... push it to the registry ...
+  - build new image
 
-- ... update our service to use the new image
+  - ship new image
+
+  - run new image
 
 ---
 
@@ -4187,6 +4196,77 @@ class: extra-details
 
 ---
 
+## Updating a single service the hard way
+
+- To update a single service, we could do the following:
+  ```bash
+  REGISTRY=localhost:5000 TAG=v0.2
+  IMAGE=$REGISTRY/dockercoins_webui:$TAG
+  docker build -t $IMAGE webui/
+  docker push $IMAGE
+  docker service update dockercoins_webui --image $IMAGE
+  ```
+
+- Make sure to tag properly your images: update the `TAG` at each iteration
+
+  (When you check which images are running, you want these tags to be uniquely identifiable)
+
+---
+
+## Updating services the easy way
+
+- With the Compose inbtegration, all we have to do is:
+  ```bash
+  export TAG=v0.2
+  docker-compose -f composefile.yml build
+  docker-compose -f composefile.yml push
+  docker stack deploy -c composefile.yml nameofstack
+  ```
+
+--
+
+- That's exactly what we used earlier to deploy the app
+
+- We don't need to learn new commands!
+
+---
+
+## Updating the web UI
+
+- Let's make the numbers on the Y axis bigger!
+
+.exercise[
+
+- Edit the file `webui/files/index.html`
+
+- Locate the `font-size` CSS attribute and increase it (at least double it)
+
+- Save and exit
+
+- Build, ship, and run:
+  ```bash
+  export TAG=v0.2
+  docker-compose -f dockercoins.yml build
+  docker-compose -f dockercoins.yml push
+  docker stack deploy -c dockercoins.yml dockercoins
+  ```
+
+]
+
+---
+
+## Viewing our changes
+
+- Wait at least 10 seconds (for the new version to be deployed)
+
+- Then reload the web UI
+
+- Or just mash "reload" frantically
+
+- ... Eventually the legend on the left will be bigger!
+
+---
+
 ## Making changes
 
 .exercise[
@@ -4203,58 +4283,40 @@ class: extra-details
 
 ---
 
-## Building and pushing the new image
+## Rolling updates
+
+- Let's change a scaled service: `worker`
 
 .exercise[
 
-- Go to the `stacks` directory:
-  ```bash
-  cd ~/orchestration-workshop/stacks
-  ```
+- Edit `worker/worker.py`
 
-- Build and ship the new image:
+- Locate the `sleep` instruction and change the delay
+
+- Build, ship, and run our changes:
   ```bash
+  export TAG=v0.3
   docker-compose -f dockercoins.yml build
   docker-compose -f dockercoins.yml push
+  docker stack deploy -c dockercoins.yml dockercoins
   ```
 
 ]
 
-Note how the build and push were fast (because caching).
-
 ---
 
-## Watching the deployment process
-
-- We will need to open a new terminal for this
+## Viewing our update as it rolls out
 
 .exercise[
 
-- Look at our service status:
+- Check the status of the `dockercoins_worker` service:
+  ```bash
+  watch docker service ps dockercoins_worker
+  ```
+
+- Hide the tasks that are shutdown:
   ```bash
   watch -n1 "docker service ps dockercoins_worker | grep -v Shutdown.*Shutdown"
-  ```
-
-]
-
-- `docker service ps worker` gives us all tasks
-  <br/>(including the one whose current or desired state is `Shutdown`)
-
-- Then we filter out the tasks whose current **and** desired state is `Shutdown`
-
-- There is also a `--filter` option, but it doesn't allow (yet) to specify that filter
-
----
-
-## Updating to our new image
-
-- Keep the `watch ...` command running!
-
-.exercise[
-
-- Update our application stack:
-  ```bash
-  docker stack deploy dockercoins -c dockercoins.yml
   ```
 
 ]
@@ -4262,6 +4324,8 @@ Note how the build and push were fast (because caching).
 If you had stopped the workers earlier, this will automatically restart them.
 
 By default, SwarmKit does a rolling upgrade, one instance at a time.
+
+We should therefore see the workers being updated one my one.
 
 ---
 
