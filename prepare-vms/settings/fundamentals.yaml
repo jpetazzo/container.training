@@ -1,33 +1,24 @@
 # This file is passed by trainer-cli to scripts/ips-txt-to-html.py
 
-workshop_name: Docker fundamentals
-workshop_short_name: Docker     # appears on VM connection cards
-repo: https://github.com/docker/docker-fundamentals
+# Number of VMs per cluster
+clustersize: 1
 
-instance_login: docker
-instance_password: training
+# Jinja2 template to use to generate ready-to-cut cards
+cards_template: cards.html
 
-clustersize: 1  # Number of VMs per cluster
-pagesize: 15    # Number of cards to print per page
+# Use "US Letter" in the US, and "A4" everywhere else
+paper_size: A4
 
-background_image: https://www.docker.com/sites/default/files/Engine.png
+# Feel free to reduce this if your printer can handle it
+paper_margin: 0.5in
 
-# To be printed on the cards:
-blurb: >
-    Here is the connection information to your very own 
-       {cluster_or_machine} for this {workshop_name} workshop. You can connect 
-       to {this_or_each} VM with any SSH client.
+# Note: paper_size and paper_margin only apply to PDF generated with pdfkit.
+# If you print (or generate a PDF) using ips.html, they will be ignored.
+# (The equivalent parameters must be set from the browser's print dialog.)
 
-       Your {machine_is_or_machines_are}:
+# This can be "test" or "stable"
+engine_version: test
 
-# {url} will be replaced by the script
-footer: >
-    <p>For slides, chat and other useful links, see: </p>
-    <center>{url}</center>
-
-url: http://container.training/
-
-engine_version: get.docker.com
-compose_version: 1.8.1
-machine_version: 0.8.2
-swarm_version: latest
+# These correspond to the version numbers visible on their respective GitHub release pages
+compose_version: 1.16.1
+machine_version: 0.12.0

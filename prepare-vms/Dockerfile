@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install \
     awscli \
+    jinja2 \
     pdfkit \
     PyYAML \
     termcolor
