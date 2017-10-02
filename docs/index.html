@@ -4787,7 +4787,7 @@ class: node-info
 
 - `docker node ps <node_name_or_id>` shows info for another node
 
-- `docker node ps -a` includes stopped and failed tasks
+- `docker node ps -f "name=<service_name>" <node_name>` The name filter matches on all or part of a task’s name
 
 ---
 
