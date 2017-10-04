@@ -7242,6 +7242,9 @@ class: prom-manual
 
 - Then we will create a service using this image
 
+Note: it is also possible to use a `config` to inject that configuration file
+without having to create this ad-hoc image.
+
 ---
 
 class: prom-manual
@@ -7327,6 +7330,175 @@ class: prom
 You should see 11 endpoints (5 cadvisor, 5 node, 1 prometheus).
 
 Their state should be "UP".
+
+---
+
+class: prom-auto, config
+
+## Injecting a configuration file
+
+(New in Docker Engine 17.06)
+
+- We are creating a custom image *just to inject a configuration*
+
+- Instead, we could use the base Prometheus image + a `config` 
+
+- A `config` is a blob (usually, a configuration file) that:
+
+  - is created and managed through the Docker API (and CLI)
+
+  - gets persisted into the Raft log (i.e. safely)
+
+  - can be associated to a service
+    <br/>
+    (this injects the blob as a plain file in the service's containers)
+
+---
+
+class: prom-auto, config
+
+## Differences between `config` and `secret`
+
+The two are very similar, but ...
+
+- `configs`:
+
+  - can be injected to any filesystem location
+
+  - can be viewed and extracted using the Docker API or CLI
+
+- `secrets`:
+
+  - can only be injected into `/run/secrets`
+
+  - are never stored in clear text on disk
+
+  - cannot be viewed or extracted with the Docker API or CLI
+
+---
+
+class: prom-auto, config
+
+## Deploying Prometheus with a `config`
+
+- The `config` can be created manually or declared in the Compose file
+
+- This is what our new Compose file looks like:
+
+.small[
+```yaml
+version: "3.3"
+
+services:
+
+prometheus:
+  image: prom/prometheus:v1.4.1 
+  ports:
+    - "9090:9090"
+  configs:
+    - source: prometheus
+      target: /etc/prometheus/prometheus.yml
+
+...
+
+configs:
+  prometheus:
+    file: ../prom/prometheus.yml
+```
+]
+
+(This is from `prometheus+config.yml`)
+
+---
+
+class: prom-auto, config
+
+## Specifying a `config` in a Compose file
+
+- In each service, an optional `configs` section can list as many configs as you want
+
+- Each config can specify:
+
+  - an optional `target` (path to inject the configuration; by default: root of the container)
+
+  - ownership and permissions (by default, the file will be owned by UID 0, i.e. `root`)
+
+- These configs reference top-level `configs` elements
+
+- The top-level configs can be declared as:
+
+  - *external*, meaning that it is supposed to be created before you deploy the stack
+
+  - referencing a file, whose content is used to initialize the config
+
+---
+
+class: prom-auto, config
+
+## Re-deploying Prometheus with a config
+
+- We will update the existing stack using `prometheus+config.yml`
+
+.exercise[
+
+- Redeploy the `prometheus` stack:
+  ```bash
+  docker stack deploy -c prometheus+config.yml prometheus
+  ```
+
+- Check that Prometheus still works as intended
+
+  (By connecting to any node of the cluster, on port 9090)
+
+]
+
+---
+
+class: prom-auto, config
+
+## Accessing the config object from the Docker CLI
+
+- Config objects can be viewed from the CLI (or API)
+
+.exercise[
+
+- List existing config objects:
+  ```bash
+  docker config ls
+  ```
+
+- View details about our config object:
+  ```bash
+  docker config inspect prometheus_prometheus
+  ```
+
+]
+
+Note: the content of the config blob is shown with BASE64 encoding.
+<br/>
+(It doesn't have to be text; it could be an image or any kind of binary content!)
+
+---
+
+class: prom-auto, config
+
+## Extracting a config blob
+
+- Let's retrieve that Prometheus configuration!
+
+.exercise[
+
+- Extract the BASE64 payload with `jq`:
+  ```bash
+  docker config inspect prometheus_prometheus | jq -r .[0].Spec.Data
+  ```
+
+- Decode it with `base64 -d`:
+  ```bash
+  docker config inspect prometheus_prometheus | jq -r .[0].Spec.Data | base64 -d
+  ```
+
+]
 
 ---
 
