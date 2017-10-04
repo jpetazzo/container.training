@@ -8362,6 +8362,57 @@ Note: `docker system prune -a` will also remove *unused* images.
 
 ---
 
+class: extra-details
+
+## Events
+
+- You can get a real-time stream of events with `docker events`
+
+- This will report *local events* and *cluster events*
+
+- Local events =
+  <br/>
+  all activity related to containers, images, plugins, volumes, networks, *on this node*
+
+- Cluster events =
+  <br/>Swarm Mode activity related to services, nodes, secrets, configs, *on the whole cluster*
+
+- `docker events` doesn't report *local events happening on other nodes*
+
+- Events can be filtered (by type, target, labels...)
+
+- Events can be formatted with Go's `text/template` or in JSON
+
+---
+
+class: extra-details
+
+## Getting *all the events*
+
+- There is no built-in to get a stream of *all the events* on *all the nodes*
+
+- This can be achieved with (for instance) the four following services working together:
+
+  - a Redis container (used as a stateless, fan-in message queue)
+
+  - a global service bind-mounting the Docker socket, pushing local events to the queue
+
+  - a similar singleton service to push global events to the queue
+
+  - a queue consumer fetching events and processing them as you please
+
+I'm not saying that you should implement it with Shell scripts, but you totally could.
+
+.small[
+(It might or might not be one of the initiating rites of the
+[House of Bash](https://twitter.com/carmatrocity/status/676559402787282944))
+]
+
+For more information about event filters and types, check [the documentation](https://docs.docker.com/engine/reference/commandline/events/).
+
+---
+
+
 class: title, extra-details
 
 # What's next?
@@ -8390,12 +8441,6 @@ class: extra-details
 class: extra-details
 
 ## Work in progress
-
-- Stabilize Compose/Swarm integration
-
-- Refine Snap deployment
-
-- Healthchecks
 
 - Demo at least one volume plugin
   <br/>(bonus points if it's a distributed storage system)
