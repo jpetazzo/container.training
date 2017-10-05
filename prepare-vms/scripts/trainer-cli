@@ -352,6 +352,8 @@ run_cli() {
     start)
         # Create $2 instances
         COUNT=$2
+        # (and optionally carry on with deployment using specified settings file)
+        SETTINGS=$3
 
         if [ -z "$COUNT" ]; then
             die "Indicate number of instances to start."
@@ -404,9 +406,13 @@ run_cli() {
         IPS=$(aws_get_instance_ips_by_tag $TAG)
         echo "$IPS" > tags/$TAG/ips.txt
         link_tag $TAG
-        echo "To deploy or kill these instances, run one of the following:"
-        echo "./trainer deploy $TAG <settings/somefile.yaml>"
-        echo "./trainer list $TAG"
+        if [ -n "$SETTINGS" ]; then
+            deploy_tag $TOKEN $SETTINGS
+        else
+            echo "To deploy or kill these instances, run one of the following:"
+            echo "./trainer deploy $TAG <settings/somefile.yaml>"
+            echo "./trainer list $TAG"
+        fi
         ;;
     status)
         greet && echo
