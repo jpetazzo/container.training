@@ -2529,6 +2529,45 @@ class: btw-labels
 
 ---
 
+## Pro-tip for ingress traffic management
+
+- It is possible to use *local* networks with Swarm services
+
+- This means that you can do something like this:
+  ```bash
+  docker service create --network host --mode global traefik ...
+  ```
+
+  (This runs the `traefik` load balancer on each node of your cluster, in the `host` network)
+
+- This gives you native performance (no iptables, no proxy, no nothing!)
+
+- The load balancer will "see" the clients' IP addresses
+
+- But: a container cannot simultaneously be in the `host` network and another network
+
+  (You will have to route traffic to containers using exposed ports or UNIX sockets)
+
+---
+
+class: extra-details
+
+## Using local networks (`host`, `macvlan` ...) with Swarm services
+
+- Using the `host` network is fairly straightforward
+
+  (With the caveats described on the previous slide)
+
+- It is also possible to use drivers like `macvlan`
+
+  - see [this guide](
+https://docs.docker.com/engine/userguide/networking/get-started-macvlan/
+) to get started on `macvlan`
+
+  - see [this PR](https://github.com/moby/moby/pull/32981) for more information about local network drivers in Swarm mode
+
+---
+
 ## Visualize container placement
 
 - Let's leverage the Docker API!
