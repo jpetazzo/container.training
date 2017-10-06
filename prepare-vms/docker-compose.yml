@@ -1,26 +1,19 @@
 version: "2"
 
 services:
-    prepare-vms:
+    workshopctl:
         build: .
-        container_name: prepare-vms
+        image: workshopctl
         working_dir: /root/prepare-vms
         volumes:
             - $HOME/.aws/:/root/.aws/
             - /etc/localtime:/etc/localtime:ro
-            - /tmp/.X11-unix:/tmp/.X11-unix
-            - $SSH_AUTH_DIRNAME:$SSH_AUTH_DIRNAME
+            - $SSH_AUTH_SOCK:$SSH_AUTH_SOCK
             - $PWD/:/root/prepare-vms/
         environment:
-            SCRIPT_DIR: /root/prepare-vms
-            DISPLAY: ${DISPLAY}
             SSH_AUTH_SOCK: ${SSH_AUTH_SOCK}
-            SSH_AGENT_PID: ${SSH_AGENT_PID}
             AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
             AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
             AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
-            AWS_DEFAULT_OUTPUT: json
-            AWS_INSTANCE_TYPE: ${AWS_INSTANCE_TYPE}
-            AWS_VPC_ID: ${AWS_VPC_ID}
             USER: ${USER}
-        entrypoint: /root/prepare-vms/scripts/trainer-cli
+        entrypoint: /root/prepare-vms/workshopctl

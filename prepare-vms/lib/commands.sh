@@ -22,6 +22,16 @@ _cmd_ami() {
     find_ubuntu_ami -r $AWS_DEFAULT_REGION -a amd64 -v 16.04 -t hvm:ebs -N -q
 }
 
+_cmd build "Build the Docker image to run this program in a container"
+_cmd_build() {
+    docker-compose build
+}
+
+_cmd wrap "Run this program in a container"
+_cmd_wrap() {
+    docker-compose run --rm workshopctl "$@"
+}
+
 _cmd cards "Generate ready-to-print cards for a batch of VMs"
 _cmd_cards() {
     TAG=$1
@@ -35,7 +45,7 @@ _cmd_cards() {
     rm -f ips.html ips.pdf
 
     # This will generate two files in the base dir: ips.pdf and ips.html
-    python scripts/ips-txt-to-html.py $SETTINGS
+    python lib/ips-txt-to-html.py $SETTINGS
 
     for f in ips.html ips.pdf; do
         # Remove old versions of cards if they exist
@@ -352,29 +362,6 @@ greet() {
     IAMUSER=$(aws iam get-user --query 'User.UserName')
     info "Hello! You seem to be UNIX user $USER, and IAM user $IAMUSER."
 }
-
-deploy_hq(){
-    TAG=$1
-    need_tag $TAG
-    REMOTE_USER=ubuntu
-    REMOTE_HOST=$(aws_get_instance_ips_by_tag $TAG)
-    echo "Trying to reach $TAG instances..."
-    while ! tag_is_reachable $TAG; do
-        echo -n "."
-        sleep 2
-    done
-    env | grep -i aws > envvars.sh
-    scp \
-        -o "UserKnownHostsFile /dev/null" \
-        -o "StrictHostKeyChecking=no" \
-        scripts/remote-execution.sh \
-        envvars.sh \
-        $REMOTE_USER@$REMOTE_HOST:/tmp/
-
-    ssh -A $REMOTE_USER@$REMOTE_HOST "bash /tmp/remote-execution.sh >>/tmp/pre.out 2>>/tmp/pre.err"
-    ssh -A $REMOTE_USER@$REMOTE_HOST 
-}
-
 
 link_tag() {
     TAG=$1

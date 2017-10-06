@@ -1,0 +1,4 @@
+#!/bin/sh
+pidof Xvfb || Xvfb -terminate &
+export DISPLAY=:0
+exec wkhtmltopdf.real "$@"

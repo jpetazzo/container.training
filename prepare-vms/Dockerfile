@@ -2,7 +2,6 @@ FROM debian:jessie
 MAINTAINER AJ Bowen <aj@soulshake.net>
 
 RUN apt-get update && apt-get install -y \
-    wkhtmltopdf \
     bsdmainutils \
     ca-certificates \
     curl \
@@ -12,9 +11,11 @@ RUN apt-get update && apt-get install -y \
     man \
     pssh \
     python \
-    python-pip \
     python-docutils \
+    python-pip \
     ssh \
+    wkhtmltopdf \
+    xvfb \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
@@ -25,7 +26,5 @@ RUN pip install \
     PyYAML \
     termcolor
 
-WORKDIR $$HOME
-RUN echo "alias ll='ls -lahF'" >> /root/.bashrc
-ENTRYPOINT ["/root/prepare-vms/scripts/trainer-cli"]
-
+RUN mv $(which wkhtmltopdf) $(which wkhtmltopdf).real
+COPY lib/wkhtmltopdf /usr/local/bin/wkhtmltopdf
