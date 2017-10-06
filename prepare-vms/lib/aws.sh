@@ -1,17 +1,13 @@
-#!/bin/bash
-
-source scripts/cli.sh
-
 aws_display_tags(){
     # Print all "Name" tags in our region with their instance count
     echo "[#] [Status] [Token] [Tag]" \
-        | awk '{ printf " %7s %-12s %-25s %-25s\n", $1, $2, $3, $4}'
+        | awk '{ printf "%-7s %-12s %-25s %-25s\n", $1, $2, $3, $4}'
     aws ec2 describe-instances \
             --query "Reservations[*].Instances[*].[State.Name,ClientToken,Tags[0].Value]" \
         | tr -d "\r" \
-        | awk '{ printf " %-12s %-25s %-25s\n", $1, $2, $3}' \
         | uniq -c \
-        | sort -k 3
+        | sort -k 3 \
+        | awk '{ printf "%-7s %-12s %-25s %-25s\n", $1, $2, $3, $4}'
 }
 
 aws_get_tokens() {
@@ -48,10 +44,8 @@ aws_display_instances_by_tag() {
                         ]"
             )
         if [[ -z $result ]]; then
-            echo "No instances found with tag $TAG in region $AWS_DEFAULT_REGION."
+            die "No instances found with tag $TAG in region $AWS_DEFAULT_REGION."
         else
-            echo "ID State Tags IP Type" \
-                | awk '{ printf "%9s %12s %15s %20s %14s \n", $1, $2, $3, $4, $5}' # column -t -c 70}
             echo "$result"
         fi
 }
@@ -94,7 +88,7 @@ aws_kill_instances_by_tag() {
         die "Invalid tag."
     fi
 
-    echo "Deleting instances with tag $TAG"
+    info "Deleting instances with tag $TAG."
 
     aws ec2 terminate-instances --instance-ids $IDS \
         | grep ^TERMINATINGINSTANCES

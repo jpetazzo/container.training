@@ -1,0 +1,21 @@
+#!/bin/sh
+case "$DOCKER_HOST" in
+*:3376)
+  echo swarm
+  ;;
+*:2376)
+  echo $DOCKER_MACHINE_NAME
+  ;;
+*:2375)
+  echo $DOCKER_MACHINE_NAME
+  ;;
+*:55555)
+  echo $DOCKER_MACHINE_NAME
+  ;;
+"")
+  echo local
+  ;;
+*)
+  echo unknown
+  ;;
+esac

@@ -1,5 +1,9 @@
-#!/bin/bash
 # borrowed from https://gist.github.com/kirikaza/6627072
+# The original script has been wrapped in a function that invokes a subshell.
+# That way, it can be safely invoked as a function from other scripts.
+
+find_ubuntu_ami() {
+(
 
 usage() {
     cat >&2 <<__
@@ -138,5 +142,5 @@ url=http://cloud-images.ubuntu.com/locator/ec2/releasesTable
         fi
     done | column -t -s \|
 
-
-
+)
+}

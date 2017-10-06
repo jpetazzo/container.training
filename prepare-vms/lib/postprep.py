@@ -1,11 +1,3 @@
-pssh -I tee /tmp/settings.yaml < $SETTINGS
-
-pssh "
-	sudo apt-get update &&
-	sudo apt-get install -y python-setuptools &&
-	sudo easy_install pyyaml"
-
-pssh -I tee /tmp/postprep.py <<EOF
 #!/usr/bin/env python
 import os
 import platform
@@ -65,32 +57,6 @@ ipv4 = open("/tmp/ipv4").read()
 # Add a "docker" user with password "training"
 system("id docker || sudo useradd -d /home/docker -m -s /bin/bash docker")
 system("echo docker:training | sudo chpasswd")
-
-# Helper for Docker prompt.
-system("""sudo tee /usr/local/bin/docker-prompt <<SQRL
-#!/bin/sh
-case "\\\$DOCKER_HOST" in
-*:3376)
-  echo swarm
-  ;;
-*:2376)
-  echo \\\$DOCKER_MACHINE_NAME
-  ;;
-*:2375)
-  echo \\\$DOCKER_MACHINE_NAME
-  ;;
-*:55555)
-  echo \\\$DOCKER_MACHINE_NAME
-  ;;
-"")
-  echo local
-  ;;
-*)
-  echo unknown
-  ;;
-esac
-SQRL""")
-system("sudo chmod +x /usr/local/bin/docker-prompt")
 
 # Fancy prompt courtesy of @soulshake.
 system("""sudo -u docker tee -a /home/docker/.bashrc <<SQRL
@@ -180,98 +146,3 @@ while addresses:
 FINISH = time.time()
 duration = "Initial deployment took {}s".format(str(FINISH - START)[:5])
 system("echo {}".format(duration))
-
-EOF
-
-IPS_FILE=ips.txt
-if [ ! -s $IPS_FILE ]; then
-    echo "ips.txt not found."
-    exit 1
-fi
-
-pssh --timeout 900 --send-input "python /tmp/postprep.py >>/tmp/pp.out 2>>/tmp/pp.err" < $IPS_FILE
-
-# If /home/docker/.ssh/id_rsa doesn't exist, copy it from node1
-pssh "
-	sudo -u docker [ -f /home/docker/.ssh/id_rsa ] ||
-	ssh -o StrictHostKeyChecking=no node1 sudo -u docker tar -C /home/docker -cvf- .ssh |
-	sudo -u docker tar -C /home/docker -xf-"
-
-# if 'docker@' doesn't appear in /home/docker/.ssh/authorized_keys, copy it there
-pssh "
-	grep docker@ /home/docker/.ssh/authorized_keys ||
-	cat /home/docker/.ssh/id_rsa.pub |
-	sudo -u docker tee -a /home/docker/.ssh/authorized_keys"
-
-# On node1, create and deploy TLS certs using Docker Machine
-true || pssh "
-	if grep -q node1 /tmp/node; then
-		grep ' node' /etc/hosts | 
-		xargs -n2 sudo -H -u docker \
-		docker-machine create -d generic --generic-ssh-user docker --generic-ip-address
-	fi"
-
-### Kubernetes cluster setup below ###
-
-_setup_kubernetes_ () {
-
-# Install packages
-pssh "
-	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg |
-	sudo apt-key add - &&
-	echo deb http://apt.kubernetes.io/ kubernetes-xenial main |
-	sudo tee /etc/apt/sources.list.d/kubernetes.list"
-pssh "
-	sudo apt-get update -q &&
-	sudo apt-get install -qy kubelet kubeadm kubectl"
-
-# Work around https://github.com/kubernetes/kubernetes/issues/53356
-pssh "
-	if [ ! -f /etc/kubernetes/kubelet.conf ]; then
-		sudo systemctl stop kubelet
-		sudo rm -rf /var/lib/kubelet/pki
-	fi"
-
-# Initialize kube master
-pssh "
-	if grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/admin.conf ]; then
-		sudo kubeadm init
-	fi"
-
-# Put kubeconfig in ubuntu's and docker's accounts
-pssh "
-	if grep -q node1 /tmp/node; then
-		sudo mkdir -p \$HOME/.kube /home/docker/.kube &&
-		sudo cp /etc/kubernetes/admin.conf \$HOME/.kube/config &&
-		sudo cp /etc/kubernetes/admin.conf /home/docker/.kube/config &&
-		sudo chown -R \$(id -u) \$HOME/.kube &&
-		sudo chown -R docker /home/docker/.kube
-	fi"
-
-# Get bootstrap token
-pssh "
-	if grep -q node1 /tmp/node; then
-		TOKEN_NAME=\$(kubectl -n kube-system get secret -o name | grep bootstrap-token)
-		TOKEN_ID=\$(kubectl -n kube-system get \$TOKEN_NAME -o go-template --template '{{ index .data \"token-id\" }}' | base64 -d)
-		TOKEN_SECRET=\$(kubectl -n kube-system get \$TOKEN_NAME -o go-template --template '{{ index .data \"token-secret\" }}' | base64 -d)
-		echo \$TOKEN_ID.\$TOKEN_SECRET >/tmp/token
-	fi"
-
-# Install weave as the pod network
-pssh "
-	if grep -q node1 /tmp/node; then
-		kubever=\$(kubectl version | base64 | tr -d '\n')
-		kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=\$kubever
-	fi"
-
-# Join the other nodes to the cluster
-pssh "
-	if ! grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/kubelet.conf ]; then
-		TOKEN=\$(ssh -o StrictHostKeyChecking=no node1 cat /tmp/token)
-		sudo kubeadm join --token \$TOKEN node1:6443
-	fi"
-
-}
-
-# Just uncomment that line to enable kubernetes provisioning!
-#_setup_kubernetes_
