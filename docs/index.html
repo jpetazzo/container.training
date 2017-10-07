@@ -1446,6 +1446,26 @@ docker swarm init --advertise-addr eth0:7777
 
 ---
 
+class: extra-details
+
+## Using a separate interface for the data path
+
+- You can use different interfaces (or IP addresses) for control and data
+
+- You set the _control plane path_ with `--advertise-addr`
+
+  (This will be used for SwarmKit manager/worker communication, leader election, etc.)
+
+- You set the _data plane path_ with `--data-path-addr`
+
+  (This will be used for traffic between containers)
+
+- Both flags can accept either an IP address, or an interface name
+
+  (When specifying an interface name, Docker will use its first IP address)
+
+---
+
 ## Token generation
 
 - In the output of `docker swarm init`, we have a message
