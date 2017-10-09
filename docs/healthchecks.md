@@ -1,0 +1,227 @@
+name: healthchecks
+
+class: healthchecks
+
+# Health checks
+
+(New in Docker Engine 1.12)
+
+- Commands that are executed on regular intervals in a container
+
+- Must return 0 or 1 to indicate "all is good" or "something's wrong"
+
+- Must execute quickly (timeouts = failures)
+
+- Example:
+  ```bash
+  curl -f http://localhost/_ping || false
+  ```
+  - the `-f` flag ensures that `curl` returns non-zero for 404 and similar errors
+  - `|| false` ensures that any non-zero exit status gets mapped to 1
+  - `curl` must be installed in the container that is being checked
+
+---
+
+class: healthchecks
+
+## Defining health checks
+
+- In a Dockerfile, with the [HEALTHCHECK](https://docs.docker.com/engine/reference/builder/#healthcheck) instruction
+  ```
+  HEALTHCHECK --interval=1s --timeout=3s CMD curl -f http://localhost/ || false
+  ```
+
+- From the command line, when running containers or services
+  ```
+  docker run --health-cmd "curl -f http://localhost/ || false" ...
+  docker service create --health-cmd "curl -f http://localhost/ || false" ...
+  ```
+
+- In Compose files, with a per-service [healthcheck](https://docs.docker.com/compose/compose-file/#healthcheck) section
+  ```yaml
+    www:
+      image: hellowebapp
+      healthcheck:
+        test: "curl -f https://localhost/ || false"
+        timeout: 3s
+  ```
+
+---
+
+class: healthcheck
+
+## Using health checks
+
+- With `docker run`, health checks are purely informative
+
+  - `docker ps` shows health status
+
+  - `docker inspect` has extra details (including health check command output)
+
+- With `docker service`:
+
+  - unhealthy tasks are terminated (i.e. the service is restarted)
+
+  - failed deployments can be rolled back automatically
+    <br/>(by setting *at least* the flag `--update-failure action rollback`)
+
+---
+
+class: healthcheck
+
+## Automated rollbacks
+
+Here is a comprehensive example using the CLI:
+
+```bash
+docker service update \
+  --update-delay 5s \
+  --update-failure-action rollback \
+  --update-max-failure-ratio .25 \
+  --update-monitor 5s \
+  --update-parallelism 1 \
+  --rollback-delay 5s \
+  --rollback-failure-action pause \
+  --rollback-max-failure-ratio .5 \
+  --rollback-monitor 5s \
+  --rollback-parallelism 0 \
+  --health-cmd "curl -f http://localhost/ || exit 1" \
+  --health-interval 2s \
+  --health-retries 1 \
+  --image yourimage:newversion \
+  yourservice
+```
+
+---
+
+class: healthcheck
+
+## Implementing auto-rollback in practice
+
+We will use the following Compose file (`stacks/dockercoins+healthchecks.yml`):
+
+```yaml
+...
+  hasher:
+    build: dockercoins/hasher
+    image: ${REGISTRY-127.0.0.1:5000}/hasher:${TAG-latest}
+    deploy:
+      replicas: 7
+      update_config:
+        delay: 5s
+        failure_action: rollback
+        max_failure_ratio: .5
+        monitor: 5s
+        parallelism: 1
+...
+```
+
+---
+
+class: healthcheck
+
+## Enabling auto-rollback
+
+.exercise[
+
+- Go to the `stacks` directory:
+  ```bash
+  cd ~/orchestration-workshop/
+  ```
+
+- Deploy the updated stack:
+  ```bash
+  docker deploy dockercoins --compose-file dockercoins+healthchecks.yml
+  ```
+
+]
+
+This will also scale the `hasher` service to 7 instances.
+
+---
+
+class: healthcheck
+
+## Visualizing a rolling update
+
+First, let's make an "innocent" change and deploy it.
+
+.exercise[
+
+- Update the `sleep` delay in the code:
+  ```bash
+  sed -i "s/sleep 0.1/sleep 0.2/" dockercoins/hasher/hasher.rb
+  ```
+
+- Build, ship, and run the new image:
+  ```bash
+  docker-compose -f dockercoins+healthchecks.yml build
+  docker-compose -f dockercoins+healthchecks.yml push
+  docker service update dockercoins_hasher \
+           --detach=false --image=127.0.0.1:5000/hasher:latest
+  ```
+
+]
+
+---
+
+class: healthcheck
+
+## Visualizing an automated rollback
+
+And now, a breaking change that will cause the health check to fail:
+
+.exercise[
+
+- Change the HTTP listening port:
+  ```bash
+  sed -i "s/80/81/" dockercoins/hasher/hasher.rb
+  ```
+
+- Build, ship, and run the new image:
+  ```bash
+  docker-compose -f dockercoins+healthchecks.yml build
+  docker-compose -f dockercoins+healthchecks.yml push
+  docker service update dockercoins_hasher \
+           --detach=false --image=127.0.0.1:5000/hasher:latest
+  ```
+
+]
+
+---
+
+class: healthcheck
+
+## Command-line options available for health checks, rollbacks, etc.
+
+Batteries included, but swappable
+
+.small[
+```
+--health-cmd string                  Command to run to check health
+--health-interval duration           Time between running the check (ms|s|m|h)
+--health-retries int                 Consecutive failures needed to report unhealthy
+--health-start-period duration       Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)
+--health-timeout duration            Maximum time to allow one check to run (ms|s|m|h)
+--no-healthcheck                     Disable any container-specified HEALTHCHECK
+--restart-condition string           Restart when condition is met ("none"|"on-failure"|"any")
+--restart-delay duration             Delay between restart attempts (ns|us|ms|s|m|h)
+--restart-max-attempts uint          Maximum number of restarts before giving up
+--restart-window duration            Window used to evaluate the restart policy (ns|us|ms|s|m|h)
+--rollback                           Rollback to previous specification
+--rollback-delay duration            Delay between task rollbacks (ns|us|ms|s|m|h)
+--rollback-failure-action string     Action on rollback failure ("pause"|"continue")
+--rollback-max-failure-ratio float   Failure rate to tolerate during a rollback
+--rollback-monitor duration          Duration after each task rollback to monitor for failure (ns|us|ms|s|m|h)
+--rollback-order string              Rollback order ("start-first"|"stop-first")
+--rollback-parallelism uint          Maximum number of tasks rolled back simultaneously (0 to roll back all at once)
+--update-delay duration              Delay between updates (ns|us|ms|s|m|h)
+--update-failure-action string       Action on update failure ("pause"|"continue"|"rollback")
+--update-max-failure-ratio float     Failure rate to tolerate during an update
+--update-monitor duration            Duration after each task update to monitor for failure (ns|us|ms|s|m|h)
+--update-order string                Update order ("start-first"|"stop-first")
+--update-parallelism uint            Maximum number of tasks updated simultaneously (0 to update all at once)
+```
+]
+
+Yup ... That's a lot of batteries!

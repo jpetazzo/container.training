@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_blank">
+    <title>Docker Orchestration Workshop</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="workshop.css">
+  </head>
+  <body>
+    <div style="position: absolute;">
+      The slides should show up here. If they don't, it might be
+      because you are accessing this file directly from your filesystem.
+      It needs to be served from a web server. You can try this:
+      <pre>
+        docker-compose up -d
+        open http://localhost:8888/workshop.html # on MacOS
+        xdg-open http://localhost:8888/workshop.html # on Linux
+      </pre>
+      Once the slides are loaded, this notice disappears when you
+      go full screen (e.g. by hitting "f").
+    </div>
+    <script src="remark.min.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+      var slideshow = remark.create({
+        sourceUrl: 'workshop.md',
+        ratio: '16:9',
+        highlightSpans: true,
+        excludedClasses: ["extra-details", "self-paced"]
+      });
+    </script>
+  </body>
+</html>
