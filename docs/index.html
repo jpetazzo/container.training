@@ -4604,9 +4604,9 @@ class: extra-details
 
 ---
 
-name: healthchecks
+name: healthcheck
 
-class: healthchecks
+class: healthcheck
 
 # Health checks
 
@@ -4628,7 +4628,7 @@ class: healthchecks
 
 ---
 
-class: healthchecks
+class: healthcheck
 
 ## Defining health checks
 
@@ -4732,7 +4732,7 @@ class: healthcheck
 
 - Go to the `stacks` directory:
   ```bash
-  cd ~/orchestration-workshop/
+  cd ~/orchestration-workshop/stacks
   ```
 
 - Deploy the updated stack:
@@ -4761,10 +4761,10 @@ First, let's make an "innocent" change and deploy it.
 
 - Build, ship, and run the new image:
   ```bash
-  docker-compose -f dockercoins+healthchecks.yml build
+  export TAG=v0.3; docker-compose -f dockercoins+healthchecks.yml build
   docker-compose -f dockercoins+healthchecks.yml push
   docker service update dockercoins_hasher \
-           --detach=false --image=127.0.0.1:5000/hasher:latest
+           --detach=false --image=127.0.0.1:5000/hasher:$TAG
   ```
 
 ]
@@ -4786,10 +4786,10 @@ And now, a breaking change that will cause the health check to fail:
 
 - Build, ship, and run the new image:
   ```bash
-  docker-compose -f dockercoins+healthchecks.yml build
+  export TAG=v0.4; docker-compose -f dockercoins+healthchecks.yml build
   docker-compose -f dockercoins+healthchecks.yml push
   docker service update dockercoins_hasher \
-           --detach=false --image=127.0.0.1:5000/hasher:latest
+           --detach=false --image=127.0.0.1:5000/hasher:$TAG
   ```
 
 ]
