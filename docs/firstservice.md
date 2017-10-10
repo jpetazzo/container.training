@@ -24,14 +24,14 @@
 
 (New in Docker Engine 17.05)
 
-If you are running Docker 17.05 or later, you will see the following message:
+If you are running Docker 17.05 to 17.09, you will see the following message:
 
 ```
 Since --detach=false was not specified, tasks will be created in the background.
 In a future release, --detach=false will become the default.
 ```
 
-Let's ignore it for now; but we'll come back to it in just a few minutes!
+You can ignore that for now; but we'll come back to it in just a few minutes!
 
 ---
 
@@ -152,9 +152,9 @@ class: extra-details
 
 ]
 
-Note: `--detach=false` will eventually become the default.
+Note: with Docker Engine 17.10 and later, `--detach=false` is the default.
 
-With older versions, you can use e.g.: `watch docker service ps <serviceID>`
+With versions older than 17.05, you can use e.g.: `watch docker service ps <serviceID>`
 
 ---
 

@@ -36,29 +36,3 @@ Reminder: there is a tag for each iteration of the content
 in the Github repository.
 
 It makes it easy to come back later and check what has changed since you did it!
-
----
-
-class: title, self-paced
-
-Thank you!
-
----
-
-class: title, in-person
-
-That's all folks! <br/> Questions?
-
-.small[.small[
-
-Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) — [@docker](https://twitter.com/docker)
-
-AJ ([@s0ulshake](https://twitter.com/s0ulshake)) — *For hire!*
-<br/>
-`curl cv.soulshake.net`
-
-]]
-
-<!--
-<br/> Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) <br/> Tiffany ([@tiffanyfayj](https://twitter.com/tiffanyfayj))
--->
