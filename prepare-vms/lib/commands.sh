@@ -130,7 +130,8 @@ _cmd_kube() {
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
     pssh "
     sudo apt-get update -q &&
-    sudo apt-get install -qy kubelet kubeadm kubectl"
+    sudo apt-get install -qy kubelet kubeadm kubectl
+    kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl"
 
     # Work around https://github.com/kubernetes/kubernetes/issues/53356
     pssh "
