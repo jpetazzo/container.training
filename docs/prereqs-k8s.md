@@ -14,9 +14,9 @@
 - For self-paced learning: SSH is not necessary if you use
   [Play-With-Docker](http://www.play-with-docker.com/)
 
-- Some Docker knowledge
+- A tiny little bit of Docker knowledge
 
-  (but that's OK if you're not a Docker expert!)
+  (that's totally OK if you're not a Docker expert!)
 
 ---
 
@@ -59,7 +59,7 @@ class: extra-details
 
 - The whole workshop is hands-on
 
-- We will see Docker in action
+- We will see Docker and Kubernetes in action
 
 - You are invited to reproduce all the demos
 
@@ -75,26 +75,6 @@ class: extra-details
 
 ---
 
-class: in-person
-
-# VM environment
-
-- To follow along, you need a cluster of five Docker Engines
-
-- If you are doing this with an instructor, see next slide
-
-- If you are doing (or re-doing) this on your own, you can:
-
-  - create your own cluster (local or cloud VMs) with Docker Machine
-    ([instructions](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-machine))
-
-  - use [Play-With-Docker](http://play-with-docker.com) ([instructions](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker))
-
-  - create a bunch of clusters for you and your friends
-    ([instructions](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-vms))
-
----
-
 class: pic, in-person
 
 ![You get five VMs](you-get-five-vms.jpg)
@@ -106,6 +86,7 @@ class: in-person
 ## You get five VMs
 
 - Each person gets 5 private VMs (not shared with anybody else)
+- Kubernetes has been deployed and pre-configured on these machines
 - They'll remain up until the day after the tutorial
 - You should have a little card with login+password+IP addresses
 - You can automatically SSH from one VM to another
@@ -146,70 +127,6 @@ wait
 -->
 
 ]
-
----
-
-class: in-person
-
-## If doing or re-doing the workshop on your own ...
-
----
-
-class: self-paced
-
-## How to get your own Docker nodes?
-
-- Use [Play-With-Docker](http://www.play-with-docker.com/)!
-
---
-
-- Main differences:
-
-  - you don't need to SSH to the machines
-    <br/>(just click on the node that you want to control in the left tab bar)
-
-  - Play-With-Docker automagically detects exposed ports
-    <br/>(and displays them as little badges with port numbers, above the terminal)
-
-  - You can access HTTP services by clicking on the port numbers
-
-  - exposing TCP services requires something like
-    [ngrok](https://ngrok.com/)
-    or [supergrok](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker)
-
-<!--
-
-- If you use VMs deployed with Docker Machine:
-
-  - you won't have pre-authorized SSH keys to bounce across machines
-
-  - you won't have host aliases
-
--->
-
----
-
-class: self-paced
-
-## Using Play-With-Docker
-
-- Open a new browser tab to [www.play-with-docker.com](http://www.play-with-docker.com/)
-
-- Confirm that you're not a robot
-
-- Click on "ADD NEW INSTANCE": congratulations, you have your first Docker node!
-
-- When you will need more nodes, just click on "ADD NEW INSTANCE" again
-
-- Note the countdown in the corner; when it expires, your instances are destroyed
-
-- If you give your URL to somebody else, they can access your nodes too
-  <br/>
-  (You can use that for pair programming, or to get help from a mentor)
-
-- Loving it? Not loving it? Tell it to the wonderful authors,
-  [@marcosnils](https://twitter.com/marcosnils) &
-  [@xetorthio](https://twitter.com/xetorthio)!
 
 ---
 
