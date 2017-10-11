@@ -22,6 +22,8 @@
 div.remark-slide-number {
   top: 6px;
   left: 6px;
+  bottom: unset;
+  right: unset;
 }
 
 body { font-family: 'Droid Serif'; }
