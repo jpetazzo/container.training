@@ -18,12 +18,12 @@
   }
 }
 
-/* put slide numbers in top-let corner instead of bottom-right */
+/* put slide numbers in top-right corner instead of bottom-right */
 div.remark-slide-number {
   top: 6px;
-  left: 6px;
+  left: unset;
   bottom: unset;
-  right: unset;
+  right: 6px;
 }
 
 body { font-family: 'Droid Serif'; }
@@ -114,7 +114,7 @@ img {
   background-position: 0.2em 0.2em;
   border: 2px dotted black;
 }
-.exercise::before {
+.exercise:before {
   content: "Exercise";
   margin-left: 1.8em;
 }
@@ -123,7 +123,7 @@ li p { line-height: 1.25em; }
 
 div.extra-details {
   background-image: url(extra-details.png);
-  background-position: 99.5% 1%;
+  background-position: 0.5% 1%;
   background-size: 4%;
 }
 
