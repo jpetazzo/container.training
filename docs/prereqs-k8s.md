@@ -11,9 +11,6 @@
   [Git BASH](https://git-for-windows.github.io/), or
   [MobaXterm](http://mobaxterm.mobatek.net/)
 
-- For self-paced learning: SSH is not necessary if you use
-  [Play-With-Docker](http://www.play-with-docker.com/)
-
 - A tiny little bit of Docker knowledge
 
   (that's totally OK if you're not a Docker expert!)
