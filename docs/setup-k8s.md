@@ -53,7 +53,8 @@
   ... But with AWS re:invent just around the corner, expect some changes
 
 - On a local machine:
-  [minikube](https://kubernetes.io/docs/getting-started-guides/minikube/)
+  [minikube](https://kubernetes.io/docs/getting-started-guides/minikube/),
+  [kubespawn](https://github.com/kinvolk/kube-spawn)
 
   FIXME
 
