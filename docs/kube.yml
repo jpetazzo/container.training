@@ -88,24 +88,10 @@ chapters:
   - concepts-k8s.md
   - kubectlget.md
   - setup-k8s.md
-
-- - firstservice.md
-  - ourapponswarm.md
-  - updatingservices.md
-  - healthchecks.md
-- - operatingswarm.md
-  - netshoot.md
-  - ipsec.md
-  - swarmtools.md
-- - security.md
-  - secrets.md
-  - leastprivilege.md
-  - apiscope.md
-  - logging.md
-  - metrics.md
-  - stateful.md
-  - extratips.md
-  - end.md
+- - kubectlrun.md
+  - kubectlexpose.md
+  - ourapponkube.md
+  - kubectlscale.md
 - |
   class: title
 
@@ -116,8 +102,3 @@ chapters:
   Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) — [@docker](https://twitter.com/docker)
 
   ]]
-
-  <!--
-  Tiffany ([@tiffanyfayj](https://twitter.com/tiffanyfayj))
-  AJ ([@s0ulshake](https://twitter.com/s0ulshake))
-  -->
