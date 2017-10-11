@@ -18,6 +18,12 @@
   }
 }
 
+/* put slide numbers in top-let corner instead of bottom-right */
+div.remark-slide-number {
+  top: 6px;
+  left: 6px;
+}
+
 body { font-family: 'Droid Serif'; }
 
 h1, h2, h3 {
