@@ -943,13 +943,15 @@ class: extra-details
 
 - Compose file version 3 adds the `deploy` section
 
-- Compose file version 3.1 adds support for secrets
+- Further versions (3.1, ...) add more features (secrets, configs ...)
 
 - You can re-run `docker stack deploy` to update a stack
 
-- ... But unsupported features will be wiped each time you redeploy (!)
+- You can make manual changes with `docker service update` ...
 
-  (This will likely be fixed/improved soon)
+- ... But they will be wiped out each time you `docker stack deploy`
+
+  (That's the intended behavior, when one thinks about it!)
 
 - `extends` doesn't work with `docker stack deploy`
 
