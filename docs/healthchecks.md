@@ -1,7 +1,5 @@
 name: healthchecks
 
-class: healthchecks
-
 # Health checks
 
 (New in Docker Engine 1.12)
@@ -21,8 +19,6 @@ class: healthchecks
   - `curl` must be installed in the container that is being checked
 
 ---
-
-class: healthchecks
 
 ## Defining health checks
 
@@ -48,8 +44,6 @@ class: healthchecks
 
 ---
 
-class: healthcheck
-
 ## Using health checks
 
 - With `docker run`, health checks are purely informative
@@ -66,8 +60,6 @@ class: healthcheck
     <br/>(by setting *at least* the flag `--update-failure action rollback`)
 
 ---
-
-class: healthcheck
 
 ## Automated rollbacks
 
@@ -94,8 +86,6 @@ docker service update \
 
 ---
 
-class: healthcheck
-
 ## Implementing auto-rollback in practice
 
 We will use the following Compose file (`stacks/dockercoins+healthchecks.yml`):
@@ -118,15 +108,13 @@ We will use the following Compose file (`stacks/dockercoins+healthchecks.yml`):
 
 ---
 
-class: healthcheck
-
 ## Enabling auto-rollback
 
 .exercise[
 
 - Go to the `stacks` directory:
   ```bash
-  cd ~/orchestration-workshop/
+  cd ~/orchestration-workshop/stacks
   ```
 
 - Deploy the updated stack:
@@ -139,8 +127,6 @@ class: healthcheck
 This will also scale the `hasher` service to 7 instances.
 
 ---
-
-class: healthcheck
 
 ## Visualizing a rolling update
 
@@ -155,17 +141,16 @@ First, let's make an "innocent" change and deploy it.
 
 - Build, ship, and run the new image:
   ```bash
+  export TAG=v0.3
   docker-compose -f dockercoins+healthchecks.yml build
   docker-compose -f dockercoins+healthchecks.yml push
   docker service update dockercoins_hasher \
-           --detach=false --image=127.0.0.1:5000/hasher:latest
+           --detach=false --image=127.0.0.1:5000/hasher:$TAG
   ```
 
 ]
 
 ---
-
-class: healthcheck
 
 ## Visualizing an automated rollback
 
@@ -180,17 +165,16 @@ And now, a breaking change that will cause the health check to fail:
 
 - Build, ship, and run the new image:
   ```bash
+  export TAG=v0.4
   docker-compose -f dockercoins+healthchecks.yml build
   docker-compose -f dockercoins+healthchecks.yml push
   docker service update dockercoins_hasher \
-           --detach=false --image=127.0.0.1:5000/hasher:latest
+           --detach=false --image=127.0.0.1:5000/hasher:$TAG
   ```
 
 ]
 
 ---
-
-class: healthcheck
 
 ## Command-line options available for health checks, rollbacks, etc.
 

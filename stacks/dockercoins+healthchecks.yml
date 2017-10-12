@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  rng:
+    build: dockercoins/rng
+    image: ${REGISTRY-127.0.0.1:5000}/rng:${TAG-latest}
+    deploy:
+      mode: global
+
+  hasher:
+    build: dockercoins/hasher
+    image: ${REGISTRY-127.0.0.1:5000}/hasher:${TAG-latest}
+    deploy:
+      replicas: 7
+      update_config:
+        delay: 5s
+        failure_action: rollback
+        max_failure_ratio: .5
+        monitor: 5s
+        parallelism: 1
+
+  webui:
+    build: dockercoins/webui
+    image: ${REGISTRY-127.0.0.1:5000}/webui:${TAG-latest}
+    ports:
+    - "8000:80"
+
+  redis:
+    image: redis
+
+  worker:
+    build: dockercoins/worker
+    image: ${REGISTRY-127.0.0.1:5000}/worker:${TAG-latest}
+    deploy:
+      replicas: 10
