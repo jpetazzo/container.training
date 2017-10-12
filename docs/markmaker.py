@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# transforms a YAML manifest into a MARKDOWN workshop file
+# transforms a YAML manifest into a HTML workshop file
 
 import glob
 import logging
@@ -19,15 +19,26 @@ class InvalidChapter(ValueError):
         ValueError.__init__(self, "Invalid chapter: {!r}".format(chapter))
 
 
-def yaml2markdown(inf, outf):
-    manifest = yaml.load(inf)
+def generatefromyaml(manifest):
+    manifest = yaml.load(manifest)
+
     markdown, titles = processchapter(manifest["chapters"])
     logging.debug(titles)
     toc = gentoc(titles)
     markdown = markdown.replace("@@TOC@@", toc)
     for (s1,s2) in manifest.get("variables", {}).items():
         markdown = markdown.replace(s1, s2)
-    outf.write(markdown)
+
+    exclude = manifest.get("exclude", [])
+    logging.debug("exclude={!r}".format(exclude))
+    if not exclude:
+        logging.warning("'exclude' is empty.")
+    exclude = ",".join('"{}"'.format(c) for c in exclude)
+
+    html = open("workshop.html").read()
+    html = html.replace("@@MARKDOWN@@", markdown)
+    html = html.replace("@@EXCLUDE@@", exclude)
+    return html
 
 
 def gentoc(titles, depth=0, chapter=0):
@@ -65,7 +76,6 @@ def processchapter(chapter):
         if "\n" in chapter:
             return (chapter, findtitles(chapter))
         if os.path.isfile(chapter):
-            mdfiles.remove(chapter)
             return processchapter(open(chapter).read())
     if isinstance(chapter, list):
         chapters = [processchapter(c) for c in chapter]
@@ -75,6 +85,4 @@ def processchapter(chapter):
     raise InvalidChapter(chapter)
 
 
-mdfiles = set(glob.glob("*.md"))
-yaml2markdown(sys.stdin, sys.stdout)
-logging.debug("The following files were unused: {}".format(mdfiles))
+sys.stdout.write(generatefromyaml(sys.stdin))

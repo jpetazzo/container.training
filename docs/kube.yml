@@ -1,3 +1,7 @@
+exclude:
+- self-paced
+- snap
+
 chapters:
 - |
   class: title
