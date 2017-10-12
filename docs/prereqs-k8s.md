@@ -42,7 +42,7 @@ class: extra-details
 
 ## Extra details
 
-- This slide should have a little magnifying glass in the top right corner
+- This slide should have a little magnifying glass in the top left corner
 
   (If it doesn't, it's because CSS is hard — Jérôme is only a backend person, alas)
 

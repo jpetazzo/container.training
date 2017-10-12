@@ -1,4 +1,4 @@
-class: netshoot, extra-details
+class: extra-details
 
 ## Troubleshooting overlay networks
 
@@ -14,19 +14,17 @@ class: netshoot, extra-details
 
 --
 
-class: netshoot, extra-details
+class: extra-details
 
 - Ah, if only we had created our overlay network with the `--attachable` flag ...
 
 --
 
-class: netshoot, extra-details
+class: extra-details
 
 - Oh well, let's use this as an excuse to introduce New Ways To Do Things
 
 ---
-
-class: netshoot
 
 # Breaking into an overlay network
 
@@ -48,8 +46,6 @@ The `constraint` makes sure that the container will be created on the local node
 
 ---
 
-class: netshoot
-
 ## Entering the debug container
 
 - Once our container is started (which should be really fast because the alpine image is small), we can enter it (from any node)
@@ -69,8 +65,6 @@ class: netshoot
 ]
 
 ---
-
-class: netshoot
 
 ## Labels
 
@@ -94,8 +88,6 @@ class: netshoot
 
 ---
 
-class: netshoot
-
 ## Installing our debugging tools
 
 - Ideally, you would author your own image, with all your favorite tools, and use it instead of the base `alpine` image
@@ -112,8 +104,6 @@ class: netshoot
 ]
 
 ---
-
-class: netshoot
 
 ## Investigating the `rng` service
 
@@ -132,8 +122,6 @@ This give us one IP address. It is not the IP address of a container.
 It is a virtual IP address (VIP) for the `rng` service.
 
 ---
-
-class: netshoot
 
 ## Investigating the VIP
 
@@ -158,8 +146,6 @@ backend is available anywhere.
 
 ---
 
-class: netshoot
-
 ## What if I don't like VIPs?
 
 - Services can be published using two modes: VIP and DNSRR.
@@ -177,8 +163,6 @@ class: netshoot
 - You change this with `docker service create --endpoint-mode [VIP|DNSRR]`
 
 ---
-
-class: netshoot
 
 ## Looking up VIP backends
 
@@ -199,7 +183,7 @@ This should list 5 IP addresses.
 
 ---
 
-class: netshoot, extra-details
+class: extra-details, benchmarking
 
 ## Testing and benchmarking our service
 
@@ -225,7 +209,7 @@ before continuing.
 
 ---
 
-class: netshoot, extra-details
+class: extra-details, benchmarking
 
 ## Benchmarking `rng`
 
@@ -247,7 +231,7 @@ We will send 50 requests, but with various levels of concurrency.
 
 ---
 
-class: netshoot, extra-details
+class: extra-details, benchmarking
 
 ## Benchmark results for `rng`
 
@@ -259,7 +243,7 @@ class: netshoot, extra-details
 
 ---
 
-class: netshoot, extra-details
+class: extra-details, benchmarking
 
 ## Benchmarking `hasher`
 
@@ -280,7 +264,7 @@ First, we need to put the POST payload in a temporary file.
 
 ---
 
-class: netshoot, extra-details
+class: extra-details, benchmarking
 
 ## Benchmarking `hasher`
 
@@ -302,7 +286,7 @@ Once again, we will send 50 requests, with different levels of concurrency.
 
 ---
 
-class: netshoot, extra-details
+class: extra-details, benchmarking
 
 ## Benchmark results for `hasher`
 
@@ -318,13 +302,13 @@ class: netshoot, extra-details
 
 ---
 
-class: netshoot, extra-details, title
+class: extra-details, title, benchmarking
 
 Why?
 
 ---
 
-class: netshoot, extra-details
+class: extra-details, benchmarking
 
 ## Why does everything take (at least) 100ms?
 
@@ -338,7 +322,7 @@ class: netshoot, extra-details
 
 ---
 
-class: netshoot, extra-details, title
+class: extra-details, title, benchmarking
 
 But ...
 
@@ -346,7 +330,7 @@ WHY?!?
 
 ---
 
-class: netshoot, extra-details
+class: extra-details, benchmarking
 
 ## Why did we sprinkle this sample app with sleeps?
 
@@ -365,7 +349,7 @@ class: netshoot, extra-details
 
 ---
 
-class: netshoot, extra-details, in-person
+class: extra-details, in-person, benchmarking
 
 ## Why do `rng` and `hasher` behave differently?
 
@@ -375,7 +359,7 @@ class: netshoot, extra-details, in-person
 
 ---
 
-class: netshoot, extra-details
+class: extra-details
 
 ## Global scheduling → global debugging
 

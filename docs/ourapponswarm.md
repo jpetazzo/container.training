@@ -763,6 +763,8 @@ Our registry is not *exactly* identical to the one deployed with `docker service
 
 ---
 
+class: auto-btp
+
 ## Testing our local registry
 
 - Connecting to port 5000 *on any node of the cluster* routes us to the registry
@@ -788,6 +790,8 @@ If that doesn't work, retry a few times; perhaps the container is still starting
 
 ---
 
+class: auto-btp
+
 ## Pushing an image to our local registry
 
 - We can retag a small image, and push it to the registry
@@ -808,6 +812,8 @@ If that doesn't work, retry a few times; perhaps the container is still starting
 ]
 
 ---
+
+class: auto-btp
 
 ## Checking what's on our local registry
 

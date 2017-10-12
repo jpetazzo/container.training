@@ -1,6 +1,8 @@
 exclude:
 - self-paced
 - snap
+- auto-btp
+- benchmarking
 
 chapters:
 - |
@@ -108,11 +110,11 @@ chapters:
   - netshoot.md
   - ipsec.md
   - swarmtools.md
-- - security.md
+  - security.md
   - secrets.md
   - leastprivilege.md
   - apiscope.md
-  - logging.md
+- - logging.md
   - metrics.md
   - stateful.md
   - extratips.md
