@@ -75,7 +75,7 @@ In this part, we will:
 
 - Create the registry service:
   ```bash
-  kubectl deploy registry --image=registry:2
+  kubectl run registry --image=registry:2
   ```
 
 - Expose it on a NodePort:
@@ -227,13 +227,13 @@ services:
 
 - Deploy `redis`:
   ```bash
-  kubectl deploy redis --image=redis
+  kubectl run redis --image=redis
   ```
 
 - Deploy everything else:
   ```bash
     for SERVICE in hasher rng webui worker; do
-      kubectl deploy $SERVICE --image=$REGISTRY/$SERVICE
+      kubectl run $SERVICE --image=$REGISTRY/$SERVICE
     done
   ```
 
@@ -273,15 +273,15 @@ services:
 
 - `worker` doesn't need to be exposed
 
-- `webui` will be dealth with later
+- `webui` will be dealt with later
 
 .exercise[
 
-- Expose each service, specifying the right port:
+- Expose each deployment, specifying the right port:
   ```bash
-  kubectl expose redis --port 6379
-  kubectl expose rng --port 80
-  kubectl expose hasher --port 80
+  kubectl expose deployment redis --port 6379
+  kubectl expose deployment rng --port 80
+  kubectl expose deployment hasher --port 80
   ```
 
 ]

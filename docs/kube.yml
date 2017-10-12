@@ -8,7 +8,7 @@ chapters:
 
   .small[
 
-  Orchestrating microservices with Docker and Kubernetes
+  Deploying and scaling microservices <br/> with Docker and Kubernetes
 
   .small[.small[
 
@@ -96,6 +96,7 @@ chapters:
   - kubectlexpose.md
   - ourapponkube.md
   - kubectlscale.md
+  - daemonset.md
 - |
   class: title
 
