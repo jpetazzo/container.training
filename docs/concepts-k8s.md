@@ -156,11 +156,11 @@ Yes!
 
 --
 
-- In this workshop, we will run our app on a single node first
+- In this workshop, we run our app on a single node first
 
 - We will need to build images and ship them around
 
-- You can do these things without Docker
+- We can do these things without Docker
   <br/>
   (and get diagnosed with NIH syndrome)
 
@@ -200,4 +200,82 @@ Yes!
   - namespace (more-or-less isolated group of things)
   - secret (bundle of sensitive data to be passed to a container)
  
-  And much more; but let's start poking around!
+  And much more! (We can see the full list by running `kubectl get`)
+
+---
+
+# Declarative vs imperative
+
+- Kubernetes puts a very strong emphasis on being *declarative*
+
+- Declarative:
+
+  *I want a cup of tea. Make it happen.*
+
+- Imperative:
+
+  *Boil some water. Pour it in a teapot. Add tea leaves. Steep for a while. Serve in cup.*
+
+--
+
+- Declarative seems simpler at first ... 
+
+--
+
+- ... As long as you know how to brew tea
+
+---
+
+## Declarative vs imperative
+
+- What declarative would really be:
+
+  *I want a cup of tea, obtained by pouring an infusion¹ of tea leaves in a cup.*
+
+--
+
+  *¹An infusion is obtained by letting the object steep a few minutes in hot² water.*
+
+--
+
+  *²Hot liquid is obtained by pouring it in an appropriate container³ and setting it on a stove.*
+
+--
+
+  *³Ah, finally, containers! Something we know about. Let's get to work, shall we?*
+
+---
+
+## Declarative vs imperative
+
+- Imperative systems:
+
+  - simpler
+
+  - if a task is interrupted, we have to restart from scratch
+
+- Declarative systems:
+
+  - if a task is interrupted (or if we show up to the party half-way through),
+    we can figure out what's missing and do only what's necessary
+
+  - we need to be able to *observe* the system
+
+  - ... and compute a "diff" between *what we have* and *what we want*
+
+---
+
+## Declarative vs imperative in Kubernetes
+
+- Virtually everything we create in Kubernetes is created from a *spec*
+
+- Watch for the `spec` fields in the YAML files later!
+
+- The *spec* describes *how we want the thing to be*
+
+- Kubernetes will *reconcile* the current state with the spec
+  <br/>(technically, this is done by a number of *controllers*)
+
+- When we want to change some resource, we update the *spec*
+
+- Kubernetes will then *converge* that resource

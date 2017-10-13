@@ -64,13 +64,13 @@ chapters:
 - - prereqs-k8s.md
   - versions-k8s.md
   - sampleapp.md
-  - concepts-k8s.md
+- - concepts-k8s.md
   - kubectlget.md
   - setup-k8s.md
-- - kubectlrun.md
-  - kubectlexpose.md
+  - kubectlrun.md
+- - kubectlexpose.md
   - ourapponkube.md
-  - kubectlscale.md
+- - kubectlscale.md
   - daemonset.md
 - |
   class: title
