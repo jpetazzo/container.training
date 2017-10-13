@@ -1,5 +1,3 @@
-class: node-info
-
 ## Getting task information for a given node
 
 - You can see all the tasks assigned to a node with `docker node ps`
@@ -10,4 +8,11 @@ class: node-info
 
 - `docker node ps <node_name_or_id>` shows info for another node
 
-- `docker node ps -a` includes stopped and failed tasks
+- `docker node ps -f <filter_expression>` allows to select which tasks to show
+
+  ```bash
+  # Show only tasks that are supposed to be running
+  docker node ps -f desired-state=running
+  # Show only tasks whose name contains the string "front"
+  docker node ps -f name=front
+  ```
