@@ -72,6 +72,8 @@ chapters:
   - ourapponkube.md
 - - kubectlscale.md
   - daemonset.md
+  - rollout.md
+  - whatsnext.md
 - |
   class: title
 
