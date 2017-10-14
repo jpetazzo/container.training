@@ -22,7 +22,7 @@ class InvalidChapter(ValueError):
 def generatefromyaml(manifest):
     manifest = yaml.load(manifest)
 
-    markdown, titles = processchapter(manifest["chapters"])
+    markdown, titles = processchapter(manifest["chapters"], "<inline>")
     logging.debug(titles)
     toc = gentoc(titles)
     markdown = markdown.replace("@@TOC@@", toc)
@@ -48,7 +48,7 @@ def gentoc(titles, depth=0, chapter=0):
         return "  "*(depth-2) + "- " + titles + "\n"
     if isinstance(titles, list):
         if depth==0:
-            sep = "\n\n---\n\n"
+            sep = "\n\n<!-- auto-generated TOC -->\n---\n\n"
             head = ""
             tail = ""
         elif depth==1:
@@ -62,23 +62,28 @@ def gentoc(titles, depth=0, chapter=0):
         return head + sep.join(gentoc(t, depth+1, c+1) for (c,t) in enumerate(titles)) + tail
 
 
-def findtitles(markdown):
-    return re.findall("^# (.*)", markdown, re.MULTILINE)
-
-
-# This takes a file name or a markdown snippet in argument.
-# It returns (epxandedmarkdown,[list of titles])
+# Arguments:
+# - `chapter` is a string; if it has multiple lines, it will be used as
+#   a markdown fragment; otherwise it will be considered as a file name
+#   to be recursively loaded and parsed
+# - `filename` is the name of the file that we're currently processing
+#   (to generate inline comments to facilitate edition)
+# Returns: (epxandedmarkdown,[list of titles])
 # The list of titles can be nested.
-def processchapter(chapter):
+def processchapter(chapter, filename):
     if isinstance(chapter, unicode):
-        return processchapter(chapter.encode("utf-8"))
+        return processchapter(chapter.encode("utf-8"), filename)
     if isinstance(chapter, str):
         if "\n" in chapter:
-            return (chapter, findtitles(chapter))
+            titles = re.findall("^# (.*)", chapter, re.MULTILINE)
+            slidefooter = "<!-- {} -->".format(filename)
+            chapter = chapter.replace("\n---\n", "\n{}\n---\n".format(slidefooter))
+            chapter += "\n" + slidefooter
+            return (chapter, titles)
         if os.path.isfile(chapter):
-            return processchapter(open(chapter).read())
+            return processchapter(open(chapter).read(), chapter)
     if isinstance(chapter, list):
-        chapters = [processchapter(c) for c in chapter]
+        chapters = [processchapter(c, filename) for c in chapter]
         markdown = "\n---\n".join(c[0] for c in chapters)
         titles = [t for (m,t) in chapters if t]
         return (markdown, titles)
