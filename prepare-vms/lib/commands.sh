@@ -72,10 +72,10 @@ _cmd_deploy() {
     # wait until all hosts are reachable before trying to deploy
     info "Trying to reach $TAG instances..."
     while ! tag_is_reachable $TAG; do
-        echo -n "."
+        >/dev/stderr echo -n "."
         sleep 2
     done
-    echo ""
+    >/dev/stderr echo ""
 
     sep "Deploying tag $TAG"
     pssh -I tee /tmp/settings.yaml < $SETTINGS
@@ -105,6 +105,7 @@ _cmd_deploy() {
     sudo -u docker tee -a /home/docker/.ssh/authorized_keys"
 
     # On node1, create and deploy TLS certs using Docker Machine
+    # (Currently disabled.)
     true || pssh "
     if grep -q node1 /tmp/node; then
         grep ' node' /etc/hosts | 
@@ -217,9 +218,9 @@ _cmd_status() {
     need_tag $TAG
     describe_tag $TAG
     tag_is_reachable $TAG
-    echo "You may be interested in running one of the following commands:"
-    echo "$0 ips $TAG"
-    echo "$0 deploy $TAG <settings/somefile.yaml>"
+    info "You may be interested in running one of the following commands:"
+    info "$0 ips $TAG"
+    info "$0 deploy $TAG <settings/somefile.yaml>"
 }
 
 _cmd opensg "Open the default security group to ALL ingress traffic"
@@ -321,9 +322,9 @@ _cmd_start() {
     if [ -n "$SETTINGS" ]; then
         _cmd_deploy $TAG $SETTINGS
     else
-        echo "To deploy or kill these instances, run one of the following:"
-        echo "$0 deploy $TAG <settings/somefile.yaml>"
-        echo "$0 stop $TAG"
+        info "To deploy or kill these instances, run one of the following:"
+        info "$0 deploy $TAG <settings/somefile.yaml>"
+        info "$0 stop $TAG"
     fi    
 }
 
@@ -377,7 +378,7 @@ pull_tag(){
     need_tag $TAG
     link_tag $TAG
     if [ ! -s $IPS_FILE ]; then
-        echo "Nonexistent or empty IPs file $IPS_FILE"
+        die "Nonexistent or empty IPs file $IPS_FILE."
     fi
 
     # Pre-pull a bunch of images

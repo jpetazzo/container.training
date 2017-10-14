@@ -13,15 +13,15 @@ die() {
 }
 
 error() {
-    echo "[$(red ERROR)] $1"
+    >/dev/stderr echo "[$(red ERROR)] $1"
 }
 
 warning() {
-    echo "[$(yellow WARNING)] $1"
+    >/dev/stderr echo "[$(yellow WARNING)] $1"
 }
 
 info() {
-    echo "[$(green INFO)] $1"
+    >/dev/stderr echo "[$(green INFO)] $1"
 }
 
 # Print a full-width separator.
@@ -33,17 +33,19 @@ sep() {
     fi
     SEP=$(yes = | tr -d "\n" | head -c $[$COLUMNS - 1])
     if [ -z "$1" ]; then
-        echo $SEP
+        >/dev/stderr echo $SEP
     else
         MSGLEN=$(echo "$1" | wc -c)
         if [ $[ $MSGLEN +4 ] -gt $COLUMNS ]; then
-            echo "$SEP"
-            echo "$1"
-            echo "$SEP"
+            >/dev/stderr echo "$SEP"
+            >/dev/stderr echo "$1"
+            >/dev/stderr echo "$SEP"
         else
             LEFTLEN=$[ ($COLUMNS - $MSGLEN - 2) / 2 ]
             RIGHTLEN=$[ $COLUMNS - $MSGLEN - 2 - $LEFTLEN ]
-            echo "$(echo $SEP | head -c $LEFTLEN) $1 $(echo $SEP | head -c $RIGHTLEN)"
+            LEFTSEP=$(echo $SEP | head -c $LEFTLEN)
+            RIGHTSEP=$(echo $SEP | head -c $RIGHTLEN)
+            >/dev/stderr echo "$LEFTSEP $1 $RIGHTSEP"
         fi
     fi
 }
@@ -65,12 +67,10 @@ need_settings() {
 need_ips_file() {
     IPS_FILE=$1
     if [ -z "$IPS_FILE" ]; then
-        echo "IPS_FILE not set."
-        die
+        die "IPS_FILE not set."
     fi
 
     if [ ! -s "$IPS_FILE" ]; then
-        echo "IPS_FILE $IPS_FILE not found. Please run: $0 ips <TAG>"
-        die
+        die "IPS_FILE $IPS_FILE not found. Please run: $0 ips <TAG>"
     fi
 }
