@@ -12,7 +12,7 @@
 
 ---
 
-# Rolling updates
+## Rolling updates
 
 - With rolling updates, when a resource is updated, it happens progressively
 
