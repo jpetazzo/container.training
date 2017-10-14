@@ -116,7 +116,7 @@ _cmd_deploy() {
     sep "Deployed tag $TAG"
     info "You may want to run one of the following commands:"
     info "$0 kube $TAG"
-    info "$0 pull-images $TAG"
+    info "$0 pull_images $TAG"
     info "$0 cards $TAG $SETTINGS"
 }
 
