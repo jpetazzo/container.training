@@ -70,6 +70,7 @@ chapters:
   - kubectlrun.md
 - - kubectlexpose.md
   - ourapponkube.md
+  - dashboard.md
 - - kubectlscale.md
   - daemonset.md
   - rollout.md
