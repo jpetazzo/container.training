@@ -92,6 +92,8 @@ aws_kill_instances_by_tag() {
 
     aws ec2 terminate-instances --instance-ids $IDS \
         | grep ^TERMINATINGINSTANCES
+
+    info "Deleted instances with tag $TAG."
 }
 
 aws_tag_instances() {
