@@ -14,7 +14,12 @@ forever)
   STTY=$(stty -g)
   while true; do
     find . | entr -d $0 once
-    [ $? = 2 ] || break
+    STATUS=$?
+    case $STATUS in
+    2) echo "Directory has changed. Restarting.";;
+    130) echo "SIGINT or q pressed. Exiting."; break;;
+    *) echo "Weird exit code: $STATUS. Retrying in 1 second."; sleep 1;;
+    esac
   done
   stty $STTY
   ;;
