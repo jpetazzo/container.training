@@ -100,6 +100,12 @@ img {
   display: inline;
 }
 
+.blackbelt {
+  background-image: url("blackbelt.png");
+  background-size: 1.5em;
+  background-repeat: no-repeat;
+  padding-left: 2em;
+}
 .warning {
   background-image: url("warning.png");
   background-size: 1.5em;
