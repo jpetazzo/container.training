@@ -1,5 +1,3 @@
-class: ipsec
-
 # Securing overlay networks
 
 - By default, overlay networks are using plain VXLAN encapsulation
@@ -15,8 +13,6 @@ class: ipsec
   (Other drivers/plugins will use different mechanisms)
 
 ---
-
-class: ipsec
 
 ## Creating two networks: encrypted and not
 
@@ -40,8 +36,6 @@ class: ipsec
 
 ---
 
-class: ipsec
-
 ## Deploying a web server sitting on both networks
 
 - Let's use good old NGINX
@@ -64,8 +58,6 @@ class: ipsec
 
 ---
 
-class: ipsec
-
 ## Sniff HTTP traffic
 
 - We will use `ngrep`, which allows to grep for network traffic
@@ -83,16 +75,12 @@ class: ipsec
 
 --
 
-class: ipsec
-
 Seeing tons of HTTP request? Shutdown your DockerCoins workers:
 ```bash
 docker service update dockercoins_worker --replicas=0
 ```
 
 ---
-
-class: ipsec
 
 ## Check that we are, indeed, sniffing traffic
 
@@ -115,7 +103,7 @@ When you do the `curl`, you should see the HTTP request in clear text in the out
 
 ---
 
-class: ipsec, extra-details
+class: extra-details
 
 ## If you are using Play-With-Docker, Vagrant, etc.
 
@@ -128,8 +116,6 @@ class: ipsec, extra-details
 - You might have to adapt/relaunch the `ngrep` command to specify the right one!
 
 ---
-
-class: ipsec
 
 ## Try to sniff traffic across overlay networks
 

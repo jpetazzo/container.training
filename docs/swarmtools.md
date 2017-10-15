@@ -1,5 +1,3 @@
-class: swarmtools
-
 # SwarmKit debugging tools
 
 - The SwarmKit repository comes with debugging tools
@@ -13,8 +11,6 @@ class: swarmtools
   - `swarm-rafttool`, to inspect the content of the Raft log
 
 ---
-
-class: swarmtools
 
 ## Building the SwarmKit tools
 
@@ -39,8 +35,6 @@ the build might fail. In that case, just skip the Swarm tools section.
 
 ---
 
-class: swarmtools
-
 ## Getting cluster-wide task information
 
 - The Docker API doesn't expose this directly (yet)
@@ -53,8 +47,6 @@ class: swarmtools
   interact with the SwarmKit API
 
 ---
-
-class: swarmtools
 
 ## Using `swarmctl`
 
@@ -80,8 +72,6 @@ class: swarmtools
 
 ---
 
-class: swarmtools
-
 ## `swarmctl` in action
 
 - Let's review a few useful `swarmctl` commands
@@ -102,8 +92,6 @@ class: swarmtools
 
 ---
 
-class: swarmtools
-
 ## `swarmctl` notes
 
 - SwarmKit is vendored into the Docker Engine
@@ -121,8 +109,6 @@ class: swarmtools
 
 ---
 
-class: swarmtools
-
 ## `swarm-rafttool`
 
 - SwarmKit stores all its important data in a distributed log using the Raft protocol
@@ -139,8 +125,6 @@ class: swarmtools
 
 ---
 
-class: swarmtools
-
 ## The powers of `swarm-rafttool`
 
 With `swarm-rafttool`, you can:
@@ -156,8 +140,6 @@ With `swarm-rafttool`, you can:
 It *cannot* work on live files, so you must stop Docker or make a copy first.
 
 ---
-
-class: swarmtools
 
 ## Using `swarm-rafttool`
 
@@ -178,8 +160,6 @@ class: swarmtools
 ]
 
 ---
-
-class: swarmtools
 
 ## Dumping the Raft log
 

@@ -1,5 +1,3 @@
-class: extra-details
-
 # Controlling Docker from a container
 
 - In a local environment, just bind-mount the Docker control socket:
@@ -22,8 +20,6 @@ More resources on this topic:
 
 ---
 
-class: extra-details
-
 ## Bind-mounting the Docker control socket
 
 - In Swarm mode, bind-mounting the control socket gives you access to the whole cluster
@@ -36,8 +32,6 @@ class: extra-details
   ```
 
 ---
-
-class: extra-details
 
 ## Constraints and global services
 
@@ -59,8 +53,6 @@ class: extra-details
 
 ---
 
-class: extra-details
-
 ## Constraints and dynamic scheduling
 
 (New in Docker Engine 1.13)
@@ -79,8 +71,6 @@ class: extra-details
 
 ---
 
-class: extra-details
-
 ## Shortcomings of dynamic scheduling
 
 .warning[If a service becomes "unschedulable" (constraints can't be satisfied):]
@@ -98,8 +88,6 @@ class: extra-details
 
 ---
 
-class: extra-details
-
 # Node management
 
 - SwarmKit allows to change (almost?) everything on-the-fly
@@ -107,8 +95,6 @@ class: extra-details
 - Nothing should require a global restart
 
 ---
-
-class: extra-details
 
 ## Node availability
 
@@ -130,8 +116,6 @@ docker node update <node-name> --availability <active|pause|drain>
 
 ---
 
-class: extra-details
-
 ## Managers and workers
 
 - Nodes can be promoted to manager with `docker node promote`
@@ -144,8 +128,6 @@ class: extra-details
   <br/>(workers cannot promote themselves)
 
 ---
-
-class: extra-details
 
 ## Removing nodes
 
@@ -160,8 +142,6 @@ class: extra-details
 - When a node is `Down`, you can remove it with `docker node rm` (from a manager node)
 
 ---
-
-class: extra-details
 
 ## Join tokens and automation
 
@@ -178,8 +158,6 @@ class: extra-details
   - propagate the token to the other nodes (secure bucket, facter, ohai...)
 
 ---
-
-class: extra-details
 
 ## Disk space management: `docker system df`
 
@@ -199,8 +177,6 @@ class: extra-details
 Note: `docker system` is new in Docker Engine 1.13.
 
 ---
-
-class: extra-details
 
 ## Reclaiming unused resources: `docker system prune`
 
@@ -225,8 +201,6 @@ Note: `docker system prune -a` will also remove *unused* images.
 
 ---
 
-class: extra-details
-
 ## Events
 
 - You can get a real-time stream of events with `docker events`
@@ -247,8 +221,6 @@ class: extra-details
 - Events can be formatted with Go's `text/template` or in JSON
 
 ---
-
-class: extra-details
 
 ## Getting *all the events*
 
