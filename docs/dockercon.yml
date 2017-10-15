@@ -5,6 +5,8 @@ exclude:
 - snap
 - auto-btp
 - benchmarking
+- elk-manual
+- prom-manual
 
 chapters:
 - |
@@ -60,7 +62,7 @@ chapters:
   ## "From zero to hero"
 
   --
-  
+
   - It rhymes, but it's a pretty bad title, to be honest
 
   --
@@ -148,6 +150,7 @@ chapters:
   - swarmtools.md
   - security.md
   - secrets.md
+  - encryptionatrest.md
   - leastprivilege.md
   - apiscope.md
 - - logging.md

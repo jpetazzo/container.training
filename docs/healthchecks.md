@@ -88,7 +88,7 @@ docker service update \
 
 ## Implementing auto-rollback in practice
 
-We will use the following Compose file (`stacks/dockercoins+healthchecks.yml`):
+We will use the following Compose file (`stacks/dockercoins+healthcheck.yml`):
 
 ```yaml
 ...
@@ -119,7 +119,7 @@ We will use the following Compose file (`stacks/dockercoins+healthchecks.yml`):
 
 - Deploy the updated stack:
   ```bash
-  docker deploy dockercoins --compose-file dockercoins+healthchecks.yml
+  docker stack deploy dockercoins --compose-file dockercoins+healthcheck.yml
   ```
 
 ]
@@ -141,9 +141,9 @@ First, let's make an "innocent" change and deploy it.
 
 - Build, ship, and run the new image:
   ```bash
-  export TAG=v0.3
-  docker-compose -f dockercoins+healthchecks.yml build
-  docker-compose -f dockercoins+healthchecks.yml push
+  export TAG=v0.5
+  docker-compose -f dockercoins+healthcheck.yml build
+  docker-compose -f dockercoins+healthcheck.yml push
   docker service update dockercoins_hasher \
            --detach=false --image=127.0.0.1:5000/hasher:$TAG
   ```
@@ -165,9 +165,9 @@ And now, a breaking change that will cause the health check to fail:
 
 - Build, ship, and run the new image:
   ```bash
-  export TAG=v0.4
-  docker-compose -f dockercoins+healthchecks.yml build
-  docker-compose -f dockercoins+healthchecks.yml push
+  export TAG=v0.6
+  docker-compose -f dockercoins+healthcheck.yml build
+  docker-compose -f dockercoins+healthcheck.yml push
   docker service update dockercoins_hasher \
            --detach=false --image=127.0.0.1:5000/hasher:$TAG
   ```

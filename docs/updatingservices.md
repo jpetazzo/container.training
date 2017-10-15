@@ -14,33 +14,11 @@
 
 ---
 
-class: extra-details
-
-## But first...
-
-- Restart the workers
-
-.exercise[
-
-- Just scale back to 10 replicas:
-  ```bash
-  docker service update dockercoins_worker --replicas 10
-  ```
-
-- Check that they're running:
-  ```bash
-  docker service ps dockercoins_worker
-  ```
-
-]
-
----
-
 ## Updating a single service the hard way
 
 - To update a single service, we could do the following:
   ```bash
-  REGISTRY=localhost:5000 TAG=v0.2
+  REGISTRY=localhost:5000 TAG=v0.3
   IMAGE=$REGISTRY/dockercoins_webui:$TAG
   docker build -t $IMAGE webui/
   docker push $IMAGE
@@ -55,9 +33,9 @@ class: extra-details
 
 ## Updating services the easy way
 
-- With the Compose inbtegration, all we have to do is:
+- With the Compose integration, all we have to do is:
   ```bash
-  export TAG=v0.2
+  export TAG=v0.3
   docker-compose -f composefile.yml build
   docker-compose -f composefile.yml push
   docker stack deploy -c composefile.yml nameofstack
@@ -85,7 +63,7 @@ class: extra-details
 
 - Build, ship, and run:
   ```bash
-  export TAG=v0.2
+  export TAG=v0.3
   docker-compose -f dockercoins.yml build
   docker-compose -f dockercoins.yml push
   docker stack deploy -c dockercoins.yml dockercoins
@@ -107,22 +85,6 @@ class: extra-details
 
 ---
 
-## Making changes
-
-.exercise[
-
-- Edit `~/orchestration-workshop/dockercoins/worker/worker.py`
-
-- Locate the line that has a `sleep` instruction
-
-- Increase the `sleep` from `0.1` to `1.0`
-
-- Save your changes and exit
-
-]
-
----
-
 ## Rolling updates
 
 - Let's change a scaled service: `worker`
@@ -135,7 +97,7 @@ class: extra-details
 
 - Build, ship, and run our changes:
   ```bash
-  export TAG=v0.3
+  export TAG=v0.4
   docker-compose -f dockercoins.yml build
   docker-compose -f dockercoins.yml push
   docker stack deploy -c dockercoins.yml dockercoins

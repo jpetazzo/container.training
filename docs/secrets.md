@@ -145,6 +145,7 @@ class: secrets
 ]
 
 Wait for the service to be fully updated with e.g. `watch docker service ps dummyservice`.
+<br/>(With Docker Engine 17.10 and later, the CLI will wait for you!)
 
 ---
 

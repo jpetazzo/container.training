@@ -1,5 +1,3 @@
-class: encryption-at-rest
-
 ## Encryption at rest
 
 - Swarm data is always encrypted
@@ -20,8 +18,6 @@ class: encryption-at-rest
 
 ---
 
-class: encryption-at-rest
-
 ## Locking a Swarm cluster
 
 - This is achieved through the `docker swarm update` command
@@ -38,8 +34,6 @@ class: encryption-at-rest
 This will display the unlock key. Copy-paste it somewhere safe.
 
 ---
-
-class: encryption-at-rest
 
 ## Locked state
 
@@ -58,8 +52,6 @@ Note: if you are doing the workshop on your own, using nodes
 that you [provisioned yourself](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-machine) or with [Play-With-Docker](http://play-with-docker.com/), you might have to use a different method to restart the Engine.
 
 ---
-
-class: encryption-at-rest
 
 ## Checking that our node is locked
 
@@ -82,8 +74,6 @@ class: encryption-at-rest
 
 ---
 
-class: encryption-at-rest
-
 ## Checking the state of the node programmatically
 
 - The state of the node shows up in the output of `docker info`
@@ -103,8 +93,6 @@ class: encryption-at-rest
 ]
 
 ---
-
-class: encryption-at-rest
 
 ## Unlocking a node
 
@@ -128,8 +116,6 @@ class: encryption-at-rest
 
 ---
 
-class: encryption-at-rest
-
 ## Managing the secret key
 
 - If the key is compromised, you can change it and re-encrypt with a new key:
@@ -148,8 +134,6 @@ Note: if somebody steals both your disks and your key, .strike[you're doomed! Do
 <br/>you can block the compromised node with `docker node demote` and `docker node rm`.
 
 ---
-
-class: encryption-at-rest
 
 ## Unlocking the cluster permanently
 

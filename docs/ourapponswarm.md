@@ -171,14 +171,14 @@ class: manual-btp
   docker service create --name registry --publish 5000:5000 registry:2
   ```
 
-- Try the following command, until it returns `{"repositories":[]}`:
+- Now try the following command; it should return `{"repositories":[]}`:
   ```bash
   curl 127.0.0.1:5000/v2/_catalog
   ```
 
 ]
 
-(Retry a few times, it might take 10-20 seconds for the container to be started. Patience.)
+(If that doesn't work, wait a few seconds and try again.)
 
 ---
 

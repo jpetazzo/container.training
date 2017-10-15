@@ -123,7 +123,7 @@ class: extra-details
 
 - Scale the service to ensure 2 copies per node:
   ```bash
-  docker service update <serviceID> --replicas 10
+  docker service update <serviceID> --replicas 10 --detach=true
   ```
 
 - Check that we have two containers on the current node:

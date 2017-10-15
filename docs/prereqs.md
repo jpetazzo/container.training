@@ -149,19 +149,9 @@ wait
 
 ---
 
-class: in-person
-
 ## If doing or re-doing the workshop on your own ...
 
----
-
-class: self-paced
-
-## How to get your own Docker nodes?
-
 - Use [Play-With-Docker](http://www.play-with-docker.com/)!
-
---
 
 - Main differences:
 
