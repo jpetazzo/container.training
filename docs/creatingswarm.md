@@ -344,3 +344,9 @@ Some presentations from the Docker Distributed Systems Summit in Berlin:
 - Heart of the SwarmKit: Store, Topology & Object Model
   ([slides](http://www.slideshare.net/Docker/heart-of-the-swarmkit-store-topology-object-model))
   ([video](https://www.youtube.com/watch?v=EmePhjGnCXY))
+
+And DockerCon Black Belt talks:
+
+.blackbelt[[Everything You Thought You Already Knew About Orchestration](https://www.youtube.com/watch?v=Qsv-q8WbIZY&list=PLkA60AVN3hh-biQ6SCtBJ-WVTyBmmYho8&index=6) by Laura Frank (DC17US)]
+
+.blackbelt[Container Orchestration from Theory to Practice by Laura Frank and Stephen Day (Wednesday 14:25)]

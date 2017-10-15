@@ -45,3 +45,13 @@
 - Enforce workloads of a given security level to run in a given zone
 
 - Enforcement can be done with [Authorization Plugins](https://docs.docker.com/engine/extend/plugins_authorization/)
+
+---
+
+## Learning more about container security
+
+.blackbelt[[Securing Containers, One Patch At A Time](https://www.youtube.com/watch?v=jZSs1RHwcqo&list=PLkA60AVN3hh-biQ6SCtBJ-WVTyBmmYho8&index=4) by Michael Crosby (DC17US)]
+
+.blackbelt[Container-relevant Upstream Kernel Developments by Tycho Andersen (Tuesday 14:55)]
+
+.blackbelt[What Have Syscalls Done for you Lately? by Liz Rice (Tuesday 11:45)]

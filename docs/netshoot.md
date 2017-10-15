@@ -375,3 +375,11 @@ class: extra-details
   - run tests from multiple locations at the same time
 
 (This becomes very practical with the `docker service log` command, available since 17.05.)
+
+---
+
+## More about overlay networks
+
+.blackbelt[[Deep Dive in Docker Overlay Networks](https://www.youtube.com/watch?v=b3XDl0YsVsg&index=1&list=PLkA60AVN3hh-biQ6SCtBJ-WVTyBmmYho8) by Laurent Bernaille (DC17US)]
+
+.blackbelt[Deeper Dive in Docker Overlay Networks by Laurent Bernaille (Wednesday 13:30)]

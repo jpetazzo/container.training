@@ -1629,3 +1629,9 @@ class: prom, snap
 
 - [The Prometheus Time Series Database](https://www.youtube.com/watch?v=HbnGSNEjhUc),
   a talk explaining why custom data storage is necessary for metrics
+
+.blackbelt[[Monitoring, the Prometheus Way
+](https://www.youtube.com/watch?v=PDxcEzu62jk&list=PLkA60AVN3hh-biQ6SCtBJ-WVTyBmmYho8&index=5) by Julius Volz (DC17US)]
+
+.blackbelt[How and Why Prometheus' New Storage Engine Pushes the Limits of Time Series Databases
+ by Goutham Veeramachaneni (Tuesday 17:10)]
