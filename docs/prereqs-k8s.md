@@ -25,7 +25,7 @@ class: in-person, extra-details
   <br/>(available with `(apt|yum|brew) install mosh`; then connect with `mosh user@host`)
 
 - [GitHub](https://github.com/join) account
-  <br/>(if you want to fork the repo; also used to join Gitter)
+  <br/>(if you want to fork the repo)
 
 - [Gitter](https://gitter.im/) account
   <br/>(to join the conversation during the workshop)
@@ -66,7 +66,7 @@ class: extra-details
 
 - This is the stuff you're supposed to do!
 - Go to [container.training](http://container.training/) to view these slides
-- Join the [chat room](chat)
+- Join the [chat room](@@CHAT@@)
 
 ]
 

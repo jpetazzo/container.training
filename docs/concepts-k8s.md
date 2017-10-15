@@ -112,7 +112,7 @@ class: pic
   <br/>
   (that's an implementation detail)
 
-- `etcd` can be run on separate machines (first schema) or colocated (second schema)
+- `etcd` can be run on separate machines (first schema) or co-located (second schema)
 
 - We need at least one master, but we can have more (for high availability)
 
@@ -144,7 +144,7 @@ No!
 
 - We could also use `rkt` ("Rocket") from CoreOS
 
-- Or leverage through the *Container Runtime Interface* other pluggable runtimes
+- Or leverage other pluggable runtimes through the *Container Runtime Interface*
 
   (like CRI-O, or containerd)
 
@@ -162,11 +162,13 @@ Yes!
 
 - We can do these things without Docker
   <br/>
-  (and get diagnosed with NIH syndrome)
+  (and get diagnosed with NIH¹ syndrome)
 
 - Docker is still the most stable container engine today
   <br/>
   (but other options are maturing very quickly)
+
+.footnote[¹[Not Invented Here](https://en.wikipedia.org/wiki/Not_invented_here)]
 
 ---
 

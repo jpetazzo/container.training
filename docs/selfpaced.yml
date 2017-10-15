@@ -1,6 +1,8 @@
 exclude:
 - in-person
 
+chat: FIXME
+
 chapters:
 - |
   class: title

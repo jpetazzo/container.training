@@ -2,6 +2,8 @@ exclude:
 - self-paced
 - snap
 
+chat: "FIXME"
+
 chapters:
 - |
   class: title

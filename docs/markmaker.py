@@ -26,8 +26,6 @@ def generatefromyaml(manifest):
     logging.debug(titles)
     toc = gentoc(titles)
     markdown = markdown.replace("@@TOC@@", toc)
-    for (s1,s2) in manifest.get("variables", {}).items():
-        markdown = markdown.replace(s1, s2)
 
     exclude = manifest.get("exclude", [])
     logging.debug("exclude={!r}".format(exclude))
@@ -38,6 +36,7 @@ def generatefromyaml(manifest):
     html = open("workshop.html").read()
     html = html.replace("@@MARKDOWN@@", markdown)
     html = html.replace("@@EXCLUDE@@", exclude)
+    html = html.replace("@@CHAT@@", manifest["chat"])
     return html
 
 
