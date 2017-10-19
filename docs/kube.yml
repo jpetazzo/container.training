@@ -67,6 +67,7 @@ chapters:
   - versions-k8s.md
   - sampleapp.md
 - - concepts-k8s.md
+  - kubenet.md
   - kubectlget.md
   - setup-k8s.md
   - kubectlrun.md

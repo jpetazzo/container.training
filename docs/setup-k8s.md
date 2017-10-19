@@ -54,9 +54,8 @@
 
 - On a local machine:
   [minikube](https://kubernetes.io/docs/getting-started-guides/minikube/),
-  [kubespawn](https://github.com/kinvolk/kube-spawn)
-
-  FIXME
+  [kubespawn](https://github.com/kinvolk/kube-spawn),
+  [Docker4Mac (coming soon)](https://beta.docker.com/)
 
 - If you want something customizable:
   [kubicorn](https://github.com/kris-nova/kubicorn)
@@ -64,5 +63,3 @@
   Probably the closest to a multi-cloud/hybrid solution so far, but in development
 
 - Also, many commercial options!
-
-  FIXME
