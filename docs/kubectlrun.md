@@ -159,6 +159,46 @@ We could! But the *deployment* would notice it right away, and scale back to the
 
 ---
 
+## Resilience
+
+- The *deployment* `pingpong` watches its *replica set*
+
+- The *replica set* ensures that the right number of *pods* are running
+
+- What happens if pods disappear?
+
+.exercise[
+
+- In a separate window, list pods, and keep watching them:
+  ```bash
+  kubectl get pods -w
+  ```
+
+- Destroy a pod:
+  ```bash
+  kubectl delete pod pingpong-yyyy
+  ```
+]
+
+---
+
+## What if we wanted something different?
+
+- What if we wanted to start a "one-shot" container, that *does not* get restarted?
+
+- We could use `kubectl run --restart=OnFailure` or `kubectl run --restart=Never`
+
+- These commands would create *jobs* or *pods* instead of *deployments*
+
+- Under the hood, `kubectl run` invokes "generators" to create resource descriptions
+
+- We could also write these resource descriptions ourselves (typically in YAML),
+  <br/>and create them on the cluster with `kubectl apply -f` (discussed later)
+
+- With `kubectl run --schedule=...`, we can also create *cronjobs*
+
+---
+
 ## Viewing logs of multiple pods
 
 - When we specify a deployment name, only one single pod's logs are shown
