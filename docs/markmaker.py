@@ -5,6 +5,7 @@ import glob
 import logging
 import os
 import re
+import string
 import sys  
 import yaml
 
@@ -19,11 +20,39 @@ class InvalidChapter(ValueError):
         ValueError.__init__(self, "Invalid chapter: {!r}".format(chapter))
 
 
+def anchor(title):
+    title = title.lower().replace(' ', '-')
+    title = ''.join(c for c in title if c in string.ascii_letters+'-')
+    return "toc-" + title
+
+
+def insertslide(markdown, title):
+    title_position = markdown.find("\n# {}\n".format(title))
+    slide_position = markdown.rfind("\n---\n", 0, title_position+1)
+    logging.debug("Inserting title slide at position {}: {}".format(slide_position, title))
+
+    before = markdown[:slide_position]
+    extra_slide = "\n---\n\nname: {}\nclass: title\n\n{}\n".format(anchor(title), title)
+    after = markdown[slide_position:]
+    return before + extra_slide + after
+
+
+def flatten(titles):
+    for title in titles:
+        if isinstance(title, list):
+            for t in flatten(title):
+                yield t
+        else:
+            yield title
+
+
 def generatefromyaml(manifest):
     manifest = yaml.load(manifest)
 
     markdown, titles = processchapter(manifest["chapters"], "<inline>")
-    logging.debug(titles)
+    logging.debug("Found {} titles.".format(len(titles)))
+    for title in flatten(titles):
+        markdown = insertslide(markdown, title)
     toc = gentoc(titles)
     markdown = markdown.replace("@@TOC@@", toc)
 
@@ -44,7 +73,7 @@ def gentoc(titles, depth=0, chapter=0):
     if not titles:
         return ""
     if isinstance(titles, str):
-        return "  "*(depth-2) + "- " + titles + "\n"
+        return "  "*(depth-2) + "- [{}](#{})\n".format(titles, anchor(titles))
     if isinstance(titles, list):
         if depth==0:
             sep = "\n\n<!-- auto-generated TOC -->\n---\n\n"
