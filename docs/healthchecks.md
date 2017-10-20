@@ -57,7 +57,7 @@ name: healthchecks
   - unhealthy tasks are terminated (i.e. the service is restarted)
 
   - failed deployments can be rolled back automatically
-    <br/>(by setting *at least* the flag `--update-failure action rollback`)
+    <br/>(by setting *at least* the flag `--update-failure-action rollback`)
 
 ---
 
