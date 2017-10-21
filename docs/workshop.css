@@ -26,6 +26,18 @@ div.remark-slide-number {
   right: 6px;
 }
 
+.debug {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  font-family: monospace;
+  color: white;
+}
+.debug:hover {
+  background-color: black;
+}
+
 body { font-family: 'Droid Serif'; }
 
 h1, h2, h3 {

@@ -76,7 +76,7 @@ def gentoc(titles, depth=0, chapter=0):
         return "  "*(depth-2) + "- [{}](#{})\n".format(titles, anchor(titles))
     if isinstance(titles, list):
         if depth==0:
-            sep = "\n\n<!-- auto-generated TOC -->\n---\n\n"
+            sep = "\n\n.debug[auto-generated TOC]\n---\n\n"
             head = ""
             tail = ""
         elif depth==1:
@@ -104,7 +104,7 @@ def processchapter(chapter, filename):
     if isinstance(chapter, str):
         if "\n" in chapter:
             titles = re.findall("^# (.*)", chapter, re.MULTILINE)
-            slidefooter = "<!-- {} -->".format(filename)
+            slidefooter = ".debug[{}]".format(filename)
             chapter = chapter.replace("\n---\n", "\n{}\n---\n".format(slidefooter))
             chapter += "\n" + slidefooter
             return (chapter, titles)
