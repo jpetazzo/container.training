@@ -212,7 +212,7 @@ Yes!
 
 - Declarative:
 
-  *I want a cup of tea. Make it happen.*
+  *I would like a cup of tea.*
 
 - Imperative:
 
@@ -245,6 +245,11 @@ Yes!
 --
 
   *³Ah, finally, containers! Something we know about. Let's get to work, shall we?*
+
+--
+
+.footnote[Did you know there was an [ISO standard](https://en.wikipedia.org/wiki/ISO_3103)
+specifying how to brew tea?]
 
 ---
 
