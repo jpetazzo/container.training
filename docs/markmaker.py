@@ -32,7 +32,19 @@ def insertslide(markdown, title):
     logging.debug("Inserting title slide at position {}: {}".format(slide_position, title))
 
     before = markdown[:slide_position]
-    extra_slide = "\n---\n\nname: {}\nclass: title\n\n{}\n".format(anchor(title), title)
+
+    extra_slide = """
+---
+
+name: {anchor}
+class: title
+
+{title}
+
+.nav[[Back to table of contents](#{toclink})]
+
+.debug[(automatically generated title slide)]
+""".format(anchor=anchor(title), title=title, toclink=title2chapter[title])
     after = markdown[slide_position:]
     return before + extra_slide + after
 
@@ -49,12 +61,12 @@ def flatten(titles):
 def generatefromyaml(manifest):
     manifest = yaml.load(manifest)
 
-    markdown, titles = processchapter(manifest["chapters"], "<inline>")
+    markdown, titles = processchapter(manifest["chapters"], "(inline)")
     logging.debug("Found {} titles.".format(len(titles)))
-    for title in flatten(titles):
-        markdown = insertslide(markdown, title)
     toc = gentoc(titles)
     markdown = markdown.replace("@@TOC@@", toc)
+    for title in flatten(titles):
+        markdown = insertslide(markdown, title)
 
     exclude = manifest.get("exclude", [])
     logging.debug("exclude={!r}".format(exclude))
@@ -69,19 +81,24 @@ def generatefromyaml(manifest):
     return html
 
 
+title2chapter = {}
+
+
 def gentoc(titles, depth=0, chapter=0):
     if not titles:
         return ""
     if isinstance(titles, str):
+        title2chapter[titles] = "toc-chapter-1"
+        logging.debug("Chapter {} Title {}".format(chapter, titles))
         return "  "*(depth-2) + "- [{}](#{})\n".format(titles, anchor(titles))
     if isinstance(titles, list):
         if depth==0:
-            sep = "\n\n.debug[auto-generated TOC]\n---\n\n"
+            sep = "\n\n.debug[(auto-generated TOC)]\n---\n\n"
             head = ""
             tail = ""
         elif depth==1:
             sep = "\n"
-            head = "## Chapter {}\n\n".format(chapter)
+            head = "name: toc-chapter-{}\n\n## Chapter {}\n\n".format(chapter, chapter)
             tail = ""
         else:
             sep = "\n"
@@ -130,3 +147,4 @@ def makelink(filename):
 
 
 sys.stdout.write(generatefromyaml(sys.stdin))
+logging.info("Done")

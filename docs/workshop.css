@@ -27,6 +27,7 @@ div.remark-slide-number {
 }
 
 .debug {
+  font-size: 25px;
   position: absolute;
   left: 0px;
   right: 0px;
@@ -88,12 +89,21 @@ img {
   max-width: 100%;
   max-height: 550px;
 }
+
 .title {
   vertical-align: middle;
   text-align: center;
 }
 .title h1 { font-size: 5em; }
 .title p { font-size: 3em; }
+
+.nav {
+  font-size: 25px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2em;
+}
 
 .quote {
   background: #eee;
