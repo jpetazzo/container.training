@@ -196,13 +196,21 @@ Yes!
 
 - A few common resource types are:
 
-  - node (self-explanatory)
+  - node (a machine — physical or virtual — in our cluster)
   - pod (group of containers running together on a node)
   - service (stable network endpoint to connect to one or multiple containers)
   - namespace (more-or-less isolated group of things)
   - secret (bundle of sensitive data to be passed to a container)
  
   And much more! (We can see the full list by running `kubectl get`)
+
+---
+
+class: pic
+
+![Node, pod, container](thanks-weave.png)
+
+(Diagram courtesy of Weave Works, used with permission.)
 
 ---
 
