@@ -130,10 +130,13 @@ wait
 
 - We will only checkout/copy the code on `node1`
 
-- When we will use the other nodes, we will do it mostly through the Docker API
+- During normal operations, we do not need access to the other nodes
 
-- We will log into other nodes only for initial setup and a few "out of band" operations
-  <br/>(checking internal logs, debugging...)
+- If we had to troubleshoot issues, we would use a combination of:
+
+  - SSH (to access system logs, daemon status...)
+  
+  - Docker API (to check running containers and container engine status)
 
 ---
 
