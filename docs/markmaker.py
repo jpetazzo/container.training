@@ -78,6 +78,7 @@ def generatefromyaml(manifest):
     html = html.replace("@@MARKDOWN@@", markdown)
     html = html.replace("@@EXCLUDE@@", exclude)
     html = html.replace("@@CHAT@@", manifest["chat"])
+    html = html.replace("@@TITLE@@", manifest["title"])
     return html
 
 

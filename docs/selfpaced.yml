@@ -3,6 +3,8 @@ exclude:
 
 chat: FIXME
 
+title: Docker Orchestration Workshop
+
 chapters:
 - |
   class: title

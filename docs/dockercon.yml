@@ -8,6 +8,7 @@ exclude:
 - elk-manual
 - prom-manual
 
+title: "Swarm: from Zero to Hero (DC17EU)"
 chapters:
 - |
   class: title

@@ -4,13 +4,15 @@ exclude:
 
 chat: "[Gitter](https://gitter.im/jpetazzo/workshop-20171026-prague)"
 
+title: "Deploying and Scaling Microservices with Docker and Kubernetes"
+
 chapters:
 - |
   class: title
 
   .small[
 
-  Deploying and scaling microservices <br/> with Docker and Kubernetes
+  Deploying and Scaling Microservices <br/> with Docker and Kubernetes
 
   .small[.small[
 
