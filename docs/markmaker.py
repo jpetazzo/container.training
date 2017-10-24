@@ -104,7 +104,7 @@ def processchapter(chapter, filename):
     if isinstance(chapter, str):
         if "\n" in chapter:
             titles = re.findall("^# (.*)", chapter, re.MULTILINE)
-            slidefooter = ".debug[{}]".format(filename)
+            slidefooter = ".debug[{}]".format(makelink(filename))
             chapter = chapter.replace("\n---\n", "\n{}\n---\n".format(slidefooter))
             chapter += "\n" + slidefooter
             return (chapter, titles)
@@ -116,6 +116,17 @@ def processchapter(chapter, filename):
         titles = [t for (m,t) in chapters if t]
         return (markdown, titles)
     raise InvalidChapter(chapter)
+
+
+def makelink(filename):
+    if os.path.isfile(filename):
+        repo = "https://github.com/jpetazzo/orchestration-workshop"
+        branch = "the-big-2017-refactor"
+        base = "docs"
+        url = "{}/tree/{}/{}/{}".format(repo, branch, base, filename)
+        return "[{}]({})".format(filename, url)
+    else:
+        return filename
 
 
 sys.stdout.write(generatefromyaml(sys.stdin))
