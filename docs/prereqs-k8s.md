@@ -27,9 +27,6 @@ class: in-person, extra-details
 - [GitHub](https://github.com/join) account
   <br/>(if you want to fork the repo)
 
-- [Gitter](https://gitter.im/) account
-  <br/>(to join the conversation during the workshop)
-
 - [Slack](https://community.docker.com/registrations/groups/4316) account
   <br/>(to join the conversation after the workshop)
 
@@ -66,7 +63,7 @@ class: extra-details
 
 - This is the stuff you're supposed to do!
 - Go to [container.training](http://container.training/) to view these slides
-- Join the [chat room](@@CHAT@@)
+- Join the chat room on @@CHAT@@
 
 ]
 

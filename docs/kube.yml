@@ -2,7 +2,7 @@ exclude:
 - self-paced
 - snap
 
-chat: "FIXME"
+chat: "[Gitter](https://gitter.im/jpetazzo/workshop-20171026-prague)"
 
 chapters:
 - |
@@ -16,8 +16,10 @@ chapters:
 
   **Be kind to the WiFi!**
 
+  <!--
   *Use the 5G network*
   <br/>
+  -->
   *Don't use your hotspot*
   <br/>
   *Don't stream videos from YouTube, Netflix, etc.
@@ -33,12 +35,26 @@ chapters:
 
   ## Intros
 
-  - Hello! I am
-    Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
+  - Hello! We are
+    Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Docker Inc.)
+    &
+    AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
 
   --
 
-  - This is my first time doing this
+  - This is our first time doing this
+
+  --
+
+  - But ... containers and us go back a long way
+
+  --
+
+  ![CONTAINERS, I TELL YOU](aj-containers.jpeg)
+
+  --
+
+  - In the immortal words of [Chelsea Manning](https://twitter.com/xychelsea): #WeGotThis!
 
   ---
 
@@ -50,17 +66,15 @@ chapters:
     <br/>
     (please remind me if I forget about it!)
 
-  - All the content is publicly available (slides, code samples, scripts)
-
-    Upstream URL: https://github.com/jpetazzo/orchestration-workshop
+  - This will be fast-paced, but DON'T PANIC!
+    <br/>
+    (all the content is publicly available)
 
   - Feel free to interrupt for questions at any time
 
-  - Live feedback, questions, help on [Gitter](chat)
+  - Live feedback, questions, help on @@CHAT@@
 
-    http://container.training/chat
-
-- intro.md
+- intro-ks.md
 - |
   @@TOC@@
 - - prereqs-k8s.md
