@@ -141,6 +141,10 @@ We all knew this couldn't be that easy, right!
 
 --
 
+🎩✨🐇
+
+--
+
 Wait ... Now, can it be *that* easy?
 
 ---
@@ -318,21 +322,23 @@ Of course, option 2 offers more learning opportunities. Right?
 
   - edit the `rng.yml` file that we used earlier
 
-  - `kubectl apply -f rng.yml` to load the new definition
+  - load the new definition with `kubectl apply`
 
 - Option 2: 
 
   - use `kubectl edit`
 
-.exercise[
+--
 
-- Use one of the two options!
+*If you feel like you got this💕🌈, feel free to try directly.*
 
-]
+*We've included a few hints on the next slides for your convenience!*
 
 ---
 
-## A few possible gotchas ...
+## We've put resources in your resources all the way down
+
+- Reminder: a daemon set is a resource that creates more resources!
 
 - There is a difference between:
 
@@ -342,30 +348,62 @@ Of course, option 2 offers more learning opportunities. Right?
 
   - the label(s) of the resource(s) created by the first resource (in the `template` block)
 
-- You want to update the selector and the template (at least)
+- You need to update the selector and the template (metadata labels are not mandatory)
 
 - The template must match the selector
 
   (i.e. the resource will refuse to create resources that it will not select)
 
-- In YAML, `yes` should be quoted; i.e. `isactive: "yes"`
-
 ---
 
-## Wrapping up
+## Adding our label
+
+- Let's add a label `isactive: yes`
+
+- In YAML, `yes` should be quoted; i.e. `isactive: "yes"`
 
 .exercise[
 
-- Update the replica set selector and template label
+- Update the daemon set to add `isactive: "yes"` to the selector and template label:
+  ```bash
+  kubectl edit daemonset rng
+  ```
 
-- Update the service selector
+- Update the service to add `isactive: "yes"` to its selector:
+  ```bash
+  kubectl edit service rng
+  ```
 
-- Check the logs of all `run=rng` pods to check that only 4 of them are now active
+]
 
-- Look at the pods that we have right now
+---
+
+## Checking what we've done
+
+.exercise[
+
+- Check the logs of all `run=rng` pods to confirm that only 4 of them are now active:
+  ```bash
+  kubectl logs -l run=rng
+  ```
+
+]
+
+The timestamps should give us a hint about how many pods are currently receiving traffic.
+
+.exercise[
+
+- Look at the pods that we have right now:
+  ```bash
+  kubectl get pods
+  ```
+
+]
+
+---
+
+## More labels, more selectors, more problems?
 
 - Bonus exercise 1: clean up the pods of the "old" daemon set
 
 - Bonus exercise 2: how could we have done to avoid creating new pods?
-
-]
