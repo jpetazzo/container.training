@@ -79,6 +79,8 @@
   kubectl get deployments -w
   ```
 
+<!-- ```keys ^C``` -->
+
 - Update `worker` either with `kubectl edit`, or by running:
   ```bash
   kubectl set image deploy worker worker=$REGISTRY/worker:$TAG

@@ -91,6 +91,8 @@ The goo.gl URL expands to:
 
   (You will have to work around the TLS certificate validation warning)
 
+<!-- ```open https://node1:3xxxx/``` -->
+
 ]
 
 - We have three authentication options at this point:

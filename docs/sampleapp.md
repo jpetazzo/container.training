@@ -264,6 +264,8 @@ class: extra-details
 
 - In your browser, you need to enter the IP address of your node
 
+<!-- ```open http://node1:8000``` -->
+
 ]
 
 You should see a speed of approximately 4 hashes/second.
@@ -316,8 +318,24 @@ class: extra-details
 
 - run `top` to see CPU and memory usage (you should see idle cycles)
 
-- run `vmstat 3` to see I/O usage (si/so/bi/bo)
+<!--
+```bash
+top
+```
+
+```keys ^C```
+-->
+
+- run `vmstat 1` to see I/O usage (si/so/bi/bo)
   <br/>(the 4 numbers should be almost zero, except `bo` for logging)
+
+<!--
+```bash
+vmstat 1
+```
+
+```keys ^C```
+-->
 
 ]
 

@@ -69,6 +69,8 @@ The `LoadBalancer` type is currently only available on AWS, Azure, and GCE.
   kubectl get pods -w
   ```
 
+<!-- ```keys ^C``` -->
+
 ]
 
 The `-w` option "watches" events happening on the specified resources.

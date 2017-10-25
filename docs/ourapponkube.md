@@ -348,6 +348,8 @@ We should now see the `worker`, well, working happily.
 
 - Open the web UI in your browser (http://node-ip-address:3xxxx/)
 
+<!-- ```open http://node1:3xxxx/``` -->
+
 ]
 
 --

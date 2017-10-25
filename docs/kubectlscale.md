@@ -10,6 +10,8 @@
   kubectl get deployments -w
   ```
 
+<!-- ```keys ^C``` -->
+
 - Now, create more `worker` replicas:
   ```bash
   kubectl scale deploy/worker --replicas=10

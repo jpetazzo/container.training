@@ -65,6 +65,8 @@ class: extra-details
 - Go to [container.training](http://container.training/) to view these slides
 - Join the chat room on @@CHAT@@
 
+<!-- ```open http://container.training/``` -->
+
 ]
 
 ---
@@ -72,6 +74,12 @@ class: extra-details
 class: pic, in-person
 
 ![You get five VMs](you-get-five-vms.jpg)
+
+<!--
+```bash
+kubectl get all -o name | grep -v services/kubernetes | xargs -n1 kubectl delete
+```
+-->
 
 ---
 
@@ -102,11 +110,7 @@ done
   ```
 - Type `exit` or `^D` to come back to node1
 
-<!--
-```keys
-exit
-```
--->
+<!-- ```keys exit``` -->
 
 ]
 
