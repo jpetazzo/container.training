@@ -164,7 +164,7 @@ We have both `deploy/rng` and `ds/rng` now!
 
 --
 
-And one too many pod ...
+And one too many pods...
 
 ---
 
@@ -215,9 +215,9 @@ It appears that *all the pods* are serving requests at the moment.
 
 ## The magic of selectors
 
-- The `rng` *service* is load balancing requests to a set of pod
+- The `rng` *service* is load balancing requests to a set of pods
 
-- This set of pod is defined as "pods having the label `run=rng`"
+- This set of pods is defined as "pods having the label `run=rng`"
 
 .exercise[
 

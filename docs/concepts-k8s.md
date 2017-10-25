@@ -92,7 +92,7 @@ class: pic
 
   (Courtesy of [Yongbok Kim](https://www.yongbok.net/blog/))
 
-- The second one is an good simplified representation of a Kubernetes cluster
+- The second one is a simplified representation of a Kubernetes cluster
 
   (Courtesy of [Imesh Gunaratne](https://medium.com/containermind/a-reference-architecture-for-deploying-wso2-middleware-on-kubernetes-d4dee7601e8e))
 

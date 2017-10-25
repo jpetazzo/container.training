@@ -63,7 +63,7 @@
 
 ## Kubernetes network model: in practice
 
-- The nodes that we are using have been setup to use Weave
+- The nodes that we are using have been set up to use Weave
 
 - We don't endorse Weave in a particular way, it just Works For Us
 

@@ -1,6 +1,6 @@
 # Setting up Kubernetes
 
-- How did we setup these Kubernetes clusters that we're using?
+- How did we set up these Kubernetes clusters that we're using?
 
 --
 
@@ -12,7 +12,7 @@
 
     3. Run `kubeadm init` on the master node
 
-    4. Setup Weave (the overlay network)
+    4. Set up Weave (the overlay network)
        <br/>
        (that step is just one `kubectl apply` command; discussed later)
 
@@ -24,19 +24,19 @@
 
 ## `kubeadm` drawbacks
 
-- Doesn't setup Docker or any other container engine
+- Doesn't set up Docker or any other container engine
 
-- Doesn't setup the overlay network
+- Doesn't set up the overlay network
 
 - Scripting is complex
   <br/>
   (because extracting the token requires advanced `kubectl` commands)
 
-- Doesn't setup multi-master (no high availability)
+- Doesn't set up multi-master (no high availability)
 
 --
 
-- It's still twice as much steps as setting up a Swarm cluster 😕
+- It's still twice as many steps as setting up a Swarm cluster 😕
 
 ---
 

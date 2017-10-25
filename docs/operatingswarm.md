@@ -20,7 +20,7 @@ The following exercises assume that you have a 5-nodes Swarm cluster.
 
 If you come here from a previous tutorial and still have your cluster: great!
 
-Otherwise: check [part 1](#part-1) to learn how to setup your own cluster.
+Otherwise: check [part 1](#part-1) to learn how to set up your own cluster.
 
 We pick up exactly where we left you, so we assume that you have:
 

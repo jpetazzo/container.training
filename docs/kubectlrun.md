@@ -29,7 +29,7 @@
 
 --
 
-OK, what did just happen?
+OK, what just happened?
 
 ---
 
@@ -196,7 +196,7 @@ We could! But the *deployment* would notice it right away, and scale back to the
 
 ## What if we wanted something different?
 
-- What if we wanted to start a "one-shot" container, that *does not* get restarted?
+- What if we wanted to start a "one-shot" container that *doesn't* get restarted?
 
 - We could use `kubectl run --restart=OnFailure` or `kubectl run --restart=Never`
 
