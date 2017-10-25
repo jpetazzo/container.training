@@ -229,6 +229,6 @@ The error that we see is expected: the Kubernetes API requires authentication.
 
 - the `READY` column indicates the number of containers in each pod
 
-- the pods with a name ending with `-ip-172-31-XX-YY` are the master components
+- the pods with a name ending with `-node1` are the master components
   <br/>
   (they have been specifically "pinned" to the master node)
