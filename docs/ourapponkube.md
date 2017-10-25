@@ -184,6 +184,7 @@ The curl command should now output:
 
 - Build and push the images:
   ```bash
+  export REGISTRY
   docker-compose -f dockercoins.yml build
   docker-compose -f dockercoins.yml push
   ```
@@ -300,6 +301,12 @@ services:
   ```
 
   (Give it about 10 seconds to recover)
+
+<!--
+```keys
+^C
+```
+-->
 
 ]
 

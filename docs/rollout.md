@@ -58,7 +58,8 @@
 
 - Build a new tag and push it to the registry:
   ```bash
-  export REGISTRY=localhost:3xxxx TAG=v0.2
+  #export REGISTRY=localhost:3xxxx
+  export TAG=v0.2
   docker-compose -f dockercoins.yml build
   docker-compose -f dockercoins.yml push
   ```
@@ -125,6 +126,12 @@ Our rollout is stuck. However, the app is not dead (just 10% slower).
 - Or we could invoke a manual rollback
 
 .exercise[
+
+<!--
+```keys
+^C
+```
+-->
 
 - Cancel the deployment and wait for the dust to settle down:
   ```bash

@@ -161,9 +161,14 @@ and displays aggregated logs.
 - Stop the application by hitting `^C`
 
 <!--
-```meta
+```wait
+units of work done
+```
+
+```keys
 ^C
 ```
+
 -->
 
 ]
@@ -216,7 +221,7 @@ class: extra-details
   ```
 
 <!--
-```meta
+```keys
 ^C
 ```
 -->
@@ -361,13 +366,6 @@ We have available resources.
 - Look at the aggregated logs of our containers
 
 - Look at the impact on CPU load and memory usage
-
-<!--
-```bash
-sleep 5
-killall docker-compose
-```
--->
 
 ]
 

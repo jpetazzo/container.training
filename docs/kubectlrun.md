@@ -136,6 +136,12 @@ We should see the following things:
   kubectl logs deploy/pingpong --tail 1 --follow
   ```
 
+<!--
+```keys
+^C
+```
+-->
+
 ]
 
 ---
@@ -173,6 +179,12 @@ We could! But the *deployment* would notice it right away, and scale back to the
   ```bash
   kubectl get pods -w
   ```
+
+<!--
+```keys
+^C
+```
+-->
 
 - Destroy a pod:
   ```bash

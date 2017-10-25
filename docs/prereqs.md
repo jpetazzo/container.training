@@ -114,18 +114,6 @@ class: in-person
 for N in $(seq 1 5); do
   ssh -o StrictHostKeyChecking=no node$N true
 done
-for N in $(seq 1 5); do
-  (.
-  docker-machine rm -f node$N
-  ssh node$N "docker ps -aq | xargs -r docker rm -f"
-  ssh node$N sudo rm -f /etc/systemd/system/docker.service
-  ssh node$N sudo systemctl daemon-reload
-  echo Restarting node$N.
-  ssh node$N sudo systemctl restart docker
-  echo Restarted node$N.
-  ) &
-done
-wait
 ```
 -->
 
@@ -137,8 +125,8 @@ wait
 - Type `exit` or `^D` to come back to node1
 
 <!--
-```meta
-^D
+```keys
+exit
 ```
 -->
 

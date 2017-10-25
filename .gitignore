@@ -7,3 +7,4 @@ prepare-vms/ips.pdf
 prepare-vms/settings.yaml
 prepare-vms/tags
 docs/*.yml.html
+autotest/nextstep
