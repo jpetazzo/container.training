@@ -902,7 +902,7 @@ class: snap, prom
 
 - Leave that tab open!
 
-- We are going to setup *another* metrics system
+- We are going to set up *another* metrics system
 
 - ... And then compare both graphs side by side
 
@@ -1495,9 +1495,9 @@ class: prom, snap
 
 ## Comparing Snap and Prometheus data
 
-- If you haven't setup Snap, InfluxDB, and Grafana, skip this section
+- If you haven't set up Snap, InfluxDB, and Grafana, skip this section
 
-- If you have closed the Grafana tab, you might have to re-setup a new dashboard
+- If you have closed the Grafana tab, you might have to re-set up a new dashboard
 
   (Unless you saved it before navigating it away)
 

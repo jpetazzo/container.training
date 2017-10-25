@@ -316,7 +316,7 @@ class: btw-labels
 
 - If you want to place multiple HTTP services on port 80, you need something more
 
-- You can setup NGINX or HAProxy on port 80 to do the virtual host switching
+- You can set up NGINX or HAProxy on port 80 to do the virtual host switching
 
 - Docker Universal Control Plane provides its own [HTTP routing mesh](
   https://docs.docker.com/datacenter/ucp/2.1/guides/admin/configure/use-domain-names-to-access-services/)

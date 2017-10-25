@@ -11,9 +11,9 @@ Suggested containerization checklist:
 - write Dockerfiles for the other (buildable) services
 - write a Compose file for that whole app
 - make sure that devs are empowered to run the app in containers
-- setup automated builds of container images from the code repo
-- setup a CI pipeline using these container images
-- setup a CD pipeline (for staging/QA) using these images 
+- set up automated builds of container images from the code repo
+- set up a CI pipeline using these container images
+- set up a CD pipeline (for staging/QA) using these images
 ]
 
 And *then* it is time to look at orchestration!
