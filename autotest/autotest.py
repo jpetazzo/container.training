@@ -9,7 +9,7 @@ import sys
 logging.basicConfig(level=logging.DEBUG)
 
 def hrule():
-    return "="*int(os.environ.get("COLUMNS", "80"))
+    return "="*int(subprocess.check_output(["tput", "cols"]))
 
 # A "snippet" is something that the user is supposed to do in the workshop.
 # Most of the "snippets" are shell commands.
