@@ -110,7 +110,7 @@ done
   ```
 - Type `exit` or `^D` to come back to node1
 
-<!-- ```keys exit``` -->
+<!-- ```bash exit``` -->
 
 ]
 
