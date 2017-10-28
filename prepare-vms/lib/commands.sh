@@ -5,6 +5,20 @@ _cmd() {
     HELP="$(printf "%s\n%-12s %s\n" "$HELP" "$1" "$2")"
 }
 
+_flag () {
+    FLAGS="$(printf "%s\n%-12s %s\n" "$FLAGS" "$1" "$2")"
+}
+
+_flag help
+_flag_help () {
+    _cmd_help
+}
+
+_flag generate_bash_completion "Generate bash completions"
+_flag_generate_bash_completion() {
+    _cmd_help | grep -v ^Commands: | awk '{print $1}'
+}
+
 _cmd help "Show available commands"
 _cmd_help() {
     printf "$(basename $0) - the orchestration workshop swiss army knife\n"

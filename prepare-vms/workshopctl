@@ -67,15 +67,27 @@ check_envvars \
 check_dependencies \
     || warning "At least one dependency is missing. Install it or try the image wrapper."
 
-# Now check which command was invoked and execute it
-if [ "$1" ]; then
-    cmd="$1"
-    shift
-else
+if [ ! "$1" ] || [[ "$@" == *--help* ]] ; then
     cmd=help
+    fun=_cmd_$cmd
+else
+    case "$1" in
+        -*)
+            # Check for flags
+            flag=$(echo "$1" | sed 's/^--//g' | tr '-' '_')  # Strip leading --
+            fun=_flag_$flag
+            type -t $fun | grep -q function || die "Invalid flag: $flag"
+            cmd=$fun
+            shift
+            ;;
+        *)
+            fun=_cmd_$1
+            type -t $fun | grep -q function || die "Invalid command: $cmd"
+            shift
+            ;;
+    esac
 fi
-fun=_cmd_$cmd
-type -t $fun | grep -q function || die "Invalid command: $cmd"
+
 $fun "$@"
 
 #    export SSH_AUTH_DIRNAME=$(dirname $SSH_AUTH_SOCK)
