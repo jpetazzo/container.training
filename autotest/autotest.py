@@ -107,8 +107,6 @@ def wait_for_success():
         secs += 1
 
 while True:
-    # Send a form feed to clear screen (while preserving scrollback)
-    print("\033[2J")
     with open("nextstep","w") as f:
         f.write(str(i))
     slide, snippet, method, data = actions[i]
@@ -127,11 +125,8 @@ while True:
             if method == "bash":
                 data += "\n"
             subprocess.check_call(["tmux", "send-keys", "{}".format(data)])
-            while not wait_for_success():
-                while raw_input("WARNING /!\ Command timed out. Continue anyway? ('n' to wait) ") == 'n':
-                    if wait_for_success():
-                        break
-                break
+            if not wait_for_success():
+                print("WARNING /!\ Command timed out.")
         else:
             print "DO NOT KNOW HOW TO HANDLE {} {!r}".format(method, data)
         i += 1
