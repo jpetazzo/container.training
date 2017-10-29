@@ -110,8 +110,13 @@ def wait_for_success(wait_for=None):
             print(".")
         secs += 1
 
-wait_for, action, method = "", "", ""
-while True:
+wait_for, stop_action, method = "", "", ""
+
+interactive = True
+if os.environ.get("WORKSHOP_TEST_FORCE_NONINTERACTIVE"):
+    interactive=False
+
+while i < len(actions):
     with open("nextstep","w") as f:
         f.write(str(i))
     slide, snippet, method, data = actions[i]
@@ -125,8 +130,8 @@ while True:
         i += 1
         continue
     if method == "keys":
-        action = data
-        print("Setting action to: {}".format(data))
+        stop_action = data
+        print("Setting stop_action to: {}".format(data))
         i += 1
         continue
     print(hrule())
@@ -134,10 +139,14 @@ while True:
     print(hrule())
     if wait_for:
         print("waiting for: {}".format(wait_for))
-    if action:
-        print("action: {}".format(action))
-    print("[{}] Shall we execute that snippet above?".format(i))
-    command = raw_input()
+    if stop_action:
+        print("stop_action: {}".format(stop_action))
+    command = ""
+    if interactive:
+        command = raw_input("[{}] Shall we execute that snippet above? ('c' to continue without further prompting) ".format(i))
+    if command == "c":
+        # continue until next timeout
+        interactive = False
     if command == "":
         if method=="keys" and data in keymaps:
             print("Mapping {!r} to {!r}.".format(data, keymaps[data]))
@@ -149,15 +158,16 @@ while True:
             subprocess.check_call(["tmux", "send-keys", "{}".format(data)])
             result = wait_for_success(wait_for=wait_for)
             if result is True:
-                if action:
-                    subprocess.check_call(["tmux", "send-keys", "{}".format(action)])
+                if stop_action:
+                    subprocess.check_call(["tmux", "send-keys", "{}".format(stop_action)])
                     wait_for_success()
-                    # Unset wait_for and action so they don't carry over to the next loop.
-                    wait_for, action = "", ""
-            elif result is False:
-                logging.warning("Last command failed!")
+                # Unset wait_for and stop_action so they don't carry over to the next loop.
+                wait_for, stop_action = "", ""
             else:
-                logging.warning("Last command timed out!")
+                logging.warning("Last command failed or timed out!")
+                if os.environ.get("WORKSHOP_TEST_FORCE_NONINTERACTIVE"):
+                    raise Exception("Command failed or timed out: {}".format(data))
+                interactive = True
         else:
             print "DO NOT KNOW HOW TO HANDLE {} {!r}".format(method, data)
         i += 1
@@ -166,3 +176,6 @@ while True:
     else:
         i += 1
         # skip other "commands"
+
+with open("nextstep", "w") as f:
+    f.write(str(0))
