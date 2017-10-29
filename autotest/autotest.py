@@ -7,8 +7,7 @@ import subprocess
 import sys
 import time
 
-import coloredlogs, logging
-coloredlogs.install()
+import logging
 
 logging.basicConfig(level=logging.DEBUG)
 

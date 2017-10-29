@@ -25,7 +25,6 @@ DEPENDENCIES="
     jinja2
     pdfkit
     man
-    coloredlogs
     "
 
 ENVVARS="
