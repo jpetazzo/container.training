@@ -61,11 +61,11 @@ check_image() {
     docker inspect $TRAINER_IMAGE >/dev/null 2>&1
 }
 
-check_envvars ||
-    die "Please set all required environment variables."
+check_envvars \
+    || die "Please set all required environment variables."
 
-check_dependencies ||
-    warning "At least one dependency is missing. Install it or try the image wrapper."
+check_dependencies \
+    || warning "At least one dependency is missing. Install it or try the image wrapper."
 
 # Now check which command was invoked and execute it
 if [ "$1" ]; then

@@ -411,9 +411,9 @@ wait_until_tag_is_running() {
         done_count=$(aws ec2 describe-instances \
             --filters "Name=instance-state-name,Values=running" \
             "Name=tag:Name,Values=$TAG" \
-            --query "Reservations[*].Instances[*].State.Name" |
-            tr "\t" "\n" |
-            wc -l)
+            --query "Reservations[*].Instances[*].State.Name" \
+            | tr "\t" "\n" \
+            | wc -l)
 
         if [[ $i -gt $max_retry ]]; then
             die "Timed out while waiting for instance creation (after $max_retry retries)"
@@ -461,12 +461,12 @@ test_vm() {
         "env" \
         "ls -la /home/docker/.ssh"; do
         sep "$cmd"
-        echo "$cmd" |
-            ssh -A -q \
+        echo "$cmd" \
+            | ssh -A -q \
                 -o "UserKnownHostsFile /dev/null" \
                 -o "StrictHostKeyChecking=no" \
-                $user@$ip sudo -u docker -i ||
-            {
+                $user@$ip sudo -u docker -i \
+            || {
                 status=$?
                 error "$cmd exit status: $status"
                 errors="[$status] $cmd\n$errors"
@@ -487,17 +487,17 @@ make_key_name() {
 
 sync_keys() {
     # make sure ssh-add -l contains "RSA"
-    ssh-add -l | grep -q RSA ||
-        die "The output of \`ssh-add -l\` doesn't contain 'RSA'. Start the agent, add your keys?"
+    ssh-add -l | grep -q RSA \
+        || die "The output of \`ssh-add -l\` doesn't contain 'RSA'. Start the agent, add your keys?"
 
     AWS_KEY_NAME=$(make_key_name)
     info "Syncing keys... "
     if ! aws ec2 describe-key-pairs --key-name "$AWS_KEY_NAME" &>/dev/null; then
         aws ec2 import-key-pair --key-name $AWS_KEY_NAME \
-            --public-key-material "$(ssh-add -L |
-                grep -i RSA |
-                head -n1 |
-                cut -d " " -f 1-2)" &>/dev/null
+            --public-key-material "$(ssh-add -L \
+                | grep -i RSA \
+                | head -n1 \
+                | cut -d " " -f 1-2)" &>/dev/null
 
         if ! aws ec2 describe-key-pairs --key-name "$AWS_KEY_NAME" &>/dev/null; then
             die "Somehow, importing the key didn't work. Make sure that 'ssh-add -l | grep RSA | head -n1' returns an RSA key?"

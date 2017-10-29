@@ -1,19 +1,19 @@
 aws_display_tags() {
     # Print all "Name" tags in our region with their instance count
-    echo "[#] [Status] [Token] [Tag]" |
-        awk '{ printf "%-7s %-12s %-25s %-25s\n", $1, $2, $3, $4}'
+    echo "[#] [Status] [Token] [Tag]" \
+        | awk '{ printf "%-7s %-12s %-25s %-25s\n", $1, $2, $3, $4}'
     aws ec2 describe-instances \
-        --query "Reservations[*].Instances[*].[State.Name,ClientToken,Tags[0].Value]" |
-        tr -d "\r" |
-        uniq -c |
-        sort -k 3 |
-        awk '{ printf "%-7s %-12s %-25s %-25s\n", $1, $2, $3, $4}'
+        --query "Reservations[*].Instances[*].[State.Name,ClientToken,Tags[0].Value]" \
+        | tr -d "\r" \
+        | uniq -c \
+        | sort -k 3 \
+        | awk '{ printf "%-7s %-12s %-25s %-25s\n", $1, $2, $3, $4}'
 }
 
 aws_get_tokens() {
     aws ec2 describe-instances --output text \
-        --query 'Reservations[*].Instances[*].[ClientToken]' |
-        sort -u
+        --query 'Reservations[*].Instances[*].[ClientToken]' \
+        | sort -u
 }
 
 aws_display_instance_statuses_by_tag() {
@@ -74,9 +74,9 @@ aws_get_instance_ips_by_tag() {
     need_tag $TAG
     aws ec2 describe-instances --filter "Name=tag:Name,Values=$TAG" \
         --output text \
-        --query "Reservations[*].Instances[*].PublicIpAddress" |
-        tr "\t" "\n" |
-        sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4 # sort IPs
+        --query "Reservations[*].Instances[*].PublicIpAddress" \
+        | tr "\t" "\n" \
+        | sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4 # sort IPs
 }
 
 aws_kill_instances_by_tag() {
@@ -89,8 +89,8 @@ aws_kill_instances_by_tag() {
 
     info "Deleting instances with tag $TAG."
 
-    aws ec2 terminate-instances --instance-ids $IDS |
-        grep ^TERMINATINGINSTANCES
+    aws ec2 terminate-instances --instance-ids $IDS \
+        | grep ^TERMINATINGINSTANCES
 
     info "Deleted instances with tag $TAG."
 }
