@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import uuid
 import logging
 import os
 import re
@@ -72,14 +73,30 @@ def wait_for_success(wait_for=None):
     secs, timeout = 0, 30
     while secs <= timeout:
         time.sleep(1)
-        output = [x for x in subprocess.check_output(["tmux", "capture-pane", "-p"]).split("\n") if x]
-        if wait_for and [x for x in output if wait_for in x]:
+        output = subprocess.check_output(["tmux", "capture-pane", "-p"])
+        if wait_for and wait_for in output:
             return True
-        if output[-1] == "$":
-            return True
+        # If there's a prompt at the end, the command completed
+        if output[-3:-1] == "\n$":
+            ec = check_exit_code()
+            return True if ec == 0 else ec
         else:
             print(".")
         secs += 1
+
+def check_exit_code():
+    token = uuid.uuid4().hex
+    data = "echo {} $?\n".format(token)
+    subprocess.check_call(["tmux", "send-keys", "{}".format(data)])
+    time.sleep(0.5)
+    screen = subprocess.check_output(["tmux", "capture-pane", "-p"])
+    output = [x for x in screen.split("\n") if x]
+              #if x.startswith(token)]
+    ec = [x for x in output if x.startswith(token)]
+    if not ec:
+        raise Exception("Couldn't retrieve exit code")
+    ret = int(ec[0].split()[1])
+    return ret
 
 slides = []
 content = open(sys.argv[1]).read()
@@ -126,24 +143,25 @@ while i < len(actions):
     # If so, we need to wait for the specified output and/or terminate the command with the specified keys.
     if method == "wait":
         wait_for = data
-        print("Setting wait_for to: {}".format(data))
+        logging.info("Setting wait_for to: {}".format(data))
         i += 1
         continue
     if method == "keys":
         stop_action = data
-        print("Setting stop_action to: {}".format(data))
+        logging.info("Setting stop_action to: {}".format(data))
         i += 1
         continue
     print(hrule())
     print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
     print(hrule())
     if wait_for:
-        print("waiting for: {}".format(wait_for))
+        logging.info("waiting for: {}".format(wait_for))
     if stop_action:
-        print("stop_action: {}".format(stop_action))
+        logging.info("stop_action: {}".format(stop_action))
     command = ""
     if interactive:
         command = raw_input("[{}] Shall we execute that snippet above? ('c' to continue without further prompting) ".format(i))
+    logging.info("Running: {}".format(data))
     if command == "c":
         # continue until next timeout
         interactive = False
@@ -163,13 +181,18 @@ while i < len(actions):
                     wait_for_success()
                 # Unset wait_for and stop_action so they don't carry over to the next loop.
                 wait_for, stop_action = "", ""
-            else:
-                logging.warning("Last command failed or timed out!")
+            elif type(result) == type(0):
+                logging.warning("Last command failed (exit code {})!".format(result))
                 if os.environ.get("WORKSHOP_TEST_FORCE_NONINTERACTIVE"):
-                    raise Exception("Command failed or timed out: {}".format(data))
+                    raise Exception("Command failed (exit code): {} ({})".format(data, result))
+                interactive = True
+            else:
+                logging.warning("Last command timed out!")
+                if os.environ.get("WORKSHOP_TEST_FORCE_NONINTERACTIVE"):
+                    raise Exception("Command timed out: {}".format(data))
                 interactive = True
         else:
-            print "DO NOT KNOW HOW TO HANDLE {} {!r}".format(method, data)
+            logging.warning("DO NOT KNOW HOW TO HANDLE {} {!r}".format(method, data))
         i += 1
     elif command.isdigit():
         i = int(command)
@@ -177,5 +200,6 @@ while i < len(actions):
         i += 1
         # skip other "commands"
 
+# Reset slide counter
 with open("nextstep", "w") as f:
     f.write(str(0))
