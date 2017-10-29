@@ -68,6 +68,19 @@ class Slide(object):
 def ansi(code):
     return lambda s: "\x1b[{}m{}\x1b[0m".format(code, s)
 
+def wait_for_success(wait_for=None):
+    secs, timeout = 0, 30
+    while secs <= timeout:
+        time.sleep(1)
+        output = [x for x in subprocess.check_output(["tmux", "capture-pane", "-p"]).split("\n") if x]
+        if wait_for and [x for x in output if wait_for in x]:
+            return True
+        if output[-1] == "$":
+            return True
+        else:
+            print(".")
+        secs += 1
+
 slides = []
 content = open(sys.argv[1]).read()
 for slide in re.split("\n---?\n", content):
@@ -96,19 +109,6 @@ except Exception as e:
 
 
 keymaps = { "^C": "\x03" }
-
-def wait_for_success(wait_for=None):
-    secs, timeout = 0, 30
-    while secs <= timeout:
-        time.sleep(1)
-        output = [x for x in subprocess.check_output(["tmux", "capture-pane", "-p"]).split("\n") if x]
-        if wait_for and [x for x in output if wait_for in x]:
-            return True
-        if output[-1] == "$":
-            return True
-        else:
-            print(".")
-        secs += 1
 
 wait_for, stop_action, method = "", "", ""
 
