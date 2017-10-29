@@ -7,6 +7,9 @@ import subprocess
 import sys
 import time
 
+import coloredlogs, logging
+coloredlogs.install()
+
 logging.basicConfig(level=logging.DEBUG)
 
 def hrule():
@@ -95,25 +98,45 @@ except Exception as e:
 
 keymaps = { "^C": "\x03" }
 
-def wait_for_success():
+def wait_for_success(wait_for=None):
     secs, timeout = 0, 30
     while secs <= timeout:
         time.sleep(1)
         output = [x for x in subprocess.check_output(["tmux", "capture-pane", "-p"]).split("\n") if x]
+        if wait_for and [x for x in output if wait_for in x]:
+            return True
         if output[-1] == "$":
             return True
         else:
             print(".")
         secs += 1
 
+wait_for, action, method = "", "", ""
 while True:
     with open("nextstep","w") as f:
         f.write(str(i))
     slide, snippet, method, data = actions[i]
     data = data.strip()
+
+    # Look behind at the last slide to see if 'wait' or 'keys' was defined.
+    # If so, we need to wait for the specified output and/or terminate the command with the specified keys.
+    if method == "wait":
+        wait_for = data
+        print("Setting wait_for to: {}".format(data))
+        i += 1
+        continue
+    if method == "keys":
+        action = data
+        print("Setting action to: {}".format(data))
+        i += 1
+        continue
     print(hrule())
     print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
     print(hrule())
+    if wait_for:
+        print("waiting for: {}".format(wait_for))
+    if action:
+        print("action: {}".format(action))
     print("[{}] Shall we execute that snippet above?".format(i))
     command = raw_input()
     if command == "":
@@ -125,8 +148,17 @@ while True:
             if method == "bash":
                 data += "\n"
             subprocess.check_call(["tmux", "send-keys", "{}".format(data)])
-            if not wait_for_success():
-                print("WARNING /!\ Command timed out.")
+            result = wait_for_success(wait_for=wait_for)
+            if result is True:
+                if action:
+                    subprocess.check_call(["tmux", "send-keys", "{}".format(action)])
+                    wait_for_success()
+                    # Unset wait_for and action so they don't carry over to the next loop.
+                    wait_for, action = "", ""
+            elif result is False:
+                logging.warning("Last command failed!")
+            else:
+                logging.warning("Last command timed out!")
         else:
             print "DO NOT KNOW HOW TO HANDLE {} {!r}".format(method, data)
         i += 1
