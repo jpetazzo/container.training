@@ -72,10 +72,10 @@ _cmd_deploy() {
     # wait until all hosts are reachable before trying to deploy
     info "Trying to reach $TAG instances..."
     while ! tag_is_reachable $TAG; do
-        echo >/dev/stderr -n "."
+        >/dev/stderr echo -n "."
         sleep 2
     done
-    echo >/dev/stderr ""
+    >/dev/stderr echo ""
 
     sep "Deploying tag $TAG"
     pssh -I tee /tmp/settings.yaml <$SETTINGS

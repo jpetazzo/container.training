@@ -6,7 +6,7 @@ pssh() {
     HOSTFILE="ips.txt"
 
     [ -f $HOSTFILE ] || {
-        echo >/dev/stderr "No hostfile found at $HOSTFILE"
+        >/dev/stderr echo "No hostfile found at $HOSTFILE"
         return
     }
 

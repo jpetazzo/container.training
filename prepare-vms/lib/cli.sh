@@ -13,15 +13,15 @@ die() {
 }
 
 error() {
-    echo >/dev/stderr "[$(red ERROR)] $1"
+    >/dev/stderr echo "[$(red ERROR)] $1"
 }
 
 warning() {
-    echo >/dev/stderr "[$(yellow WARNING)] $1"
+    >/dev/stderr echo "[$(yellow WARNING)] $1"
 }
 
 info() {
-    echo >/dev/stderr "[$(green INFO)] $1"
+    >/dev/stderr echo "[$(green INFO)] $1"
 }
 
 # Print a full-width separator.
@@ -33,19 +33,19 @@ sep() {
     fi
     SEP=$(yes = | tr -d "\n" | head -c $(($COLUMNS - 1)))
     if [ -z "$1" ]; then
-        echo >/dev/stderr $SEP
+        >/dev/stderr echo $SEP
     else
         MSGLEN=$(echo "$1" | wc -c)
         if [ $(($MSGLEN + 4)) -gt $COLUMNS ]; then
-            echo >/dev/stderr "$SEP"
-            echo >/dev/stderr "$1"
-            echo >/dev/stderr "$SEP"
+            >/dev/stderr echo "$SEP"
+            >/dev/stderr echo "$1"
+            >/dev/stderr echo "$SEP"
         else
             LEFTLEN=$((($COLUMNS - $MSGLEN - 2) / 2))
             RIGHTLEN=$(($COLUMNS - $MSGLEN - 2 - $LEFTLEN))
             LEFTSEP=$(echo $SEP | head -c $LEFTLEN)
             RIGHTSEP=$(echo $SEP | head -c $RIGHTLEN)
-            echo >/dev/stderr "$LEFTSEP $1 $RIGHTSEP"
+            >/dev/stderr echo "$LEFTSEP $1 $RIGHTSEP"
         fi
     fi
 }
