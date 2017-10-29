@@ -1,7 +1,7 @@
 export AWS_DEFAULT_OUTPUT=text
 
 HELP=""
-_cmd () {
+_cmd() {
     HELP="$(printf "%s\n%-12s %s\n" "$HELP" "$1" "$2")"
 }
 
@@ -39,7 +39,7 @@ _cmd_cards() {
     need_tag $TAG
     need_settings $SETTINGS
 
-    aws_get_instance_ips_by_tag $TAG > tags/$TAG/ips.txt
+    aws_get_instance_ips_by_tag $TAG >tags/$TAG/ips.txt
 
     # Remove symlinks to old cards
     rm -f ips.html ips.pdf
@@ -72,24 +72,24 @@ _cmd_deploy() {
     # wait until all hosts are reachable before trying to deploy
     info "Trying to reach $TAG instances..."
     while ! tag_is_reachable $TAG; do
-        >/dev/stderr echo -n "."
+        echo >/dev/stderr -n "."
         sleep 2
     done
-    >/dev/stderr echo ""
+    echo >/dev/stderr ""
 
     sep "Deploying tag $TAG"
-    pssh -I tee /tmp/settings.yaml < $SETTINGS
+    pssh -I tee /tmp/settings.yaml <$SETTINGS
     pssh "
     sudo apt-get update &&
     sudo apt-get install -y python-setuptools &&
     sudo easy_install pyyaml"
 
     # Copy postprep.py to the remote machines, and execute it, feeding it the list of IP addresses
-    pssh -I tee /tmp/postprep.py < lib/postprep.py
-    pssh --timeout 900 --send-input "python /tmp/postprep.py >>/tmp/pp.out 2>>/tmp/pp.err" < ips.txt
+    pssh -I tee /tmp/postprep.py <lib/postprep.py
+    pssh --timeout 900 --send-input "python /tmp/postprep.py >>/tmp/pp.out 2>>/tmp/pp.err" <ips.txt
 
     # Install docker-prompt script
-    pssh -I sudo tee /usr/local/bin/docker-prompt < lib/docker-prompt
+    pssh -I sudo tee /usr/local/bin/docker-prompt <lib/docker-prompt
     pssh sudo chmod +x /usr/local/bin/docker-prompt
 
     # If /home/docker/.ssh/id_rsa doesn't exist, copy it from node1
@@ -206,7 +206,7 @@ _cmd_ips() {
 }
 
 _cmd list "List available batches in the current region"
-_cmd_list(){
+_cmd_list() {
     info "Listing batches in region $AWS_DEFAULT_REGION:"
     aws_display_tags
 }
@@ -259,7 +259,7 @@ _cmd_retag() {
     if [[ -z "$NEWTAG" ]]; then
         die "You must specify a new tag to apply."
     fi
-    aws_tag_instances $OLDTAG $NEWTAG 
+    aws_tag_instances $OLDTAG $NEWTAG
 }
 
 _cmd start "Start a batch of VMs"
@@ -279,8 +279,8 @@ _cmd_start() {
     # Upload our SSH keys to AWS if needed, to be added to each VM's authorized_keys
     key_name=$(sync_keys)
 
-    AMI=$(_cmd_ami)  # Retrieve the AWS image ID
-    TOKEN=$(get_token)  # generate a timestamp token for this batch of VMs
+    AMI=$(_cmd_ami)    # Retrieve the AWS image ID
+    TOKEN=$(get_token) # generate a timestamp token for this batch of VMs
     AWS_KEY_NAME=$(make_key_name)
 
     sep "Starting instances"
@@ -295,7 +295,7 @@ _cmd_start() {
         --instance-type t2.medium \
         --client-token $TOKEN \
         --image-id $AMI)
-    reservation_id=$(echo "$result" | head -1 | awk '{print $2}' )
+    reservation_id=$(echo "$result" | head -1 | awk '{print $2}')
     info "Reservation ID: $reservation_id"
     sep
 
@@ -317,7 +317,7 @@ _cmd_start() {
 
     mkdir -p tags/$TAG
     IPS=$(aws_get_instance_ips_by_tag $TAG)
-    echo "$IPS" > tags/$TAG/ips.txt
+    echo "$IPS" >tags/$TAG/ips.txt
     link_tag $TAG
     if [ -n "$SETTINGS" ]; then
         _cmd_deploy $TAG $SETTINGS
@@ -325,16 +325,16 @@ _cmd_start() {
         info "To deploy or kill these instances, run one of the following:"
         info "$0 deploy $TAG <settings/somefile.yaml>"
         info "$0 stop $TAG"
-    fi    
+    fi
 }
 
 _cmd ec2quotas "Check our EC2 quotas (max instances)"
-_cmd_ec2quotas(){
+_cmd_ec2quotas() {
     greet
 
     max_instances=$(aws ec2 describe-account-attributes \
-                    --attribute-names max-instances \
-                    --query 'AccountAttributes[*][AttributeValues]')
+        --attribute-names max-instances \
+        --query 'AccountAttributes[*][AttributeValues]')
     info "In the current region ($AWS_DEFAULT_REGION) you can deploy up to $max_instances instances."
 
     # Print list of AWS EC2 regions, highlighting ours ($AWS_DEFAULT_REGION) in the list
@@ -373,7 +373,7 @@ link_tag() {
     ln -sf $IPS_FILE ips.txt
 }
 
-pull_tag(){
+pull_tag() {
     TAG=$1
     need_tag $TAG
     link_tag $TAG
@@ -405,15 +405,15 @@ wait_until_tag_is_running() {
     COUNT=$2
     i=0
     done_count=0
-    while [[ $done_count -lt $COUNT ]]; do \
+    while [[ $done_count -lt $COUNT ]]; do
         let "i += 1"
         info "$(printf "%d/%d instances online" $done_count $COUNT)"
         done_count=$(aws ec2 describe-instances \
-                --filters "Name=instance-state-name,Values=running" \
-                          "Name=tag:Name,Values=$TAG" \
-                --query "Reservations[*].Instances[*].State.Name" \
-            | tr "\t" "\n" \
-            | wc -l)
+            --filters "Name=instance-state-name,Values=running" \
+            "Name=tag:Name,Values=$TAG" \
+            --query "Reservations[*].Instances[*].State.Name" |
+            tr "\t" "\n" |
+            wc -l)
 
         if [[ $i -gt $max_retry ]]; then
             die "Timed out while waiting for instance creation (after $max_retry retries)"
@@ -432,7 +432,7 @@ tag_is_reachable() {
 test_tag() {
     ips_file=tags/$TAG/ips.txt
     info "Picking a random IP address in $ips_file to run tests."
-    n=$[ 1 + $RANDOM % $(wc -l < $ips_file) ]
+    n=$((1 + $RANDOM % $(wc -l <$ips_file)))
     ip=$(head -n $n $ips_file | tail -n 1)
     test_vm $ip
     info "Tests complete."
@@ -461,12 +461,12 @@ test_vm() {
         "env" \
         "ls -la /home/docker/.ssh"; do
         sep "$cmd"
-        echo "$cmd" | 
+        echo "$cmd" |
             ssh -A -q \
                 -o "UserKnownHostsFile /dev/null" \
                 -o "StrictHostKeyChecking=no" \
-                $user@$ip sudo -u docker -i \
-            || {
+                $user@$ip sudo -u docker -i ||
+            {
                 status=$?
                 error "$cmd exit status: $status"
                 errors="[$status] $cmd\n$errors"
@@ -480,7 +480,7 @@ test_vm() {
     info "Test VM was $ip."
 }
 
-make_key_name(){
+make_key_name() {
     SHORT_FINGERPRINT=$(ssh-add -l | grep RSA | head -n1 | cut -d " " -f 2 | tr -d : | cut -c 1-8)
     echo "${SHORT_FINGERPRINT}-${USER}"
 }
@@ -492,14 +492,14 @@ sync_keys() {
 
     AWS_KEY_NAME=$(make_key_name)
     info "Syncing keys... "
-    if ! aws ec2 describe-key-pairs --key-name "$AWS_KEY_NAME" &> /dev/null; then
+    if ! aws ec2 describe-key-pairs --key-name "$AWS_KEY_NAME" &>/dev/null; then
         aws ec2 import-key-pair --key-name $AWS_KEY_NAME \
-            --public-key-material "$(ssh-add -L \
-                                    | grep -i RSA \
-                                    | head -n1 \
-                                    | cut -d " " -f 1-2)" &> /dev/null
+            --public-key-material "$(ssh-add -L |
+                grep -i RSA |
+                head -n1 |
+                cut -d " " -f 1-2)" &>/dev/null
 
-        if ! aws ec2 describe-key-pairs --key-name "$AWS_KEY_NAME" &> /dev/null; then
+        if ! aws ec2 describe-key-pairs --key-name "$AWS_KEY_NAME" &>/dev/null; then
             die "Somehow, importing the key didn't work. Make sure that 'ssh-add -l | grep RSA | head -n1' returns an RSA key?"
         else
             info "Imported new key $AWS_KEY_NAME."
@@ -523,4 +523,3 @@ describe_tag() {
     aws_display_instances_by_tag $TAG
     aws_display_instance_statuses_by_tag $TAG
 }
-
