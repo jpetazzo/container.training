@@ -89,12 +89,15 @@ img {
   max-width: 100%;
   max-height: 550px;
 }
+.small img {
+  max-height: 250px;
+}
 
 .title {
   vertical-align: middle;
   text-align: center;
 }
-.title h1 { font-size: 5em; }
+.title h1 { font-size: 3em; font-family: unset;}
 .title p { font-size: 3em; }
 
 .nav {
