@@ -135,21 +135,15 @@ Without further ado, let's start our application.
   cd ~/orchestration-workshop/dockercoins
   ```
 
-<!--
-```wait
-units of work done
-```
-
-```keys
-^C
-```
-
--->
-
 - Use Compose to build and run all containers:
   ```bash
   docker-compose up
   ```
+
+<!--
+```wait units of work done```
+```keys ^C```
+-->
 
 ]
 
@@ -215,21 +209,15 @@ class: extra-details
   docker-compose logs
   ```
 
-<!--
-```wait
-units of work done
-```
-
-```keys
-^C
-```
-
--->
-
 - Stream container logs, starting at the last 10 lines for each container:
   ```bash
   docker-compose logs --tail 10 --follow
   ```
+
+<!--
+```wait units of work done```
+```keys ^C```
+-->
 
 ]
 
@@ -324,29 +312,20 @@ class: extra-details
 - run `top` to see CPU and memory usage (you should see idle cycles)
 
 <!--
-```wait
-Tasks
-```
+```bash top```
+
+```wait Tasks```
 ```keys ^C```
-
-```bash
-top
-```
-
 -->
 
 - run `vmstat 1` to see I/O usage (si/so/bi/bo)
   <br/>(the 4 numbers should be almost zero, except `bo` for logging)
 
 <!--
-```wait
-memory
-```
-```keys ^C```
-```bash
-vmstat 1
-```
+```bash vmstat 1```
 
+```wait memory```
+```keys ^C```
 -->
 
 ]

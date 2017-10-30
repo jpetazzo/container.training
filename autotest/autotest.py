@@ -137,20 +137,16 @@ while i < len(actions):
     with open("nextstep","w") as f:
         f.write(str(i))
     slide, snippet, method, data = actions[i]
+    _, _, next_method, _ = actions[i+1]
+    # If this command is immediately followed by ```wait <string>```, then assume a ```keys <keys>```
+    # comes immediately after. Once the <string> appears on screen, send <keys>.
+    if next_method == "wait":
+        _, _, _, wait_for = actions[i+1]
+        _, _, _, stop_action = actions[i+2]
+        i += 2
+
     data = data.strip()
 
-    # Look behind at the last slide to see if 'wait' or 'keys' was defined.
-    # If so, we need to wait for the specified output and/or terminate the command with the specified keys.
-    if method == "wait":
-        wait_for = data
-        logging.info("Setting wait_for to: {}".format(data))
-        i += 1
-        continue
-    if method == "keys":
-        stop_action = data
-        logging.info("Setting stop_action to: {}".format(data))
-        i += 1
-        continue
     print(hrule())
     print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
     print(hrule())
@@ -177,6 +173,7 @@ while i < len(actions):
             result = wait_for_success(wait_for=wait_for)
             if result is True:
                 if stop_action:
+                    logging.info("Got '{}', running stop_action: {}".format(wait_for, stop_action))
                     subprocess.check_call(["tmux", "send-keys", "{}".format(stop_action)])
                     wait_for_success()
                 # Unset wait_for and stop_action so they don't carry over to the next loop.
