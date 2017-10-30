@@ -136,18 +136,25 @@ def processchapter(chapter, filename):
         return (markdown, titles)
     raise InvalidChapter(chapter)
 
-# Default values
-repo = "https://github.com/jpetazzo/orchestration-workshop"
-branch = "the-big-2017-refactor"
-base = "docs"
-# OK now try to infer real values
-repo = subprocess.check_output(["git", "config", "remote.origin.url"])
-repo = repo.strip().replace("git@github.com:", "https://github.com/")
-branch = subprocess.check_output(["git", "status", "--short", "--branch"])
-branch = branch[3:].split("...")[0]
-base = subprocess.check_output(["git", "rev-parse", "--show-prefix"])
-base = base.strip().strip("/")
-# And the function that uses these values
+try:
+    repo = subprocess.check_output(["git", "config", "remote.origin.url"])
+    repo = repo.strip().replace("git@github.com:", "https://github.com/")
+except:
+    logging.exception("Could not get git remote URL, falling back to default")
+    repo = "https://github.com/jpetazzo/orchestration-workshop"
+try:
+    branch = subprocess.check_output(["git", "status", "--short", "--branch"])
+    branch = branch[3:].split("...")[0]
+except:
+    logging.exception("Could not infer git branch name, falling back to default")
+    branch = "the-big-2017-refactor"
+try:
+    base = subprocess.check_output(["git", "rev-parse", "--show-prefix"])
+    base = base.strip().strip("/")
+except:
+    logging.exception("Could not infer git directory name, falling back to default")
+    base = "docs"
+
 def makelink(filename):
     if os.path.isfile(filename):
         url = "{}/tree/{}/{}/{}".format(repo, branch, base, filename)
