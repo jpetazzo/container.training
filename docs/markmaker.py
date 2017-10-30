@@ -6,6 +6,7 @@ import logging
 import os
 import re
 import string
+import subprocess
 import sys  
 import yaml
 
@@ -135,12 +136,20 @@ def processchapter(chapter, filename):
         return (markdown, titles)
     raise InvalidChapter(chapter)
 
-
+# Default values
+repo = "https://github.com/jpetazzo/orchestration-workshop"
+branch = "the-big-2017-refactor"
+base = "docs"
+# OK now try to infer real values
+repo = subprocess.check_output(["git", "config", "remote.origin.url"])
+repo = repo.strip().replace("git@github.com:", "https://github.com/")
+branch = subprocess.check_output(["git", "status", "--short", "--branch"])
+branch = branch[3:].split("...")[0]
+base = subprocess.check_output(["git", "rev-parse", "--show-prefix"])
+base = base.strip().strip("/")
+# And the function that uses these values
 def makelink(filename):
     if os.path.isfile(filename):
-        repo = "https://github.com/jpetazzo/orchestration-workshop"
-        branch = "the-big-2017-refactor"
-        base = "docs"
         url = "{}/tree/{}/{}/{}".format(repo, branch, base, filename)
         return "[{}]({})".format(filename, url)
     else:
