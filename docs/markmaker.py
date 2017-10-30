@@ -136,28 +136,30 @@ def processchapter(chapter, filename):
         return (markdown, titles)
     raise InvalidChapter(chapter)
 
+# Try to figure out the URL of the repo on GitHub.
+# This is used to generate "edit me on GitHub"-style links.
 try:
-    repo = subprocess.check_output(["git", "config", "remote.origin.url"])
-    repo = repo.strip().replace("git@github.com:", "https://github.com/")
-except:
-    logging.exception("Could not get git remote URL, falling back to default")
-    repo = "https://github.com/jpetazzo/orchestration-workshop"
-try:
-    branch = subprocess.check_output(["git", "status", "--short", "--branch"])
-    branch = branch[3:].split("...")[0]
-except:
-    logging.exception("Could not infer git branch name, falling back to default")
-    branch = "the-big-2017-refactor"
-try:
+    if "REPOSITORY_URL" in os.environ:
+        repo = os.environ["REPOSITORY_URL"]
+    else:
+        repo = subprocess.check_output(["git", "config", "remote.origin.url"])
+        repo = repo.strip().replace("git@github.com:", "https://github.com/")
+    if "BRANCH" in os.environ:
+        branch = os.environ["BRANCH"]
+    else:
+        branch = subprocess.check_output(["git", "status", "--short", "--branch"])
+        branch = branch[3:].split("...")[0]
     base = subprocess.check_output(["git", "rev-parse", "--show-prefix"])
     base = base.strip().strip("/")
+    urltemplate = ("{repo}/tree/{branch}/{base}/{filename}"
+        .format(repo=repo, branch=branch, base=base, filename="{}"))
 except:
-    logging.exception("Could not infer git directory name, falling back to default")
-    base = "docs"
+    logging.exception("Could not generate repository URL; generating local URLs instead.")
+    urltemplate = "file://{pwd}/{filename}".format(pwd=os.environ["PWD"], filename="{}")
 
 def makelink(filename):
     if os.path.isfile(filename):
-        url = "{}/tree/{}/{}/{}".format(repo, branch, base, filename)
+        url = urltemplate.format(filename)
         return "[{}]({})".format(filename, url)
     else:
         return filename
