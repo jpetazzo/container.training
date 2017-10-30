@@ -11,8 +11,7 @@ import sys
 import yaml
 
 
-if os.environ.get("DEBUG") == "1":
-    logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 
 
 class InvalidChapter(ValueError):
