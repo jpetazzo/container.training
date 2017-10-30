@@ -50,8 +50,11 @@
 
 ## Learning more about container security
 
-.blackbelt[[Securing Containers, One Patch At A Time](https://www.youtube.com/watch?v=jZSs1RHwcqo&list=PLkA60AVN3hh-biQ6SCtBJ-WVTyBmmYho8&index=4) by Michael Crosby (DC17US)]
+.blackbelt[DC17US: Securing Containers, One Patch At A Time
+([video](https://www.youtube.com/watch?v=jZSs1RHwcqo&list=PLkA60AVN3hh-biQ6SCtBJ-WVTyBmmYho8&index=4))]
 
-.blackbelt[Container-relevant Upstream Kernel Developments by Tycho Andersen (Tuesday 14:55)]
+.blackbelt[DC17EU: Container-relevant Upstream Kernel Developments
+([video](https://dockercon.docker.com/watch/7JQBpvHJwjdW6FKXvMfCK1))]
 
-.blackbelt[What Have Syscalls Done for you Lately? by Liz Rice (Tuesday 11:45)]
+.blackbelt[DC17EU: What Have Syscalls Done for you Lately?
+([video](https://dockercon.docker.com/watch/4ZxNyWuwk9JHSxZxgBBi6J))]

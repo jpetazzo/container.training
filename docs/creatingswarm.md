@@ -347,6 +347,9 @@ Some presentations from the Docker Distributed Systems Summit in Berlin:
 
 And DockerCon Black Belt talks:
 
-.blackbelt[[Everything You Thought You Already Knew About Orchestration](https://www.youtube.com/watch?v=Qsv-q8WbIZY&list=PLkA60AVN3hh-biQ6SCtBJ-WVTyBmmYho8&index=6) by Laura Frank (DC17US)]
+.blackbelt[DC17US: Everything You Thought You Already Knew About Orchestration
+ ([video](https://www.youtube.com/watch?v=Qsv-q8WbIZY&list=PLkA60AVN3hh-biQ6SCtBJ-WVTyBmmYho8&index=6))]
 
-.blackbelt[Container Orchestration from Theory to Practice by Laura Frank and Stephen Day (Wednesday 14:25)]
+.blackbelt[DC17EU: Container Orchestration from Theory to Practice
+ ([video](https://dockercon.docker.com/watch/5fhwnQxW8on1TKxPwwXZ5r))]
+
