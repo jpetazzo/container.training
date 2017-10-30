@@ -1,12 +1,19 @@
 #!/usr/bin/env python
 
+import uuid
 import logging
 import os
 import re
 import subprocess
 import sys
+import time
+import uuid
 
 logging.basicConfig(level=logging.DEBUG)
+
+
+TIMEOUT = 60 # 1 minute
+
 
 def hrule():
     return "="*int(subprocess.check_output(["tput", "cols"]))
@@ -65,6 +72,49 @@ class Slide(object):
 def ansi(code):
     return lambda s: "\x1b[{}m{}\x1b[0m".format(code, s)
 
+
+def wait_for_string(s):
+    logging.debug("Waiting for string: {}".format(s))
+    deadline = time.time() + TIMEOUT
+    while time.time() < deadline:
+        output = subprocess.check_output(["tmux", "capture-pane", "-p"])
+        if s in output:
+            return
+        time.sleep(1)
+    raise Exception("Timed out while waiting for {}!".format(s))
+
+
+def wait_for_prompt():
+    logging.debug("Waiting for prompt.")
+    deadline = time.time() + TIMEOUT
+    while time.time() < deadline:
+        output = subprocess.check_output(["tmux", "capture-pane", "-p"])
+        if output[-3:-1] == "\n$":
+            return
+        time.sleep(1)
+    raise Exception("Timed out while waiting for prompt!".format(s))
+
+
+def check_exit_status():
+    token = uuid.uuid4().hex
+    data = "echo {} $?\n".format(token)
+    logging.debug("Sending {!r} to get exit status.".format(data))
+    subprocess.check_call(["tmux", "send-keys", data])
+    time.sleep(0.5)
+    wait_for_prompt()
+    screen = subprocess.check_output(["tmux", "capture-pane", "-p"])
+    status = re.findall("\n{} ([0-9]+)\n".format(token), screen, re.MULTILINE)
+    logging.debug("Got exit status: {}.".format(status))
+    if len(status) == 0:
+        raise Exception("Couldn't retrieve status code {}. Timed out?".format(token))
+    if len(status) > 1:
+        raise Exception("More than one status code {}. I'm seeing double! Shoot them both.".format(token))
+    code = int(status[0])
+    if code != 0:
+        raise Exception("Non-zero exit status: {}.".format(code))
+    # Otherwise just return peacefully.
+
+
 slides = []
 content = open(sys.argv[1]).read()
 for slide in re.split("\n---?\n", content):
@@ -94,30 +144,63 @@ except Exception as e:
 
 keymaps = { "^C": "\x03" }
 
-while True:
-    with open("nextstep","w") as f:
+interactive = True
+
+while i < len(actions):
+    with open("nextstep", "w") as f:
         f.write(str(i))
     slide, snippet, method, data = actions[i]
+
     data = data.strip()
+
     print(hrule())
     print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
     print(hrule())
-    print("[{}] Shall we execute that snippet above?".format(i))
-    command = raw_input()
-    if command == "":
-        if method=="keys" and data in keymaps:
-            print("Mapping {!r} to {!r}.".format(data, keymaps[data]))
-            data = keymaps[data]
-        if method in ["bash", "keys"]:
-            data = re.sub("\n +", "\n", data)
-            if method == "bash":
-                data += "\n"
-            subprocess.check_call(["tmux", "send-keys", "{}".format(data)])
-        else:
-            print "DO NOT KNOW HOW TO HANDLE {} {!r}".format(method, data)
-        i += 1
+    if interactive:
+        print("[{}] Shall we execute that snippet above?".format(i))
+        print("(ENTER to execute, 'c' to continue until next error, N to jump to step #N)")
+        command = raw_input("> ")
+    else:
+        command = ""
+
+    if command == "c":
+        # continue until next timeout
+        interactive = False
     elif command.isdigit():
         i = int(command)
+    elif command == "":
+        logging.info("Running with method {}: {}".format(method, data))
+        if method == "keys":
+            if data in keymaps:
+                print("Mapping {!r} to {!r}.".format(data, keymaps[data]))
+                data = keymaps[data]
+            subprocess.check_call(["tmux", "send-keys", data])
+        elif method == "bash":
+            # Make sure that we're ready
+            wait_for_prompt()
+            # Strip leading spaces
+            data = re.sub("\n +", "\n", data)
+            # Add "RETURN" at the end of the command :)
+            data += "\n"
+            # Send command
+            subprocess.check_call(["tmux", "send-keys", data])
+            # Force a short sleep to avoid race condition
+            time.sleep(0.5)
+            _, _, next_method, next_data = actions[i+1]
+            if next_method == "wait":
+                wait_for_string(next_data)
+            else:
+                wait_for_prompt()
+                # Verify return code FIXME should be optional
+                check_exit_status()
+        else:
+            logging.warning("Unknown method {}: {!r}".format(method, data))
+        i += 1
+
     else:
         i += 1
-        # skip other "commands"
+        logging.warning("Unknown command {}, skipping to next step.".format(command))
+
+# Reset slide counter
+with open("nextstep", "w") as f:
+    f.write(str(0))

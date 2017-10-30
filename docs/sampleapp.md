@@ -140,6 +140,11 @@ Without further ado, let's start our application.
   docker-compose up
   ```
 
+<!--
+```wait units of work done```
+```keys ^C```
+-->
+
 ]
 
 Compose tells Docker to build all container images (pulling
@@ -159,17 +164,6 @@ and displays aggregated logs.
 .exercise[
 
 - Stop the application by hitting `^C`
-
-<!--
-```wait
-units of work done
-```
-
-```keys
-^C
-```
-
--->
 
 ]
 
@@ -221,9 +215,8 @@ class: extra-details
   ```
 
 <!--
-```keys
-^C
-```
+```wait units of work done```
+```keys ^C```
 -->
 
 ]
@@ -319,10 +312,9 @@ class: extra-details
 - run `top` to see CPU and memory usage (you should see idle cycles)
 
 <!--
-```bash
-top
-```
+```bash top```
 
+```wait Tasks```
 ```keys ^C```
 -->
 
@@ -330,10 +322,9 @@ top
   <br/>(the 4 numbers should be almost zero, except `bo` for logging)
 
 <!--
-```bash
-vmstat 1
-```
+```bash vmstat 1```
 
+```wait memory```
 ```keys ^C```
 -->
 
