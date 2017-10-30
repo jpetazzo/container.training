@@ -1,8 +1,8 @@
-# This file can be sourced in order to directly run commands on 
+# This file can be sourced in order to directly run commands on
 # a batch of VMs whose IPs are located in ips.txt of the directory in which
 # the command is run.
 
-pssh () {
+pssh() {
     HOSTFILE="ips.txt"
 
     [ -f $HOSTFILE ] || {
@@ -14,10 +14,10 @@ pssh () {
     export PSSH=$(which pssh || which parallel-ssh)
 
     $PSSH -h $HOSTFILE -l ubuntu \
-    --par 100 \
-    -O LogLevel=ERROR \
-    -O UserKnownHostsFile=/dev/null \
-    -O StrictHostKeyChecking=no \
-    -O ForwardAgent=yes \
-    "$@"
+        --par 100 \
+        -O LogLevel=ERROR \
+        -O UserKnownHostsFile=/dev/null \
+        -O StrictHostKeyChecking=no \
+        -O ForwardAgent=yes \
+        "$@"
 }

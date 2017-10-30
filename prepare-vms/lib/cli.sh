@@ -31,18 +31,18 @@ sep() {
     if [ -z "$COLUMNS" ]; then
         COLUMNS=80
     fi
-    SEP=$(yes = | tr -d "\n" | head -c $[$COLUMNS - 1])
+    SEP=$(yes = | tr -d "\n" | head -c $(($COLUMNS - 1)))
     if [ -z "$1" ]; then
         >/dev/stderr echo $SEP
     else
         MSGLEN=$(echo "$1" | wc -c)
-        if [ $[ $MSGLEN +4 ] -gt $COLUMNS ]; then
+        if [ $(($MSGLEN + 4)) -gt $COLUMNS ]; then
             >/dev/stderr echo "$SEP"
             >/dev/stderr echo "$1"
             >/dev/stderr echo "$SEP"
         else
-            LEFTLEN=$[ ($COLUMNS - $MSGLEN - 2) / 2 ]
-            RIGHTLEN=$[ $COLUMNS - $MSGLEN - 2 - $LEFTLEN ]
+            LEFTLEN=$((($COLUMNS - $MSGLEN - 2) / 2))
+            RIGHTLEN=$(($COLUMNS - $MSGLEN - 2 - $LEFTLEN))
             LEFTSEP=$(echo $SEP | head -c $LEFTLEN)
             RIGHTSEP=$(echo $SEP | head -c $RIGHTLEN)
             >/dev/stderr echo "$LEFTSEP $1 $RIGHTSEP"
