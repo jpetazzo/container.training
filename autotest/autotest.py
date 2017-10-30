@@ -87,11 +87,10 @@ def wait_for_success(wait_for=None):
 def check_exit_code():
     token = uuid.uuid4().hex
     data = "echo {} $?\n".format(token)
-    subprocess.check_call(["tmux", "send-keys", "{}".format(data)])
+    subprocess.check_call(["tmux", "send-keys", data])
     time.sleep(0.5)
     screen = subprocess.check_output(["tmux", "capture-pane", "-p"])
     output = [x for x in screen.split("\n") if x]
-              #if x.startswith(token)]
     ec = [x for x in output if x.startswith(token)]
     if not ec:
         raise Exception("Couldn't retrieve exit code")

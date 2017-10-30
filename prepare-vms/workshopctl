@@ -22,8 +22,6 @@ DEPENDENCIES="
     jq
     pssh
     wkhtmltopdf
-    jinja2
-    pdfkit
     man
     "
 
