@@ -141,6 +141,8 @@ You can refer to the [NOMENCLATURE](https://github.com/docker/swarmkit/blob/mast
   docker node ls
   ```
 
+<!-- Ignore errors: ```wait ``` -->
+
 ]
 
 --

@@ -557,6 +557,9 @@ What did we change to make it compatible with Swarm mode?
   git log -p --since "4-JUL-2015" -- . ':!*.yml*' ':!*.html'
   ```
 
+  <!-- ```wait commit``` -->
+  <!-- ```keys q``` -->
+
 ]
 
 ---

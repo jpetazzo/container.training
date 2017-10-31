@@ -77,7 +77,7 @@ def wait_for_string(s):
     logging.debug("Waiting for string: {}".format(s))
     deadline = time.time() + TIMEOUT
     while time.time() < deadline:
-        output = subprocess.check_output(["tmux", "capture-pane", "-p"])
+        output = capture_pane()
         if s in output:
             return
         time.sleep(1)
@@ -88,21 +88,23 @@ def wait_for_prompt():
     logging.debug("Waiting for prompt.")
     deadline = time.time() + TIMEOUT
     while time.time() < deadline:
-        output = subprocess.check_output(["tmux", "capture-pane", "-p"])
-        if output[-3:-1] == "\n$":
+        output = capture_pane()
+        # If we are not at the bottom of the screen, there will be a bunch of extra \n's
+        output = output.rstrip('\n')
+        if output[-2:] == "\n$":
             return
         time.sleep(1)
-    raise Exception("Timed out while waiting for prompt!".format(s))
+    raise Exception("Timed out while waiting for prompt!")
 
 
 def check_exit_status():
     token = uuid.uuid4().hex
     data = "echo {} $?\n".format(token)
     logging.debug("Sending {!r} to get exit status.".format(data))
-    subprocess.check_call(["tmux", "send-keys", data])
+    send_keys(data)
     time.sleep(0.5)
     wait_for_prompt()
-    screen = subprocess.check_output(["tmux", "capture-pane", "-p"])
+    screen = capture_pane()
     status = re.findall("\n{} ([0-9]+)\n".format(token), screen, re.MULTILINE)
     logging.debug("Got exit status: {}.".format(status))
     if len(status) == 0:
@@ -134,6 +136,13 @@ for slide in slides:
         actions.append((slide, snippet, method, data))
 
 
+def send_keys(data):
+    subprocess.check_call(["tmux", "send-keys", data])
+
+def capture_pane():
+    return subprocess.check_output(["tmux", "capture-pane", "-p"])
+
+
 try:
     i = int(open("nextstep").read())
     logging.info("Loaded next step ({}) from file.".format(i))
@@ -142,7 +151,7 @@ except Exception as e:
     i = 0
 
 
-keymaps = { "^C": "\x03" }
+keymaps = { "^C": "\x03", "^D": "\x04" }
 
 interactive = True
 
@@ -151,6 +160,7 @@ while i < len(actions):
         f.write(str(i))
     slide, snippet, method, data = actions[i]
 
+    # Remove extra spaces (we don't want them in the terminal) and carriage returns
     data = data.strip()
 
     print(hrule())
@@ -163,6 +173,12 @@ while i < len(actions):
     else:
         command = ""
 
+    # For now, remove the `highlighted` sections
+    # (Make sure to use $() in shell snippets!)
+    if '`' in data:
+        logging.info("Stripping ` from snippet.")
+        data = data.replace('`', '')
+
     if command == "c":
         # continue until next timeout
         interactive = False
@@ -174,7 +190,7 @@ while i < len(actions):
             if data in keymaps:
                 print("Mapping {!r} to {!r}.".format(data, keymaps[data]))
                 data = keymaps[data]
-            subprocess.check_call(["tmux", "send-keys", data])
+            send_keys(data)
         elif method == "bash":
             # Make sure that we're ready
             wait_for_prompt()
@@ -183,7 +199,7 @@ while i < len(actions):
             # Add "RETURN" at the end of the command :)
             data += "\n"
             # Send command
-            subprocess.check_call(["tmux", "send-keys", data])
+            send_keys(data)
             # Force a short sleep to avoid race condition
             time.sleep(0.5)
             _, _, next_method, next_data = actions[i+1]
@@ -193,6 +209,19 @@ while i < len(actions):
                 wait_for_prompt()
                 # Verify return code FIXME should be optional
                 check_exit_status()
+        elif method == "copypaste":
+            screen = capture_pane()
+            matches = re.findall(data, screen, flags=re.DOTALL)
+            if len(matches) == 0:
+                raise Exception("Could not find regex {} in output.".format(data))
+            # Arbitrarily get the most recent match
+            match = matches[-1]
+            # Remove line breaks (like a screen copy paste would do)
+            match = match.replace('\n', '')
+            send_keys(match + '\n')
+            # FIXME: we should factor out the "bash" method
+            wait_for_prompt()
+            check_exit_status()
         else:
             logging.warning("Unknown method {}: {!r}".format(method, data))
         i += 1

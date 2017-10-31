@@ -259,7 +259,7 @@ about this instance; including a randomly-generated super-hero name.
 ]
 
 Note: if you don't have `jq` on your Play-With-Docker instance, just install it:
-```bash
+```
 apk add --no-cache jq
 ```
 
@@ -415,6 +415,8 @@ https://docs.docker.com/engine/userguide/networking/get-started-macvlan/
 - Point your browser to port 8080 of your node1's public ip
 
   (If you use Play-With-Docker, click on the (8080) badge)
+
+  <!-- ```open http://node1:8080``` -->
 
 ]
 

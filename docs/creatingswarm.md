@@ -192,10 +192,15 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
   docker swarm join-token worker
   ```
 
-- Switch to `node2`
+- Log into `node2`:
+  ```bash
+  ssh node2
+  ```
 
 - Copy-paste the `docker swarm join ...` command
   <br/>(that was displayed just before)
+
+<!-- ```copypaste docker swarm join --token SWMTKN.*?:2377``` -->
 
 ]
 
@@ -217,9 +222,10 @@ class: extra-details
 ]
 
 - However, Swarm commands will not work; try, for instance:
-  ```
+  ```bash
   docker node ls
   ```
+  <!-- ```wait ``` -->
 
 - This is because the node that we added is currently a *worker*
 
@@ -233,7 +239,10 @@ class: extra-details
 
 .exercise[
 
-- Switch back to `node1`
+- Switch back to `node1`:
+  ```keys
+  ^D
+  ```
 
 - View the cluster from `node1`, which is a manager:
   ```bash

@@ -55,9 +55,23 @@
 
 .exercise[
 
-- Edit the file `webui/files/index.html`
+- Edit the file `webui/files/index.html`:
+  ```bash
+  vi dockercoins/webui/files/index.html
+  ```
+
+  <!-- ```wait <title>``` -->
 
 - Locate the `font-size` CSS attribute and increase it (at least double it)
+
+  <!--
+  ```keys /font-size```
+  ```keys ^J```
+  ```keys lllllllllllllcw45px```
+  ```keys ^[```
+  ```keys :wq```
+  ```keys ^J```
+  -->
 
 - Save and exit
 

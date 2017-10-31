@@ -109,7 +109,9 @@ class: pic
 
 <!--
 ```bash
-[ -d orchestration-workshop ] && mv orchestration-workshop orchestration-workshop.$$
+if [ -d orchestration-workshop ]; then
+  mv orchestration-workshop orchestration-workshop.$$
+fi
 ```
 -->
 
