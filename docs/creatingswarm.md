@@ -222,18 +222,16 @@ class: extra-details
 ]
 
 - However, Swarm commands will not work; try, for instance:
+
+.exercise[
   ```bash
   docker node ls
   ```
 
-  <!--
-  ```wait
-  FIXME
-  ```
-  -->
+  <!-- ```wait ``` -->
+]
 
 - This is because the node that we added is currently a *worker*
-
 - Only *managers* can accept Swarm-specific commands
 
 ---
