@@ -150,9 +150,6 @@ except Exception as e:
     logging.warning("Could not read nextstep file ({}), initializing to 0.".format(e))
     i = 0
 
-
-keymaps = { "^C": "\x03", "^D": "\x04" }
-
 interactive = True
 
 while i < len(actions):
@@ -187,9 +184,6 @@ while i < len(actions):
     elif command == "":
         logging.info("Running with method {}: {}".format(method, data))
         if method == "keys":
-            if data in keymaps:
-                print("Mapping {!r} to {!r}.".format(data, keymaps[data]))
-                data = keymaps[data]
             send_keys(data)
         elif method == "bash":
             # Make sure that we're ready
