@@ -164,7 +164,7 @@ while i < len(actions):
     print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
     print(hrule())
     if interactive:
-        print("[{}] Shall we execute that snippet above?".format(i))
+        print("[{}/{}] Shall we execute that snippet above?".format(i, len(actions)))
         print("(ENTER to execute, 'c' to continue until next error, N to jump to step #N)")
         command = raw_input("> ")
     else:

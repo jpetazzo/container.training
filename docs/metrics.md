@@ -1006,9 +1006,9 @@ class: prom-manual
      --mount type=bind,source=/sys,target=/host/sys \
      --mount type=bind,source=/,target=/rootfs \
      prom/node-exporter \
-      -collector.procfs /host/proc \
-      -collector.sysfs /host/proc \
-      -collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)"
+      --path.procfs /host/proc \
+      --path.sysfs /host/proc \
+      --collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)"
    ```
 
 ]
