@@ -152,15 +152,13 @@ class: elk-manual
 
 .exercise[
 
-- Get the ID of the Logstash container:
+- View the logs of the logstash service:
   ```bash
-  CID=$(docker ps -q --filter label=com.docker.swarm.service.name=logstash)
+  docker service logs logstash --follow
   ```
 
-- View the logs:
-  ```bash
-  docker logs --follow $CID
-  ```
+  <!-- ```wait "message" => "ok"``` -->
+  <!-- ```keys ^C``` -->
 
 ]
 
@@ -267,6 +265,9 @@ The test message should show up in the logstash container logs.
            alpine echo hello
   ```
 
+  <!-- ```wait Detected task failure``` -->
+  <!-- ```keys ^C``` -->
+
 ]
 
 The test message should show up as well in the logstash container logs.
@@ -344,18 +345,6 @@ You can also set `--restart-delay`, `--restart-max-attempts`, and `--restart-win
 - The logging flags are the same as before
 
 .exercise[
-
-<!--
-
-- Enable GELF logging for all our *stateless* services:
-  ```bash
-    for SERVICE in hasher rng webui worker; do
-      docker service update dockercoins_$SERVICE \
-             --log-driver gelf --log-opt gelf-address=udp://127.0.0.1:12201
-    done
-  ```
-
--->
 
 - Enable GELF logging for the `rng` service:
   ```bash
