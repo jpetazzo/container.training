@@ -225,7 +225,12 @@ class: extra-details
   ```bash
   docker node ls
   ```
-  <!-- ```wait ``` -->
+
+  <!--
+  ```wait
+  FIXME
+  ```
+  -->
 
 - This is because the node that we added is currently a *worker*
 

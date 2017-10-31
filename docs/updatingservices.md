@@ -68,7 +68,7 @@
   ```keys /font-size```
   ```keys ^J```
   ```keys lllllllllllllcw45px```
-  ```keys ^[```
+  ```keys ^[``` ]
   ```keys :wq```
   ```keys ^J```
   -->
