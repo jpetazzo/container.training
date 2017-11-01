@@ -226,14 +226,9 @@ class: extra-details
   docker node ls
   ```
 
-  <!--
-  ```wait
-  FIXME
-  ```
-  -->
+```wait```
 
 - This is because the node that we added is currently a *worker*
-
 - Only *managers* can accept Swarm-specific commands
 
 ---
