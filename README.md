@@ -113,7 +113,7 @@ check the [prepare-vms](prepare-vms) directory for more information.
 
 ## Slide Deck
 
-- The slides are in the `docs` directory.
+- The slides are in the `slides` directory.
 - For each slide deck, there is a `.yml` file referencing `.md` files.
 - The `.md` files contain Markdown snippets.
 - When you run `build.sh once`, it will "compile" all the `.yml` files
