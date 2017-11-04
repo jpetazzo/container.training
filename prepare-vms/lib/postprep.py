@@ -60,7 +60,7 @@ system("echo docker:training | sudo chpasswd")
 
 # Fancy prompt courtesy of @soulshake.
 system("""sudo -u docker tee -a /home/docker/.bashrc <<SQRL
-export PS1='\e[1m\e[31m[\h] \e[32m(\\$(docker-prompt)) \e[34m\u@{}\e[35m \w\e[0m\n$ '
+export PS1='\e[1m\e[31m[{}] \e[32m(\\$(docker-prompt)) \e[34m\u@\h\e[35m \w\e[0m\n$ '
 SQRL""".format(ipv4))
 
 # Custom .vimrc
@@ -135,7 +135,9 @@ while addresses:
     print(cluster)
 
     mynode = cluster.index(ipv4) + 1
-    system("echo 'node{}' | sudo -u docker tee /tmp/node".format(mynode))
+    system("echo node{} | sudo -u docker tee /tmp/node".format(mynode))
+    system("echo node{} | sudo tee /etc/hostname".format(mynode))
+    system("sudo hostname node{}".format(mynode))
     system("sudo -u docker mkdir -p /home/docker/.ssh")
     system("sudo -u docker touch /home/docker/.ssh/authorized_keys")
 

@@ -1,0 +1,182 @@
+chat: "[Slack](https://dockercommunity.slack.com/messages/C7ET1GY4Q)"
+
+exclude:
+- self-paced
+- snap
+- auto-btp
+- benchmarking
+- elk-manual
+- prom-manual
+
+title: "Swarm: from Zero to Hero (DC17EU)"
+chapters:
+- |
+  class: title
+
+  .small[
+
+  Swarm: from Zero to Hero
+
+  .small[.small[
+
+  **Be kind to the WiFi!**
+
+  *Use the 5G network*
+  <br/>
+  *Don't use your hotspot*
+  <br/>
+  *Don't stream videos from YouTube, Netflix, etc.
+  <br/>(if you're bored, watch local content instead)*
+
+  Also: share the power outlets
+  <br/>
+  *(with limited power comes limited responsibility?)*
+  <br/>
+  *(or something?)*
+
+  Thank you!
+
+  ]
+  ]
+  ]
+
+  ---
+
+  ## Intros
+ 
+  <!--
+  - Hello! We are
+    AJ ([@s0ulshake](https://twitter.com/s0ulshake))
+    &
+    Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
+  -->
+
+  - Hello! We are Jérôme, Lee, Nicholas, and Scott
+
+  <!--
+    I am
+    Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
+  -->
+
+  --
+
+  - This is our collective Docker knowledge:
+
+    ![Bell Curve](bell-curve.jpg)
+
+  ---
+
+  ## "From zero to hero"
+
+  --
+
+  - It rhymes, but it's a pretty bad title, to be honest
+
+  --
+  
+  - None of you is a "zero"
+
+  --
+  
+  - None of us is a "hero"
+
+  --
+  
+  - None of us should even try to be a hero
+
+  --
+  
+    *The hero syndrome is a phenomenon affecting people who seek heroism or recognition,
+    usually by creating a desperate situation which they can resolve.
+    This can include unlawful acts, such as arson.
+    The phenomenon has been noted to affect civil servants,
+    such as firefighters, nurses, police officers, and security guards.*
+
+    (Wikipedia page on [hero syndrome](https://en.wikipedia.org/wiki/Hero_syndrome))
+
+  ---
+
+  ## Agenda
+
+  .small[
+  - 09:00-09:10 Hello!
+  - 09:10-10:30 Part 1
+  - 10:30-11:00 coffee break
+  - 11:00-12:30 Part 2
+  - 12:30-13:30 lunch break
+  - 13:30-15:00 Part 3
+  - 15:00-15:30 coffee break
+  - 15:30-17:00 Part 4
+  - 17:00-18:00 Afterhours and Q&A
+  ]
+
+  <!--
+  - The tutorial will run from 9:00am to 12:20pm
+
+  - This will be fast-paced, but DON'T PANIC!
+
+  - There will be a coffee break at 10:30am
+    <br/>
+    (please remind me if I forget about it!)
+  -->
+
+  - All the content is publicly available (slides, code samples, scripts)
+
+    Upstream URL: https://github.com/jpetazzo/orchestration-workshop
+
+  - Feel free to interrupt for questions at any time
+
+  - Live feedback, questions, help on [Gitter](chat)
+
+    http://container.training/chat
+
+- intro.md
+- |
+  @@TOC@@
+- - prereqs.md
+  - versions.md
+  - |
+    class: title
+
+    All right!
+    <br/>
+    We're all set.
+    <br/>
+    Let's do this.
+  - sampleapp.md
+  - swarmkit.md
+  - creatingswarm.md
+  - morenodes.md
+- - firstservice.md
+  - ourapponswarm.md
+  - updatingservices.md
+  - healthchecks.md
+- - operatingswarm.md
+  - netshoot.md
+  - ipsec.md
+  - swarmtools.md
+  - security.md
+  - secrets.md
+  - encryptionatrest.md
+  - leastprivilege.md
+  - apiscope.md
+- - logging.md
+  - metrics.md
+  - stateful.md
+  - extratips.md
+  - end.md
+- |
+  class: title
+
+  That's all folks! <br/> Questions?
+
+  .small[.small[
+
+  Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) — [@docker](https://twitter.com/docker)
+
+  ]]
+
+  <!--
+  Tiffany ([@tiffanyfayj](https://twitter.com/tiffanyfayj))
+  AJ ([@s0ulshake](https://twitter.com/s0ulshake))
+  -->

@@ -1,15 +1,28 @@
 #!/usr/bin/env python
 
+import uuid
+import logging
 import os
 import re
-import signal
 import subprocess
+import sys
 import time
+import uuid
 
-def print_snippet(snippet):
-    print(78*'-')
-    print(snippet)
-    print(78*'-')
+logging.basicConfig(level=logging.DEBUG)
+
+
+TIMEOUT = 60 # 1 minute
+
+
+def hrule():
+    return "="*int(subprocess.check_output(["tput", "cols"]))
+
+# A "snippet" is something that the user is supposed to do in the workshop.
+# Most of the "snippets" are shell commands.
+# Some of them can be key strokes or other actions.
+# In the markdown source, they are the code sections (identified by triple-
+# quotes) within .exercise[] sections.
 
 class Snippet(object):
 
@@ -29,26 +42,22 @@ class Slide(object):
     def __init__(self, content):
         Slide.current_slide += 1
         self.number = Slide.current_slide
+
         # Remove commented-out slides
         # (remark.js considers ??? to be the separator for speaker notes)
         content = re.split("\n\?\?\?\n", content)[0]
         self.content = content
+
         self.snippets = []
         exercises = re.findall("\.exercise\[(.*)\]", content, re.DOTALL)
         for exercise in exercises:
-            if "```" in exercise and "<br/>`" in exercise:
-                print("! Exercise on slide {} has both ``` and <br/>` delimiters, skipping."
-                      .format(self.number))
-                print_snippet(exercise)
-            elif "```" in exercise:
+            if "```" in exercise:
                 for snippet in exercise.split("```")[1::2]:
                     self.snippets.append(Snippet(self, snippet))
-            elif "<br/>`" in exercise:
-                for snippet in re.findall("<br/>`(.*)`", exercise):
-                    self.snippets.append(Snippet(self, snippet))
             else:
-                print("  Exercise on slide {} has neither ``` or <br/>` delimiters, skipping."
-                     .format(self.number))
+                logging.warning("Exercise on slide {} does not have any ``` snippet."
+                                .format(self.number))
+                self.debug()
 
     def __str__(self):
         text = self.content
@@ -56,136 +65,165 @@ class Slide(object):
             text = text.replace(snippet.content, ansi("7")(snippet.content))
         return text
 
+    def debug(self):
+        logging.debug("\n{}\n{}\n{}".format(hrule(), self.content, hrule()))
+
 
 def ansi(code):
     return lambda s: "\x1b[{}m{}\x1b[0m".format(code, s)
 
-slides = []
-with open("index.html") as f:
-    content = f.read()
-    for slide in re.split("\n---?\n", content):
-        slides.append(Slide(slide))
 
-is_editing_file = False
-placeholders = {}
+def wait_for_string(s):
+    logging.debug("Waiting for string: {}".format(s))
+    deadline = time.time() + TIMEOUT
+    while time.time() < deadline:
+        output = capture_pane()
+        if s in output:
+            return
+        time.sleep(1)
+    raise Exception("Timed out while waiting for {}!".format(s))
+
+
+def wait_for_prompt():
+    logging.debug("Waiting for prompt.")
+    deadline = time.time() + TIMEOUT
+    while time.time() < deadline:
+        output = capture_pane()
+        # If we are not at the bottom of the screen, there will be a bunch of extra \n's
+        output = output.rstrip('\n')
+        if output[-2:] == "\n$":
+            return
+        time.sleep(1)
+    raise Exception("Timed out while waiting for prompt!")
+
+
+def check_exit_status():
+    token = uuid.uuid4().hex
+    data = "echo {} $?\n".format(token)
+    logging.debug("Sending {!r} to get exit status.".format(data))
+    send_keys(data)
+    time.sleep(0.5)
+    wait_for_prompt()
+    screen = capture_pane()
+    status = re.findall("\n{} ([0-9]+)\n".format(token), screen, re.MULTILINE)
+    logging.debug("Got exit status: {}.".format(status))
+    if len(status) == 0:
+        raise Exception("Couldn't retrieve status code {}. Timed out?".format(token))
+    if len(status) > 1:
+        raise Exception("More than one status code {}. I'm seeing double! Shoot them both.".format(token))
+    code = int(status[0])
+    if code != 0:
+        raise Exception("Non-zero exit status: {}.".format(code))
+    # Otherwise just return peacefully.
+
+
+slides = []
+content = open(sys.argv[1]).read()
+for slide in re.split("\n---?\n", content):
+    slides.append(Slide(slide))
+
+actions = []
 for slide in slides:
     for snippet in slide.snippets:
         content = snippet.content
-        # Multi-line snippets should be ```highlightsyntax...
-        # Single-line snippets will be interpreted as shell commands
+        # Extract the "method" (e.g. bash, keys, ...)
+        # On multi-line snippets, the method is alone on the first line
+        # On single-line snippets, the data follows the method immediately
         if '\n' in content:
-            highlight, content = content.split('\n', 1)
+            method, data = content.split('\n', 1)
         else:
-            highlight = "bash"
-        content = content.strip()
-        # If the previous snippet was a file fragment, and the current
-        # snippet is not YAML or EDIT, complain.
-        if is_editing_file and highlight not in ["yaml", "edit"]:
-            print("! On slide {}, previous snippet was YAML, so what do what do?"
-                  .format(slide.number))
-            print_snippet(content)
-        is_editing_file = False
-        if highlight == "yaml":
-            is_editing_file = True
-        elif highlight == "placeholder":
-            for line in content.split('\n'):
-                variable, value = line.split(' ', 1)
-                placeholders[variable] = value
-        elif highlight == "bash":
-            for variable, value in placeholders.items():
-                quoted = "`{}`".format(variable)
-                if quoted in content:
-                    content = content.replace(quoted, value)
-                    del placeholders[variable]
-            if '`' in content:
-                print("! The following snippet on slide {} contains a backtick:"
-                      .format(slide.number))
-                print_snippet(content)
-                continue
-            print("_ "+content)
-            snippet.actions.append((highlight, content))
-        elif highlight == "edit":
-            print(". "+content)
-            snippet.actions.append((highlight, content))
-        elif highlight == "meta":
-            print("^ "+content)
-            snippet.actions.append((highlight, content))
-        else:
-            print("! Unknown highlight {!r} on slide {}.".format(highlight, slide.number))
-if placeholders:
-    print("! Remaining placeholder values: {}".format(placeholders))
+            method, data = content.split(' ', 1)
+        actions.append((slide, snippet, method, data))
 
-actions = sum([snippet.actions for snippet in sum([slide.snippets for slide in slides], [])], [])
 
-# Strip ^{ ... ^} for now
-def strip_curly_braces(actions, in_braces=False):
-    if actions == []:
-        return []
-    elif actions[0] == ("meta", "^{"):
-        return strip_curly_braces(actions[1:], True)
-    elif actions[0] == ("meta", "^}"):
-        return strip_curly_braces(actions[1:], False)
-    elif in_braces:
-        return strip_curly_braces(actions[1:], True)
+def send_keys(data):
+    subprocess.check_call(["tmux", "send-keys", data])
+
+def capture_pane():
+    return subprocess.check_output(["tmux", "capture-pane", "-p"])
+
+
+try:
+    i = int(open("nextstep").read())
+    logging.info("Loaded next step ({}) from file.".format(i))
+except Exception as e:
+    logging.warning("Could not read nextstep file ({}), initializing to 0.".format(e))
+    i = 0
+
+interactive = True
+
+while i < len(actions):
+    with open("nextstep", "w") as f:
+        f.write(str(i))
+    slide, snippet, method, data = actions[i]
+
+    # Remove extra spaces (we don't want them in the terminal) and carriage returns
+    data = data.strip()
+
+    print(hrule())
+    print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
+    print(hrule())
+    if interactive:
+        print("[{}/{}] Shall we execute that snippet above?".format(i, len(actions)))
+        print("(ENTER to execute, 'c' to continue until next error, N to jump to step #N)")
+        command = raw_input("> ")
     else:
-        return [actions[0]] + strip_curly_braces(actions[1:], False)
+        command = ""
 
-actions = strip_curly_braces(actions)
+    # For now, remove the `highlighted` sections
+    # (Make sure to use $() in shell snippets!)
+    if '`' in data:
+        logging.info("Stripping ` from snippet.")
+        data = data.replace('`', '')
 
-background = []
-cwd = os.path.expanduser("~")
-env = {}
-for current_action, next_action in zip(actions, actions[1:]+[("bash", "true")]):
-    if current_action[0] == "meta":
-        continue
-    print(ansi(7)(">>> {}".format(current_action[1])))
-    time.sleep(1)
-    popen_options = dict(shell=True, cwd=cwd, stdin=subprocess.PIPE, preexec_fn=os.setpgrp)
-    # The follow hack allows to capture the environment variables set by `docker-machine env`
-    # FIXME: this doesn't handle `unset` for now
-    if any([
-        "eval $(docker-machine env" in current_action[1],
-        "DOCKER_HOST" in current_action[1],
-        "COMPOSE_FILE" in current_action[1],
-        ]):
-        popen_options["stdout"] = subprocess.PIPE
-        current_action[1] += "\nenv"
-    proc = subprocess.Popen(current_action[1], **popen_options)
-    proc.cmd = current_action[1]
-    if next_action[0] == "meta":
-        print(">>> {}".format(next_action[1]))
-        time.sleep(3)
-        if next_action[1] == "^C":
-            os.killpg(proc.pid, signal.SIGINT)
-            proc.wait()
-        elif next_action[1] == "^Z":
-            # Let the process run
-            background.append(proc)
-        elif next_action[1] == "^D":
-            proc.communicate()
-            proc.wait()
+    if command == "c":
+        # continue until next timeout
+        interactive = False
+    elif command.isdigit():
+        i = int(command)
+    elif command == "":
+        logging.info("Running with method {}: {}".format(method, data))
+        if method == "keys":
+            send_keys(data)
+        elif method == "bash":
+            # Make sure that we're ready
+            wait_for_prompt()
+            # Strip leading spaces
+            data = re.sub("\n +", "\n", data)
+            # Add "RETURN" at the end of the command :)
+            data += "\n"
+            # Send command
+            send_keys(data)
+            # Force a short sleep to avoid race condition
+            time.sleep(0.5)
+            _, _, next_method, next_data = actions[i+1]
+            if next_method == "wait":
+                wait_for_string(next_data)
+            else:
+                wait_for_prompt()
+                # Verify return code FIXME should be optional
+                check_exit_status()
+        elif method == "copypaste":
+            screen = capture_pane()
+            matches = re.findall(data, screen, flags=re.DOTALL)
+            if len(matches) == 0:
+                raise Exception("Could not find regex {} in output.".format(data))
+            # Arbitrarily get the most recent match
+            match = matches[-1]
+            # Remove line breaks (like a screen copy paste would do)
+            match = match.replace('\n', '')
+            send_keys(match + '\n')
+            # FIXME: we should factor out the "bash" method
+            wait_for_prompt()
+            check_exit_status()
         else:
-            print("! Unknown meta action {} after snippet:".format(next_action[1]))
-            print_snippet(next_action[1])
-        print(ansi(7)("<<< {}".format(current_action[1])))
-    else:
-        proc.wait()
-        if "stdout" in popen_options:
-            stdout, stderr = proc.communicate()
-            for line in stdout.split('\n'):
-                if line.startswith("DOCKER_"):
-                    variable, value = line.split('=', 1)
-                    env[variable] = value
-                    print("=== {}={}".format(variable, value))
-        print(ansi(7)("<<< {} >>> {}".format(proc.returncode, current_action[1])))
-        if proc.returncode != 0:
-            print("Got non-zero status code; aborting.")
-            break
-    if current_action[1].startswith("cd "):
-        cwd = os.path.expanduser(current_action[1][3:])
-for proc in background:
-    print("Terminating background process:")
-    print_snippet(proc.cmd)
-    proc.terminate()
-    proc.wait()
+            logging.warning("Unknown method {}: {!r}".format(method, data))
+        i += 1
 
+    else:
+        i += 1
+        logging.warning("Unknown command {}, skipping to next step.".format(command))
+
+# Reset slide counter
+with open("nextstep", "w") as f:
+    f.write(str(0))

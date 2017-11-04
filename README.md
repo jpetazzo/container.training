@@ -8,10 +8,27 @@ non-stop since June 2015.
 
 ## Content
 
-- Chapter 1: Getting Started: running apps with docker-compose
-- Chapter 2: Scaling out with Swarm Mode
-- Chapter 3: Operating the Swarm (networks, updates, logging, metrics)
-- Chapter 4: Deeper in Swarm (stateful services, scripting, DAB's)
+The workshop introduces a demo app, "DockerCoins," built
+around a micro-services architecture. First, we run it
+on a single node, using Docker Compose. Then, we pretend
+that we need to scale it, and we use an orchestrator
+(SwarmKit or Kubernetes) to deploy and scale the app on
+a cluster.
+
+We explain the concepts of the orchestrator. For SwarmKit,
+we setup the cluster with `docker swarm init` and `docker swarm join`.
+For Kubernetes, we use pre-configured clusters.
+
+Then, we cover more advanced concepts: scaling, load balancing,
+updates, global services or daemon sets.
+
+There are a number of advanced optional chapters about
+logging, metrics, secrets, network encryption, etc.
+
+The content is very modular: it is broken down in a large
+number of Markdown files, that are put together according
+to a YAML manifest. This allows to re-use content
+between different workshops very easily.
 
 
 ## Quick start (or, "I want to try it!")
@@ -32,8 +49,8 @@ own cluster, we have multiple solutions for you!
 
 ### Using [play-with-docker](http://play-with-docker.com/)
 
-This method is very easy to get started (you don't need any extra account
-or resources!) but will require a bit of adaptation from the workshop slides.
+This method is very easy to get started: you don't need any extra account
+or resources! It works only for the SwarmKit version of the workshop, though.
 
 To get started, go to [play-with-docker](http://play-with-docker.com/), and
 click on _ADD NEW INSTANCE_ five times. You will get five "docker-in-docker"
@@ -44,31 +61,9 @@ the tab corresponding to that node.
 
 The nodes are not directly reachable from outside; so when the slides tell
 you to "connect to the IP address of your node on port XYZ" you will have
-to use a different method.
-
-We suggest to use "supergrok", a container offering a NGINX+ngrok combo to
-expose your services. To use it, just start (on any of your nodes) the
-`jpetazzo/supergrok` image. The image will output further instructions:
-
-```
-docker run --name supergrok -d jpetazzo/supergrok
-docker logs --follow supergrok
-```
-
-The logs of the container will give you a tunnel address and explain you
-how to connected to exposed services. That's all you need to do!
-
-We are also working on a native proxy, embedded to Play-With-Docker.
-Stay tuned!
-
-<!--
-
-- You can use a proxy provided by Play-With-Docker. When the slides
-  instruct you to connect to nodeX on port ABC, instead, you will connect
-  to http://play-with-docker.com/XXX.XXX.XXX.XXX:ABC, where XXX.XXX.XXX.XXX
-  is the IP address of nodeX.
-
--->
+to use a different method: click on the port number that should appear on
+top of the play-with-docker window. This only works for HTTP services,
+though.
 
 Note that the instances provided by Play-With-Docker have a short lifespan
 (a few hours only), so if you want to do the workshop over multiple sessions,
@@ -119,14 +114,16 @@ check the [prepare-vms](prepare-vms) directory for more information.
 ## Slide Deck
 
 - The slides are in the `docs` directory.
-- To view them locally open `docs/index.html` in your browser. It works
-  offline too.
-- To view them online open https://jpetazzo.github.io/orchestration-workshop/
-  in your browser.
-- When you fork this repo, be sure GitHub Pages is enabled in repo Settings
-  for "master branch /docs folder" and you'll have your own website for them.
-- They use https://remarkjs.com to allow simple markdown in a html file that
-  remark will transform into a presentation in the browser.
+- For each slide deck, there is a `.yml` file referencing `.md` files.
+- The `.md` files contain Markdown snippets.
+- When you run `build.sh once`, it will "compile" all the `.yml` files
+  into `.yml.html` files that you can open in your browser.
+- You can also run `build.sh forever`, which will watch the directory
+  and rebuild slides automatically when files are modified.
+- If needed, you can fine-tune `workshop.css` and `workshop.html`
+  (respectively the CSS style used, and the boilerplate template).
+- The slides use https://remarkjs.com to render Markdown into HTML in
+  a web browser.
 
 
 ## Sample App: Dockercoins!
@@ -181,7 +178,7 @@ want to become an instructor), keep reading!*
   they need for class.
 - Typically you create the servers the day before or morning of workshop, and
   leave them up the rest of day after workshop. If creating hundreds of servers,
-  you'll likely want to run all these `trainer` commands from a dedicated
+  you'll likely want to run all these `workshopctl` commands from a dedicated
   instance you have in same region as instances you want to create. Much faster
   this way if you're on poor internet. Also, create 2 sets of servers for
   yourself, and use one during workshop and the 2nd is a backup.
@@ -203,7 +200,7 @@ want to become an instructor), keep reading!*
 
 ### Creating the VMs
 
-`prepare-vms/trainer` is the script that gets you most of what you need for
+`prepare-vms/workshopctl` is the script that gets you most of what you need for
 setting up instances. See
 [prepare-vms/README.md](prepare-vms)
 for all the info on tools and scripts.

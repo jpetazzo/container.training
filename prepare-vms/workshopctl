@@ -50,8 +50,8 @@ check_dependencies() {
     status=0
     for dependency in $DEPENDENCIES; do
         if ! command -v $dependency >/dev/null; then
-             warning "Dependency $dependency could not be found."
-             status=1
+            warning "Dependency $dependency could not be found."
+            status=1
         fi
     done
     return $status
@@ -61,11 +61,11 @@ check_image() {
     docker inspect $TRAINER_IMAGE >/dev/null 2>&1
 }
 
-check_envvars ||
-    die "Please set all required environment variables."
+check_envvars \
+    || die "Please set all required environment variables."
 
-check_dependencies || 
-    warning "At least one dependency is missing. Install it or try the image wrapper."
+check_dependencies \
+    || warning "At least one dependency is missing. Install it or try the image wrapper."
 
 # Now check which command was invoked and execute it
 if [ "$1" ]; then

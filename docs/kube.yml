@@ -1,0 +1,106 @@
+exclude:
+- self-paced
+- snap
+
+chat: "[Gitter](https://gitter.im/jpetazzo/workshop-20171026-prague)"
+
+title: "Deploying and Scaling Microservices with Docker and Kubernetes"
+
+chapters:
+- |
+  class: title
+
+  .small[
+
+  Deploying and Scaling Microservices <br/> with Docker and Kubernetes
+
+  .small[.small[
+
+  **Be kind to the WiFi!**
+
+  <!--
+  *Use the 5G network*
+  <br/>
+  -->
+  *Don't use your hotspot*
+  <br/>
+  *Don't stream videos from YouTube, Netflix, etc.
+  <br/>(if you're bored, watch local content instead)*
+
+  Thank you!
+
+  ]
+  ]
+  ]
+
+  ---
+
+  ## Intros
+
+  - Hello! We are
+    Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Docker Inc.)
+    &
+    AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
+
+  --
+
+  - This is our first time doing this
+
+  --
+
+  - But ... containers and us go back a long way
+
+  --
+
+  ![CONTAINERS, I TELL YOU](aj-containers.jpeg)
+
+  --
+
+  - In the immortal words of [Chelsea Manning](https://twitter.com/xychelsea): #WeGotThis!
+
+  ---
+
+  ## Logistics
+
+  - The tutorial will run from 9:00am to 12:15pm
+
+  - There will be a coffee break at 10:30am
+    <br/>
+    (please remind me if I forget about it!)
+
+  - This will be fast-paced, but DON'T PANIC!
+    <br/>
+    (all the content is publicly available)
+
+  - Feel free to interrupt for questions at any time
+
+  - Live feedback, questions, help on @@CHAT@@
+
+- intro-ks.md
+- |
+  @@TOC@@
+- - prereqs-k8s.md
+  - versions-k8s.md
+  - sampleapp.md
+- - concepts-k8s.md
+  - kubenet.md
+  - kubectlget.md
+  - setup-k8s.md
+  - kubectlrun.md
+- - kubectlexpose.md
+  - ourapponkube.md
+  - dashboard.md
+- - kubectlscale.md
+  - daemonset.md
+  - rollout.md
+  - whatsnext.md
+- |
+  class: title
+
+  That's all folks! <br/> Questions?
+
+  .small[.small[
+
+  Jérôme ([@jpetazzo](https://twitter.com/jpetazzo)) — [@docker](https://twitter.com/docker)
+
+  ]]

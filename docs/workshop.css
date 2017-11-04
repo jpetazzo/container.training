@@ -1,0 +1,168 @@
+@import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+@import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+@import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+/* For print! Borrowed from https://github.com/gnab/remark/issues/50 */
+@page {
+  size: 1210px 681px;
+  margin: 0;
+ }
+
+@media print {
+  .remark-slide-scaler {
+      width: 100% !important;
+      height: 100% !important;
+      transform: scale(1) !important;
+      top: 0 !important;
+      left: 0 !important;
+  }
+}
+
+/* put slide numbers in top-right corner instead of bottom-right */
+div.remark-slide-number {
+  top: 6px;
+  left: unset;
+  bottom: unset;
+  right: 6px;
+}
+
+.debug {
+  font-size: 25px;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  font-family: monospace;
+  color: white;
+}
+.debug a {
+  color: white;
+}
+.debug:hover {
+  background-color: black;
+}
+
+body { font-family: 'Droid Serif'; }
+
+h1, h2, h3 {
+  font-family: 'Yanone Kaffeesatz';
+  font-weight: normal;
+  margin-top: 0.5em;
+}
+
+a {
+  text-decoration: none;
+  color: blue;
+}
+
+.remark-slide-content { padding: 1em 2.5em 1em 2.5em; }
+.remark-slide-content { font-size: 25px; }
+.remark-slide-content h1 { font-size: 50px; }
+.remark-slide-content h2 { font-size: 50px; }
+.remark-slide-content h3 { font-size: 25px; }
+
+.footnote {
+  position: absolute;
+  bottom: 3em;
+}
+
+.remark-code { font-size: 25px; }
+.small .remark-code { font-size: 16px; }
+.remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+.remark-inline-code {
+   background-color: #ccc;
+}
+
+.red { color: #fa0000; }
+.gray { color: #ccc; }
+.small { font-size: 70%; }
+.big { font-size: 140%; }
+.underline { text-decoration: underline; }
+.strike { text-decoration: line-through; }
+
+.pic {
+  vertical-align: middle;
+  text-align: center;
+  padding: 0 0 0 0 !important;
+}
+img {
+  max-width: 100%;
+  max-height: 550px;
+}
+.small img {
+  max-height: 250px;
+}
+
+.title {
+  vertical-align: middle;
+  text-align: center;
+}
+.title h1 { font-size: 3em; font-family: unset;}
+.title p { font-size: 3em; }
+
+.nav {
+  font-size: 25px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2em;
+}
+
+.quote {
+  background: #eee;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+  font-style: italic;
+}
+.quote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+.quote p {
+  display: inline;
+}
+
+.blackbelt {
+  background-image: url("blackbelt.png");
+  background-size: 1.5em;
+  background-repeat: no-repeat;
+  padding-left: 2em;
+}
+.warning {
+  background-image: url("warning.png");
+  background-size: 1.5em;
+  background-repeat: no-repeat;
+  padding-left: 2em;
+}
+.exercise {
+  background-color: #eee;
+  background-image: url("keyboard.png");
+  background-size: 1.4em;
+  background-repeat: no-repeat;
+  background-position: 0.2em 0.2em;
+  border: 2px dotted black;
+}
+.exercise:before {
+  content: "Exercise";
+  margin-left: 1.8em;
+}
+
+li p { line-height: 1.25em; }
+
+div.extra-details {
+  background-image: url(extra-details.png);
+  background-position: 0.5% 1%;
+  background-size: 4%;
+}
+
+/* This is used only for the history slide (the only table in this doc) */
+td {
+  padding: 0.1em 0.5em;
+  background: #eee;
+}

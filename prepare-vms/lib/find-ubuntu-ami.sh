@@ -3,10 +3,10 @@
 # That way, it can be safely invoked as a function from other scripts.
 
 find_ubuntu_ami() {
-(
+    (
 
-usage() {
-    cat >&2 <<__
+        usage() {
+            cat >&2 <<__
 usage: find-ubuntu-ami.sh [ <filter>... ] [ <sorting> ] [ <options> ]
 where:
     <filter> is pair of key and substring to search
@@ -33,66 +33,94 @@ where:
     protip for Docker orchestration workshop admin:
         ./find-ubuntu-ami.sh -t hvm:ebs -r \$AWS_REGION -v 15.10 -N
 __
-    exit 1
-}
+            exit 1
+        }
 
-args=`getopt hr:n:v:a:t:d:i:k:RNVATDIKq $*`
-if [ $? != 0 ] ; then
-    echo >&2
-    usage
-fi
+        args=$(getopt hr:n:v:a:t:d:i:k:RNVATDIKq $*)
+        if [ $? != 0 ]; then
+            echo >&2
+            usage
+        fi
 
-region=
-name=
-version=
-arch=
-type=
-date=
-image=
-kernel=
+        region=
+        name=
+        version=
+        arch=
+        type=
+        date=
+        image=
+        kernel=
 
-sort=date
+        sort=date
 
-quiet=
+        quiet=
 
-set -- $args
-for a ; do
-    case "$a" in
-        -h) usage ;;
+        set -- $args
+        for a; do
+            case "$a" in
+            -h) usage ;;
 
-        -r) region=$2 ; shift ;;
-        -n) name=$2 ; shift ;;
-        -v) version=$2 ; shift ;;
-        -a) arch=$2 ; shift ;;
-        -t) type=$2 ; shift ;;
-        -d) date=$2 ; shift ;;
-        -i) image=$2 ; shift ;;
-        -k) kernel=$2 ; shift ;;
-        
-        -R) sort=region ;;
-        -N) sort=name ;;
-        -V) sort=version ;;
-        -A) sort=arch ;;
-        -T) sort=type ;;
-        -D) sort=date ;;
-        -I) sort=image ;;
-        -K) sort=kernel ;;
+            -r)
+                region=$2
+                shift
+                ;;
+            -n)
+                name=$2
+                shift
+                ;;
+            -v)
+                version=$2
+                shift
+                ;;
+            -a)
+                arch=$2
+                shift
+                ;;
+            -t)
+                type=$2
+                shift
+                ;;
+            -d)
+                date=$2
+                shift
+                ;;
+            -i)
+                image=$2
+                shift
+                ;;
+            -k)
+                kernel=$2
+                shift
+                ;;
 
-        -q) quiet=y ;;
-        
-        --) shift ; break ;;
-        *) continue ;;
-    esac
-    shift
-done
+            -R) sort=region ;;
+            -N) sort=name ;;
+            -V) sort=version ;;
+            -A) sort=arch ;;
+            -T) sort=type ;;
+            -D) sort=date ;;
+            -I) sort=image ;;
+            -K) sort=kernel ;;
 
-[ $# = 0 ] || usage
+            -q) quiet=y ;;
 
-fix_json() {
-    tr -d \\n | sed 's/,]}/]}/'
-}
+            --)
+                shift
+                break
+                ;;
+            *) continue ;;
+            esac
+            shift
+        done
 
-jq_query() { cat <<__
+        [ $# = 0 ] || usage
+
+        fix_json() {
+            tr -d \\n | sed 's/,]}/]}/'
+        }
+
+        jq_query() {
+            cat <<__
     .aaData | map (
         {
             region: .[0],
@@ -116,31 +144,31 @@ jq_query() { cat <<__
     ) | sort_by(.$sort) | .[] |
     "\(.region)|\(.name)|\(.version)|\(.arch)|\(.type)|\(.date)|\(.image)|\(.kernel)"
 __
-}
+        }
 
-trim_quotes() {
-    sed 's/^"//;s/"$//'
-}
+        trim_quotes() {
+            sed 's/^"//;s/"$//'
+        }
 
-escape_spaces() {
-    sed 's/ /\\\ /g'
-}
+        escape_spaces() {
+            sed 's/ /\\\ /g'
+        }
 
-url=http://cloud-images.ubuntu.com/locator/ec2/releasesTable
+        url=http://cloud-images.ubuntu.com/locator/ec2/releasesTable
 
-{
-    [ "$quiet" ] || echo REGION NAME VERSION ARCH TYPE DATE IMAGE KERNEL
-    curl -s $url | fix_json | jq "`jq_query`" | trim_quotes | escape_spaces | tr \| ' '
-} |
-    while read region name version arch type date image kernel ; do
-        image=${image%<*}
-        image=${image#*>}
-        if [ "$quiet" ]; then
-            echo $image
-        else
-            echo "$region|$name|$version|$arch|$type|$date|$image|$kernel"
-        fi
-    done | column -t -s \|
+        {
+            [ "$quiet" ] || echo REGION NAME VERSION ARCH TYPE DATE IMAGE KERNEL
+            curl -s $url | fix_json | jq "$(jq_query)" | trim_quotes | escape_spaces | tr \| ' '
+        } \
+            | while read region name version arch type date image kernel; do
+                image=${image%<*}
+                image=${image#*>}
+                if [ "$quiet" ]; then
+                    echo $image
+                else
+                    echo "$region|$name|$version|$arch|$type|$date|$image|$kernel"
+                fi
+            done | column -t -s \|
 
-)
+    )
 }
