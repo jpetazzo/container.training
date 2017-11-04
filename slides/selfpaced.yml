@@ -28,7 +28,7 @@ chapters:
     class: title, self-paced
 
     Part 1
-  - common//sampleapp.md
+  - common/sampleapp.md
   - |
     class: title
 
@@ -50,7 +50,7 @@ chapters:
   - swarm/swarmtools.md
 - - swarm/security.md
   - swarm/secrets.md
-  - swarm/swarm/swarm/leastprivilege.md
+  - swarm/leastprivilege.md
   - kube/namespaces.md
   - swarm/apiscope.md
   - swarm/encryptionatrest.md

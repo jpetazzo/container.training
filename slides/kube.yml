@@ -81,16 +81,16 @@ chapters:
   @@TOC@@
 - - kube/prereqs-k8s.md
   - kube/versions-k8s.md
-  - common//sampleapp.md
+  - common/sampleapp.md
 - - kube/concepts-k8s.md
-  - kubenet.md
-  - kubectlget.md
+  - kube/kubenet.md
+  - kube/kubectlget.md
   - kube/setup-k8s.md
-  - kubectlrun.md
-- - kubectlexpose.md
-  - ourapponkube/kube*.md
+  - kube/kubectlrun.md
+- - kube/kubectlexpose.md
+  - kube/ourapponkube.md
   - kube/dashboard.md
-- - kubectlscale.md
+- - kube/kubectlscale.md
   - kube/daemonset.md
   - kube/rollout.md
   - kube/whatsnext.md
