@@ -1,12 +1,107 @@
-# Docker Orchestration Workshop
+# Container Training
 
-This is the material (slides, scripts, demo app, and other
-code samples) for the "Docker orchestration workshop"
-written and delivered by Jérôme Petazzoni (and lots of others)
-non-stop since June 2015.
+This repository (formerly known as `orchestration-workshop`)
+contains materials (slides, scripts, demo app, and other
+code samples) used for various workshops, tutorials, and
+training sessions around the themes of Docker, containers,
+and orchestration.
+
+For the moment, it includes:
+
+- Introduction to Docker and Containers,
+- Container Orchestration with Docker Swarm,
+- Container Orchestration with Kubernetes.
+
+These materials have been designed around the following
+principles:
+
+- they assume very little prior knowledge of Docker,
+  containers, or a particular programming language;
+- they can be used in a classroom setup (with an
+  instructor), or self-paced at home;
+- they are hands-on, meaning that they contain lots
+  of examples and exercises that you can easily
+  reproduce;
+- they progressively introduce concepts in chapters
+  that build on top of each other.
+
+If you're looking for the materials, you can stop reading
+right now, and hop to http://container.training/, which
+hosts all the slides decks available.
+
+The rest of this document explains how this repository
+is structured, and how to use it to deliver (or create)
+your own tutorials.
 
 
-## Content
+## Why a single repository?
+
+All these materials have been gathered in a single repository
+because they have a few things in common:
+
+- a [build system](slides/) generating HTML slides from
+  Markdown source files;
+- some [common slides](slides/common/) that are re-used
+  (and updated) identically between different decks;
+- [deployment scripts](prepare-vms/) to start training
+  VMs in bulk;
+- a [semi-automated test harness](autotest/) to check
+  that the exercises and examples provided work properly;
+- a fancy pipeline powered by
+  [Netlify](https://www.netlify.com/) and continuously
+  deploying `master` to http://container.training/.
+
+
+## What are the different courses available?
+
+**Introduction to Docker** is derived from the first
+"Docker Fundamentals" training materials. For more information,
+see [jpetazzo/intro-to-docker](https://github.com/jpetazzo/intro-to-docker).
+The version in this repository has been adapted to the Markdown
+publishing pipeline. It is still maintained, but only receives
+minor updates once in a while.
+
+**Container Orchestration with Docker Swarm** (formerly
+known as "Orchestration Workshop") is a workshop created by Jérôme
+Petazzoni in June 2015. Since then, it has been continuously updated
+and improved, and received contributions from many others authors.
+It is actively maintained.
+
+**Container Orchestration with Kubernetes** was created by
+Jérôme Petazzoni in October 2017, with help and feedback from
+a few other contributors. It is actively maintained.
+
+
+## Repository structure
+
+- [autotest](autotest/)
+  - Semi-automated testing system to check that all the exercises
+    in the slides work properly.
+- [bin](bin/)
+  - A few helper scripts that you can safely ignore for now.
+- [dockercoins](dockercoins/)
+  - The demo app used throughout the orchestration workshops.
+- [efk](efk/), [elk](elk/), [prom](prom/), [snap](snap/):
+  - Logging and metrics stacks used in the later parts of
+    the orchestration workshops.
+- [prepare-local](prepare-local/), [prepare-machine](prepare-machine/):
+  - Contributed scripts to automate the creation of local environments.
+    These could use some help to test/check that they work.
+- [prepare-vms](prepare-vms/):
+  - Scripts to automate the creation of AWS instances for students.
+    These are routinely used and actively maintained.
+- [slides](slides/):
+  - All the slides! They are assembled from Markdown files with
+    a custom Python script, and then rendered using [gnab/remark](
+    https://github.com/gnab/remark). Check this directory for more details.
+- [stacks](stacks/):
+  - A handful of Compose files (version 3) allowing to easily
+    deploy complex application stacks.
+
+
+## Course structure
+
+(This applies only for the orchestration workshops.)
 
 The workshop introduces a demo app, "DockerCoins," built
 around a micro-services architecture. First, we run it
@@ -31,104 +126,10 @@ to a YAML manifest. This allows to re-use content
 between different workshops very easily.
 
 
-## Quick start (or, "I want to try it!")
+### DockerCoins
 
-This workshop is designed to be *hands on*, i.e. to give you a step-by-step
-guide where you will build your own Docker cluster, and use it to deploy
-a sample application.
-
-The easiest way to follow the workshop is to attend it when it is delivered
-by an instructor. In that case, the instructor will generally give you
-credentials (IP addresses, login, password) to connect to your own cluster
-of virtual machines; and the [slides](http://jpetazzo.github.io/orchestration-workshop)
-assume that you have your own cluster indeed.
-
-If you want to follow the workshop on your own, and want to have your
-own cluster, we have multiple solutions for you!
-
-
-### Using [play-with-docker](http://play-with-docker.com/)
-
-This method is very easy to get started: you don't need any extra account
-or resources! It works only for the SwarmKit version of the workshop, though.
-
-To get started, go to [play-with-docker](http://play-with-docker.com/), and
-click on _ADD NEW INSTANCE_ five times. You will get five "docker-in-docker"
-containers, all on a private network. These are your five nodes for the workshop!
-
-When the instructions in the slides tell you to "SSH on node X", just go to
-the tab corresponding to that node.
-
-The nodes are not directly reachable from outside; so when the slides tell
-you to "connect to the IP address of your node on port XYZ" you will have
-to use a different method: click on the port number that should appear on
-top of the play-with-docker window. This only works for HTTP services,
-though.
-
-Note that the instances provided by Play-With-Docker have a short lifespan
-(a few hours only), so if you want to do the workshop over multiple sessions,
-you will have to start over each time ... Or create your own cluster with
-one of the methods described below.
-
-
-### Using Docker Machine to create your own cluster
-
-This method requires a bit more work to get started, but you get a permanent
-cluster, with less limitations.
-
-You will need Docker Machine (if you have Docker Mac, Docker Windows, or
-the Docker Toolbox, you're all set already). You will also need:
-
-- credentials for a cloud provider (e.g. API keys or tokens),
-- or a local install of VirtualBox or VMware (or anything supported
-  by Docker Machine).
-
-Full instructions are in the [prepare-machine](prepare-machine) subdirectory.
-
-
-### Using our scripts to mass-create a bunch of clusters
-
-Since we often deliver the workshop during conferences or similar events,
-we have scripts to automate the creation of a bunch of clusters using
-AWS EC2. If you want to create multiple clusters and have EC2 credits,
-check the [prepare-vms](prepare-vms) directory for more information.
-
-
-## How This Repo is Organized
-
-- **dockercoins**
-  - Sample App: compose files and source code for the dockercoins sample apps
-  used throughout the workshop
-- **docs**
-  - Slide Deck: presentation slide deck, works out-of-box with GitHub Pages,
-  uses https://remarkjs.com
-- **prepare-local**
-  - untested scripts for automating the creation of local virtualbox VM's
-  (could use your help validating)
-- **prepare-machine**
-  - instructions explaining how to use Docker Machine to create VMs
-- **prepare-vms**
-  - scripts for automating the creation of AWS instances for students
-
-
-## Slide Deck
-
-- The slides are in the `docs` directory.
-- For each slide deck, there is a `.yml` file referencing `.md` files.
-- The `.md` files contain Markdown snippets.
-- When you run `build.sh once`, it will "compile" all the `.yml` files
-  into `.yml.html` files that you can open in your browser.
-- You can also run `build.sh forever`, which will watch the directory
-  and rebuild slides automatically when files are modified.
-- If needed, you can fine-tune `workshop.css` and `workshop.html`
-  (respectively the CSS style used, and the boilerplate template).
-- The slides use https://remarkjs.com to render Markdown into HTML in
-  a web browser.
-
-
-## Sample App: Dockercoins!
-
-The sample app is in the `dockercoins` directory. It's used during all chapters
+The sample app is in the `dockercoins` directory.
+It's used during all chapters
 for explaining different concepts of orchestration.
 
 To see it in action:
@@ -138,12 +139,17 @@ To see it in action:
 - the web UI will be available on port 8000
 
 
-*If you just want to run the workshop for yourself, you can stop reading
-here. If you want to deliver the workshop for others (i.e. if you
-want to become an instructor), keep reading!*
-
-
 ## Running the Workshop
+
+If you want to deliver one of these workshops yourself,
+this section is for you!
+
+> *This section has been mostly contributed by
+> [Bret Fisher](https://twitter.com/bretfisher), who was
+> one of the first persons to have the bravery of delivering
+> this workshop without me. Thanks Bret! 🍻
+>
+> Jérôme.*
 
 
 ### General timeline of planning a workshop
@@ -152,7 +158,7 @@ want to become an instructor), keep reading!*
   understand the different `dockercoins` repo's and the steps we go through to
   get to a full Swarm Mode cluster of many containers. You'll update the first
   few slides and last slide at a minimum, with your info.
-- Your docs directory can use GitHub Pages.
+- ~~Your docs directory can use GitHub Pages.~~
 - This workshop expects 5 servers per student. You can get away with as little
   as 2 servers per student, but you'll need to change the slide deck to
   accommodate. More servers = more fun.
@@ -185,6 +191,7 @@ want to become an instructor), keep reading!*
 - Remember you'll need to print the "cards" for students, so you'll need to
   create instances while you have a way to print them.
 
+
 ### Things That Could Go Wrong
 
 - Creating AWS instances ahead of time, and you hit its limits in region and
@@ -198,12 +205,14 @@ want to become an instructor), keep reading!*
 - Forget to print "cards" and cut them up for handing out IP's.
 - Forget to have fun and focus on your students!
 
+
 ### Creating the VMs
 
 `prepare-vms/workshopctl` is the script that gets you most of what you need for
 setting up instances. See
 [prepare-vms/README.md](prepare-vms)
 for all the info on tools and scripts.
+
 
 ### Content for Different Workshop Durations
 
@@ -212,6 +221,7 @@ it in shorter timelines, here's some recommendations on what to cut out. You
 can replace `---` with `???` which will hide slides. Or leave them there and
 add something like `(EXTRA CREDIT)` to title so students can still view the
 content but you also know to skip during presentation.
+
 
 #### 3 Hour Version
 
@@ -223,6 +233,7 @@ content but you also know to skip during presentation.
 - Skip most of Chapter 4, but keep stateful services and DAB's if possible
 - Mention what DAB's are, but make this part optional in case you run out
   of time
+
 
 #### 2 Hour Version
 
@@ -268,13 +279,18 @@ If there is a bug and you can't fix it, but you can
 reproduce it: submit an issue explaining how to reproduce.
 
 If there is a bug and you can't even reproduce it:
-sorry. It is probably an Heisenbug. I can't act on it
-until it's reproducible.
+sorry. It is probably an Heisenbug. We can't act on it
+until it's reproducible, alas.
 
-if you have attended this workshop and have feedback,
-or if you want us to deliver that workshop at your
-conference or for your company: contact me (jerome
-at docker dot com).
+If you have attended this workshop and have feedback,
+or if you want somebody  to deliver that workshop at your
+conference or for your company: you can contact one of us!
 
-Thank you!
+- jerome at docker dot com
+- bret at bretfisher dot com
+
+If you are willing and able to deliver such workshops,
+feel free to submit a PR to add your name to that list!
+
+**Thank you!**
 
