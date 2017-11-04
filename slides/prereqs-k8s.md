@@ -73,7 +73,7 @@ class: extra-details
 
 class: pic, in-person
 
-![You get five VMs](you-get-five-vms.jpg)
+![You get five VMs](images/you-get-five-vms.jpg)
 
 <!--
 ```bash

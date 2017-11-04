@@ -140,7 +140,7 @@ And *then* it is time to look at orchestration!
 
 --
 
-![Star Trek Federation](startrek-federation.jpg)
+![Star Trek Federation](images/startrek-federation.jpg)
 
 --
 

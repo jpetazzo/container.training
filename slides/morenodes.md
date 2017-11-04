@@ -47,7 +47,7 @@ class: in-person
 
 class: in-person
 
-![Mario Red Shell](mario-red-shell.png)
+![Mario Red Shell](images/mario-red-shell.png)
 
 --
 
@@ -118,7 +118,7 @@ class: self-paced
   - Solid blue icon = Swarm manager detected
   - Blue outline icon = Swarm worker detected
 
-![Play-With-Docker icons](pwd-icons.png)
+![Play-With-Docker icons](images/pwd-icons.png)
 
 ---
 

@@ -314,11 +314,11 @@ class: extra-details, benchmarking
 
 `rng` code:
 
-![RNG code screenshot](delay-rng.png)
+![RNG code screenshot](images/delay-rng.png)
 
 `hasher` code:
 
-![HASHER code screenshot](delay-hasher.png)
+![HASHER code screenshot](images/delay-hasher.png)
 
 ---
 
@@ -353,7 +353,7 @@ class: extra-details, in-person, benchmarking
 
 ## Why do `rng` and `hasher` behave differently?
 
-![Equations on a blackboard](equations.png)
+![Equations on a blackboard](images/equations.png)
 
 (Synchronous vs. asynchronous event processing)
 

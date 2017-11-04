@@ -59,7 +59,7 @@ class: extra-details
 
 ## Example in `worker/worker.py`
 
-![Service discovery](service-discovery.png)
+![Service discovery](images/service-discovery.png)
 
 ---
 
@@ -69,7 +69,7 @@ class: extra-details
 
 class: pic
 
-![DockerCoins logo](dockercoins.png)
+![DockerCoins logo](images/dockercoins.png)
 
 (DockerCoins 2016 logo courtesy of [@XtlCnslt](https://twitter.com/xtlcnslt) and [@ndeloof](https://twitter.com/ndeloof). Thanks!)
 

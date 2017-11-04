@@ -68,7 +68,7 @@
 
 class: pic
 
-![haha only kidding](k8s-arch1.png)
+![haha only kidding](images/k8s-arch1.png)
 
 ---
 
@@ -82,7 +82,7 @@ class: pic
 
 class: pic
 
-![that one is more like the real thing](k8s-arch2.png)
+![that one is more like the real thing](images/k8s-arch2.png)
 
 ---
 
@@ -208,7 +208,7 @@ Yes!
 
 class: pic
 
-![Node, pod, container](thanks-weave.png)
+![Node, pod, container](images/thanks-weave.png)
 
 (Diagram courtesy of Weave Works, used with permission.)
 

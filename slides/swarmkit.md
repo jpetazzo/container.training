@@ -82,7 +82,7 @@ class: extra-details
 
 ## Illustration
 
-![Illustration](swarm-mode.svg)
+![Illustration](images/swarm-mode.svg)
 
 ---
 

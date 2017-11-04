@@ -129,20 +129,20 @@ img {
 }
 
 .blackbelt {
-  background-image: url("blackbelt.png");
+  background-image: url("images/blackbelt.png");
   background-size: 1.5em;
   background-repeat: no-repeat;
   padding-left: 2em;
 }
 .warning {
-  background-image: url("warning.png");
+  background-image: url("images/warning.png");
   background-size: 1.5em;
   background-repeat: no-repeat;
   padding-left: 2em;
 }
 .exercise {
   background-color: #eee;
-  background-image: url("keyboard.png");
+  background-image: url("images/keyboard.png");
   background-size: 1.4em;
   background-repeat: no-repeat;
   background-position: 0.2em 0.2em;
@@ -156,7 +156,7 @@ img {
 li p { line-height: 1.25em; }
 
 div.extra-details {
-  background-image: url(extra-details.png);
+  background-image: url("images/extra-details.png");
   background-position: 0.5% 1%;
   background-size: 4%;
 }

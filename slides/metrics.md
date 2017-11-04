@@ -839,7 +839,7 @@ If you see an orange box (sometimes without a message), it means that you got so
 
 class: snap
 
-![Screenshot showing how to fill the form](grafana-add-source.png)
+![Screenshot showing how to fill the form](images/grafana-add-source.png)
 
 ---
 
@@ -892,7 +892,7 @@ Congratulations, you are viewing the CPU usage of a single container!
 
 class: snap
 
-![Screenshot showing the end result](grafana-add-graph.png)
+![Screenshot showing the end result](images/grafana-add-graph.png)
 
 ---
 
