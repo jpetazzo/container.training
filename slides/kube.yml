@@ -76,24 +76,24 @@ chapters:
 
   - Live feedback, questions, help on @@CHAT@@
 
-- intro-ks.md
+- kube/intro-ks.md
 - |
   @@TOC@@
-- - prereqs-k8s.md
-  - versions-k8s.md
-  - sampleapp.md
-- - concepts-k8s.md
+- - kube/prereqs-k8s.md
+  - kube/versions-k8s.md
+  - common//sampleapp.md
+- - kube/concepts-k8s.md
   - kubenet.md
   - kubectlget.md
-  - setup-k8s.md
+  - kube/setup-k8s.md
   - kubectlrun.md
 - - kubectlexpose.md
-  - ourapponkube.md
-  - dashboard.md
+  - ourapponkube/kube*.md
+  - kube/dashboard.md
 - - kubectlscale.md
-  - daemonset.md
-  - rollout.md
-  - whatsnext.md
+  - kube/daemonset.md
+  - kube/rollout.md
+  - kube/whatsnext.md
 - |
   class: title
 

@@ -81,11 +81,11 @@ chapters:
 
   - Live feedback, questions, help on @@CHAT@@
 
-- intro.md
+- swarm/intro.md
 - |
   @@TOC@@
-- - prereqs.md
-  - versions.md
+- - swarm/prereqs.md
+  - swarm/versions.md
   - |
     class: title
 
@@ -94,29 +94,29 @@ chapters:
     We're all set.
     <br/>
     Let's do this.
-  - sampleapp.md
-  - swarmkit.md
-  - creatingswarm.md
-  - morenodes.md
-- - firstservice.md
-  - ourapponswarm.md
-  - updatingservices.md
-  #- rollingupdates.md
-  #- healthchecks.md
-- - operatingswarm.md
-  #- netshoot.md
-  #- ipsec.md
-  #- swarmtools.md
-  - security.md
-  #- secrets.md
-  #- encryptionatrest.md
-  - leastprivilege.md
-  - apiscope.md
-  - logging.md
-  - metrics.md
-  #- stateful.md
-  #- extratips.md
-  - end.md
+  - common//sampleapp.md
+  - swarm/swarmkit.md
+  - swarm/creatingswarm.md
+  - swarm/morenodes.md
+- - swarm/firstservice.md
+  - swarm/ourapponswarm.md
+  - swarm/updatingservices.md
+  #- swarm/rollingupdates.md
+  #- swarm/healthchecks.md
+- - swarm/operatingswarm.md
+  #- swarm/netshoot.md
+  #- swarm/ipsec.md
+  #- swarm/swarmtools.md
+  - swarm/security.md
+  #- swarm/secrets.md
+  #- swarm/encryptionatrest.md
+  - swarm/swarm/swarm/leastprivilege.md
+  - swarm/apiscope.md
+  - swarm/logging.md
+  - swarm/metrics.md
+  #- swarm/stateful.md
+  #- swarm/extratips.md
+  - swarm/end.md
 - |
   class: title
 

@@ -9,11 +9,11 @@ chapters:
 - |
   class: title
   Docker <br/> Orchestration <br/> Workshop
-- intro.md
+- swarm/intro.md
 - |
   @@TOC@@
-- - prereqs.md
-  - versions.md
+- - swarm/prereqs.md
+  - swarm/versions.md
   - |
     class: title
 
@@ -28,37 +28,37 @@ chapters:
     class: title, self-paced
 
     Part 1
-  - sampleapp.md
+  - common//sampleapp.md
   - |
     class: title
 
     Scaling out
-  - swarmkit.md
-  - creatingswarm.md
-  - machine.md
-  - morenodes.md
-- - firstservice.md
-  - ourapponswarm.md
-- - operatingswarm.md
-  - netshoot.md
-  - swarmnbt.md
-  - ipsec.md
-  - updatingservices.md
-  - rollingupdates.md
-  - healthchecks.md
-  - nodeinfo.md
-  - swarmtools.md
-- - security.md
-  - secrets.md
-  - leastprivilege.md
-  - namespaces.md
-  - apiscope.md
-  - encryptionatrest.md
-  - logging.md
-  - metrics.md
-  - stateful.md
-  - extratips.md
-  - end.md
+  - swarm/swarmkit.md
+  - swarm/creatingswarm.md
+  - swarm/machine.md
+  - swarm/morenodes.md
+- - swarm/firstservice.md
+  - swarm/ourapponswarm.md
+- - swarm/operatingswarm.md
+  - swarm/netshoot.md
+  - swarm/swarmnbt.md
+  - swarm/ipsec.md
+  - swarm/updatingservices.md
+  - swarm/rollingupdates.md
+  - swarm/healthchecks.md
+  - swarm/nodeinfo.md
+  - swarm/swarmtools.md
+- - swarm/security.md
+  - swarm/secrets.md
+  - swarm/swarm/swarm/leastprivilege.md
+  - kube/namespaces.md
+  - swarm/apiscope.md
+  - swarm/encryptionatrest.md
+  - swarm/logging.md
+  - swarm/metrics.md
+  - swarm/stateful.md
+  - swarm/extratips.md
+  - swarm/end.md
 - |
   class: title
 
