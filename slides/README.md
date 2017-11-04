@@ -45,3 +45,12 @@ and publish them to http://container.training/.
 Pull requests are automatically deployed to testing
 subdomains. I had no idea that I would ever say this
 about a static page hosting service, but it is seriously awesome. ⚡️💥
+
+
+## Extra bells and whistles
+
+You can run `./slidechecker foo.yml.html` to check for
+missing images and show the number of slides in that deck.
+It requires `phantomjs` to be installed. It takes some
+time to run so it is not yet integrated with the publishing
+pipeline.
