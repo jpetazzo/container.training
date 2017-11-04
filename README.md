@@ -121,7 +121,7 @@ check the [prepare-vms](prepare-vms) directory for more information.
 - The slides are in the `docs` directory.
 - To view them locally open `docs/index.html` in your browser. It works
   offline too.
-- To view them online open https://jpetazzo.github.io/orchestration-workshop/
+- To view them online open https://jpetazzo.github.io/container.training/
   in your browser.
 - When you fork this repo, be sure GitHub Pages is enabled in repo Settings
   for "master branch /docs folder" and you'll have your own website for them.
