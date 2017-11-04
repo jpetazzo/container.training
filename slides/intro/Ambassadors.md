@@ -3,7 +3,7 @@ class: title
 
 # Ambassadors
 
-![](Ambassadors/ambassador.jpg)
+![](images/ambassador.jpg)
 
 ---
 
@@ -40,7 +40,7 @@ ambassador containers.
 
 ---
 
-![ambassador](Ambassadors/diagram.png)
+![ambassador](images/diagram.png)
 
 ---
 

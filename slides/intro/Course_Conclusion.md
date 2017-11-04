@@ -2,7 +2,7 @@ class: title
 
 # Course Conclusion
 
-![end](Course_Conclusion/end.jpg)
+![end](images/end.jpg)
 
 ---
 

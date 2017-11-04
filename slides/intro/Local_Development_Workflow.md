@@ -3,7 +3,7 @@ class: title
 
 # Local Development Workflow with Docker
 
-![construction](Local_Development_Workflow/construction.jpg)
+![construction](images/construction.jpg)
 
 ---
 
@@ -148,7 +148,7 @@ http://<yourHostIP>:80
 
 We can see our company naming application. 
 
-![web application 1](Local_Development_Workflow/webapp1.png)
+![web application 1](images/webapp1.png)
 
 ---
 
@@ -184,7 +184,7 @@ http://<yourHostIP>:80
 
 We can see the updated color of our company naming application.
 
-![web application 2](Local_Development_Workflow/webapp2.png)
+![web application 2](images/webapp2.png)
 
 ---
 

@@ -3,7 +3,7 @@ class: title
 
 # Advanced Dockerfiles
 
-![construction](Dockerfile_Reference/construction.jpg)
+![construction](images/construction.jpg)
 
 ---
 

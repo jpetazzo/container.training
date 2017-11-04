@@ -3,7 +3,7 @@ class: title
 
 # Copying files during the build
 
-![Monks copying books](Copying_Files_During_Build/copy.jpg)
+![Monks copying books](images/copy.jpg)
 
 ---
 

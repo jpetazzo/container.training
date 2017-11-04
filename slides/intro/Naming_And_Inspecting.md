@@ -3,7 +3,7 @@ class: title
 
 # Naming and inspecting containers
 
-![Markings on container door](Naming_And_Inspecting/containermarkings.jpg)
+![Markings on container door](images/containermarkings.jpg)
 
 ---
 

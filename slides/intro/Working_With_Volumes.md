@@ -3,7 +3,7 @@ class: title
 
 # Working with Volumes
 
-![volume](Working_With_Volumes/volume.jpg)
+![volume](images/volume.jpg)
 
 ---
 

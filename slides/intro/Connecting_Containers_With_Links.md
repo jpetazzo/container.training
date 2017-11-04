@@ -3,7 +3,7 @@ class: title
 
 # Connecting Containers With Links
 
-![graph](Connecting_Containers_With_Links/graph.gif)
+![graph](images/graph.gif)
 
 ---
 

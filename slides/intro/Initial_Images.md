@@ -3,7 +3,7 @@ class: title
 
 # Understanding Docker Images
 
-![image](Initial_Images/image.png)
+![image](images/image.png)
 
 ---
 
@@ -76,7 +76,7 @@ Let's give a couple of metaphors to illustrate those concepts.
 
 Images are like templates or stencils that you can create containers from.
 
-![stencil](Initial_Images/stenciling-wall.jpg)
+![stencil](images/stenciling-wall.jpg)
 
 ---
 

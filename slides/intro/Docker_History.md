@@ -20,7 +20,7 @@ class: pic
 
 ## The VPS age (until 2007-2008)
 
-![lightcont](About_Docker/lightcont.png)
+![lightcont](images/lightcont.png)
 
 ---
 
@@ -36,7 +36,7 @@ class: pic
 
 ## The PAAS period (2008-2013)
 
-![heroku 2007](About_Docker/heroku-first-homepage.png)
+![heroku 2007](images/heroku-first-homepage.png)
 
 ---
 
