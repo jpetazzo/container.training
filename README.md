@@ -23,7 +23,7 @@ a sample application.
 The easiest way to follow the workshop is to attend it when it is delivered
 by an instructor. In that case, the instructor will generally give you
 credentials (IP addresses, login, password) to connect to your own cluster
-of virtual machines; and the [slides](http://jpetazzo.github.io/orchestration-workshop)
+of virtual machines; and the [slides](http://jpetazzo.github.io/container.training)
 assume that you have your own cluster indeed.
 
 If you want to follow the workshop on your own, and want to have your
@@ -280,4 +280,3 @@ conference or for your company: contact me (jerome
 at docker dot com).
 
 Thank you!
-
