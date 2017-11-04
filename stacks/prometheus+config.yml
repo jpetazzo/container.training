@@ -12,7 +12,7 @@ services:
 
   node:
     image: prom/node-exporter
-    command: -collector.procfs /host/proc -collector.sysfs /host/proc -collector.filesystem.ignored-mount-points "^(sys|proc|dev|host|etc)($$|/)"
+    command: --path.procfs /host/proc --path.sysfs /host/proc --collector.filesystem.ignored-mount-points "^(sys|proc|dev|host|etc)($$|/)"
     deploy:
       mode: global
     volumes:
