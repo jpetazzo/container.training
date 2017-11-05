@@ -1,69 +1,14 @@
-title: "LISA17 M7: Getting Started with Docker and Containers"
+title: "Introduction to Docker and Containers"
 
-chat: "[Slack](https://usenix-lisa.slack.com/messages/C0E6N1NJW)"
+chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+
+exclude:
+- self-paced
 
 chapters:
-- |
-  class: title
-
-  .small[
-
-  LISA17 M7
-
-  Getting Started <br/> with Docker and Containers
-
-  .small[.small[
-
-  **Be kind to the WiFi!**
-
-  *Use the 5G network*
-  <br/>
-  *Don't use your hotspot*
-  <br/>
-  *Don't stream videos from YouTube, Netflix, etc.
-  <br/>(if you're bored, watch local content instead)*
-
-  <!--
-  Also: share the power outlets
-  <br/>
-  *(with limited power comes limited responsibility?)*
-  <br/>
-  *(or something?)*
-  -->
-
-  Thank you!
-
-  ]
-  ]
-  ]
-
-  ---
-
-  ## Logistics
-
-  - Hello! We are
-    Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Docker Inc.)
-    &
-    AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
-
-  - The tutorial will run from 1:30pm to 5:00pm
-
-  - This will be fast-paced, but DON'T PANIC!
-
-  - There will be a coffee break at 3:00pm
-    <br/>
-    (please remind me if I forget about it!)
-
-  - All the content is publicly available
-
-    One URL to remember: http://container.training
-
-  - Feel free to interrupt for questions at any time
-
-  - Live feedback, questions, help on @@CHAT@@
-
-- |
-  @@TOC@@
+- common/title.md
+- common/logistics.md
+- common/toc.md
 - - intro/Docker_Overview.md
   #- intro/Docker_History.md
   - intro/Training_Environment.md
@@ -89,3 +34,4 @@ chapters:
   - intro/Working_With_Volumes.md
   - intro/Compose_For_Dev_Stacks.md
   - intro/Course_Conclusion.md
+  - common/thankyou.md

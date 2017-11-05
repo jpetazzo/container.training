@@ -1,27 +1,19 @@
+title: |
+  Docker
+  Orchestration
+  Workshop
+
+chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+
 exclude:
 - in-person
 
-chat: FIXME
-
-title: Docker Orchestration Workshop
-
 chapters:
-- |
-  class: title
-  Docker <br/> Orchestration <br/> Workshop
+- common/title.md
 - swarm/intro.md
-- |
-  @@TOC@@
+- common/toc.md
 - - swarm/prereqs.md
   - swarm/versions.md
-  - |
-    class: title
-
-    All right!
-    <br/>
-    We're all set.
-    <br/>
-    Let's do this.
   - |
     name: part-1
 
@@ -29,16 +21,18 @@ chapters:
 
     Part 1
   - common/sampleapp.md
-  - |
-    class: title
-
-    Scaling out
   - swarm/swarmkit.md
   - swarm/creatingswarm.md
   - swarm/machine.md
   - swarm/morenodes.md
 - - swarm/firstservice.md
   - swarm/ourapponswarm.md
+  - |
+    name: part-2
+
+    class: title, self-paced
+
+    Part 2
 - - swarm/operatingswarm.md
   - swarm/netshoot.md
   - swarm/swarmnbt.md
@@ -59,7 +53,4 @@ chapters:
   - swarm/stateful.md
   - swarm/extratips.md
   - swarm/end.md
-- |
-  class: title
-
-  Thank you!
+- common/thankyou.md

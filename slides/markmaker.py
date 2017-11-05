@@ -81,11 +81,13 @@ def generatefromyaml(manifest, filename):
         ".debug[{}\n\nThese sides have been built from commit: {}\n\n".format(dirtyfiles, commit),
         1)
 
+    markdown = markdown.replace("@@TITLE@@", manifest["title"].replace("\n", "<br/>"))
+
     html = open("workshop.html").read()
     html = html.replace("@@MARKDOWN@@", markdown)
     html = html.replace("@@EXCLUDE@@", exclude)
     html = html.replace("@@CHAT@@", manifest["chat"])
-    html = html.replace("@@TITLE@@", manifest["title"])
+    html = html.replace("@@TITLE@@", manifest["title"].replace("\n", " "))
     return html
 
 

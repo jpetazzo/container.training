@@ -1,20 +1,6 @@
-class: title, in-person
-
-Operating the Swarm
-
----
-
-name: part-2
-
-class: title, self-paced
-
-Part 2
-
----
-
 class: self-paced
 
-## Before we start ...
+## Before we continue ...
 
 The following exercises assume that you have a 5-nodes Swarm cluster.
 
