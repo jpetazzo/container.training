@@ -2,7 +2,7 @@
 case "$1" in
 once)
   for YAML in *.yml; do
-    ./markmaker.py < $YAML > $YAML.html || { 
+    ./markmaker.py $YAML > $YAML.html || { 
       rm $YAML.html
       break
     }

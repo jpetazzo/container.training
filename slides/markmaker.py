@@ -7,7 +7,7 @@ import os
 import re
 import string
 import subprocess
-import sys  
+import sys
 import yaml
 
 
@@ -58,10 +58,10 @@ def flatten(titles):
             yield title
 
 
-def generatefromyaml(manifest):
+def generatefromyaml(manifest, filename):
     manifest = yaml.load(manifest)
 
-    markdown, titles = processchapter(manifest["chapters"], "(inline)")
+    markdown, titles = processchapter(manifest["chapters"], filename)
     logging.debug("Found {} titles.".format(len(titles)))
     toc = gentoc(titles)
     markdown = markdown.replace("@@TOC@@", toc)
@@ -163,6 +163,15 @@ def makelink(filename):
     else:
         return filename
 
-
-sys.stdout.write(generatefromyaml(sys.stdin))
-logging.info("Done")
+if len(sys.argv) != 2:
+    logging.error("This program takes one and only one argument: the YAML file to process.")
+else:
+    filename = sys.argv[1]
+    if filename == "-":
+        filename = "<stdin>"
+        manifest = sys.stdin
+    else:
+        manifest = open(filename)
+    logging.info("Processing {}...".format(filename))
+    sys.stdout.write(generatefromyaml(manifest, filename))
+    logging.info("Processed {}.".format(filename))
