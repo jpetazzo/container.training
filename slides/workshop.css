@@ -34,12 +34,19 @@ div.remark-slide-number {
   bottom: 0px;
   font-family: monospace;
   color: white;
+  background-color: black;
+  opacity: 0;
 }
 .debug a {
   color: white;
 }
 .debug:hover {
-  background-color: black;
+  opacity: 1;
+}
+div.debug {
+  vertical-align: initial;
+  text-align: initial;
+  font-size: initial;
 }
 
 body { font-family: 'Droid Serif'; }

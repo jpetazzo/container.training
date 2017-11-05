@@ -74,6 +74,13 @@ def generatefromyaml(manifest, filename):
         logging.warning("'exclude' is empty.")
     exclude = ",".join('"{}"'.format(c) for c in exclude)
 
+    # Insert build info. This is super hackish.
+
+    markdown = markdown.replace(
+        ".debug[",
+        ".debug[{}\n\nThese sides have been built from commit: {}\n\n".format(dirtyfiles, commit),
+        1)
+
     html = open("workshop.html").read()
     html = html.replace("@@MARKDOWN@@", markdown)
     html = html.replace("@@EXCLUDE@@", exclude)
@@ -146,8 +153,7 @@ try:
     if "BRANCH" in os.environ:
         branch = os.environ["BRANCH"]
     else:
-        branch = subprocess.check_output(["git", "status", "--short", "--branch"])
-        branch = branch[3:].split("...")[0]
+        branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"])
     base = subprocess.check_output(["git", "rev-parse", "--show-prefix"])
     base = base.strip().strip("/")
     urltemplate = ("{repo}/tree/{branch}/{base}/{filename}"
@@ -155,6 +161,16 @@ try:
 except:
     logging.exception("Could not generate repository URL; generating local URLs instead.")
     urltemplate = "file://{pwd}/{filename}".format(pwd=os.environ["PWD"], filename="{}")
+try:
+    commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"])
+except:
+    logging.exception("Could not figure out HEAD commit.")
+    commit = "??????"
+try:
+    dirtyfiles = subprocess.check_output(["git", "status", "--porcelain"])
+except:
+    logging.exception("Could not figure out repository cleanliness.")
+    dirtyfiles = "?? git status --porcelain failed"
 
 def makelink(filename):
     if os.path.isfile(filename):
