@@ -1,43 +1,61 @@
 {# Feel free to customize or override anything in there! #}
 {%- set url = "http://container.training/" -%}
+{%- set pagesize = 12 -%}
 {%- if clustersize == 1 -%}
-    {%- set workshop_name = "Docker" -%}
-    {%- set pagesize = 15 -%}
+    {%- set workshop_name = "Docker workshop" -%}
     {%- set cluster_or_machine = "machine" -%}
     {%- set this_or_each = "this" -%}
     {%- set machine_is_or_machines_are = "machine is" -%}
-    {%- set background_image = "https://s3-us-west-2.amazonaws.com/www.breadware.com/integrations/docker.png" -%}
+    {%- set image_src = "https://s3-us-west-2.amazonaws.com/www.breadware.com/integrations/docker.png" -%}
 {%- else -%}
-    {%- set workshop_name = "orchestration" -%}
-    {%- set pagesize = 12 -%}
+    {%- set workshop_name = "orchestration workshop" -%}
     {%- set cluster_or_machine = "cluster" -%}
     {%- set this_or_each = "each" -%}
     {%- set machine_is_or_machines_are = "machines are" -%}
-    {%- set background_image = "https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png" -%}
+    {%- set image_src = "https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png" -%}
 {%- endif -%}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head><style>
-body {
+body, table {
     margin: 0;
+    padding: 0;
+    line-height: 1em;
+    font-size: 14px;
+}
+
+table {
+    border-spacing: 0;
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+    border-left: 0.8em double grey;
+    padding-left: 0.4em;
 }
 
 div {
     float: left;
     border: 1px dotted black;
-    width: 27%;
-    padding: 6% 2.5% 2.5% 2.5%;
-    font-size: x-small;
-    line-height: 1em;
-    background-image: url("{{background_image}}");
-    background-size: 13%;
-    background-position-x: 50%;
-    background-position-y: 5%;
-    background-repeat: no-repeat;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    /* columns * (width+left+right) < 100% */
+    width: 21.5%;
+    padding-left: 1.5%;
+    padding-right: 1.5%;
 }
 
 p {
-    margin: 0.5em 0 0.5em 0;
+    margin: 0.4em 0 0.4em 0;
+}
+
+img {
+    height: 4em;
+    float: right;
+    margin-right: -0.4em;
+}
+
+.logpass {
+    font-family: monospace;
+    font-weight: bold;
 }
 
 .pagebreak {
@@ -53,25 +71,31 @@ p {
         <span class="pagebreak"></span>
     {% endif %}
     <div>
+
         <p>
-            Here is the connection information to your very own 
-            {{ cluster_or_machine }} for this {{ workshop_name }} workshop.
+            Here is the connection information to your very own
+            {{ cluster_or_machine }} for this {{ workshop_name }}.
             You can connect to {{ this_or_each }} VM with any SSH client.
         </p>
         <p>
-            Your {{ machine_is_or_machines_are }}:
-            <ul>
-                {% for node in cluster %}
-                <li>node{{ loop.index }}: {{ node }}</li>
-                {% endfor %}
-            </ul>
+            <img src="{{ image_src }}" />
+            <table>
+                <tr><td>login:</td></tr>
+                <tr><td class="logpass">docker</td></tr>
+                <tr><td>password:</td></tr>
+                <tr><td class="logpass">training</td></tr>
+            </table>
+
         </p>
         <p>
-            login: <b><code>docker</code></b>
-            <br/>
-            password: <b><code>training</code></b>
+            Your {{ machine_is_or_machines_are }}:
+            <table>
+                {% for node in cluster %}
+                <tr><td>node{{ loop.index }}:</td><td>{{ node }}</td></tr>
+                {% endfor %}
+            </table>
         </p>
-        <p>For slides, chat and other useful links, see:
+        <p>You can find the slides at:
             <center>{{ url }}</center>
         </p>
     </div>
