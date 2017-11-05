@@ -1,16 +1,16 @@
 # Our sample application
 
 - Visit the GitHub repository with all the materials of this workshop:
-  <br/>https://github.com/jpetazzo/orchestration-workshop
+  <br/>https://github.com/jpetazzo/container.training
 
 - The application is in the [dockercoins](
-  https://github.com/jpetazzo/orchestration-workshop/tree/master/dockercoins)
+  https://github.com/jpetazzo/container.training/tree/master/dockercoins)
   subdirectory
 
 - Let's look at the general layout of the source code:
 
   there is a Compose file [docker-compose.yml](
-  https://github.com/jpetazzo/orchestration-workshop/blob/master/dockercoins/docker-compose.yml) ...
+  https://github.com/jpetazzo/container.training/blob/master/dockercoins/docker-compose.yml) ...
 
   ... and 4 other services, each in its own directory:
 
@@ -109,15 +109,15 @@ class: pic
 
 <!--
 ```bash
-if [ -d orchestration-workshop ]; then
-  mv orchestration-workshop orchestration-workshop.$$
+if [ -d container.training ]; then
+  mv container.training container.training.$$
 fi
 ```
 -->
 
 - Clone the repository on `node1`:
   ```bash
-  git clone git://github.com/jpetazzo/orchestration-workshop
+  git clone git://github.com/jpetazzo/container.training
   ```
 
 ]
@@ -134,7 +134,7 @@ Without further ado, let's start our application.
 
 - Go to the `dockercoins` directory, in the cloned repo:
   ```bash
-  cd ~/orchestration-workshop/dockercoins
+  cd ~/container.training/dockercoins
   ```
 
 - Use Compose to build and run all containers:

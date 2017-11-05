@@ -179,7 +179,7 @@ The curl command should now output:
 
 - Go to the `stacks` directory:
   ```bash
-  cd ~/orchestration-workshop/stacks
+  cd ~/container.training/stacks
   ```
 
 - Build and push the images:

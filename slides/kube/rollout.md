@@ -51,7 +51,7 @@
 
 - Go to the `stack` directory:
   ```bash
-  cd ~/orchestration-workshop/stacks
+  cd ~/container.training/stacks
   ```
 
 - Edit `dockercoins/worker/worker.py`, update the `sleep` line to sleep 1 second

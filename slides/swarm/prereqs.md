@@ -83,12 +83,12 @@ class: in-person
 - If you are doing (or re-doing) this on your own, you can:
 
   - create your own cluster (local or cloud VMs) with Docker Machine
-    ([instructions](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-machine))
+    ([instructions](https://github.com/jpetazzo/container.training/tree/master/prepare-machine))
 
-  - use [Play-With-Docker](http://play-with-docker.com) ([instructions](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker))
+  - use [Play-With-Docker](http://play-with-docker.com) ([instructions](https://github.com/jpetazzo/container.training#using-play-with-docker))
 
   - create a bunch of clusters for you and your friends
-    ([instructions](https://github.com/jpetazzo/orchestration-workshop/tree/master/prepare-vms))
+    ([instructions](https://github.com/jpetazzo/container.training/tree/master/prepare-vms))
 
 ---
 
@@ -146,7 +146,7 @@ done
 
   - exposing TCP services requires something like
     [ngrok](https://ngrok.com/)
-    or [supergrok](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker)
+    or [supergrok](https://github.com/jpetazzo/container.training#using-play-with-docker)
 
 <!--
 

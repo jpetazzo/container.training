@@ -114,7 +114,7 @@ We will use the following Compose file (`stacks/dockercoins+healthcheck.yml`):
 
 - Go to the `stacks` directory:
   ```bash
-  cd ~/orchestration-workshop/stacks
+  cd ~/container.training/stacks
   ```
 
 - Deploy the updated stack:

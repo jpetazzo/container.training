@@ -240,7 +240,7 @@ class: manual-btp
 - Set `REGISTRY` and `TAG` environment variables to use our local registry
 - And run this little for loop:
   ```bash
-    cd ~/orchestration-workshop/dockercoins
+    cd ~/container.training/dockercoins
     REGISTRY=127.0.0.1:5000 TAG=v1
     for SERVICE in hasher rng webui worker; do
       docker tag dockercoins_$SERVICE $REGISTRY/$SERVICE:$TAG
@@ -549,7 +549,7 @@ What did we change to make it compatible with Swarm mode?
 
 - Go to the app directory:
   ```bash
-  cd ~/orchestration-workshop/dockercoins
+  cd ~/container.training/dockercoins
   ```
 
 - See modifications in the code:
@@ -693,7 +693,7 @@ services:
 
 - Go to the `stacks` directory:
   ```bash
-  cd ~/orchestration-workshop/stacks
+  cd ~/container.training/stacks
   ```
 
 - Check `registry.yml`:

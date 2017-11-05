@@ -37,5 +37,5 @@ class: self-paced
 - If you are doing this on your own:
   <br/>you can use
   [Play-With-Docker](http://www.play-with-docker.com/) and
-  read [these instructions](https://github.com/jpetazzo/orchestration-workshop#using-play-with-docker) for extra
+  read [these instructions](https://github.com/jpetazzo/container.training#using-play-with-docker) for extra
   details

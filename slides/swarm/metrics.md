@@ -306,7 +306,7 @@ class: snap
 - Create a task using the manifest:
 
   ```bash
-  cd ~/orchestration-workshop/snap
+  cd ~/container.training/snap
   snapctl task create -t psutil-file.yml
   ```
 
@@ -715,7 +715,7 @@ class: snap
 - Load a task manifest file collecting a couple of metrics on all containers,
   <br/>and sending them to InfluxDB:
   ```bash
-  cd ~/orchestration-workshop/snap
+  cd ~/container.training/snap
   snapctl task create -t docker-influxdb.json
   ```
 
@@ -1101,7 +1101,7 @@ class: prom-manual
 
 - Build the image using the provided Dockerfile:
   ```bash
-  docker build -t 127.0.0.1:5000/prometheus ~/orchestration-workshop/prom
+  docker build -t 127.0.0.1:5000/prometheus ~/container.training/prom
   ```
 
 - Push the image to our local registry:
@@ -1143,7 +1143,7 @@ class: prom-auto
 
 - Make sure we are in the stacks directory:
   ```bash
-  cd ~/orchestration-workshop/stacks
+  cd ~/container.training/stacks
   ```
 
 - Build, ship, and run the Prometheus stack:

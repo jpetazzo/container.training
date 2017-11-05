@@ -6,7 +6,7 @@
 
 - The content that you're viewing right now is in a public GitHub repository:
 
-  https://github.com/jpetazzo/orchestration-workshop
+  https://github.com/jpetazzo/container.training
 
 - Typos? Mistakes? Questions? Feel free to hover over the bottom of the slide ...
 
