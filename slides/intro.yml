@@ -33,5 +33,4 @@ chapters:
 - - intro/Local_Development_Workflow.md
   - intro/Working_With_Volumes.md
   - intro/Compose_For_Dev_Stacks.md
-  - intro/Course_Conclusion.md
   - common/thankyou.md
