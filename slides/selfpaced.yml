@@ -12,7 +12,7 @@ chapters:
 - common/title.md
 - swarm/intro.md
 - common/toc.md
-- - swarm/prereqs.md
+- - common/prereqs.md
   - swarm/versions.md
   - |
     name: part-1

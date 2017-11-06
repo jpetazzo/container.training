@@ -13,7 +13,7 @@ chapters:
 - common/logistics.md
 - kube/intro-ks.md
 - common/toc.md
-- - kube/prereqs-k8s.md
+- - common/prereqs.md
   - kube/versions-k8s.md
   - common/sampleapp.md
 - - kube/concepts-k8s.md

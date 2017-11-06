@@ -15,7 +15,7 @@ chapters:
 - common/logistics.md
 - swarm/intro.md
 - common/toc.md
-- - swarm/prereqs.md
+- - common/prereqs.md
   - swarm/versions.md
   - common/sampleapp.md
   - swarm/swarmkit.md
