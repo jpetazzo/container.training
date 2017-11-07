@@ -33,6 +33,12 @@ def insertslide(markdown, title):
 
     before = markdown[:slide_position]
 
+    toclink = "toc-chapter-{}".format(title2path[title][0])
+    _titles_ = [""] + all_titles + [""]
+    currentindex = _titles_.index(title)
+    previouslink = anchor(_titles_[currentindex-1])
+    nextlink = anchor(_titles_[currentindex+1])
+
     extra_slide = """
 ---
 
@@ -41,10 +47,16 @@ class: title
 
 {title}
 
-.nav[[Back to table of contents](#{toclink})]
+.nav[
+[Previous section](#{previouslink})
+|
+[Back to table of contents](#{toclink})
+|
+[Next section](#{nextlink})
+]
 
 .debug[(automatically generated title slide)]
-""".format(anchor=anchor(title), title=title, toclink=title2chapter[title])
+""".format(anchor=anchor(title), title=title, toclink=toclink, previouslink=previouslink, nextlink=nextlink)
     after = markdown[slide_position:]
     return before + extra_slide + after
 
@@ -91,30 +103,34 @@ def generatefromyaml(manifest, filename):
     return html
 
 
-title2chapter = {}
+# Maps a section title (the string just after "^# ") to its position
+# in the table of content (as a (chapter,part,subpart,...) tuple).
+title2path = {}
+path2title = {}
+all_titles = []
 
-
-def gentoc(titles, depth=0, chapter=0):
-    if not titles:
+# "tree" is a list of titles, potentially nested.
+def gentoc(tree, path=()):
+    if not tree:
         return ""
-    if isinstance(titles, str):
-        title2chapter[titles] = "toc-chapter-1"
-        logging.debug("Chapter {} Title {}".format(chapter, titles))
-        return "  "*(depth-2) + "- [{}](#{})\n".format(titles, anchor(titles))
-    if isinstance(titles, list):
-        if depth==0:
-            sep = "\n\n.debug[(auto-generated TOC)]\n---\n\n"
-            head = ""
-            tail = ""
-        elif depth==1:
-            sep = "\n"
-            head = "name: toc-chapter-{}\n\n## Chapter {}\n\n".format(chapter, chapter)
-            tail = ""
+    if isinstance(tree, str):
+        title = tree
+        title2path[title] = path
+        path2title[path] = title
+        all_titles.append(title)
+        logging.debug("Path {} Title {}".format(path, title))
+        return "- [{}](#{})".format(title, anchor(title))
+    if isinstance(tree, list):
+        if len(path) == 0:
+            return "\n---\n".join(gentoc(subtree, path+(i+1,)) for (i,subtree) in enumerate(tree))
+        elif len(path) == 1:
+            chapterslide = "## Chapter {}\n\n".format(path[0])
+            for (i,subtree) in enumerate(tree):
+                chapterslide += gentoc(subtree, path+(i+1,)) + "\n\n"
+            chapterslide += ".debug[(auto-generated TOC)]"
+            return chapterslide
         else:
-            sep = "\n"
-            head = ""
-            tail = ""
-        return head + sep.join(gentoc(t, depth+1, c+1) for (c,t) in enumerate(titles)) + tail
+            return "\n\n".join(gentoc(subtree, path+(i+1,)) for (i,subtree) in enumerate(tree))
 
 
 # Arguments:
