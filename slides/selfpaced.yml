@@ -10,6 +10,7 @@ exclude:
 
 chapters:
 - common/title.md
+#- common/logistics.md
 - swarm/intro.md
 - common/toc.md
 - - common/prereqs.md
@@ -46,10 +47,9 @@ chapters:
   - swarm/swarmtools.md
 - - swarm/security.md
   - swarm/secrets.md
-  - swarm/leastprivilege.md
-  - kube/namespaces.md
-  - swarm/apiscope.md
   - swarm/encryptionatrest.md
+  - swarm/leastprivilege.md
+  - swarm/apiscope.md
   - swarm/logging.md
   - swarm/metrics.md
   - swarm/stateful.md
