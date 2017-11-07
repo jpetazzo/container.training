@@ -44,6 +44,18 @@ http://jpetazzo.github.io/2013/10/08/docker-containers-metrics/
 
 ---
 
+## Application metrics
+
+- Arbitrary metrics related to your application and business
+
+- System performance: request latency, error rate ...
+
+- Volume information: number of rows in database, message queue size ...
+
+- Business data: inventory, items sold, revenue ...
+
+---
+
 class: snap, prom
 
 ## Tools
