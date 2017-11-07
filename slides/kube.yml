@@ -17,6 +17,8 @@ chapters:
   - kube/versions-k8s.md
   - common/sampleapp.md
 - - kube/concepts-k8s.md
+  - common/declarative.md
+  - kube/declarative.md
   - kube/kubenet.md
   - kube/kubectlget.md
   - kube/setup-k8s.md
