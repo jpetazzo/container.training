@@ -120,12 +120,16 @@ div.title > p:first-child {
   background-size: 1.5em;
   background-repeat: no-repeat;
   padding-left: 2em;
+  background-position: left;
 }
 .warning {
   background-image: url("images/warning.png");
   background-size: 1.5em;
-  background-repeat: no-repeat;
   padding-left: 2em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  background-repeat: no-repeat;
+  background-position: left;
 }
 .exercise {
   background-color: #eee;
