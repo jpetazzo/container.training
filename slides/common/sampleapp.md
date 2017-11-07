@@ -263,11 +263,31 @@ class: extra-details
 
 ]
 
-You should see a speed of approximately 4 hashes/second.
+A drawing area should show up, and after a few seconds, a blue
+graph will appear.
 
-More precisely: 4 hashes/second, with regular dips down to zero.
-<br/>This is because Jérôme is incapable of writing good frontend code.
-<br/>Don't ask. Seriously, don't ask. This is embarrassing.
+---
+
+class: self-paced, extra-details
+
+## If the graph doesn't load
+
+If you just see a `Page not found` error, it might be because your
+Docker Engine is running on a different machine. This can be the case if:
+
+- you are using the Docker Toolbox
+
+- you are using a VM (local or remote) created with Docker Machine
+
+- you are controlling a remote Docker Engine
+
+When you run DockerCoins in development mode, the web UI static files
+are mapped to the container using a volume. Alas, volumes can only
+work on a local environment, or when using Docker4Mac or Docker4Windows.
+
+How to fix this?
+
+Edit `dockercoins.yml` and comment out the `volumes` section, and try again.
 
 ---
 
@@ -275,9 +295,27 @@ class: extra-details
 
 ## Why does the speed seem irregular?
 
+- It *looks like* the speed is approximately 4 hashes/second
+
+- Or more precisely: 4 hashes/second, with regular dips down to zero
+
+- Why?
+
+--
+
+class: extra-details
+
 - The app actually has a constant, steady speed: 3.33 hashes/second
   <br/>
   (which corresponds to 1 hash every 0.3 seconds, for *reasons*)
+
+- Yes, and?
+
+---
+
+class: extra-details
+
+## The reason why this graph is *not awesome*
 
 - The worker doesn't update the counter after every loop, but up to once per second
 
@@ -285,9 +323,15 @@ class: extra-details
 
 - Between two consecutive updates, the counter will increase either by 4, or by 0
 
-- The perceived speed will therefore be 4 - 4 - 4 - 0 - 4 - 4 - etc.
+- The perceived speed will therefore be 4 - 4 - 4 - 0 - 4 - 4 - 0 etc.
 
-*We told you to not ask!!!*
+- What can we conclude from this?
+
+--
+
+class: extra-details
+
+- Jérôme is clearly incapable of writing good frontend code
 
 ---
 
