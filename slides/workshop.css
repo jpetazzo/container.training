@@ -85,17 +85,25 @@ a {
 .underline { text-decoration: underline; }
 .strike { text-decoration: line-through; }
 
-.pic {
+/* On pic slides, zoom images as big as possible */
+div.pic {
+  padding: 0;
   vertical-align: middle;
-  text-align: center;
-  padding: 0 0 0 0 !important;
 }
-img {
-  max-width: 100%;
-  max-height: 550px;
+div.pic p {
+  margin: 0;
 }
-.small img {
-  max-height: 250px;
+div.pic img {
+  display: block;
+  margin: auto;
+  max-width: 1210px;
+  max-height: 681px;
+}
+
+/* Center images that are on title slides */
+div.title img {
+  display: block;
+  margin: auto;
 }
 
 div.title {

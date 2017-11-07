@@ -65,17 +65,7 @@ class: extra-details
 
 ## What's this application?
 
----
-
-class: pic
-
-![DockerCoins logo](images/dockercoins.png)
-
-(DockerCoins 2016 logo courtesy of [@XtlCnslt](https://twitter.com/xtlcnslt) and [@ndeloof](https://twitter.com/ndeloof). Thanks!)
-
----
-
-## What's this application?
+--
 
 - It is a DockerCoin miner! 💰🐳📦🚢
 

@@ -82,6 +82,22 @@ class: extra-details
 
 ## Illustration
 
+On the next slide:
+
+- whales = nodes (workers and managers)
+
+- monkeys = managers
+
+- purple monkey = leader
+
+- grey monkeys = followers
+
+- dotted triangle = raft protocol
+
+---
+
+class: pic
+
 ![Illustration](images/swarm-mode.svg)
 
 ---
