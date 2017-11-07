@@ -1,6 +1,7 @@
 title: "Introduction to Docker and Containers"
 
 chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
 
 exclude:
 - self-paced

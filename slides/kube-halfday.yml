@@ -2,7 +2,8 @@ title: |
   Deploying and Scaling Microservices
   with Docker and Kubernetes
 
-chat: "[Gitter](https://gitter.im/jpetazzo/workshop-20171026-prague)"
+chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
 
 exclude:
 - self-paced
