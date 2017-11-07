@@ -1,6 +1,27 @@
-@import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
 @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
 @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+@import url('https://fonts.googleapis.com/css?family=Inconsolata:400,700');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
+/* Fonts! Sizes! And a bit of color. */
+.remark-slide-content {
+  font-family: 'Droid Serif';
+  font-size: 25px !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Droid Serif';
+  font-weight: bold;
+  font-size: 45px !important;
+  margin-top: 0.5em;
+}
+
+code.remark-code, code.remark-inline-code {
+  font-family: 'Inconsolata';
+  font-size: 110%;
+  background-color: #ccc;
+}
 
 /* For print! Borrowed from https://github.com/gnab/remark/issues/50 */
 @page {
@@ -18,6 +39,8 @@
   }
 }
 
+/* Don't change things below this unless you know what you're doing! */
+
 /* put slide numbers in top-right corner instead of bottom-right */
 div.remark-slide-number {
   top: 6px;
@@ -27,12 +50,11 @@ div.remark-slide-number {
 }
 
 .debug {
-  font-size: 25px;
+  font-family: monospace;
   position: absolute;
   left: 0px;
   right: 0px;
   bottom: 0px;
-  font-family: monospace;
   color: white;
   background-color: black;
   opacity: 0;
@@ -43,19 +65,6 @@ div.remark-slide-number {
 .debug:hover {
   opacity: 1;
 }
-div.debug {
-  vertical-align: initial;
-  text-align: initial;
-  font-size: initial;
-}
-
-body { font-family: 'Droid Serif'; }
-
-h1, h2, h3 {
-  font-family: 'Yanone Kaffeesatz';
-  font-weight: normal;
-  margin-top: 0.5em;
-}
 
 a {
   text-decoration: none;
@@ -63,21 +72,10 @@ a {
 }
 
 .remark-slide-content { padding: 1em 2.5em 1em 2.5em; }
-.remark-slide-content { font-size: 25px; }
-.remark-slide-content h1 { font-size: 50px; }
-.remark-slide-content h2 { font-size: 50px; }
-.remark-slide-content h3 { font-size: 25px; }
 
 .footnote {
   position: absolute;
   bottom: 3em;
-}
-
-.remark-code { font-size: 25px; }
-.small .remark-code { font-size: 16px; }
-.remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
-.remark-inline-code {
-   background-color: #ccc;
 }
 
 .red { color: #fa0000; }
@@ -100,39 +98,21 @@ img {
   max-height: 250px;
 }
 
-.title {
-  vertical-align: middle;
-  text-align: center;
+div.title {
+  vertical-align: middle; 
 }
-.title h1 { font-size: 3em; font-family: unset;}
-.title p { font-size: 3em; }
+div.title > p:first-child {
+  text-align: center;
+  font-size: 300%;
+}
 
 .nav {
-  font-size: 25px;
+  text-align: center;
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 2em;
-}
-
-.quote {
-  background: #eee;
-  border-left: 10px solid #ccc;
-  margin: 1.5em 10px;
-  padding: 0.5em 10px;
-  quotes: "\201C""\201D""\2018""\2019";
-  font-style: italic;
-}
-.quote:before {
-  color: #ccc;
-  content: open-quote;
-  font-size: 4em;
-  line-height: 0.1em;
-  margin-right: 0.25em;
-  vertical-align: -0.4em;
-}
-.quote p {
-  display: inline;
+  bottom: 25px;
+  font-size: 150%;
 }
 
 .blackbelt {

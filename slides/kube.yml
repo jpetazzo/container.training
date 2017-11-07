@@ -28,4 +28,4 @@ chapters:
   - kube/daemonset.md
   - kube/rollout.md
   - kube/whatsnext.md
-- common/thankyou.md
+  - common/thankyou.md

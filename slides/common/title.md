@@ -2,7 +2,7 @@ class: title, self-paced
 
 @@TITLE@@
 
-*Self-paced version*
+.nav[*Self-paced version*]
 
 ---
 
@@ -11,11 +11,10 @@ class: title, in-person
 @@TITLE@@
 
 **Be kind to the WiFi!**
-
-*Use the 5G network*
 <br/>
-*Don't use your hotspot*
+*Use the 5G network.*
+*Don't use your hotspot.*
 <br/>
-*Don't stream videos or download big files during the workshop*
+*Don't stream videos or download big files during the workshop.*
 
-Thank you!
+*Thank you!*

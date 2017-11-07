@@ -90,7 +90,7 @@ def generatefromyaml(manifest, filename):
 
     markdown = markdown.replace(
         ".debug[",
-        ".debug[{}\n\nThese sides have been built from commit: {}\n\n".format(dirtyfiles, commit),
+        ".debug[\n```\n{}\n```\n\nThese slides have been built from commit: {}\n\n".format(dirtyfiles, commit),
         1)
 
     markdown = markdown.replace("@@TITLE@@", manifest["title"].replace("\n", "<br/>"))
@@ -172,6 +172,7 @@ try:
         branch = os.environ["BRANCH"]
     else:
         branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"])
+        branch = branch.strip()
     base = subprocess.check_output(["git", "rev-parse", "--show-prefix"])
     base = base.strip().strip("/")
     urltemplate = ("{repo}/tree/{branch}/{base}/{filename}"
