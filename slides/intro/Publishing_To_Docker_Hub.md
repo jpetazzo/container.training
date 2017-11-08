@@ -4,7 +4,7 @@ We have built our first images.
 
 We can now publish it to the Docker Hub!
 
-*Note: you don't have to do the exercises in this section,
+*You don't have to do the exercises in this section,
 because they require an account on the Docker Hub, and we
 don't want to force anyone to create one.*
 
@@ -39,7 +39,7 @@ servers, it will store your credentials in `~/.docker/config`.]
 
 * When pushing an image to a registry, the registry address is in the tag.
 
-  Eample: `registry.example.net:5000/image`
+  Example: `registry.example.net:5000/image`
 
 * What about Docker Hub images?
 
@@ -83,6 +83,20 @@ servers, it will store your credentials in `~/.docker/config`.]
 
 * If you work with public repositories, this is free
 
-* Corollary: this gives you a very simple way to get free, basic CI
+---
 
-  (With the technique presented earlier)
+class: extra-details
+
+## Setting up an automated build
+
+* We need a Dockerized repository!
+* Let's go to https://github.com/jpetazzo/trainingwheels and fork it.
+* Go to the Docker Hub (https://hub.docker.com/).
+* Select "Create" in the top-right bar, and select "Create Automated Build."
+* Connect your Docker Hub account to your GitHub account.
+* Select your user and the repository that we just forked.
+* Create.
+* Then go to "Build Settings."
+* Put `/www` in "Dockerfile Location" (or whichever directory the Dockerfile is in).
+* Click "Trigger" to build the repository immediately (without waiting for a git push).
+* Subsequent builds will happen automatically, thanks to GitHub hooks.
