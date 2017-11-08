@@ -3,7 +3,7 @@ class: title
 
 # Background Containers
 
-![Background Containers](images/background-containers.jpg)
+![Background Containers](images/title-background-containers.jpg)
 
 ---
 

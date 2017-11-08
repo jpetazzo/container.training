@@ -10,7 +10,7 @@ page.onResourceError = function(resourceError) {
 }
 
 page.onConsoleMessage = function(msg) {
-  console.log('Console: ' +msg);
+  /*console.log('Console: ' +msg);*/
 }
 
 console.log('Loading: ' + url);

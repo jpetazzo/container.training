@@ -3,7 +3,7 @@ class: title
 
 # Ambassadors
 
-![](images/ambassador.jpg)
+![](images/title-ambassador.jpg)
 
 ---
 

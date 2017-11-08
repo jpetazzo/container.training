@@ -1,10 +1,8 @@
-
 class: title
 
 # Installing Docker
 
-
-![install](images/install.jpg)
+![install](images/title-installing-docker.jpg)
 
 ---
 

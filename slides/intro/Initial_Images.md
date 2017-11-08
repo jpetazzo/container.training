@@ -3,7 +3,7 @@ class: title
 
 # Understanding Docker Images
 
-![image](images/image.png)
+![image](images/title-understanding-docker-images.png)
 
 ---
 

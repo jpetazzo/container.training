@@ -1,9 +1,6 @@
-
-class: title
-
 # Advanced Dockerfiles
 
-![construction](images/construction.jpg)
+![construction](images/title-advanced-dockerfiles.jpg)
 
 ---
 

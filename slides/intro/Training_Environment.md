@@ -2,7 +2,7 @@ class: title
 
 # Our training environment
 
-![SSH terminal](images/ssh.jpg)
+![SSH terminal](images/title-our-training-environment.jpg)
 
 ---
 

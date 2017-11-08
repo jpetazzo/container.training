@@ -3,7 +3,7 @@ class: title
 
 # The Container Network Model
 
-![A denser graph network](images/complex-network.jpg)
+![A denser graph network](images/title-the-container-network-model.jpg)
 
 ---
 

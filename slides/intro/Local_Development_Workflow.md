@@ -3,7 +3,7 @@ class: title
 
 # Local Development Workflow with Docker
 
-![construction](images/construction.jpg)
+![construction](images/title-local-development-workflow-with-docker.jpg)
 
 ---
 

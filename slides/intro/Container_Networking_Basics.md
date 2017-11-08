@@ -3,7 +3,7 @@ class: title
 
 # Container Networking Basics
 
-![A dense graph network](images/network.jpg)
+![A dense graph network](images/title-container-networking-basics.jpg)
 
 ---
 
