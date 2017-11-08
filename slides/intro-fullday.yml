@@ -1,4 +1,7 @@
-title: "Introduction to Docker and Containers"
+title: |
+  Introduction
+  to Docker and
+  Containers
 
 chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
@@ -13,7 +16,7 @@ chapters:
 - - intro/Docker_Overview.md
   #- intro/Docker_History.md
   - intro/Training_Environment.md
-  - intro/Install_Docker.md
+  - intro/Installing_Docker.md
   - intro/First_Containers.md
   - intro/Background_Containers.md
   - intro/Start_And_Attach.md
@@ -23,15 +26,16 @@ chapters:
   - intro/Cmd_And_Entrypoint.md
   - intro/Copying_Files_During_Build.md
   - intro/Multi_Stage_Builds.md
+  - intro/Publishing_To_Docker_Hub.md
   - intro/Dockerfile_Tips.md
-  #- intro/Advanced_Dockerfiles.md
-  - intro/Docker_Hub_Tease.md
 - - intro/Naming_And_Inspecting.md
   - intro/Container_Networking_Basics.md
+  - intro/Network_Drivers.md
   - intro/Container_Network_Model.md
   #- intro/Connecting_Containers_With_Links.md
   - intro/Ambassadors.md
 - - intro/Local_Development_Workflow.md
   - intro/Working_With_Volumes.md
   - intro/Compose_For_Dev_Stacks.md
+  - intro/Advanced_Dockerfiles.md
   - common/thankyou.md

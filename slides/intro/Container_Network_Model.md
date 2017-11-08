@@ -174,7 +174,7 @@ In Docker Engine 1.10, this has been replaced by a dynamic resolver.
 
 ---
 
-## Connecting multiple containers together
+# Service discovery with containers
 
 * Let's try to run an application that requires two containers.
 
@@ -210,9 +210,7 @@ $ docker ps -l
 
 * If we connect to the application now, we will see an error page:
 
-.small[
 ![Trainingwheels error](images/trainingwheels-error.png)
-]
 
 * This is because the Redis service is not running.
 * This container tries to resolve the name `redis`.
@@ -241,9 +239,7 @@ $ docker run --net dev --name redis -d redis
 
 * If we connect to the application now, we should see that the app is working correctly:
 
-.small[
 ![Trainingwheels OK](images/trainingwheels-ok.png)
-]
 
 * When the app tries to resolve `redis`, instead of getting a DNS error, it gets the IP address of our Redis container.
 

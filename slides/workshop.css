@@ -99,19 +99,28 @@ div.pic img {
   max-width: 1210px;
   max-height: 681px;
 }
+div.pic h1, div.pic h2, div.title h1, div.title h2 {
+  text-align: center;
+}
 
 /* Center images that are on title slides */
 div.title img {
   display: block;
   margin: auto;
+  max-width: 1210px;
+  max-height: 420px; /* Arbitrary value to have so space for the title */
 }
-
 div.title {
   vertical-align: middle; 
 }
 div.title > p:first-child {
   text-align: center;
   font-size: 300%;
+}
+
+div img {
+  max-width: 1210px;
+  max-height: 250px;
 }
 
 .nav {
