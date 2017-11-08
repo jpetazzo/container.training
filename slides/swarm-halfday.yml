@@ -8,7 +8,7 @@ chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 exclude:
 - self-paced
 - snap
-- auto-btp
+- btp-manual
 - benchmarking
 - elk-manual
 - prom-manual
@@ -25,9 +25,15 @@ chapters:
   - common/declarative.md
   - swarm/swarmmode.md
   - swarm/creatingswarm.md
+  #- swarm/machine.md
   - swarm/morenodes.md
 - - swarm/firstservice.md
   - swarm/ourapponswarm.md
+  #- swarm/hostingregistry.md
+  #- swarm/testingregistry.md
+  #- swarm/btp-manual.md
+  #- swarm/swarmready.md
+  - swarm/compose2swarm.md
   - swarm/updatingservices.md
   #- swarm/rollingupdates.md
   #- swarm/healthchecks.md

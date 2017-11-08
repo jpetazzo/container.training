@@ -6,6 +6,7 @@ chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 
 exclude:
 - in-person
+- btp-auto
 
 chapters:
 - common/title.md
@@ -29,6 +30,11 @@ chapters:
   - swarm/morenodes.md
 - - swarm/firstservice.md
   - swarm/ourapponswarm.md
+  - swarm/hostingregistry.md
+  - swarm/testingregistry.md
+  - swarm/btp-manual.md
+  - swarm/swarmready.md
+  - swarm/compose2swarm.md
   - |
     name: part-2
 
