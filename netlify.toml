@@ -1,0 +1,5 @@
+[build]
+  base = "slides"
+  publish = "slides"
+  command = "./build.sh once"
+
