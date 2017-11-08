@@ -3,73 +3,119 @@
     <title>Container Training</title>
     <style type="text/css">
         body {
-            background-image: url("images/containers-pattern.jpg");
+            background-image: url("images/container-background.jpg");
+            max-width: 1024px;
+            margin: auto;
         }
-        * {
-            font-size: 24px;
+        div.main {
+            background: white;
+            height: 100%;
+        }
+        body, table {
+            font-size: 20px;
             font-family: sans-serif;
         }
-        h1 {
-            display: block;
+        table {
+            width: 100%;
+            padding-left: 20px;
+            padding-right: 20px;
         }
-        h1, table {
-            margin-left: auto;
-            margin-right: auto;
+        .header {
+            font-size: 300%;
+            font-weight: bold;
         }
-        h1, td, th {
-            padding: 0.5em;
-            background: #eee;
+        .title {
+            font-size: 150%;
+            font-weight: bold;  
+        }
+        .footer {
+            font-size: 150%;
+        }
+        td {
+            padding: 1px;
+        }
+        td.header, td.title, td.footer {
+            padding-top: 20px;
+        }
+        td.title {
+            border-bottom: thick solid black;
+            padding-bottom: 2px;
         }
         a {
             text-decoration: none;
         }
-        td:nth-child(2) a::after {
-            content: "(slides)";
+        a.attend:after {
+            content: "📅 attend";
         }
-        td:nth-child(3) a::after {
-            content: "(chat)";
+        a.slides:after {
+            content: "📚 slides";
+        }
+        a.chat:after {
+            content: "💬 chat";
+        }
+        a.video:after {
+            content: "📺 video";
         }
     </style>
 </head>
 <body>
-    <h1>Container Training</h1>
+    <div class="main">
     <table>
-        <tr><th>Coming soon</th></tr>
+        <tr><td class="header" colspan="4">Container Training</td></tr>
+
+        <tr><td class="title" colspan="4">Coming soon</td></tr>
+
         <tr>
             <td>QCON SF: Introduction to Docker and Containers</td>
+            <td><a class="attend" href="https://qconsf.com/sf2017/workshop/introduction-docker-and-containers" /></td>
         </tr>
+
         <tr>
             <td>QCON SF: Orchestrating Microservices with Docker Swarm</td>
+            <td><a class="attend" href="https://qconsf.com/sf2017/workshop/orchestrating-microservices-docker-swarm" /></td>
         </tr>
-        <tr><th>Past workshops</th></tr>
+
+        <tr><td class="title" colspan="4">Past workshops</td></tr>
+
         <tr>
             <td>LISA17 M7: Getting Started with Docker and Containers</td>
-            <td><a href="http://lisa17m7.container.training/">📚</a></td>
-            <td><a href="https://gitter.im/jpetazzo/workshop-20171030-sanfrancisco">💬</a></td>
+            <td><a class="slides" href="http://lisa17m7.container.training/" /></td>
         </tr>
+
         <tr>
             <td>LISA17 T9: Build, Ship, and Run Microservices on a Docker Swarm Cluster</td>
-           <td><a href="http://lisa17t9.container.training/">📚</a></td>
-            <td><a href="https://gitter.im/jpetazzo/workshop-20171031-sanfrancisco">💬</a></td>
+            <td><a class="slides" href="http://lisa17t9.container.training/" /></td>
+            <td><a class="chat" href="https://gitter.im/jpetazzo/workshop-20171031-sanfrancisco" /></td>
         </tr>
+        
         <tr>
             <td>Deploying and scaling microservices with Docker and Kubernetes</td>
-            <td><a href="http://osseu17.container.training/">📚</a></td>
-            <td><a href="https://gitter.im/jpetazzo/workshop-20171026-prague">💬</a></td>
+            <td><a class="slides" href="http://osseu17.container.training/" /></td>
+            <td><a class="chat" href="https://gitter.im/jpetazzo/workshop-20171026-prague" /></td>
+            <td><a class="video" href="https://www.youtube.com/playlist?list=PLBAFXs0YjviLrsyydCzxWrIP_1-wkcSHS" /></td>
         </tr>
+
         <tr>
             <td>DockerCon Workshop: from Zero to Hero (full day, B3 M1-2)</td>
-            <td><a href="http://dc17eu.container.training/">📚</a></td>
+            <td><a class="slides" href="http://dc17eu.container.training/" /></td>
         </tr>
+
         <tr>
             <td>DockerCon Workshop: Orchestration for Advanced Users (afternoon, B4 M5-6)</td>
-            <td><a href="https://www.bretfisher.com/dockercon17eu/">📚</a></td>
+            <td><a class="slides" href="https://www.bretfisher.com/dockercon17eu/" /></td>
         </tr>
+
         <tr>
             <td>Self-paced Workshop: Orchestrating Microservices with Docker and Swarm</td>
-            <td><a href="selfpaced.yml.html">📚</a></td>
+            <td><a class="slides" href="selfpaced.yml.html" /></td>
+        </tr>
+
+        <tr>
+            <td class="footer">
+                Maintained by Jérôme Petazzoni (<a href="https://twitter.com/jpetazzo">@jpetazzo</a>)
+            </td>
         </tr>
     </table>
-    <h1>Maintained by Jérôme Petazzoni (<a href="https://twitter.com/jpetazzo">@jpetazzo</a>)</h1>
+    </div>
 </body>
 </html>
