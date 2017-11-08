@@ -1,7 +1,7 @@
 
 class: title
 
-# Connecting Containers With Links
+# Connecting containers with links
 
 ![graph](images/title-connecting-containers-with-links.gif)
 

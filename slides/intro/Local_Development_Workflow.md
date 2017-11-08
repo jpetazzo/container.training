@@ -1,9 +1,9 @@
 
 class: title
 
-# Local Development Workflow with Docker
+# Local development workflow with Docker
 
-![construction](images/title-local-development-workflow-with-docker.jpg)
+![Construction site](images/title-local-development-workflow-with-docker.jpg)
 
 ---
 

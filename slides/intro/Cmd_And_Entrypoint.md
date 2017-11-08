@@ -1,7 +1,7 @@
 
 class: title
 
-# CMD and ENTRYPOINT
+# `CMD` and `ENTRYPOINT`
 
 ![Container entry doors](images/entrypoint.jpg)
 

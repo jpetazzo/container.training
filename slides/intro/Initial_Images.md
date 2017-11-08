@@ -1,7 +1,7 @@
 
 class: title
 
-# Understanding Docker Images
+# Understanding Docker images
 
 ![image](images/title-understanding-docker-images.png)
 

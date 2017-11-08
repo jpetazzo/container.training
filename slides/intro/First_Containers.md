@@ -1,9 +1,9 @@
 
 class: title
 
-# Our First Containers
+# Our first containers
 
-![Plastic Containers](images/title-our-first-containers.jpg)
+![Colorful plastic tubs](images/title-our-first-containers.jpg)
 
 ---
 

@@ -1,4 +1,4 @@
-# Building Images Interactively
+# Building images interactively
 
 In this section, we will create our first container image.
 

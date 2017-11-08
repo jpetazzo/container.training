@@ -1,9 +1,9 @@
 
 class: title
 
-# Background Containers
+# Background containers
 
-![Background Containers](images/title-background-containers.jpg)
+![Background containers](images/title-background-containers.jpg)
 
 ---
 

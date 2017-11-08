@@ -1,5 +1,4 @@
-
-# Compose For Development Stacks
+# Compose for development stacks
 
 Dockerfiles are great to build container images.
 

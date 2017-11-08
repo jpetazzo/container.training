@@ -1,7 +1,7 @@
 
 class: title
 
-# Working with Volumes
+# Working with volumes
 
 ![volume](images/title-working-with-volumes.jpg)
 
@@ -19,7 +19,7 @@ At the end of this section, you will be able to:
 
 ---
 
-## Working with Volumes
+## Working with volumes
 
 Docker volumes can be used to achieve many things, including:
 

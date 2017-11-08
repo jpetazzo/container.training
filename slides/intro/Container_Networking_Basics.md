@@ -1,7 +1,7 @@
 
 class: title
 
-# Container Networking Basics
+# Container networking basics
 
 ![A dense graph network](images/title-container-networking-basics.jpg)
 

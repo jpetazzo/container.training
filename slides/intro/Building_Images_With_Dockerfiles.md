@@ -3,7 +3,7 @@ class: title
 
 # Building Docker images with a Dockerfile
 
-![construction](images/title-building-docker-images-with-a-dockerfile.jpg)
+![Construction site with containers](images/title-building-docker-images-with-a-dockerfile.jpg)
 
 ---
 
