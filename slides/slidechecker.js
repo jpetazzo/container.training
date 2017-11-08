@@ -32,38 +32,40 @@ page.open(url, function(status) {
    */
   var analyze = page.evaluate(function() {
     var ret = {}, i, n = slideshow.getSlideCount();
-    ret.titles = {};
-    ret.slides = {};
-    ret.n_slides = n;
+    ret = [];
     for (i=1; i<=n; i++) {
       console.log('Current slide: ' + i + '/' + n);
       var visible_slide = document.getElementsByClassName('remark-visible')[0];
+      var debug = visible_slide.getElementsByClassName('debug');
+      if (debug.length==0) {
+        debug = '?';
+      }
+      else {
+        debug = debug[0].textContent;
+      }
+      var slide_desc = 'Slide ' + i + '/' + n + ' (' + debug + ')';
       ['h1', 'h2'].forEach(function(tag) {
         var titles = visible_slide.getElementsByTagName(tag);
         console.log('Found ' + titles.length + ' titles with tag ' + tag);
         titles.forEach(function(t) {
           if (t.clientHeight>60) {
-            ret.titles[t.textContent] = i;
+            ret.push(slide_desc + ' has a long title: ' + t.textContent);
           }
         });
       });
       var scaler = visible_slide.getElementsByClassName('remark-slide-scaler')[0];
       var slide = scaler.getElementsByClassName('remark-slide')[0];
       if (slide.clientHeight > scaler.clientHeight) {
-        ret.slides[slide.textContent] = i;
+        ret.push(slide_desc + ' is too long');
       }
       slideshow.gotoNextSlide();
     }
+    ret.push('Deck has ' + n + ' slides');
     return ret;
   });
-  Object.keys(analyze.titles).forEach(function(t) {
-    console.log('Title overflow on slide ' + analyze.titles[t] +': ' + t);
+  analyze.forEach(function(msg) {
+    console.log(msg);
   });
-  Object.keys(analyze.slides).forEach(function(s) {
-    console.log('Slide overflow: ' + analyze.slides[s]);
-  })
-  console.log('Number of slides: ' + analyze.n_slides);
-
   console.log('Done: ' + url + '(' + status + ')');
   phantom.exit();
 });
