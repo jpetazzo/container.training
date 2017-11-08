@@ -58,7 +58,7 @@ class: pic
 
 ## The deployment problem
 
-![problem](images/problem.png)
+![problem](images/shipping-software-problem.png)
 
 ---
 
@@ -66,7 +66,7 @@ class: pic
 
 ## The matrix from hell
 
-![matrix](images/matrix.png)
+![matrix](images/shipping-matrix-from-hell.png)
 
 ---
 
@@ -74,7 +74,7 @@ class: pic
 
 ## The parallel with the shipping indsutry
 
-![history](images/shippingindustry.png)
+![history](images/shipping-industry-problem.png)
 
 ---
 
@@ -82,7 +82,7 @@ class: pic
 
 ## Intermodal shipping containers
 
-![shipping](images/shipping.png)
+![shipping](images/shipping-industry-solution.png)
 
 ---
 
@@ -90,7 +90,7 @@ class: pic
 
 ## A new shipping ecosystem
 
-![shipeco](images/shipeco.png)
+![shipeco](images/shipping-indsutry-results.png)
 
 ---
 
@@ -98,7 +98,7 @@ class: pic
 
 ## A shipping container system for applications
 
-![shipapp](images/appcont.png)
+![shipapp](images/shipping-software-solution.png)
 
 ---
 
@@ -106,7 +106,7 @@ class: pic
 
 ## Eliminate the matrix from hell
 
-![elimatrix](images/elimatrix.png)
+![elimatrix](images/shipping-matrix-solved.png)
 
 ---
 

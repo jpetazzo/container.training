@@ -208,6 +208,6 @@ Yes!
 
 class: pic
 
-![Node, pod, container](images/thanks-weave.png)
+![Node, pod, container](images/k8s-arch3-thanks-weave.png)
 
 (Diagram courtesy of Weave Works, used with permission.)

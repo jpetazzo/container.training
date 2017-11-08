@@ -148,7 +148,7 @@ http://<yourHostIP>:80
 
 We can see our company naming application. 
 
-![web application 1](images/webapp1.png)
+![web application 1](images/webapp-in-blue.png)
 
 ---
 
@@ -184,7 +184,7 @@ http://<yourHostIP>:80
 
 We can see the updated color of our company naming application.
 
-![web application 2](images/webapp2.png)
+![web application 2](images/webapp-in-red.png)
 
 ---
 

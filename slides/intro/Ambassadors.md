@@ -3,7 +3,7 @@ class: title
 
 # Ambassadors
 
-![](images/title-ambassador.jpg)
+![Two serious-looking persons shaking hands](images/title-ambassador.jpg)
 
 ---
 
@@ -40,7 +40,7 @@ ambassador containers.
 
 ---
 
-![ambassador](images/diagram.png)
+![ambassador](images/ambassador-diagram.png)
 
 ---
 

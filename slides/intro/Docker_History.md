@@ -20,7 +20,7 @@ class: pic
 
 ## The VPS age (until 2007-2008)
 
-![lightcont](images/lightcont.png)
+![lightcont](images/containers-as-lightweight-vms.png)
 
 ---
 

@@ -69,7 +69,7 @@ But first, let's make sure that everything works properly.
 Point your browser to the IP address of your Docker host, on the port
 shown by `docker ps` for container port 80.
 
-![Screenshot](images/web.png)
+![Screenshot](images/welcome-to-nginx.png)
 
 ---
 
