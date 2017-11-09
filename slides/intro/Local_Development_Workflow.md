@@ -31,28 +31,25 @@ By using Docker containers, we will get a consistent development environment.
 
 ---
 
-## Our "namer" application
+## Working on the "namer" application
 
-* The code is available on https://github.com/jpetazzo/namer.
+* We have to work on some application whose code is at:
 
-* The image jpetazzo/namer is automatically built by the Docker Hub.
+  https://github.com/jpetazzo/namer.
 
-Let's run it with:
+* What is it? We don't know yet!
 
-```bash
-$ docker run -dP jpetazzo/namer
-```
-
-Check the port number with `docker ps` and open the application.
-
----
-
-## Let's look at the code
-
-Let's download our application's source code.
+* Let's download the code.
 
 ```bash
 $ git clone https://github.com/jpetazzo/namer
+```
+
+---
+
+## Looking at the code
+
+```bash
 $ cd namer
 $ ls -1
 company_name_generator.rb
@@ -62,11 +59,13 @@ Dockerfile
 Gemfile
 ```
 
+--
+
+Aha, a `Gemfile`! This is Ruby. Probably. We know this. Maybe?
+
 ---
 
-## Where's my code?
-
-According to the Dockerfile, the code is copied into `/src` :
+## Looking at the `Dockerfile`
 
 ```dockerfile
 FROM ruby
@@ -80,9 +79,85 @@ CMD ["rackup", "--host", "0.0.0.0"]
 EXPOSE 9292
 ```
 
-We want to make changes *inside the container* without rebuilding it each time. 
+* This application is using a base `ruby` image.
+* The code is copied in `/src`.
+* Dependencies are installed with `bundler`.
+* The application is started with `rackup`.
+* It is listening on port 9292.
 
-For that, we will use a *volume*.
+---
+
+## Building and running the "namer" application
+
+* Let's build the application with the `Dockerfile`!
+
+--
+
+```bash
+$ docker build -t namer .
+```
+
+--
+
+* Then run it. *We need to expose its ports.*
+
+--
+
+```bash
+$ docker run -dP namer
+```
+
+--
+
+* Check on which port the container is listening.
+
+--
+
+```bash
+$ docker ps -l
+```
+
+---
+
+## Connecting to our application
+
+* Point our browser to our Docker node, on the port allocated to the container.
+
+--
+
+* Hit "reload" a few times.
+
+--
+
+* This is an enterprise-class, carrier-grade, ISO-compliant company name generator!
+
+  (With 50% more bullshit than the average competition!)
+
+  (Wait, was that 50% more, or 50% less? *Anyway!*)
+
+  ![web application 1](images/webapp-in-blue.png)
+
+---
+
+## Making changes to the code
+
+Option 1:
+
+* Edit the code locally
+* Rebuild the image
+* Re-run the container
+
+Option 2:
+
+* Enter the container (with `docker exec`)
+* Install an editor
+* Make changes from within the container
+
+Option 3:
+
+* Use a *volume* to mount local files into the container
+* Make changes locally
+* Changes are reflected into the container
 
 ---
 
@@ -91,16 +166,16 @@ For that, we will use a *volume*.
 We will tell Docker to map the current directory to `/src` in the container.
 
 ```bash
-$ docker run -d -v $(pwd):/src -p 80:9292 jpetazzo/namer
+$ docker run -d -v $(pwd):/src -P namer
 ```
 
 * `-d`: the container should run in detached mode (in the background).
 
 * `-v`: the following host directory should be mounted inside the container.
 
-* `-p`: connections to port 80 on the host should be routed to port 9292 in the container.
+* `-P`: publish all the ports exposed by this image.
 
-* `jpetazzo/namer` is the name of the image we will run.
+* `namer` is the name of the image we will run.
 
 * We don't specify a command to run because is is already set in the Dockerfile.
 
@@ -108,14 +183,15 @@ $ docker run -d -v $(pwd):/src -p 80:9292 jpetazzo/namer
 
 ## Mounting volumes inside containers
 
-The `-v` flag mounts a directory from your host into your Docker
-container. The flag structure is:
+The `-v` flag mounts a directory from your host into your Docker container.
+
+The flag structure is:
 
 ```bash
 [host-path]:[container-path]:[rw|ro]
 ```
 
-* If [host-path] or [container-path] doesn't exist it is created.
+* If `[host-path]` or `[container-path]` doesn't exist it is created.
 
 * You can control the write status of the volume with the `ro` and
   `rw` options.
@@ -128,27 +204,15 @@ There will be a full chapter about volumes!
 
 ## Testing the development container
 
-Now let us see if our new container is running.
+* Check the port used by our new container.
 
 ```bash
-$ docker ps
-CONTAINER ID  IMAGE   COMMAND CREATED       STATUS PORTS                NAMES
-045885b68bc5  trai... rackup  3 seconds ago Up ... 0.0.0.0:80->9292/tcp ...
+$ docker ps -l
+CONTAINER ID  IMAGE  COMMAND  CREATED        STATUS  PORTS                   NAMES
+045885b68bc5  namer  rackup   3 seconds ago  Up ...  0.0.0.0:32770->9292/tcp ...
 ```
 
----
-
-## Viewing our application
-
-Now let's browse to our web application on:
-
-```bash 
-http://<yourHostIP>:80
-```
-
-We can see our company naming application. 
-
-![web application 1](images/webapp-in-blue.png)
+* Open the application in your web browser.
 
 ---
 
@@ -174,53 +238,121 @@ color: red;
 
 ---
 
-## Refreshing our application
+## Viewing our changes
 
-Now let's refresh our browser:
+* Reload the application in our browser.
 
-```bash
-http://<yourHostIP>:80
-```
+--
 
-We can see the updated color of our company naming application.
+* The color should have changed.
 
-![web application 2](images/webapp-in-red.png)
+  ![web application 2](images/webapp-in-red.png)
 
 ---
 
-## Improving the workflow with Compose
+## Understanding volumes
 
-* You can also start the container with the following command:
+* Volumes are *not* copying or synchronizing files between the host and the container.
 
-```bash
-$ docker-compose up -d
-```
+* Volumes are *bind mounts*: a kernel mechanism associating a path to another.
 
-* This works thanks to the Compose file, `docker-compose.yml`:
+* Bind mounts are *kind of* similar to symbolic links, but at a very different level.
 
-```yaml
-www:
-  build: .
-  volumes:
-    - .:/src
-  ports:
-    - 80:9292
-```
+* Changes made on the host or on the container will be visible on the other side.
+
+  (Since under the hood, it's the same file on both anyway.)
 
 ---
 
-## Why Compose?
+## Trash your servers and burn your code
 
-* Specifying all those "docker run" parameters is tedious.
+*(This is the title of a
+[2013 blog post](http://chadfowler.com/2013/06/23/immutable-deployments.html)
+by Chad Fowler, where he explains the concept of immutable infrastructure.)*
 
-* And error-prone.
+--
 
-* We can "encode" those parameters in a "Compose file."
+* Let's mess up majorly with our container.
 
-* When you see a `docker-compose.yml` file, you know that you can use `docker-compose up`.
+  (Remove files or whatever.)
+
+* Now, how can we fix this?
+
+--
+
+* Our old container (with the blue version of the code) is still running.
+
+* See on which port it is exposed:
+  ```bash
+  docker ps
+  ```
+
+* Point our browser to it to confirm that it still works fine.
+
+---
+
+## Immutable infrastructure in a nutshell
+
+* Instead of *updating* a server, we deploy a new one.
+
+* This might be challenging with classical servers, but it's trivial with containers.
+
+* In fact, with Docker, the most logical workflow is to build a new image and run it.
+
+* If something goes wrong with the new image, we can always restart the old one.
+
+* We can even keep both versions running side by side.
+
+If this pattern sounds interesting, you might want to read about *blue/green deployment*
+and *canary deployments*.
+
+---
+
+## Improving the workflow
+
+The workflow that we showed is nice, but it requires us to:
+
+* keep track of all the `docker run` flags required to run the container,
+
+* inspect the `Dockerfile` to know which path(s) to mount,
+
+* write scripts to hide that complexity.
+
+There has to be a better way!
+
+---
+
+## Docker Compose to the rescue
+
+* Docker Compose allows us to "encode" `docker run` parameters in a YAML file.
+
+* Here is the `docker-compose.yml` file that we can use for our "namer" app:
+
+  ```yaml
+  www:
+    build: .
+    volumes:
+      - .:/src
+    ports:
+      - 80:9292
+  ```
+
+* Try it:
+  ```bash
+  $ docker-compose up -d
+  ```
+
+---
+
+## Working with Docker Compose
+
+* When you see a `docker-compose.yml` file, you can use `docker-compose up`.
+
+* It can build images and run them with the required parameters.
 
 * Compose can also deal with complex, multi-container apps.
-  <br/>(More on this later.)
+
+  (More on this later!)
 
 ---
 
