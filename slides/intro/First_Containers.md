@@ -51,10 +51,13 @@ root@04c0bb0a6c07:/#
 ```
 
 * This is a brand new container.
+
 * It runs a bare-bones, no-frills `ubuntu` system.
+
 * `-it` is shorthand for `-i -t`.
 
   * `-i` tells Docker to connect us to the container's stdin.
+
   * `-t` tells Docker that we want a pseudo-terminal.
 
 ---
@@ -69,22 +72,6 @@ bash: figlet: command not found
 ```
 
 Alright, we need to install it.
-
----
-
-## An observation
-
-Let's check how many packages are installed here.
-
-```bash
-root@04c0bb0a6c07:/# dpkg -l | wc -l
-189
-```
-
-* `dpkg -l` lists the packages installed in our container
-* `wc -l` counts them
-* If you have a Debian or Ubuntu machine, you can run the same command 
-  and compare the results.
 
 ---
 
@@ -104,6 +91,12 @@ Reading package lists... Done
 
 One minute later, `figlet` is installed!
 
+---
+
+## Try to run our freshly installed program
+
+The `figlet` program takes a message as parameter.
+
 ```bash
 root@04c0bb0a6c07:/# figlet hello
  _          _ _       
@@ -113,11 +106,30 @@ root@04c0bb0a6c07:/# figlet hello
 |_| |_|\___|_|_|\___/ 
 ```
 
+Beautiful! 😍
+
 ---
 
-## Exiting our container
+## Counting packages in the container
 
-Just exit the shell, like you would usually do.
+Let's check how many packages are installed there.
+
+```bash
+root@04c0bb0a6c07:/# dpkg -l | wc -l
+190
+```
+
+* `dpkg -l` lists the packages installed in our container
+
+* `wc -l` counts them
+
+How many packages do we have on our host?
+
+---
+
+## Counting packages on the host
+
+Exit the container by logging out of the shell, like you would usually do.
 
 (E.g. with `^D` or `exit`)
 
@@ -125,9 +137,35 @@ Just exit the shell, like you would usually do.
 root@04c0bb0a6c07:/# exit
 ```
 
+Now, try to:
+
+* run `dpkg -l | wc -l`. How many packages are installed?
+
+* run `figlet`. Does that work?
+
+---
+
+## Host and containers are independent things
+
+* We ran an `ubuntu` container on an `ubuntu` host.
+
+* But they have different, independent packages.
+
+* Installing something on the host doesn't expose it to the container.
+
+* And vice-versa.
+
+* We can run *any container* on *any host*.
+
+---
+
+## Where's our container?
+
 * Our container is now in a *stopped* state.
 
 * It still exists on disk, but all compute resources have been freed up.
+
+* We will see later how to get back to that container.
 
 ---
 
