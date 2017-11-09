@@ -75,7 +75,7 @@ class: extra-details
 
 class: pic
 
-![Docker CE/EE release cycle](docker-ce-ee-lifecycle.png)
+![Docker CE/EE release cycle](images/docker-ce-ee-lifecycle.png)
 
 ---
 
