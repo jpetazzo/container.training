@@ -124,7 +124,7 @@ def gentoc(tree, path=()):
         if len(path) == 0:
             return "\n---\n".join(gentoc(subtree, path+(i+1,)) for (i,subtree) in enumerate(tree))
         elif len(path) == 1:
-            chapterslide = "## Chapter {}\n\n".format(path[0])
+            chapterslide = "name: toc-chapter-{n}\n\n## Chapter {n}\n\n".format(n=path[0])
             for (i,subtree) in enumerate(tree):
                 chapterslide += gentoc(subtree, path+(i+1,)) + "\n\n"
             chapterslide += ".debug[(auto-generated TOC)]"
