@@ -59,8 +59,10 @@ The `constraint` makes sure that the container will be created on the local node
 
 - Enter it:
   ```bash
-  docker exec -ti <containerID> sh
+  docker exec -ti containerID sh
   ```
+
+  <!-- ```wait No such container: containerID``` -->
 
 ]
 
@@ -129,7 +131,7 @@ It is a virtual IP address (VIP) for the `rng` service.
 
 - Try to ping the VIP:
   ```bash
-  ping rng
+  ping -c 3 rng
   ```
 
 ]

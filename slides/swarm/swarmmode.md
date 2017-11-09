@@ -34,7 +34,7 @@
   docker node ls
   ```
 
-<!-- Ignore errors: ```wait ``` -->
+<!-- Ignore errors: ```wait not a swarm manager``` -->
 
 ]
 

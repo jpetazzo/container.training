@@ -226,6 +226,8 @@ class: extra-details
   docker node ls
   ```
 
+<!-- Ignore errors: ```wait not a swarm manager``` -->
+
 - This is because the node that we added is currently a *worker*
 - Only *managers* can accept Swarm-specific commands
 

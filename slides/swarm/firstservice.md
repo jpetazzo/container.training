@@ -8,12 +8,12 @@
 
 - Create a service featuring an Alpine container pinging Google resolvers:
   ```bash
-  docker service create alpine ping 8.8.8.8
+  docker service create --name pingpong alpine ping 8.8.8.8
   ```
 
 - Check the result:
   ```bash
-  docker service ps <serviceID>
+  docker service ps pingpong
   ```
 
 ]
@@ -47,7 +47,7 @@ You can ignore that for now; but we'll come back to it in just a few minutes!
 
 - Check the output of our ping command:
   ```bash
-  docker service logs <serviceID>
+  docker service logs pingpong
   ```
 
 ]
@@ -82,7 +82,7 @@ class: extra-details
 
 - Look up the `NODE` on which the container is running:
   ```bash
-  docker service ps <serviceID>
+  docker service ps pingpong
   ```
 
 - If you use Play-With-Docker, switch to that node's tab, or set `DOCKER_HOST`
@@ -106,8 +106,10 @@ class: extra-details
 
 - View its logs:
   ```bash
-  docker logs <containerID>
+  docker logs containerID
   ```
+
+  <!-- ```wait No such container: containerID``` -->
 
 - Go back to `node1` afterwards
 
@@ -123,7 +125,7 @@ class: extra-details
 
 - Scale the service to ensure 2 copies per node:
   ```bash
-  docker service update <serviceID> --replicas 10 --detach=true
+  docker service update pingpong --replicas 10 --detach=true
   ```
 
 - Check that we have two containers on the current node:
@@ -147,7 +149,7 @@ class: extra-details
 
 - Scale the service to ensure 3 copies per node:
   ```bash
-  docker service update <serviceID> --replicas 15 --detach=false
+  docker service update pingpong --replicas 15 --detach=false
   ```
 
 ]
@@ -401,6 +403,8 @@ https://docs.docker.com/engine/userguide/networking/get-started-macvlan/
   cd docker-swarm-visualizer
   docker-compose up -d
   ```
+
+  <!-- ```longwait Creating dockerswarmvisualizer_viz_1``` -->
 
 ]
 

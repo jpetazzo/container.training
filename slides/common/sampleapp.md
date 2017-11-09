@@ -133,7 +133,7 @@ Without further ado, let's start our application.
   ```
 
 <!--
-```wait units of work done```
+```longwait units of work done```
 ```keys ^C```
 -->
 
