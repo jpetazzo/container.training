@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import uuid
 import logging
 import os
 import re
@@ -9,7 +8,7 @@ import sys
 import time
 import uuid
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 
 
 TIMEOUT = 60 # 1 minute
@@ -73,9 +72,9 @@ def ansi(code):
     return lambda s: "\x1b[{}m{}\x1b[0m".format(code, s)
 
 
-def wait_for_string(s):
+def wait_for_string(s, timeout=TIMEOUT):
     logging.debug("Waiting for string: {}".format(s))
-    deadline = time.time() + TIMEOUT
+    deadline = time.time() + timeout
     while time.time() < deadline:
         output = capture_pane()
         if s in output:
@@ -91,7 +90,9 @@ def wait_for_prompt():
         output = capture_pane()
         # If we are not at the bottom of the screen, there will be a bunch of extra \n's
         output = output.rstrip('\n')
-        if output[-2:] == "\n$":
+        if output.endswith("\n$"):
+            return
+        if output.endswith("\n/ #"):
             return
         time.sleep(1)
     raise Exception("Timed out while waiting for prompt!")
@@ -115,6 +116,23 @@ def check_exit_status():
     if code != 0:
         raise Exception("Non-zero exit status: {}.".format(code))
     # Otherwise just return peacefully.
+
+
+def setup_tmux_and_ssh():
+    if subprocess.call(["tmux", "has-session"]):
+        logging.info("Couldn't connect to tmux. A new tmux session will be created.")
+        subprocess.check_call(["tmux", "new-session", "-d"])
+        wait_for_string("$")
+        send_keys("cd ../prepare-vms\n")
+        send_keys("ssh docker@$(head -n1 ips.txt)\n")
+        wait_for_string("password:")
+        send_keys("training\n")
+        wait_for_prompt()
+    else:
+        logging.info("Found tmux session. Trying to acquire shell prompt.")
+        wait_for_prompt()
+    logging.info("Successfully connected to test cluster in tmux session.")
+
 
 
 slides = []
@@ -141,6 +159,9 @@ def send_keys(data):
 
 def capture_pane():
     return subprocess.check_output(["tmux", "capture-pane", "-p"])
+
+
+setup_tmux_and_ssh()
 
 
 try:
@@ -199,6 +220,8 @@ while i < len(actions):
             _, _, next_method, next_data = actions[i+1]
             if next_method == "wait":
                 wait_for_string(next_data)
+            elif next_method == "longwait":
+                wait_for_string(next_data, 10*TIMEOUT)
             else:
                 wait_for_prompt()
                 # Verify return code FIXME should be optional
