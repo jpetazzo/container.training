@@ -5,20 +5,15 @@
         body {
             background-image: url("images/container-background.jpg");
             max-width: 1024px;
-            margin: auto;
-        }
-        div.main {
-            background: white;
-            height: 100%;
-        }
-        body, table {
-            font-size: 20px;
-            font-family: sans-serif;
+            margin: 0 auto;
         }
         table {
+            font-size: 20px;
+            font-family: sans-serif;
+            background: white;
             width: 100%;
-            padding-left: 20px;
-            padding-right: 20px;
+            height: 100%;
+            padding: 20px;
         }
         .header {
             font-size: 300%;
@@ -28,22 +23,27 @@
             font-size: 150%;
             font-weight: bold;  
         }
-        .footer {
-            position: absolute;
-            bottom: 20px;
-        }
         td {
             padding: 1px;
+            height: 1em;
         }
-        td.header, td.title, td.footer {
-            padding-top: 20px;
+        td.spacer {
+            height: unset;
+        }
+        td.footer {
+            padding-top: 80px;
+            height: 100px;
         }
         td.title {
             border-bottom: thick solid black;
             padding-bottom: 2px;
+            padding-top: 20px;
         }
         a {
             text-decoration: none;
+        }
+        a:hover {
+            background: yellow;
         }
         a.attend:after {
             content: "📅 attend";
@@ -136,6 +136,8 @@
             <td>Deploying and Scaling Microservices with Docker and Kubernetes</td>
             <td><a class="slides" href="kube-halfday.yml.html" /></td>
         </tr>
+
+        <tr><td class="spacer"></td></tr>
 
         <tr>
             <td class="footer">
