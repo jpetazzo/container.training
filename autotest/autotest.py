@@ -2,6 +2,7 @@
 
 import logging
 import os
+import random
 import re
 import subprocess
 import sys
@@ -12,6 +13,7 @@ logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 
 
 TIMEOUT = 60 # 1 minute
+
 
 
 def hrule():
@@ -99,6 +101,8 @@ def wait_for_prompt():
 
 
 def check_exit_status():
+    if not verify_status:
+        return
     token = uuid.uuid4().hex
     data = "echo {} $?\n".format(token)
     logging.debug("Sending {!r} to get exit status.".format(data))
@@ -155,7 +159,14 @@ for slide in slides:
 
 
 def send_keys(data):
-    subprocess.check_call(["tmux", "send-keys", data])
+    if simulate_type and data[0] != '^':
+        for key in data:
+            if key == ";":
+                key = "\\;"
+            subprocess.check_call(["tmux", "send-keys", key])
+            time.sleep(0.1*random.random())
+    else:
+        subprocess.check_call(["tmux", "send-keys", data])
 
 def capture_pane():
     return subprocess.check_output(["tmux", "capture-pane", "-p"])
@@ -172,6 +183,8 @@ except Exception as e:
     i = 0
 
 interactive = True
+verify_status = False
+simulate_type = True
 
 while i < len(actions):
     with open("nextstep", "w") as f:
