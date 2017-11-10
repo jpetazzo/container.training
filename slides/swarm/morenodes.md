@@ -83,7 +83,7 @@ class: in-person
 
 ---
 
-## You can control the Swarm from any manager node
+## Controlling the Swarm from other nodes
 
 .exercise[
 

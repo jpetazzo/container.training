@@ -34,7 +34,7 @@
 
 ---
 
-## Guidelines for workload isolation leveraging least privilege model
+## Guidelines for workload isolation
 
 - Define security levels
 

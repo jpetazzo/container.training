@@ -49,7 +49,7 @@
 
 ---
 
-## Updating the web UI
+## Changing the code
 
 - Let's make the numbers on the Y axis bigger!
 
@@ -74,6 +74,21 @@
   -->
 
 - Save and exit
+
+]
+
+---
+
+## Build, ship, and run our changes
+
+- Four steps:
+
+  1. Set (and export!) the `TAG` environment variable
+  2. `docker-compose build`
+  3. `docker-compose push`
+  4. `docker stack deploy`
+
+.exercise[
 
 - Build, ship, and run:
   ```bash

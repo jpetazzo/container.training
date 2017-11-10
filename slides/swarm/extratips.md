@@ -159,7 +159,9 @@ docker node update <node-name> --availability <active|pause|drain>
 
 ---
 
-## Disk space management: `docker system df`
+## Viewing disk usage: `docker system df`
+
+*(New in Docker Engine 1.13)*
 
 - Shows disk usage for images, containers, and volumes
 
@@ -174,11 +176,9 @@ docker node update <node-name> --availability <active|pause|drain>
 
 ]
 
-Note: `docker system` is new in Docker Engine 1.13.
-
 ---
 
-## Reclaiming unused resources: `docker system prune`
+## Cleaning up disk: `docker system prune`
 
 - Removes stopped containers
 

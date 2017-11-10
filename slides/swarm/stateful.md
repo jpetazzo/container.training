@@ -162,7 +162,7 @@ This ensures consistent behavior.
 
 ---
 
-## Service updates cause containers to be replaced
+## Updating a service recreates its containers
 
 - Let's try to make a trivial update to the service and see what happens
 
@@ -247,7 +247,7 @@ Note: the `local` volume driver automatically creates volumes.
 
 ---
 
-## Checking that persistence actually works across service updates
+## Checking that data is now persisted correctly
 
 .exercise[
 

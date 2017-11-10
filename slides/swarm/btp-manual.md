@@ -1,4 +1,4 @@
-## Build, tag, and push our application container images
+## Build, tag, and push our container images
 
 - Compose has named our images `dockercoins_XXX` for each service
 
@@ -246,7 +246,7 @@ You should see the performance peaking at 10 hashes/s (like before).
 
 class: extra-details
 
-## Why do we have to re-create the service to enable global scheduling?
+## Why do we have to re-create the service?
 
 - State reconciliation is handled by a *controller*
 

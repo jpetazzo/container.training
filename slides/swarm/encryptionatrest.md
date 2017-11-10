@@ -74,7 +74,7 @@ that you [provisioned yourself](https://github.com/jpetazzo/container.training/t
 
 ---
 
-## Checking the state of the node programmatically
+## Checking node state in scripts
 
 - The state of the node shows up in the output of `docker info`
 

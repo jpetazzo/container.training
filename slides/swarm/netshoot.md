@@ -334,7 +334,7 @@ WHY?!?
 
 class: extra-details, benchmarking
 
-## Why did we sprinkle this sample app with sleeps?
+## Why did we sprinkle the code with sleeps?
 
 - Deterministic performance
   <br/>(regardless of instance speed, CPUs, I/O...)

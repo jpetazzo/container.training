@@ -163,7 +163,7 @@ If anything goes wrong — ask for help!
 
 ---
 
-## If doing or re-doing the workshop on your own ...
+## Doing or re-doing the workshop on your own?
 
 - Use something like
   [Play-With-Docker](http://play-with-docker.com/) or

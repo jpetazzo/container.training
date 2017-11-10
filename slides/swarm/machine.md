@@ -90,7 +90,7 @@ class: in-person
 
 ---
 
-## Using Docker Machine to communicate with a node
+## Selecting a node with Docker Machine
 
 - To select a node, use `eval $(docker-machine env nodeX)`
 

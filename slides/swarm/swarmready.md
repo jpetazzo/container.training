@@ -25,7 +25,7 @@ What did we change to make it compatible with Swarm mode?
 
 ---
 
-## What did we change in our app since its inception?
+## Which files have been changed since then?
 
 - Compose files
 

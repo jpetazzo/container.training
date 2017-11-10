@@ -1,8 +1,8 @@
-# Swarm Mode
+# Swarm mode
 
-- Since version 1.12, Docker Engine embeds SwarmKit
+- Since version 1.12, the Docker Engine embeds SwarmKit
 
-- All the SwarmKit features are "asleep" until you enable "Swarm Mode"
+- All the SwarmKit features are "asleep" until you enable "Swarm mode"
 
 - Examples of Swarm Mode commands:
 
@@ -20,11 +20,11 @@
 
 ---
 
-## You need to enable Swarm mode to use the new stuff
+## Swarm mode needs to be explicitly activated
 
 - By default, all this new code is inactive
 
-- Swarm Mode can be enabled, "unlocking" SwarmKit functions
+- Swarm mode can be enabled, "unlocking" SwarmKit functions
   <br/>(services, out-of-the-box overlay networks, etc.)
 
 .exercise[

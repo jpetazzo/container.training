@@ -1,6 +1,6 @@
 class: nbt, extra-details
 
-## Measuring network conditions on the whole cluster
+## Measuring cluster-wide network conditions
 
 - Since we have built-in, cluster-wide discovery, it's relatively straightforward
   to monitor the whole cluster automatically

@@ -65,6 +65,7 @@ name: healthchecks
 
 Here is a comprehensive example using the CLI:
 
+.sall[
 ```bash
 docker service update \
   --update-delay 5s \
@@ -80,9 +81,9 @@ docker service update \
   --health-cmd "curl -f http://localhost/ || exit 1" \
   --health-interval 2s \
   --health-retries 1 \
-  --image yourimage:newversion \
-  yourservice
+  --image yourimage:newversion yourservice
 ```
+]
 
 ---
 
@@ -176,9 +177,7 @@ And now, a breaking change that will cause the health check to fail:
 
 ---
 
-## Command-line options available for health checks, rollbacks, etc.
-
-Batteries included, but swappable
+## CLI flags for health checks and rollbacks
 
 .small[
 ```
@@ -207,5 +206,3 @@ Batteries included, but swappable
 --update-parallelism uint            Maximum number of tasks updated simultaneously (0 to update all at once)
 ```
 ]
-
-Yup ... That's a lot of batteries!

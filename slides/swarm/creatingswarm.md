@@ -226,7 +226,7 @@ class: extra-details
   docker node ls
   ```
 
-<!-- Ignore errors: ```wait not a swarm manager``` -->
+<!-- Ignore errors: .dummy[```wait not a swarm manager```] -->
 
 - This is because the node that we added is currently a *worker*
 - Only *managers* can accept Swarm-specific commands
@@ -239,10 +239,9 @@ class: extra-details
 
 .exercise[
 
-- Switch back to `node1`:
-  ```keys
-  ^D
-  ```
+- Switch back to `node1` (with `exit`, `Ctrl-D` ...)
+
+<!-- ```keys ^D``` -->
 
 - View the cluster from `node1`, which is a manager:
   ```bash
@@ -257,7 +256,6 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
 8jud...ox4b *  node1     Ready   Active        Leader
 ehb0...4fvx    node2     Ready   Active
 ```
-
 
 ---
 

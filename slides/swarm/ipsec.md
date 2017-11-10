@@ -36,7 +36,7 @@
 
 ---
 
-## Deploying a web server sitting on both networks
+## Deploying a dual-homed web server
 
 - Let's use good old NGINX
 

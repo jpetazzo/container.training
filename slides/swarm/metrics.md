@@ -1053,10 +1053,11 @@ class: prom-manual
 
 class: prom-manual
 
-## Configuring the Prometheus server
+## Prometheus server configuration
 
 This will be our configuration file for Prometheus:
 
+.small[
 ```yaml
 global:
   scrape_interval: 10s
@@ -1075,14 +1076,13 @@ scrape_configs:
         type: 'A'
         port: 8080
 ```
+]
 
 ---
 
 class: prom-manual
 
-## Passing the configuration to the Prometheus server
-
-- We need to provide our custom configuration to the Prometheus server
+## Passing the configuration to Prometheus
 
 - The easiest solution is to create a custom image bundling this configuration
 
@@ -1237,9 +1237,9 @@ class: prom-auto, config
 
 ## Deploying Prometheus with a `config`
 
-- The `config` can be created manually or declared in the Compose file
-
-- This is what our new Compose file looks like:
+The following Compose file (`prometheus+config.yml`) achieves
+the same result, but by using a `config` instead of baking the
+configuration into the image.
 
 .small[
 ```yaml
@@ -1262,8 +1262,6 @@ configs:
     file: ../prom/prometheus.yml
 ```
 ]
-
-(This is from `prometheus+config.yml`)
 
 ---
 
@@ -1312,9 +1310,9 @@ class: prom-auto, config
 
 class: prom-auto, config
 
-## Accessing the config object from the Docker CLI
+## Accessing the config object from the CLI
 
-- Config objects can be viewed from the CLI (or API)
+- Config objects can be viewed from the Docker CLI (or API)
 
 .exercise[
 

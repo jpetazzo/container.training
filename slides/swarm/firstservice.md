@@ -370,19 +370,23 @@ class: btw-labels
 
 class: extra-details
 
-## Using local networks (`host`, `macvlan` ...) with Swarm services
+## Using local networks (`host`, `macvlan` ...)
+
+- It is possible to connect services to local networks
 
 - Using the `host` network is fairly straightforward
 
   (With the caveats described on the previous slide)
 
-- It is also possible to use drivers like `macvlan`
+- Other network drivers are a bit more complicated
 
-  - see [this guide](
-https://docs.docker.com/engine/userguide/networking/get-started-macvlan/
-) to get started on `macvlan`
+  (IP allocation may have to be coordinated between nodes)
 
-  - see [this PR](https://github.com/moby/moby/pull/32981) for more information about local network drivers in Swarm mode
+- See for instance [this guide](
+  https://docs.docker.com/engine/userguide/networking/get-started-macvlan/
+  ) to get started on `macvlan`
+
+- See [this PR](https://github.com/moby/moby/pull/32981) for more information about local network drivers in Swarm mode
 
 ---
 
