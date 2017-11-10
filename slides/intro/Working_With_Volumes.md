@@ -95,7 +95,7 @@ We will see an example in the following slides.
 
 class: extra-details
 
-## Sharing web application logs with another container
+## Sharing app server logs with another container
 
 Let's start a Tomcat container:
 
@@ -311,9 +311,9 @@ QUIT
 
 ---
 
-## What happens when you remove containers with volumes?
+## Volumes lifecycle
 
-* Volumes are kept around.
+* When you remove a container, its volumes are kept around.
 
 * You can list them with `docker volume ls`.
 
@@ -371,9 +371,9 @@ $ docker inspect <yourContainerID>
 
 ---
 
-## Sharing a single file between the host and a container
+## Sharing a single file
 
-The same `-v` flag can be used to share a single file.
+The same `-v` flag can be used to share a single file (instead of a directory).
 
 One of the most interesting examples is to share the Docker control socket.
 
@@ -381,8 +381,11 @@ One of the most interesting examples is to share the Docker control socket.
 $ docker run -it -v /var/run/docker.sock:/var/run/docker.sock docker sh
 ```
 
-Warning: when using such mounts, the container gains root-like access to the host.
-It can potentially do bad things.
+From that container, you can now run `docker` commands communicating with
+the Docker Engine running on the host. Try `docker ps`!
+
+.warning[Since that container has access to the Docker socket, it
+has root-like access to the host.]
 
 ---
 

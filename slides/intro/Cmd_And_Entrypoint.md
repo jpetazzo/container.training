@@ -141,7 +141,7 @@ Why did we use JSON syntax for our `ENTRYPOINT`?
 
 * When CMD or ENTRYPOINT use string syntax, they get wrapped in `sh -c`.
 
-* To avoid this wrapping, you must use JSON syntax.
+* To avoid this wrapping, we can use JSON syntax.
 
 What if we used `ENTRYPOINT` with string syntax?
 
@@ -177,8 +177,6 @@ $ docker run figlet salut
 / \_/  |  |/  |   |  |  
  \/ \_/|_/|__/ \_/|_/|_/
 ```
-
-Great success!
 
 ---
 
@@ -227,9 +225,8 @@ $ docker build -t figlet .
 Successfully built 6e0b6a048a07
 ```
 
-And run it:
+Run it without parameters:
 
-.small[
 ```bash
 $ docker run figlet
  _          _   _                             _        
@@ -237,7 +234,15 @@ $ docker run figlet
 | |     _  | | | |  __             __   ,_   | |  __|  
 |/ \   |/  |/  |/  /  \_  |  |  |_/  \_/  |  |/  /  |  
 |   |_/|__/|__/|__/\__/    \/ \/  \__/    |_/|__/\_/|_/
+```
 
+---
+
+## Overriding the image default parameters
+
+Now let's pass extra arguments to the image.
+
+```bash
 $ docker run figlet hola mundo
  _           _                                               
 | |         | |                                      |       
@@ -245,7 +250,8 @@ $ docker run figlet hola mundo
 |/ \   /  \_|/  /  |    / |/ |/ |  |   |  / |/ |  /  |  /  \_
 |   |_/\__/ |__/\_/|_/    |  |  |_/ \_/|_/  |  |_/\_/|_/\__/ 
 ```
-]
+
+We overrode `CMD` but still used `ENTRYPOINT`.
 
 ---
 

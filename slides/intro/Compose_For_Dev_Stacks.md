@@ -112,6 +112,7 @@ them.
 
 Here is the file used in the demo:
 
+.small[
 ```yaml
 version: "2"
 
@@ -130,6 +131,7 @@ services:
   redis:
     image: redis
 ```
+]
 
 ---
 

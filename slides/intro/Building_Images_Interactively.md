@@ -16,27 +16,21 @@ We will:
 
 ---
 
-## Building Images Interactively
+## The plan
 
-As we have seen, the images on the Docker Hub are sometimes very basic.
+1. Create a container (with `docker run`) using our base distro of choice.
 
-How do we want to construct our own images?
+2. Run a bunch of commands to install and set up our software in the container.
 
-As an example, we will build an image that has `figlet`.
+3. (Optionally) review changes in the container with `docker diff`.
 
-First, we will do it manually with `docker commit`.
+4. Turn the container into a new image with `docker commit`.
 
-Then, in an upcoming chapter, we will use a `Dockerfile` and `docker build`.
-
----
-
-## Building from a base
-
-Our base will be the `ubuntu` image.
+5. (Optionally) add tags to the image with `docker tag`.
 
 ---
 
-## Create a new container and make some changes
+## Setting up our container
 
 Start an Ubuntu container:
 
@@ -107,7 +101,7 @@ As explained before:
 
 ---
 
-## Commit and run your image
+## Commit our changes into a new image
 
 The `docker commit` command will create a new layer with those changes,
 and a new image using this new layer.
@@ -119,7 +113,13 @@ $ docker commit <yourContainerId>
 
 The output of the `docker commit` command will be the ID for your newly created image.
 
-We can run this image:
+We can use it as an argument to `docker run`.
+
+---
+
+## Testing our new image
+
+Let's run this image:
 
 ```bash
 $ docker run -it <newImageId>
@@ -130,6 +130,8 @@ root@fcfb62f0bfde:/# figlet hello
 | | | |  __/ | | (_) |
 |_| |_|\___|_|_|\___/ 
 ```
+
+It works! 🎉
 
 ---
 

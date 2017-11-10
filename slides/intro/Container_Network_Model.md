@@ -126,13 +126,16 @@ $ docker run -d --name es --net dev elasticsearch:2
 
 Now, create another container on this network.
 
+.small[
 ```bash
 $ docker run -ti --net dev alpine sh
 root@0ecccdfa45ef:/#
 ```
+]
 
 From this new container, we can resolve and ping the other one, using its assigned name:
 
+.small[
 ```bash
 / # ping es
 PING es (172.18.0.2) 56(84) bytes of data.
@@ -145,6 +148,7 @@ PING es (172.18.0.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.114/0.149/0.221/0.052 ms
 root@0ecccdfa45ef:/#
 ```
+]
 
 ---
 
@@ -155,6 +159,7 @@ class: extra-details
 In Docker Engine 1.9, name resolution is implemented with `/etc/hosts`, and
 updating it each time containers are added/removed.
 
+.small[
 ```bash
 [root@0ecccdfa45ef /]# cat /etc/hosts
 172.18.0.3  0ecccdfa45ef
@@ -167,6 +172,7 @@ ff02::2 ip6-allrouters
 172.18.0.2      es
 172.18.0.2      es.dev
 ```
+]
 
 In Docker Engine 1.10, this has been replaced by a dynamic resolver.
 
@@ -358,6 +364,7 @@ Each ElasticSearch instance has a name (generated when it is started). This name
 
 Try the following command a few times:
 
+.small[
 ```bash
 $ docker run --rm --net dev centos curl -s es:9200
 {
@@ -365,9 +372,11 @@ $ docker run --rm --net dev centos curl -s es:9200
 ...
 }
 ```
+]
 
 Then try it a few times by replacing `--net dev` with `--net prod`:
 
+.small[
 ```bash
 $ docker run --rm --net prod centos curl -s es:9200
 {
@@ -375,6 +384,7 @@ $ docker run --rm --net prod centos curl -s es:9200
 ...
 }
 ```
+]
 
 ---
 

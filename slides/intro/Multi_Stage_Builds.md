@@ -49,7 +49,7 @@
 
 ---
 
-## Implementing multi-stage builds for our C program
+## Multi-stage builds for our C program
 
 We will change our Dockerfile to:
 
@@ -65,7 +65,7 @@ The resulting Dockerfile is on the next slide.
 
 ---
 
-## Revised Dockerfile implementing multi-stage build
+## Multi-stage build `Dockerfile`
 
 Here is the final Dockerfile:
 
@@ -89,7 +89,7 @@ docker run hellomultistage
 
 ---
 
-## Comparing single-stage and multi-stage image sizes
+## Comparing single/multi-stage build image sizes
 
 List our images with `docker images`, and check the size of:
 

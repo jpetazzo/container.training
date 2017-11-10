@@ -85,16 +85,8 @@ The `docker inspect` command will output a very detailed JSON map.
 ```bash
 $ docker inspect <containerID>
 [{
-	"AppArmorProfile": "",
-	"Args": [],
-	"Config": {
-	    "AttachStderr": true,
-	    "AttachStdin": false,
-	    "AttachStdout": true,
-	    "Cmd": [
-		"bash"
-	    ],
-	    "CpuShares": 0,
+...
+(many pages of JSON here)
 ...
 ```
 

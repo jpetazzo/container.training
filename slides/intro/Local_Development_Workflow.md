@@ -17,7 +17,7 @@ At the end of this section, you will be able to:
 
 ---
 
-## Using a Docker container for local development
+## Containerized local development environments
 
 We want to solve the following issues:
 
