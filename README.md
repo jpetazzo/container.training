@@ -39,14 +39,16 @@ your own tutorials.
 All these materials have been gathered in a single repository
 because they have a few things in common:
 
-- a [build system](slides/) generating HTML slides from
-  Markdown source files;
 - some [common slides](slides/common/) that are re-used
   (and updated) identically between different decks;
+- a [build system](slides/) generating HTML slides from
+  Markdown source files;
+- a [semi-automated test harness](slides/autotest.py) to check
+  that the exercises and examples provided work properly;
+- a [PhantomJS script](slides/slidechecker.js) to check
+  that the slides look good and don't have formatting issues;
 - [deployment scripts](prepare-vms/) to start training
   VMs in bulk;
-- a [semi-automated test harness](autotest/) to check
-  that the exercises and examples provided work properly;
 - a fancy pipeline powered by
   [Netlify](https://www.netlify.com/) and continuously
   deploying `master` to http://container.training/.
