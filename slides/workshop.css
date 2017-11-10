@@ -17,10 +17,16 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0.5em;
 }
 
-code.remark-code, code.remark-inline-code {
+code {
   font-family: 'Inconsolata';
   font-size: 110%;
   background-color: #ccc;
+}
+code.remark-code {
+  font-size: 100%;
+}
+.exercise ul li code.remark-code.hljs.bash {
+  padding: 0;
 }
 
 /* For print! Borrowed from https://github.com/gnab/remark/issues/50 */
