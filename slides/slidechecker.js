@@ -10,12 +10,12 @@ page.onResourceError = function(resourceError) {
 }
 
 page.onConsoleMessage = function(msg) {
-  /*console.log('Console: ' +msg);*/
+  //console.log('Console: ' +msg);
 }
 
-console.log('Loading: ' + url);
+console.log('DEBUG Loading: ' + url);
 page.open(url, function(status) {
-  console.log('Loaded: ' + url + '(' + status + ')');
+  console.log('DEBUG Loaded: ' + url + '(' + status + ')');
 
   /* analyze will be an object with:
    *
@@ -34,7 +34,7 @@ page.open(url, function(status) {
     var ret = {}, i, n = slideshow.getSlideCount();
     ret = [];
     for (i=1; i<=n; i++) {
-      console.log('Current slide: ' + i + '/' + n);
+      console.log('DEBUG Current slide: ' + i + '/' + n);
       var visible_slide = document.getElementsByClassName('remark-visible')[0];
       var debug = visible_slide.getElementsByClassName('debug');
       if (debug.length==0) {
@@ -46,7 +46,7 @@ page.open(url, function(status) {
       var slide_desc = 'Slide ' + i + '/' + n + ' (' + debug + ')';
       ['h1', 'h2'].forEach(function(tag) {
         var titles = visible_slide.getElementsByTagName(tag);
-        console.log('Found ' + titles.length + ' titles with tag ' + tag);
+        console.log('DEBUG Found ' + titles.length + ' titles with tag ' + tag);
         titles.forEach(function(t) {
           if (t.clientHeight>60) {
             ret.push(slide_desc + ' has a long title: ' + t.textContent);
@@ -66,6 +66,6 @@ page.open(url, function(status) {
   analyze.forEach(function(msg) {
     console.log(msg);
   });
-  console.log('Done: ' + url + '(' + status + ')');
+  console.log('DEBUG Done: ' + url + '(' + status + ')');
   phantom.exit();
 });

@@ -7,6 +7,9 @@ once)
       break
     }
   done
+  [ -n "$SLIDECHECKER" ] && for YAML in *.yml; do
+    ./appendcheck.py $YAML.html
+  done
   ;;
 
 forever)
