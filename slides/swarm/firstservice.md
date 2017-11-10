@@ -192,7 +192,7 @@ class: extra-details
 
 ---
 
-## Synchronous and asynchronous operations in action
+## `--detach` in action
 
 .exercise[
 
