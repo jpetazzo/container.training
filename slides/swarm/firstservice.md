@@ -20,6 +20,8 @@
 
 ---
 
+class: extra-details
+
 ## `--detach` for service creation
 
 (New in Docker Engine 17.05)
@@ -125,7 +127,7 @@ class: extra-details
 
 - Scale the service to ensure 2 copies per node:
   ```bash
-  docker service update pingpong --replicas 10 --detach=true
+  docker service update pingpong --replicas 10
   ```
 
 - Check that we have two containers on the current node:
@@ -137,13 +139,60 @@ class: extra-details
 
 ---
 
-## View deployment progress
+## Monitoring deployment progress with `--detach`
 
 (New in Docker Engine 17.05)
 
-- Commands that create/update/delete services can run with `--detach=false`
+- The CLI can monitor commands that create/update/delete services
 
-- The CLI will show the status of the command, and exit once it's done working
+- `--detach=false`
+
+  - synchronous operation
+  - the CLI will monitor and display the progress of our request
+  - it exits only when the operation is complete
+
+- `--detach=true`
+
+  - asynchronous operation
+  - the CLI just submits our request
+  - it exits as soon as the request is committed into Raft
+
+---
+
+## To `--detach` or not to `--detach`
+
+- `--detach=false`
+
+  - great when experimenting, to see what's going on
+
+  - also great when orchestrating complex deployments
+    <br/>(when you want to wait for a service to be ready before starting another)
+
+- `--detach=true`
+
+  - great for independent operations that can be parallelized
+
+  - great in headless scripts (where nobody's watching anyway)
+
+.warning[`--detach=false` does not complete *faster*. It just *doesn't wait* for completion.]
+
+---
+
+class: extra-details
+
+## `--detach` over time
+
+- Docker Engine 17.10 and later: the default is `--detach=false`
+
+- From Docker Engine 17.05 to 17.09: the default is `--detach=true`
+
+- Prior to Docker 17.05: `--detach` doesn't exist
+
+ (You can watch progress with e.g. `watch docker service ps <serviceID>`)
+
+---
+
+## Synchronous and asynchronous operations in action
 
 .exercise[
 
@@ -152,11 +201,12 @@ class: extra-details
   docker service update pingpong --replicas 15 --detach=false
   ```
 
+- And then to 4 copies per node:
+  ```bash
+  docker service update pingpong --replicas 15 --detach=true
+  ```
+
 ]
-
-Note: with Docker Engine 17.10 and later, `--detach=false` is the default.
-
-With versions older than 17.05, you can use e.g.: `watch docker service ps <serviceID>`
 
 ---
 
@@ -188,7 +238,7 @@ With versions older than 17.05, you can use e.g.: `watch docker service ps <serv
 - Create an ElasticSearch service (and give it a name while we're at it):
   ```bash
   docker service create --name search --publish 9200:9200 --replicas 7 \
-         --detach=false elasticsearch`:2`
+         elasticsearch`:2`
   ```
 
 ]

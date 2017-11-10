@@ -161,7 +161,7 @@ docker node update <node-name> --availability <active|pause|drain>
 
 ## Viewing disk usage: `docker system df`
 
-*(New in Docker Engine 1.13)*
+(New in Docker Engine 1.13)
 
 - Shows disk usage for images, containers, and volumes
 
