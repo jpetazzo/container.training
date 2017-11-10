@@ -68,7 +68,7 @@
 
 ---
 
-## Rolling out the new version of the `worker` service
+## Rolling out the new `worker` service
 
 .exercise[
 

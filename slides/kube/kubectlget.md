@@ -42,7 +42,7 @@
 
 ---
 
-## From human-readable to machine-readable output
+## Obtaining machine-readable output
 
 - `kubectl get` can output JSON, YAML, or be directly formatted
 

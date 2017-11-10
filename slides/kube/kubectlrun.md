@@ -55,7 +55,7 @@ We should see the following things:
 
 ---
 
-## Deployments, replica sets, and replication controllers
+## What are these different things?
 
 - A *deployment* is a high-level construct
 

@@ -40,7 +40,7 @@
 
 ---
 
-## Kubernetes network model: the bad and the ugly
+## Kubernetes network model: the less good
 
 - Everything can reach everything
 

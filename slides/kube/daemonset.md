@@ -336,7 +336,7 @@ Of course, option 2 offers more learning opportunities. Right?
 
 ---
 
-## We've put resources in your resources all the way down
+## We've put resources in your resources
 
 - Reminder: a daemon set is a resource that creates more resources!
 
