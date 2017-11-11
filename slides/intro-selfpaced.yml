@@ -7,11 +7,11 @@ chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
 
 exclude:
-- self-paced
+- in-person
 
 chapters:
 - common/title.md
-- logistics.md
+# - common/logistics.md
 - common/intro.md
 - common/toc.md
 - - intro/Docker_Overview.md

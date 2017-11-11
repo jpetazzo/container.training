@@ -81,7 +81,10 @@ a {
 
 .footnote {
   position: absolute;
-  bottom: 3em;
+  bottom: 1em;
+}
+span.footnote {
+  bottom: 2em;
 }
 
 .red { color: #fa0000; }
@@ -124,6 +127,7 @@ div.title > p:first-child {
   font-size: 300%;
 }
 
+/* "Normal" images (not on title or pic slides) shouldn't be too big */
 div img {
   max-width: 1210px;
   max-height: 250px;

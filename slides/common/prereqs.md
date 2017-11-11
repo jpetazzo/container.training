@@ -60,9 +60,9 @@ class: in-person
 
 ## Where are we going to run our containers?
 
---
+---
 
-class: in-person
+class: in-person, pic
 
 ![You get five VMs](images/you-get-five-vms.jpg)
 

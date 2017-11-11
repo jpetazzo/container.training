@@ -15,8 +15,8 @@ exclude:
 
 chapters:
 - common/title.md
-- common/logistics.md
-- swarm/intro.md
+- logistics.md
+- common/intro.md
 - common/toc.md
 - - common/prereqs.md
   - swarm/versions.md

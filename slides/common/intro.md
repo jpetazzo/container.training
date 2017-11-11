@@ -27,9 +27,9 @@ class: self-paced
 - Likewise, it will take more than merely *reading* these slides
   to make you an expert
 
-- These slides include *tons* of exercises
+- These slides include *tons* of exercises and examples
 
-- They assume that you have access to a cluster of Docker nodes
+- They assume that you have access to some Docker nodes
 
 - If you are attending a workshop or tutorial:
   <br/>you will be given specific instructions to access your cluster
@@ -39,3 +39,21 @@ class: self-paced
   [Play-With-Docker](http://www.play-with-docker.com/) and
   read [these instructions](https://github.com/jpetazzo/container.training#using-play-with-docker) for extra
   details
+
+---
+
+## About these slides
+
+- All the content is available in a public GitHub repository:
+
+  https://github.com/jpetazzo/container.training
+
+- You can get updated "builds" of the slides there:
+
+  http://container.training/
+
+- Typos? Mistakes? Questions? Feel free to hover over the bottom of the slide ...
+
+--
+
+.footnote[👇 Try it! The source file will be shown and you can view it on GitHub and fork and edit it.]
