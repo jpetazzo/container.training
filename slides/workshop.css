@@ -127,6 +127,12 @@ div.title > p:first-child {
   font-size: 300%;
 }
 
+div.pic span.interstitial img {
+  width: 100%;
+  max-height: unset;
+  max-width: unset;
+}
+
 /* "Normal" images (not on title or pic slides) shouldn't be too big */
 div img {
   max-width: 1210px;

@@ -26,6 +26,14 @@ def anchor(title):
     return "toc-" + title
 
 
+def interstitials_generator():
+    images = [url.strip() for url in open("interstitials.txt") if url.strip()]
+    while True:
+        for image in images:
+            yield image
+interstitials = interstitials_generator()
+
+
 def insertslide(markdown, title):
     title_position = markdown.find("\n# {}\n".format(title))
     slide_position = markdown.rfind("\n---\n", 0, title_position+1)
@@ -38,8 +46,15 @@ def insertslide(markdown, title):
     currentindex = _titles_.index(title)
     previouslink = anchor(_titles_[currentindex-1])
     nextlink = anchor(_titles_[currentindex+1])
+    interstitial = interstitials.next()
 
     extra_slide = """
+---
+
+class: pic
+
+.interstitial[![Image separating from the next chapter]({interstitial})]
+
 ---
 
 name: {anchor}
@@ -56,7 +71,7 @@ class: title
 ]
 
 .debug[(automatically generated title slide)]
-""".format(anchor=anchor(title), title=title, toclink=toclink, previouslink=previouslink, nextlink=nextlink)
+""".format(anchor=anchor(title), interstitial=interstitial, title=title, toclink=toclink, previouslink=previouslink, nextlink=nextlink)
     after = markdown[slide_position:]
     return before + extra_slide + after
 
