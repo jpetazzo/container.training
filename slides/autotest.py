@@ -1,5 +1,7 @@
 #!/usr/bin/env python
+# coding: utf-8
 
+import click
 import logging
 import os
 import random
@@ -11,9 +13,11 @@ import uuid
 
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 
+interactive = True
+verify_status = False
+simulate_type = True
 
 TIMEOUT = 60 # 1 minute
-
 
 
 def hrule():
@@ -182,10 +186,6 @@ except Exception as e:
     logging.warning("Could not read nextstep file ({}), initializing to 0.".format(e))
     i = 0
 
-interactive = True
-verify_status = False
-simulate_type = True
-
 while i < len(actions):
     with open("nextstep", "w") as f:
         f.write(str(i))
@@ -199,10 +199,14 @@ while i < len(actions):
     print(hrule())
     if interactive:
         print("[{}/{}] Shall we execute that snippet above?".format(i, len(actions)))
-        print("(ENTER to execute, 'c' to continue until next error, N to jump to step #N)")
-        command = raw_input("> ")
+        print("y/⏎/→   Execute snippet")
+        print("s       Skip snippet")
+        print("g       Go to a specific snippet")
+        print("q       Quit")
+        print("c       Continue non-interactively until next error")
+        command = click.getchar()
     else:
-        command = ""
+        command = "y"
 
     # For now, remove the `highlighted` sections
     # (Make sure to use $() in shell snippets!)
@@ -210,12 +214,16 @@ while i < len(actions):
         logging.info("Stripping ` from snippet.")
         data = data.replace('`', '')
 
-    if command == "c":
+    if command == "s":
+        i += 1
+    elif command == "g":
+        i = click.prompt("Enter snippet number", type=int)
+    elif command == "q":
+        break
+    elif command == "c":
         # continue until next timeout
         interactive = False
-    elif command.isdigit():
-        i = int(command)
-    elif command == "":
+    elif command in ("y", "\r", " ", "\x1b[C"):
         logging.info("Running with method {}: {}".format(method, data))
         if method == "keys":
             send_keys(data)
@@ -257,8 +265,7 @@ while i < len(actions):
         i += 1
 
     else:
-        i += 1
-        logging.warning("Unknown command {}, skipping to next step.".format(command))
+        logging.warning("Unknown command {}.".format(command))
 
 # Reset slide counter
 with open("nextstep", "w") as f:
