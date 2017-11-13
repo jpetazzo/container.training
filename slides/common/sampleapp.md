@@ -59,7 +59,24 @@ class: extra-details
 
 ## Example in `worker/worker.py`
 
-![Service discovery](images/service-discovery.png)
+```python
+redis = Redis("`redis`")
+
+
+def get_random_bytes():
+    r = requests.get("http://`rng`/32")
+    return r.content
+
+
+def hash_bytes(data):
+    r = requests.post("http://`hasher`/",
+                      data=data,
+                      headers={"Content-Type": "application/octet-stream"})
+```
+
+(Full source code available [here](
+https://github.com/jpetazzo/container.training/blob/8279a3bce9398f7c1a53bdd95187c53eda4e6435/dockercoins/worker/worker.py#L17
+))
 
 ---
 

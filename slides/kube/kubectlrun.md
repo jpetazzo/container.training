@@ -236,14 +236,13 @@ Unfortunately, `--follow` cannot (yet) be used to stream the logs from multiple 
 
 class: title
 
-.small[
-Meanwhile, at the Google NOC ...
-
-.small[
-Why the hell 
+Meanwhile,
 <br/>
-are we getting 1000 packets per second 
+at the Google NOC ...
 <br/>
-of ICMP ECHO traffic from EC2 ?!?
-]
-]
+<br/>
+.small[“Why the hell]
+<br/>
+.small[are we getting 1000 packets per second]
+<br/>
+.small[of ICMP ECHO traffic from EC2 ?!?”]
