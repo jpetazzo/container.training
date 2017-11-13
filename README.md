@@ -76,9 +76,6 @@ a few other contributors. It is actively maintained.
 
 ## Repository structure
 
-- [autotest](autotest/)
-  - Semi-automated testing system to check that all the exercises
-    in the slides work properly.
 - [bin](bin/)
   - A few helper scripts that you can safely ignore for now.
 - [dockercoins](dockercoins/)
