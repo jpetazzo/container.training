@@ -260,6 +260,13 @@ while i < len(actions):
             # FIXME: we should factor out the "bash" method
             wait_for_prompt()
             check_exit_status()
+        elif method == "open":
+            # Cheap way to get node1's IP address
+            screen = capture_pane()
+            ipaddr = re.findall("^\[(.*)\]", screen, re.MULTILINE)[-1]
+            url = data.replace("/node1", "/{}".format(ipaddr))
+            # This should probably be adapted to run on different OS
+            subprocess.check_call(["open", url])
         else:
             logging.warning("Unknown method {}: {!r}".format(method, data))
         i += 1
