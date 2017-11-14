@@ -35,10 +35,9 @@ class: self-paced
   <br/>you will be given specific instructions to access your cluster
 
 - If you are doing this on your own:
-  <br/>you can use
-  [Play-With-Docker](http://www.play-with-docker.com/) and
-  read [these instructions](https://github.com/jpetazzo/container.training#using-play-with-docker) for extra
-  details
+  <br/>the first chapter will give you various options like
+  [Play-With-Docker](http://www.play-with-docker.com/)
+  to get your own cluster
 
 ---
 
