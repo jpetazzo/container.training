@@ -3,8 +3,7 @@ title: |
   to Docker and
   Containers
 
-chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+chat: "[Gitter](https://gitter.im/jpetazzo/workshop-20171116-sanfrancisco)"
 
 exclude:
 - self-paced
