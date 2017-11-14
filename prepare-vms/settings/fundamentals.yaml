@@ -20,5 +20,5 @@ paper_margin: 0.2in
 engine_version: test
 
 # These correspond to the version numbers visible on their respective GitHub release pages
-compose_version: 1.16.1
-machine_version: 0.12.0
+compose_version: 1.17.1
+machine_version: 0.13.0

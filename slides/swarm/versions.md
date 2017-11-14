@@ -1,8 +1,8 @@
 ## Brand new versions!
 
-- Engine 17.10
-- Compose 1.16
-- Machine 0.12
+- Engine 17.11
+- Compose 1.17
+- Machine 0.13
 
 .exercise[
 
@@ -17,7 +17,7 @@
 
 ---
 
-## Wait, what, 17.10 ?!?
+## Wait, what, 17.11 ?!?
 
 --
 
