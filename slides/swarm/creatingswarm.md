@@ -179,7 +179,7 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
 
 --
 
-- Don't panic, we can easily see it again 😏
+- Don't panic, we can easily see it again .emoji[😏]
 
 ---
 
