@@ -2,9 +2,9 @@
 
  - Hello! We are:
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
+   - .emoji[👷🏻‍♀️] AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
 
-   - 🐳 Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Docker Inc.)
+   - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Docker Inc.)
 
 - The workshop will run from 9am to 4pm
 

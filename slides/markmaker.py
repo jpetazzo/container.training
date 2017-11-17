@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # transforms a YAML manifest into a HTML workshop file
 
 import glob

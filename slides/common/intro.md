@@ -55,4 +55,4 @@ class: self-paced
 
 --
 
-.footnote[👇 Try it! The source file will be shown and you can view it on GitHub and fork and edit it.]
+.footnote[.emoji[👇] Try it! The source file will be shown and you can view it on GitHub and fork and edit it.]

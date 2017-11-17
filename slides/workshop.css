@@ -10,6 +10,10 @@
   font-size: 25px !important;
 }
 
+.emoji {
+  font-family: 'EmojiOne Color';
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Droid Serif';
   font-weight: bold;
