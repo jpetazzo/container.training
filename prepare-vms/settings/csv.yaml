@@ -1,0 +1,5 @@
+# Number of VMs per cluster
+clustersize: 5
+
+# Jinja2 template to use to generate ready-to-cut cards
+cards_template: clusters.csv

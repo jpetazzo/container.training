@@ -1,0 +1,5 @@
+Put your initials in the first column to "claim" a cluster.
+Initials{% for node in clusters[0] %}	node{{ loop.index }}{% endfor %}
+{% for cluster in clusters -%}
+  {%- for node in cluster %}	{{ node|trim }}{% endfor %}
+{% endfor %}
