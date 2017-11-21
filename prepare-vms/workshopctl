@@ -38,7 +38,7 @@ check_envvars() {
         if [ -z "${!envvar}" ]; then
             error "Environment variable $envvar is not set."
             if [ "$envvar" = "SSH_AUTH_SOCK" ]; then
-                error "Hint: run '\$(ssh-agent) ; ssh-add' and try again?"
+                error "Hint: run 'eval \$(ssh-agent) ; ssh-add' and try again?"
             fi
             status=1
         fi
