@@ -184,7 +184,7 @@ Yes!
 
   *Probably not (in the future)*
 
-.footnote[More information about CRI [on the Kubernetes blog](http://blog.kubernetes.io/2016/12/]container-runtime-interface-cri-in-kubernetes.html).
+.footnote[More information about CRI [on the Kubernetes blog](http://blog.kubernetes.io/2016/12/container-runtime-interface-cri-in-kubernetes.html)]
 
 ---
 
