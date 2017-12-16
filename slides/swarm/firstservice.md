@@ -174,7 +174,7 @@ class: extra-details
 
   - great in headless scripts (where nobody's watching anyway)
 
-.warning[`--detach=false` does not complete *faster*. It just *doesn't wait* for completion.]
+.warning[`--detach=true` does not complete *faster*. It just *doesn't wait* for completion.]
 
 ---
 
