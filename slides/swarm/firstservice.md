@@ -203,7 +203,7 @@ class: extra-details
 
 - And then to 4 copies per node:
   ```bash
-  docker service update pingpong --replicas 15 --detach=true
+  docker service update pingpong --replicas 20 --detach=true
   ```
 
 ]
