@@ -71,7 +71,7 @@ Examples:
 
 ```bash
 docker swarm init --advertise-addr 10.0.9.2
-docker swarm init --advertise-addr eth0:7777
+docker swarm init --advertise-addr eth0
 ```
 
 ---
