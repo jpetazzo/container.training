@@ -257,7 +257,7 @@ First, we need to put the POST payload in a temporary file.
 
 .exercise[
 
-- Install curl in the container, and generate 10 bytes of random data:
+- Generate 10 bytes of random data:
   ```bash
   curl http://rng/10 >/tmp/random
   ```
