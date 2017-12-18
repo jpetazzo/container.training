@@ -100,7 +100,7 @@ class: extra-details
 Let's start a Tomcat container:
 
 ```bash
-$ docker run --name webapp -d -p 8080:8080 -v /usr/local/tomcat/logs
+$ docker run --name webapp -d -p 8080:8080 -v /usr/local/tomcat/logs tomcat
 ```
 
 Now, start an `alpine` container accessing the same volume:

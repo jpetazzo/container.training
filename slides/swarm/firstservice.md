@@ -174,7 +174,7 @@ class: extra-details
 
   - great in headless scripts (where nobody's watching anyway)
 
-.warning[`--detach=false` does not complete *faster*. It just *doesn't wait* for completion.]
+.warning[`--detach=true` does not complete *faster*. It just *doesn't wait* for completion.]
 
 ---
 
@@ -203,7 +203,7 @@ class: extra-details
 
 - And then to 4 copies per node:
   ```bash
-  docker service update pingpong --replicas 15 --detach=true
+  docker service update pingpong --replicas 20 --detach=true
   ```
 
 ]
