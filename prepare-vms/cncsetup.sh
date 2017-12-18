@@ -8,7 +8,7 @@ if id docker; then
   sudo userdel -r docker
 fi
 pip install --user awscli jinja2 pdfkit
-sudo apt-get install wkhtmltopdf xvfb
+sudo apt-get install -y wkhtmltopdf xvfb
 tmux new-session \; send-keys "
 [ -f ~/.ssh/id_rsa ] || ssh-keygen
 eval \$(ssh-agent)
