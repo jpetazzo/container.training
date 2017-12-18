@@ -33,17 +33,43 @@ class: advertise-addr
   <br/>
   (i.e. it tells them *"you can contact me on 10.1.2.3:2377"*)
 
-- If the node has only one IP address (other than 127.0.0.1), it is used automatically
+- If the node has only one IP address, it is used automatically
+  <br/>
+  (The addresses of the loopback interface and the Docker bridge are ignored)
 
 - If the node has multiple IP addresses, you **must** specify which one to use
   <br/>
   (Docker refuses to pick one randomly)
 
 - You can specify an IP address or an interface name
-  <br/>(in the latter case, Docker will read the IP address of the interface and use it)
+  <br/>
+  (in the latter case, Docker will read the IP address of the interface and use it)
 
 - You can also specify a port number
-  <br/>(otherwise, the default port 2377 will be used)
+  <br/>
+  (otherwise, the default port 2377 will be used)
+
+---
+
+class: advertise-addr
+
+## Using a non-default port number
+
+- Changing the *advertised* port does not change the *listening* port
+
+- If you only pass `--advertise-addr eth0:7777`, Swarm will still listen on port 2377
+
+- You will probably need to pass `--listen-addr eth0:7777` as well
+
+- This is to accommodate scenarios where these ports *must* be different
+  <br/>
+  (port mapping, load balancers...)
+
+Example to run Swarm on a different port:
+
+```bash
+docker swarm init --advertise-addr eth0:7777 --listen-addr eth0:7777
+```
 
 ---
 
@@ -70,8 +96,8 @@ class: advertise-addr
 Examples:
 
 ```bash
-docker swarm init --advertise-addr 10.0.9.2
-docker swarm init --advertise-addr eth0:7777
+docker swarm init --advertise-addr 172.24.0.2
+docker swarm init --advertise-addr eth0
 ```
 
 ---
@@ -82,7 +108,7 @@ class: extra-details
 
 - You can use different interfaces (or IP addresses) for control and data
 
-- You set the _control plane path_ with `--advertise-addr`
+- You set the _control plane path_ with `--advertise-addr` and `--listen-addr`
 
   (This will be used for SwarmKit manager/worker communication, leader election, etc.)
 
