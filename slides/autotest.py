@@ -228,6 +228,7 @@ while state.next_step < len(actions):
         print("simulate_type:{} verify_status:{}".format(state.simulate_type, state.verify_status))
         print("[{}/{}] Shall we execute that snippet above?".format(state.next_step, len(actions)))
         print("y/⏎/→   Execute snippet")
+        print("p/←     Previous snippet")
         print("s       Skip snippet")
         print("t       Toggle typist simulation")
         print("v       Toggle verification of exit status")
@@ -246,6 +247,8 @@ while state.next_step < len(actions):
 
     if command == "s":
         state.next_step += 1
+    elif command in ("p", "\x1b[D"):
+        state.next_step -= 1
     elif command == "t":
         state.simulate_type = not state.simulate_type
     elif command == "v":
