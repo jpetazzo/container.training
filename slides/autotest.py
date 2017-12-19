@@ -28,14 +28,14 @@ class State(object):
         self.next_step = 0
 
     def load(self):
-        data = yaml.load(open("state.yml"))
+        data = yaml.load(open("state.yaml"))
         self.interactive = bool(data["interactive"])
         self.verify_status = bool(data["verify_status"])
         self.simulate_type = bool(data["simulate_type"])
         self.next_step = int(data["next_step"])
 
     def save(self):
-        with open("state.yml", "w") as f:
+        with open("state.yaml", "w") as f:
             yaml.dump(dict(
                 interactive=self.interactive,
                 verify_status=self.verify_status,
