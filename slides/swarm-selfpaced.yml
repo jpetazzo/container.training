@@ -26,7 +26,7 @@ chapters:
   - common/declarative.md
   - swarm/swarmmode.md
   - swarm/creatingswarm.md
-  - swarm/machine.md
+  #- swarm/machine.md
   - swarm/morenodes.md
 - - swarm/firstservice.md
   - swarm/ourapponswarm.md
