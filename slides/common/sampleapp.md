@@ -484,12 +484,12 @@ We will use `httping`.
 
 - Check the latency of `rng`:
   ```bash
-  httping -c 10 localhost:8001
+  httping -c 3 localhost:8001
   ```
 
 - Check the latency of `hasher`:
   ```bash
-  httping -c 10 localhost:8002
+  httping -c 3 localhost:8002
   ```
 
 ]
