@@ -10,14 +10,40 @@ import subprocess
 import sys
 import time
 import uuid
+import yaml
+
 
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 
-interactive = True
-verify_status = False
-simulate_type = True
 
 TIMEOUT = 60 # 1 minute
+
+
+class State(object):
+
+    def __init__(self):
+        self.interactive = True
+        self.verify_status = False
+        self.simulate_type = True
+        self.next_step = 0
+
+    def load(self):
+        data = yaml.load(open("state.yml"))
+        self.interactive = bool(data["interactive"])
+        self.verify_status = bool(data["verify_status"])
+        self.simulate_type = bool(data["simulate_type"])
+        self.next_step = int(data["next_step"])
+
+    def save(self):
+        with open("state.yml", "w") as f:
+            yaml.dump(dict(
+                interactive=self.interactive,
+                verify_status=self.verify_status,
+                simulate_type=self.simulate_type,
+                next_step=self.next_step), f, default_flow_style=False)
+
+
+state = State()
 
 
 def hrule():
@@ -105,7 +131,7 @@ def wait_for_prompt():
 
 
 def check_exit_status():
-    if not verify_status:
+    if not state.verify_status:
         return
     token = uuid.uuid4().hex
     data = "echo {} $?\n".format(token)
@@ -163,7 +189,7 @@ for slide in slides:
 
 
 def send_keys(data):
-    if simulate_type and data[0] != '^':
+    if state.simulate_type and data[0] != '^':
         for key in data:
             if key == ";":
                 key = "\\;"
@@ -180,16 +206,17 @@ setup_tmux_and_ssh()
 
 
 try:
-    i = int(open("nextstep").read())
-    logging.info("Loaded next step ({}) from file.".format(i))
+    state.load()
+    logging.info("Successfully loaded state from file.")
 except Exception as e:
-    logging.warning("Could not read nextstep file ({}), initializing to 0.".format(e))
-    i = 0
+    logging.exception("Could not load state from file.")
+    logging.warning("Using default values.")
 
-while i < len(actions):
-    with open("nextstep", "w") as f:
-        f.write(str(i))
-    slide, snippet, method, data = actions[i]
+
+while state.next_step < len(actions):
+    state.save()
+
+    slide, snippet, method, data = actions[state.next_step]
 
     # Remove extra spaces (we don't want them in the terminal) and carriage returns
     data = data.strip()
@@ -197,10 +224,13 @@ while i < len(actions):
     print(hrule())
     print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
     print(hrule())
-    if interactive:
-        print("[{}/{}] Shall we execute that snippet above?".format(i, len(actions)))
+    if state.interactive:
+        print("simulate_type:{} verify_status:{}".format(state.simulate_type, state.verify_status))
+        print("[{}/{}] Shall we execute that snippet above?".format(state.next_step, len(actions)))
         print("y/⏎/→   Execute snippet")
         print("s       Skip snippet")
+        print("t       Toggle typist simulation")
+        print("v       Toggle verification of exit status")
         print("g       Go to a specific snippet")
         print("q       Quit")
         print("c       Continue non-interactively until next error")
@@ -215,14 +245,18 @@ while i < len(actions):
         data = data.replace('`', '')
 
     if command == "s":
-        i += 1
+        state.next_step += 1
+    elif command == "t":
+        state.simulate_type = not state.simulate_type
+    elif command == "v":
+        state.verify_status = not state.verify_status
     elif command == "g":
-        i = click.prompt("Enter snippet number", type=int)
+        state.next_step = click.prompt("Enter snippet number", type=int)
     elif command == "q":
         break
     elif command == "c":
         # continue until next timeout
-        interactive = False
+        state.interactive = False
     elif command in ("y", "\r", " ", "\x1b[C"):
         logging.info("Running with method {}: {}".format(method, data))
         if method == "keys":
@@ -238,7 +272,7 @@ while i < len(actions):
             send_keys(data)
             # Force a short sleep to avoid race condition
             time.sleep(0.5)
-            _, _, next_method, next_data = actions[i+1]
+            _, _, next_method, next_data = actions[state.next_step+1]
             if next_method == "wait":
                 wait_for_string(next_data)
             elif next_method == "longwait":
@@ -269,11 +303,7 @@ while i < len(actions):
             subprocess.check_call(["open", url])
         else:
             logging.warning("Unknown method {}: {!r}".format(method, data))
-        i += 1
+        state.next_step += 1
 
     else:
         logging.warning("Unknown command {}.".format(command))
-
-# Reset slide counter
-with open("nextstep", "w") as f:
-    f.write(str(0))

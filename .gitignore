@@ -7,4 +7,4 @@ prepare-vms/ips.pdf
 prepare-vms/settings.yaml
 prepare-vms/tags
 slides/*.yml.html
-slides/nextstep
+slides/state.yml
