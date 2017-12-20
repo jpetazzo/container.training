@@ -68,13 +68,16 @@ class: secrets
   ```bash
     docker service create \
            --secret hackme --secret arewesecureyet \
-           --name dummyservice --mode global \
+           --name dummyservice \
+           --constraint node.hostname==$HOSTNAME \
            alpine sleep 1000000000
   ```
 
 ]
 
-We use a global service to make sure that there will be an instance on the local node.
+We constrain the container to be on the local node for convenience.
+<br/>
+(We are going to use `docker exec` in just a moment!)
 
 ---
 
@@ -97,6 +100,9 @@ class: secrets
   ```
 
 - Check the files in `/run/secrets`
+
+<!-- ```bash grep . /run/secrets/*``` -->
+<!-- ```bash exit``` -->
 
 ]
 

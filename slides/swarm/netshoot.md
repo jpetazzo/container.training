@@ -284,6 +284,8 @@ Once again, we will send 50 requests, with different levels of concurrency.
     ab -c 50 -n 50 -T application/octet-stream -p /tmp/random http://hasher/
   ```
 
+<!-- ```bash exit``` -->
+
 ]
 
 ---

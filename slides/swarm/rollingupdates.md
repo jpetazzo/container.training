@@ -29,10 +29,16 @@
   watch docker service ps dockercoins_worker
   ```
 
+<!-- ```wait dockercoins_worker.1``` -->
+<!-- ```keys ^C``` -->
+
 - Hide the tasks that are shutdown:
   ```bash
   watch -n1 "docker service ps dockercoins_worker | grep -v Shutdown.*Shutdown"
   ```
+
+<!-- ```wait dockercoins_worker.1``` -->
+<!-- ```keys ^C``` -->
 
 ]
 

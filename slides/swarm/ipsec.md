@@ -71,6 +71,9 @@
   docker run --net host nicolaka/netshoot ngrep -tpd eth0 HTTP
   ```
 
+<!-- ```wait User-Agent``` -->
+<!-- ```keys ^C``` -->
+
 ]
 
 --

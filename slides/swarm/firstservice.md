@@ -281,6 +281,8 @@ class: extra-details
 
 .exercise[
 
+<!-- Give it a few seconds to be ready ```bash sleep 5``` -->
+
 - Try the following command:
   ```bash
   curl localhost:9200

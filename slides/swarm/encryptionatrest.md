@@ -68,6 +68,8 @@ that you [provisioned yourself](https://github.com/jpetazzo/container.training/t
   docker node ls
   ```
 
+<!-- ```wait Swarm is encrypted``` -->
+
 ]
 
 (The last command should fail, and it will tell you how to unlock this node.)

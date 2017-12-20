@@ -152,6 +152,8 @@ It *cannot* work on live files, so you must stop Docker or make a copy first.
   cp -r /graph/swarm /swarmdata
   ```
 
+<!-- ```wait cp: cannot stat``` -->
+
 - Otherwise, it is in the default `/var/lib/docker`:
   ```bash
   sudo cp -r /var/lib/docker/swarm /swarmdata
@@ -173,6 +175,8 @@ It *cannot* work on live files, so you must stop Docker or make a copy first.
   ```bash
   /lib/ld-musl-x86_64.so.1 /usr/local/bin/swarm-rafttool -d /swarmdata/ dump-wal
   ```
+
+<!-- ```wait -bash:``` -->
 
 - Otherwise, you don't need the musl linker but you need to get root:
   ```bash
