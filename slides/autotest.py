@@ -208,6 +208,10 @@ setup_tmux_and_ssh()
 try:
     state.load()
     logging.info("Successfully loaded state from file.")
+    # Let's override the starting state, so that when an error occurs,
+    # we can restart the auto-tester and then single-step or debug.
+    # (Instead of running again through the same issue immediately.)
+    state.interactive = True
 except Exception as e:
     logging.exception("Could not load state from file.")
     logging.warning("Using default values.")
