@@ -2,7 +2,7 @@ class: title, self-paced
 
 @@TITLE@@
 
-.nav[*Self-paced version*]
+.nav[**Slides: http://swarm2017.container.training/**]
 
 ---
 
