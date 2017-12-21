@@ -100,6 +100,47 @@ class Slide(object):
         logging.debug("\n{}\n{}\n{}".format(hrule(), self.content, hrule()))
 
 
+# Synchronize the slide currently tested with an external browser
+class Tracker(object):
+
+    def __init__(self):
+        self.slide_on_screen = None
+    
+    # Directly go to a specific slide
+    def goto(self, slide_number):
+        subprocess.check_call(["./gotoslide.js", str(slide_number)])
+        self.slide_on_screen = slide_number
+
+    # Advance by one slide
+    def advance(self):
+        self.goto(self.slide_on_screen+1)
+
+    # Offer the opportunity to go step by step to the given slide
+    def catchup(self, slide_number):
+        if self.slide_on_screen == slide_number:
+            return
+        if self.slide_on_screen == None:
+            return self.goto(slide_number)
+        if self.slide_on_screen > slide_number:
+            return self.goto(slide_number)
+        while self.slide_on_screen < slide_number:
+            if state.interactive:
+                print("Catching up on slide: {} -> {}"
+                    .format(self.slide_on_screen, slide_number))
+                print("z       Zoom to target slide")
+                print("⎵       Advance by one slide")
+                command = click.getchar()
+            else:
+                command = "z"
+            if command == "z":
+                self.goto(slide_number)
+            elif command == " ":
+                self.advance()
+
+
+tracker = Tracker()
+
+
 def ansi(code):
     return lambda s: "\x1b[{}m{}\x1b[0m".format(code, s)
 
@@ -172,6 +213,9 @@ def setup_tmux_and_ssh():
 slides = []
 content = open(sys.argv[1]).read()
 for slide in re.split("\n---?\n", content):
+    # FIXME: hack: do not add slides from the 'in-person' deck
+    if re.search("class:.*in-person", slide):
+        continue
     slides.append(Slide(slide))
 
 actions = []
@@ -225,9 +269,12 @@ while state.next_step < len(actions):
     # Remove extra spaces (we don't want them in the terminal) and carriage returns
     data = data.strip()
 
+    tracker.catchup(slide.number)
+
     print(hrule())
     print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
     print(hrule())
+    print(slide.number)
     if state.interactive:
         print("simulate_type:{} verify_status:{}".format(state.simulate_type, state.verify_status))
         print("[{}/{}] Shall we execute that snippet above?".format(state.next_step, len(actions)))
@@ -259,6 +306,8 @@ while state.next_step < len(actions):
         state.verify_status = not state.verify_status
     elif command == "g":
         state.next_step = click.prompt("Enter snippet number", type=int)
+        if state.next_step == 0:
+            tracker.catchup(0)
     elif command == "q":
         break
     elif command == "c":
