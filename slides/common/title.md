@@ -2,8 +2,6 @@ class: title, self-paced
 
 @@TITLE@@
 
-.nav[**Slides: http://swarm2017.container.training/**]
-
 ---
 
 class: title, in-person
