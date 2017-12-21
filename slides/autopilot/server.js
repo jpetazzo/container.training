@@ -26,7 +26,7 @@ app.use(express.static('.'));
 app.use(express.static('..'));
 
 io.on('connection', function(socket){
-  console.log('a client connected');
+  console.log('a client connected: ' + socket.handshake.address);
   socket.on('slide change', function(n, ack){
     console.log('slide change: ' + n);
     socket.broadcast.emit('slide change', n);
