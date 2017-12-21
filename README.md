@@ -43,7 +43,7 @@ because they have a few things in common:
   (and updated) identically between different decks;
 - a [build system](slides/) generating HTML slides from
   Markdown source files;
-- a [semi-automated test harness](slides/autotest.py) to check
+- a [semi-automated test harness](slides/autopilot/) to check
   that the exercises and examples provided work properly;
 - a [PhantomJS script](slides/slidechecker.js) to check
   that the slides look good and don't have formatting issues;
