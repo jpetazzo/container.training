@@ -199,7 +199,7 @@ def send_keys(data):
         subprocess.check_call(["tmux", "send-keys", data])
 
 def capture_pane():
-    return subprocess.check_output(["tmux", "capture-pane", "-p"])
+    return subprocess.check_output(["tmux", "capture-pane", "-p"]).decode('utf-8')
 
 
 setup_tmux_and_ssh()
