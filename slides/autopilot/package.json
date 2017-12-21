@@ -1,0 +1,8 @@
+{
+  "name": "container-training-pub-sub-server",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4"
+  }
+}

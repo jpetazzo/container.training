@@ -43,9 +43,6 @@ class State(object):
                 next_step=self.next_step), f, default_flow_style=False)
 
 
-state = State()
-
-
 def hrule():
     return "="*int(subprocess.check_output(["tput", "cols"]))
 
@@ -99,46 +96,56 @@ class Slide(object):
     def debug(self):
         logging.debug("\n{}\n{}\n{}".format(hrule(), self.content, hrule()))
 
-
-# Synchronize the slide currently tested with an external browser
-class Tracker(object):
+# Synchronize slides in a remote browser
+class Remote(object):
 
     def __init__(self):
-        self.slide_on_screen = None
-    
+        self.slide_on_screen = 0
+
     # Directly go to a specific slide
     def goto(self, slide_number):
         subprocess.check_call(["./gotoslide.js", str(slide_number)])
         self.slide_on_screen = slide_number
-
-    # Advance by one slide
-    def advance(self):
-        self.goto(self.slide_on_screen+1)
+        focus_slides()
 
     # Offer the opportunity to go step by step to the given slide
     def catchup(self, slide_number):
-        if self.slide_on_screen == slide_number:
-            return
-        if self.slide_on_screen == None:
-            return self.goto(slide_number)
         if self.slide_on_screen > slide_number:
             return self.goto(slide_number)
         while self.slide_on_screen < slide_number:
             if state.interactive:
                 print("Catching up on slide: {} -> {}"
                     .format(self.slide_on_screen, slide_number))
-                print("z       Zoom to target slide")
-                print("⎵       Advance by one slide")
+                print("z/⏎     Zoom to target slide")
+                print("n/→/⎵   Next slide")
+                print("p/←     Previous slide")
+                print("q       Abort remote control")
                 command = click.getchar()
             else:
                 command = "z"
-            if command == "z":
+            if command in ("z", "\r"):
                 self.goto(slide_number)
-            elif command == " ":
-                self.advance()
+            elif command in ("n", "\x1b[C", " "):
+                self.goto(self.slide_on_screen+1)
+            elif command in ("p", "\x1b[D"):
+                self.goto(self.slide_on_screen-1)
+            elif command == "q":
+                return
 
 
-tracker = Tracker()
+def focus_slides():
+    subprocess.check_call(["i3-msg", "workspace", "3"])
+    subprocess.check_call(["i3-msg", "workspace", "1"])
+    time.sleep(1)
+
+def focus_terminal():
+    subprocess.check_call(["i3-msg", "workspace", "2"])
+    subprocess.check_call(["i3-msg", "workspace", "1"])
+    time.sleep(1)
+
+
+remote = Remote()
+state = State()
 
 
 def ansi(code):
@@ -212,9 +219,19 @@ def setup_tmux_and_ssh():
 
 slides = []
 content = open(sys.argv[1]).read()
+
+# OK, this part is definitely hackish, and will break if the
+# excludedClasses parameter is not on a single line.
+excluded_classes = re.findall("excludedClasses: (\[.*\])", content)
+excluded_classes = set(eval(excluded_classes[0]))
+
 for slide in re.split("\n---?\n", content):
-    # FIXME: hack: do not add slides from the 'in-person' deck
-    if re.search("class:.*in-person", slide):
+    slide_classes = re.findall("class: (.*)", slide)
+    if slide_classes:
+        slide_classes = slide_classes[0].split(",")
+        slide_classes = [c.strip() for c in slide_classes]
+    if excluded_classes & set(slide_classes):
+        logging.info("Skipping excluded slide.")
         continue
     slides.append(Slide(slide))
 
@@ -237,13 +254,17 @@ def send_keys(data):
         for key in data:
             if key == ";":
                 key = "\\;"
+            if key == "\n":
+                time.sleep(1)
             subprocess.check_call(["tmux", "send-keys", key])
-            time.sleep(0.1*random.random())
+            time.sleep(0.2*random.random())
+            if key == "\n":
+                time.sleep(1)
     else:
         subprocess.check_call(["tmux", "send-keys", data])
 
 def capture_pane():
-    return subprocess.check_output(["tmux", "capture-pane", "-p"])
+    return subprocess.check_output(["tmux", "capture-pane", "-p"]).decode('utf-8')
 
 
 setup_tmux_and_ssh()
@@ -269,20 +290,20 @@ while state.next_step < len(actions):
     # Remove extra spaces (we don't want them in the terminal) and carriage returns
     data = data.strip()
 
-    tracker.catchup(slide.number)
+    # Synchronize the remote slides
+    remote.catchup(slide.number)
 
     print(hrule())
     print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
     print(hrule())
-    print(slide.number)
     if state.interactive:
         print("simulate_type:{} verify_status:{}".format(state.simulate_type, state.verify_status))
         print("[{}/{}] Shall we execute that snippet above?".format(state.next_step, len(actions)))
-        print("y/⏎/→   Execute snippet")
+        print("y/⎵/⏎   Execute snippet")
         print("p/←     Previous snippet")
-        print("s       Skip snippet")
-        print("t       Toggle typist simulation")
-        print("v       Toggle verification of exit status")
+        print("n/→     Next snippet")
+        print("s       Simulate keystrokes")
+        print("v       Validate exit status")
         print("g       Go to a specific snippet")
         print("q       Quit")
         print("c       Continue non-interactively until next error")
@@ -296,24 +317,26 @@ while state.next_step < len(actions):
         logging.info("Stripping ` from snippet.")
         data = data.replace('`', '')
 
-    if command == "s":
+    if command in ("n", "\x1b[C"):
         state.next_step += 1
     elif command in ("p", "\x1b[D"):
         state.next_step -= 1
-    elif command == "t":
+    elif command == "s":
         state.simulate_type = not state.simulate_type
     elif command == "v":
         state.verify_status = not state.verify_status
     elif command == "g":
         state.next_step = click.prompt("Enter snippet number", type=int)
+        # Special case: if we go to snippet 0, also reset the slides deck
         if state.next_step == 0:
-            tracker.catchup(0)
+            remote.goto(1)
     elif command == "q":
         break
     elif command == "c":
         # continue until next timeout
         state.interactive = False
-    elif command in ("y", "\r", " ", "\x1b[C"):
+    elif command in ("y", "\r", " "):
+        focus_terminal()
         logging.info("Running with method {}: {}".format(method, data))
         if method == "keys":
             send_keys(data)

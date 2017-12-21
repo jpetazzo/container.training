@@ -7,5 +7,5 @@ prepare-vms/ips.pdf
 prepare-vms/settings.yaml
 prepare-vms/tags
 slides/*.yml.html
-slides/state.yaml
+slides/autopilot/state.yaml
 node_modules
