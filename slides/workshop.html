@@ -31,5 +31,16 @@
         excludedClasses: [@@EXCLUDE@@]
       });
     </script>
+    
+    <!-- 
+    These two scripts will be available only when loading the
+    content using the pub/sub server. Otherwise, they'll just
+    404 and that's OK.
+    -->
+    <script src="/socket.io/socket.io.js">
+    </script>
+    <script src="/remote.js">
+    </script>
+
   </body>
 </html>

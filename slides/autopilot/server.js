@@ -19,7 +19,10 @@ app.get('/', function(req, res){
   res.send('container.training autopilot pub/sub server');
 });
 
-/* Serve slides etc. from the parent directory */
+/* Serve remote.js from the current directory */
+app.use(express.static('.'));
+
+/* Serve slides etc. from current and the parent directory */
 app.use(express.static('..'));
 
 io.on('connection', function(socket){
