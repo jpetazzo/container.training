@@ -8,6 +8,10 @@
 
 var io = require('socket.io-client');
 var socket = io('http://localhost:3000');
-socket.emit('slide change', process.argv[2], function () {
-    socket.close();
+socket.on('connect_error', function(){ 
+  console.log('connection error');
+  socket.close();
+});
+socket.emit('slide change', process.argv[2], function(){
+  socket.close();
 });
