@@ -254,8 +254,12 @@ def send_keys(data):
         for key in data:
             if key == ";":
                 key = "\\;"
+            if key == "\n":
+                time.sleep(1)
             subprocess.check_call(["tmux", "send-keys", key])
-            time.sleep(0.1*random.random())
+            time.sleep(0.2*random.random())
+            if key == "\n":
+                time.sleep(1)
     else:
         subprocess.check_call(["tmux", "send-keys", data])
 
