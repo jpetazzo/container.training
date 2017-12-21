@@ -8,3 +8,4 @@ prepare-vms/settings.yaml
 prepare-vms/tags
 slides/*.yml.html
 slides/autopilot/state.yaml
+node_modules
