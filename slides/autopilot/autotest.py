@@ -202,14 +202,23 @@ def check_exit_status():
 
 def setup_tmux_and_ssh():
     if subprocess.call(["tmux", "has-session"]):
-        logging.info("Couldn't connect to tmux. A new tmux session will be created.")
-        subprocess.check_call(["tmux", "new-session", "-d"])
-        wait_for_string("$")
-        send_keys("cd ../prepare-vms\n")
-        send_keys("ssh docker@$(head -n1 ips.txt)\n")
-        wait_for_string("password:")
-        send_keys("training\n")
-        wait_for_prompt()
+        logging.error("Couldn't connect to tmux. Please setup tmux first.")
+        ipaddr = open("../../prepare-vms/ips.txt").read().split("\n")[0]
+        uid = os.getuid()
+
+        raise Exception("""
+1. If you're running this directly from a node:
+
+tmux
+
+2. If you want to control a remote tmux:
+
+rm -f /tmp/tmux-{uid}/default
+ssh -t -L /tmp/tmux-{uid}/default:/tmp/tmux-1001/default docker@{ipaddr} tmux
+
+3. If you cannot control a remote tmux:
+tmux new-session ssh docker@{ipaddr}
+""".format(uid=uid, ipaddr=ipaddr))
     else:
         logging.info("Found tmux session. Trying to acquire shell prompt.")
         wait_for_prompt()
