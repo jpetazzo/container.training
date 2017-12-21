@@ -6,6 +6,7 @@ chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 
 exclude:
 - in-person
+- extra-details
 - btp-auto
 
 chapters:
@@ -15,12 +16,6 @@ chapters:
 - common/toc.md
 - - common/prereqs.md
   - swarm/versions.md
-  - |
-    name: part-1
-
-    class: title, self-paced
-
-    Part 1
   - common/sampleapp.md
   - swarm/swarmkit.md
   - common/declarative.md
@@ -35,12 +30,6 @@ chapters:
   - swarm/btp-manual.md
   - swarm/swarmready.md
   - swarm/compose2swarm.md
-  - |
-    name: part-2
-
-    class: title, self-paced
-
-    Part 2
 - - swarm/operatingswarm.md
   #- swarm/netshoot.md
   #- swarm/swarmnbt.md
@@ -52,11 +41,11 @@ chapters:
   - swarm/swarmtools.md
 - - swarm/security.md
   - swarm/secrets.md
-  - swarm/encryptionatrest.md
+  #- swarm/encryptionatrest.md
   - swarm/leastprivilege.md
   - swarm/apiscope.md
   #- swarm/logging.md
   #- swarm/metrics.md
   - swarm/stateful.md
-  - swarm/extratips.md
+  #- swarm/extratips.md
   - common/thankyou.md
