@@ -116,18 +116,21 @@ class Remote(object):
             if state.interactive:
                 print("Catching up on slide: {} -> {}"
                     .format(self.slide_on_screen, slide_number))
-                print("z       Zoom to target slide")
-                print("n/➡️/⎵   Next slide")
-                print("p/⬅️     Previous slide")
+                print("z/⏎     Zoom to target slide")
+                print("n/→/⎵   Next slide")
+                print("p/←     Previous slide")
+                print("q       Abort remote control")
                 command = click.getchar()
             else:
                 command = "z"
-            if command == "z":
+            if command in ("z", "\r"):
                 self.goto(slide_number)
             elif command in ("n", "\x1b[C", " "):
                 self.goto(self.slide_on_screen+1)
             elif command in ("p", "\x1b[D"):
                 self.goto(self.slide_on_screen-1)
+            elif command == "q":
+                return
 
 
 def focus_slides():
@@ -292,7 +295,7 @@ while state.next_step < len(actions):
     if state.interactive:
         print("simulate_type:{} verify_status:{}".format(state.simulate_type, state.verify_status))
         print("[{}/{}] Shall we execute that snippet above?".format(state.next_step, len(actions)))
-        print("y/⏎     Execute snippet")
+        print("y/⎵/⏎   Execute snippet")
         print("p/←     Previous snippet")
         print("n/→     Next snippet")
         print("s       Simulate keystrokes")
@@ -320,6 +323,9 @@ while state.next_step < len(actions):
         state.verify_status = not state.verify_status
     elif command == "g":
         state.next_step = click.prompt("Enter snippet number", type=int)
+        # Special case: if we go to snippet 0, also reset the slides deck
+        if state.next_step == 0:
+            remote.goto(1)
     elif command == "q":
         break
     elif command == "c":
