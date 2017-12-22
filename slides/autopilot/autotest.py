@@ -392,6 +392,9 @@ while state.next_step < len(actions):
             # This should probably be adapted to run on different OS
             subprocess.check_call(["xdg-open", url])
             focus_browser()
+            if status.interactive:
+                print("Press any key to continue to next step...")
+                click.getchar()
         else:
             logging.warning("Unknown method {}: {!r}".format(method, data))
         state.next_step += 1
