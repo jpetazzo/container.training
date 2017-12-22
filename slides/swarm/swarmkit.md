@@ -46,7 +46,7 @@ class: extra-details
 - SwarmKit implements the Raft algorithm directly
   <br/>
   (Nomad is similar; thanks [@cbednarski](https://twitter.com/@cbednarski),
-  [@diptanu](https://twitter.com/diptanu) and others for point it out!)
+  [@diptanu](https://twitter.com/diptanu) and others for pointing it out!)
 
 - Analogy courtesy of [@aluzzardi](https://twitter.com/aluzzardi):
 

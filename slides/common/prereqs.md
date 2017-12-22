@@ -66,6 +66,8 @@ Misattributed to Benjamin Franklin
 
 - Join the chat room on @@CHAT@@
 
+<!-- ```open http://container.training/``` -->
+
 ]
 
 ---
@@ -194,6 +196,32 @@ If anything goes wrong — ask for help!
     ([instructions](https://github.com/jpetazzo/container.training/tree/master/prepare-vms))
 
   Bigger setup effort; ideal for group training
+
+---
+
+class: self-paced
+
+## Get your own Docker nodes
+
+- If you already have some Docker nodes: great!
+
+- If not: let's get some thanks to Play-With-Docker
+
+.exercise[
+
+- Go to http://www.play-with-docker.com/
+
+- Log in
+
+- Create your first node
+
+<!-- ```open http://www.play-with-docker.com/``` -->
+
+]
+
+You will need a Docker ID to use Play-With-Docker.
+
+(Creating a Docker ID is free.)
 
 ---
 
