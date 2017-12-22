@@ -136,12 +136,14 @@ class Remote(object):
 def focus_slides():
     subprocess.check_call(["i3-msg", "workspace", "3"])
     subprocess.check_call(["i3-msg", "workspace", "1"])
-    time.sleep(1)
 
 def focus_terminal():
     subprocess.check_call(["i3-msg", "workspace", "2"])
     subprocess.check_call(["i3-msg", "workspace", "1"])
-    time.sleep(1)
+
+def focus_browser():
+    subprocess.check_call(["i3-msg", "workspace", "4"])
+    subprocess.check_call(["i3-msg", "workspace", "1"])
 
 
 remote = Remote()
@@ -388,7 +390,8 @@ while state.next_step < len(actions):
             ipaddr = re.findall("^\[(.*)\]", screen, re.MULTILINE)[-1]
             url = data.replace("/node1", "/{}".format(ipaddr))
             # This should probably be adapted to run on different OS
-            subprocess.check_call(["open", url])
+            subprocess.check_call(["xdg-open", url])
+            focus_browser()
         else:
             logging.warning("Unknown method {}: {!r}".format(method, data))
         state.next_step += 1
