@@ -215,10 +215,10 @@ tmux
 
 2. If you want to control a remote tmux:
 
-rm -f /tmp/tmux-{uid}/default
-ssh -t -L /tmp/tmux-{uid}/default:/tmp/tmux-1001/default docker@{ipaddr} tmux
+rm -f /tmp/tmux-{uid}/default && ssh -t -L /tmp/tmux-{uid}/default:/tmp/tmux-1001/default docker@{ipaddr} tmux
 
 3. If you cannot control a remote tmux:
+
 tmux new-session ssh docker@{ipaddr}
 """.format(uid=uid, ipaddr=ipaddr))
     else:
