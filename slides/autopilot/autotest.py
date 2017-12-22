@@ -114,6 +114,7 @@ class Remote(object):
             return self.goto(slide_number)
         while self.slide_on_screen < slide_number:
             if state.interactive:
+                click.clear()
                 print("Catching up on slide: {} -> {}"
                     .format(self.slide_on_screen, slide_number))
                 print("z/⏎     Zoom to target slide")
@@ -304,6 +305,7 @@ while state.next_step < len(actions):
     # Synchronize the remote slides
     remote.catchup(slide.number)
 
+    click.clear()
     print(hrule())
     print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
     print(hrule())
