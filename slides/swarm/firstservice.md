@@ -89,7 +89,7 @@ class: extra-details
 
 - If you use Play-With-Docker, switch to that node's tab, or set `DOCKER_HOST`
 
-- Otherwise, `ssh` into tht node or use `$(eval docker-machine env node...)`
+- Otherwise, `ssh` into that node or use `$(eval docker-machine env node...)`
 
 ]
 
