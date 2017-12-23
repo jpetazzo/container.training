@@ -22,7 +22,7 @@ With Play-With-Docker:
 
 ```bash
 TOKEN=$(docker swarm join-token -q manager)
-for N in $(seq 4 5); do
+for N in $(seq 3 5); do
   export DOCKER_HOST=tcp://node$N:2375
   docker swarm join --token $TOKEN node1:2377
 done
