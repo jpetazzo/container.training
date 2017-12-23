@@ -160,6 +160,8 @@ def wait_for_prompt():
         if last_line == "/ #":
             return
         # We did not recognize a known prompt; wait a bit and check again
+        logging.debug("Could not find a known prompt on last line: {!r}"
+                      .format(last_line))
         time.sleep(1)
     raise Exception("Timed out while waiting for prompt!")
 
@@ -265,7 +267,7 @@ except Exception as e:
 
 def move_forward():
     state.snippet += 1
-    if state.snippet > len(slide.snippets):
+    if state.snippet > len(slides[state.slide].snippets):
         state.slide += 1
         state.snippet = 0
     if state.slide > len(slides):
@@ -284,8 +286,9 @@ while True:
     slide = slides[state.slide]
     snippet = slide.snippets[state.snippet-1] if state.snippet else None
     click.clear()
-    print("[Slide {}/{}] [Snippet {}] [simulate_type:{}] [verify_status:{}]"
-          .format(state.slide, len(slides), state.snippet,
+    print("[Slide {}/{}] [Snippet {}/{}] [simulate_type:{}] [verify_status:{}]"
+          .format(state.slide, len(slides),
+                  state.snippet, len(slide.snippets) if slide.snippets else 0,
                   state.simulate_type, state.verify_status))
     print(hrule())
     if snippet:
@@ -327,8 +330,11 @@ while True:
         state.interactive = False
     elif command in ("y", "\r", " "):
         if not snippet:
+            # Advance to next snippet
+            # Advance until a slide that has snippets
             while not slides[state.slide].snippets:
                 move_forward()
+            # And then advance to the snippet
             move_forward()
             continue
         method, data = snippet.method, snippet.data
