@@ -25,14 +25,16 @@ class State(object):
         self.interactive = True
         self.verify_status = False
         self.simulate_type = True
-        self.next_step = 0
+        self.slide = 1
+        self.snippet = 0
 
     def load(self):
         data = yaml.load(open("state.yaml"))
         self.interactive = bool(data["interactive"])
         self.verify_status = bool(data["verify_status"])
         self.simulate_type = bool(data["simulate_type"])
-        self.next_step = int(data["next_step"])
+        self.slide = int(data["slide"])
+        self.snippet = int(data["snippet"])
 
     def save(self):
         with open("state.yaml", "w") as f:
@@ -40,7 +42,12 @@ class State(object):
                 interactive=self.interactive,
                 verify_status=self.verify_status,
                 simulate_type=self.simulate_type,
-                next_step=self.next_step), f, default_flow_style=False)
+                slide=self.slide,
+                snippet=self.snippet,
+                ), f, default_flow_style=False)
+
+
+state = State()
 
 
 def hrule():
@@ -57,7 +64,15 @@ class Snippet(object):
     def __init__(self, slide, content):
         self.slide = slide
         self.content = content
-        self.actions = []
+        # Extract the "method" (e.g. bash, keys, ...)
+        # On multi-line snippets, the method is alone on the first line
+        # On single-line snippets, the data follows the method immediately
+        if '\n' in content:
+            self.method, self.data = content.split('\n', 1)
+        else:
+            self.method, self.data = content.split(' ', 1)
+        self.data = self.data.strip()
+        self.next = None
 
     def __str__(self):
         return self.content
@@ -68,8 +83,8 @@ class Slide(object):
     current_slide = 0
 
     def __init__(self, content):
-        Slide.current_slide += 1
         self.number = Slide.current_slide
+        Slide.current_slide += 1
 
         # Remove commented-out slides
         # (remark.js considers ??? to be the separator for speaker notes)
@@ -80,8 +95,13 @@ class Slide(object):
         exercises = re.findall("\.exercise\[(.*)\]", content, re.DOTALL)
         for exercise in exercises:
             if "```" in exercise:
-                for snippet in exercise.split("```")[1::2]:
-                    self.snippets.append(Snippet(self, snippet))
+                previous = None
+                for snippet_content in exercise.split("```")[1::2]:
+                    snippet = Snippet(self, snippet_content)
+                    if previous:
+                        previous.next = snippet
+                    previous = snippet
+                    self.snippets.append(snippet)
             else:
                 logging.warning("Exercise on slide {} does not have any ``` snippet."
                                 .format(self.number))
@@ -96,43 +116,6 @@ class Slide(object):
     def debug(self):
         logging.debug("\n{}\n{}\n{}".format(hrule(), self.content, hrule()))
 
-# Synchronize slides in a remote browser
-class Remote(object):
-
-    def __init__(self):
-        self.slide_on_screen = 0
-
-    # Directly go to a specific slide
-    def goto(self, slide_number):
-        subprocess.check_call(["./gotoslide.js", str(slide_number)])
-        self.slide_on_screen = slide_number
-        focus_slides()
-
-    # Offer the opportunity to go step by step to the given slide
-    def catchup(self, slide_number):
-        if self.slide_on_screen > slide_number:
-            return self.goto(slide_number)
-        while self.slide_on_screen < slide_number:
-            if state.interactive:
-                click.clear()
-                print("Catching up on slide: {} -> {}"
-                    .format(self.slide_on_screen, slide_number))
-                print("z/⏎     Zoom to target slide")
-                print("n/→/⎵   Next slide")
-                print("p/←     Previous slide")
-                print("q       Abort remote control")
-                command = click.getchar()
-            else:
-                command = "z"
-            if command in ("z", "\r"):
-                self.goto(slide_number)
-            elif command in ("n", "\x1b[C", " "):
-                self.goto(self.slide_on_screen+1)
-            elif command in ("p", "\x1b[D"):
-                self.goto(self.slide_on_screen-1)
-            elif command == "q":
-                return
-
 
 def focus_slides():
     subprocess.check_output(["i3-msg", "workspace", "3"])
@@ -145,10 +128,6 @@ def focus_terminal():
 def focus_browser():
     subprocess.check_output(["i3-msg", "workspace", "4"])
     subprocess.check_output(["i3-msg", "workspace", "1"])
-
-
-remote = Remote()
-state = State()
 
 
 def ansi(code):
@@ -173,10 +152,14 @@ def wait_for_prompt():
         output = capture_pane()
         # If we are not at the bottom of the screen, there will be a bunch of extra \n's
         output = output.rstrip('\n')
-        if output.endswith("\n$"):
+        last_line = output.split('\n')[-1]
+        # Our custom prompt on the VMs has two lines; the 2nd line is just '$'
+        if last_line == "$":
             return
-        if output.endswith("\n/ #"):
+        # When we are in an alpine container, the prompt will be "/ #"
+        if last_line == "/ #":
             return
+        # We did not recognize a known prompt; wait a bit and check again
         time.sleep(1)
     raise Exception("Timed out while waiting for prompt!")
 
@@ -228,8 +211,7 @@ tmux new-session ssh docker@{ipaddr}
     logging.info("Successfully connected to test cluster in tmux session.")
 
 
-
-slides = []
+slides = [Slide("Dummy slide zero")]
 content = open(sys.argv[1]).read()
 
 # OK, this part is definitely hackish, and will break if the
@@ -247,19 +229,6 @@ for slide in re.split("\n---?\n", content):
         continue
     slides.append(Slide(slide))
 
-actions = []
-for slide in slides:
-    for snippet in slide.snippets:
-        content = snippet.content
-        # Extract the "method" (e.g. bash, keys, ...)
-        # On multi-line snippets, the method is alone on the first line
-        # On single-line snippets, the data follows the method immediately
-        if '\n' in content:
-            method, data = content.split('\n', 1)
-        else:
-            method, data = content.split(' ', 1)
-        actions.append((slide, snippet, method, data))
-
 
 def send_keys(data):
     if state.simulate_type and data[0] != '^':
@@ -269,11 +238,12 @@ def send_keys(data):
             if key == "\n":
                 time.sleep(1)
             subprocess.check_call(["tmux", "send-keys", key])
-            time.sleep(0.2*random.random())
+            time.sleep(0.15*random.random())
             if key == "\n":
                 time.sleep(1)
     else:
         subprocess.check_call(["tmux", "send-keys", data])
+
 
 def capture_pane():
     return subprocess.check_output(["tmux", "capture-pane", "-p"]).decode('utf-8')
@@ -293,63 +263,75 @@ except Exception as e:
     logging.exception("Could not load state from file.")
     logging.warning("Using default values.")
 
+def move_forward():
+    state.snippet += 1
+    if state.snippet > len(slide.snippets):
+        state.slide += 1
+        state.snippet = 0
+    if state.slide > len(slides):
+        state.slide = len(slides)
 
-while state.next_step < len(actions):
+def move_backward():
+    state.snippet -= 1
+    if state.snippet < 0:
+        state.slide -= 1
+        state.snippet = 0
+    if state.slide == 0:
+        state.slide = 1
+
+while True:
     state.save()
-
-    slide, snippet, method, data = actions[state.next_step]
-
-    # Remove extra spaces (we don't want them in the terminal) and carriage returns
-    data = data.strip()
-
-    # Synchronize the remote slides
-    remote.catchup(slide.number)
-
+    slide = slides[state.slide]
+    snippet = slide.snippets[state.snippet-1] if state.snippet else None
     click.clear()
+    print("[Slide {}/{}] [Snippet {}] [simulate_type:{}] [verify_status:{}]"
+          .format(state.slide, len(slides), state.snippet,
+                  state.simulate_type, state.verify_status))
     print(hrule())
-    print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
+    if snippet:
+        print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
+        focus_terminal()
+    else:
+        print(slide.content)
+        subprocess.check_output(["./gotoslide.js", str(slide.number)])
+        focus_slides()
     print(hrule())
     if state.interactive:
-        print("simulate_type:{} verify_status:{}".format(state.simulate_type, state.verify_status))
-        print("[{}/{}] Shall we execute that snippet above?".format(state.next_step, len(actions)))
-        print("y/⎵/⏎   Execute snippet")
-        print("p/←     Previous snippet")
-        print("n/→     Next snippet")
+        print("y/⎵/⏎   Execute snippet or advance to next snippet")
+        print("p/←     Previous")
+        print("n/→     Next")
         print("s       Simulate keystrokes")
         print("v       Validate exit status")
-        print("g       Go to a specific snippet")
+        print("g       Go to a specific slide")
         print("q       Quit")
         print("c       Continue non-interactively until next error")
         command = click.getchar()
     else:
         command = "y"
 
-    # For now, remove the `highlighted` sections
-    # (Make sure to use $() in shell snippets!)
-    if '`' in data:
-        logging.info("Stripping ` from snippet.")
-        data = data.replace('`', '')
-
     if command in ("n", "\x1b[C"):
-        state.next_step += 1
+        move_forward()
     elif command in ("p", "\x1b[D"):
-        state.next_step -= 1
+        move_backward()
     elif command == "s":
         state.simulate_type = not state.simulate_type
     elif command == "v":
         state.verify_status = not state.verify_status
     elif command == "g":
-        state.next_step = click.prompt("Enter snippet number", type=int)
-        # Special case: if we go to snippet 0, also reset the slides deck
-        if state.next_step == 0:
-            remote.goto(1)
+        state.slide = click.prompt("Enter slide number", type=int)
+        state.snippet = 0
     elif command == "q":
         break
     elif command == "c":
         # continue until next timeout
         state.interactive = False
     elif command in ("y", "\r", " "):
-        focus_terminal()
+        if not snippet:
+            while not slides[state.slide].snippets:
+                move_forward()
+            move_forward()
+            continue
+        method, data = snippet.method, snippet.data
         logging.info("Running with method {}: {}".format(method, data))
         if method == "keys":
             send_keys(data)
@@ -358,20 +340,21 @@ while state.next_step < len(actions):
             wait_for_prompt()
             # Strip leading spaces
             data = re.sub("\n +", "\n", data)
+            # Remove backticks (they are used to highlight sections)
+            data = data.replace('`', '')
             # Add "RETURN" at the end of the command :)
             data += "\n"
             # Send command
             send_keys(data)
             # Force a short sleep to avoid race condition
             time.sleep(0.5)
-            _, _, next_method, next_data = actions[state.next_step+1]
-            if next_method == "wait":
-                wait_for_string(next_data)
-            elif next_method == "longwait":
-                wait_for_string(next_data, 10*TIMEOUT)
+            if snippet.next and snippet.next.method == "wait":
+                wait_for_string(snippet.next.data)
+            elif snippet.next and snippet.next.method == "longwait":
+                wait_for_string(snippet.next.data, 10*TIMEOUT)
             else:
                 wait_for_prompt()
-                # Verify return code FIXME should be optional
+                # Verify return code
                 check_exit_status()
         elif method == "copypaste":
             screen = capture_pane()
@@ -399,7 +382,7 @@ while state.next_step < len(actions):
                 click.getchar()
         else:
             logging.warning("Unknown method {}: {!r}".format(method, data))
-        state.next_step += 1
+        move_forward()
 
     else:
         logging.warning("Unknown command {}.".format(command))
