@@ -6,6 +6,7 @@ import logging
 import os
 import random
 import re
+import select
 import subprocess
 import sys
 import time
@@ -134,6 +135,13 @@ def ansi(code):
     return lambda s: "\x1b[{}m{}\x1b[0m".format(code, s)
 
 
+# Sleeps the indicated delay, but interruptible by pressing ENTER.
+# If interrupted, returns True.
+def interruptible_sleep(t):
+    rfds, _, _ = select.select([0], [], [], t)
+    return 0 in rfds
+
+
 def wait_for_string(s, timeout=TIMEOUT):
     logging.debug("Waiting for string: {}".format(s))
     deadline = time.time() + timeout
@@ -141,7 +149,7 @@ def wait_for_string(s, timeout=TIMEOUT):
         output = capture_pane()
         if s in output:
             return
-        time.sleep(1)
+        if interruptible_sleep(1): return
     raise Exception("Timed out while waiting for {}!".format(s))
 
 
@@ -162,7 +170,7 @@ def wait_for_prompt():
         # We did not recognize a known prompt; wait a bit and check again
         logging.debug("Could not find a known prompt on last line: {!r}"
                       .format(last_line))
-        time.sleep(1)
+        if interruptible_sleep(1): return
     raise Exception("Timed out while waiting for prompt!")
 
 
@@ -238,11 +246,11 @@ def send_keys(data):
             if key == ";":
                 key = "\\;"
             if key == "\n":
-                time.sleep(1)
+                if interruptible_sleep(1): return
             subprocess.check_call(["tmux", "send-keys", key])
-            time.sleep(0.15*random.random())
+            if interruptible_sleep(0.15*random.random()): return
             if key == "\n":
-                time.sleep(1)
+                if interruptible_sleep(1): return
     else:
         subprocess.check_call(["tmux", "send-keys", data])
 
@@ -270,16 +278,23 @@ def move_forward():
     if state.snippet > len(slides[state.slide].snippets):
         state.slide += 1
         state.snippet = 0
-    if state.slide > len(slides):
-        state.slide = len(slides)
+    check_bounds()
+
 
 def move_backward():
     state.snippet -= 1
     if state.snippet < 0:
         state.slide -= 1
         state.snippet = 0
-    if state.slide == 0:
+    check_bounds()
+
+
+def check_bounds():
+    if state.slide < 1:
         state.slide = 1
+    if state.slide >= len(slides):
+        state.slide = len(slides)-1
+
 
 while True:
     state.save()
@@ -287,7 +302,7 @@ while True:
     snippet = slide.snippets[state.snippet-1] if state.snippet else None
     click.clear()
     print("[Slide {}/{}] [Snippet {}/{}] [simulate_type:{}] [verify_status:{}]"
-          .format(state.slide, len(slides),
+          .format(state.slide, len(slides)-1,
                   state.snippet, len(slide.snippets) if slide.snippets else 0,
                   state.simulate_type, state.verify_status))
     print(hrule())
@@ -323,6 +338,7 @@ while True:
     elif command == "g":
         state.slide = click.prompt("Enter slide number", type=int)
         state.snippet = 0
+        check_bounds()
     elif command == "q":
         break
     elif command == "c":
@@ -334,6 +350,9 @@ while True:
             # Advance until a slide that has snippets
             while not slides[state.slide].snippets:
                 move_forward()
+                # But stop if we reach the last slide
+                if state.slide == len(slides)-1:
+                    break
             # And then advance to the snippet
             move_forward()
             continue
