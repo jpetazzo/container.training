@@ -280,6 +280,9 @@ _cmd_start() {
     key_name=$(sync_keys)
 
     AMI=$(_cmd_ami)    # Retrieve the AWS image ID
+    if [ -z "$AMI" ]; then
+        die "I could not find which AMI to use in this region. Try another region?"
+    fi
     TOKEN=$(get_token) # generate a timestamp token for this batch of VMs
     AWS_KEY_NAME=$(make_key_name)
 
