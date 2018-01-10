@@ -134,13 +134,6 @@ _cmd_kube() {
     sudo apt-get install -qy kubelet kubeadm kubectl
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl"
 
-    # Work around https://github.com/kubernetes/kubernetes/issues/53356
-    pssh "
-    if [ ! -f /etc/kubernetes/kubelet.conf ]; then
-        sudo systemctl stop kubelet
-        sudo rm -rf /var/lib/kubelet/pki
-    fi"
-
     # Initialize kube master
     pssh "
     if grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/admin.conf ]; then
@@ -177,7 +170,7 @@ _cmd_kube() {
     pssh "
     if ! grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/kubelet.conf ]; then
         TOKEN=\$(ssh -o StrictHostKeyChecking=no node1 cat /tmp/token)
-        sudo kubeadm join --token \$TOKEN node1:6443
+        sudo kubeadm join --discovery-token-unsafe-skip-ca-verification --token \$TOKEN node1:6443
     fi"
 
     sep "Done"
