@@ -137,7 +137,8 @@ _cmd_kube() {
     # Initialize kube master
     pssh "
     if grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/admin.conf ]; then
-        sudo kubeadm init
+        kubeadm token generate > /tmp/token
+	sudo kubeadm init --token \$(cat /tmp/token)
     fi"
 
     # Put kubeconfig in ubuntu's and docker's accounts
@@ -148,15 +149,6 @@ _cmd_kube() {
         sudo cp /etc/kubernetes/admin.conf /home/docker/.kube/config &&
         sudo chown -R \$(id -u) \$HOME/.kube &&
         sudo chown -R docker /home/docker/.kube
-    fi"
-
-    # Get bootstrap token
-    pssh "
-    if grep -q node1 /tmp/node; then
-        TOKEN_NAME=\$(kubectl -n kube-system get secret -o name | grep bootstrap-token)
-        TOKEN_ID=\$(kubectl -n kube-system get \$TOKEN_NAME -o go-template --template '{{ index .data \"token-id\" }}' | base64 -d)
-        TOKEN_SECRET=\$(kubectl -n kube-system get \$TOKEN_NAME -o go-template --template '{{ index .data \"token-secret\" }}' | base64 -d)
-        echo \$TOKEN_ID.\$TOKEN_SECRET >/tmp/token
     fi"
 
     # Install weave as the pod network
