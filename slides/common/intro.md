@@ -9,12 +9,10 @@
 
 - We recommend having a mentor to help you ...
 
-- ... Or be comfortable spending some time reading the Docker
- [documentation](https://docs.docker.com/) ...
+- ... Or be comfortable spending some time reading the Kubernetes
+ [documentation](https://kubernetes.io/docs/) ...
 
-- ... And looking for answers in the [Docker forums](forums.docker.com),
-  [StackOverflow](http://stackoverflow.com/questions/tagged/docker),
-  and other outlets
+- ... And looking for answers on [StackOverflow](http://stackoverflow.com/questions/tagged/kubernetes) and other outlets
 
 ---
 

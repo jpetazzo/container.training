@@ -131,6 +131,7 @@ And *then* it is time to look at orchestration!
 
   - shell scripts invoking `kubectl`
   - YAML resources descriptions committed to a repo
+  - [Brigade](https://brigade.sh/) (event-driven scripting; no YAML)
   - [Helm](https://github.com/kubernetes/helm) (~package manager)
   - [Spinnaker](https://www.spinnaker.io/) (Netflix' CD platform)
 
@@ -160,7 +161,7 @@ Sorry Star Trek fans, this is not the federation you're looking for!
 
 - Raft recommends low latency between nodes
 
-- What if our cluster spreads multiple regions?
+- What if our cluster spreads to multiple regions?
 
 --
 

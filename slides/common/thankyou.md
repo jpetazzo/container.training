@@ -6,7 +6,7 @@ Thank you!
 
 class: title, in-person
 
-That's all folks! <br/> Questions?
+That's all, folks! <br/> Questions?
 
 ![end](images/end.jpg)
 
@@ -14,13 +14,9 @@ That's all folks! <br/> Questions?
 
 # Links and resources
 
-- [Docker Community Slack](https://community.docker.com/registrations/groups/4316)
-- [Docker Community Forums](https://forums.docker.com/)
-- [Docker Hub](https://hub.docker.com)
-- [Docker Blog](http://blog.docker.com/)
-- [Docker documentation](http://docs.docker.com/)
-- [Docker on StackOverflow](https://stackoverflow.com/questions/tagged/docker)
-- [Docker on Twitter](http://twitter.com/docker)
-- [Play With Docker Hands-On Labs](http://training.play-with-docker.com/)
+- [Kubernetes Community](https://kubernetes.io/community/) - Slack, Google Groups, meetups
+- [Play With Kubernetes Hands-On Labs](https://medium.com/@marcosnils/introducing-pwk-play-with-k8s-159fcfeb787b)
+- [Local meetups](https://www.meetup.com/)
+- [Microsoft Cloud Developer Advocates](https://developer.microsoft.com/en-us/advocates/)
 
 .footnote[These slides (and future updates) are on → http://container.training/]

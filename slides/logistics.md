@@ -2,18 +2,17 @@
 
  - Hello! We are:
 
-   - .emoji[👷🏻‍♀️] AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
+   - .emoji[✨] Bridget ([@bridgetkromhout](https://twitter.com/bridgetkromhout))
 
-   - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Docker Inc.)
+   - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
 
-- The workshop will run from 9am to 4pm
+- This workshop will run from 10:30am-12:45pm.
 
-- There will be a lunch break at noon
+- Lunchtime is after the workshop!
 
-  (And coffee breaks!)
+  (And we will take a 15min break at 11:30am!)
 
 - Feel free to interrupt for questions at any time
 
 - *Especially when you see full screen container pictures!*
 
-- Live feedback, questions, help on @@CHAT@@

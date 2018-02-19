@@ -26,7 +26,7 @@ class: extra-details
 
 - This slide should have a little magnifying glass in the top left corner
 
-  (If it doesn't, it's because CSS is hard — Jérôme is only a backend person, alas)
+  (If it doesn't, it's because CSS is hard — we're only backend people, alas!)
 
 - Slides with that magnifying glass indicate slides providing extra details
 
@@ -62,7 +62,7 @@ Misattributed to Benjamin Franklin
 
 - This is the stuff you're supposed to do!
 
-- Go to [container.training](http://container.training/) to view these slides
+- Go to [indexconf2018.container.training](http://indexconf2018.container.training/) to view these slides
 
 - Join the chat room on @@CHAT@@
 
@@ -78,17 +78,11 @@ class: in-person
 
 ---
 
-class: in-person, pic
-
-![You get five VMs](images/you-get-five-vms.jpg)
-
----
-
 class: in-person
 
-## You get five VMs
+## You get three VMs
 
-- Each person gets 5 private VMs (not shared with anybody else)
+- Each person gets 3 private VMs (not shared with anybody else)
 
 - They'll remain up for the duration of the workshop
 
@@ -153,7 +147,7 @@ class: in-person
 
 <!--
 ```bash
-for N in $(seq 1 5); do
+for N in $(seq 1 3); do
   ssh -o StrictHostKeyChecking=no node$N true
 done
 ```

@@ -48,7 +48,7 @@
 
 .exercise[
 
-- Give us more info about them nodes:
+- Give us more info about the nodes:
   ```bash
   kubectl get nodes -o wide
   ```
@@ -136,7 +136,7 @@ There is already one service on our cluster: the Kubernetes API itself.
   ```
   
   - `-k` is used to skip certificate verification
-  - Make sure to replace 10.96.0.1 with the CLUSTER-IP shown earlier
+  - Make sure to replace 10.96.0.1 with the CLUSTER-IP shown by `$ kubectl get svc`
 
 ]
 
@@ -173,7 +173,7 @@ The error that we see is expected: the Kubernetes API requires authentication.
 
 ## Namespaces
 
-- Namespaces allow to segregate resources
+- Namespaces allow us to segregate resources
 
 .exercise[
 

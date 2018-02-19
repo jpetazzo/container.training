@@ -17,5 +17,5 @@ class: title, in-person
 *Don't stream videos or download big files during the workshop.*<br/>
 *Thank you!*
 
-**Slides: http://container.training/**
+**Slides: http://indexconf2018.container.training/**
 ]

@@ -4,7 +4,7 @@
 
 --
 
-- We used `kubeadm` on "fresh" EC2 instances with Ubuntu 16.04 LTS
+- We used `kubeadm` on Azure instances with Ubuntu 16.04 LTS
 
     1. Install Docker
 
@@ -36,26 +36,25 @@
 
 --
 
-- It's still twice as many steps as setting up a Swarm cluster 😕
+- "It's still twice as many steps as setting up a Swarm cluster 😕 " -- Jérôme
 
 ---
 
 ## Other deployment options
 
-- If you are on Google Cloud:
-  [GKE](https://cloud.google.com/container-engine/)
+- If you are on Azure:
+  [AKS](https://azure.microsoft.com/services/container-service/)
 
-  Empirically the best Kubernetes deployment out there
+- If you are on Google Cloud:
+  [GKE](https://cloud.google.com/kubernetes-engine/)
 
 - If you are on AWS:
-  [kops](https://github.com/kubernetes/kops)
-
-  ... But with AWS re:invent just around the corner, expect some changes
+  [EKS](https://aws.amazon.com/eks/)
 
 - On a local machine:
   [minikube](https://kubernetes.io/docs/getting-started-guides/minikube/),
   [kubespawn](https://github.com/kinvolk/kube-spawn),
-  [Docker4Mac (coming soon)](https://beta.docker.com/)
+  [Docker4Mac](https://docs.docker.com/docker-for-mac/kubernetes/)
 
 - If you want something customizable:
   [kubicorn](https://github.com/kris-nova/kubicorn)

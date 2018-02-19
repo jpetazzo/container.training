@@ -245,4 +245,4 @@ at the Google NOC ...
 <br/>
 .small[are we getting 1000 packets per second]
 <br/>
-.small[of ICMP ECHO traffic from EC2 ?!?”]
+.small[of ICMP ECHO traffic from Azure ?!?”]

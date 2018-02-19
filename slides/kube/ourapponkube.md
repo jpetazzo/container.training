@@ -40,7 +40,7 @@ In this part, we will:
 
 - We could use the Docker Hub
 
-- Or a service offered by our cloud provider (GCR, ECR...)
+- Or a service offered by our cloud provider (ACR, GCR, ECR...)
 
 - Or we could just self-host that registry
 
