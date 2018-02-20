@@ -382,7 +382,7 @@ Of course, option 2 offers more learning opportunities. Right?
 
 .exercise[
 
-- Check the logs of all `run=rng` pods to confirm that only 4 of them are now active:
+- Check the logs of all `run=rng` pods to confirm that only 2 of them are now active:
   ```bash
   kubectl logs -l run=rng
   ```

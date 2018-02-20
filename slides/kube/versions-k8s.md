@@ -1,4 +1,4 @@
-## Brand new versions!
+## Versions Installed
 
 - Kubernetes 1.9.3
 - Docker Engine 18.02.0-ce
