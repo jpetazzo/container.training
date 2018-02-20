@@ -90,7 +90,7 @@ class: in-person
 
 - You can automatically SSH from one VM to another
 
-- The nodes have aliases: `node1`, `node2`, etc.
+- The nodes have aliases: `node1`, `node2`, `node3`.
 
 ---
 

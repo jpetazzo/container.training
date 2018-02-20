@@ -4,6 +4,8 @@
 
    - .emoji[✨] Bridget ([@bridgetkromhout](https://twitter.com/bridgetkromhout))
 
+   - .emoji[🌟 ] Jessica ([@jldeen](https://twitter.com/jldeen))
+
    - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
 
 - This workshop will run from 10:30am-12:45pm.
