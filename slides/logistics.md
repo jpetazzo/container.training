@@ -4,7 +4,7 @@
 
    - .emoji[✨] Bridget ([@bridgetkromhout](https://twitter.com/bridgetkromhout))
 
-   - .emoji[🌟 ] Jessica ([@jldeen](https://twitter.com/jldeen))
+   - .emoji[🌟] Jessica ([@jldeen](https://twitter.com/jldeen))
 
    - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
 
