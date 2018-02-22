@@ -1,8 +1,6 @@
 # Daemon sets
 
-- Remember: we did all that cluster orchestration business for `rng`
-
-- We want one (and exactly one) instance of `rng` per node
+- What if we want one (and exactly one) instance of `rng` per node?
 
 - If we just scale `deploy/rng` to 2, nothing guarantees that they spread
 
