@@ -211,3 +211,11 @@ class: pic
 ![Node, pod, container](images/k8s-arch3-thanks-weave.png)
 
 (Diagram courtesy of Weave Works, used with permission.)
+
+---
+
+class: pic
+
+![One of the best Kubernetes architecture diagrams available](images/k8s-arch4-thanks-luxas.png)
+
+(Diagram courtesy of Lucas Käldström, in [this presentation](https://speakerdeck.com/luxas/kubeadm-cluster-creation-internals-from-self-hosting-to-upgradability-and-ha).)
