@@ -149,7 +149,7 @@ Our rollout is stuck. However, the app is not dead (just 10% slower).
 
 - We want to:
 
-  - revert to `v0.1`
+  - revert to `v0.1` (which we now realize we didn't tag - yikes!)
   - be conservative on availability (always have desired number of available workers)
   - be aggressive on rollout speed (update more than one pod at a time) 
   - give some time to our workers to "warm up" before starting more
@@ -163,7 +163,7 @@ spec:
     spec:
       containers:
       - name: worker
-        image: $REGISTRY/worker:v0.1
+        image: $REGISTRY/worker:latest
   strategy:
     rollingUpdate:
       maxUnavailable: 0
@@ -192,7 +192,7 @@ spec:
         spec:
           containers:
           - name: worker
-            image: $REGISTRY/worker:v0.1
+            image: $REGISTRY/worker:latest
       strategy:
         rollingUpdate:
           maxUnavailable: 0
