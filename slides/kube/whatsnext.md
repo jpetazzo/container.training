@@ -160,7 +160,7 @@ Sorry Star Trek fans, this is not the federation you're looking for!
 
 - Raft recommends low latency between nodes
 
-- What if our cluster spreads multiple regions?
+- What if our cluster spreads to multiple regions?
 
 --
 
