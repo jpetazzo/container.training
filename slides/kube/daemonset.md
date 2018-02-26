@@ -4,7 +4,7 @@
 
 - We want one (and exactly one) instance of `rng` per node
 
-- If we just scale `deploy/rng` to 4, nothing guarantees that they spread
+- If we just scale `deploy/rng` to the number of worker nodes in our cluster, nothing guarantees that the rng processes will be distributed evenly across the cluster
 
 - Instead of a `deployment`, we will use a `daemonset`
 
@@ -22,7 +22,7 @@
 
 ## Creating a daemon set
 
-- Unfortunately, as of Kubernetes 1.8, the CLI cannot create daemon sets
+- Unfortunately, as of Kubernetes 1.9, the CLI cannot create daemon sets
 
 --
 
@@ -406,4 +406,4 @@ The timestamps should give us a hint about how many pods are currently receiving
 
 - Bonus exercise 1: clean up the pods of the "old" daemon set
 
-- Bonus exercise 2: how could we have done to avoid creating new pods?
+- Bonus exercise 2: how could we have done this to avoid creating new pods?
