@@ -89,7 +89,13 @@ The goo.gl URL expands to:
 
 - Connect to https://oneofournodes:3xxxx/
 
-  (You will have to work around the TLS certificate validation warning)
+  - Yes, https. If you use http it will say:
+
+              This page isn’t working
+              <oneofournodes> sent an invalid response.
+              ERR_INVALID_HTTP_RESPONSE
+
+  - You will have to work around the TLS certificate validation warning
 
 <!-- ```open https://node1:3xxxx/``` -->
 
@@ -109,7 +115,7 @@ The goo.gl URL expands to:
 
 ## Granting more rights to the dashboard
 
-- The dashboard documentation [explains how to do](https://github.com/kubernetes/dashboard/wiki/Access-control#admin-privileges)
+- The dashboard documentation [explains how to do this](https://github.com/kubernetes/dashboard/wiki/Access-control#admin-privileges)
 
 - We just need to load another YAML file!
 
