@@ -50,6 +50,8 @@
 
 - If you are on AWS:
   [EKS](https://aws.amazon.com/eks/)
+  or
+  [kops](https://github.com/kubernetes/kops)
 
 - On a local machine:
   [minikube](https://kubernetes.io/docs/getting-started-guides/minikube/),

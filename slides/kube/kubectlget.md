@@ -136,7 +136,8 @@ There is already one service on our cluster: the Kubernetes API itself.
   ```
   
   - `-k` is used to skip certificate verification
-  - Make sure to replace 10.96.0.1 with the CLUSTER-IP shown by `$ kubectl get svc`
+
+  - Make sure to replace 10.96.0.1 with the CLUSTER-IP shown by `kubectl get svc`
 
 ]
 

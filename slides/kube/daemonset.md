@@ -4,16 +4,30 @@
 
 - We want one (and exactly one) instance of `rng` per node
 
-- If we just scale `deploy/rng` to the number of worker nodes in our cluster, nothing guarantees that the rng processes will be distributed evenly across the cluster
+- What if we just scale up `deploy/rng` to the number of nodes?
+
+  - nothing guarantees that the `rng` containers will be distributed evenly
+
+  - if we add nodes later, they will not automatically run a copy of `rng`
+
+  - if we remove (or reboot) a node, one `rng` container will restart elsewhere
 
 - Instead of a `deployment`, we will use a `daemonset`
+
+---
+
+## Daemon sets in practice
 
 - Daemon sets are great for cluster-wide, per-node processes:
 
   - `kube-proxy`
+
   - `weave` (our overlay network)
+
   - monitoring agents
+
   - hardware management tools (e.g. SCSI/FC HBA agents)
+
   - etc.
 
 - They can also be restricted to run [only on some nodes](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/#running-pods-on-only-some-nodes)

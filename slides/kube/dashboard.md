@@ -89,17 +89,29 @@ The goo.gl URL expands to:
 
 - Connect to https://oneofournodes:3xxxx/
 
-  - Yes, https. If you use http it will say:
-
-              This page isn’t working
-              <oneofournodes> sent an invalid response.
-              ERR_INVALID_HTTP_RESPONSE
-
-  - You will have to work around the TLS certificate validation warning
+- You will have to work around the TLS certificate validation warning
 
 <!-- ```open https://node1:3xxxx/``` -->
 
 ]
+
+The dashboard will then ask you which authentication you want to use.
+
+.warning[Make sure that you use `https`! Otherwise, you'll get this error:]
+
+```
+This page isn’t working
+<oneofournodes> sent an invalid response.
+ERR_INVALID_HTTP_RESPONSE
+```
+
+.warning[Chrome 63 (and later) as well as recent versions of Edge will refuse to connect.]
+
+We do not know how to work around that issue for the moment.
+
+---
+
+## Dashboard authentication
 
 - We have three authentication options at this point:
 
