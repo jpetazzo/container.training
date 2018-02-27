@@ -338,5 +338,5 @@ class: extra-details
 
 class: extra-details
 
-- Jérôme is clearly incapable of writing good frontend code
+- "I'm clearly incapable of writing good frontend code!"😀  --Jérôme
 
