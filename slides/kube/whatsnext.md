@@ -133,6 +133,7 @@ And *then* it is time to look at orchestration!
   - YAML resources descriptions committed to a repo
   - [Helm](https://github.com/kubernetes/helm) (~package manager)
   - [Spinnaker](https://www.spinnaker.io/) (Netflix' CD platform)
+  - [Brigade](https://brigade.sh/) (event-driven scripting; no YAML)
 
 ---
 
