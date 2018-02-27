@@ -4,7 +4,7 @@
 
 --
 
-- We used `kubeadm` on "fresh" EC2 instances with Ubuntu 16.04 LTS
+- We used `kubeadm` on freshly installed VM instances running Ubuntu 16.04 LTS
 
     1. Install Docker
 
