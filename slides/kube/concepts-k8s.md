@@ -210,12 +210,24 @@ class: pic
 
 ![Node, pod, container](images/k8s-arch3-thanks-weave.png)
 
-(Diagram courtesy of Weave Works, used with permission.)
-
 ---
 
 class: pic
 
 ![One of the best Kubernetes architecture diagrams available](images/k8s-arch4-thanks-luxas.png)
 
-(Diagram courtesy of Lucas Käldström, in [this presentation](https://speakerdeck.com/luxas/kubeadm-cluster-creation-internals-from-self-hosting-to-upgradability-and-ha).)
+---
+
+## Credits
+
+- The first diagram is courtesy of Weave Works
+
+  - a *pod* can have multiple containers working together
+
+  - IP addresses are associated with *pods*, not with individual containers
+
+- The second diagram is courtesy of Lucas Käldström, in [this presentation](https://speakerdeck.com/luxas/kubeadm-cluster-creation-internals-from-self-hosting-to-upgradability-and-ha)
+
+  - it's one of the best Kubernetes architecture diagrams available!
+
+Both diagrams used with permission.
