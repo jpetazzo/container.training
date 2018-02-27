@@ -17,7 +17,7 @@ chapters:
 - - common/prereqs.md
   - kube/versions-k8s.md
   - common/sampleapp.md
-  - common/composescale.md
+  #- common/composescale.md
   - common/composedown.md
 - - kube/concepts-k8s.md
   - common/declarative.md
