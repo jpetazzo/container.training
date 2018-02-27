@@ -86,15 +86,15 @@ class: in-person
 
 class: in-person, pic
 
-![You get five VMs](images/you-get-five-vms.jpg)
+![You get a cluster](images/you-get-a-cluster.jpg)
 
 ---
 
 class: in-person
 
-## You get five VMs
+## You get a cluster of cloud VMs
 
-- Each person gets 5 private VMs (not shared with anybody else)
+- Each person gets a private cluster of cloud VMs (not shared with anybody else)
 
 - They'll remain up for the duration of the workshop
 

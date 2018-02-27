@@ -10,7 +10,7 @@ Otherwise: check [part 1](#part-1) to learn how to set up your own cluster.
 
 We pick up exactly where we left you, so we assume that you have:
 
-- a five nodes Swarm cluster,
+- a Swarm cluster with at least 3 nodes,
 
 - a self-hosted registry,
 
