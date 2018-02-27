@@ -212,11 +212,11 @@ The error that we see is expected: the Kubernetes API requires authentication.
 
 *Ding ding ding ding ding!*
 
-`kube-system`: "The namespace for objects created by the Kubernetes system"
+The `kube-system` namespace is used for the control plane
 
 ---
 
-## What are all these pods?
+## What are all these control plane pods?
 
 - `etcd` is our etcd server
 
