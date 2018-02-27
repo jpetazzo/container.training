@@ -36,7 +36,7 @@
 
 --
 
-- It's still twice as many steps as setting up a Swarm cluster 😕
+- "It's still twice as many steps as setting up a Swarm cluster 😕" -- Jérôme
 
 ---
 
