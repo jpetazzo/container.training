@@ -24,13 +24,19 @@ class: extra-details
 
 ## Extra details
 
-- This slide should have a little magnifying glass in the top left corner
+- This slide has a little magnifying glass in the top left corner
 
-  (If it doesn't, it's because CSS is hard — Jérôme is only a backend person, alas)
+- This magnifiying glass indicates slides that provide extra details
 
-- Slides with that magnifying glass indicate slides providing extra details
+- Feel free to skip them if:
 
-- Feel free to skip them if you're in a hurry!
+  - you are in a hurry
+
+  - you are new to this and want to avoid cognitive overload
+
+  - you want only the most essential information
+
+- You can review these slides another time if you want, they'll be waiting for you ☺
 
 ---
 
