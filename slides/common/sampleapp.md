@@ -39,21 +39,15 @@ class: extra-details
 
 ---
 
-## Links, naming, and service discovery
+## Service discovery in container-land
 
-- Containers can have network aliases (resolvable through DNS)
+- We do not hard-code IP addresses in the code
 
-- Compose file version 2+ makes each container reachable through its service name
+- We do not hard-code FQDN in the code, either
 
-- Compose file version 1 did require "links" sections
+- We just connect to a service name, and container-magic does the rest
 
-- Our code can connect to services using their short name
-
-  (instead of e.g. IP address or FQDN)
-
-- Network aliases are automatically namespaced
-
-  (i.e. you can have multiple apps declaring and using a service named `database`)
+  (And by container-magic, we mean "a crafty, dynamic, embedded DNS server")
 
 ---
 
@@ -77,6 +71,26 @@ def hash_bytes(data):
 (Full source code available [here](
 https://github.com/jpetazzo/container.training/blob/8279a3bce9398f7c1a53bdd95187c53eda4e6435/dockercoins/worker/worker.py#L17
 ))
+
+---
+
+class: extra-details
+
+## Links, naming, and service discovery
+
+- Containers can have network aliases (resolvable through DNS)
+
+- Compose file version 2+ makes each container reachable through its service name
+
+- Compose file version 1 did require "links" sections
+
+- Network aliases are automatically namespaced
+
+  - you can have multiple apps declaring and using a service named `database`
+
+  - containers in the blue app will resolve `database` to the IP of the blue database
+
+  - containers in the green app will resolve `database` to the IP of the green database
 
 ---
 
