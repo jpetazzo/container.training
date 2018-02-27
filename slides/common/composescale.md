@@ -1,3 +1,74 @@
+## Restarting in the background
+
+- Many flags and commands of Compose are modeled after those of `docker`
+
+.exercise[
+
+- Start the app in the background with the `-d` option:
+  ```bash
+  docker-compose up -d
+  ```
+
+- Check that our app is running with the `ps` command:
+  ```bash
+  docker-compose ps
+  ```
+
+]
+
+`docker-compose ps` also shows the ports exposed by the application.
+
+---
+
+class: extra-details
+
+## Viewing logs
+
+- The `docker-compose logs` command works like `docker logs`
+
+.exercise[
+
+- View all logs since container creation and exit when done:
+  ```bash
+  docker-compose logs
+  ```
+
+- Stream container logs, starting at the last 10 lines for each container:
+  ```bash
+  docker-compose logs --tail 10 --follow
+  ```
+
+<!--
+```wait units of work done```
+```keys ^C```
+-->
+
+]
+
+Tip: use `^S` and `^Q` to pause/resume log output.
+
+---
+
+class: extra-details
+
+## Upgrading from Compose 1.6
+
+.warning[The `logs` command has changed between Compose 1.6 and 1.7!]
+
+- Up to 1.6
+
+  - `docker-compose logs` is the equivalent of `logs --follow`
+
+  - `docker-compose logs` must be restarted if containers are added
+
+- Since 1.7
+
+  - `--follow` must be specified explicitly
+
+  - new containers are automatically picked up by `docker-compose logs`
+
+---
+
 ## Scaling up the application
 
 - Our goal is to make that performance graph go up (without changing a line of code!)

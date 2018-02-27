@@ -151,7 +151,6 @@ Without further ado, let's start our application.
 
 <!--
 ```longwait units of work done```
-```keys ^C```
 -->
 
 ]
@@ -162,99 +161,21 @@ and displays aggregated logs.
 
 ---
 
-## Lots of logs
+## Our application at work
 
-- The application continuously generates logs
+- On the left-hand side, the "rainbow strip" shows the container names
+
+- On the right-hand side, we see the output of our containers
 
 - We can see the `worker` service making requests to `rng` and `hasher`
 
-- Let's put that in the background
-
-.exercise[
-
-- Stop the application by hitting `^C`
-
-]
-
-- `^C` stops all containers by sending them the `TERM` signal
-
-- Some containers exit immediately, others take longer
-  <br/>(because they don't handle `SIGTERM` and end up being killed after a 10s timeout)
-
----
-
-## Restarting in the background
-
-- Many flags and commands of Compose are modeled after those of `docker`
-
-.exercise[
-
-- Start the app in the background with the `-d` option:
-  ```bash
-  docker-compose up -d
-  ```
-
-- Check that our app is running with the `ps` command:
-  ```bash
-  docker-compose ps
-  ```
-
-]
-
-`docker-compose ps` also shows the ports exposed by the application.
-
----
-
-class: extra-details
-
-## Viewing logs
-
-- The `docker-compose logs` command works like `docker logs`
-
-.exercise[
-
-- View all logs since container creation and exit when done:
-  ```bash
-  docker-compose logs
-  ```
-
-- Stream container logs, starting at the last 10 lines for each container:
-  ```bash
-  docker-compose logs --tail 10 --follow
-  ```
-
-<!--
-```wait units of work done```
-```keys ^C```
--->
-
-]
-
-Tip: use `^S` and `^Q` to pause/resume log output.
-
----
-
-class: extra-details
-
-## Upgrading from Compose 1.6
-
-.warning[The `logs` command has changed between Compose 1.6 and 1.7!]
-
-- Up to 1.6
-
-  - `docker-compose logs` is the equivalent of `logs --follow`
-
-  - `docker-compose logs` must be restarted if containers are added
-
-- Since 1.7
-
-  - `--follow` must be specified explicitly
-
-  - new containers are automatically picked up by `docker-compose logs`
+- For `rng` and `hasher`, we see HTTP access logs
 
 ---
 
 ## Connecting to the web UI
+
+- "Logs are exciting and fun!" (No-one, ever)
 
 - The `webui` container exposes a web dashboard; let's view it
 
@@ -294,7 +215,7 @@ work on a local environment, or when using Docker4Mac or Docker4Windows.
 
 How to fix this?
 
-Edit `dockercoins.yml` and comment out the `volumes` section, and try again.
+Stop the app with `^C`, edit `dockercoins.yml`, comment out the `volumes` section, and try again.
 
 ---
 
@@ -338,5 +259,31 @@ class: extra-details
 
 class: extra-details
 
-- "I'm clearly incapable of writing good frontend code!"😀  --Jérôme
+- "I'm clearly incapable of writing good frontend code!" 😀 — Jérôme
+
+---
+
+## Stopping the application
+
+- If we interrupt Compose (with `^C`), it will politely ask the Docker Engine to stop the app
+
+- The Docker Engine will send a `TERM` signal to the containers
+
+- If the containers do not exit in a timely manner, the Engine sends a `KILL` signal
+
+.exercise[
+
+- Stop the application by hitting `^C`
+
+<!--
+```keys ^C```
+-->
+
+]
+
+--
+
+Some containers exit immediately, others take longer.
+
+The containers that do not handle `SIGTERM` end up being killed after a 10s timeout.
 
