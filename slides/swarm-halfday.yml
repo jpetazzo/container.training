@@ -22,6 +22,8 @@ chapters:
 - - common/prereqs.md
   - swarm/versions.md
   - common/sampleapp.md
+  - common/composescale.md
+  - common/composedown.md
   - swarm/swarmkit.md
   - common/declarative.md
   - swarm/swarmmode.md
