@@ -212,9 +212,11 @@ The error that we see is expected: the Kubernetes API requires authentication.
 
 *Ding ding ding ding ding!*
 
+The `kube-system` namespace is used for the control plane
+
 ---
 
-## What are all these pods?
+## What are all these control plane pods?
 
 - `etcd` is our etcd server
 
@@ -233,3 +235,34 @@ The error that we see is expected: the Kubernetes API requires authentication.
 - the pods with a name ending with `-node1` are the master components
   <br/>
   (they have been specifically "pinned" to the master node)
+
+---
+
+## What about `kube-public`?
+
+.exercise[
+
+- List the pods in the `kube-system` namespace:
+  ```bash
+  kubectl -n kube-public get pods
+  ```
+
+]
+
+--
+
+* Maybe it doesn't have pods, but what secrets is `kube-public` keeping?
+
+--
+
+.exercise[
+
+- List the secrets in the `kube-public` namespace:
+  ```bash
+  kubectl -n kube-public get secrets
+  ```
+
+]
+--
+
+- `kube-public` is created by kubeadm & [used for security bootstrapping](http://blog.kubernetes.io/2017/01/stronger-foundation-for-creating-and-managing-kubernetes-clusters.html)
