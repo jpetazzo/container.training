@@ -1,6 +1,6 @@
 # Daemon sets
 
-- Remember: we did all that cluster orchestration business for `rng`
+- We want to scale `rng` in a way that is different from how we scaled `worker`
 
 - We want one (and exactly one) instance of `rng` per node
 
