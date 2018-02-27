@@ -11,7 +11,8 @@ exclude:
 chapters:
 - common/title.md
 #- logistics.md
-- common/intro.md
+- kube/intro.md
+- common/about-slides.md
 - common/toc.md
 - - common/prereqs.md
   - kube/versions-k8s.md

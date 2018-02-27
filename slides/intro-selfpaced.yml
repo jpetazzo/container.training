@@ -12,7 +12,8 @@ exclude:
 chapters:
 - common/title.md
 # - common/logistics.md
-- common/intro.md
+- intro/intro.md
+- common/about-slides.md
 - common/toc.md
 - - intro/Docker_Overview.md
   #- intro/Docker_History.md
