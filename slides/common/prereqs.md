@@ -175,7 +175,7 @@ fi
   ```bash
   ssh node2
   ```
-- Type `exit` or `^D` to come back to node1
+- Type `exit` or `^D` to come back to `node1`
 
 <!-- ```bash exit``` -->
 
