@@ -280,7 +280,7 @@ _cmd_start() {
     result=$(aws ec2 run-instances \
         --key-name $AWS_KEY_NAME \
         --count $COUNT \
-        --instance-type t2.medium \
+        --instance-type ${AWS_INSTANCE_TYPE-t2.medium} \
         --client-token $TOKEN \
         --image-id $AMI)
     reservation_id=$(echo "$result" | head -1 | awk '{print $2}')

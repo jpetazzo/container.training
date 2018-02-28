@@ -15,5 +15,6 @@ services:
             AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
             AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
             AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+            AWS_INSTANCE_TYPE: ${AWS_INSTANCE_TYPE}
             USER: ${USER}
         entrypoint: /root/prepare-vms/workshopctl
