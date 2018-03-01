@@ -39,7 +39,10 @@ _cmd_cards() {
     need_tag $TAG
     need_settings $SETTINGS
 
-    aws_get_instance_ips_by_tag $TAG >tags/$TAG/ips.txt
+    # If you're not using AWS, populate the ips.txt file manually
+    if [ ! -f tags/$TAG/ips.txt ]; then
+      aws_get_instance_ips_by_tag $TAG >tags/$TAG/ips.txt
+    fi
 
     # Remove symlinks to old cards
     rm -f ips.html ips.pdf
