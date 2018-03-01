@@ -44,25 +44,33 @@ The goo.gl URL expands to:
 ---
 
 
-## 2) Bypass SSL for the dashboard
+## 2) Bypassing SSL for the dashboard
 
-The Kubernetes dashboard uses https, but we don't have a certificate
+- The Kubernetes dashboard uses HTTPS, but we don't have a certificate
 
-Chrome 63 (and later) as well as recent versions of Edge will refuse to connect
+- Recent versions of Chrome (63 and later) and Edge will refuse to connect
 
-In real life, we'd use something like [Let's Encrypt](https://letsencrypt.org/)
+  (You won't even get the option to ignore a security warning!)
 
-For this workshop, we'll forward http to https _(do not try this at home!)_
+- We could (and should!) get a certificate, e.g. with [Let's Encrypt](https://letsencrypt.org/)
 
---
+- ... But for convenience, for this workshop, we'll forward HTTP to HTTPS
 
-.warning[All our dashboard traffic is now clear-text, including passwords!]
+.warning[Do not do this at home, or even worse, at work!]
 
---
+---
+
+## Running the SSL unwrapper
+
+- We are going to run [`socat`](http://www.dest-unreach.org/socat/doc/socat.html), telling it to accept TCP connections and relay them over SSL
+
+- Then we will expose that `socat` instance with a `NodePort` service
+
+- For convenience, these steps are neatly encapsulated into another YAML file
 
 .exercise[
 
-- Forward http to https
+- Apply the convenient YAML file, and defeat SSL protection:
   ```bash
   kubectl apply -f https://goo.gl/tA7GLz
   ```
@@ -71,7 +79,9 @@ For this workshop, we'll forward http to https _(do not try this at home!)_
 
 The goo.gl URL expands to:
 <br/>
-.small[https://gist.githubusercontent.com/jpetazzo/c53a28b5b7fdae88bc3c5f0945552c04/raw/da13ef1bdd38cc0e90b7a4074be8d6a0215e1a65/socat.yaml]
+.small[.small[https://gist.githubusercontent.com/jpetazzo/c53a28b5b7fdae88bc3c5f0945552c04/raw/da13ef1bdd38cc0e90b7a4074be8d6a0215e1a65/socat.yaml]]
+
+.warning[All our dashboard traffic is now clear-text, including passwords!]
 
 ---
 
@@ -127,15 +137,15 @@ The dashboard will then ask you which authentication you want to use.
 
 ---
 
-## What about making the dashboard reachable from outside?
+## Exposing the dashboard over HTTPS
 
-- We took a shortcut by forwarding http to https inside the cluster
+- We took a shortcut by forwarding HTTP to HTTPS inside the cluster
 
-- If we were really using https...
+- Let's expose the dashboard over HTTPS!
 
-- Inside, the dashboard is exposed through a `ClusterIP` service
+- The dashboard is exposed through a `ClusterIP` service (internal traffic only)
 
-- From outside, we need a `NodePort` service instead
+- We will change that into a `NodePort` service (accepting outside traffic)
 
 .exercise[
 
@@ -174,6 +184,18 @@ The dashboard will then ask you which authentication you want to use.
 - Check the port that was assigned with `kubectl -n kube-system get services`
 
 ]
+
+---
+
+## Running the Kubernetes dashboard securely
+
+- The steps that we just showed you are *for educational purposes only!*
+
+- If you do that on your production cluster, people [can and will abuse it](https://blog.redlock.io/cryptojacking-tesla)
+
+- For an in-depth discussion about securing the dashboard,
+  <br/>
+  check [this excellent post on Heptio's blog](https://blog.heptio.com/on-securing-the-kubernetes-dashboard-16b09b1b7aca)
 
 ---
 
@@ -227,5 +249,3 @@ The dashboard will then ask you which authentication you want to use.
 
 - Example: the official setup instructions for most pod networks
 
-
----
