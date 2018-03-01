@@ -36,6 +36,14 @@ The Docker Compose file here is used to build a image with all the dependencies 
 - `AWS_SECRET_ACCESS_KEY`
 - `AWS_DEFAULT_REGION`
 
+If you're not using AWS, set these to placeholder values:
+
+```
+export AWS_ACCESS_KEY_ID="foo"
+export AWS_SECRET_ACCESS_KEY="foo"
+export AWS_DEFAULT_REGION="foo"
+```
+
 ### Update/copy `settings/example.yaml`
 
 Then pass `settings/YOUR_WORKSHOP_NAME-settings.yaml` as an argument to `./workshopctl deploy`, `./workshopctl cards`, etc.
@@ -76,7 +84,7 @@ test         Run tests (pre-flight checks) on a batch of VMs
 - During `start` it will add your default local SSH key to all instances under the `ubuntu` user.
 - During `deploy` it will create the `docker` user with password `training`, which is printing on the cards for students. For now, this is hard coded.
 
-### Example Steps to Launch a Batch of Instances for a Workshop
+### Example Steps to Launch a Batch of AWS Instances for a Workshop
 
 - Run `./workshopctl start N` Creates `N` EC2 instances
   - Your local SSH key will be synced to instances under `ubuntu` user
@@ -88,6 +96,20 @@ test         Run tests (pre-flight checks) on a batch of VMs
 - Run `./workshopctl cards TAG settings/somefile.yaml` generates PDF/HTML files to print and cut and hand out to students
 - *Have a great workshop*
 - Run `./workshopctl stop TAG` to terminate instances.
+
+### Example Steps to Configure Instances from another source
+
+- Launch instances from another source.
+- Set placeholder values for AWS settings.
+- Choose a tag. It could be the event name, datestamp, etc.
+- Create a file with the IPs to be configured
+  - The file should be named `prepare-vms/tags/<tag>/ips.txt`
+  - Format is one IP per line, no other info needed.
+- Ensure the settings file is current: `prepare-vms/settings/kube101.yaml`
+- For a tag called `test`, configure instances: `workshopctl deploy test settings/kube101.yaml`
+- Optionally, configure Kubernetes clusters of the size in the settings: `workshopctl kube test`
+- Generate `test` cards to print and hand out: `workshopctl cards test settings/kube101.yaml`
+- Print the cards file: prepare-vms/tags/test/ips.html
 
 ## Other Tools
 
@@ -142,6 +164,8 @@ The `postprep.rc` file will be copied via parallel-ssh to all of the VMs and exe
 #### Generate cards
 
     $ ./workshopctl cards TAG settings/somefile.yaml
+
+If you want to generate both HTML and PDF cards, install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html); without that installed, only HTML cards will be generated.
 
 #### List tags
 
