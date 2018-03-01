@@ -20,7 +20,7 @@ DEPENDENCIES="
     ssh
     curl
     jq
-    parallel-ssh
+    pssh
     wkhtmltopdf
     man
     "
