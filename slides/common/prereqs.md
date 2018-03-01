@@ -159,7 +159,7 @@ class: in-person
 
 <!--
 ```bash
-for N in $(seq 1 5); do
+for N in $(awk '/node/{print $2}' /etc/hosts); do
   ssh -o StrictHostKeyChecking=no node$N true
 done
 ```
