@@ -212,7 +212,7 @@ The error that we see is expected: the Kubernetes API requires authentication.
 
 *Ding ding ding ding ding!*
 
-The `kube-system` namespace is used for the control plane
+The `kube-system` namespace is used for the control plane.
 
 ---
 
@@ -242,7 +242,7 @@ The `kube-system` namespace is used for the control plane
 
 .exercise[
 
-- List the pods in the `kube-system` namespace:
+- List the pods in the `kube-public` namespace:
   ```bash
   kubectl -n kube-public get pods
   ```
@@ -251,7 +251,7 @@ The `kube-system` namespace is used for the control plane
 
 --
 
-* Maybe it doesn't have pods, but what secrets is `kube-public` keeping?
+- Maybe it doesn't have pods, but what secrets is `kube-public` keeping?
 
 --
 
