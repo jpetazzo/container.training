@@ -247,6 +247,17 @@ content but you also know to skip during presentation.
 - Last 15-30 minutes is for stateful services, DAB files, and questions.
 
 
+### Pre-built images
+
+There are pre-built images for the 4 components of the DockerCoins demo app: `dockercoins/hasher:v0.1`, `dockercoins/rng:v0.1`, `dockercoins/webui:v0.1`, and `dockercoins/worker:v0.1`. They correspond to the code in this repository.
+
+There are also three variants, for demo purposes:
+
+- `dockercoins/rng:v0.2` is broken (the server won't even start),
+- `dockercoins/webui:v0.2` has bigger font on the Y axis and a green graph (instead of blue),
+- `dockercoins/worker:v0.2` is 11x slower than `v0.1`.
+
+
 ## Past events
 
 Since its inception, this workshop has been delivered dozens of times,
