@@ -4,6 +4,7 @@
 
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
+- [Parallel SSH](https://code.google.com/archive/p/parallel-ssh/) (on a Mac: `brew install pssh`)
 
 ## General Workflow
 
