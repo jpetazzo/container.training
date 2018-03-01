@@ -89,7 +89,7 @@ test         Run tests (pre-flight checks) on a batch of VMs
 - Run `./workshopctl start N` Creates `N` EC2 instances
   - Your local SSH key will be synced to instances under `ubuntu` user
   - AWS instances will be created and tagged based on date, and IP's stored in `prepare-vms/tags/`
-- Run `./workshopctl deploy TAG settings/somefile.yaml` to run `scripts/postprep.rc` via parallel-ssh
+- Run `./workshopctl deploy TAG settings/somefile.yaml` to run `lib/postprep.py` via parallel-ssh
   - If it errors or times out, you should be able to rerun
   - Requires good connection to run all the parallel SSH connections, up to 100 parallel (ProTip: create dedicated management instance in same AWS region where you run all these utils from)
 - Run `./workshopctl pull-images TAG` to pre-pull a bunch of Docker images to the instances
@@ -111,6 +111,7 @@ test         Run tests (pre-flight checks) on a batch of VMs
 - Generate `test` cards to print and hand out: `workshopctl cards test settings/kube101.yaml`
 - Print the cards file: prepare-vms/tags/test/ips.html
 
+
 ## Other Tools
 
 ### Deploying your SSH key to all the machines
@@ -118,13 +119,6 @@ test         Run tests (pre-flight checks) on a batch of VMs
 - Make sure that you have SSH keys loaded (`ssh-add -l`).
 - Source `rc`.
 - Run `pcopykey`.
-
-
-### Installing extra packages
-
-- Source `postprep.rc`.
-  (This will install a few extra packages, add entries to
-  /etc/hosts, generate SSH keys, and deploy them on all hosts.)
 
 
 ## Even More Details
@@ -155,7 +149,7 @@ Instances can be deployed manually using the `deploy` command:
 
     $ ./workshopctl deploy TAG settings/somefile.yaml
 
-The `postprep.rc` file will be copied via parallel-ssh to all of the VMs and executed.
+The `postprep.py` file will be copied via parallel-ssh to all of the VMs and executed.
 
 #### Pre-pull images
 
