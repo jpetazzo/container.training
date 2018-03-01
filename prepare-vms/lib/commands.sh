@@ -127,7 +127,7 @@ _cmd kube "Setup kubernetes clusters with kubeadm (must be run AFTER deploy)"
 _cmd_kube() {
 
     # Install packages
-    pssh "
+    pssh --timeout 200 "
     curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg |
     sudo apt-key add - &&
     echo deb http://apt.kubernetes.io/ kubernetes-xenial main |
@@ -138,7 +138,7 @@ _cmd_kube() {
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl"
 
     # Initialize kube master
-    pssh "
+    pssh --timeout 200 "
     if grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/admin.conf ]; then
         kubeadm token generate > /tmp/token
 	sudo kubeadm init --token \$(cat /tmp/token)
@@ -162,7 +162,7 @@ _cmd_kube() {
     fi"
 
     # Join the other nodes to the cluster
-    pssh "
+    pssh --timeout 200 "
     if ! grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/kubelet.conf ]; then
         TOKEN=\$(ssh -o StrictHostKeyChecking=no node1 cat /tmp/token)
         sudo kubeadm join --discovery-token-unsafe-skip-ca-verification --token \$TOKEN node1:6443
