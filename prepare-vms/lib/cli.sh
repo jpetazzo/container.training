@@ -2,7 +2,7 @@
 _ERR() {
     error "Command $BASH_COMMAND failed (exit status: $?)"
 }
-set -e
+set -eE
 trap _ERR ERR
 
 die() {
