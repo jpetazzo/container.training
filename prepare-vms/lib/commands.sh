@@ -171,6 +171,19 @@ _cmd_kube() {
     sep "Done"
 }
 
+_cmd kubetest "Check that all notes are reporting as Ready"
+_cmd_kubetest() {
+    # There are way too many backslashes in the command below.
+    # Feel free to make that better ♥
+    pssh -i "
+    set -e
+    if grep -q node1 /tmp/node; then
+      for NODE in \$(awk /\ node/\ {print\ \\\$2} /etc/hosts); do 
+        echo \$NODE ; kubectl get nodes | grep -w \$NODE | grep -w Ready
+      done
+    fi"
+}
+
 _cmd ids "List the instance IDs belonging to a given tag or token"
 _cmd_ids() {
     TAG=$1
