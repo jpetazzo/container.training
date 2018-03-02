@@ -99,18 +99,34 @@ test         Run tests (pre-flight checks) on a batch of VMs
 
 ### Example Steps to Configure Instances from another source
 
-- Launch instances from another source.
-- Set placeholder values for AWS settings.
-- Choose a tag. It could be the event name, datestamp, etc.
+- Launch instances via another method. You'll need to get the instance IPs and be able to ssh into them.
+- Set placeholder values for [AWS environment variable settings](#required-environment-variables).
+- Choose a tag. It could be an event name, datestamp, etc. Create a directory for your tag: `prepare-vms/tags/<tag>/`
 - Create a file with the IPs to be configured
   - The file should be named `prepare-vms/tags/<tag>/ips.txt`
   - Format is one IP per line, no other info needed.
-- Ensure the settings file is current: `prepare-vms/settings/kube101.yaml`
+- Ensure the settings file is current (especially the number of nodes): `prepare-vms/settings/kube101.yaml`
 - For a tag called `test`, configure instances: `workshopctl deploy test settings/kube101.yaml`
 - Optionally, configure Kubernetes clusters of the size in the settings: `workshopctl kube test`
 - Generate `test` cards to print and hand out: `workshopctl cards test settings/kube101.yaml`
 - Print the cards file: prepare-vms/tags/test/ips.html
 
+### Example Steps to Launch Azure Instances
+
+- Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) and authenticate with a valid account
+- Customize `azuredeploy.parameters.json`
+  - Required:
+    - Provide the SSH public key you plan to use for instance configuration
+  - Optional:
+    - Choose a name for the workshop (default is "workshop")
+    - Choose the number of instances (default is 3)
+    - Customize the desired instance size (default is Standard_D2_v3)
+ - Launch instances with your chosen resource group name and your preferred region; the examples are "workshop" and "eastus":
+```
+az group create --name workshop --location eastus
+az group deployment create --resource-group workshop --template-file azuredeploy.json --parameters @azuredeploy.parameters.json
+az vm list-ip-addresses --resource-group workshop --output table
+```
 
 ## Other Tools
 
