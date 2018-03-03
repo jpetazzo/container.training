@@ -175,10 +175,10 @@ _cmd kubetest "Check that all notes are reporting as Ready"
 _cmd_kubetest() {
     # There are way too many backslashes in the command below.
     # Feel free to make that better ♥
-    pssh -i "
+    pssh "
     set -e
     if grep -q node1 /tmp/node; then
-      for NODE in \$(awk /\ node/\ {print\ \\\$2} /etc/hosts); do 
+      for NODE in \$(awk /\ node/\ {print\ \\\$2} /etc/hosts); do
         echo \$NODE ; kubectl get nodes | grep -w \$NODE | grep -w Ready
       done
     fi"
@@ -434,6 +434,7 @@ tag_is_reachable() {
 }
 
 test_tag() {
+    TAG=$1
     ips_file=tags/$TAG/ips.txt
     info "Picking a random IP address in $ips_file to run tests."
     n=$((1 + $RANDOM % $(wc -l <$ips_file)))
