@@ -434,6 +434,7 @@ tag_is_reachable() {
 }
 
 test_tag() {
+    TAG=$1
     ips_file=tags/$TAG/ips.txt
     info "Picking a random IP address in $ips_file to run tests."
     n=$((1 + $RANDOM % $(wc -l <$ips_file)))
