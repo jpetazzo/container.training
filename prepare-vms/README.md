@@ -57,6 +57,7 @@ workshopctl - the orchestration workshop swiss army knife
 Commands:
 ami          Show the AMI that will be used for deployment
 amis         List Ubuntu AMIs in the current region
+build        Build the Docker image to run this program in a container
 cards        Generate ready-to-print cards for a batch of VMs
 deploy       Install Docker on a bunch of running VMs
 ec2quotas    Check our EC2 quotas (max instances)
@@ -64,7 +65,7 @@ help         Show available commands
 ids          List the instance IDs belonging to a given tag or token
 ips          List the IP addresses of the VMs for a given tag or token
 kube         Setup kubernetes clusters with kubeadm (must be run AFTER deploy)
-kubetest     Test health of kubernetes clusters (must be run AFTER kube)
+kubetest     Check that all notes are reporting as Ready
 list         List available batches in the current region
 opensg       Open the default security group to ALL ingress traffic
 pull_images  Pre-pull a bunch of Docker images
@@ -73,6 +74,7 @@ start        Start a batch of VMs
 status       List instance status for a given batch
 stop         Stop (terminate, shutdown, kill, remove, destroy...) instances
 test         Run tests (pre-flight checks) on a batch of VMs
+wrap         Run this program in a container
 ```
 
 ### Summary of What `./workshopctl` Does For You
