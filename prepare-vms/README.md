@@ -64,6 +64,7 @@ help         Show available commands
 ids          List the instance IDs belonging to a given tag or token
 ips          List the IP addresses of the VMs for a given tag or token
 kube         Setup kubernetes clusters with kubeadm (must be run AFTER deploy)
+kubetest     Test health of kubernetes clusters (must be run AFTER kube)
 list         List available batches in the current region
 opensg       Open the default security group to ALL ingress traffic
 pull_images  Pre-pull a bunch of Docker images
