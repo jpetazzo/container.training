@@ -131,6 +131,13 @@ az group deployment create --resource-group workshop --template-file azuredeploy
 az vm list-ip-addresses --resource-group workshop --output table
 ```
 
+After the workshop is over, remove the instances:
+
+```
+az group delete --resource-group workshop
+```
+
+
 ## Other Tools
 
 ### Deploying your SSH key to all the machines
