@@ -4,7 +4,12 @@
 
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
-- [Parallel SSH](https://code.google.com/archive/p/parallel-ssh/) (on a Mac: `brew install pssh`)
+- [Parallel SSH](https://code.google.com/archive/p/parallel-ssh/) (on a Mac: `brew install pssh`) - the configuration scripts require this
+
+And if you want to generate printable cards:
+
+- [pyyaml](https://pypi.python.org/pypi/PyYAML) (on a Mac: `brew install pyyaml`)
+- [jinja2](https://pypi.python.org/pypi/Jinja2) (on a Mac: `brew install jinja2`)
 
 ## General Workflow
 
@@ -43,6 +48,8 @@ export AWS_ACCESS_KEY_ID="foo"
 export AWS_SECRET_ACCESS_KEY="foo"
 export AWS_DEFAULT_REGION="foo"
 ```
+
+If you don't have the `aws` CLI installed, you will get a warning that it's a missing dependency. If you're not using AWS you can ignore this.
 
 ### Update/copy `settings/example.yaml`
 
@@ -100,20 +107,6 @@ wrap         Run this program in a container
 - *Have a great workshop*
 - Run `./workshopctl stop TAG` to terminate instances.
 
-### Example Steps to Configure Instances from another source
-
-- Launch instances via another method. You'll need to get the instance IPs and be able to ssh into them.
-- Set placeholder values for [AWS environment variable settings](#required-environment-variables).
-- Choose a tag. It could be an event name, datestamp, etc. Create a directory for your tag: `prepare-vms/tags/<tag>/`
-- Create a file with the IPs to be configured
-  - The file should be named `prepare-vms/tags/<tag>/ips.txt`
-  - Format is one IP per line, no other info needed.
-- Ensure the settings file is current (especially the number of nodes): `prepare-vms/settings/kube101.yaml`
-- For a tag called `test`, configure instances: `workshopctl deploy test settings/kube101.yaml`
-- Optionally, configure Kubernetes clusters of the size in the settings: `workshopctl kube test`
-- Generate `test` cards to print and hand out: `workshopctl cards test settings/kube101.yaml`
-- Print the cards file: prepare-vms/tags/test/ips.html
-
 ### Example Steps to Launch Azure Instances
 
 - Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) and authenticate with a valid account
@@ -128,7 +121,29 @@ wrap         Run this program in a container
 ```
 az group create --name workshop --location eastus
 az group deployment create --resource-group workshop --template-file azuredeploy.json --parameters @azuredeploy.parameters.json
+```
+
+The `az group deployment create` command can take several minutes and will only say `- Running ..` until it completes, unless you increase the verbosity with `--verbose` or `--debug`.
+
+To display the IPs of the instances you've launched:
+
+```
 az vm list-ip-addresses --resource-group workshop --output table
+```
+
+If you want to put the IPs into `prepare-vms/tags/<tag>/ips.txt` for a tag of "myworkshop":
+
+1) If you haven't yet installed `jq` and/or created your event's tags directory in `prepare-vms`:
+
+```
+brew install jq
+mkdir -p tags/myworkshop
+```
+
+2) And then generate the IP list:
+
+```
+az vm list-ip-addresses --resource-group workshop --output json | jq -r '.[].virtualMachine.network.publicIpAddresses[].ipAddress' > tags/myworkshop/ips.txt
 ```
 
 After the workshop is over, remove the instances:
@@ -136,6 +151,21 @@ After the workshop is over, remove the instances:
 ```
 az group delete --resource-group workshop
 ```
+
+### Example Steps to Configure Instances from a non-AWS Source
+
+- Launch instances via your preferred method. You'll need to get the instance IPs and be able to ssh into them.
+- Set placeholder values for [AWS environment variable settings](#required-environment-variables).
+- Choose a tag. It could be an event name, datestamp, etc. Ensure you have created a directory for your tag: `prepare-vms/tags/<tag>/`
+- If you have not already generated a file with the IPs to be configured:
+  - The file should be named `prepare-vms/tags/<tag>/ips.txt`
+  - Format is one IP per line, no other info needed.
+- Ensure the settings file is as desired (especially the number of nodes): `prepare-vms/settings/kube101.yaml`
+- For a tag called `myworkshop`, configure instances: `workshopctl deploy myworkshop settings/kube101.yaml`
+- Optionally, configure Kubernetes clusters of the size in the settings: `workshopctl kube myworkshop`
+- Optionally, test your Kubernetes clusters. They may take a little time to become ready: `workshopctl kubetest myworkshop`
+- Generate cards to print and hand out: `workshopctl cards myworkshop settings/kube101.yaml`
+- Print the cards file: `prepare-vms/tags/myworkshop/ips.html`
 
 
 ## Other Tools
@@ -186,6 +216,8 @@ The `postprep.py` file will be copied via parallel-ssh to all of the VMs and exe
     $ ./workshopctl cards TAG settings/somefile.yaml
 
 If you want to generate both HTML and PDF cards, install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html); without that installed, only HTML cards will be generated.
+
+If you don't have `wkhtmltopdf` installed, you will get a warning that it is a missing dependency. If you plan to just print the HTML cards, you can ignore this.
 
 #### List tags
 
