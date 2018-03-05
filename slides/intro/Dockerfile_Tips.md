@@ -90,7 +90,7 @@ COPY <test data sets and fixtures>
 RUN <unit tests>
 FROM <baseimage>
 RUN <install dependencies>
-COPY <vcode>
+COPY <code>
 RUN <build code>
 CMD, EXPOSE ...
 ```
