@@ -95,6 +95,6 @@ RUN <build code>
 CMD, EXPOSE ...
 ```
 
-* The build fails as soon as an instructions fails
+* The build fails as soon as an instruction fails
 * If `RUN <unit tests>` fails, the build doesn't produce an image
 * If it succeeds, it produces a clean image (without test libraries and data)
