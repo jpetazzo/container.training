@@ -116,7 +116,7 @@ wrap         Run this program in a container
   - Optional:
     - Choose a name for the workshop (default is "workshop")
     - Choose the number of instances (default is 3)
-    - Customize the desired instance size (default is Standard_D2_v3)
+    - Customize the desired instance size (default is Standard_D1_v2)
  - Launch instances with your chosen resource group name and your preferred region; the examples are "workshop" and "eastus":
 ```
 az group create --name workshop --location eastus
