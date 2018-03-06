@@ -185,6 +185,7 @@ The curl command should now output:
 - Build and push the images:
   ```bash
   export REGISTRY
+  export TAG=v0.1
   docker-compose -f dockercoins.yml build
   docker-compose -f dockercoins.yml push
   ```
@@ -220,6 +221,30 @@ services:
 
 ---
 
+class: extra-details
+
+## Avoiding the `latest` tag
+
+.warning[Make sure that you've set the `TAG` variable properly!]
+
+- If you don't, the tag will default to `latest`
+
+- The problem with `latest`: nobody knows what it points to!
+
+  - the latest commit in the repo?
+
+  - the latest commit in some branch? (Which one?)
+
+  - the latest tag?
+
+  - some random version pushed by a random team member?
+
+- If you keep pushing the `latest` tag, how do you roll back?
+
+- Image tags should be meaningful, i.e. correspond to code branches, tags, or hashes
+
+---
+
 ## Deploying all the things
 
 - We can now deploy our code (as well as a redis instance)
@@ -234,7 +259,7 @@ services:
 - Deploy everything else:
   ```bash
     for SERVICE in hasher rng webui worker; do
-      kubectl run $SERVICE --image=$REGISTRY/$SERVICE
+      kubectl run $SERVICE --image=$REGISTRY/$SERVICE:$TAG
     done
   ```
 
@@ -268,7 +293,7 @@ services:
 
 ---
 
-# Exposing services internally 
+# Exposing services internally
 
 - Three deployments need to be reachable by others: `hasher`, `redis`, `rng`
 
