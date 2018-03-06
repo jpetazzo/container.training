@@ -1,6 +1,5 @@
 title: |
-  Deploying and Scaling Microservices
-  with Kubernetes
+  Kubernetes 101
 
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
@@ -12,7 +11,7 @@ exclude:
 
 chapters:
 - common/title.md
-- logistics.md
+- logistics-bridget.md
 - kube/intro.md
 - common/about-slides.md
 - common/toc.md
@@ -36,4 +35,4 @@ chapters:
   - kube/rollout.md
   - kube/whatsnext.md
   - common/thankyou.md
-  - kube/links.md
+  - kube/links-bridget.md
