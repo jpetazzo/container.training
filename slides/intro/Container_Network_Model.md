@@ -434,7 +434,7 @@ When creating a network, extra options can be provided.
 
 * `--internal` disables outbound traffic (the network won't have a default gateway).
 
-* `--gateway` indicates which address to use for the gateway (when utbound traffic is allowed).
+* `--gateway` indicates which address to use for the gateway (when outbound traffic is allowed).
 
 * `--subnet` (in CIDR notation) indicates the subnet to use.
 
