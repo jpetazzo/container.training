@@ -70,7 +70,7 @@ Misattributed to Benjamin Franklin
 
 - Go to [container.training](http://container.training/) to view these slides
 
-- Join the chat room on @@CHAT@@
+- Join the chat room: @@CHAT@@
 
 <!-- ```open http://container.training/``` -->
 
