@@ -1,7 +1,8 @@
 ## A brief introduction
 
-- This was initially written by [Jérôme Petazzoni](https://twitter.com/jpetazzo) to support in-person,
-  instructor-led workshops and tutorials; credit is also due to [multiple contributors](https://github.com/jpetazzo/container.training/graphs/contributors)
+- This was initially written to support in-person, instructor-led workshops and tutorials
+
+- These materials are maintained by [Jérôme Petazzoni](https://twitter.com/jpetazzo) and [multiple contributors](https://github.com/jpetazzo/container.training/graphs/contributors)
 
 - You can also follow along on your own, at your own pace
 
