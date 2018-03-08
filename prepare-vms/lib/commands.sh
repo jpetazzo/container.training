@@ -177,7 +177,9 @@ _cmd_kubetest() {
     # Feel free to make that better ♥
     pssh "
     set -e
+    [ -f /tmp/node ]
     if grep -q node1 /tmp/node; then
+      which kubectl
       for NODE in \$(awk /\ node/\ {print\ \\\$2} /etc/hosts); do
         echo \$NODE ; kubectl get nodes | grep -w \$NODE | grep -w Ready
       done
