@@ -93,7 +93,7 @@ Success!
 * Older Dockerfiles also have the `ADD` instruction.
   <br/>It is similar but can automatically extract archives.
 
-* If we really wanted to compile C code in a compiler, we would:
+* If we really wanted to compile C code in a container, we would:
 
   * Place it in a different directory, with the `WORKDIR` instruction.
 
