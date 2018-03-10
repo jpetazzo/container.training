@@ -94,8 +94,6 @@ RUN apt-get update && apt-get install -y wget && apt-get clean
 
 It is also possible to break a command onto multiple lines:
 
-It is possible to execute multiple commands in a single step:
-
 ```dockerfile
 RUN apt-get update \
  && apt-get install -y wget \
