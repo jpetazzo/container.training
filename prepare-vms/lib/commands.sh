@@ -132,7 +132,7 @@ _cmd_kube() {
     sudo apt-key add - &&
     echo deb http://apt.kubernetes.io/ kubernetes-xenial main |
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
-    pssh "
+    pssh --timeout 200 "
     sudo apt-get update -q &&
     sudo apt-get install -qy kubelet kubeadm kubectl
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl"
