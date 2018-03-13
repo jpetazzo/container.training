@@ -87,6 +87,17 @@ The goo.gl URL expands to:
 
 ## Connecting to the dashboard
 
+.exercise[
+
+- Check which port the dashboard is on:
+  ```bash
+  kubectl -n kube-system get svc socat
+  ```
+
+]
+
+You'll want the `3xxxx` port.
+
 
 .exercise[
 
