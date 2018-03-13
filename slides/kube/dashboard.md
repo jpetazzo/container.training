@@ -175,7 +175,7 @@ The dashboard will then ask you which authentication you want to use.
 
 ## Editing the `kubernetes-dashboard` service
 
-- If we look at the YAML that we loaded just before, we'll get a hint
+- If we look at the [YAML](https://goo.gl/Qamqab) that we loaded before, we'll get a hint
 
 --
 
@@ -193,6 +193,8 @@ The dashboard will then ask you which authentication you want to use.
 - Change `ClusterIP` to `NodePort`, save, and exit
 
 - Check the port that was assigned with `kubectl -n kube-system get services`
+
+- Connect to https://oneofournodes:3xxxx/ (yes, https)
 
 ]
 
