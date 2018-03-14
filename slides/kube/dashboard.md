@@ -162,7 +162,7 @@ The dashboard will then ask you which authentication you want to use.
 
 - Edit the service:
   ```bash
-  kubectl edit service kubernetes-dashboard
+  kubectl edit -n kube-system service kubernetes-dashboard
   ```
 
 ]
