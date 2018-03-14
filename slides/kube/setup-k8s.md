@@ -59,7 +59,7 @@
   [Docker4Mac](https://docs.docker.com/docker-for-mac/kubernetes/)
 
 - If you want something customizable:
-  [kubicorn](https://github.com/kris-nova/kubicorn)
+  [kubicorn](https://github.com/kubicorn/kubicorn)
 
   Probably the closest to a multi-cloud/hybrid solution so far, but in development
 
