@@ -16,6 +16,7 @@ And if you want to generate printable cards:
 - fork/clone repo
 - set required environment variables for AWS
 - create your own setting file from `settings/example.yaml`
+- if necessary, increase allowed open files: `ulimit -Sn 10000`
 - run `./workshopctl` commands to create instances, install docker, setup each users environment in node1, other management tasks
 - run `./workshopctl cards` command to generate PDF for printing handouts of each users host IP's and login info
 
