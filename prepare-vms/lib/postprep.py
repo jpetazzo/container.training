@@ -45,7 +45,7 @@ def system(cmd):
 
 # On EC2, the ephemeral disk might be mounted on /mnt.
 # If /mnt is a mountpoint, place Docker workspace on it.
-system("if mountpoint -q /mnt; then sudo mkdir /mnt/docker && sudo ln -s /mnt/docker /var/lib/docker; fi")
+system("if mountpoint -q /mnt; then sudo mkdir -p /mnt/docker && sudo ln -sfn /mnt/docker /var/lib/docker; fi")
 
 # Put our public IP in /tmp/ipv4
 # ipv4_retrieval_endpoint = "http://169.254.169.254/latest/meta-data/public-ipv4"
