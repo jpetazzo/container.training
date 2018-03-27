@@ -128,7 +128,7 @@ $ docker run -d -p 8000:80 nginx
 $ docker run -d -p 8080:80 -p 8888:80 nginx
 ```
 
-* We are running two NGINX web servers.
+* We are running three NGINX web servers.
 * The first one is exposed on port 80.
 * The second one is exposed on port 8000.
 * The third one is exposed on ports 8080 and 8888.
