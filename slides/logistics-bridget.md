@@ -1,16 +1,14 @@
 ## Intros
 
- - Hello! We are:
+ - Hello and welcome!
 
-   - .emoji[✨] Bridget ([@bridgetkromhout](https://twitter.com/bridgetkromhout))
+ - I'm .emoji[✨] Bridget ([@bridgetkromhout](https://twitter.com/bridgetkromhout))
 
-   - .emoji[🌟] Joe ([@joelaha](https://twitter.com/joelaha))
+ - The workshop will run from 2:00pm-5:30pm
 
-- The workshop will run from 13:30-16:45
+ - There will be a break with refreshments from 3:30pm-4pm
 
-- There will be a break from 15:00-15:15
+ - Feel free to interrupt for questions at any time
 
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
+ - *Especially when you see full screen container pictures!*
 
