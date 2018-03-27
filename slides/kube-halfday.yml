@@ -2,9 +2,9 @@ title: |
   Kubernetes 101
 
 
-#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+chat: "[SREcon slack #k8s101](https://usenix-srecon.slack.com/messages/C9XR4F5NJ/) ([get invitation](http://sreconinvite.herokuapp.com/))"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
-chat: "In person!"
+#chat: "In person!"
 
 exclude:
 - self-paced
