@@ -142,7 +142,7 @@ We all knew this couldn't be that easy, right!
 
 - We could also tell Kubernetes to ignore these errors and try anyway
 
-- The `--force` flag actual name is `--validate=false`
+- The `--force` flag's actual name is `--validate=false`
 
 .exercise[
 
