@@ -55,6 +55,28 @@ We can arbitrarily distinguish:
 
 ---
 
+class: extra-details
+
+## Docker Inc. packages vs distribution packages
+
+* Docker Inc. releases new versions monthly (edge) and quarterly (stable)
+
+* Releases are immediately available on Docker Inc.'s package repositories
+
+* Linux distros don't always update to the latest Docker version
+
+  (Sometimes, updating would break their guidelines for major/minor upgrades)
+
+* Sometimes, some distros have carried packages with custom patches
+
+* Sometimes, these patches added critical security bugs ☹
+
+* Installing through Docker Inc.'s repositories is a bit of extra work …
+
+  … but it is generally worth it!
+
+---
+
 ## Installing Docker on macOS and Windows
 
 * On macOS, the recommended method is to use Docker4Mac:
