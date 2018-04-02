@@ -296,7 +296,7 @@ If you have attended this workshop and have feedback,
 or if you want somebody  to deliver that workshop at your
 conference or for your company: you can contact one of us!
 
-- jerome at docker dot com
+- jerome dot petazzoni at gmail dot com
 - bret at bretfisher dot com
 
 If you are willing and able to deliver such workshops,
