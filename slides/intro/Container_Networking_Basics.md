@@ -49,14 +49,14 @@ We will use `docker ps`:
 
 ```bash
 $ docker ps
-CONTAINER ID  IMAGE  ...  PORTS                                          ...
-e40ffb406c9e  nginx  ...  0.0.0.0:32769->80/tcp, 0.0.0.0:32768->443/tcp  ...
+CONTAINER ID  IMAGE  ...  PORTS                  ...
+e40ffb406c9e  nginx  ...  0.0.0.0:32768->80/tcp  ...
 ```
 
 
-* The web server is running on ports 80 and 443 inside the container.
+* The web server is running on port 80 inside the container.
 
-* Those ports are mapped to ports 32769 and 32768 on our Docker host.
+* This port is mapped to port 32768 on our Docker host.
 
 We will explain the whys and hows of this port mapping.
 
@@ -81,12 +81,37 @@ Make sure to use the right port number if it is different
 from the example below:
 
 ```bash
-$ curl localhost:32769
+$ curl localhost:32768
 <!DOCTYPE html>
 <html>
 <head>
 <title>Welcome to nginx!</title>
 ...
+```
+
+---
+
+## How does Docker know which port to map?
+
+* There is metadata in the image telling "this image has something on port 80".
+
+* We can see that metadata with `docker inspect`:
+
+```bash
+$ docker inspect nginx --format {{.Config.ExposedPorts}}
+map[80/tcp:{}]
+```
+
+* This metadata was set in the Dockerfile, with the `EXPOSE` keyword.
+
+* We can see that with `docker history`:
+
+```bash
+$ docker history nginx
+IMAGE               CREATED             CREATED BY
+7f70b30f2cc6        11 days ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "…
+<missing>           11 days ago         /bin/sh -c #(nop)  STOPSIGNAL [SIGTERM]
+<missing>           11 days ago         /bin/sh -c #(nop)  EXPOSE 80/tcp
 ```
 
 ---
@@ -113,7 +138,7 @@ There is a command to help us:
 
 ```bash
 $ docker port <containerID> 80
-32769
+32768
 ```
 
 ---
