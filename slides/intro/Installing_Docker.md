@@ -29,7 +29,7 @@ We can arbitrarily distinguish:
 
 * Installing Docker on an existing Linux machine (physical or VM)
 
-* Installing Docker on MacOS or Windows
+* Installing Docker on macOS or Windows
 
 * Installing Docker on a fleet of cloud VMs
 
@@ -55,9 +55,9 @@ We can arbitrarily distinguish:
 
 ---
 
-## Installing Docker on MacOS and Windows
+## Installing Docker on macOS and Windows
 
-* On MacOS, the recommended method is to use Docker4Mac:
+* On macOS, the recommended method is to use Docker4Mac:
 
   https://docs.docker.com/docker-for-mac/install/
 
@@ -71,7 +71,7 @@ We can arbitrarily distinguish:
 
 ---
 
-## Running Docker on MacOS and Windows
+## Running Docker on macOS and Windows
 
 When you execute `docker version` from the terminal:
 
