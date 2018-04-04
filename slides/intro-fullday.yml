@@ -16,7 +16,7 @@ chapters:
 - common/about-slides.md
 - common/toc.md
 - - intro/Docker_Overview.md
-  #- intro/Docker_History.md
+  - intro/Docker_History.md
   - intro/Training_Environment.md
   - intro/Installing_Docker.md
   - intro/First_Containers.md
@@ -40,6 +40,12 @@ chapters:
 - - intro/Local_Development_Workflow.md
   - intro/Working_With_Volumes.md
   - intro/Compose_For_Dev_Stacks.md
+  - intro/Docker_Machine.md
   - intro/Advanced_Dockerfiles.md
+- - intro/Namespaces_Cgroups.md
+  - intro/Copy_On_Write.md
+  - intro/Containers_From_Scratch.md
+  - intro/Container_Engines.md
+  - intro/Orchestration_Overview.md
   - common/thankyou.md
   - intro/links.md
