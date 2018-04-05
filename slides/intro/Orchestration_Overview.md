@@ -416,7 +416,7 @@ It depends on:
 
 - Reality:
 
-  - true, if trying to understand *everything*;
+  - true, if we try to understand *everything*;
 
   - false, if we focus on what matters.
 
