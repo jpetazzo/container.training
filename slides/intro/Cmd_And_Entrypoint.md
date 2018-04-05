@@ -64,6 +64,7 @@ Let's build it:
 $ docker build -t figlet .
 ...
 Successfully built 042dff3b4a8d
+Successfully tagged figlet:latest
 ```
 
 And run it:
