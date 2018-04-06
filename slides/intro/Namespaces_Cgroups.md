@@ -1008,7 +1008,3 @@ See `man capabilities` for the full list and details.
 - LSMs add a layer of access control to all process operations.
 
 - Container engines take care of this so you don't have to.
-
----
-
-FIXME windows containers, summarize Jess article
