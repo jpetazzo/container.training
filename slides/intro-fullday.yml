@@ -44,7 +44,7 @@ chapters:
   - intro/Advanced_Dockerfiles.md
 - - intro/Namespaces_Cgroups.md
   - intro/Copy_On_Write.md
-  - intro/Containers_From_Scratch.md
+  #- intro/Containers_From_Scratch.md
   - intro/Container_Engines.md
   - intro/Orchestration_Overview.md
   - common/thankyou.md

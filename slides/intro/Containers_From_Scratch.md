@@ -1,3 +1,3 @@
 # Building containers from scratch
 
-FIXME
+(This is a "bonus section" done if time permits.)
