@@ -64,6 +64,7 @@ Let's build it:
 $ docker build -t figlet .
 ...
 Successfully built 042dff3b4a8d
+Successfully tagged figlet:latest
 ```
 
 And run it:
@@ -165,6 +166,7 @@ Let's build it:
 $ docker build -t figlet .
 ...
 Successfully built 36f588918d73
+Successfully tagged figlet:latest
 ```
 
 And run it:
@@ -223,6 +225,7 @@ Let's build it:
 $ docker build -t figlet .
 ...
 Successfully built 6e0b6a048a07
+Successfully tagged figlet:latest
 ```
 
 Run it without parameters:
