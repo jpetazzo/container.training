@@ -48,7 +48,7 @@ What does that really mean?
 
 - A: obviously not!
 
-![Daily variations of traffic](images/traffic-graph.png)
+.center[![Daily variations of traffic](images/traffic-graph.png)]
 
 ---
 
@@ -245,7 +245,7 @@ Scheduling = deciding which hypervisor to use for each VM.
 
 ## Scheduling with one resource
 
-![Not-so-good bin packing](images/binpacking-1d-1.gif)
+.center[![Not-so-good bin packing](images/binpacking-1d-1.gif)]
 
 Can we do better?
 
@@ -253,7 +253,7 @@ Can we do better?
 
 ## Scheduling with one resource
 
-![Better bin packing](images/binpacking-1d-2.gif)
+.center[![Better bin packing](images/binpacking-1d-2.gif)]
 
 Yup!
 
@@ -261,43 +261,43 @@ Yup!
 
 ## Scheduling with two resources
 
-![2D bin packing](images/binpacking-2d.gif)
+.center[![2D bin packing](images/binpacking-2d.gif)]
 
 ---
 
 ## Scheduling with three resources
 
-![3D bin packing](images/binpacking-3d.gif)
+.center[![3D bin packing](images/binpacking-3d.gif)]
 
 ---
 
 ## You need to be good at this
 
-![Tangram](images/tangram.gif)
+.center[![Tangram](images/tangram.gif)]
 
 ---
 
 ## But also, you must be quick!
 
-![Tetris](images/tetris-1.png)
+.center[![Tetris](images/tetris-1.png)]
 
 ---
 
 ## And be web scale!
 
-![Big tetris](images/tetris-2.gif)
+.center[![Big tetris](images/tetris-2.gif)]
 
 ---
 
 ## And think outside (?) of the box!
 
-![3D tetris](images/tetris-3.png)
+.center[![3D tetris](images/tetris-3.png)]
 
 ---
 
 ## Good luck!
 
-![FUUUUUU face](images/fu-face.jpg)
+.center[![FUUUUUU face](images/fu-face.jpg)]
 
 ---
 
