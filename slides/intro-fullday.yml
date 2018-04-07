@@ -31,6 +31,7 @@ chapters:
   - intro/Publishing_To_Docker_Hub.md
   - intro/Dockerfile_Tips.md
 - - intro/Naming_And_Inspecting.md
+  - intro/Labels.md
   - intro/Getting_Inside.md
   - intro/Container_Networking_Basics.md
   - intro/Network_Drivers.md
