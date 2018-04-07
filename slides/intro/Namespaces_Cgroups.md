@@ -638,6 +638,7 @@ The numbers are PIDs.
 
 The names are the names of our nodes (arbitrarily chosen).
 
+.small[
 ```bash
 cpu                      memory
 ├── batch                ├── stateless
@@ -656,6 +657,7 @@ cpu                      memory
     └── redis
         └── 1008
 ```
+]
 
 ---
 
