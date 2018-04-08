@@ -416,8 +416,47 @@ The timestamps should give us a hint about how many pods are currently receiving
 
 ---
 
-## More labels, more selectors, more problems?
+## Cleaning up
 
-- Bonus exercise 1: clean up the pods of the "old" daemon set
+- The pods of the "old" daemon set are still running
 
-- Bonus exercise 2: how could we have done this to avoid creating new pods?
+- We are going to identify them programmatically
+
+.exercise[
+
+- List the pods with `run=rng` but without `isactive=yes`:
+  ```bash
+  kubectl get pods -l run=rng,isactive!=yes
+  ```
+
+- Remove these pods:
+  ```bash
+  kubectl get pods -l run=rng,isactive!=yes -o name |
+      xargs kubectl delete
+  ```
+
+]
+
+---
+
+## Avoiding extra pods
+
+- When we changed the definition of the daemon set, it immediately created new pods
+
+- How could we have avoided this?
+
+--
+
+- By adding the `isactive: "yes"` label to the pods before changing the daemon set!
+
+- This can be done programmatically with `kubectl patch`:
+
+  ```bash
+    PATCH='
+    metadata:
+      labels:
+        isactive: "yes"
+    '
+    kubectl get pods -l run=rng -o name |
+      xargs kubectl patch -p "$PATCH" 
+  ```
