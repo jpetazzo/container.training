@@ -53,6 +53,26 @@ The `LoadBalancer` type is currently only available on AWS, Azure, and GCE.
 
 ---
 
+## Headless services
+
+- A "headless service" is a service that doesn't have a virtual IP address
+
+- Since there is no virtual IP address, there is no load balancer either
+
+- This is useful if we want to connect directly to the pods
+
+- We can discover the pod IP addresses:
+
+  - by querying the Kubernetes API
+  - by querying the internal DNS (if we use `kube-dns`)
+  - with other custom mechanisms (e.g. running Consul, Zookeeper...)
+
+- A headless service is obtained by setting the `clusterIP` field to `None`
+
+  (Either with `--cluster-ip=None`, or by providing a custom YAML)
+
+---
+
 ## Running containers with open ports
 
 - Since `ping` doesn't have anything to connect to, we'll have to run something else
