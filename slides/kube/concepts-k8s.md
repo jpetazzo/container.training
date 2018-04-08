@@ -134,11 +134,11 @@ class: pic
 
 - It is common to reserve a dedicated node for the control plane
 
-  (Except of single-node development clusters, like when using minikube)
+  (Except for single-node development clusters, like when using minikube)
 
 - This node is then called a "master"
 
-  (Yes, this is amibiguous: is the "master" a node, or the whole control plane?)
+  (Yes, this is ambiguous: is the "master" a node, or the whole control plane?)
 
 - Normal applications are restricted from running on this node
 
@@ -152,7 +152,7 @@ class: pic
 
 ---
 
-## Running the control plane outside
+## Running the control plane outside containers
 
 - The services of the control plane can run in or out of containers
 
