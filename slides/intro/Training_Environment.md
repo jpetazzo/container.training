@@ -38,6 +38,22 @@ individual Docker VM.*
 
 ---
 
+## What *is* Docker?
+
+- "Installing Docker" really means "Installing the Docker Engine and CLI".
+
+- The Docker Engine is a daemon (a service running in the background).
+
+- This daemon manages containers, the same way that an hypervisor manages VMs.
+
+- We interact with the Docker Engine by using the Docker CLI.
+
+- The Docker CLI and the Docker Engine communicate through an API.
+
+- There are many other programs, and many client libraries, to use that API.
+
+---
+
 ## Why don't we run Docker locally?
 
 - We are going to download container images and distribution packages.
