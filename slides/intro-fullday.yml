@@ -48,6 +48,7 @@ chapters:
   - intro/Copy_On_Write.md
   #- intro/Containers_From_Scratch.md
   - intro/Container_Engines.md
+  - intro/Ecosystem.md
   - intro/Orchestration_Overview.md
   - common/thankyou.md
   - intro/links.md
