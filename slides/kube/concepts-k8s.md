@@ -98,39 +98,76 @@ class: pic
 
 ---
 
-## Kubernetes architecture: the master
-
-- The Kubernetes logic (its "brains") is a collection of services:
-
-  - the API server (our point of entry to everything!)
-  - core services like the scheduler and controller manager
-  - `etcd` (a highly available key/value store; the "database" of Kubernetes)
-
-- Together, these services form what is called the "master"
-
-- These services can run straight on a host, or in containers
-  <br/>
-  (that's an implementation detail)
-
-- `etcd` can be run on separate machines (first schema) or co-located (second schema)
-
-- We need at least one master, but we can have more (for high availability)
-
----
-
 ## Kubernetes architecture: the nodes
 
-- The nodes executing our containers run another collection of services:
+- The nodes executing our containers run a collection of services:
 
   - a container Engine (typically Docker)
+
   - kubelet (the "node agent")
+
   - kube-proxy (a necessary but not sufficient network component)
 
 - Nodes were formerly called "minions"
 
-- It is customary to *not* run apps on the node(s) running master components
+  (You might see that word in older articles or documentation)
 
-  (Except when using small development clusters) 
+---
+
+## Kubernetes architecture: the control plane
+
+- The Kubernetes logic (its "brains") is a collection of services:
+
+  - the API server (our point of entry to everything!)
+
+  - core services like the scheduler and controller manager
+
+  - `etcd` (a highly available key/value store; the "database" of Kubernetes)
+
+- Together, these services form the control plane of our cluster
+
+- The control plane is also called the "master"
+
+---
+
+## Running the control plane on special nodes
+
+- It is common to reserve a dedicated node for the control plane
+
+  (Except of single-node development clusters, like when using minikube)
+
+- This node is then called a "master"
+
+  (Yes, this is amibiguous: is the "master" a node, or the whole control plane?)
+
+- Normal applications are restricted from running on this node
+
+  (By using a mechanism called ["taints"](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/))
+
+- When high availability is required, each service of the control plane must be resilient
+
+- The control plane is then replicated on multiple nodes
+
+  (This is sometimes called a "multi-master" setup)
+
+---
+
+## Running the control plane outside
+
+- The services of the control plane can run in or out of containers
+
+- For instance: since `etcd` is a critical service, some people
+  deploy it directly on a dedicated cluster (without containers)
+
+  (This is illustrated on the first "super complicated" schema)
+
+- In some hosted Kubernetes offerings (e.g. GKE), the control plane is invisible
+
+  (We only "see" a Kubernetes API endpoint)
+
+- In that case, there is no "master node"
+
+*For this reason, it is more accurate to say "control plane" rather than "master".*
 
 ---
 
