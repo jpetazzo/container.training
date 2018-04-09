@@ -44,6 +44,7 @@ chapters:
   - intro/Docker_Machine.md
   - intro/Advanced_Dockerfiles.md
   - intro/Application_Configuration.md
+  - intro/Logging.md
 - - intro/Namespaces_Cgroups.md
   - intro/Copy_On_Write.md
   #- intro/Containers_From_Scratch.md
