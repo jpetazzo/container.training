@@ -401,6 +401,47 @@ or providing extra features. For instance:
 
 ---
 
+## Volumes vs. Mounts
+
+* Since Docker 17.06, a new options is available: `--mount`.
+
+* It offers a new, richer syntax to manipulate data in containers.
+
+* It makes an explicit difference between:
+
+  - volumes (identified with a unique name, managed by a storage plugin),
+
+  - bind mounts (identified with a host path, not managed).
+
+* The former `-v` / `--volume` option is still usable.
+
+---
+
+## `--mount` syntax
+
+Binding a host path to a container path:
+
+```bash
+$ docker run \
+  --mount type=bind,source=/path/on/host,target=/path/in/container alpine
+```
+
+Mounting a volume to a container path:
+
+```bash
+$ docker run \
+  --mount source=myvolume,target=/path/in/container alpine
+```
+
+Mounting a tmpfs (in-memory, for temporary files):
+
+```bash
+$ docker run \
+  --mount type=tmpfs,destination=/path/in/container,tmpfs-size=1000000 alpine
+```
+
+---
+
 ## Section summary
 
 We've learned how to:

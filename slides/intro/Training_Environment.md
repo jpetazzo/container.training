@@ -38,6 +38,42 @@ individual Docker VM.*
 
 ---
 
+## What *is* Docker?
+
+- "Installing Docker" really means "Installing the Docker Engine and CLI".
+
+- The Docker Engine is a daemon (a service running in the background).
+
+- This daemon manages containers, the same way that an hypervisor manages VMs.
+
+- We interact with the Docker Engine by using the Docker CLI.
+
+- The Docker CLI and the Docker Engine communicate through an API.
+
+- There are many other programs, and many client libraries, to use that API.
+
+---
+
+## Why don't we run Docker locally?
+
+- We are going to download container images and distribution packages.
+
+- This could put a bit of stress on the local WiFi and slow us down.
+
+- Instead, we use a remote VM that has a good connectivity
+
+- In some rare cases, installing Docker locally is challenging:
+
+  - no administrator/root access (computer managed by strict corp IT)
+
+  - 32-bit CPU or OS
+
+  - old OS version (e.g. CentOS 6, OSX pre-Yosemite, Windows 7)
+
+- It's better to spend time learning containers than fiddling with the installer!
+
+---
+
 ## Connecting to your Virtual Machine
 
 You need an SSH client.
@@ -66,21 +102,24 @@ Once logged in, make sure that you can run a basic Docker command:
 ```bash
 $ docker version
 Client:
- Version:      17.09.0-ce
- API version:  1.32
- Go version:   go1.8.3
- Git commit:   afdb6d4
- Built:        Tue Sep 26 22:40:09 2017
- OS/Arch:      darwin/amd64
+ Version:       18.03.0-ce
+ API version:   1.37
+ Go version:    go1.9.4
+ Git commit:    0520e24
+ Built:         Wed Mar 21 23:10:06 2018
+ OS/Arch:       linux/amd64
+ Experimental:  false
+ Orchestrator:  swarm
 
 Server:
- Version:      17.09.0-ce
- API version:  1.32 (minimum version 1.12)
- Go version:   go1.8.3
- Git commit:   afdb6d4
- Built:        Tue Sep 26 22:45:38 2017
- OS/Arch:      linux/amd64
- Experimental: true
+ Engine:
+  Version:      18.03.0-ce
+  API version:  1.37 (minimum version 1.12)
+  Go version:   go1.9.4
+  Git commit:   0520e24
+  Built:        Wed Mar 21 23:08:35 2018
+  OS/Arch:      linux/amd64
+  Experimental: false
 ```
 ]
 
