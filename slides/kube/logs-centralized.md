@@ -28,7 +28,7 @@
 
   - Kibana (to view/search log entries with a nice UI)
 
-- The only component that we need to access from outside will be Kibana
+- The only component that we need to access from outside the cluster will be Kibana
 
 ---
 
@@ -71,7 +71,7 @@ and a few roles and role bindings (to give fluentd the required permissions).
 
 ## The itinerary of a log line (with Fluentd)
 
-- Fluentd runs on each node (thanks to a deamon set)
+- Fluentd runs on each node (thanks to a daemon set)
 
 - It binds-mounts `/var/log/containers` from the host (to access these files)
 
@@ -125,13 +125,13 @@ and a few roles and role bindings (to give fluentd the required permissions).
 
 ---
 
-## Caveat emptors
+## Caveat emptor
 
 We are using EFK because it is relatively straightforward
 to deploy on Kubernetes, without having to redeploy or reconfigure
 our cluster. But it doesn't mean that it will always be the best
 option for your use-case. If you are running Kubernetes in the
-cloud, you might consider using check the cloud provider's logging
+cloud, you might consider using the cloud provider's logging
 infrastructure (if it can be integrated with Kubernetes).
 
 The deployment method that we will use here has been simplified:
