@@ -60,7 +60,9 @@ Exactly what we need!
 
 ]
 
-(The installation will differ if you want to run Stern on anything else than a Linux amd64 machine.)
+These installation instructions will work on our clusters, since they are Linux amd64 VMs.
+
+However, you will have to adapt them if you want to install Stern on your local machine.
 
 ---
 
