@@ -131,3 +131,63 @@ we created our Helm chart before.
 ]
 
 Note: it might take a minute or two for the app to be up and running.
+
+---
+
+## Namespaces and isolation
+
+- Namespaces *do not* provide isolation
+
+- A pod in the `green` namespace can communicate with a pod in the `blue` namespace
+
+- A pod in the `default` namespace can communicate with a pod in the `kube-system` namespace
+
+- `kube-dns` uses a different subdomain for each namespace
+
+- Example: from any pod in the cluster, you can connect to the Kubernetes API with:
+
+  `https://kubernetes.default.svc.cluster.local:443/`
+
+---
+
+## Isolating pods
+
+- Actual isolation is implemented with *network policies*
+
+- Network policies are resources (like deployments, services, namespaces...)
+
+- Network policies specify which flows are allowed:
+
+  - between pods
+
+  - from pods to the outside world
+
+  - and vice-versa
+
+---
+
+## Network policies overview
+
+- We can create as many network policies as we want
+
+- Each network policy has:
+
+  - a *pod selector*: "which pods are targeted by the policy?"
+
+  - lists of ingress and/or egress rules: "which peers and ports are allowed or blocked?"
+
+- If a pod is not targeted by any policy, traffic is allowed by default
+
+- If a pod is targeted by at least one policy, traffic must be allowed explicitly
+
+---
+
+## More about network policies
+
+- This remains a high level overview of network policies
+
+- For more details, check:
+
+  - the [Kubernetes documentation about network policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+
+  - this [talk about network policies at KubeCon 2017 US](https://www.youtube.com/watch?v=3gGpMmYeEO8) by [@ahmetb](https://twitter.com/ahmetb)
