@@ -327,9 +327,9 @@ class: extra-details
 
 ## Which one is the best?
 
-- According to Michael Crosby (core Docker maintainer), overlay2!
+- Eventually, overlay2 should be the best option.
 
-- Overlay2 is available on all modern systems.
+- It is available on all modern systems.
 
 - Its memory usage is better than Device Mapper, BTRFS, or ZFS.
 

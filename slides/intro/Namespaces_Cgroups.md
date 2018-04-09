@@ -24,11 +24,11 @@ The last item should be done for educational purposes only!
 
   - *nothing* relevant to "our" containers!
 
-- Containers are composed using multiple independent feautres.
+- Containers are composed using multiple independent features.
 
 - On Linux, containers rely on "namespaces, cgroups, and some filesystem magic."
 
-  (Other features are also involved for security: capabilities, seccompd, LSMs...)
+  (Other features are also involved for security: capabilities, seccomp, LSMs...)
 
 - We are going to explore namespaces and cgroups.
 
@@ -92,21 +92,35 @@ The last item should be done for educational purposes only!
 
 - A new process can re-use none / all / some of the namespaces of its parent.
 
-- Namespaces are materialized by pseudo-files in `/proc/<pid>/ns`.
-
-- When the last process of a namespace exits, the namespace is destroyed.
-
-  (Unless the namespace has been preserved by bind-mounting the pseudo-file.)
-
 - It is possible to "enter" a namespace with the `setns()` system call.
 
 - The Linux tool `nsenter` allows to do that from a shell.
 
 ---
 
+## Namespaces lifecycle
+
+- When the last process of a namespace exits, the namespace is destroyed.
+
+- All the associated resources are then removed.
+
+- Namespaces are materialized by pseudo-files in `/proc/<pid>/ns`.
+
+  ```bash
+  ls -l /proc/self/ns
+  ```
+
+- It is possible to compare namespaces by checking these files.
+
+  (This helps to answer the question, "are these two processes in the same namespace?")
+
+- It is possible to preserve a namespace by bind-mounting its pseudo-file.
+
+---
+
 ## Namespaces can be used independently
 
-- As mentioned in the previous slide:
+- As mentioned in the previous slides:
 
   *A new process can re-use none / all / some of the namespaces of its parent.*
 
@@ -179,19 +193,19 @@ Exit the "container" with `exit` or `Ctrl-D`.
 
 ---
 
-## Net namespace in theory
+## Net namespace overview
 
 - Each network namespace has its own private network stack.
 
 - The network stack includes:
 
-  - network interfaces (including `lo`)
+  - network interfaces (including `lo`),
 
-  - routing table**s** (as in `ip rule` etc.)
+  - routing table**s** (as in `ip rule` etc.),
 
-  - iptables chains and rules
+  - iptables chains and rules,
 
-  - sockets (as seen by `ss`, `netstat`)
+  - sockets (as seen by `ss`, `netstat`).
 
 - You can move a network interface from a network namespace to another:
   ```bash
@@ -200,29 +214,23 @@ Exit the "container" with `exit` or `Ctrl-D`.
 
 ---
 
-## Net namespace in practice
+## Net namespace typical use
 
-- Typical use-case:
+- Each container is given its own network namespace.
 
-  - each container is given its own network namespace
+- For each network namespace (i.e. each container), a `veth` pair is created.
 
-  - for each network namespace (i.e. each container), a `veth` pair is created
+  (Two `veth` interfaces act as if they were connected with a cross-over cable.)
 
-  - (reminder: the two `veth` interfaces act as if they were connected with a cross-over cable)
+- One `veth` is moved to the container network namespace (and renamed `eth0`).
 
-  - one `veth` is move to the container network namespace (and renamed `eth0`)
-
-  - the other `veth` is moved to a bridge on the host (e.g. the `docker0` bridge)
-
-- But also:
-
-  - `--net host` means "do not containerize the network"
-
-  - `--net container` means "share the network stack with another container"
+- The other `veth` is moved to a bridge on the host (e.g. the `docker0` bridge).
 
 ---
 
-## Net namespace in action
+class: extra-details
+
+## Creating a network namespace
 
 Start a new process with its own network namespace:
 
@@ -245,7 +253,7 @@ See that this new network namespace is unconfigured:
 
 class: extra-details
 
-## Setting up connectivity for a new network namespace
+## Creating the `veth` interfaces
 
 In another shell (on the host), create a `veth` pair:
 
@@ -263,7 +271,7 @@ $ sudo ip link set in_host master docker0 up
 
 class: extra-details
 
-## Moving the interface to the network namespace
+## Moving the `veth` interface
 
 *In the process created by `unshare`,* check the PID of our "network container":
 
@@ -284,7 +292,7 @@ $ sudo ip link set in_netns netns 533
 
 class: extra-details
 
-## Basic configuration of the network namespace
+## Basic network configuration
 
 Let's set up `lo` (the loopback interface):
 
@@ -342,6 +350,8 @@ If Docker is not running, you will need to take care of this!
 
 ---
 
+class: extra-details
+
 ## Cleaning up network namespaces
 
 - Terminate the process created by `unshare` (with `exit` or `Ctrl-D`).
@@ -353,6 +363,22 @@ If Docker is not running, you will need to take care of this!
 - When a `veth` interface is destroyed, it also destroys the other half of the pair.
 
 - So we don't have anything else to do to clean up!
+
+---
+
+## Other ways to use network namespaces
+
+- `--net none` gives an empty network namespace to a container.
+
+  (Effectively isolating it completely from the network.)
+
+- `--net host` means "do not containerize the network".
+
+  (No network namespace is created; the container uses the host network stack.)
+
+- `--net container` means "reuse the network namespace of another container".
+
+  (As a result, both containers share the same interfaces, routes, etc.)
 
 ---
 
@@ -472,25 +498,29 @@ class: extra-details
 
 ## OK, really, why do we need `--fork`?
 
-- The `unshare` tool calls the `unshare` syscall, then `exec`s the new binary.
+*It is not necessary to remember all these details.
+<br/>
+This is just an illustration of the complexity of namespaces!*
 
-- A process calling `unshare` to create new namespaces is moved to the new namespaces ...
+The `unshare` tool calls the `unshare` syscall, then `exec`s the new binary.
+<br/>
+A process calling `unshare` to create new namespaces is moved to the new namespaces...
+<br/>
+... Except for the PID namespace.
+<br/>
+(Because this would change the current PID of the process from X to 1.)
 
-- ... Except for the PID namespace.
+The processes created by the new binary are placed into the new PID namespace.
+<br/>
+The first one will be PID 1.
+<br/>
+If PID 1 exits, it is not possible to create additional processes in the namespace.
+<br/>
+(Attempting to do so will result in `ENOMEM`.)
 
-  (Because this would change the current PID of the process from X to 1.)
-
-- The processes created by the new binary are placed into the new PID namespace.
-
-- The first one will be PID 1.
-
-- If PID 1 exits, it is not possible to create additional processes in the namespace.
-
-  (Attempting to do so will result in `ENOMEM`.)
-
-- Without the `--fork` flag, the first command that we execute will be PID 1 ...
-
-- ... And once it exits, we cannot create more processes in the namespace!
+Without the `--fork` flag, the first command that we execute will be PID 1 ...
+<br/>
+... And once it exits, we cannot create more processes in the namespace!
 
 Check `man 2 unshare` and `man pid_namespaces` if you want more details.
 
@@ -530,16 +560,15 @@ Check `man 2 unshare` and `man pid_namespaces` if you want more details.
   - UID 0→1999 in container C2 is mapped to UID 12000→13999 on host
   - etc.
 
-- UID in containers becomes irrelevant.
+- UID 0 in the container can still perform privileged operations in the container.
 
-  (Just use UID 0 in the container, it gets squashed to a non-privileged user outside.)
+  (For instance: setting up network interfaces.)
 
-- Huge security benefits!
+- But outside of the container, it is a non-privileged user.
 
-- Allows non-privileged users to perform privileged operations in context.
+- It also means that the UID in containers becomes unimportant.
 
-  Example: a regular user can configure network interfaces in a namespace,
-  if they own that namespace.
+  (Just use UID 0 in the container, since it gets squashed to a non-privileged user outside.)
 
 - Ultimately enables better privilege separation in container engines.
 
@@ -551,8 +580,8 @@ Check `man 2 unshare` and `man pid_namespaces` if you want more details.
 
 - Filesystem permissions and file ownership are more complicated.
 
-  (E.g. when using a common root filesystem for multiple containers
-  running each with their own UID.)
+  .small[(E.g. when the same root filesystem is shared by multiple containers
+  running with different UIDs.)]
 
 - With the Docker Engine:
 
