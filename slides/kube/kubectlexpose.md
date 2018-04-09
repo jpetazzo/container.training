@@ -193,13 +193,32 @@ class: extra-details
 
 - Check the endpoints that Kubernetes has associated with our `elastic` service:
   ```bash
-  kubectl get service elastic -o wide
-  kubectl get endpoints elastic
-  ```
-
-- Compare with the pods for the `elastic` service:
-  ```bash
-  kubectl get pods -l run=elastic -o wide
+  kubectl describe service elastic
   ```
 
 ]
+
+In the output, there will be a line starting with `Endpoints:`.
+
+That line will list a bunch of addresses in `host:port` format.
+
+---
+
+class: extra-details
+
+## Viewing endpoint details
+
+- When we have many endpoints, the previous command truncates the list
+
+- If we want to see the full list, we can use one of the following commands:
+  ```bash
+  kubectl describe endpoint elastic
+  kubectl get endpoint elastic -o yaml
+  ```
+
+- These addresses will show us a list of IP addresses
+
+- These IP addresses should match the addresses of the corresponding pods:
+  ```bash
+  kubectl get pods -l run=elastic -o wide
+  ```
