@@ -54,7 +54,7 @@
 
 ## Fix account permissions
 
-- Helm permission model requires use to tweak permissions
+- Helm permission model requires us to tweak permissions
 
 - In a more realistic deployment, you might create per-user or per-team
   service accounts, roles, and role bindings
@@ -77,7 +77,7 @@ fine for personal and development clusters.)
 
 ## View available charts
 
-- A public repo is pre-configurd when installing Helm
+- A public repo is pre-configured when installing Helm
 
 - We can view available charts with `helm search` (and an optional keyword)
 
