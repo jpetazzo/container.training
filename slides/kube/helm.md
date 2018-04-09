@@ -156,7 +156,6 @@ The chart's metadata includes an URL to the project's home page.
 
 - Move away the sample templates:
   ```bash
-  mkdir dockercoins/do-not-use
   mv dockercoins/templates dockercoins/default-templates
   ```
 
