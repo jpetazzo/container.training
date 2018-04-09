@@ -1,10 +1,9 @@
 title: |
   Introduction
-  to Docker and
-  Containers
+  to Containers
 
-chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+chat: "[Gitter](https://gitter.im/jpetazzo/training-20180411-paris)"
 
 exclude:
 - self-paced
