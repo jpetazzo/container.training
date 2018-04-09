@@ -14,7 +14,7 @@
 
 - It would be nice to be able to upgrade/rollback these bundles carefully
 
-- Helm offers all these things!
+- [Helm](https://helm.sh/) is an open source project offering all these things!
 
 ---
 
