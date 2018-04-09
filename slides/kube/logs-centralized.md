@@ -80,7 +80,7 @@ and a few roles and role bindings (to give fluentd the required permissions).
 - Each log line becomes a JSON object, fully annotated with extra information:
   <br/>container id, pod name, Kubernetes labels ...
 
-- These JSON objects are stored into ElasticSearch
+- These JSON objects are stored in ElasticSearch
 
 - ElasticSearch indexes the JSON objects
 
@@ -141,4 +141,4 @@ But this is outside of the scope of this chapter.
 
 The YAML file that we used creates all the resources in the
 `default` namespace, for simplicity. In a real scenario, you will
-create the resources in the `kube-system` or in a dedicated namespace.
+create the resources in the `kube-system` namespace or in a dedicated namespace.
