@@ -4,9 +4,9 @@
 
   - it cannot stream logs from multiple pods at a time
 
-  - when showing logs from multiple pods, it mixes them all
+  - when showing logs from multiple pods, it mixes them all together
 
-- We are going to see how to do better
+- We are going to see how to do it better
 
 ---
 
@@ -16,7 +16,7 @@
 
   - take a selector as an argument
 
-  - enumerate all pods matching that selector (`with kubectl get -l ...`)
+  - enumerate all pods matching that selector (with `kubectl get -l ...`)
 
   - fork one `kubectl logs --follow ...` command per container
 
@@ -39,7 +39,7 @@ From the README:
 
 *Stern allows you to tail multiple pods on Kubernetes and multiple containers within the pod. Each result is color coded for quicker debugging.*
 
-*The query is a regular expression so the pod name can easily be filtered and you don't need to specify the exact id (for instance omitting the deployment id). If a pod is deleted it gets removed from tail and if a new is added it automatically gets tailed.*
+*The query is a regular expression so the pod name can easily be filtered and you don't need to specify the exact id (for instance omitting the deployment id). If a pod is deleted it gets removed from tail and if a new [pod] is added it automatically gets tailed.*
 
 Exactly what we need!
 
