@@ -28,4 +28,4 @@
 
 - *Especially when you see full screen container pictures!*
 
-- Live feedback, questions, help on @@CHAT@@
+- Live feedback, questions, help: @@CHAT@@
