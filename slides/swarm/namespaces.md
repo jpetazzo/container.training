@@ -3,7 +3,7 @@ name: namespaces
 
 # Improving isolation with User Namespaces
 
-- *Namespaces* are kernel mechanisms to compartimetalize the system
+- *Namespaces* are kernel mechanisms to compartmentalize the system
 
 - There are different kind of namespaces: `pid`, `net`, `mnt`, `ipc`, `uts`, and `user`
 
