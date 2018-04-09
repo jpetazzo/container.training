@@ -1,8 +1,8 @@
 ## Versions installed
 
-- Kubernetes 1.9.6 (but 1.10 is about to come out!)
+- Kubernetes 1.10.0
 - Docker Engine 18.03.0-ce
-- Docker Compose 1.18.0
+- Docker Compose 1.20.1
 
 
 .exercise[
