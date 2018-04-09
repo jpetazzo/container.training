@@ -125,7 +125,7 @@ class: in-person
   works pretty well
 
 - Nice-to-have: [Mosh](https://mosh.org/) instead of SSH, if your internet connection tends to lose packets
-  <br/>(available with `(apt|yum|brew) install mosh`; then connect with `mosh user@host`)
+  <br/>(available with `(apt|yum|brew) install mosh`; then connect with `mosh user@host`; requires UDP ports to be open - by default, mosh uses a UDP port between 60000 and 61000)
 
 ---
 
@@ -135,7 +135,7 @@ class: in-person
 
 .exercise[
 
-- Log into the first VM (`node1`) with SSH or MOSH
+- Log into the first VM (`node1`) with your SSH client
 
 <!--
 ```bash
@@ -245,6 +245,8 @@ You are welcome to use the method that you feel the most comfortable with.
 ---
 
 ## Tmux cheatsheet
+
+[Tmux](https://en.wikipedia.org/wiki/Tmux) is an alternate terminal multiplexer like `screen`; it's installed on your workshop nodes.
 
 - Ctrl-b c → creates a new window
 - Ctrl-b n → go to next window
