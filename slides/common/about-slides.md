@@ -45,5 +45,4 @@ class: extra-details
 
   - you want only the most essential information
 
-- You can review these slides another time if you want, they'll be waiti
-ng for you ☺
+- You can review these slides another time if you want, they'll be waiting for you ☺
