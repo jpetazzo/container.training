@@ -38,5 +38,5 @@ chapters:
   #- kube/helm.md
   #- kube/namespaces.md
   - kube/whatsnext.md
-  - common/thankyou.md
   - kube/links.md
+  - common/thankyou.md
