@@ -20,9 +20,9 @@
 
 .exercise[
 
-- Let's ping `goo.gl`:
+- Let's ping `google.com`:
   ```bash
-  kubectl run pingpong --image alpine ping goo.gl
+  kubectl run pingpong --image alpine ping google.com
   ```
 
 ]
