@@ -41,7 +41,8 @@ OK, what just happened?
 
 - List most resource types:
   ```bash
-  kubectl get all
+  kubectl get all # This was broken in Kubernetes 1.10, so ...
+  kubectl get all -o custom-columns=KIND:.kind,NAME:.metadata.name
   ```
 
 ]
@@ -49,9 +50,9 @@ OK, what just happened?
 --
 
 We should see the following things:
-- `deploy/pingpong` (the *deployment* that we just created)
-- `rs/pingpong-xxxx` (a *replica set* created by the deployment)
-- `po/pingpong-yyyy` (a *pod* created by the replica set)
+- A `Deployment` named  `pingpong` (the thing that we just created)
+- A `ReplicaSet` named `pingpong-xxxx` (created by the deployment)
+- A `Pod` named `pingpong-yyyy` (created by the replica set)
 
 ---
 
