@@ -444,7 +444,7 @@ The timestamps should give us a hint about how many pods are currently receiving
 
 ## Cleaning up
 
-- The pods of the "old" daemon set are still running
+- The pods of the deployment and the "old" daemon set are still running
 
 - We are going to identify them programmatically
 
@@ -457,17 +457,71 @@ The timestamps should give us a hint about how many pods are currently receiving
 
 - Remove these pods:
   ```bash
-  kubectl get pods -l run=rng,isactive!=yes -o name |
-      xargs kubectl delete
+  kubectl get pods -l run=rng,isactive!=yes -o name | xargs kubectl delete
   ```
 
 ]
 
 ---
 
+## Cleaning up the deployment
+
+```
+$ kubectl get pods
+NAME                        READY     STATUS        RESTARTS   AGE
+rng-54f57d4d49-7pt82        1/1       Terminating   0          51m
+rng-54f57d4d49-vgz9h        1/1       Running       0          22s
+rng-b85tm                   1/1       Terminating   0          39m
+rng-hfbrr                   1/1       Terminating   0          39m
+rng-vplmj                   1/1       Running       0          7m
+rng-xbpvg                   1/1       Running       0          7m
+```
+
+- The extra daemonset pods are going away, leaving only the ones we want.
+
+- But why is a new deployment being started?!
+
+--
+
+- Remember, k8s maintains our desired state
+
+- We can't just delete a pod - it will be recreated!
+
+---
+
+## Deleting a deployment
+
+.exercise[
+
+- Remove the `rng` deployment:
+  ```bash
+  kubectl delete deployment rng
+  ```
+]
+
+--
+
+- We should see deployment "rng" is deleted. Let's check:
+
+```
+$ kubectl get pods
+NAME                        READY     STATUS        RESTARTS   AGE
+rng-54f57d4d49-vgz9h        1/1       Terminating   0          4m
+rng-vplmj                   1/1       Running       0          11m
+rng-xbpvg                   1/1       Running       0          11m
+```
+
+Ding, dong, the deployment is dead! And the daemonset lives on.
+
+--
+
+(This is how you could remove that `pingpong` deployment if you like!)
+
+---
+
 ## Avoiding extra pods
 
-- When we changed the definition of the daemon set, it immediately created new pods
+- When we changed the definition of the daemon set, it immediately created new pods. We had to remove the old ones manually.
 
 - How could we have avoided this?
 
