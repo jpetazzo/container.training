@@ -179,6 +179,7 @@ Wait ... Now, can it be *that* easy?
 --
 
 We have both `deploy/rng` and `ds/rng` now!
+(Though of course a bug prevents them from being labeled as such!)
 
 --
 
@@ -194,13 +195,38 @@ And one too many pods...
 
 - We still have the old `rng` *deployment*
 
+```
+NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+rng        1         1         1            1           11m
+```
+
 - But now we have the new `rng` *daemonset* as well
+
+```
+NAME      DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+rng       2         2         2         2            2           <none>          11s
+```
+
+---
+
+## Too many pods
 
 - If we look at the pods, we have:
 
-  - *one pod* for the deployment
+  - *one pod* for the deployment (named `rng-xxxxxxxxxx-yyyyy`)
 
-  - *one pod per node* for the daemonset
+  - *one pod per node* for the daemonset (named `rng-yyyyy`)
+
+```
+NAME                        READY     STATUS    RESTARTS   AGE
+rng-54f57d4d49-7pt82        1/1       Running   0          11m
+rng-b85tm                   1/1       Running   0          11s
+rng-hfbrr                   1/1       Running   0          11s
+```
+
+--
+
+.footnote[.warning[Yes, our three-node cluster is only running two pods for the daemonset! The master node does not run such pods.]]
 
 ---
 
