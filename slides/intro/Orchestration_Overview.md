@@ -424,4 +424,4 @@ It depends on:
 
 ## Kubernetes in action
 
-FIXME (describe the demo?)
+.center[![Demo stamp](images/demo.jpg)]
