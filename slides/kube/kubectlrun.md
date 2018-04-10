@@ -137,9 +137,8 @@ We should see the following things:
   ```
 
 <!--
-```keys
-^C
-```
+```wait seq=3```
+```keys ^C```
 -->
 
 ]
@@ -181,9 +180,8 @@ We could! But the *deployment* would notice it right away, and scale back to the
   ```
 
 <!--
-```keys
-^C
-```
+```wait Running```
+```keys ^C```
 -->
 
 - Destroy a pod:
