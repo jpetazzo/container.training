@@ -36,7 +36,7 @@
 
 ## Creating a daemon set
 
-- Unfortunately, as of Kubernetes 1.9, the CLI cannot create daemon sets
+- Unfortunately, as of Kubernetes 1.10, the CLI cannot create daemon sets
 
 --
 
@@ -55,7 +55,7 @@
 
 --
 
-  - option 1: read the docs
+  - option 1: [read the docs](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/#create-a-daemonset)
 
 --
 
