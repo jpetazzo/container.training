@@ -19,6 +19,9 @@ logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 
 TIMEOUT = 60 # 1 minute
 
+# This one is not a constant. It's an ugly global.
+IPADDR = None
+
 
 class State(object):
 
@@ -163,6 +166,9 @@ def wait_for_prompt():
         last_line = output.split('\n')[-1]
         # Our custom prompt on the VMs has two lines; the 2nd line is just '$'
         if last_line == "$":
+            # This is a perfect opportunity to grab the node's IP address
+            global IPADDR
+            IPADDR = re.findall("^\[(.*)\]", output, re.MULTILINE)[-1]
             return
         # When we are in an alpine container, the prompt will be "/ #"
         if last_line == "/ #":
@@ -397,8 +403,7 @@ while True:
         elif method == "open":
             # Cheap way to get node1's IP address
             screen = capture_pane()
-            ipaddr = re.findall("^\[(.*)\]", screen, re.MULTILINE)[-1]
-            url = data.replace("/node1", "/{}".format(ipaddr))
+            url = data.replace("/node1", "/{}".format(IPADDR))
             # This should probably be adapted to run on different OS
             subprocess.check_output(["xdg-open", url])
             focus_browser()

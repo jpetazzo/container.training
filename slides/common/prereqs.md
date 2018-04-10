@@ -182,14 +182,14 @@ class: in-person
 
 <!--
 ```bash
-for N in $(awk '/node/{print $2}' /etc/hosts); do
-  ssh -o StrictHostKeyChecking=no node$N true
+for N in $(awk '/\Wnode/{print $2}' /etc/hosts); do
+  ssh -o StrictHostKeyChecking=no $N true
 done
 ```
 
 ```bash
 if which kubectl; then
-  kubectl get all -o name | grep -v services/kubernetes | xargs -n1 kubectl delete
+  kubectl get all -o name | grep -v service/kubernetes | xargs -n1 kubectl delete
 fi
 ```
 -->
