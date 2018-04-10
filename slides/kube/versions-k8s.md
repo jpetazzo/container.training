@@ -22,7 +22,7 @@ class: extra-details
 
 ## Kubernetes and Docker compatibility
 
-- Kubernetes only validates Docker Engine versions 1.11.2, 1.12.6, 1.13.1, and 17.03.2
+- Kubernetes 1.10 only validates Docker Engine versions [1.11.2 to 1.13.1 and 17.03.x](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.10.md#external-dependencies)
 
 --
 
