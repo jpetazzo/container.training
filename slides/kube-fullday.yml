@@ -20,20 +20,20 @@ chapters:
   - common/sampleapp.md
   - common/composescale.md
   - common/composedown.md
-- - kube/concepts-k8s.md
+  - kube/concepts-k8s.md
   - common/declarative.md
   - kube/declarative.md
   - kube/kubenet.md
   - kube/kubectlget.md
   - kube/setup-k8s.md
-  - kube/kubectlrun.md
-- - kube/kubectlexpose.md
+- - kube/kubectlrun.md
+  - kube/kubectlexpose.md
   - kube/ourapponkube.md
-  - kube/dashboard.md
-- - kube/kubectlscale.md
+- - kube/dashboard.md
+  - kube/kubectlscale.md
   - kube/daemonset.md
   - kube/rollout.md
-  - kube/logs-cli.md
+- - kube/logs-cli.md
   - kube/logs-centralized.md
   - kube/helm.md
   - kube/namespaces.md

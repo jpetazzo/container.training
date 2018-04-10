@@ -18,11 +18,11 @@ chapters:
   - intro/Docker_History.md
   - intro/Training_Environment.md
   - intro/Installing_Docker.md
-  - intro/First_Containers.md
+- - intro/First_Containers.md
   - intro/Background_Containers.md
   - intro/Start_And_Attach.md
-- - intro/Initial_Images.md
-  - intro/Building_Images_Interactively.md
+  - intro/Initial_Images.md
+- - intro/Building_Images_Interactively.md
   - intro/Building_Images_With_Dockerfiles.md
   - intro/Cmd_And_Entrypoint.md
   - intro/Copying_Files_During_Build.md
@@ -41,14 +41,14 @@ chapters:
   - intro/Working_With_Volumes.md
   - intro/Compose_For_Dev_Stacks.md
   - intro/Docker_Machine.md
-  - intro/CI_Pipeline.md
+- - intro/CI_Pipeline.md
   - intro/Advanced_Dockerfiles.md
   - intro/Application_Configuration.md
   - intro/Logging.md
 - - intro/Namespaces_Cgroups.md
   - intro/Copy_On_Write.md
   #- intro/Containers_From_Scratch.md
-  - intro/Container_Engines.md
+- - intro/Container_Engines.md
   - intro/Ecosystem.md
   - intro/Orchestration_Overview.md
   - common/thankyou.md
