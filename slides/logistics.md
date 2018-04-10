@@ -2,7 +2,7 @@
 
 - Hello! We are:
 
-   - .emoji[⛵] Jérémy ([@jeremygarrouste](twitter.com/jeremygarrouste), Inpiwee)
+   - .emoji[⛵] Jérémy ([@jeremygarrouste](https://twitter.com/jeremygarrouste), Inpiwee)
 
    - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
 
