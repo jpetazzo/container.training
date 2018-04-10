@@ -28,15 +28,11 @@ The last item should be done for educational purposes only!
 
 - On Linux, containers rely on "namespaces, cgroups, and some filesystem magic."
 
-  (Other features are also involved for security: capabilities, seccomp, LSMs...)
-
-- We are going to explore namespaces and cgroups.
-
-  (Filesystems are covered in a dedicated chapter about copy-on-write.)
+- Security also requires features like capabilities, seccomp, LSMs...
 
 ---
 
-## Namespaces overview
+# Namespaces
 
 - Provide processes with their own view of the system.
 
@@ -601,7 +597,7 @@ Check `man 2 unshare` and `man pid_namespaces` if you want more details.
 
 ---
 
-## Control groups
+# Control groups
 
 - Control groups provide resource *metering* and *limiting*.
 
@@ -944,13 +940,13 @@ Killed
 
 ---
 
-## Capabilities, seccomp, LSMs...
+# Security features
 
 - Namespaces and cgroups are not enough to ensure strong security.
 
-- If we want our containers to actually contain, we need more.
+- We need extra mechanisms: capabilities, seccomp, LSMs.
 
-- Capabilities, seccomp, LSMs were already used before containers to harden security.
+- These mechanisms were already used before containers to harden security.
 
 - They can be used together with containers.
 
