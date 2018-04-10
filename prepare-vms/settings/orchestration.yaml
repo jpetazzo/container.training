@@ -7,7 +7,7 @@ clustersize: 5
 cards_template: cards.html
 
 # Use "Letter" in the US, and "A4" everywhere else
-paper_size: Letter
+paper_size: A4
 
 # Feel free to reduce this if your printer can handle it
 paper_margin: 0.2in
