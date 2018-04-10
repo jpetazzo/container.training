@@ -41,6 +41,7 @@ chapters:
   - intro/Working_With_Volumes.md
   - intro/Compose_For_Dev_Stacks.md
   - intro/Docker_Machine.md
+  - intro/CI_Pipeline.md
   - intro/Advanced_Dockerfiles.md
   - intro/Application_Configuration.md
   - intro/Logging.md

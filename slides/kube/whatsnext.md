@@ -74,6 +74,12 @@ And *then* it is time to look at orchestration!
 
 ---
 
+## Stateful services (demo!)
+
+.center[![Demo](images/demo.jpg)]
+
+---
+
 ## HTTP traffic handling
 
 - *Services* are layer 4 constructs
@@ -93,13 +99,9 @@ And *then* it is time to look at orchestration!
 
 ---
 
-## Logging and metrics
+## Ingress with Træfik  (demo!)
 
-- Logging is delegated to the container engine
-
-- Metrics are typically handled with Prometheus
-
-  (Heapster is a popular add-on)
+.center[![Demo](images/demo.jpg)]
 
 ---
 
