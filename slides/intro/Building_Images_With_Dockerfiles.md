@@ -143,13 +143,13 @@ Removing intermediate container e01b294dbffd
  ---> eb8d9b561b37
 ```
 
-* The `RUN` command is executed in this container.
-
 * A container (`e01b294dbffd`) is created from the base image.
 
-* The build container (`e01b294dbffd`) is removed.
+* The `RUN` command is executed in this container.
 
 * The container is committed into an image (`eb8d9b561b37`).
+
+* The build container (`e01b294dbffd`) is removed.
 
 * The output of this step will be the base image for the next one.
 

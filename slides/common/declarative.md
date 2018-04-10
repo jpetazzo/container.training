@@ -8,7 +8,7 @@
 
 - Imperative:
 
-  *Boil some water. Pour it in a teapot. Add tea leaves. Steep for a while. Serve in cup.*
+  *Boil some water. Pour it in a teapot. Add tea leaves. Steep for a while. Serve in a cup.*
 
 --
 
