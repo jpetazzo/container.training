@@ -137,7 +137,12 @@ Note: please DO NOT call the service `search`. It would collide with the TLD.
 
 --
 
-Our requests are load balanced across multiple pods.
+We may see `curl: (7) Failed to connect to _IP_ port 9200: Connection refused`
+This is normal while the service starts up
+
+--
+
+Once it's running, our requests are load balanced across multiple pods.
 
 ---
 
