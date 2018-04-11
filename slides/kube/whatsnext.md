@@ -105,6 +105,16 @@ And *then* it is time to look at orchestration!
 
 ---
 
+## Logging and metrics
+
+- Logging is delegated to the container engine
+
+- Metrics are typically handled with [Prometheus](https://prometheus.io/)
+
+  ([Heapster](https://github.com/kubernetes/heapster) is a popular add-on)
+
+---
+
 ## Managing the configuration of our applications
 
 - Two constructs are particularly useful: secrets and config maps
@@ -159,7 +169,7 @@ Sorry Star Trek fans, this is not the federation you're looking for!
 
 - Kubernetes master operation relies on etcd
 
-- etcd uses the Raft protocol
+- etcd uses the [Raft](https://raft.github.io/) protocol
 
 - Raft recommends low latency between nodes
 
