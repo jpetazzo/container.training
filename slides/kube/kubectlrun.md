@@ -20,9 +20,9 @@
 
 .exercise[
 
-- Let's ping `google.com`:
+- Let's ping `1.1.1.1`:
   ```bash
-  kubectl run pingpong --image alpine ping google.com
+  kubectl run pingpong --image alpine ping 1.1.1.1
   ```
 
 ]
@@ -234,13 +234,11 @@ Unfortunately, `--follow` cannot (yet) be used to stream the logs from multiple 
 
 class: title
 
-Meanwhile,
-<br/>
-at the Google NOC ...
+Meanwhile, at Cloudflare...
 <br/>
 <br/>
-.small[“Why the hell]
+.small["NOC, NOC." "Who's there?"]
 <br/>
-.small[are we getting 1000 packets per second]
+.small["1000 packets per second of ICMP ECHO traffic from this workshop!"]
 <br/>
-.small[of ICMP ECHO traffic from these IPs?!?”]
+.small["It's okay! [Disappears in the background!](https://blog.cloudflare.com/dns-resolver-1-1-1-1/)"]
