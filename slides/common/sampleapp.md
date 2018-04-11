@@ -1,4 +1,4 @@
-# Getting our sample application source code
+# Our sample application
 
 - We will clone the GitHub repository onto our `node1`
 
@@ -53,7 +53,7 @@ and displays aggregated logs.
 
 ---
 
-# More detail on our sample application
+## More detail on our sample application
 
 - Visit the GitHub repository with all the materials of this workshop:
   <br/>https://github.com/jpetazzo/container.training
