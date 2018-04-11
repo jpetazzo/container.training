@@ -72,7 +72,7 @@ class: pic
 
 class: pic
 
-## The parallel with the shipping indsutry
+## The parallel with the shipping industry
 
 ![history](images/shipping-industry-problem.png)
 
