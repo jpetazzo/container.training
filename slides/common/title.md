@@ -11,7 +11,7 @@ class: title, in-person
 @@TITLE@@<br/></br>
 
 .footnote[
-**WiFI: `Arty Loft`**
+**WiFI: `ArtyLoft`** ou **`ArtyLoft 5 GHz`**
 <br/>
 **Mot de passe: `TFLEVENT5`**
 
