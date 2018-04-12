@@ -88,9 +88,9 @@ fine for personal and development clusters.)
   helm search
   ```
 
-- View charts related to `gitlab`:
+- View charts related to `prometheus`:
   ```bash
-  helm search gitlab
+  helm search prometheus
   ```
 
 ]
