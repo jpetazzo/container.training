@@ -1,5 +1,60 @@
 # Our sample application
 
+- We will clone the GitHub repository onto our `node1`
+
+- The repository also contains scripts and tools that we will use through the workshop
+
+.exercise[
+
+<!--
+```bash
+if [ -d container.training ]; then
+  mv container.training container.training.$$
+fi
+```
+-->
+
+- Clone the repository on `node1`:
+  ```bash
+  git clone git://github.com/jpetazzo/container.training
+  ```
+
+]
+
+(You can also fork the repository on GitHub and clone your fork if you prefer that.)
+
+---
+
+## Downloading and running the application
+
+Let's start this before we look around, as downloading will take a little time...
+
+.exercise[
+
+- Go to the `dockercoins` directory, in the cloned repo:
+  ```bash
+  cd ~/container.training/dockercoins
+  ```
+
+- Use Compose to build and run all containers:
+  ```bash
+  docker-compose up
+  ```
+
+<!--
+```longwait units of work done```
+-->
+
+]
+
+Compose tells Docker to build all container images (pulling
+the corresponding base images), then starts all containers,
+and displays aggregated logs.
+
+---
+
+## More detail on our sample application
+
 - Visit the GitHub repository with all the materials of this workshop:
   <br/>https://github.com/jpetazzo/container.training
 
@@ -117,61 +172,6 @@ class: extra-details
   - every second, `worker` updates `redis` to indicate how many loops were done
 
   - `webui` queries `redis`, and computes and exposes "hashing speed" in your browser
-
----
-
-## Getting the application source code
-
-- We will clone the GitHub repository
-
-- The repository also contains scripts and tools that we will use through the workshop
-
-.exercise[
-
-<!--
-```bash
-if [ -d container.training ]; then
-  mv container.training container.training.$$
-fi
-```
--->
-
-- Clone the repository on `node1`:
-  ```bash
-  git clone git://github.com/jpetazzo/container.training
-  ```
-
-]
-
-(You can also fork the repository on GitHub and clone your fork if you prefer that.)
-
----
-
-# Running the application
-
-Without further ado, let's start our application.
-
-.exercise[
-
-- Go to the `dockercoins` directory, in the cloned repo:
-  ```bash
-  cd ~/container.training/dockercoins
-  ```
-
-- Use Compose to build and run all containers:
-  ```bash
-  docker-compose up
-  ```
-
-<!--
-```longwait units of work done```
--->
-
-]
-
-Compose tells Docker to build all container images (pulling
-the corresponding base images), then starts all containers,
-and displays aggregated logs.
 
 ---
 
@@ -299,5 +299,5 @@ class: extra-details
 
 Some containers exit immediately, others take longer.
 
-The containers that do not handle `SIGTERM` end up being killed after a 10s timeout.
+The containers that do not handle `SIGTERM` end up being killed after a 10s timeout. If we are very impatient, we can hit `^C` a second time!
 
