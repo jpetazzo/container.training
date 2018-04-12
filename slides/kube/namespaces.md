@@ -18,7 +18,7 @@
 
 --
 
-- In other words: <mark>the tuple *(type, name, namespace)* needs to be unique</mark>
+- In other words: **the tuple *(type, name, namespace)* needs to be unique**
 
   (In the resource YAML, the type is called `Kind`)
 
