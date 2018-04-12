@@ -14,7 +14,7 @@ And if you want to generate printable cards:
 ## General Workflow
 
 - fork/clone repo
-- set required environment variables (for AWS; placeholders otherwise)
+- set required environment variables
 - create your own setting file from `settings/example.yaml`
 - if necessary, increase allowed open files: `ulimit -Sn 10000`
 - run `./workshopctl` commands to create instances, install docker, setup each users environment in node1, other management tasks
