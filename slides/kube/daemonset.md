@@ -202,6 +202,8 @@ And one too many pods...
 
   - *one pod per node* for the daemonset
 
+.footnote[(We don't run these pods on master nodes, so it's *one pod per worker node*.)]
+
 ---
 
 ## What are all these pods doing?
