@@ -235,18 +235,17 @@ class: extra-details
 
 class: extra-details
 
-## endpoints not endpoint
+## `endpoints` not `endpoint`
 
 - `endpoints` is the only resource that cannot be singular
 
 ```bash
-kubectl get endpoint
-kubectl describe endpoint
+$ kubectl get endpoint
+error: the server doesn't have a resource type "endpoint"
 ```
 
---
-
-.warning[error: the server doesn't have a resource type "endpoint"]
-
 - This is because the type itself is plural (unlike every other resource)
+
 - There is no `endpoint` object: `type Endpoints struct`
+
+- The type doesn't represent a single endpoint, but a list of endpoints
