@@ -457,6 +457,6 @@ The timestamps should give us a hint about how many pods are currently receiving
       labels:
         isactive: "yes"
     '
-    kubectl get pods -l run=rng -o name |
+    kubectl get pods -l run=rng -l controller-revision-hash -o name |
       xargs kubectl patch -p "$PATCH" 
   ```
