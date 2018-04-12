@@ -40,12 +40,12 @@
 
 - We can create namespaces with a very minimal YAML, e.g.:
   ```bash
-	  kubectl apply -f- <<EOF
-	  apiVersion: v1
-	  kind: Namespace
-	  metadata:
-	    name: blue
-	  EOF
+	kubectl apply -f- <<EOF
+	apiVersion: v1
+	kind: Namespace
+	metadata:
+	  name: blue
+	EOF
   ```
 
 - If we are using a tool like Helm, it will create namespaces automatically
