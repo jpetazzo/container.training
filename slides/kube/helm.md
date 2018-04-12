@@ -193,12 +193,19 @@ The chart's metadata includes an URL to the project's home page.
 
 ---
 
-## Testing our chart
+## Testing our helm chart
 
-- We can now install our chart with `helm install dockercoins`
+.exercise[
 
-  (In that case, `dockercoins` is the path to the chart)
+- Let's install our helm chart! (`dockercoins` is the path to the chart)
+  ```bash
+  helm install dockercoins
+  ```
+]
 
-- However, since the application is already deployed, this will fail
+--
+
+- Since the application is already deployed, this will fail:<br>
+`Error: release loitering-otter failed: services "hasher" already exists`
 
 - To avoid naming conflicts, we will deploy the application in another *namespace*
