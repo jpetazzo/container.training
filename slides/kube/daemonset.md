@@ -222,11 +222,12 @@ NAME                        READY     STATUS    RESTARTS   AGE
 rng-54f57d4d49-7pt82        1/1       Running   0          11m
 rng-b85tm                   1/1       Running   0          11s
 rng-hfbrr                   1/1       Running   0          11s
+[...]
 ```
 
 --
 
-.footnote[.warning[Yes, our three-node cluster is only running two pods for the daemonset! The master node does not run such pods.]]
+.footnote[.warning[Our cluster is only running pods for the daemonset on the worker nodes! The master node does not run such pods.]]
 
 ---
 
@@ -475,6 +476,7 @@ rng-b85tm                   1/1       Terminating   0          39m
 rng-hfbrr                   1/1       Terminating   0          39m
 rng-vplmj                   1/1       Running       0          7m
 rng-xbpvg                   1/1       Running       0          7m
+[...]
 ```
 
 - The extra daemonset pods are going away, leaving only the ones we want.
@@ -509,6 +511,7 @@ NAME                        READY     STATUS        RESTARTS   AGE
 rng-54f57d4d49-vgz9h        1/1       Terminating   0          4m
 rng-vplmj                   1/1       Running       0          11m
 rng-xbpvg                   1/1       Running       0          11m
+[...]
 ```
 
 Ding, dong, the deployment is dead! And the daemonset lives on.
