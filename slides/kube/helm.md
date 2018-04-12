@@ -154,9 +154,10 @@ The chart's metadata includes an URL to the project's home page.
   helm create dockercoins
   ```
 
-- Move away the sample templates:
+- Move away the sample templates and create an empty template directory:
   ```bash
   mv dockercoins/templates dockercoins/default-templates
+  mkdir dockercoins/templates
   ```
 
 ]
