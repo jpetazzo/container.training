@@ -224,7 +224,7 @@ class: extra-details
   kubectl get endpoints elastic -o yaml
   ```
 
-- These addresses will show us a list of IP addresses
+- These commands will show us a list of IP addresses
 
 - These IP addresses should match the addresses of the corresponding pods:
   ```bash
