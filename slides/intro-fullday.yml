@@ -44,6 +44,7 @@ chapters:
 - - intro/CI_Pipeline.md
   - intro/Advanced_Dockerfiles.md
   - intro/Application_Configuration.md
+  - intro/Dockerfile_Samples.md
   - intro/Logging.md
 - - intro/Namespaces_Cgroups.md
   - intro/Copy_On_Write.md
