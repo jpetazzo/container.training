@@ -137,8 +137,9 @@ Note: please DO NOT call the service `search`. It would collide with the TLD.
 
 --
 
-We may see `curl: (7) Failed to connect to _IP_ port 9200: Connection refused`
-This is normal while the service starts up
+We may see `curl: (7) Failed to connect to _IP_ port 9200: Connection refused`.
+
+This is normal while the service starts up.
 
 --
 
