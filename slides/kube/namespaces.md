@@ -2,21 +2,23 @@
 
 - We cannot have two resources with the same name
 
+  (Or can we...?)
+
 --
 
 - We cannot have two resources *of the same type* with the same name
 
-  (But it's OK to have a `rng` service, a `rng` deployment, and a `rng` daemon set)
+  (But it's OK to have a `rng` service, a `rng` deployment, and a `rng` daemon set!)
 
 --
 
 - We cannot have two resources of the same type with the same name *in the same namespace*
 
-  (But it's OK to have e.g. two `rng` services in different namespaces)
+  (But it's OK to have e.g. two `rng` services in different namespaces!)
 
 --
 
-- In other words: the tuple *(type, name, namespace)* needs to be unique
+- In other words: **the tuple *(type, name, namespace)* needs to be unique**
 
   (In the resource YAML, the type is called `Kind`)
 
