@@ -137,7 +137,13 @@ Note: please DO NOT call the service `search`. It would collide with the TLD.
 
 --
 
-Our requests are load balanced across multiple pods.
+We may see `curl: (7) Failed to connect to _IP_ port 9200: Connection refused`.
+
+This is normal while the service starts up.
+
+--
+
+Once it's running, our requests are load balanced across multiple pods.
 
 ---
 
@@ -208,17 +214,39 @@ class: extra-details
 
 ## Viewing endpoint details
 
-- When we have many endpoints, the previous command truncates the list
+- When we have many endpoints, our display commands truncate the list
+  ```bash
+  kubectl get endpoints
+  ```
 
 - If we want to see the full list, we can use one of the following commands:
   ```bash
-  kubectl describe endpoint elastic
-  kubectl get endpoint elastic -o yaml
+  kubectl describe endpoints elastic
+  kubectl get endpoints elastic -o yaml
   ```
 
-- These addresses will show us a list of IP addresses
+- These commands will show us a list of IP addresses
 
 - These IP addresses should match the addresses of the corresponding pods:
   ```bash
   kubectl get pods -l run=elastic -o wide
   ```
+
+---
+
+class: extra-details
+
+## `endpoints` not `endpoint`
+
+- `endpoints` is the only resource that cannot be singular
+
+```bash
+$ kubectl get endpoint
+error: the server doesn't have a resource type "endpoint"
+```
+
+- This is because the type itself is plural (unlike every other resource)
+
+- There is no `endpoint` object: `type Endpoints struct`
+
+- The type doesn't represent a single endpoint, but a list of endpoints
