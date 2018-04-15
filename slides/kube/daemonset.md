@@ -431,8 +431,7 @@ The timestamps should give us a hint about how many pods are currently receiving
 
 - Remove these pods:
   ```bash
-  kubectl get pods -l run=rng,isactive!=yes -o name |
-      xargs kubectl delete
+  kubectl delete pods -l run=rng,isactive!=yes -o name
   ```
 
 ]
