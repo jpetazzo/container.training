@@ -178,34 +178,37 @@ Wait ... Now, can it be *that* easy?
 
 --
 
-We have both `deploy/rng` and `ds/rng` now!
-(Though of course a bug prevents them from being labeled as such!)
+We have two resources called `rng`:
 
---
+- the *deployment* that was existing before
 
-And one too many pods...
+- the *daemon set* that we just created
+
+We also have one too many pods.
+<br/>
+(The pod corresponding to the *deployment* still exists.)
 
 ---
 
-## Explanation
+## `deploy/rng` and `ds/rng`
 
 - You can have different resource types with the same name
 
-  (i.e. a *deployment* and a *daemonset* both named `rng`)
+  (i.e. a *deployment* and a *daemon set* both named `rng`)
 
 - We still have the old `rng` *deployment*
 
-```
-NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-rng        1         1         1            1           11m
-```
+  ```
+  NAME    DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+  rng     1         1         1            1           11m
+  ```
 
-- But now we have the new `rng` *daemonset* as well
+- But now we have the new `rng` *daemon set* as well
 
-```
-NAME      DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
-rng       2         2         2         2            2           <none>          11s
-```
+  ```
+  NAME   DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+  rng    2         2         2         2            2           <none>          11s
+  ```
 
 ---
 
@@ -215,19 +218,21 @@ rng       2         2         2         2            2           <none>         
 
   - *one pod* for the deployment (named `rng-xxxxxxxxxx-yyyyy`)
 
-  - *one pod per node* for the daemonset (named `rng-yyyyy`)
+  - *one pod per node* for the daemon set (named `rng-zzzzz`)
 
-```
-NAME                        READY     STATUS    RESTARTS   AGE
-rng-54f57d4d49-7pt82        1/1       Running   0          11m
-rng-b85tm                   1/1       Running   0          11s
-rng-hfbrr                   1/1       Running   0          11s
-[...]
-```
+  ```
+  NAME                        READY     STATUS    RESTARTS   AGE
+  rng-54f57d4d49-7pt82        1/1       Running   0          11m
+  rng-b85tm                   1/1       Running   0          25s
+  rng-hfbrr                   1/1       Running   0          25s
+  [...]
+  ```
 
 --
 
-.footnote[.warning[Our cluster is only running pods for the daemonset on the worker nodes! The master node does not run such pods.]]
+The daemon set created one pod per node, except on the master node.
+
+The master node has [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) preventing ordinary pods from running there.
 
 ---
 
@@ -458,14 +463,14 @@ The timestamps should give us a hint about how many pods are currently receiving
 
 - Remove these pods:
   ```bash
-  kubectl get pods -l run=rng,isactive!=yes -o name | xargs kubectl delete
+  kubectl delete pods -l run=rng,isactive!=yes
   ```
 
 ]
 
 ---
 
-## Cleaning up the deployment
+## Cleaning up stale pods
 
 ```
 $ kubectl get pods
@@ -479,15 +484,15 @@ rng-xbpvg                   1/1       Running       0          7m
 [...]
 ```
 
-- The extra daemonset pods are going away, leaving only the ones we want.
+- The extra pods (noted `Terminating` above) are going away
 
-- But why is a new deployment being started?!
+- ... But a new one (`rng-54f57d4d49-vgz9h` above) was restarted immediately!
 
 --
 
-- Remember, k8s maintains our desired state
+- Remember, the *deployment* still exists, and makes sure that one pod is up and running
 
-- We can't just delete a pod - it will be recreated!
+- If we delete the pod associated to the deployment, it is recreated automatically
 
 ---
 
@@ -503,7 +508,7 @@ rng-xbpvg                   1/1       Running       0          7m
 
 --
 
-- We should see deployment "rng" is deleted. Let's check:
+- The pod that was created by the deployment is now being shutdown:
 
 ```
 $ kubectl get pods
@@ -514,11 +519,7 @@ rng-xbpvg                   1/1       Running       0          11m
 [...]
 ```
 
-Ding, dong, the deployment is dead! And the daemonset lives on.
-
---
-
-(This is how you could remove that `pingpong` deployment if you like!)
+Ding, dong, the deployment is dead! And the daemon set lives on.
 
 ---
 
@@ -543,3 +544,39 @@ Ding, dong, the deployment is dead! And the daemonset lives on.
     kubectl get pods -l run=rng -o name |
       xargs kubectl patch -p "$PATCH" 
   ```
+
+---
+
+## Labels and debugging
+
+- When a pod is misbehaving, we can delete it: another one will be recreated
+
+- But we can also change its labels
+
+- It will be removed from the load balancer (it won't receive traffic anymore)
+
+- Another pod will be recreated immediately
+
+- But the problematic pod is still here, and we can inspect and debug it
+
+- We can even re-add it to the rotation if necessary
+
+  (Very useful to troubleshoot intermittent and elusive bugs)
+
+---
+
+## Labels and advanced rollout control
+
+- Conversely, we can add pods matching a service's selector
+
+- These pods will then receive requests and serve traffic
+
+- Examples:
+
+  - one-shot pod with all debug flags enabled, to collect logs
+
+  - pods created automatically, but added to rotation in a second step
+    <br/>
+    (by setting their label accordingly)
+
+- This gives us building blocks for canary and blue/green deployments
