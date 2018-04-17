@@ -94,6 +94,28 @@ That rollout should be pretty quick. What shows in the web UI?
 
 ---
 
+## Give it some time
+
+- At first, it looks like nothing is happening (the graph remains at the same level)
+
+- According to `kubectl get deploy -w`, the `deployment` was updated really quickly
+
+- But `kubectl get pods -w` tells a different story
+
+- The old `pods` are still here, and they stay in `Terminating` state for a while
+
+- Eventually, they are terminated; and then the graph decreases significantly
+
+- This delay is due to the fact that our worker doesn't handle signals
+
+- Kubernetes sends a "polite" shutdown request to the worker, which ignores it
+
+- After a grace period, Kubernetes gets impatient and kills the container
+
+  (The grace period is 30 seconds, but [can be changed](https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods) if needed)
+
+---
+
 ## Rolling out a boo-boo
 
 - What happens if we make a mistake?

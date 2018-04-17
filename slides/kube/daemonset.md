@@ -459,3 +459,39 @@ The timestamps should give us a hint about how many pods are currently receiving
     kubectl get pods -l run=rng -o name |
       xargs kubectl patch -p "$PATCH" 
   ```
+
+---
+
+## Labels and debugging
+
+- When a pod is misbehaving, we can delete it: another one will be recreated
+
+- But we can also change its labels
+
+- It will be removed from the load balancer (it won't receive traffic anymore)
+
+- Another pod will be recreated immediately
+
+- But the problematic pod is still here, and we can inspect and debug it
+
+- We can even re-add it to the rotation if necessary
+
+  (Very useful to troubleshoot intermittent and elusive bugs)
+
+---
+
+## Labels and advanced rollout control
+
+- Conversely, we can add pods matching a service's selector
+
+- These pods will then receive requests and serve traffic
+
+- Examples:
+
+  - one-shot pod with all debug flags enabled, to collect logs
+
+  - pods created automatically, but added to rotation in a second step
+    <br/>
+    (by setting their label accordingly)
+
+- This gives us building blocks for canary and blue/green deployments
