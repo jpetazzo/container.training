@@ -48,7 +48,7 @@
   helm init
   ```
 
-- Add the `helm` completion
+- Add the `helm` completion:
   ```bash
   . <(helm completion $SHELL)
   ```
