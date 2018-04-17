@@ -110,7 +110,9 @@ That rollout should be pretty quick. What shows in the web UI?
 
 - Kubernetes sends a "polite" shutdown request to the worker, which ignores it
 
-- Eventually, Kubernetes gets impatient and kills the container
+- After a grace period, Kubernetes gets impatient and kills the container
+
+  (The grace period is 30 seconds, but [can be changed](https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods) if needed)
 
 ---
 
