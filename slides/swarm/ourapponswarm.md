@@ -107,7 +107,7 @@ class: extra-details
 
 - Make sure we have a Docker Hub account
 
-- [Activate a Docker Datacenter subscription](
+- [Activate a Docker EE subscription](
   https://hub.docker.com/enterprise/trial/)
 
 - Install DTR on our machines
