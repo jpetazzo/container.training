@@ -7,7 +7,6 @@ services:
         working_dir: /root/prepare-vms
         volumes:
             - $HOME/.aws/:/root/.aws/
-            - /etc/localtime:/etc/localtime:ro
             - $SSH_AUTH_SOCK:$SSH_AUTH_SOCK
             - $PWD/:/root/prepare-vms/
         environment:
