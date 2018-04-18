@@ -53,7 +53,7 @@ We should see the following things:
 - `rs/pingpong-xxxx` (a *replica set* created by the deployment)
 - `po/pingpong-yyyy` (a *pod* created by the replica set)
 
-Note: as of 1.10, types aren't displayed! [This may be a bug.](https://github.com/kubernetes/kubernetes/issues/62340)
+Note: as of 1.10.0, types aren't displayed! [This is a bug and will be corrected in 1.10.1.](https://github.com/kubernetes/kubernetes/issues/62340)
 
 ---
 
