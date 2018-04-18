@@ -267,7 +267,7 @@ The latest version of the ElasticSearch image won't start without mandatory conf
 
 ---
 
-class: extra-details
+class: extra-details, pic
 
 ![diagram showing what happens during docker service create, courtesy of @aluzzardi](images/docker-service-create.svg)
 
