@@ -508,7 +508,7 @@ rng-xbpvg                   1/1       Running       0          7m
 
 --
 
-- The pod that was created by the deployment is now being shutdown:
+- The pod that was created by the deployment is now being terminated:
 
 ```
 $ kubectl get pods
