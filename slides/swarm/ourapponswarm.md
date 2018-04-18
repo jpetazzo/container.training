@@ -79,6 +79,11 @@ We just have to adapt this to our application, which has 4 services!
   - doesn't come with anything either
   - located wherever you want
 
+- **Lots of 3rd party cloud or self-hosted options**
+
+  - AWS/Azure/Google Container Registry
+  - GitLab, Quay, JFrog
+  
 ]
 
 ---
