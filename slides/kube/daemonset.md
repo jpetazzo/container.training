@@ -202,7 +202,7 @@ And one too many pods...
 
   - *one pod per node* for the daemonset
 
-.footnote[(We don't run these pods on master nodes, so it's *one pod per worker node*.)]
+.footnote[(Off by one? We don't run these pods on the node hosting the control plane.)]
 
 ---
 
