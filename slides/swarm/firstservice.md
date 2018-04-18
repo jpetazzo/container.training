@@ -20,23 +20,6 @@
 
 ---
 
-class: extra-details
-
-## `--detach` for service creation
-
-(New in Docker Engine 17.05)
-
-If you are running Docker 17.05 to 17.09, you will see the following message:
-
-```
-Since --detach=false was not specified, tasks will be created in the background.
-In a future release, --detach=false will become the default.
-```
-
-You can ignore that for now; but we'll come back to it in just a few minutes!
-
----
-
 ## Checking service logs
 
 (New in Docker Engine 17.05)
@@ -57,20 +40,6 @@ You can ignore that for now; but we'll come back to it in just a few minutes!
 Flags `--follow` and `--tail` are available, as well as a few others.
 
 Note: by default, when a container is destroyed (e.g. when scaling down), its logs are lost.
-
----
-
-class: extra-details
-
-## Before Docker Engine 17.05
-
-- Docker 1.13/17.03/17.04 have `docker service logs` as an experimental feature
-  <br/>(available only when enabling the experimental feature flag)
-
-- We have to use `docker logs`, which only works on local containers
-
-- We will have to connect to the node running our container
-  <br/>(unless it was scheduled locally, of course)
 
 ---
 
@@ -141,15 +110,16 @@ class: extra-details
 
 ## Monitoring deployment progress with `--detach`
 
-(New in Docker Engine 17.05)
+(New in Docker Engine 17.10)
 
-- The CLI can monitor commands that create/update/delete services
+- The CLI monitors commands that create/update/delete services
 
-- `--detach=false`
+- In effect, `--detach=false` is the default
 
   - synchronous operation
   - the CLI will monitor and display the progress of our request
   - it exits only when the operation is complete
+  - Ctrl-C to detach at anytime
 
 - `--detach=true`
 
