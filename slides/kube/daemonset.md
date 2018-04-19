@@ -234,6 +234,8 @@ The daemon set created one pod per node, except on the master node.
 
 The master node has [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) preventing ordinary pods from running there.
 
+.footnote[(Off by one? We don't run these pods on the node hosting the control plane.)]
+
 ---
 
 ## What are all these pods doing?
