@@ -235,8 +235,7 @@ Unfortunately, `--follow` cannot (yet) be used to stream the logs from multiple 
 
 ## Aren't we flooding 1.1.1.1?
 
-- If you're asking yourself that question:
-  congratulations for being a good citizen!
+- If you're wondering this, good question!
 
 - Don't worry, though:
 
