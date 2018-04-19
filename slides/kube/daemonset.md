@@ -232,7 +232,9 @@ We also have one too many pods.
 
 The daemon set created one pod per node, except on the master node.
 
-The master node has [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) preventing ordinary pods from running there.
+The master node has [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) preventing pods from running there.
+
+(To schedule a pod on this node anyway, the pod will require appropriate [tolerations](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/).)
 
 .footnote[(Off by one? We don't run these pods on the node hosting the control plane.)]
 
