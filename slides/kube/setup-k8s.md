@@ -84,4 +84,4 @@
 
 - For a longer list, check the Kubernetes documentation:
   <br/>
-  it has a great guide to [pick the right solution](https://kubernetes.io/docs/setup/pick-right-solution/) to setup Kubernetes.
+  it has a great guide to [pick the right solution](https://kubernetes.io/docs/setup/pick-right-solution/) to set up Kubernetes.
