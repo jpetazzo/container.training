@@ -541,7 +541,7 @@ Ding, dong, the deployment is dead! And the daemon set lives on.
       labels:
         isactive: "yes"
     '
-    kubectl get pods -l run=rng -o name |
+    kubectl get pods -l run=rng -l controller-revision-hash -o name |
       xargs kubectl patch -p "$PATCH" 
   ```
 
