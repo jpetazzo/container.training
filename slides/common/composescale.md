@@ -49,26 +49,6 @@ Tip: use `^S` and `^Q` to pause/resume log output.
 
 ---
 
-class: extra-details
-
-## Upgrading from Compose 1.6
-
-.warning[The `logs` command has changed between Compose 1.6 and 1.7!]
-
-- Up to 1.6
-
-  - `docker-compose logs` is the equivalent of `logs --follow`
-
-  - `docker-compose logs` must be restarted if containers are added
-
-- Since 1.7
-
-  - `--follow` must be specified explicitly
-
-  - new containers are automatically picked up by `docker-compose logs`
-
----
-
 ## Scaling up the application
 
 - Our goal is to make that performance graph go up (without changing a line of code!)
