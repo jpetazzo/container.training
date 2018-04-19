@@ -258,13 +258,11 @@ class: extra-details
 
 - This might change in the future (after all, it was possible in 1.12 RC!)
 
-- As of Docker Engine 17.05, other parameters requiring to `rm`/`create` the service are:
+- As of Docker Engine 18.03, other parameters requiring to `rm`/`create` the service are:
 
   - service name
 
   - hostname
-
-  - network
 
 ---
 
