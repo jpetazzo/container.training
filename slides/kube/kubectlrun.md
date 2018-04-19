@@ -53,6 +53,8 @@ We should see the following things:
 - `rs/pingpong-xxxx` (a *replica set* created by the deployment)
 - `po/pingpong-yyyy` (a *pod* created by the replica set)
 
+Note: as of 1.10.0, types aren't displayed! [This is a bug and will be corrected in 1.10.1.](https://github.com/kubernetes/kubernetes/issues/62340)
+
 ---
 
 ## What are these different things?
@@ -82,17 +84,28 @@ We should see the following things:
 
 - `kubectl run` created a *deployment*, `deploy/pingpong`
 
+```
+NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+pingpong   1         1         1            1           24m
+```
+
 - That deployment created a *replica set*, `rs/pingpong-xxxx`
+
+```
+NAME                  DESIRED   CURRENT   READY     AGE
+pingpong-68bbb64457   1         1         1         24m
+```
 
 - That replica set created a *pod*, `po/pingpong-yyyy`
 
+```
+NAME                        READY     STATUS    RESTARTS   AGE
+pingpong-68bbb64457-x7vss   1/1       Running   0          24m
+```
+
 - We'll see later how these folks play together for:
 
-  - scaling
-
-  - high availability
-
-  - rolling updates
+  - scaling, high availability, rolling updates
 
 ---
 
