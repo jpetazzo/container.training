@@ -30,11 +30,11 @@
 
 - Doesn't set up the overlay network
 
-- Scripting is complex
-  <br/>
-  (because extracting the token requires advanced `kubectl` commands)
-
 - Doesn't set up multi-master (no high availability)
+
+--
+
+  (At least ... not yet!)
 
 --
 
@@ -65,4 +65,23 @@
 
   Probably the closest to a multi-cloud/hybrid solution so far, but in development
 
-- Also, many commercial options!
+---
+
+## Even more deployment options
+
+- If you like Ansible:
+  [kubespray](https://github.com/kubernetes-incubator/kubespray)
+
+- If you like Terraform:
+  [typhoon](https://github.com/poseidon/typhoon/)
+
+- You can also learn how to install every component manually, with
+  the excellent tutorial [Kubernetes The Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way)
+
+  *Kubernetes The Hard Way is optimized for learning, which means taking the long route to ensure you understand each task required to bootstrap a Kubernetes cluster.*
+
+- There are also many commercial options available!
+
+- For a longer list, check the Kubernetes documentation:
+  <br/>
+  it has a great guide to [pick the right solution](https://kubernetes.io/docs/setup/pick-right-solution/) to setup Kubernetes.
