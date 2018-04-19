@@ -36,7 +36,7 @@
 
 ## Creating a daemon set
 
-- Unfortunately, as of Kubernetes 1.9, the CLI cannot create daemon sets
+- Unfortunately, as of Kubernetes 1.10, the CLI cannot create daemon sets
 
 --
 
@@ -55,7 +55,7 @@
 
 --
 
-  - option 1: read the docs
+  - option 1: [read the docs](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/#create-a-daemonset)
 
 --
 
@@ -178,29 +178,61 @@ Wait ... Now, can it be *that* easy?
 
 --
 
-We have both `deploy/rng` and `ds/rng` now!
+We have two resources called `rng`:
 
---
+- the *deployment* that was existing before
 
-And one too many pods...
+- the *daemon set* that we just created
+
+We also have one too many pods.
+<br/>
+(The pod corresponding to the *deployment* still exists.)
 
 ---
 
-## Explanation
+## `deploy/rng` and `ds/rng`
 
 - You can have different resource types with the same name
 
-  (i.e. a *deployment* and a *daemonset* both named `rng`)
+  (i.e. a *deployment* and a *daemon set* both named `rng`)
 
 - We still have the old `rng` *deployment*
 
-- But now we have the new `rng` *daemonset* as well
+  ```
+  NAME    DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+  rng     1         1         1            1           11m
+  ```
+
+- But now we have the new `rng` *daemon set* as well
+
+  ```
+  NAME   DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+  rng    2         2         2         2            2           <none>          11s
+  ```
+
+---
+
+## Too many pods
 
 - If we look at the pods, we have:
 
-  - *one pod* for the deployment
+  - *one pod* for the deployment (named `rng-xxxxxxxxxx-yyyyy`)
 
-  - *one pod per node* for the daemonset
+  - *one pod per node* for the daemon set (named `rng-zzzzz`)
+
+  ```
+  NAME                        READY     STATUS    RESTARTS   AGE
+  rng-54f57d4d49-7pt82        1/1       Running   0          11m
+  rng-b85tm                   1/1       Running   0          25s
+  rng-hfbrr                   1/1       Running   0          25s
+  [...]
+  ```
+
+--
+
+The daemon set created one pod per node, except on the master node.
+
+The master node has [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) preventing ordinary pods from running there.
 
 ---
 
@@ -418,7 +450,7 @@ The timestamps should give us a hint about how many pods are currently receiving
 
 ## Cleaning up
 
-- The pods of the "old" daemon set are still running
+- The pods of the deployment and the "old" daemon set are still running
 
 - We are going to identify them programmatically
 
@@ -438,9 +470,62 @@ The timestamps should give us a hint about how many pods are currently receiving
 
 ---
 
+## Cleaning up stale pods
+
+```
+$ kubectl get pods
+NAME                        READY     STATUS        RESTARTS   AGE
+rng-54f57d4d49-7pt82        1/1       Terminating   0          51m
+rng-54f57d4d49-vgz9h        1/1       Running       0          22s
+rng-b85tm                   1/1       Terminating   0          39m
+rng-hfbrr                   1/1       Terminating   0          39m
+rng-vplmj                   1/1       Running       0          7m
+rng-xbpvg                   1/1       Running       0          7m
+[...]
+```
+
+- The extra pods (noted `Terminating` above) are going away
+
+- ... But a new one (`rng-54f57d4d49-vgz9h` above) was restarted immediately!
+
+--
+
+- Remember, the *deployment* still exists, and makes sure that one pod is up and running
+
+- If we delete the pod associated to the deployment, it is recreated automatically
+
+---
+
+## Deleting a deployment
+
+.exercise[
+
+- Remove the `rng` deployment:
+  ```bash
+  kubectl delete deployment rng
+  ```
+]
+
+--
+
+- The pod that was created by the deployment is now being terminated:
+
+```
+$ kubectl get pods
+NAME                        READY     STATUS        RESTARTS   AGE
+rng-54f57d4d49-vgz9h        1/1       Terminating   0          4m
+rng-vplmj                   1/1       Running       0          11m
+rng-xbpvg                   1/1       Running       0          11m
+[...]
+```
+
+Ding, dong, the deployment is dead! And the daemon set lives on.
+
+---
+
 ## Avoiding extra pods
 
-- When we changed the definition of the daemon set, it immediately created new pods
+- When we changed the definition of the daemon set, it immediately created new pods. We had to remove the old ones manually.
 
 - How could we have avoided this?
 
