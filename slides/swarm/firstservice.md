@@ -379,13 +379,13 @@ class: btw-labels
 
   - labels are detected automatically and dynamically update the configuration
 
-- Two common open source "reverse proxy" options
+- Two common open source "reverse proxy" options:
 
   - [Traefik](https://traefik.io/) - popular, many features, requires running on managers, 
   needs key/value for HA
   
   - [Docker Flow Proxy](http://proxy.dockerflow.com/) - uses HAProxy, made for 
-  Swarm by Docker Captian [@vfarcic](https://twitter.com/vfarcic)
+  Swarm by Docker Captain [@vfarcic](https://twitter.com/vfarcic)
 
 ---
 
