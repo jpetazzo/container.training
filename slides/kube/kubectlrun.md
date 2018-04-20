@@ -20,9 +20,10 @@
 
 .exercise[
 
-- Let's ping `goo.gl`:
+- Let's ping `1.1.1.1`, Cloudflare's 
+  [public DNS resolver](https://blog.cloudflare.com/announcing-1111/):
   ```bash
-  kubectl run pingpong --image alpine ping goo.gl
+  kubectl run pingpong --image alpine ping 1.1.1.1
   ```
 
 ]
@@ -245,15 +246,15 @@ Unfortunately, `--follow` cannot (yet) be used to stream the logs from multiple 
 
 ---
 
-class: title
+## Aren't we flooding 1.1.1.1?
 
-Meanwhile,
-<br/>
-at the Google NOC ...
-<br/>
-<br/>
-.small[“Why the hell]
-<br/>
-.small[are we getting 1000 packets per second]
-<br/>
-.small[of ICMP ECHO traffic from these IPs?!?”]
+- If you're wondering this, good question!
+
+- Don't worry, though:
+
+  *APNIC's research group held the IP addresses 1.1.1.1 and 1.0.0.1. While the addresses were valid, so many people had entered them into various random systems that they were continuously overwhelmed by a flood of garbage traffic. APNIC wanted to study this garbage traffic but any time they'd tried to announce the IPs, the flood would overwhelm any conventional network.*
+
+  (Source: https://blog.cloudflare.com/announcing-1111/)
+
+- It's very unlikely that our concerted pings manage to produce
+  even a modest blip at Cloudlare's NOC!
