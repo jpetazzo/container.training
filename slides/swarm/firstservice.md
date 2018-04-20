@@ -381,8 +381,8 @@ class: btw-labels
 
 - Two common open source "reverse proxy" options
 
-  - [Traefik](https://traefik.io/) - uses NGINX, popular, requires proxy be on managers, 
-  needs DB for HA
+  - [Traefik](https://traefik.io/) - popular, many features, requires running on managers, 
+  needs key/value for HA
   
   - [Docker Flow Proxy](http://proxy.dockerflow.com/) - uses HAProxy, made for 
   Swarm by Docker Captian [@vfarcic](https://twitter.com/vfarcic)
