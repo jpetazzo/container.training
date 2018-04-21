@@ -36,7 +36,7 @@ chapters:
   - kube/daemonset.md
   - kube/rollout.md
 - - kube/logs-cli.md
-# Bridget hasn't added ELK yet
+# Bridget hasn't added EFK yet
   #- kube/logs-centralized.md
   - kube/helm.md
   - kube/namespaces.md
