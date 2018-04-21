@@ -2,21 +2,24 @@ title: |
   Kubernetes 101
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-chat: "[Gitter](https://gitter.im/jpetazzo/training-20180413-paris)"
-#chat: "In person!"
+#chat: "[Gitter](https://gitter.im/jpetazzo/training-20180413-paris)"
+chat: "In person!"
 
 exclude:
 - self-paced
 
 chapters:
 - common/title.md
-- logistics.md
+#- logistics.md
+# Bridget-specific; others use logistics.md
+- logistics-bridget.md
 - kube/intro.md
 - common/about-slides.md
 - common/toc.md
 - - common/prereqs.md
   - kube/versions-k8s.md
   - common/sampleapp.md
+# Bridget doesn't go into as much depth with compose
   #- common/composescale.md
   - common/composedown.md
   - kube/concepts-k8s.md
@@ -24,18 +27,21 @@ chapters:
   - kube/declarative.md
   - kube/kubenet.md
   - kube/kubectlget.md
-- - kube/setup-k8s.md
-  - kube/kubectlrun.md
+  - kube/setup-k8s.md
+- - kube/kubectlrun.md
   - kube/kubectlexpose.md
   - kube/ourapponkube.md
-  - kube/dashboard.md
-- - kube/kubectlscale.md
+- - kube/dashboard.md
+  - kube/kubectlscale.md
   - kube/daemonset.md
   - kube/rollout.md
-  - kube/logs-cli.md
+- - kube/logs-cli.md
+# Bridget hasn't added ELK yet
   #- kube/logs-centralized.md
-  #- kube/helm.md
-  #- kube/namespaces.md
+  - kube/helm.md
+  - kube/namespaces.md
   - kube/whatsnext.md
-  - kube/links.md
+#  - kube/links.md
+# Bridget-specific
+  - kube/links-bridget.md
   - common/thankyou.md
