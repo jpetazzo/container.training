@@ -260,5 +260,5 @@ The dashboard will then ask you which authentication you want to use.
 
 --
 
-- It introduces new failure modes
+- It introduces new failure modes (like if you try to apply yaml from a link that's no longer valid)
 
