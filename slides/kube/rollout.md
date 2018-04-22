@@ -33,6 +33,23 @@
 
 ---
 
+## Checking current rollout parameters
+
+- Recall how we build custom reports with `kubectl` and `jq`:
+
+.exercise[
+
+- Show the rollout plan for our deployments:
+  ```bash
+    kubectl get deploy -o json |
+            jq ".items[] | {name:.metadata.name} + .spec.strategy.rollingUpdate"
+  ```
+
+]
+
+---
+
+
 ## Rolling updates in practice
 
 - As of Kubernetes 1.8, we can do rolling updates with:
@@ -141,6 +158,24 @@ Our rollout is stuck. However, the app is not dead (just 10% slower).
 
 ---
 
+## Why 10% slower?
+
+- We start with 10 pods running for the `worker` deployment
+
+- Current settings: MaxUnavailable=1 and MaxSurge=1
+
+- When we start the rollout:
+
+  - one replica is taken down (as per MaxUnavailable=1)
+  - another is created (with the new version) to replace it
+  - another is created (with the new version) per MaxSurge=1
+
+- Now we have 9 replicas up and running, and 2 being deployed
+
+- Our rollout is stuck at this point!
+
+---
+
 ## Recovering from a bad rollout
 
 - We could push some `v0.3` image
@@ -222,6 +257,8 @@ spec:
       minReadySeconds: 10
     "
   kubectl rollout status deployment worker
+  kubectl get deploy -o json worker |
+          jq "{name:.metadata.name} + .spec.strategy.rollingUpdate"
   ```
   ] 
 
