@@ -6,9 +6,12 @@
 
    - .emoji[🌟] Joe ([@joelaha](https://twitter.com/joelaha))
 
-- The workshop will run from 13:30-16:45
 
-- There will be a break from 15:00-15:15
+*Morning and afternoon sessions are the same*
+
+- Morning session: 9am - noon (break from 10:30-10:45)
+
+- Afternoon session: 1pm - 4pm (break from 2:30-2:45)
 
 - Feel free to interrupt for questions at any time
 
