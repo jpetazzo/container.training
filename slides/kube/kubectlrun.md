@@ -50,11 +50,11 @@ OK, what just happened?
 --
 
 We should see the following things:
-- `deploy/pingpong` (the *deployment* that we just created)
-- `rs/pingpong-xxxx` (a *replica set* created by the deployment)
-- `po/pingpong-yyyy` (a *pod* created by the replica set)
+- `deployment.apps/pingpong` (the *deployment* that we just created)
+- `replicaset.apps/pingpong-xxxxxxxxxx` (a *replica set* created by the deployment)
+- `pod/pingpong-xxxxxxxxxx-yyyyy` (a *pod* created by the replica set)
 
-Note: as of 1.10.0, types aren't displayed! [This is a bug and will be corrected in 1.10.1.](https://github.com/kubernetes/kubernetes/issues/62340)
+Note: as of 1.10.1, resource types are displayed in more detail.
 
 ---
 
@@ -83,25 +83,25 @@ Note: as of 1.10.0, types aren't displayed! [This is a bug and will be corrected
 
 ## Our `pingpong` deployment
 
-- `kubectl run` created a *deployment*, `deploy/pingpong`
+- `kubectl run` created a *deployment*, `deployment.apps/pingpong`
 
 ```
-NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-pingpong   1         1         1            1           24m
+NAME                       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/pingpong   1         1         1            1           10m
 ```
 
-- That deployment created a *replica set*, `rs/pingpong-xxxx`
+- That deployment created a *replica set*, `replicaset.apps/pingpong-xxxxxxxxxx`
 
 ```
-NAME                  DESIRED   CURRENT   READY     AGE
-pingpong-68bbb64457   1         1         1         24m
+NAME                                  DESIRED   CURRENT   READY     AGE
+replicaset.apps/pingpong-7c8bbcd9bc   1         1         1         10m
 ```
 
-- That replica set created a *pod*, `po/pingpong-yyyy`
+- That replica set created a *pod*, `pod/pingpong-xxxxxxxxxx-yyyyy`
 
 ```
-NAME                        READY     STATUS    RESTARTS   AGE
-pingpong-68bbb64457-x7vss   1/1       Running   0          24m
+NAME                            READY     STATUS    RESTARTS   AGE
+pod/pingpong-7c8bbcd9bc-6c9qz   1/1       Running   0          10m
 ```
 
 - We'll see later how these folks play together for:
@@ -172,7 +172,7 @@ pingpong-68bbb64457-x7vss   1/1       Running   0          24m
 
 ]
 
-Note: what if we tried to scale `rs/pingpong-xxxx`?
+Note: what if we tried to scale `replicaset.apps/pingpong-xxxxxxxxxx`?
 
 We could! But the *deployment* would notice it right away, and scale back to the initial level.
 
@@ -200,7 +200,7 @@ We could! But the *deployment* would notice it right away, and scale back to the
 
 - Destroy a pod:
   ```bash
-  kubectl delete pod pingpong-yyyy
+  kubectl delete pod pingpong-xxxxxxxxxx-yyyyy
   ```
 ]
 
