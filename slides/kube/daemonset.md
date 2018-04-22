@@ -432,9 +432,9 @@ Of course, option 2 offers more learning opportunities. Right?
 
 .exercise[
 
-- Check the logs of all `run=rng` pods to confirm that exactly one per node is now active:
+- Check the most recent log line of all `run=rng` pods to confirm that exactly one per node is now active:
   ```bash
-  kubectl logs -l run=rng
+  kubectl logs -l run=rng --tail 1
   ```
 
 ]
