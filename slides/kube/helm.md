@@ -50,7 +50,7 @@
 
 - Add the `helm` completion:
   ```bash
-  . <(helm completion $SHELL)
+  . <(helm completion $(basename $SHELL))
   ```
 
 ]
