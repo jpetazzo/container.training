@@ -199,22 +199,22 @@ We also have one too many pods.
 - We still have the old `rng` *deployment*
 
   ```
-  NAME    DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-  rng     1         1         1            1           11m
+NAME                       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/rng        1         1         1            1           18m
   ```
 
 - But now we have the new `rng` *daemon set* as well
 
   ```
-  NAME   DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
-  rng    2         2         2         2            2           <none>          11s
+NAME                DESIRED  CURRENT  READY  UP-TO-DATE  AVAILABLE  NODE SELECTOR  AGE
+daemonset.apps/rng  2        2        2      2           2          <none>         9s
   ```
 
 ---
 
 ## Too many pods
 
-- If we look at the pods, we have:
+- If we check with `kubectl get pods`, we see:
 
   - *one pod* for the deployment (named `rng-xxxxxxxxxx-yyyyy`)
 
@@ -432,9 +432,9 @@ Of course, option 2 offers more learning opportunities. Right?
 
 .exercise[
 
-- Check the logs of all `run=rng` pods to confirm that exactly one per node is now active:
+- Check the most recent log line of all `run=rng` pods to confirm that exactly one per node is now active:
   ```bash
-  kubectl logs -l run=rng
+  kubectl logs -l run=rng --tail 1
   ```
 
 ]
