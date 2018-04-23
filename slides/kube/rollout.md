@@ -158,7 +158,21 @@ Our rollout is stuck. However, the app is not dead (just 10% slower).
 
 ---
 
-## Why 10% slower?
+## What's going on with our rollout?
+
+- Why is our app 10% slower?
+
+- Because `MaxUnavailable=1`, so the rollout terminated 1 replica out of 10 available
+
+- Okay, but why do we see 2 new replicas being rolled out?
+
+- Because `MaxSurge=1`, so in addition to replacing the terminated one, the rollout is also starting one more
+
+---
+
+class: extra-details
+
+## The nitty-gritty details
 
 - We start with 10 pods running for the `worker` deployment
 
