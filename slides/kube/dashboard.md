@@ -256,9 +256,9 @@ The dashboard will then ask you which authentication you want to use.
 
 - It's safe if you use HTTPS URLs from trusted sources
 
+- Example: the official setup instructions for most pod networks
+
 --
 
-- It introduces new failure modes
-
-- Example: the official setup instructions for most pod networks
+- It introduces new failure modes (like if you try to apply yaml from a link that's no longer valid)
 
