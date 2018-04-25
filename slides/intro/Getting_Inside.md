@@ -144,7 +144,7 @@ docker run jpetazzo/crashtest
 
 The container starts, but then stops immediately, without any output.
 
-What would McGyver do?
+What would MacGyver&trade; do?
 
 First, let's check the status of that container.
 
