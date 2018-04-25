@@ -426,16 +426,14 @@ class: extra-details
 
 .exercise[
 
-- Get the source code of this simple-yet-beautiful visualization app:
+- Create a service of this simple-yet-beautiful visualization app:
   ```bash
-  cd ~
-  git clone git://github.com/dockersamples/docker-swarm-visualizer
-  ```
-
-- Build and run the Swarm visualizer:
-  ```bash
-  cd docker-swarm-visualizer
-  docker-compose up -d
+  docker service create \
+  --name=viz \
+  --publish=8080:8080/tcp \
+  --constraint=node.role==manager \
+  --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+  dockersamples/visualizer
   ```
 
   <!-- ```longwait Creating dockerswarmvisualizer_viz_1``` -->
@@ -450,7 +448,7 @@ class: extra-details
 
 .exercise[
 
-- Point your browser to port 8080 of your node1's public ip
+- Point your browser to port 8080 of a nodes public ip
 
   (If you use Play-With-Docker, click on the (8080) badge)
 
@@ -476,19 +474,17 @@ class: extra-details
 
 - Instead of viewing your cluster, this could take care of logging, metrics, autoscaling ...
 
-- We can run it within a service, too! We won't do it, but the command would look like:
+- Ideally all things in a Swarm run in Services (cattle not pets)
 
-  ```bash
-    docker service create \
-      --mount source=/var/run/docker.sock,type=bind,target=/var/run/docker.sock \
-      --name viz --constraint node.role==manager ...
-  ```
+.footnote[
 
 Credits: the visualization code was written by
 [Francisco Miranda](https://github.com/maroshii).
-<br/>
+
 [Mano Marks](https://twitter.com/manomarks) adapted
 it to Swarm and maintains it.
+
+]
 
 ---
 

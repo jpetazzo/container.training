@@ -112,9 +112,10 @@ services:
 
 .exercise[
 
-- Deploy our local registry:
+- Deploy our local registry and the visualizer:
   ```bash
-  docker stack deploy registry --compose-file registry.yml
+  docker stack deploy --compose-file registry.yml registry
+  docker stack deploy -c visualizer.yml viz
   ```
 
 ]
