@@ -37,6 +37,7 @@ chapters:
   - swarm/btp-manual.md
   - swarm/swarmready.md
   - swarm/compose2swarm.md
+  - common/cicd.md
   - swarm/updatingservices.md
   #- swarm/rollingupdates.md
   - swarm/healthchecks.md
