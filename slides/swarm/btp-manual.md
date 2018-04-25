@@ -141,7 +141,7 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 - Update `webui` so that we can connect to it from outside:
   ```bash
-  docker service update webui --publish-add 8000:80 --detach=false
+  docker service update webui --publish-add 8000:80
   ```
 
 ]
@@ -197,7 +197,7 @@ It has been replaced by the new version, with port 80 accessible from outside.
 
 - Bring up more workers:
   ```bash
-  docker service update worker --replicas 10 --detach=false
+  docker service update worker --replicas 10
   ```
 
 - Check the result in the web UI
@@ -235,7 +235,7 @@ You should see the performance peaking at 10 hashes/s (like before).
 - Re-create the `rng` service with *global scheduling*:
   ```bash
     docker service create --name rng --network dockercoins --mode global \
-      --detach=false $REGISTRY/rng:$TAG
+      $REGISTRY/rng:$TAG
   ```
 
 - Look at the result in the web UI
