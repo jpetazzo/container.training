@@ -114,7 +114,7 @@ services:
 
 - Deploy our local registry:
   ```bash
-  docker stack deploy registry --compose-file registry.yml
+  docker stack deploy --compose-file registry.yml registry
   ```
 
 ]
@@ -304,7 +304,7 @@ services:
 
 - Create the application stack:
   ```bash
-  docker stack deploy dockercoins --compose-file dockercoins.yml
+  docker stack deploy --compose-file dockercoins.yml dockercoins
   ```
 
 ]

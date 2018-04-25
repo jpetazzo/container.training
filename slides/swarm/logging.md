@@ -187,7 +187,7 @@ class: elk-auto
   ```bash
   docker-compose -f elk.yml build
   docker-compose -f elk.yml push
-  docker stack deploy elk -c elk.yml
+  docker stack deploy -c elk.yml elk
   ```
 
 ]
