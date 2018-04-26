@@ -120,7 +120,7 @@ We will use the following Compose file (`stacks/dockercoins+healthcheck.yml`):
 
 - Deploy the updated stack:
   ```bash
-  docker stack deploy dockercoins --compose-file dockercoins+healthcheck.yml
+  docker stack deploy --compose-file dockercoins+healthcheck.yml dockercoins 
   ```
 
 ]
