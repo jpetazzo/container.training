@@ -399,6 +399,7 @@ pull_tag() {
 	    alpine \
 	    registry \
 	    nicolaka/netshoot \
+	    jpetazzo/trainingwheels \
 	    golang \
             training/namer \
 	    dockercoins/hasher \
