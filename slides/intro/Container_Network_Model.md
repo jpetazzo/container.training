@@ -65,9 +65,17 @@ eb0eeab782f4        host                host
 
 * A network is managed by a *driver*.
 
-* All the drivers that we have seen before are available.
+* The built-in drivers include:
 
-* A new multi-host driver, *overlay*, is available out of the box.
+  * `bridge` (default)
+
+  * `none`
+
+  * `host`
+
+  * `macvlan`
+
+* A multi-host driver, *overlay*, is available out of the box (Swarm clusters).
 
 * More drivers can be provided by plugins (OVS, VLAN...)
 
