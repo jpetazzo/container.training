@@ -182,11 +182,13 @@ class: self-paced
   try to break them down in multiple clusters
   (keeping internal latency low)
 
-- Groups of up to 9 nodes: all of them are managers
+- Groups of 3 or 5 nodes: all of them are managers. Beyond 5, seperate out managers and workers.
 
-- Groups of 10 nodes and up: pick 5 "stable" nodes to be managers
+- Groups of 5-10 nodes: pick 3 "stable" nodes to be managers
   <br/>
   (Cloud pro-tip: use separate auto-scaling groups for managers and workers)
+
+- Groups of 10-100 nodes: pick 5 "stable" nodes to be managers
 
 - Groups of more than 100 nodes: watch your managers' CPU and RAM
 
@@ -209,11 +211,11 @@ class: self-paced
 
 - Testing by the community: [4700 heterogenous nodes all over the 'net](https://sematext.com/blog/2016/11/14/docker-swarm-lessons-from-swarm3k/)
 
-  - it just works
+  - it just works, assuming they have the resources
 
-  - more nodes require more CPU; more containers require more RAM
+  - more nodes require more manager CPU and Networking; more containers require more RAM
 
-  - scheduling of large jobs (70000 containers) is slow, though (working on it!)
+  - scheduling of large jobs (70,000 containers) is slow, though (working on it!)
 
 ---
 
