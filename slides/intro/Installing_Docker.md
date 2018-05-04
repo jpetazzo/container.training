@@ -37,7 +37,8 @@ We can arbitrarily distinguish:
 
 ## Installing Docker on Linux
 
-* The recommended method is to install the packages supplied by Docker Inc.
+* The recommended method is to install the packages supplied by Docker Inc. at
+  https://store.docker.com
 
 * The general method is:
 
@@ -79,17 +80,38 @@ class: extra-details
 
 ## Installing Docker on macOS and Windows
 
-* On macOS, the recommended method is to use Docker4Mac:
+* On macOS, the recommended method is to use Docker for Mac:
 
   https://docs.docker.com/docker-for-mac/install/
 
-* On Windows 10 Pro, Enterprise, and Eduction, you can use Docker4Windows:
+* On Windows 10 Pro, Enterprise, and Eduction, you can use Docker for Windows:
 
   https://docs.docker.com/docker-for-windows/install/
 
 * On older versions of Windows, you can use the Docker Toolbox:
 
   https://docs.docker.com/toolbox/toolbox_install_windows/
+
+* On Windows Server 2016+, you can [install the native engine](https://docs.docker.com/install/windows/docker-ee/)
+  or Docker for Windows (if using win2016 for local dev)
+
+---
+
+## Docker for Mac and Docker for Windows
+
+* Special Docker Editions that have Settings GUI and use Host OS prefered virtualization
+
+* They are installed like normal applications on the host, and run a tiny VM that is 
+  mostly transparent to your daily use.
+
+* They access network resources like normal applications
+  <br/>(and therefore, play better with enterprise VPNs and firewalls)
+
+* They support filesystem sharing through volumes (we'll talk about this later)
+
+* They only support running one Docker VM at a time ...
+
+  ... so if you want to run a full cluster locally, you can still use docker-machine
 
 ---
 
@@ -107,25 +129,6 @@ When you execute `docker version` from the terminal:
 All communication with the Docker Engine happens over the API.
 
 This will also allow to use remote Engines exactly as if they were local.
-
----
-
-## Docker4Mac and Docker4Windows
-
-* They let you run Docker without VirtualBox
-
-* They are installed like normal applications (think QEMU, but faster)
-
-* They access network resources like normal applications
-  <br/>(and therefore, play well with enterprise VPNs and firewalls)
-
-* They support filesystem sharing through volumes (we'll talk about this later)
-
-* They only support running one Docker VM at a time ...
-
-  ... so if you want to run a full cluster locally, install e.g. the Docker Toolbox
-
-* They can co-exist with the Docker Toolbox
 
 ---
 

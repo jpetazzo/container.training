@@ -56,6 +56,51 @@ In this section, we will explain:
 
 ---
 
+## Example in layers
+
+<table>
+  <tr>
+    <td>CentOS</td>
+    <td>-----></td>
+    <td>Base "FROM" Layer</td>
+  </tr>
+  <tr>
+    <td>JRE</td>
+    <td>-----></td>
+    <td>Layer 2</td>
+  </tr>
+  <tr>
+    <td>Tomcat</td>
+    <td>-----></td>
+    <td>Layer 3</td>
+  </tr>
+  <tr>
+    <td>App dependencies</td>
+    <td>-----></td>
+    <td>Layer 4</td>
+  </tr>
+</table>
+
+etc.
+
+---
+
+class: pic
+
+## Example in pictures
+
+![layers](images/container-layers.jpg)
+
+---
+
+class: pic
+
+## Example of many containers using same images
+
+![layers](images/sharing-layers.jpg)
+
+---
+
 ## Differences between containers and images
 
 * An image is a read-only filesystem.
@@ -67,26 +112,6 @@ In this section, we will explain:
   instead of regular copy.
 
 * `docker run` starts a container from a given image.
-
-Let's give a couple of metaphors to illustrate those concepts.
-
----
-
-## Image as stencils
-
-Images are like templates or stencils that you can create containers from.
-
-![stencil](images/stenciling-wall.jpg)
-
----
-
-## Object-oriented programming
-
-* Images are conceptually similar to *classes*.
-
-* Layers are conceptually similar to *inheritance*.
-
-* Containers are conceptually similar to *instances*.
 
 ---
 
@@ -138,7 +163,7 @@ Note: you will probably never have to do this yourself.
 * Saves all the changes made to a container into a new layer.
 * Creates a new image (effectively a copy of the container).
 
-`docker build`
+`docker build` (**used 99% of time**)
 
 * Performs a repeatable build sequence.
 * This is the preferred method!
@@ -179,6 +204,8 @@ Those images include:
 * Distro images to be used as bases for your builds, like ubuntu, fedora...
 
 * Ready-to-use components and services, like redis, postgresql...
+
+* Over 130 at this point!
 
 ---
 

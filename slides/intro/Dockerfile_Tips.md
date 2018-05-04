@@ -51,9 +51,8 @@ The dependencies are reinstalled every time, because the build system does not k
 
 ```bash
 FROM python
-MAINTAINER Docker Education Team <education@docker.com>
-COPY . /src/
 WORKDIR /src
+COPY . .
 RUN pip install -qr requirements.txt
 EXPOSE 5000
 CMD ["python", "app.py"]
@@ -67,11 +66,11 @@ Adding the dependencies as a separate step means that Docker can cache more effi
 
 ```bash
 FROM python
-MAINTAINER Docker Education Team <education@docker.com>
-COPY ./requirements.txt /tmp/requirements.txt
+WORKDIR /tmp
+COPY requirements.txt requirements.txt
 RUN pip install -qr /tmp/requirements.txt
-COPY . /src/
 WORKDIR /src
+COPY . .
 EXPOSE 5000
 CMD ["python", "app.py"]
 ```

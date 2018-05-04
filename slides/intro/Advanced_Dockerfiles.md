@@ -34,18 +34,6 @@ In this section, we will see more Dockerfile commands.
 
 ---
 
-## The `MAINTAINER` instruction
-
-The `MAINTAINER` instruction tells you who wrote the `Dockerfile`.
-
-```dockerfile
-MAINTAINER Docker Education Team <education@docker.com>
-```
-
-It's optional but recommended.
-
----
-
 ## The `RUN` instruction
 
 The `RUN` instruction can be specified in two ways.
@@ -428,5 +416,4 @@ ONBUILD COPY . /src
 ```
 
 * You can't chain `ONBUILD` instructions with `ONBUILD`.
-* `ONBUILD` can't be used to trigger `FROM` and `MAINTAINER`
-  instructions.
+* `ONBUILD` can't be used to trigger `FROM` instructions.
