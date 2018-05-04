@@ -100,8 +100,7 @@ We have available resources.
 ## Scaling workers on a single node
 
 - Docker Compose supports scaling
-- Let's 
-`worker` and see what happens!
+- Let's `worker` and see what happens!
 
 .exercise[
 
