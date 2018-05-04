@@ -291,7 +291,7 @@ apk add --no-cache jq
 
 ## Load balancing results
 
-Traffic is handled by our clusters [TCP routing mesh](
+Traffic is handled by our clusters [routing mesh](
 https://docs.docker.com/engine/swarm/ingress/).
 
 Each request is served by one of the 7 instances, in rotation.
@@ -303,7 +303,13 @@ to re-use the same connection.
 
 ---
 
-## Under the hood of the TCP routing mesh
+class: pic
+
+![routing mesh](images/ingress-routing-mesh.png)
+
+---
+
+## Under the hood of the routing mesh
 
 - Load balancing is done by IPVS
 
@@ -322,9 +328,9 @@ to re-use the same connection.
 
 There are many ways to deal with inbound traffic on a Swarm cluster.
 
-- Put all (or a subset) of your nodes in a DNS `A` record
+- Put all (or a subset) of your nodes in a DNS `A` record (good for web clients)
 
-- Assign your nodes (or a subset) to an ELB
+- Assign your nodes (or a subset) to an external load balancer (ELB, etc.)
 
 - Use a virtual IP and make sure that it is assigned to an "alive" node
 
@@ -332,24 +338,31 @@ There are many ways to deal with inbound traffic on a Swarm cluster.
 
 ---
 
-class: btw-labels
+class: pic
+
+![external LB](images/ingress-lb.png)
+
+---
 
 ## Managing HTTP traffic
 
 - The TCP routing mesh doesn't parse HTTP headers
 
-- If you want to place multiple HTTP services on port 80, you need something more
+- If you want to place multiple HTTP services on port 80/443, you need something more
 
-- You can set up NGINX or HAProxy on port 80 to do the virtual host switching
+- You can set up NGINX or HAProxy on port 80/443 to route connections to the correct
+  Service, but they need to be "Swarm aware" to dynamically update configs
 
-- Docker Universal Control Plane provides its own [HTTP routing mesh](
-  https://docs.docker.com/datacenter/ucp/2.1/guides/admin/configure/use-domain-names-to-access-services/)
+--
 
-  - add a specific label starting with `com.docker.ucp.mesh.http` to your services
+- Docker EE provides its own [Layer 7 routing](https://docs.docker.com/ee/ucp/interlock/)
 
-  - labels are detected automatically and dynamically update the configuration
+  - Service labels like `com.docker.lb.hosts=<FQDN>` are detected automatically via Docker 
+  API and dynamically update the configuration
 
-- Two common open source "reverse proxy" options:
+--
+
+- Two common open source options:
 
   - [Traefik](https://traefik.io/) - popular, many features, requires running on managers, 
   needs key/value for HA
@@ -373,7 +386,7 @@ class: btw-labels
 
   - owner of a service (for billing, paging...)
 
-  - etc.
+  - corelate Swarm objects together (services, volumes, configs, secrets, etc.)
 
 ---
 
