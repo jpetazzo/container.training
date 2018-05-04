@@ -426,14 +426,10 @@ class: extra-details
 
 .exercise[
 
-- Create a service of this simple-yet-beautiful visualization app:
+- Run this simple-yet-beautiful visualization app:
   ```bash
-  docker service create \
-  --name=viz \
-  --publish=8080:8080/tcp \
-  --constraint=node.role==manager \
-  --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
-  dockersamples/visualizer
+  cd ~/container.training/stacks
+  docker-compose -f visualizer.yml up -d
   ```
 
   <!-- ```longwait Creating dockerswarmvisualizer_viz_1``` -->
@@ -448,7 +444,7 @@ class: extra-details
 
 .exercise[
 
-- Point your browser to port 8080 of a nodes public ip
+- Point your browser to port 8080 of your node1's public ip
 
   (If you use Play-With-Docker, click on the (8080) badge)
 
@@ -474,7 +470,13 @@ class: extra-details
 
 - Instead of viewing your cluster, this could take care of logging, metrics, autoscaling ...
 
-- Ideally all things in a Swarm run in Services (cattle not pets)
+- We can run it within a service, too! We won't do it yet, but the command would look like:
+
+  ```bash
+    docker service create \	
+      --mount source=/var/run/docker.sock,type=bind,target=/var/run/docker.sock \	
+      --name viz --constraint node.role==manager ...	
+  ```
 
 .footnote[
 
