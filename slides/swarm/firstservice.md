@@ -473,9 +473,9 @@ class: extra-details
 - We can run it within a service, too! We won't do it yet, but the command would look like:
 
   ```bash
-    docker service create \	
-      --mount source=/var/run/docker.sock,type=bind,target=/var/run/docker.sock \	
-      --name viz --constraint node.role==manager ...	
+    docker service create \
+      --mount source=/var/run/docker.sock,type=bind,target=/var/run/docker.sock \
+      --name viz --constraint node.role==manager ...
   ```
 
 .footnote[
