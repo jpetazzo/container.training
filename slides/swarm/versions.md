@@ -96,4 +96,4 @@ class: pic
 | 2017 | 17.09 | ADD/COPY chown, start\_period, stop-signal, overlay2 default
 | 2017 | 17.12 | containerd, Hyper-V isolation, Windows routing mesh
 | 2018 | 18.03 | Templates for secrets/configs, multi-yaml stacks, LCOW
-| 2018 | 18.03 | Stack deploy to Kubernetes, docker trust, tmpfs, manifest cli
+| 2018 | 18.03 | Stack deploy to Kubernetes, `docker trust`, tmpfs, manifest CLI
