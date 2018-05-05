@@ -106,7 +106,7 @@ We have available resources.
 
 - Start one more `worker` container:
   ```bash
-  docker-compose scale worker=2
+  docker-compose up --scale worker=2
   ```
 
 - Look at the performance graph (it should show a x2 improvement)
@@ -127,7 +127,7 @@ We have available resources.
 
 - Start eight more `worker` containers:
   ```bash
-  docker-compose scale worker=10
+  docker-compose up --scale worker=10
   ```
 
 - Look at the performance graph: does it show a x10 improvement?
