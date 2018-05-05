@@ -60,6 +60,10 @@ Before diving in, let's see a small example of Compose in action.
 If you are using the official training virtual machines, Compose has been
 pre-installed.
 
+If you are using Docker for Mac/Windows or the Docker Toolbox, Compose comes with them.
+
+If you are on Linux (desktop or server environment), you will need to install Compose from its [release page](https://github.com/docker/compose/releases) or with `pip install docker-compose`.
+
 You can always check that it is installed by running:
 
 ```bash
@@ -135,22 +139,33 @@ services:
 
 ---
 
-## Compose file versions
+## Compose file structure
 
-Version 1 directly has the various containers (`www`, `redis`...) at the top level of the  file.
+A Compose file has multiple sections:
 
-Version 2 has multiple sections:
+* `version` is mandatory. (We should use `"2"` or later; version 1 is deprecated.)
 
-* `version` is mandatory and should be `"2"`.
-
-* `services` is mandatory and corresponds to the content of the version 1 format.
+* `services` is mandatory. A service is one or more replicas of the same image running as containers.
 
 * `networks` is optional and indicates to which networks containers should be connected.
-  <br/>(By default, containers will be connected on a private, per-app network.)
+  <br/>(By default, containers will be connected on a private, per-compose-file network.)
 
 * `volumes` is optional and can define volumes to be used and/or shared by the containers.
 
-Version 3 adds support for deployment options (scaling, rolling updates, etc.)
+---
+
+## Compose file versions
+
+* Version 1 is legacy and shouldn't be used.
+
+  (If you see a Compose file without `version` and `services`, it's a legacy v1 file.)
+
+* Version 2 added support for networks and volumes.
+
+* Version 3 added support for deployment options (scaling, rolling updates, etc).
+
+The [Docker documentation](https://docs.docker.com/compose/compose-file/)
+has excellent information about the Compose file format if you need to know more about versions.
 
 ---
 
@@ -259,6 +274,8 @@ Stopping trainingwheels_redis_1 ... done
 Removing trainingwheels_www_1 ... done
 Removing trainingwheels_redis_1 ... done
 ```
+
+Use `docker-compose down -v` to remove everything including volumes.
 
 ---
 
