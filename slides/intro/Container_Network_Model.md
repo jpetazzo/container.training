@@ -350,7 +350,7 @@ class: extra-details
 Create the `prod` network.
 
 ```bash
-$ docker create network prod
+$ docker network create prod
 5a41562fecf2d8f115bedc16865f7336232a04268bdf2bd816aecca01b68d50c
 ```
 
