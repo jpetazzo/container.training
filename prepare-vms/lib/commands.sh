@@ -393,9 +393,23 @@ pull_tag() {
             ubuntu:latest \
             fedora:latest \
             centos:latest \
+	    elasticsearch:2 \
             postgres \
             redis \
+	    alpine \
+	    registry \
+	    nicolaka/netshoot \
+	    jpetazzo/trainingwheels \
+	    golang \
             training/namer \
+	    dockercoins/hasher \
+	    dockercoins/rng \
+	    dockercoins/webui \
+	    dockercoins/worker \
+	    logstash \
+	    prom/node-exporter \
+	    google/cadvisor \
+	    dockersamples/visualizer \
             nathanleclaire/redisonrails; do
         sudo -u docker docker pull $I
     done'
