@@ -1,8 +1,5 @@
 # This file is passed by trainer-cli to scripts/ips-txt-to-html.py
 
-# Workshop name for cards, either fundamentals, kube101, or swarm
-type: swarm
-
 # Number of VMs per cluster
 clustersize: 3
 
