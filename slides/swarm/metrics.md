@@ -1183,7 +1183,7 @@ class: prom
 
 ]
 
-You should see 11 endpoints (5 cadvisor, 5 node, 1 prometheus).
+You should see 7 endpoints (3 cadvisor, 3 node, 1 prometheus).
 
 Their state should be "UP".
 

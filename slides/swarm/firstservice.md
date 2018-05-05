@@ -96,7 +96,7 @@ class: extra-details
 
 - Scale the service to ensure 2 copies per node:
   ```bash
-  docker service update pingpong --replicas 10
+  docker service update pingpong --replicas 6
   ```
 
 - Check that we have two containers on the current node:
@@ -168,12 +168,12 @@ class: extra-details
 
 - Scale the service to ensure 3 copies per node:
   ```bash
-  docker service update pingpong --replicas 15 --detach=false
+  docker service update pingpong --replicas 9 --detach=false
   ```
 
 - And then to 4 copies per node:
   ```bash
-  docker service update pingpong --replicas 20 --detach=true
+  docker service update pingpong --replicas 12 --detach=true
   ```
 
 ]
@@ -207,7 +207,7 @@ class: extra-details
 
 - Create an ElasticSearch service (and give it a name while we're at it):
   ```bash
-  docker service create --name search --publish 9200:9200 --replicas 7 \
+  docker service create --name search --publish 9200:9200 --replicas 5 \
          elasticsearch`:2`
   ```
 
@@ -294,7 +294,7 @@ apk add --no-cache jq
 Traffic is handled by our clusters [TCP routing mesh](
 https://docs.docker.com/engine/swarm/ingress/).
 
-Each request is served by one of the 7 instances, in rotation.
+Each request is served by one of the instances, in rotation.
 
 Note: if you try to access the service from your browser,
 you will probably see the same

@@ -35,33 +35,7 @@ class: in-person
 
 ## Building our full cluster
 
-- We could SSH to nodes 3, 4, 5; and copy-paste the command
-
---
-
-class: in-person
-
-- Or we could use the AWESOME POWER OF THE SHELL!
-
---
-
-class: in-person
-
-![Mario Red Shell](images/mario-red-shell.png)
-
---
-
-class: in-person
-
-- No, not *that* shell
-
----
-
-class: in-person
-
-## Let's form like Swarm-tron
-
-- Let's get the token, and loop over the remaining nodes with SSH
+- Let's get the token, and use a one-liner for the remaining node with SSH
 
 .exercise[
 
@@ -70,11 +44,9 @@ class: in-person
   TOKEN=$(docker swarm join-token -q manager)
   ```
 
-- Loop over the 3 remaining nodes:
+- Add the remaining node:
   ```bash
-    for NODE in node3 node4 node5; do
-      ssh $NODE docker swarm join --token $TOKEN node1:2377
-    done
+    ssh node3 docker swarm join --token $TOKEN node1:2377
   ```
 
 ]
