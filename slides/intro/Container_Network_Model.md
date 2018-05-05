@@ -75,7 +75,7 @@ eb0eeab782f4        host                host
 
   * `macvlan`
 
-* A multi-host driver, *overlay*, is available out of the box (Swarm clusters).
+* A multi-host driver, *overlay*, is available out of the box (for Swarm clusters).
 
 * More drivers can be provided by plugins (OVS, VLAN...)
 
