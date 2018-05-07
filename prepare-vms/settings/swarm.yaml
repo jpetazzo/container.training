@@ -1,7 +1,7 @@
 # This file is passed by trainer-cli to scripts/ips-txt-to-html.py
 
 # Number of VMs per cluster
-clustersize: 5
+clustersize: 3
 
 # Jinja2 template to use to generate ready-to-cut cards
 cards_template: cards.html
@@ -20,5 +20,5 @@ paper_margin: 0.2in
 engine_version: stable
 
 # These correspond to the version numbers visible on their respective GitHub release pages
-compose_version: 1.20.1
+compose_version: 1.21.1
 machine_version: 0.14.0

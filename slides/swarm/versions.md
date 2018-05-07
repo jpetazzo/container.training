@@ -1,8 +1,8 @@
 ## Brand new versions!
 
-- Engine 17.12
-- Compose 1.17
-- Machine 0.13
+- Engine 18.03
+- Compose 1.21
+- Machine 0.14
 
 .exercise[
 
