@@ -16,7 +16,7 @@ fi
 
 - Clone the repository on `node1`:
   ```bash
-  git clone git://github.com/jpetazzo/container.training
+  git clone git://@@CLONE@@
   ```
 
 ]
@@ -56,16 +56,16 @@ and displays aggregated logs.
 ## More detail on our sample application
 
 - Visit the GitHub repository with all the materials of this workshop:
-  <br/>https://github.com/jpetazzo/container.training
+  <br/>https://@@CLONE@@
 
 - The application is in the [dockercoins](
-  https://github.com/jpetazzo/container.training/tree/master/dockercoins)
+  https://@@CLONE@@/tree/master/dockercoins)
   subdirectory
 
 - Let's look at the general layout of the source code:
 
   there is a Compose file [docker-compose.yml](
-  https://github.com/jpetazzo/container.training/blob/master/dockercoins/docker-compose.yml) ...
+  https://@@CLONE@@/blob/master/dockercoins/docker-compose.yml) ...
 
   ... and 4 other services, each in its own directory:
 
@@ -124,7 +124,7 @@ def hash_bytes(data):
 ```
 
 (Full source code available [here](
-https://github.com/jpetazzo/container.training/blob/8279a3bce9398f7c1a53bdd95187c53eda4e6435/dockercoins/worker/worker.py#L17
+https://@@CLONE@@/blob/8279a3bce9398f7c1a53bdd95187c53eda4e6435/dockercoins/worker/worker.py#L17
 ))
 
 ---

@@ -2,7 +2,7 @@
 
 - All the content is available in a public GitHub repository:
 
-  https://github.com/jpetazzo/container.training
+  https://@@CLONE@@
 
 - You can get updated "builds" of the slides there:
 

@@ -49,7 +49,7 @@ This will display the unlock key. Copy-paste it somewhere safe.
 ]
 
 Note: if you are doing the workshop on your own, using nodes
-that you [provisioned yourself](https://github.com/jpetazzo/container.training/tree/master/prepare-machine) or with [Play-With-Docker](http://play-with-docker.com/), you might have to use a different method to restart the Engine.
+that you [provisioned yourself](https://@@CLONE@@/tree/master/prepare-machine) or with [Play-With-Docker](http://play-with-docker.com/), you might have to use a different method to restart the Engine.
 
 ---
 
