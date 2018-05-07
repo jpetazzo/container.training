@@ -1,20 +1,20 @@
 {# Feel free to customize or override anything in there! #}
-{%- set url = "http://container.training/" -%}
 {%- set pagesize = 12 -%}
 {%- if clustersize == 1 -%}
-    {%- set workshop_name = "Docker workshop" -%}
     {%- set cluster_or_machine = "machine" -%}
     {%- set this_or_each = "this" -%}
     {%- set machine_is_or_machines_are = "machine is" -%}
-    {%- set image_src = "https://s3-us-west-2.amazonaws.com/www.breadware.com/integrations/docker.png" -%}
 {%- else -%}
-    {%- set workshop_name = "orchestration workshop" -%}
     {%- set cluster_or_machine = "cluster" -%}
     {%- set this_or_each = "each" -%}
     {%- set machine_is_or_machines_are = "machines are" -%}
-    {%- set image_src_swarm = "https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png" -%}
-    {%- set image_src_kube = "https://avatars1.githubusercontent.com/u/13629408" -%}
-    {%- set image_src = image_src_swarm -%}
+{%- endif -%}
+{%- if workshop_name == "kubernetes" -%}
+    {%- set image_src = "https://avatars1.githubusercontent.com/u/13629408" -%}
+{%- elif workshop_name == "swarm" -%}
+    {%- set image_src = "https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png" -%}
+{%- else -%}
+    {%- set image_src = "https://s3-us-west-2.amazonaws.com/www.breadware.com/integrations/docker.png" -%}
 {%- endif -%}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>

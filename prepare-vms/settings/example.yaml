@@ -1,5 +1,11 @@
 # customize your cluster size, your cards template, and the versions
 
+# Workshop name for cards, either fundamentals, kubernetes, or swarm
+workshop_name: fundamentals
+
+# slides URL, in case you want too use something other then default
+url: http://container.training
+
 # Number of VMs per cluster
 clustersize: 5
 

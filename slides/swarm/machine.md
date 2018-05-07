@@ -169,7 +169,7 @@ class: in-person
 This should tell us that we are talking to `node3`.
 
 Note: it can be useful to use a [custom shell prompt](
-https://github.com/jpetazzo/container.training/blob/master/prepare-vms/scripts/postprep.rc#L68)
+https://@@CLONE@@/blob/master/prepare-vms/scripts/postprep.rc#L68)
 reflecting the `DOCKER_HOST` variable.
 
 ---

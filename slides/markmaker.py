@@ -114,6 +114,8 @@ def generatefromyaml(manifest, filename):
     html = html.replace("@@MARKDOWN@@", markdown)
     html = html.replace("@@EXCLUDE@@", exclude)
     html = html.replace("@@CHAT@@", manifest["chat"])
+    html = html.replace("@@URL@@", manifest["url"])
+    html = html.replace("@@CLONE@@", manifest["clone"])
     html = html.replace("@@TITLE@@", manifest["title"].replace("\n", " "))
     return html
 

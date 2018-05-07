@@ -1,10 +1,16 @@
 # 3 nodes for k8s 101 workshops
 
+# Workshop name for cards, either fundamentals, kubernetes, or swarm
+workshop_name: kubernetes
+
+# slides URL, in case you want too use something other then default
+url: http://container.training
+
 # Number of VMs per cluster
 clustersize: 3
 
 # Jinja2 template to use to generate ready-to-cut cards
-cards_template: settings/kube101.html
+cards_template: cards.html
 
 # Use "Letter" in the US, and "A4" everywhere else
 paper_size: Letter

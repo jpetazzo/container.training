@@ -2,6 +2,14 @@ title: |
   Container Orchestration
   with Docker and Swarm
 
+# URL to swap out for cloning a specific fork in class
+# don't add https:// and remember to make class branch default in github
+# NOTE: we still assume your repoo is also container.training throughout course
+clone: github.com/jpetazzo/container.training
+
+# slides URL, in case you want too use something other then default
+url: http://container.training
+
 chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
 
