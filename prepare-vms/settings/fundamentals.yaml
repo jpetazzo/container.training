@@ -23,7 +23,7 @@ paper_margin: 0.2in
 # (The equivalent parameters must be set from the browser's print dialog.)
 
 # This can be "test" or "stable"
-engine_version: stable
+engine_version: test
 
 # These correspond to the version numbers visible on their respective GitHub release pages
 compose_version: 1.17.1
