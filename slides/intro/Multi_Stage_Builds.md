@@ -1,6 +1,6 @@
 # Multi-stage builds
 
-* In the previous example, our final image contain:
+* In the previous example, our final image contained:
 
   * our `hello` program
 
