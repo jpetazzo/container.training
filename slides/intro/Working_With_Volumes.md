@@ -259,7 +259,7 @@ $ docker run -d --name redis28 redis:2.8
 Connect to the Redis container and set some data.
 
 ```bash
-$ docker run -ti --link redis28:redis alpine telnet redis 6379
+$ docker run -ti --link redis28:redis busybox telnet redis 6379
 ```
 
 Issue the following commands:
@@ -298,7 +298,7 @@ class: extra-details
 Connect to the Redis container and see our data.
 
 ```bash
-docker run -ti --link redis30:redis alpine telnet redis 6379
+docker run -ti --link redis30:redis busybox telnet redis 6379
 ```
 
 Issue a few commands.
