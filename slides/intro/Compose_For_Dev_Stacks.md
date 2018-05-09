@@ -51,7 +51,7 @@ Before diving in, let's see a small example of Compose in action.
 
 ## Compose in action
 
-![composeup](images/composeup.gif)
+![composeup](../images/composeup.gif)
 
 ---
 
