@@ -4,11 +4,14 @@
 
    - .emoji[✨] Bridget ([@bridgetkromhout](https://twitter.com/bridgetkromhout))
 
-   - .emoji[🌟] Joe ([@joelaha](https://twitter.com/joelaha))
+   - .emoji[🌟] Samantha ([@zruty](https://twitter.com/zruty))
 
-- The workshop will run from 13:30-16:45
+- The workshop will run from 9:00am-12:40pm, with two breaks
 
-- There will be a break from 15:00-15:15
+   - Part 1: 9:00am-10:00am
+   - Part 2: 10:20am-11:20am
+   - Part 3: 11:40am-12:40pm
+
 
 - Feel free to interrupt for questions at any time
 
