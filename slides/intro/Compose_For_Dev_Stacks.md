@@ -99,7 +99,7 @@ including linking the relevant containers together.
 
 Verify that the app is running at `http://<yourHostIP>:8000`.
 
-![composeapp](images/composeapp.png)
+![composeapp](../images/composeapp.png)
 
 ---
 
