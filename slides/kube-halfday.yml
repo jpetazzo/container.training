@@ -28,14 +28,14 @@ chapters:
   - kube/kubenet.md
   - kube/kubectlget.md
   - kube/setup-k8s.md
-- - kube/kubectlrun.md
-  - kube/kubectlexpose.md
+  - kube/kubectlrun.md
+- - kube/kubectlexpose.md
   - kube/ourapponkube.md
-- - kube/dashboard.md
+  - kube/dashboard.md
   - kube/kubectlscale.md
-  - kube/daemonset.md
+- - kube/daemonset.md
   - kube/rollout.md
-- - kube/logs-cli.md
+  - kube/logs-cli.md
 # Bridget hasn't added EFK yet
   #- kube/logs-centralized.md
   - kube/helm.md
