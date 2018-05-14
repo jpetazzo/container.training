@@ -69,7 +69,6 @@ Aha, a `Gemfile`! This is Ruby. Probably. We know this. Maybe?
 
 ```dockerfile
 FROM ruby
-MAINTAINER Education Team at Docker <education@docker.com>
 
 COPY . /src
 WORKDIR /src
@@ -141,19 +140,19 @@ $ docker ps -l
 
 ## Making changes to the code
 
-Option 1:
+Option 1: (what a pain)
 
 * Edit the code locally
 * Rebuild the image
 * Re-run the container
 
-Option 2:
+Option 2: (cool idea, but no)
 
 * Enter the container (with `docker exec`)
 * Install an editor
 * Make changes from within the container
 
-Option 3:
+Option 3: (winner winner chicken dinner!)
 
 * Use a *volume* to mount local files into the container
 * Make changes locally
@@ -168,6 +167,8 @@ We will tell Docker to map the current directory to `/src` in the container.
 ```bash
 $ docker run -d -v $(pwd):/src -P namer
 ```
+
+If in PowerShell, replace `$(pwd)` with `${pwd}`
 
 * `-d`: the container should run in detached mode (in the background).
 

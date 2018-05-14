@@ -37,6 +37,8 @@ int main () {
 
 Let's create a new directory, and put this file in there.
 
+Make sure it's in your user path e.g. `/Users/name/../dockerbuild` on Mac/Win.
+
 Then we will write the Dockerfile.
 
 ---
