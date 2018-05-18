@@ -69,7 +69,6 @@ Aha, a `Gemfile`! This is Ruby. Probably. We know this. Maybe?
 
 ```dockerfile
 FROM ruby
-MAINTAINER Education Team at Docker <education@docker.com>
 
 COPY . /src
 WORKDIR /src
@@ -178,6 +177,8 @@ $ docker run -d -v $(pwd):/src -P namer
 * `namer` is the name of the image we will run.
 
 * We don't specify a command to run because is is already set in the Dockerfile.
+
+Note: on Windows, replace `$(pwd)` with `%cd%` (or `${pwd}` if you use PowerShell).
 
 ---
 

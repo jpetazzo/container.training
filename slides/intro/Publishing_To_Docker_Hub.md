@@ -21,7 +21,7 @@ public images is free as well.*
   docker login
   ```
 
-.warning[When running Docker4Mac, Docker4Windows, or
+.warning[When running Docker for Mac/Windows, or
 Docker on a Linux workstation, it can (and will when
 possible) integrate with your system's keyring to
 store your credentials securely. However, on most Linux

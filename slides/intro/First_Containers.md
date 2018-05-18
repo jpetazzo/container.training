@@ -110,6 +110,8 @@ Beautiful! .emoji[😍]
 
 ---
 
+class: in-person
+
 ## Counting packages in the container
 
 Let's check how many packages are installed there.
@@ -126,6 +128,8 @@ root@04c0bb0a6c07:/# dpkg -l | wc -l
 How many packages do we have on our host?
 
 ---
+
+class: in-person
 
 ## Counting packages on the host
 
@@ -145,17 +149,33 @@ Now, try to:
 
 ---
 
+class: self-paced
+
+## Comparing the container and the host
+
+Exit the container by logging out of the shell, with `^D` or `exit`.
+
+Now try to run `figlet`. Does that work?
+
+(It shouldn't; except if, by coincidence, you are running on a machine where figlet was installed before.)
+
+---
+
 ## Host and containers are independent things
 
-* We ran an `ubuntu` container on an `ubuntu` host.
+* We ran an `ubuntu` container on an Linux/Windows/macOS host.
 
-* But they have different, independent packages.
+* They have different, independent packages.
 
 * Installing something on the host doesn't expose it to the container.
 
 * And vice-versa.
 
+* Even if both the host and the container have the same Linux distro!
+
 * We can run *any container* on *any host*.
+
+  (One exception: Windows containers cannot run on Linux machines; at least not yet.)
 
 ---
 
