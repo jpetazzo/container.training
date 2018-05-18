@@ -113,7 +113,7 @@ class: elk-manual
 
 - We could author a custom image bundling this configuration
 
-- We can also pass the [configuration](https://github.com/jpetazzo/container.training/blob/master/elk/logstash.conf) on the command line
+- We can also pass the [configuration](https://@@GITREPO@@/blob/master/elk/logstash.conf) on the command line
 
 .exercise[
 
@@ -195,7 +195,7 @@ class: elk-auto
 Note: the *build* and *push* steps are not strictly necessary, but they don't hurt!
 
 Let's have a look at the [Compose file](
-https://github.com/jpetazzo/container.training/blob/master/stacks/elk.yml).
+https://@@GITREPO@@/blob/master/stacks/elk.yml).
 
 ---
 

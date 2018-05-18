@@ -2,7 +2,7 @@
 
 - This was initially written to support in-person, instructor-led workshops and tutorials
 
-- These materials are maintained by [Jérôme Petazzoni](https://twitter.com/jpetazzo) and [multiple contributors](https://github.com/jpetazzo/container.training/graphs/contributors)
+- These materials are maintained by [Jérôme Petazzoni](https://twitter.com/jpetazzo) and [multiple contributors](https://@@GITREPO@@/graphs/contributors)
 
 - You can also follow along on your own, at your own pace
 

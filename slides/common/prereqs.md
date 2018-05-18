@@ -48,11 +48,11 @@ Misattributed to Benjamin Franklin
 
 - This is the stuff you're supposed to do!
 
-- Go to [container.training](http://container.training/) to view these slides
+- Go to @@SLIDES@@ to view these slides
 
 - Join the chat room: @@CHAT@@
 
-<!-- ```open http://container.training/``` -->
+<!-- ```open @@SLIDES@@``` -->
 
 ]
 
@@ -222,7 +222,7 @@ If anything goes wrong — ask for help!
   Small setup effort; small cost; flexible environments
 
 - Create a bunch of clusters for you and your friends
-    ([instructions](https://github.com/jpetazzo/container.training/tree/master/prepare-vms))
+    ([instructions](https://@@GITREPO@@/tree/master/prepare-vms))
 
   Bigger setup effort; ideal for group training
 
