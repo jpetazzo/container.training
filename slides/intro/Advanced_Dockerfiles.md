@@ -1,6 +1,6 @@
 # Advanced Dockerfiles
 
-![construction](images/title-advanced-dockerfiles.jpg)
+![construction](../images/title-advanced-dockerfiles.jpg)
 
 ---
 

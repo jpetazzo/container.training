@@ -51,7 +51,7 @@ Before diving in, let's see a small example of Compose in action.
 
 ## Compose in action
 
-![composeup](images/composeup.gif)
+![composeup](../images/composeup.gif)
 
 ---
 
@@ -99,7 +99,7 @@ including linking the relevant containers together.
 
 Verify that the app is running at `http://<yourHostIP>:8000`.
 
-![composeapp](images/composeapp.png)
+![composeapp](../images/composeapp.png)
 
 ---
 
