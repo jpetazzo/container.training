@@ -3,7 +3,7 @@
 - This was initially written by [Jérôme Petazzoni](https://twitter.com/jpetazzo) to support in-person,
   instructor-led workshops and tutorials
   
-- Over time, [multiple contributors](https://github.com/jpetazzo/container.training/graphs/contributors) also helped to improve these materials — thank you!
+- Over time, [multiple contributors](https://@@GITREPO@@/graphs/contributors) also helped to improve these materials — thank you!
 
 - You can also follow along on your own, at your own pace
 
