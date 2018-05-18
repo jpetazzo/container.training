@@ -46,6 +46,8 @@ In this section, we will explain:
 
 ## Example for a Java webapp
 
+Each of the following items will correspond to one layer:
+
 * CentOS base layer
 * Packages and configuration files added by our local IT
 * JRE
@@ -56,6 +58,22 @@ In this section, we will explain:
 
 ---
 
+class: pic
+
+## The read-write layer
+
+![layers](images/container-layers.jpg)
+
+---
+
+class: pic
+
+## Multiple containers sharing the same image
+
+![layers](images/sharing-layers.jpg)
+
+---
+
 ## Differences between containers and images
 
 * An image is a read-only filesystem.
@@ -63,24 +81,14 @@ In this section, we will explain:
 * A container is an encapsulated set of processes running in a
   read-write copy of that filesystem.
 
-* To optimize container boot time, *copy-on-write* is used 
+* To optimize container boot time, *copy-on-write* is used
   instead of regular copy.
 
 * `docker run` starts a container from a given image.
 
-Let's give a couple of metaphors to illustrate those concepts.
-
 ---
 
-## Image as stencils
-
-Images are like templates or stencils that you can create containers from.
-
-![stencil](images/stenciling-wall.jpg)
-
----
-
-## Object-oriented programming
+## Comparison with object-oriented programming
 
 * Images are conceptually similar to *classes*.
 
@@ -99,7 +107,7 @@ If an image is read-only, how do we change it?
 * We create a new container from that image.
 
 * Then we make changes to that container.
- 
+
 * When we are satisfied with those changes, we transform them into a new layer.
 
 * A new image is created by stacking the new layer on top of the old image.
@@ -118,7 +126,7 @@ If an image is read-only, how do we change it?
 
 ## Creating the first images
 
-There is a special empty image called `scratch`. 
+There is a special empty image called `scratch`.
 
 * It allows to *build from scratch*.
 
@@ -138,7 +146,7 @@ Note: you will probably never have to do this yourself.
 * Saves all the changes made to a container into a new layer.
 * Creates a new image (effectively a copy of the container).
 
-`docker build`
+`docker build` **(used 99% of the time)**
 
 * Performs a repeatable build sequence.
 * This is the preferred method!
@@ -179,6 +187,8 @@ Those images include:
 * Distro images to be used as bases for your builds, like ubuntu, fedora...
 
 * Ready-to-use components and services, like redis, postgresql...
+
+* Over 130 at this point!
 
 ---
 
@@ -299,9 +309,9 @@ There are two ways to download images.
 ```bash
 $ docker pull debian:jessie
 Pulling repository debian
-b164861940b8: Download complete 
-b164861940b8: Pulling image (jessie) from debian 
-d1881793a057: Download complete 
+b164861940b8: Download complete
+b164861940b8: Pulling image (jessie) from debian
+d1881793a057: Download complete
 ```
 
 * As seen previously, images are made up of layers.
