@@ -131,6 +131,27 @@ We will then show one particular method in action, using ELK and Docker's loggin
 
 ---
 
+## A word of warning about `json-file`
+
+- By default, log file size is unlimited.
+
+- This means that a very verbose container *will* use up all your disk space.
+
+  (Or a less verbose container, but running for a very long time.)
+
+- Log rotation can be enabled by setting a `max-size` option.
+
+- Older log files can be removed by setting a `max-file` option.
+
+- Just like other logging options, these can be set per container, or globally.
+
+Example:
+```bash
+$ docker run --log-opt max-size=10m --log-opt max-file=3 elasticsearch
+```
+
+---
+
 ## Demo: sending logs to ELK
 
 - We are going to deploy an ELK stack.
