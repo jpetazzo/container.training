@@ -35,6 +35,7 @@ chapters:
 - - kube/kubectlrun.md
   - kube/kubectlexpose.md
   - kube/ourapponkube.md
+  #- kube/kubectlproxy.md
 - - kube/dashboard.md
   - kube/kubectlscale.md
   - kube/daemonset.md
