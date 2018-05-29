@@ -40,7 +40,12 @@
 
 ## Creating namespaces
 
-- We can create namespaces with a very minimal YAML, e.g.:
+- Creating a namespace is done with the `kubectl create namespace` command:
+  ```bash
+  kubectl create namespace blue
+  ```
+
+- We can also get fancy and use a very minimal YAML snippet, e.g.:
   ```bash
 	kubectl apply -f- <<EOF
 	apiVersion: v1
@@ -49,6 +54,8 @@
 	  name: blue
 	EOF
   ```
+
+- The two methods above are identical
 
 - If we are using a tool like Helm, it will create namespaces automatically
 
