@@ -808,7 +808,7 @@ $ sudo mkdir $CG
 Limit it to approximately 100MB of memory usage:
 
 ```bash
-$ sudo tee $CG/memory.memsw.limit_in_bytes <<<100000000
+$ sudo tee $CG/memory.memsw.limit_in_bytes <<< 100000000
 ```
 
 Move the current process to that cgroup:
@@ -818,6 +818,59 @@ $ sudo tee $CG/tasks <<< $$
 ```
 
 The current process *and all its future children* are now limited.
+
+(Confused about `<<<`? Look at the next slide!)
+
+---
+
+## What's `<<<`?
+
+- This is a "here string". (It is a non-POSIX shell extension.)
+
+- The following commands are equivalent:
+
+  ```bash
+  foo <<< hello
+  ```
+
+  ```bash
+  echo hello | foo
+  ```
+
+  ```bash
+  foo <<EOF
+  hello
+  EOF
+  ```
+
+- Why did we use that?
+
+---
+
+## Writing to cgroups pseudo-files requires root
+
+Instead of:
+
+```bash
+sudo tee $CG/tasks <<< $$
+```
+
+We could have done:
+
+```bash
+sudo sh -c "echo $$ > $CG/tasks"
+```
+
+The following commands, however, would be invalid:
+
+```bash
+sudo echo $$ > $CG/tasks
+```
+
+```bash
+sudo -i # (or su)
+echo $$ > $CG/tasks
+```
 
 ---
 
