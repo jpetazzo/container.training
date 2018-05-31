@@ -1,2 +1,3 @@
 # This is for netlify
 PyYAML
+jinja2
