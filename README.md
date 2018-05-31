@@ -292,15 +292,31 @@ If there is a bug and you can't even reproduce it:
 sorry. It is probably an Heisenbug. We can't act on it
 until it's reproducible, alas.
 
-If you have attended this workshop and have feedback,
-or if you want somebody  to deliver that workshop at your
-conference or for your company: you can contact one of us!
+
+# “Please teach us!”
+
+If you have attended one of these workshops, and want
+your team or organization to attend a similar one, you
+can look at the list of upcoming events on
+http://container.training/.
+
+You are also welcome to reuse these materials to run
+your own workshop, for your team or even at a meetup
+or conference. In that case, you might enjoy watching
+[Bridget Kromhout's talk at KubeCon 2018 Europe](
+https://www.youtube.com/watch?v=mYsp_cGY2O0), explaining
+precisely how to run such a workshop yourself.
+
+Finally, you can also contact the following persons,
+who are experienced speakers, are familiar with the
+material, and are available to deliver these workshops
+at your conference or for your company:
 
 - jerome dot petazzoni at gmail dot com
 - bret at bretfisher dot com
 
-If you are willing and able to deliver such workshops,
-feel free to submit a PR to add your name to that list!
+(If you are willing and able to deliver such workshops,
+feel free to submit a PR to add your name to that list!)
 
 **Thank you!**
 
