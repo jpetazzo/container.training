@@ -320,7 +320,7 @@ EXPOSE 5000
 
 This Compose file uses the same image, but with a few overrides for development:
 
-- the Flask development serve ris used (overriding `CMD`),
+- the Flask development server is used (overriding `CMD`),
 
 - the `DEBUG` environment variable is set,
 
