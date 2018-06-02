@@ -213,7 +213,7 @@ $ docker-compose -f elk.yml up -d
 
   - it is set with the `ELASTICSEARCH_URL` environment variable,
 
-  - by default it is `localhost:9200`, we change it to `elastichsearch:9200`.
+  - by default it is `localhost:9200`, we change it to `elasticsearch:9200`.
 
 - We need to configure Logstash:
 
