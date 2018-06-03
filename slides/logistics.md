@@ -1,26 +1,14 @@
 ## Intros
 
-- This slide should be customized by the tutorial instructor(s).
-
 - Hello! We are:
 
-   - .emoji[👩🏻‍🏫] Ann O'Nymous ([@...](https://twitter.com/...), Megacorp Inc)
-
-   - .emoji[👨🏾‍🎓] Stu Dent ([@...](https://twitter.com/...), University of Wakanda)
-
- <!-- .dummy[
-
-   - .emoji[👷🏻‍♀️] AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
+   - .emoji[⛵] Jérémy ([@jeremygarrouste](https://twitter.com/jeremygarrouste), Inpiwee)
 
    - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
 
-   - .emoji[⛵] Jérémy ([@jeremygarrouste](twitter.com/jeremygarrouste), Inpiwee)
+- The training will run from 9:15 to 17:00
 
-] -->
-
-- The workshop will run from ...
-
-- There will be a lunch break at ...
+- There will be a lunch break at 12:30
 
   (And coffee breaks!)
 
