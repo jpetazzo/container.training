@@ -1,17 +1,13 @@
 {# Feel free to customize or override anything in there! #}
-{%- set url = "http://container.training/" -%}
+{%- set url = "juin2018.container.training" -%}
 {%- set pagesize = 12 -%}
 {%- if clustersize == 1 -%}
-    {%- set workshop_name = "Docker workshop" -%}
-    {%- set cluster_or_machine = "machine" -%}
-    {%- set this_or_each = "this" -%}
-    {%- set machine_is_or_machines_are = "machine is" -%}
+    {%- set cluster_or_machine = "votre VM" -%}
+    {%- set machine_is_or_machines_are = "Votre VM" -%}
     {%- set image_src = "https://s3-us-west-2.amazonaws.com/www.breadware.com/integrations/docker.png" -%}
 {%- else -%}
-    {%- set workshop_name = "orchestration workshop" -%}
-    {%- set cluster_or_machine = "cluster" -%}
-    {%- set this_or_each = "each" -%}
-    {%- set machine_is_or_machines_are = "machines are" -%}
+    {%- set cluster_or_machine = "votre cluster" -%}
+    {%- set machine_is_or_machines_are = "Votre cluster" -%}
     {%- set image_src_swarm = "https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png" -%}
     {%- set image_src_kube = "https://avatars1.githubusercontent.com/u/13629408" -%}
     {%- set image_src = image_src_swarm -%}
@@ -75,9 +71,9 @@ img {
     <div>
 
         <p>
-            Here is the connection information to your very own
-            {{ cluster_or_machine }} for this {{ workshop_name }}.
-            You can connect to {{ this_or_each }} VM with any SSH client.
+            Voici les informations pour vous connecter à
+            {{ cluster_or_machine }} pour cette formation.
+            Vous pouvez vous connecter avec n'importe quel client SSH.
         </p>
         <p>
             <img src="{{ image_src }}" />
@@ -90,14 +86,14 @@ img {
 
         </p>
         <p>
-            Your {{ machine_is_or_machines_are }}:
+            {{ machine_is_or_machines_are }}:
             <table>
                 {% for node in cluster %}
                 <tr><td>node{{ loop.index }}:</td><td>{{ node }}</td></tr>
                 {% endfor %}
             </table>
         </p>
-        <p>You can find the slides at:
+        <p>Les slides sont à l'adresse suivante :
             <center>{{ url }}</center>
         </p>
     </div>
