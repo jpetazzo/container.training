@@ -49,7 +49,8 @@ chapters:
   - intro/Advanced_Dockerfiles.md
   - intro/Application_Configuration.md
   - intro/Logging.md
-- - intro/Namespaces_Cgroups.md
+- - intro/Resource_Limits.md
+  - intro/Namespaces_Cgroups.md
   - intro/Copy_On_Write.md
   #- intro/Containers_From_Scratch.md
   - intro/Container_Engines.md
