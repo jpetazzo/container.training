@@ -74,6 +74,12 @@ And *then* it is time to look at orchestration!
 
 ---
 
+## Stateful services (demo!)
+
+.center[![Demo](images/demo.jpg)]
+
+---
+
 ## HTTP traffic handling
 
 - *Services* are layer 4 constructs
@@ -90,6 +96,12 @@ And *then* it is time to look at orchestration!
   - and much more!
 
 - Check out e.g. [Træfik](https://docs.traefik.io/user-guide/kubernetes/)
+
+---
+
+## Ingress with Træfik  (demo!)
+
+.center[![Demo](images/demo.jpg)]
 
 ---
 

@@ -1,14 +1,13 @@
 title: |
-  Deploying and Scaling Microservices
+  Introduction to Orchestration
   with Kubernetes
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
-chat: "In person!"
+chat: "[Gitter](https://gitter.im/jpetazzo/training-20180607-montpellier)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://juin2018.container.training/
 
 exclude:
 - self-paced
@@ -22,25 +21,25 @@ chapters:
 - - common/prereqs.md
   - kube/versions-k8s.md
   - common/sampleapp.md
-  #- common/composescale.md
+  - common/composescale.md
   - common/composedown.md
-- - kube/concepts-k8s.md
+  - kube/concepts-k8s.md
   - common/declarative.md
   - kube/declarative.md
   - kube/kubenet.md
   - kube/kubectlget.md
   - kube/setup-k8s.md
-  - kube/kubectlrun.md
-- - kube/kubectlexpose.md
+- - kube/kubectlrun.md
+  - kube/kubectlexpose.md
   - kube/ourapponkube.md
-  - kube/dashboard.md
-- - kube/kubectlscale.md
+- - kube/dashboard.md
+  - kube/kubectlscale.md
   - kube/daemonset.md
   - kube/rollout.md
-  #- kube/logs-cli.md
-  #- kube/logs-centralized.md
-  #- kube/helm.md
-  #- kube/namespaces.md
+- - kube/logs-cli.md
+  - kube/logs-centralized.md
+  - kube/helm.md
+  - kube/namespaces.md
   - kube/whatsnext.md
   - kube/links.md
   - common/thankyou.md
