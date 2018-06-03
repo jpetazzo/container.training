@@ -1,0 +1,59 @@
+body {
+    background-image: url("images/container-background.jpg");
+    max-width: 1024px;
+    margin: 0 auto;
+}
+table {
+    font-size: 20px;
+    font-family: sans-serif;
+    background: white;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+}
+.header {
+    font-size: 300%;
+    font-weight: bold;
+}
+.title {
+    font-size: 150%;
+    font-weight: bold;
+}
+.details {
+    font-size: 80%;
+    font-style: italic;
+}
+td {
+    padding: 1px;
+    height: 1em;
+}
+td.spacer {
+    height: unset;
+}
+td.footer {
+    padding-top: 80px;
+    height: 100px;
+}
+td.title {
+    border-bottom: thick solid black;
+    padding-bottom: 2px;
+    padding-top: 20px;
+}
+a {
+    text-decoration: none;
+}
+a:hover {
+    background: yellow;
+}
+a.attend:after {
+    content: "📅 attend";
+}
+a.slides:after {
+    content: "📚 slides";
+}
+a.chat:after {
+    content: "💬 chat";
+}
+a.video:after {
+    content: "📺 video";
+}

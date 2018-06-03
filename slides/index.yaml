@@ -124,11 +124,19 @@
   slides: http://qconsf2017intro.container.training/
   video: https://www.youtube.com/playlist?list=PLBAFXs0YjviLgqTum8MkspG_8VzGl6C07
 
+- date: 2017-10-30
+  city: San Franciso, CA
+  country: us
+  event: LISA
+  title: (M7) Getting Started with Docker and Containers
+  slides: http://lisa17m7.container.training/
 
-#<td>LISA17 M7: Getting Started with Docker and Containers
-#slides: http://lisa17m7.container.training/
-#<td>LISA17 T9: Build, Ship, and Run Microservices on a Docker Swarm Cluster
-#slides: http://lisa17t9.container.training/
+- date: 2017-10-31
+  city: San Franciso, CA
+  country: us
+  event: LISA
+  title: (T9) Build, Ship, and Run Microservices on a Docker Swarm Cluster
+  slides: http://lisa17t9.container.training/
 
 - date: 2017-10-26
   city: Prague
@@ -138,12 +146,69 @@
   slides: http://osseu17.container.training/
   video: https://www.youtube.com/playlist?list=PLBAFXs0YjviLrsyydCzxWrIP_1-wkcSHS
 
+- date: 2017-10-16
+  city: Copenhagen
+  country: dk
+  event: DockerCon
+  title: Swarm from Zero to Hero
+  slides: http://dc17eu.container.training/
 
-#<td>DockerCon Workshop: from Zero to Hero (full day, B3 M1-2)
-#slides: http://dc17eu.container.training/
+- date: 2017-10-16
+  city: Copenhagen
+  country: dk
+  event: DockerCon
+  title: Orchestration for Advanced Users
+  slides: https://www.bretfisher.com/dockercon17eu
 
-#<td>DockerCon Workshop: Orchestration for Advanced Users (afternoon, B4 M5-6)
-#slides: https://www.bretfisher.com/dockercon17eu/
+- date: 2017-07-25
+  city: Minneapolis, MN
+  country: us
+  event: devopsdays
+  title: Deploying & Scaling microservices with Docker Swarm
+  video: https://www.youtube.com/watch?v=DABbqyJeG_E
+
+- date: 2017-06-12
+  city: Berlin
+  country: de
+  event: DevOpsCon
+  title: Deploying and scaling containerized Microservices with Docker and Swarm
+
+- date: 2017-05-18
+  city: Portland, OR
+  country: us
+  event: PyCon
+  title: Deploy and scale containers with Docker native, open source orchestration
+  video: https://www.youtube.com/watch?v=EuzoEaE6Cqs
+
+- date: 2017-05-08
+  city: Austin, TX
+  country: us
+  event: OSCON
+  title: Deploying and scaling applications in containers with Docker
+
+- date: 2017-05-04
+  city: Chicago, IL
+  country: us
+  event: GOTO
+  title: Container deployment, scaling, and orchestration with Docker Swarm
+
+- date: 2017-04-17
+  city: Austin, TX
+  country: us
+  event: DockerCon
+  title: Orchestration Workshop
+
+- date: 2017-03-22
+  city: San Jose, CA
+  country: us
+  event: Devoxx
+  title: Container deployment, scaling, and orchestration with Docker Swarm
+
+- date: 2017-03-03
+  city: Pasadena, CA
+  country: us
+  event: SCALE
+  title: Container deployment, scaling, and orchestration with Docker Swarm
 
 - date: 2016-12-06
   city: Boston, MA
@@ -153,6 +218,30 @@
   slides: http://lisa16t1.container.training/
   video: https://www.youtube.com/playlist?list=PLBAFXs0YjviIDDhr8vIwCN1wkyNGXjbbc
 
+- date: 2016-10-07
+  city: Berlin
+  country: de
+  event: LinuxCon
+  title: Orchestrating Containers in Production at Scale with Docker Swarm
+
+- date: 2016-09-20
+  city: New York, NY
+  country: us
+  event: Velocity
+  title: Deployment and orchestration at scale with Docker
+
+- date: 2016-08-25
+  city: Toronto
+  country: ca
+  event: LinuxCon
+  title: Orchestrating Containers in Production at Scale with Docker Swarm
+
+- date: 2016-06-22
+  city: Seattle, WA
+  country: us
+  event: DockerCon
+  title: Orchestration Workshop
+
 - date: 2016-05-29
   city: Portland, OR
   country: us
@@ -160,6 +249,70 @@
   title: Introduction to Docker and containers
   slides: https://us.pycon.org/2016/site_media/media/tutorial_handouts/DockerSlides.pdf
   video: https://www.youtube.com/watch?v=ZVaRK10HBjo
+
+- date: 2016-05-17
+  city: Austin, TX
+  country: us
+  event: OSCON
+  title: Deployment and orchestration at scale with Docker Swarm
+
+- date: 2016-04-27
+  city: Budapest
+  country: hu
+  event: CRAFT
+  title: Advanced Docker concepts and container orchestration
+
+- date: 2016-04-22
+  city: Berlin
+  country: de
+  event: Neofonie
+  title: Orchestration Workshop
+
+- date: 2016-04-05
+  city: Stockholm
+  country: se
+  event: Praqma
+  title: Orchestration Workshop
+
+- date: 2016-03-22
+  city: Munich
+  country: de
+  event: Stylight
+  title: Orchestration Workshop
+
+- date: 2016-03-11
+  city: London
+  country: uk
+  event: QCON
+  title: Containers in production with Docker Swarm
+
+- date: 2016-02-19
+  city: Amsterdam
+  country: nl
+  event: Container Solutions
+  title: Orchestration Workshop
+
+- date: 2016-02-15
+  city: Paris
+  country: fr
+  event: Zenika
+  title: Orchestration Workshop
+
+- date: 2016-01-22
+  city: Pasadena, CA
+  country: us
+  event: SCALE
+  title: Advanced Docker concepts and container orchestration
+
+#- date: 2015-11-10
+#  city: Washington DC
+#  country: us
+#  event: LISA
+#  title: Deploying and Scaling Applications with Docker Swarm
+
+#2015-09-24-strangeloop
+
+
 
 - title: Introduction to Docker and Containers
   slides: intro-selfpaced.yml.html
