@@ -111,7 +111,7 @@ You should see the banner of the hasher service: `HASHER running on ...`
 
 .exercise[
 
-- Stop the `kubectl proxy`
+- Stop the `kubectl proxy` process with Ctrl-C
 
 ]
 
