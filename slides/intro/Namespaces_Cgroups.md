@@ -76,6 +76,8 @@ The last item should be done for educational purposes only!
 
 ---
 
+class: extra-details, deep-dive
+
 ## Manipulating namespaces
 
 - Namespaces are created with two methods:
@@ -93,6 +95,8 @@ The last item should be done for educational purposes only!
 - The Linux tool `nsenter` allows to do that from a shell.
 
 ---
+
+class: extra-details, deep-dive
 
 ## Namespaces lifecycle
 
@@ -113,6 +117,8 @@ The last item should be done for educational purposes only!
 - It is possible to preserve a namespace by bind-mounting its pseudo-file.
 
 ---
+
+class: extra-details, deep-dive
 
 ## Namespaces can be used independently
 
@@ -150,6 +156,8 @@ The last item should be done for educational purposes only!
 
 ---
 
+class: extra-details, deep-dive
+
 ## Creating our first namespace
 
 Let's use `unshare` to create a new process that will have its own UTS namespace:
@@ -165,6 +173,8 @@ $ sudo unshare --uts
 - If we don't specify a program to run, a `$SHELL` is started.
 
 ---
+
+class: extra-details, deep-dive
 
 ## Demonstrating our uts namespace
 
@@ -398,6 +408,8 @@ class: extra-details
 
 ---
 
+class: extra-details, deep-dive
+
 ## Setting up a private `/tmp`
 
 Create a new mount namespace:
@@ -435,6 +447,8 @@ The mount is automatically cleaned up when you exit the process.
 
 ---
 
+class: extra-details, deep-dive
+
 ## PID namespace in action
 
 Create a new PID namespace:
@@ -453,9 +467,13 @@ Check the process tree in the new namespace:
 
 --
 
+class: extra-details, deep-dive
+
 🤔 Why do we see all the processes?!?
 
 ---
+
+class: extra-details, deep-dive
 
 ## PID namespaces and `/proc`
 
@@ -470,6 +488,8 @@ Check the process tree in the new namespace:
   (Try to `kill` a process: you will get `No such process`.)
 
 ---
+
+class: extra-details, deep-dive
 
 ## PID namespaces, take 2
 
@@ -569,6 +589,8 @@ Check `man 2 unshare` and `man pid_namespaces` if you want more details.
 - Ultimately enables better privilege separation in container engines.
 
 ---
+
+class: extra-details, deep-dive
 
 ## User namespace challenges
 
@@ -686,6 +708,8 @@ cpu                      memory
 
 ---
 
+class: extra-details, deep-dive
+
 ## Cgroups v1 vs v2
 
 - Cgroups v1 are available on all systems (and widely used).
@@ -759,6 +783,8 @@ cpu                      memory
 
 ---
 
+class: extra-details, deep-dive
+
 ## Avoiding the OOM killer
 
 - For some workloads (databases and stateful systems), killing
@@ -778,6 +804,8 @@ cpu                      memory
 
 ---
 
+class: extra-details, deep-dive
+
 ## Overhead of the memory cgroup
 
 - Each time a process grabs or releases a page, the kernel update counters.
@@ -795,6 +823,8 @@ cpu                      memory
   - but if it stops using it, the "charge" is moved to another group.
 
 ---
+
+class: extra-details, deep-dive
 
 ## Setting up a limit with the memory cgroup
 
@@ -823,6 +853,8 @@ The current process *and all its future children* are now limited.
 
 ---
 
+class: extra-details, deep-dive
+
 ## What's `<<<`?
 
 - This is a "here string". (It is a non-POSIX shell extension.)
@@ -846,6 +878,8 @@ The current process *and all its future children* are now limited.
 - Why did we use that?
 
 ---
+
+class: extra-details, deep-dive
 
 ## Writing to cgroups pseudo-files requires root
 
@@ -873,6 +907,8 @@ echo $$ > $CG/tasks
 ```
 
 ---
+
+class: extra-details, deep-dive
 
 ## Testing the memory limit
 

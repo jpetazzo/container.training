@@ -40,6 +40,8 @@ ambassador containers.
 
 ---
 
+class: pic
+
 ![ambassador](images/ambassador-diagram.png)
 
 ---
