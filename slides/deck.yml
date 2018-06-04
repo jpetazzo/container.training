@@ -96,6 +96,12 @@ chapters:
   - kube/kubectlexpose.md
   - kube/ourapponkube.md
 - - kube/dashboard.md
+  - |
+      # Exercise — running wordsmith on Kubernetes
+
+      Now that we know how to deploy containers on Kubernetes, let's deploy the wordsmith app on our cluster!
+
+      The code is at: https://bitbucket.org/jgarrouste/k8s-wordsmith-exo/src/master/
   - kube/kubectlscale.md
   - kube/daemonset.md
   - kube/rollout.md
