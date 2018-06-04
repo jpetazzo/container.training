@@ -1,14 +1,9 @@
-# Pre-requirements
+# Orchestration
 
-- Be comfortable with the UNIX command line
+- Now that we have learned some container knowledge,
+  we can get started with orchestration!
 
-  - navigating directories
-
-  - editing files
-
-  - a little bit of bash-fu (environment variables, loops)
-
-- Some Docker knowledge
+- Note: all that is needed to follow along the orchestration part is some *basic* Docker knowledge, i.e.:
 
   - `docker run`, `docker ps`, `docker build`
 
@@ -36,7 +31,7 @@ Misattributed to Benjamin Franklin
 
 ## Hands-on sections
 
-- The whole workshop is hands-on
+- Of course, we have tons of exercises and hands-on labs
 
 - We are going to build, ship, and run containers!
 
@@ -78,7 +73,9 @@ class: in-person
 
 - They'll remain up for the duration of the workshop
 
-- You should have a little card with login+password+IP addresses
+- You should have **another** little card with login+password+IP addresses
+
+  (But that one has 5 nodes instead of only 1)
 
 - You can automatically SSH from one VM to another
 

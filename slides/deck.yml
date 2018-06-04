@@ -1,0 +1,108 @@
+title: |
+  Introduction
+  to Containers
+  and Orchestration
+
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+chat: "[Gitter](https://gitter.im/jpetazzo/training-20180605-montpellier)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://juin2018.container.training/
+
+exclude:
+- self-paced
+
+chapters:
+- common/title.md
+- logistics.md
+- intro/intro.md
+- common/about-slides.md
+- common/toc.md
+- - intro/Docker_Overview.md
+  - intro/Docker_History.md
+  - intro/Training_Environment.md
+  - intro/Installing_Docker.md
+  - intro/First_Containers.md
+  - intro/Background_Containers.md
+  - intro/Start_And_Attach.md
+- - intro/Initial_Images.md
+  - intro/Building_Images_Interactively.md
+  - intro/Building_Images_With_Dockerfiles.md
+  - intro/Cmd_And_Entrypoint.md
+  - intro/Copying_Files_During_Build.md
+- - |
+      # Exercise — writing Dockerfiles
+
+      Let's write Dockerfiles for an existing application!
+
+      The code is at: https://bitbucket.org/jgarrouste/k8s-wordsmith-exo/src/master/
+  - intro/Multi_Stage_Builds.md
+  - intro/Publishing_To_Docker_Hub.md
+  - intro/Dockerfile_Tips.md
+  - |
+      # Exercise — writing better Dockerfiles
+
+      Let's update our Dockerfiles to leverage multi-stage builds!
+
+      The code is at: https://bitbucket.org/jgarrouste/k8s-wordsmith-exo/src/master/
+
+      Use a different tag for these images, so that we can compare their sizes.
+
+      What's the size difference between single-stage and multi-stage builds?
+- - intro/Naming_And_Inspecting.md
+  - intro/Labels.md
+  - intro/Getting_Inside.md
+  - intro/Resource_Limits.md
+- - intro/Namespaces_Cgroups.md
+  - intro/Copy_On_Write.md
+  #- intro/Containers_From_Scratch.md
+- - intro/Container_Networking_Basics.md
+  - intro/Network_Drivers.md
+  - intro/Container_Network_Model.md
+  #- intro/Connecting_Containers_With_Links.md
+  - intro/Ambassadors.md
+- - intro/Local_Development_Workflow.md
+  - intro/Working_With_Volumes.md
+  - intro/Compose_For_Dev_Stacks.md
+  - |
+      # Exercise — writing a Compose file
+
+      Let's write a Compose file for the wordsmith app!
+
+      The code is at: https://bitbucket.org/jgarrouste/k8s-wordsmith-exo/src/master/
+
+- - intro/CI_Pipeline.md
+  - intro/Docker_Machine.md
+  - intro/Advanced_Dockerfiles.md
+  - intro/Application_Configuration.md
+  - intro/Logging.md
+- - intro/Container_Engines.md
+  - intro/Ecosystem.md
+  - intro/Orchestration_Overview.md
+  - intro/links.md
+- - common/prereqs.md
+  - kube/versions-k8s.md
+  - common/sampleapp.md
+  - common/composescale.md
+  - common/composedown.md
+  - kube/concepts-k8s.md
+  - common/declarative.md
+  - kube/declarative.md
+  - kube/kubenet.md
+  - kube/kubectlget.md
+  - kube/setup-k8s.md
+- - kube/kubectlrun.md
+  - kube/kubectlexpose.md
+  - kube/ourapponkube.md
+- - kube/dashboard.md
+  - kube/kubectlscale.md
+  - kube/daemonset.md
+  - kube/rollout.md
+- - kube/logs-cli.md
+  - kube/logs-centralized.md
+  - kube/helm.md
+  - kube/namespaces.md
+  - kube/whatsnext.md
+  - kube/links.md
+  - common/thankyou.md
