@@ -913,8 +913,6 @@ Killed
 
 - Allows to set relative weights used by the scheduler.
 
-- We cannot set CPU limits (like, "don't use more than 10% of CPU").
-
 ---
 
 ## Cpuset cgroup
