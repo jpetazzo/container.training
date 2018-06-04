@@ -2,7 +2,7 @@
 
 - All the content is available in a public GitHub repository:
 
-  https://github.com/jpetazzo/container.training
+  https://@@GITREPO@@
 
 - You can get updated "builds" of the slides there:
 
@@ -10,7 +10,7 @@
 
 <!--
 .exercise[
-```open https://github.com/jpetazzo/container.training```
+```open https://@@GITREPO@@```
 ```open http://container.training/```
 ]
 -->
@@ -23,7 +23,7 @@
 
 <!--
 .exercise[
-```open https://github.com/jpetazzo/container.training/tree/master/slides/common/about-slides.md```
+```open https://@@GITREPO@@/tree/master/slides/common/about-slides.md```
 ]
 -->
 

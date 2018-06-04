@@ -49,7 +49,7 @@ Before diving in, let's see a small example of Compose in action.
 
 ---
 
-## Compose in action
+class: pic
 
 ![composeup](images/composeup.gif)
 

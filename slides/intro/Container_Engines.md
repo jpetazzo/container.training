@@ -73,7 +73,7 @@ Containers also exist (sometimes with other names) on Windows, macOS, Solaris, F
 
 ## LXC
 
-* The venerable ancestor (first realeased in 2008).
+* The venerable ancestor (first released in 2008).
 
 * Docker initially relied on it to execute containers.
 

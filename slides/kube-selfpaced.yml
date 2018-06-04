@@ -5,6 +5,10 @@ title: |
 chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
 
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://container.training/
+
 exclude:
 - in-person
 
@@ -28,6 +32,7 @@ chapters:
   - kube/kubectlrun.md
 - - kube/kubectlexpose.md
   - kube/ourapponkube.md
+  - kube/kubectlproxy.md
   - kube/dashboard.md
 - - kube/kubectlscale.md
   - kube/daemonset.md

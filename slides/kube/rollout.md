@@ -133,7 +133,7 @@ That rollout should be pretty quick. What shows in the web UI?
 
 ---
 
-## Rolling out a boo-boo
+## Rolling out something invalid
 
 - What happens if we make a mistake?
 

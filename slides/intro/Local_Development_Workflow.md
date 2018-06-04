@@ -17,7 +17,7 @@ At the end of this section, you will be able to:
 
 ---
 
-## Containerized local development environments
+## Local development in a container
 
 We want to solve the following issues:
 

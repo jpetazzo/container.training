@@ -420,8 +420,3 @@ It depends on:
 
   - false, if we focus on what matters.
 
----
-
-## Kubernetes in action
-
-.center[![Demo stamp](images/demo.jpg)]

@@ -85,7 +85,7 @@ class: extra-details
 
   https://docs.docker.com/docker-for-mac/install/
 
-* On Windows 10 Pro, Enterprise, and Eduction, you can use Docker for Windows:
+* On Windows 10 Pro, Enterprise, and Education, you can use Docker for Windows:
 
   https://docs.docker.com/docker-for-windows/install/
 

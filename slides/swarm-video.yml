@@ -4,6 +4,10 @@ title: |
 
 chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://container.training/
+
 exclude:
 - in-person
 - btp-auto

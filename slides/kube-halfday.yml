@@ -5,6 +5,10 @@ title: |
 #chat: "[Gitter](https://gitter.im/jpetazzo/training-20180413-paris)"
 chat: "In person!"
 
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://container.training/
+
 exclude:
 - self-paced
 
@@ -31,6 +35,7 @@ chapters:
 - - kube/kubectlrun.md
   - kube/kubectlexpose.md
   - kube/ourapponkube.md
+  #- kube/kubectlproxy.md
 - - kube/dashboard.md
   - kube/kubectlscale.md
   - kube/daemonset.md

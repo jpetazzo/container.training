@@ -10,9 +10,11 @@
 
 * [Solaris Containers (2004)](https://en.wikipedia.org/wiki/Solaris_Containers)
 
-* [FreeBSD jails (1999)](https://www.freebsd.org/cgi/man.cgi?query=jail&sektion=8&manpath=FreeBSD+4.0-RELEASE)
+* [FreeBSD jails (1999-2000)](https://www.freebsd.org/cgi/man.cgi?query=jail&sektion=8&manpath=FreeBSD+4.0-RELEASE)
 
 Containers have been around for a *very long time* indeed.
+
+(See [this excellent blog post by Serge Hallyn](https://s3hh.wordpress.com/2018/03/22/history-of-containers/) for more historic details.)
 
 ---
 

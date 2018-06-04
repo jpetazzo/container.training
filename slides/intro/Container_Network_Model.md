@@ -498,12 +498,12 @@ b2887adeb5578a01fd9c55c435cad56bbbe802350711d2743691f95743680b09
 
 * If containers span multiple hosts, we need an *overlay* network to connect them together.
 
-* Docker ships with a default network plugin, `overlay`, implementing an overlay network leveraging 
+* Docker ships with a default network plugin, `overlay`, implementing an overlay network leveraging
   VXLAN, *enabled with Swarm Mode*.
 
 * Other plugins (Weave, Calico...) can provide overlay networks as well.
 
-* Once you have an overlay network, *all the features that we've used in this chapter work identically 
+* Once you have an overlay network, *all the features that we've used in this chapter work identically
   across multiple hosts.*
 
 ---
@@ -542,13 +542,174 @@ General idea:
 
 ---
 
-## Section summary
+## Connecting and disconnecting dynamically
 
-We've learned how to:
+* So far, we have specified which network to use when starting the container.
 
-* Create private networks for groups of containers.
+* The Docker Engine also allows to connect and disconnect while the container runs.
 
-* Assign IP addresses to containers.
+* This feature is exposed through the Docker API, and through two Docker CLI commands:
 
-* Use container naming to implement service discovery.
+  * `docker network connect <network> <container>`
 
+  * `docker network disconnect <network> <container>`
+
+---
+
+## Dynamically connecting to a network
+
+* We have a container named `es` connected to a network named `dev`.
+
+* Let's start a simple alpine container on the default network:
+
+  ```bash
+  $ docker run -ti alpine sh
+  / #
+  ```
+
+* In this container, try to ping the `es` container:
+
+  ```bash
+  / # ping es
+  ping: bad address 'es'
+  ```
+
+  This doesn't work, but we will change that by connecting the container.
+
+---
+
+## Finding the container ID and connecting it
+
+* Figure out the ID of our alpine container; here are two methods:
+
+  * looking at `/etc/hostname` in the container,
+
+  * running `docker ps -lq` on the host.
+
+* Run the following command on the host:
+
+  ```bash
+  $ docker network connect dev `<container_id>`
+  ```
+
+---
+
+## Checking what we did
+
+* Try again to `ping es` from the container.
+
+* It should now work correctly:
+
+  ```bash
+  / # ping es
+  PING es (172.20.0.3): 56 data bytes
+  64 bytes from 172.20.0.3: seq=0 ttl=64 time=0.376 ms
+  64 bytes from 172.20.0.3: seq=1 ttl=64 time=0.130 ms
+  ^C
+  ```
+
+* Interrupt it with Ctrl-C.
+
+---
+
+## Looking at the network setup in the container
+
+We can look at the list of network interfaces with `ifconfig`, `ip a`, or `ip l`:
+
+.small[
+```bash
+/ # ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+18: eth0@if19: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue state UP
+    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+20: eth1@if21: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue state UP
+    link/ether 02:42:ac:14:00:04 brd ff:ff:ff:ff:ff:ff
+    inet 172.20.0.4/16 brd 172.20.255.255 scope global eth1
+       valid_lft forever preferred_lft forever
+/ #
+```
+]
+
+Each network connection is materialized with a virtual network interface.
+
+As we can see, we can be connected to multiple networks at the same time.
+
+---
+
+## Disconnecting from a network
+
+* Let's try the symmetrical command to disconnect the container:
+  ```bash
+  $ docker network disconnect dev <container_id>
+  ```
+
+* From now on, if we try to ping `es`, it will not resolve:
+  ```bash
+  / # ping es
+  ping: bad address 'es'
+  ```
+
+* Trying to ping the IP address directly won't work either:
+  ```bash
+  / # ping 172.20.0.3
+  ... (nothing happens until we interrupt it with Ctrl-C)
+  ```
+
+---
+
+class: extra-details
+
+## Network aliases are scoped per network
+
+* Each network has its own set of network aliases.
+
+* We saw this earlier: `es` resolves to different addresses in `dev` and `prod`.
+
+* If we are connected to multiple networks, the resolver looks up names in each of them
+  (as of Docker Engine 18.03, it is the connection order) and stops as soon as the name
+  is found.
+
+* Therefore, if we are connected to both `dev` and `prod`, resolving `es` will **not**
+  give us the addresses of all the `es` services; but only the ones in `dev` or `prod`.
+
+* However, we can lookup `es.dev` or `es.prod` if we need to.
+
+---
+
+class: extra-details
+
+## Finding out about our networks and names
+
+* We can do reverse DNS lookups on containers' IP addresses.
+
+* If the IP address belongs to a network (other than the default bridge), the result will be:
+
+  ```
+  name-or-first-alias-or-container-id.network-name
+  ```
+
+* Example:
+
+.small[
+```bash
+$ docker run -ti --net prod --net-alias hello alpine
+/ # apk add --no-cache drill
+...
+OK: 5 MiB in 13 packages
+/ # ifconfig
+eth0      Link encap:Ethernet  HWaddr 02:42:AC:15:00:03
+          inet addr:`172.21.0.3`  Bcast:172.21.255.255  Mask:255.255.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+...
+/ # drill -t ptr `3.0.21.172`.in-addr.arpa
+...
+;; ANSWER SECTION:
+3.0.21.172.in-addr.arpa.	600	IN	PTR	`hello.prod`.
+...
+```
+]
