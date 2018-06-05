@@ -105,6 +105,27 @@ You should see the banner of the hasher service: `HASHER running on ...`
 
 ---
 
+## Compare proxy output to CLI output
+
+.exercise[
+
+- Inspect the `hasher` pod:
+  ```bash
+  kubectl describe pods -l run=hasher
+  ```
+
+]
+
+The `Name:` field should match the one shown by the proxy
+
+example: `Name:           hasher-57d84dfccf-srfft`
+
+--
+
+You can also see lots of other interesting settings, events, etc!
+
+---
+
 ## Stopping the proxy
 
 - Remember: as it is running right now, `kubectl proxy` gives open access to our cluster
