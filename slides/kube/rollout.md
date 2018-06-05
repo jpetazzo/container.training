@@ -190,6 +190,33 @@ class: extra-details
 
 ---
 
+## Checking the dashboard during the bad rollout
+
+.exercise[
+
+- Check which port the dashboard is on:
+  ```bash
+  kubectl -n kube-system get svc socat
+  ```
+
+]
+
+Note the `3xxxx` port.
+
+.exercise[
+
+- Connect to http://oneofournodes:3xxxx/
+
+<!-- ```open https://node1:3xxxx/``` -->
+
+]
+
+--
+
+- We have failures in Deployments, Pods, and Replica Sets
+
+---
+
 ## Recovering from a bad rollout
 
 - We could push some `v0.3` image
