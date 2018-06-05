@@ -1,6 +1,8 @@
 #!/bin/sh
+set -e
 case "$1" in
 once)
+  ./index.py
   for YAML in *.yml; do
     ./markmaker.py $YAML > $YAML.html || { 
       rm $YAML.html
@@ -15,6 +17,7 @@ once)
   ;;
 
 forever)
+  set +e
   # check if entr is installed
   if ! command -v entr >/dev/null; then
     echo >&2 "First install 'entr' with apt, brew, etc."
