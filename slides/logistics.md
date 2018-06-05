@@ -6,9 +6,9 @@
 
    - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
 
-- The training will run from 9:15 to 17:00
+- The training will run from 9:15 to 18:00
 
-- There will be a lunch break at 12:30
+- There will be a lunch break from 12:00 to 13:30
 
   (And coffee breaks!)
 

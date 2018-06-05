@@ -36,6 +36,10 @@ individual Docker VM.*
 
 - It comes pre-loaded with Docker and some other useful tools.
 
+- **Keep the card with your VM IP address!**
+
+  **(We will be in a different room tomorrow.)**
+
 ---
 
 ## What *is* Docker?
