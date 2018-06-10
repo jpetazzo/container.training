@@ -192,6 +192,8 @@ class: extra-details
 
 ## Checking the dashboard during the bad rollout
 
+If you haven't deployed the Kubernetes dashboard earlier, just skip this slide.
+
 .exercise[
 
 - Check which port the dashboard is on:
