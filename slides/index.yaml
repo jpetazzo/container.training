@@ -1,19 +1,10 @@
-- date: 2018-06-12
-  city: San Jose, CA
+- date: 2018-10-01
+  city: New York, NY
   country: us
   event: Velocity
   title: Kubernetes 101
   speaker: bridgetkromhout
-  slides: https://velocitysj2018.container.training
-  attend: https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/66286
-
-- date: 2018-06-27
-  city: Amsterdam
-  country: nl
-  event: devopsdays
-  title: Kubernetes 101
-  speaker: bridgetkromhout
-  attend: https://www.devopsdays.org/events/2018-amsterdam/registration/
+  attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/70102
 
 - date: 2018-07-17
   city: Portland, OR
@@ -23,13 +14,22 @@
   speaker: bridgetkromhout
   attend: https://conferences.oreilly.com/oscon/oscon-or/public/schedule/detail/66287
 
-- date: 2018-10-01
-  city: New York, NY
+- date: 2018-06-27
+  city: Amsterdam
+  country: nl
+  event: devopsdays
+  title: Kubernetes 101
+  speaker: bridgetkromhout
+  attend: https://www.devopsdays.org/events/2018-amsterdam/registration/
+
+- date: 2018-06-12
+  city: San Jose, CA
   country: us
   event: Velocity
   title: Kubernetes 101
   speaker: bridgetkromhout
-  attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/70102
+  slides: https://velocitysj2018.container.training
+  attend: https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/66286
 
 - date: 2018-05-17
   city: Virginia Beach, FL
