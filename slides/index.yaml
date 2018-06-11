@@ -6,6 +6,14 @@
   speaker: bridgetkromhout
   attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/70102
 
+- date: 2018-09-30
+  city: New York, NY
+  country: us
+  event: Velocity
+  title: Kubernetes Bootcamp: Deploying and Scaling Microservices
+  speaker: jpetazzo
+  attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/69875
+
 - date: 2018-07-17
   city: Portland, OR
   country: us
