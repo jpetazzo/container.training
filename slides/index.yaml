@@ -1,18 +1,18 @@
-- date: 2018-06-12
-  city: San Jose, CA
+- date: 2018-10-01
+  city: New York, NY
   country: us
   event: Velocity
   title: Kubernetes 101
   speaker: bridgetkromhout
-  attend: https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/66286
+  attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/70102
 
-- date: 2018-06-27
-  city: Amsterdam
-  country: nl
-  event: devopsdays
-  title: Kubernetes 101
-  speaker: bridgetkromhout
-  attend: https://www.devopsdays.org/events/2018-amsterdam/registration/
+- date: 2018-09-30
+  city: New York, NY
+  country: us
+  event: Velocity
+  title: Kubernetes Bootcamp - Deploying and Scaling Microservices
+  speaker: jpetazzo
+  attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/69875
 
 - date: 2018-07-17
   city: Portland, OR
@@ -22,13 +22,40 @@
   speaker: bridgetkromhout
   attend: https://conferences.oreilly.com/oscon/oscon-or/public/schedule/detail/66287
 
-- date: 2018-10-01
-  city: New York, NY
+- date: 2018-06-27
+  city: Amsterdam
+  country: nl
+  event: devopsdays
+  title: Kubernetes 101
+  speaker: bridgetkromhout
+  attend: https://www.devopsdays.org/events/2018-amsterdam/registration/
+
+- date: 2018-06-12
+  city: San Jose, CA
   country: us
   event: Velocity
   title: Kubernetes 101
   speaker: bridgetkromhout
-  attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/70102
+  slides: https://velocitysj2018.container.training
+  attend: https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/66286
+
+- date: 2018-06-12
+  city: San Jose, CA
+  country: us
+  event: Velocity
+  title: "Kubernetes two-day kickstart: Deploying and Scaling Microservices with Kubernetes"
+  speaker: "bketelsen, erikstmartin"
+  slides: http://kubernetes.academy/kube-fullday.yml.html#1
+  attend: https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/66932
+
+- date: 2018-06-11
+  city: San Jose, CA
+  country: us
+  event: Velocity
+  title: "Kubernetes two-day kickstart: Introduction to Docker and Containers"
+  speaker: "bketelsen, erikstmartin"
+  slides: http://kubernetes.academy/intro-fullday.yml.html#1
+  attend: https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/66932
 
 - date: 2018-05-17
   city: Virginia Beach, FL

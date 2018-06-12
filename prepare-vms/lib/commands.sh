@@ -48,7 +48,7 @@ _cmd_cards() {
     rm -f ips.html ips.pdf
 
     # This will generate two files in the base dir: ips.pdf and ips.html
-    python lib/ips-txt-to-html.py $SETTINGS
+    lib/ips-txt-to-html.py $SETTINGS
 
     for f in ips.html ips.pdf; do
         # Remove old versions of cards if they exist
