@@ -39,6 +39,24 @@
   slides: https://velocitysj2018.container.training
   attend: https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/66286
 
+- date: 2018-06-12
+  city: San Jose, CA
+  country: us
+  event: Velocity
+  title: "Kubernetes two-day kickstart: Deploying and Scaling Microservices with Kubernetes"
+  speaker: "bketelsen, erikstmartin"
+  slides: http://kubernetes.academy/kube-fullday.yml.html#1
+  attend: https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/66932
+
+- date: 2018-06-11
+  city: San Jose, CA
+  country: us
+  event: Velocity
+  title: "Kubernetes two-day kickstart: Introduction to Docker and Containers"
+  speaker: "bketelsen, erikstmartin"
+  slides: http://kubernetes.academy/intro-fullday.yml.html#1
+  attend: https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/66932
+
 - date: 2018-05-17
   city: Virginia Beach, FL
   country: us
