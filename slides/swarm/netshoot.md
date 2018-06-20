@@ -302,7 +302,7 @@ class: extra-details, benchmarking
 
 - Requests are a bit slower in the parallel benchmark
 
-- It looks like `hasher` is better equiped to deal with concurrency than `rng`
+- It looks like `hasher` is better equipped to deal with concurrency than `rng`
 
 ---
 

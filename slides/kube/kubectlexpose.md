@@ -123,7 +123,7 @@ Note: please DO NOT call the service `search`. It would collide with the TLD.
 
 .exercise[
 
-- Let's obtain the IP address that was allocated for our service, *programatically:*
+- Let's obtain the IP address that was allocated for our service, *programmatically:*
   ```bash
   IP=$(kubectl get svc elastic -o go-template --template '{{ .spec.clusterIP }}')
   ```

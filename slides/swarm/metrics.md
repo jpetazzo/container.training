@@ -554,7 +554,7 @@ class: snap
 
 ## Instruct all nodes to join the agreement
 
-- We dont need another fancy global service!
+- We don't need another fancy global service!
 
 - We can join nodes from any existing node of the cluster
 

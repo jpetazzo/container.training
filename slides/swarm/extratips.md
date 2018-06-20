@@ -77,7 +77,7 @@ More resources on this topic:
 
 - It won't be scheduled automatically when constraints are satisfiable again
 
-- You will have to update the service; you can do a no-op udate with:
+- You will have to update the service; you can do a no-op update with:
   ```bash
   docker service update ... --force
   ```

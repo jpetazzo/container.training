@@ -102,7 +102,7 @@ Cons:
 
 - not very readable
 
-- some unnecessary files might still remain if the cleanup is not torough
+- some unnecessary files might still remain if the cleanup is not thorough
 
 - that layer is expensive (slow to build)
 

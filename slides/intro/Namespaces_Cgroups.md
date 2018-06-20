@@ -144,7 +144,7 @@ class: extra-details, deep-dive
 
 - Also allows to set the NIS domain.
 
-  (If you dont' know what a NIS domain is, you don't have to worry about it!)
+  (If you don't know what a NIS domain is, you don't have to worry about it!)
 
 - If you're wondering: UTS = UNIX time sharing.
 

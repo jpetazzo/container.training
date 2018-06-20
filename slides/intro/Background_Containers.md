@@ -117,7 +117,7 @@ CONTAINER ID  IMAGE           ...  CREATED        STATUS        ...
 
 Many Docker commands will work on container IDs: `docker stop`, `docker rm`...
 
-If we want to list only the IDs of our containers (without the other colums
+If we want to list only the IDs of our containers (without the other columns
 or the header line),
 we can use the `-q` ("Quiet", "Quick") flag:
 

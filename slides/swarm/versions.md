@@ -69,7 +69,7 @@ class: extra-details
 
   (containerd, libcontainer, SwarmKit...)
 
-- More predictible release schedule (see next slide)
+- More predictable release schedule (see next slide)
 
 ---
 
