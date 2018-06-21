@@ -64,6 +64,38 @@ But first, let's make sure that everything works properly.
 
 ---
 
+## Finding the container's IP address
+
+We can use the `docker inspect` command to find the IP address of the
+container.
+
+```bash
+$ docker inspect --format '{{ .NetworkSettings.IPAddress }}' <yourContainerID>
+172.17.0.3
+```
+
+* `docker inspect` is an advanced command, that can retrieve a ton
+  of information about our containers.
+
+* Here, we provide it with a format string to extract exactly the
+  private IP address of the container.
+
+---
+
+## Pinging our container
+
+We can test connectivity to the container using the IP address we've
+just discovered. Let's see this now by using the `ping` tool.
+
+```bash
+$ ping <ipAddress>
+64 bytes from <ipAddress>: icmp_req=1 ttl=64 time=0.085 ms
+64 bytes from <ipAddress>: icmp_req=2 ttl=64 time=0.085 ms
+64 bytes from <ipAddress>: icmp_req=3 ttl=64 time=0.085 ms
+```
+
+---
+
 ## Connecting to our web server (GUI)
 
 Point your browser to the IP address of your Docker host, on the port
@@ -180,37 +212,6 @@ There are many ways to integrate containers in your network.
 When using Docker through an extra management layer like Mesos or Kubernetes,
 these will usually provide their own mechanism to expose containers.
 
----
-
-## Finding the container's IP address
-
-We can use the `docker inspect` command to find the IP address of the
-container.
-
-```bash
-$ docker inspect --format '{{ .NetworkSettings.IPAddress }}' <yourContainerID>
-172.17.0.3
-```
-
-* `docker inspect` is an advanced command, that can retrieve a ton
-  of information about our containers.
-
-* Here, we provide it with a format string to extract exactly the
-  private IP address of the container.
-
----
-
-## Pinging our container
-
-We can test connectivity to the container using the IP address we've
-just discovered. Let's see this now by using the `ping` tool.
-
-```bash
-$ ping <ipAddress>
-64 bytes from <ipAddress>: icmp_req=1 ttl=64 time=0.085 ms
-64 bytes from <ipAddress>: icmp_req=2 ttl=64 time=0.085 ms
-64 bytes from <ipAddress>: icmp_req=3 ttl=64 time=0.085 ms
-```
 
 ---
 
@@ -220,9 +221,10 @@ We've learned how to:
 
 * Expose a network port.
 
+* Find a container's IP address.
+
 * Manipulate container networking basics.
 
-* Find a container's IP address.
 
 In the next chapter, we will see how to connect
 containers together without exposing their ports.
