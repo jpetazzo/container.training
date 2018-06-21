@@ -69,10 +69,17 @@ But first, let's make sure that everything works properly.
 We can use the `docker inspect` command to find the IP address of the
 container.
 
-```bash
-$ docker inspect --format '{{ .NetworkSettings.IPAddress }}' <yourContainerID>
-172.17.0.3
-```
+* Modern docker syntax
+  ```bash
+  $ docker inspect --format '{{range .NetworkSettings.Networks }}{{.IPAddress}}{{end}}' <yourContainerID>
+  172.17.0.3
+  ```
+
+* Old docker syntax
+  ```bash
+  $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' <yourContainerID>
+  172.17.0.3
+  ```
 
 * `docker inspect` is an advanced command, that can retrieve a ton
   of information about our containers.
