@@ -98,7 +98,7 @@ $ curl localhost:32768
 * We can see that metadata with `docker inspect`:
 
 ```bash
-$ docker inspect nginx --format {{.Config.ExposedPorts}}
+$ docker inspect --format '{{.Config.ExposedPorts}}' nginx
 map[80/tcp:{}]
 ```
 
