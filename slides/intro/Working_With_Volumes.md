@@ -298,7 +298,7 @@ class: extra-details
 Connect to the Redis container and see our data.
 
 ```bash
-docker run -ti --link redis30:redis alpine telnet redis 6379
+docker run -ti --link redis30:redis alpine:3.6 telnet redis 6379
 ```
 
 Issue a few commands.
