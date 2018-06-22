@@ -195,7 +195,7 @@ Let's start another container using the `webapps` volume.
 $ docker run -v webapps:/webapps -w /webapps -ti alpine vi ROOT/index.jsp
 ```
 
-Vandalize the page, save, exit.
+Where `-w` sets the working directory inside the container. Vandalize the page, save and exit.
 
 Then run `curl localhost:1234` again to see your changes.
 
