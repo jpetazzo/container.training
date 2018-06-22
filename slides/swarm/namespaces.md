@@ -75,7 +75,7 @@ When enabling user namespaces:
 
 For practical reasons, when enabling user namespaces, the Docker Engine places containers and images (and everything else) in a different directory.
 
-As a resut, if you enable user namespaces on an existing installation:
+As a result, if you enable user namespaces on an existing installation:
 
 -  all containers and images (and e.g. Swarm data) disappear
 

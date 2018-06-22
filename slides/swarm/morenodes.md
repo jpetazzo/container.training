@@ -179,7 +179,7 @@ class: self-paced
 
   - one of the main take-aways was *"you're gonna need a bigger manager"*
 
-- Testing by the community: [4700 heterogenous nodes all over the 'net](https://sematext.com/blog/2016/11/14/docker-swarm-lessons-from-swarm3k/)
+- Testing by the community: [4700 heterogeneous nodes all over the 'net](https://sematext.com/blog/2016/11/14/docker-swarm-lessons-from-swarm3k/)
 
   - it just works
 

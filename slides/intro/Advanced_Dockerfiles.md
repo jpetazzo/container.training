@@ -355,7 +355,7 @@ class: extra-details
 
 ## Overriding the `ENTRYPOINT` instruction
 
-The entry point can be overriden as well.
+The entry point can be overridden as well.
 
 ```bash
 $ docker run -it training/ls

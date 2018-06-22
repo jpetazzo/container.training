@@ -30,7 +30,7 @@
 
 ## Environment variables
 
-- Most of the tools (CLI, libraries...) connecting to the Docker API can use ennvironment variables.
+- Most of the tools (CLI, libraries...) connecting to the Docker API can use environment variables.
 
 - These variables are:
 
@@ -40,7 +40,7 @@
 
   - `DOCKER_CERT_PATH` (path to the keypair and certificate to use for auth)
 
-- `docker-machine env ...` will generate the variables needed to connect to an host.
+- `docker-machine env ...` will generate the variables needed to connect to a host.
 
 - `$(eval docker-machine env ...)` sets these variables in the current shell.
 
@@ -50,7 +50,7 @@
 
 With `docker-machine`, we can:
 
-- upgrade an host to the latest version of the Docker Engine,
+- upgrade a host to the latest version of the Docker Engine,
 
 - start/stop/restart hosts,
 

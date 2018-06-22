@@ -64,7 +64,7 @@ Create this Dockerfile.
 
 ## Testing our C program
 
-* Create `hello.c` and `Dockerfile` in the same direcotry.
+* Create `hello.c` and `Dockerfile` in the same directory.
 
 * Run `docker build -t hello .` in this directory.
 

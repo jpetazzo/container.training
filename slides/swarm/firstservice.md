@@ -386,7 +386,7 @@ class: btw-labels
 
   - owner of a service (for billing, paging...)
 
-  - corelate Swarm objects together (services, volumes, configs, secrets, etc.)
+  - correlate Swarm objects together (services, volumes, configs, secrets, etc.)
 
 ---
 

@@ -35,7 +35,7 @@ class: extra-details
 
 - This slide has a little magnifying glass in the top left corner
 
-- This magnifiying glass indicates slides that provide extra details
+- This magnifying glass indicates slides that provide extra details
 
 - Feel free to skip them if:
 
