@@ -6,9 +6,7 @@
 
    - .emoji[🌟] Joe ([@joelaha](https://twitter.com/joelaha))
 
-- The workshop will run from 13:30-16:45
-
-- There will be a break from 15:00-15:15
+- The workshop will run from 14:45 - 17:15
 
 - Feel free to interrupt for questions at any time
 
