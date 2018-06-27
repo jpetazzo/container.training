@@ -28,6 +28,7 @@
   event: devopsdays
   title: Kubernetes 101
   speaker: bridgetkromhout
+  slides: https://devopsdaysams2018.container.training
   attend: https://www.devopsdays.org/events/2018-amsterdam/registration/
 
 - date: 2018-06-12
