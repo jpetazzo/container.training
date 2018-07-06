@@ -14,9 +14,7 @@ exclude:
 
 chapters:
 - common/title.md
-#- logistics.md
-# Bridget-specific; others use logistics.md
-- logistics-bridget.md
+- logistics.md
 - kube/intro.md
 - common/about-slides.md
 - common/toc.md
