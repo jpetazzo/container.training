@@ -1,3 +1,11 @@
+- date: 2018-07-12
+  city: Minneapolis, MN
+  country: us
+  event: devopsdays Minneapolis
+  title: Kubernetes 101
+  speaker: "ashleymcnamara, bketelsen"
+  attend: https://www.devopsdays.org/events/2018-minneapolis/registration/
+
 - date: 2018-10-01
   city: New York, NY
   country: us
