@@ -15,9 +15,12 @@ TEMPLATE="""<html>
 
         {% for item in coming_soon %}
           <tr>
-            <td>{{ item.prettydate }}: {{ item.title }} at {{ item.event }} in {{ item.city }}</td>
+            <td>{{ item.title }}</td>
             <td>{% if item.slides %}<a class="slides" href="{{ item.slides }}" />{% endif %}</td>
             <td><a class="attend" href="{{ item.attend }}" /></td>
+          </tr>
+          <tr>
+            <td class="details">Scheduled {{ item.prettydate }} at {{ item.event }} in {{item.city }}.</td>
           </tr>
         {% endfor %}
       {% endif %}
@@ -27,10 +30,14 @@ TEMPLATE="""<html>
 
         {% for item in past_workshops[:5] %}
           <tr>
-            <td>{{ item.prettydate }}: {{ item.title }} {% if item.event %}at {{ item.event }} {% endif %} {% if item.city %} in {{ item.city }} {% endif %}</td>
+            <td>{{ item.title }}</td>
             <td><a class="slides" href="{{ item.slides }}" /></td>
             <td>{% if item.video %}<a class="video" href="{{ item.video }}" />{% endif %}</td>
           </tr>
+          <tr>
+            <td class="details">Delivered {{ item.prettydate }} at {{ item.event }} in {{item.city }}.</td>
+          </tr>
+
         {% endfor %}
 
         {% if past_workshops[5:] %}
