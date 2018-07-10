@@ -4,6 +4,8 @@ Our app on Kube
 
 ---
 
+class: extra-details
+
 ## What's on the menu?
 
 In this part, we will:
@@ -130,6 +132,8 @@ We should see:
 
 ---
 
+class: extra-details
+
 ## Testing our local registry
 
 - We can retag a small image, and push it to the registry
@@ -150,6 +154,8 @@ We should see:
 ]
 
 ---
+
+class: extra-details
 
 ## Checking again what's on our local registry
 

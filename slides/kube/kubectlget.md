@@ -1,3 +1,5 @@
+class: extra-details
+
 # First contact with `kubectl`
 
 - `kubectl` is (almost) the only tool we'll need to talk to Kubernetes
@@ -78,6 +80,8 @@
 ]
 
 ---
+
+class: extra-details
 
 ## What's available?
 

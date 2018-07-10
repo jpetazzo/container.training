@@ -10,9 +10,6 @@
 
   3) bypass authentication for the dashboard
 
---
-
-There is an additional step to make the dashboard available from outside (we'll get to that)
 
 --
 
@@ -145,58 +142,6 @@ The dashboard will then ask you which authentication you want to use.
 --
 
 .warning[By the way, we just added a backdoor to our Kubernetes cluster!]
-
----
-
-## Exposing the dashboard over HTTPS
-
-- We took a shortcut by forwarding HTTP to HTTPS inside the cluster
-
-- Let's expose the dashboard over HTTPS!
-
-- The dashboard is exposed through a `ClusterIP` service (internal traffic only)
-
-- We will change that into a `NodePort` service (accepting outside traffic)
-
-.exercise[
-
-- Edit the service:
-  ```bash
-  kubectl edit service kubernetes-dashboard
-  ```
-
-]
-
---
-
-`NotFound`?!? Y U NO WORK?!?
-
----
-
-## Editing the `kubernetes-dashboard` service
-
-- If we look at the [YAML](https://goo.gl/Qamqab) that we loaded before, we'll get a hint
-
---
-
-- The dashboard was created in the `kube-system` namespace
-
---
-
-.exercise[
-
-- Edit the service:
-  ```bash
-  kubectl -n kube-system edit service kubernetes-dashboard
-  ```
-
-- Change `ClusterIP` to `NodePort`, save, and exit
-
-- Check the port that was assigned with `kubectl -n kube-system get services`
-
-- Connect to https://oneofournodes:3xxxx/ (yes, https)
-
-]
 
 ---
 

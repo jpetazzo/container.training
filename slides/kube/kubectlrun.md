@@ -81,6 +81,8 @@ Note: as of 1.10.1, resource types are displayed in more detail.
 
 ---
 
+class: extra-details
+
 ## Our `pingpong` deployment
 
 - `kubectl run` created a *deployment*, `deployment.apps/pingpong`
@@ -132,6 +134,8 @@ pod/pingpong-7c8bbcd9bc-6c9qz   1/1       Running   0          10m
 ]
 
 ---
+
+class: extra-details
 
 ## Streaming logs in real time
 
@@ -223,6 +227,8 @@ We could! But the *deployment* would notice it right away, and scale back to the
 
 ---
 
+clas: extra-details
+
 ## Viewing logs of multiple pods
 
 - When we specify a deployment name, only one single pod's logs are shown
@@ -245,6 +251,8 @@ We could! But the *deployment* would notice it right away, and scale back to the
 Unfortunately, `--follow` cannot (yet) be used to stream the logs from multiple containers.
 
 ---
+
+class: extra-details
 
 ## Aren't we flooding 1.1.1.1?
 
