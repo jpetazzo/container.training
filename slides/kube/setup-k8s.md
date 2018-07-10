@@ -24,23 +24,6 @@
 
 ---
 
-## `kubeadm` drawbacks
-
-- Doesn't set up Docker or any other container engine
-
-- Doesn't set up the overlay network
-
-- Doesn't set up multi-master (no high availability)
-
---
-
-  (At least ... not yet!)
-
---
-
-- "It's still twice as many steps as setting up a Swarm cluster 😕" -- Jérôme
-
----
 
 ## Other deployment options
 
