@@ -29,6 +29,7 @@
   event: OSCON
   title: Kubernetes 101
   speaker: bridgetkromhout
+  slides: https://oscon2018.container.training/
   attend: https://conferences.oreilly.com/oscon/oscon-or/public/schedule/detail/66287
 
 - date: 2018-06-27
