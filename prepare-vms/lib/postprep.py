@@ -114,6 +114,9 @@ system("sudo apt-get -qy install python-setuptools pssh apache2-utils httping ht
 ### (If we don't do this, Docker will not be responsive during the next step.)
 system("while ! sudo -u docker docker version ; do sleep 2; done")
 
+### Clean up any previous hosts
+system("cat /etc/hosts | grep -v node | sudo tee /etc/hosts")
+
 ### BEGIN CLUSTERING ###
 
 addresses = list(l.strip() for l in sys.stdin)
