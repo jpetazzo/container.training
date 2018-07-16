@@ -85,7 +85,7 @@
 
 - We can list all available resource types by running `kubectl api-resources`
   <br/>
-  (up to Kubernetes 1.10, this command used to be `kubectl get`)
+  (In Kubernetes 1.10 and prior, this command used to be `kubectl get`)
 
 - We can view details about a resource with:
   ```bash

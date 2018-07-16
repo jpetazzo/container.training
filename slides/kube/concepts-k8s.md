@@ -243,7 +243,7 @@ Yes!
 
 - We can see the full list by running `kubectl api-resources`
 
-  (Up until Kubernetes 1.10, the command to list API resources was `kubectl get`)
+  (In Kubernetes 1.10 and prior, the command to list API resources was `kubectl get`)
 
 ---
 
