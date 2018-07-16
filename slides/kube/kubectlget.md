@@ -83,7 +83,7 @@
 
 - `kubectl` has pretty good introspection facilities
 
-- We can list all available resource types by running `kubectl get`
+- We can list all available resource types by running `kubectl api-resources` (this used to be `kubectl get`)
 
 - We can view details about a resource with:
   ```bash
@@ -224,7 +224,7 @@ The `kube-system` namespace is used for the control plane.
 
 - `kube-controller-manager` and `kube-scheduler` are other master components
 
-- `kube-dns` is an additional component (not mandatory but super useful, so it's there)
+- `coredns` provides DNS-based service discovery ([replacing kube-dns as of 1.11](https://kubernetes.io/blog/2018/07/10/coredns-ga-for-kubernetes-cluster-dns/))
 
 - `kube-proxy` is the (per-node) component managing port mappings and such
 
