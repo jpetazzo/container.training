@@ -83,7 +83,9 @@
 
 - `kubectl` has pretty good introspection facilities
 
-- We can list all available resource types by running `kubectl api-resources` (this used to be `kubectl get`)
+- We can list all available resource types by running `kubectl api-resources`
+  <br/>
+  (In Kubernetes 1.10 and prior, this command used to be `kubectl get`)
 
 - We can view details about a resource with:
   ```bash
