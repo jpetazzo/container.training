@@ -154,19 +154,19 @@ That rollout should be pretty quick. What shows in the web UI?
 
 --
 
-Our rollout is stuck. However, the app is not dead (just 10% slower).
+Our rollout is stuck. However, the app is not dead (just 20% slower).
 
 ---
 
 ## What's going on with our rollout?
 
-- Why is our app 10% slower?
+- Why is our app 20% slower?
 
-- Because `MaxUnavailable=1`, so the rollout terminated 1 replica out of 10 available
+- Because `MaxUnavailable=25%`, so the rollout terminated 2 replicas out of 10 available
 
-- Okay, but why do we see 2 new replicas being rolled out?
+- Okay, but why do we see 5 new replicas being rolled out?
 
-- Because `MaxSurge=1`, so in addition to replacing the terminated one, the rollout is also starting one more
+- Because `MaxSurge=25%`, so in addition to replacing the terminated ones, the rollout is also starting extras
 
 ---
 
@@ -176,15 +176,15 @@ class: extra-details
 
 - We start with 10 pods running for the `worker` deployment
 
-- Current settings: MaxUnavailable=1 and MaxSurge=1
+- Default settings: MaxUnavailable=25% and MaxSurge=25%
 
 - When we start the rollout:
 
-  - one replica is taken down (as per MaxUnavailable=1)
-  - another is created (with the new version) to replace it
-  - another is created (with the new version) per MaxSurge=1
+  - two replicas are taken down (as per MaxUnavailable=25%, rounded down)
+  - two are created (with the new version) to replace them
+  - three more are created (with the new version) per MaxSurge=25% (rounded up)
 
-- Now we have 9 replicas up and running, and 2 being deployed
+- Now we have 8 replicas up and running, and 5 being deployed
 
 - Our rollout is stuck at this point!
 
