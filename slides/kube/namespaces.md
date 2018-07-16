@@ -151,7 +151,7 @@ Note: it might take a minute or two for the app to be up and running.
 
 - A pod in the `default` namespace can communicate with a pod in the `kube-system` namespace
 
-- `kube-dns` uses a different subdomain for each namespace
+- CoreDNS uses a different subdomain for each namespace
 
 - Example: from any pod in the cluster, you can connect to the Kubernetes API with:
 
