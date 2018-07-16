@@ -28,7 +28,7 @@ And *then* it is time to look at orchestration!
 
 - Each of the two `redis` services has its own `ClusterIP`
 
-- `kube-dns` creates two entries, mapping to these two `ClusterIP` addresses:
+- CoreDNS creates two entries, mapping to these two `ClusterIP` addresses:
 
   `redis.blue.svc.cluster.local` and `redis.green.svc.cluster.local`
 
