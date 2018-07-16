@@ -239,7 +239,11 @@ Yes!
   - namespace (more-or-less isolated group of things)
   - secret (bundle of sensitive data to be passed to a container)
  
-  And much more! (We can see the full list by running `kubectl get`)
+  And much more!
+
+- We can see the full list by running `kubectl api-resources`
+
+  (In Kubernetes 1.10 and prior, the command to list API resources was `kubectl get`)
 
 ---
 
