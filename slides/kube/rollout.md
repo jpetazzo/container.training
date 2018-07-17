@@ -154,19 +154,29 @@ That rollout should be pretty quick. What shows in the web UI?
 
 --
 
-Our rollout is stuck. However, the app is not dead (just 10% slower).
+Our rollout is stuck. However, the app is not dead.
+
+(After a minute, it will stabilize to be 20-25% slower.)
 
 ---
 
 ## What's going on with our rollout?
 
-- Why is our app 10% slower?
+- Why is our app a bit slower?
 
-- Because `MaxUnavailable=1`, so the rollout terminated 1 replica out of 10 available
+- Because `MaxUnavailable=25%`
 
-- Okay, but why do we see 2 new replicas being rolled out?
+  ... So the rollout terminated 2 replicas out of 10 available
 
-- Because `MaxSurge=1`, so in addition to replacing the terminated one, the rollout is also starting one more
+- Okay, but why do we see 5 new replicas being rolled out?
+
+- Because `MaxSurge=25%`
+
+  ... So in addition to replacing 2 replicas, the rollout is also starting 3 more
+
+- It rounded down the number of MaxUnavailable pods conservatively,
+  <br/>
+  but the total number of pods being rolled out is allowed to be 25+25=50%
 
 ---
 
@@ -176,15 +186,15 @@ class: extra-details
 
 - We start with 10 pods running for the `worker` deployment
 
-- Current settings: MaxUnavailable=1 and MaxSurge=1
+- Current settings: MaxUnavailable=25% and MaxSurge=25%
 
 - When we start the rollout:
 
-  - one replica is taken down (as per MaxUnavailable=1)
-  - another is created (with the new version) to replace it
-  - another is created (with the new version) per MaxSurge=1
+  - two replicas are taken down (as per MaxUnavailable=25%)
+  - two others are created (with the new version) to replace them
+  - three others are created (with the new version) per MaxSurge=25%)
 
-- Now we have 9 replicas up and running, and 2 being deployed
+- Now we have 8 replicas up and running, and 5 being deployed
 
 - Our rollout is stuck at this point!
 
@@ -251,7 +261,7 @@ Note the `3xxxx` port.
 
   - revert to `v0.1`
   - be conservative on availability (always have desired number of available workers)
-  - be aggressive on rollout speed (update more than one pod at a time) 
+  - go slow on rollout speed (update only one pod at a time) 
   - give some time to our workers to "warm up" before starting more
 
 The corresponding changes can be expressed in the following YAML snippet:
@@ -267,7 +277,7 @@ spec:
   strategy:
     rollingUpdate:
       maxUnavailable: 0
-      maxSurge: 3
+      maxSurge: 1
   minReadySeconds: 10
 ```
 ]
@@ -296,7 +306,7 @@ spec:
       strategy:
         rollingUpdate:
           maxUnavailable: 0
-          maxSurge: 3
+          maxSurge: 1
       minReadySeconds: 10
     "
   kubectl rollout status deployment worker
