@@ -161,7 +161,7 @@ class: pic
 
   (This is illustrated on the first "super complicated" schema)
 
-- In some hosted Kubernetes offerings (e.g. GKE), the control plane is invisible
+- In some hosted Kubernetes offerings (e.g. AKS, GKE, EKS), the control plane is invisible
 
   (We only "see" a Kubernetes API endpoint)
 
