@@ -10,7 +10,7 @@
 
     2. Install Kubernetes packages
 
-    3. Run `kubeadm init` on the master node
+    3. Run `kubeadm init` on the first node (it deploys the control plane on that node)
 
     4. Set up Weave (the overlay network)
        <br/>
