@@ -6,7 +6,7 @@
 
 - If we want to connect to our pod(s), we need to create a *service*
 
-- Once a service is created, `kube-dns` will allow us to resolve it by name
+- Once a service is created, CoreDNS will allow us to resolve it by name
 
   (i.e. after creating service `hello`, the name `hello` will resolve to something)
 
@@ -46,7 +46,7 @@ Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables`
 
 - `ExternalName`
 
-  - the DNS entry managed by `kube-dns` will just be a `CNAME` to a provided record
+  - the DNS entry managed by CoreDNS will just be a `CNAME` to a provided record
   - no port, no IP address, no nothing else is allocated
 
 The `LoadBalancer` type is currently only available on AWS, Azure, and GCE.
@@ -179,7 +179,7 @@ class: extra-details
 
 - Since there is no virtual IP address, there is no load balancer either
 
-- `kube-dns` will return the pods' IP addresses as multiple `A` records
+- CoreDNS will return the pods' IP addresses as multiple `A` records
 
 - This gives us an easy way to discover all the replicas for a deployment
 

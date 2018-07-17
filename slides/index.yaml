@@ -23,12 +23,22 @@
   speaker: jpetazzo
   attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/69875
 
+- date: 2018-09-17
+  country: fr
+  city: Paris
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Déployer ses applications avec Kubernetes (in French)
+  lang: fr
+  attend:  https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
+
 - date: 2018-07-17
   city: Portland, OR
   country: us
   event: OSCON
   title: Kubernetes 101
   speaker: bridgetkromhout
+  slides: https://oscon2018.container.training/
   attend: https://conferences.oreilly.com/oscon/oscon-or/public/schedule/detail/66287
 
 - date: 2018-06-27
