@@ -13,6 +13,7 @@ COMPOSE_VERSION = config["compose_version"]
 MACHINE_VERSION = config["machine_version"]
 CLUSTER_SIZE = config["clustersize"]
 ENGINE_VERSION = config["engine_version"]
+DOCKER_USER_PASSWORD = config["docker_user_password"]
 
 #################################
 
@@ -54,9 +55,9 @@ system("curl --silent {} > /tmp/ipv4".format(ipv4_retrieval_endpoint))
 
 ipv4 = open("/tmp/ipv4").read()
 
-# Add a "docker" user with password "training"
+# Add a "docker" user with password coming from the settings
 system("id docker || sudo useradd -d /home/docker -m -s /bin/bash docker")
-system("echo docker:training | sudo chpasswd")
+system("echo docker:{} | sudo chpasswd".format(DOCKER_USER_PASSWORD))
 
 # Fancy prompt courtesy of @soulshake.
 system("""sudo -u docker tee -a /home/docker/.bashrc <<SQRL
