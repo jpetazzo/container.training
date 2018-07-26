@@ -1,3 +1,11 @@
+- date: 2018-10-31
+  city: London, UK
+  country: uk
+  event: Velocity EU
+  title: Kubernetes 101
+  speaker: bridgetkromhout
+  attend: https://conferences.oreilly.com/velocity/vl-eu/public/schedule/detail/71149
+
 - date: 2018-07-12
   city: Minneapolis, MN
   country: us
