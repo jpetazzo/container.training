@@ -113,7 +113,7 @@ for item in items:
                 1: "st", 2: "nd", 3: "rd",
                 21: "st", 22: "nd", 23: "rd",
                 31: "st"}.get(date.day, "th")
-        item["prettydate"] = date.strftime("%B %e{}, %Y").format(suffix)
+        item["prettydate"] = date.strftime("%B %d{}, %Y").format(suffix)
 
 today = datetime.date.today()
 coming_soon = [i for i in items if i.get("date") and i["date"] >= today]
