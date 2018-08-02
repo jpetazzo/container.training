@@ -212,7 +212,7 @@ If anything goes wrong — ask for help!
 
 - Use something like
   [Play-With-Docker](http://play-with-docker.com/) or
-  [Play-With-Kubernetes](https://medium.com/@marcosnils/introducing-pwk-play-with-k8s-159fcfeb787b)
+  [Play-With-Kubernetes](https://training.play-with-kubernetes.com/)
 
   Zero setup effort; but environment are short-lived and
   might have limited resources
