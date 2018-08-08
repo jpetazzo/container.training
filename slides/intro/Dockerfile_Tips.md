@@ -312,7 +312,7 @@ CMD gunicorn --bind 0.0.0.0:5000 --workers 10 counter:app
 EXPOSE 5000
 ```
 
-(Source: [traininghweels Dockerfile](https://github.com/jpetazzo/trainingwheels/blob/master/www/Dockerfile))
+(Source: [trainingwheels Dockerfile](https://github.com/jpetazzo/trainingwheels/blob/master/www/Dockerfile))
 
 ---
 
