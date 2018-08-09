@@ -123,7 +123,7 @@ and a few roles and role bindings (to give fluentd the required permissions).
 
   `kubernetes.host`, `kubernetes.pod_name`, `stream`, `log`
 
-.red[*]If you don't see `@timestamp`, it's probably because not logs exist yet.
+.red[*]If you don't see `@timestamp`, it's probably because no logs exist yet.
 <br/>Wait a bit, and double-check the logging pipeline!
 
 ---
