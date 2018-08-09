@@ -130,6 +130,7 @@ We all knew this couldn't be that easy, right!
 
   - remove the `replicas` field
   - remove the `strategy` field (which defines the rollout mechanism for a deployment)
+  - remove the `progressDeadlineSeconds` field (also used by the rollout mechanism)
   - remove the `status: {}` line at the end
 
 --
