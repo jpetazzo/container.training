@@ -109,19 +109,21 @@ And *then* it is time to look at orchestration!
 
 ## Metrics
 
-- The kubelet embeds cAdvisor, which exposes container metrics
+- The kubelet embeds [cAdvisor](https://github.com/google/cadvisor), which exposes container metrics
 
   (cAdvisor might be separated in the future for more flexibility)
-
-- [Heapster](https://github.com/kubernetes/heapster) is a popular add-on
-
-  (but is being [deprecated](https://github.com/kubernetes/heapster/blob/master/docs/deprecation.md) starting with Kubernetes 1.11)
-
-- It is now recommended to use the [Metrics Server](https://kubernetes.io/docs/tasks/debug-application-cluster/core-metrics-pipeline/) instead
 
 - It is a good idea to start with [Prometheus](https://prometheus.io/)
 
   (even if you end up using something else)
+
+- Starting from Kubernetes 1.8, we can use the [Metrics API](https://kubernetes.io/docs/tasks/debug-application-cluster/core-metrics-pipeline/)
+
+- [Heapster](https://github.com/kubernetes/heapster) was a popular add-on
+
+  (but is being [deprecated](https://github.com/kubernetes/heapster/blob/master/docs/deprecation.md) starting with Kubernetes 1.11)
+
+
 
 ---
 
