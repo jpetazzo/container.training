@@ -1,3 +1,19 @@
+- date: 2018-11-08
+  city: San Francisco, CA
+  country: us
+  event: QCON
+  title: Introduction to Docker and Containers
+  speaker: jpetazzo
+  attend: https://qconsf.com/sf2018/workshop/introduction-docker-and-containers
+
+- date: 2018-11-09
+  city: San Francisco, CA
+  country: us
+  event: QCON
+  title: Getting Started With Kubernetes and Container Orchestration
+  speaker: jpetazzo
+  attend: https://qconsf.com/sf2018/workshop/getting-started-kubernetes-and-container-orchestration
+
 - date: 2018-10-31
   city: London, UK
   country: uk
