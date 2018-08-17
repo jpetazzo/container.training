@@ -1,0 +1,18 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "sshKeyData": {
+      "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDXTIl/M9oeSlcsC5Rfe+nZr4Jc4sl200pSw2lpdxlZ3xzeP15NgSSMJnigUrKUXHfqRQ+2wiPxEf0Odz2GdvmXvR0xodayoOQsO24AoERjeSBXCwqITsfp1bGKzMb30/3ojRBo6LBR6r1+lzJYnNCGkT+IQwLzRIpm0LCNz1j08PUI2aZ04+mcDANvHuN/hwi/THbLLp6SNWN43m9r02RcC6xlCNEhJi4wk4VzMzVbSv9RlLGST2ocbUHwmQ2k9OUmpzoOx73aQi9XNnEaFh2w/eIdXM75VtkT3mRryyykg9y0/hH8/MVmIuRIdzxHQqlm++DLXVH5Ctw6a4kS+ki7 workshop"
+      },
+    "workshopName": {
+      "value": "workshop"
+    },
+    "numberOfInstances": {
+      "value": 3
+    },
+    "vmSize": {
+      "value": "Standard_D1_v2"
+    }
+  }
+}
