@@ -113,7 +113,7 @@ and a few roles and role bindings (to give fluentd the required permissions).
 
 - The first time you connect to Kibana, you must "configure an index pattern"
 
-- Just use the one that is suggested, `@timestamp`
+- Just use the one that is suggested, `@timestamp`.red[*]
 
 - Then click "Discover" (in the top-left corner)
 
@@ -122,6 +122,9 @@ and a few roles and role bindings (to give fluentd the required permissions).
 - Advice: in the left column, select a few fields to display, e.g.:
 
   `kubernetes.host`, `kubernetes.pod_name`, `stream`, `log`
+
+.red[*]If you don't see `@timestamp`, it's probably because no logs exist yet.
+<br/>Wait a bit, and double-check the logging pipeline!
 
 ---
 

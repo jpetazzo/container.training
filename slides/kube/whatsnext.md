@@ -93,13 +93,37 @@ And *then* it is time to look at orchestration!
 
 ---
 
-## Logging and metrics
+## Logging
 
 - Logging is delegated to the container engine
 
-- Metrics are typically handled with [Prometheus](https://prometheus.io/)
+- Logs are exposed through the API
 
-  ([Heapster](https://github.com/kubernetes/heapster) is a popular add-on)
+- Logs are also accessible through local files (`/var/log/containers`)
+
+- Log shipping to a central platform is usually done through these files
+
+  (e.g. with an agent bind-mounting the log directory)
+
+---
+
+## Metrics
+
+- The kubelet embeds [cAdvisor](https://github.com/google/cadvisor), which exposes container metrics
+
+  (cAdvisor might be separated in the future for more flexibility)
+
+- It is a good idea to start with [Prometheus](https://prometheus.io/)
+
+  (even if you end up using something else)
+
+- Starting from Kubernetes 1.8, we can use the [Metrics API](https://kubernetes.io/docs/tasks/debug-application-cluster/core-metrics-pipeline/)
+
+- [Heapster](https://github.com/kubernetes/heapster) was a popular add-on
+
+  (but is being [deprecated](https://github.com/kubernetes/heapster/blob/master/docs/deprecation.md) starting with Kubernetes 1.11)
+
+
 
 ---
 
