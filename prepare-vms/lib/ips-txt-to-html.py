@@ -21,7 +21,7 @@ print("   Number of IPs: {}".format(len(ips)))
 print(" VMs per cluster: {}".format(clustersize))
 print("---------------------------------------------")
 
-assert len(ips)%clustersize == 0
+# assert len(ips)%clustersize == 0
 
 clusters = []
 
