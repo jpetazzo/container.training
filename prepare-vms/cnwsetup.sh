@@ -10,5 +10,5 @@ az group create --name $1 --location eastus
 az group deployment create --resource-group $1 --template-file azuredeploy.json --parameters @azuredeploy.parameters.json
 az vm list-ip-addresses --resource-group $1 --output table
 mkdir -p tags/$1
-az vm list-ip-addresses --resource-group $1 --output json | jq -r '.[].virtualMachine.network.publicIpAddresses[].ipAddress' > tags/$WORKSHOPNAME/ips.txt
-# az group delete --resource-group $1 -y
+az vm list-ip-addresses --resource-group $1 --output json | jq -r '.[].virtualMachine.network.publicIpAddresses[].ipAddress' > tags/$1/ips.txt
+# az group delete --resource-group Aberaeron -y
