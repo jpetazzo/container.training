@@ -37,16 +37,46 @@ A network policy can provide ingress rules, egress rules, or both.
 
 - If a pod isn't selected by any network policy, then its traffic is unrestricted
 
-  (Except if it's traffic to/from another pod, which itself is selected and restricted)
+  (In other words: in the absence of network policies, all traffic is allowed)
 
 - If a pod is selected by at least one network policy, then all traffic is blocked ...
 
   ... unless it is explicitly allowed by one of these network policies
 
-Note: that logic applies separately to ingress and egress traffic.
+---
 
-If a pod is selected by network policies that only specify ingress rules,
-<br/>then egress traffic for that pod is unrestricted.
+class: extra-details
+
+## Traffic filtering is flow-oriented
+
+- Network policies deal with *connections*, not individual packets
+
+- Example: to allow HTTP (80/tcp) connections to pod A, you only need an ingress rule
+
+  (You do not need a matching egress rule to allow response traffic to go through)
+
+- This also stands for UDP traffic
+
+  (Allowing DNS traffic can be done with a single rule)
+
+- Network policy implementations use stateful connection tracking
+
+---
+
+## Pod-to-pod traffic
+
+- Connections from pod A to pod B have to be allowed by both pods:
+
+  - pod A has to be unrestricted, or allow the connection as an *egress* rule
+
+  - pod B has to be unrestricted, or allow the connection as an *ingress* rule
+
+- As a consequence: if a network policy restricts traffic going from/to a pod,
+  <br/>
+  the restriction cannot be overridden by a network policy selecting another pod
+
+- This prevents an entity with access to namespace A (but no access to namespace B)
+  from adding network policies giving them access to namespace B
 
 ---
 
@@ -230,6 +260,8 @@ The second command will fail and time out after 3 seconds.
 
 - As always, the [Kubernetes documentation](https://kubernetes.io/docs/concepts/services-networking/network-policies/) is a good starting point
 
-- [Ahmet Alp Balkan](https://ahmet.im/) delivered a [very good talk about network policies](https://www.youtube.com/watch?list=PLj6h78yzYM2P-3-xqvmWaZbbI1sW-ulZb&v=3gGpMmYeEO8) at KubeCon
+- And two resources by [Ahmet Alp Balkan](https://ahmet.im/):
 
-- He also compiled some [ready-to-use recipes](https://github.com/ahmetb/kubernetes-network-policy-recipes) for network policies
+  - a [very good talk about network policies](https://www.youtube.com/watch?list=PLj6h78yzYM2P-3-xqvmWaZbbI1sW-ulZb&v=3gGpMmYeEO8) at KubeCon North America 2017
+
+  - a repository of [ready-to-use recipes](https://github.com/ahmetb/kubernetes-network-policy-recipes) for network policies
