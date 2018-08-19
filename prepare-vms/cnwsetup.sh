@@ -11,4 +11,3 @@ az group deployment create --resource-group $1 --template-file azuredeploy.json 
 az vm list-ip-addresses --resource-group $1 --output table
 mkdir -p tags/$1
 az vm list-ip-addresses --resource-group $1 --output json | jq -r '.[].virtualMachine.network.publicIpAddresses[].ipAddress' > tags/$1/ips.txt
-# az group delete --resource-group $1 -y
