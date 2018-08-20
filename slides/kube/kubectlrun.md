@@ -26,6 +26,8 @@
   kubectl run pingpong --image alpine ping 1.1.1.1
   ```
 
+<!-- ```hide kubectl wait deploy/pingpong --for condition=available``` -->
+
 ]
 
 --

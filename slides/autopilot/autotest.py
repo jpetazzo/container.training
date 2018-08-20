@@ -32,6 +32,7 @@ class State(object):
         self.switch_desktop = False
         self.sync_slides = False
         self.open_links = False
+        self.run_hidden = True
         self.slide = 1
         self.snippet = 0
 
@@ -43,6 +44,7 @@ class State(object):
         self.switch_desktop = bool(data["switch_desktop"])
         self.sync_slides = bool(data["sync_slides"])
         self.open_links = bool(data["open_links"])
+        self.run_hidden = bool(data["run_hidden"])
         self.slide = int(data["slide"])
         self.snippet = int(data["snippet"])
 
@@ -55,6 +57,7 @@ class State(object):
                 switch_desktop=self.switch_desktop,
                 sync_slides=self.sync_slides,
                 open_links=self.open_links,
+                run_hidden=self.run_hidden,
                 slide=self.slide,
                 snippet=self.snippet,
                 ), f, default_flow_style=False)
@@ -323,11 +326,12 @@ while True:
     snippet = slide.snippets[state.snippet-1] if state.snippet else None
     click.clear()
     print("[Slide {}/{}] [Snippet {}/{}] [simulate_type:{}] [verify_status:{}] "
-          "[switch_desktop:{}] [sync_slides:{}] [open_links:{}]"
+          "[switch_desktop:{}] [sync_slides:{}] [open_links:{}] [run_hidden:{}]"
           .format(state.slide, len(slides)-1,
                   state.snippet, len(slide.snippets) if slide.snippets else 0,
                   state.simulate_type, state.verify_status,
-                  state.switch_desktop, state.sync_slides, state.open_links))
+                  state.switch_desktop, state.sync_slides,
+                  state.open_links, state.run_hidden))
     print(hrule())
     if snippet:
         print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
@@ -347,6 +351,7 @@ while True:
         print("d       Switch desktop")
         print("k       Sync slides")
         print("o       Open links")
+        print("h       Run hidden commands")
         print("g       Go to a specific slide")
         print("q       Quit")
         print("c       Continue non-interactively until next error")
@@ -368,6 +373,8 @@ while True:
         state.sync_slides = not state.sync_slides
     elif command == "o":
         state.open_links = not state.open_links
+    elif command == "h":
+        state.run_hidden = not state.run_hidden
     elif command == "g":
         state.slide = click.prompt("Enter slide number", type=int)
         state.snippet = 0
@@ -393,7 +400,7 @@ while True:
         logging.info("Running with method {}: {}".format(method, data))
         if method == "keys":
             send_keys(data)
-        elif method == "bash":
+        elif method == "bash" or (method == "hide" and state.run_hidden):
             # Make sure that we're ready
             wait_for_prompt()
             # Strip leading spaces
