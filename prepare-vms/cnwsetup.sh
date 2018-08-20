@@ -5,7 +5,6 @@ then
 	exit 1
 fi
 
-docker-compose build
 az group create --name $1 --location eastus
 az group deployment create --resource-group $1 --template-file azuredeploy.json --parameters @azuredeploy.parameters.json
 az vm list-ip-addresses --resource-group $1 --output table
