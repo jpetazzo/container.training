@@ -69,7 +69,10 @@ The `LoadBalancer` type is currently only available on AWS, Azure, and GCE.
   kubectl get pods -w
   ```
 
-<!-- ```keys ^C``` -->
+<!--
+```wait elastic-```
+```keys ^C```
+-->
 
 ]
 
@@ -127,6 +130,8 @@ Note: please DO NOT call the service `search`. It would collide with the TLD.
   ```bash
   IP=$(kubectl get svc elastic -o go-template --template '{{ .spec.clusterIP }}')
   ```
+
+<!-- ```hide kubectl wait deploy elastic --for condition=available``` -->
 
 - Send a few requests:
   ```bash

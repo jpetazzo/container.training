@@ -198,10 +198,13 @@ We could! But the *deployment* would notice it right away, and scale back to the
 <!--
 ```wait Running```
 ```keys ^C```
+```hide kubectl wait deploy pingpong --for condition=available```
+```keys kubectl delete pod ping```
+```copypaste pong-..........-.....```
 -->
 
 - Destroy a pod:
-  ```bash
+  ```
   kubectl delete pod pingpong-xxxxxxxxxx-yyyyy
   ```
 ]

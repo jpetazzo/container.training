@@ -189,7 +189,8 @@ done
 
 ```bash
 if which kubectl; then
-  kubectl get all -o name | grep -v service/kubernetes | xargs -rn1 kubectl delete
+  kubectl get deploy,ds -o name | xargs -rn1 kubectl delete
+  kubectl get all -o name | grep -v service/kubernetes | xargs -rn1 kubectl delete --ignore-not-found=true
 fi
 ```
 -->

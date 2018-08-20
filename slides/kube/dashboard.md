@@ -161,7 +161,7 @@ The dashboard will then ask you which authentication you want to use.
 .exercise[
 
 - Edit the service:
-  ```bash
+  ```
   kubectl edit service kubernetes-dashboard
   ```
 
@@ -191,6 +191,16 @@ The dashboard will then ask you which authentication you want to use.
   ```
 
 - Change `ClusterIP` to `NodePort`, save, and exit
+
+<!--
+```wait Please edit the object below```
+```keys /ClusterIP```
+```keys ^J```
+```keys cwNodePort```
+```keys ^[ ``` ]
+```keys :wq```
+```keys ^J```
+-->
 
 - Check the port that was assigned with `kubectl -n kube-system get services`
 

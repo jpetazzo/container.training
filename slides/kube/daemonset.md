@@ -95,10 +95,21 @@ Note: `--export` will remove "cluster-specific" information, i.e.:
 
 - Change `kind: Deployment` to `kind: DaemonSet`
 
+<!--
+```bash vim rng.yml```
+```wait kind: Deployment```
+```keys /Deployment```
+```keys ^J```
+```keys cwDaemonSet```
+```keys ^[``` ]
+```keys :wq```
+```keys ^J```
+-->
+
 - Save, quit
 
 - Try to create our new resource:
-  ```bash
+  ```
   kubectl apply -f rng.yml
   ```
 
@@ -420,10 +431,34 @@ Of course, option 2 offers more learning opportunities. Right?
   kubectl edit daemonset rng
   ```
 
+<!--
+```wait Please edit the object below```
+```keys /run: rng```
+```keys ^J```
+```keys noisactive: "yes"```
+```keys ^[``` ]
+```keys /run: rng```
+```keys ^J```
+```keys oisactive: "yes"```
+```keys ^[``` ]
+```keys :wq```
+```keys ^J```
+-->
+
 - Update the service to add `isactive: "yes"` to its selector:
   ```bash
   kubectl edit service rng
   ```
+
+<!--
+```wait Please edit the object below```
+```keys /run: rng```
+```keys ^J```
+```keys noisactive: "yes"```
+```keys ^[``` ]
+```keys :wq```
+```keys ^J```
+-->
 
 ]
 

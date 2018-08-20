@@ -96,7 +96,10 @@
   kubectl get deployments -w
   ```
 
-<!-- ```keys ^C``` -->
+<!--
+```wait NAME```
+```keys ^C```
+-->
 
 - Update `worker` either with `kubectl edit`, or by running:
   ```bash
@@ -149,6 +152,11 @@ That rollout should be pretty quick. What shows in the web UI?
   ```bash
   kubectl rollout status deploy worker
   ```
+
+<!--
+```wait Waiting for deployment```
+```keys ^C```
+-->
 
 ]
 

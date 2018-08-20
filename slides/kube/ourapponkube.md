@@ -114,6 +114,8 @@ In this part, we will:
 
 .exercise[
 
+<!-- ```hide kubectl wait deploy/registry --for condition=available```-->
+
 - View the repositories currently held in our registry:
   ```bash
   curl $REGISTRY/v2/_catalog
@@ -275,6 +277,11 @@ class: extra-details
 
 .exercise[
 
+<!-- ```hide
+kubectl wait deploy/rng --for condition=available
+kubectl wait deploy/worker --for condition=available
+``` -->
+
 - Look at some logs:
   ```bash
   kubectl logs deploy/rng
@@ -328,9 +335,8 @@ class: extra-details
   (Give it about 10 seconds to recover)
 
 <!--
-```keys
-^C
-```
+```wait units of work done, updating hash counter```
+```keys ^C```
 -->
 
 ]

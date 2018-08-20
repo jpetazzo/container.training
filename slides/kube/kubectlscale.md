@@ -10,7 +10,12 @@
   kubectl get deployments -w
   ```
 
-<!-- ```keys ^C``` -->
+<!--
+```wait RESTARTS```
+```keys ^C```
+```wait AVAILABLE```
+```keys ^C```
+-->
 
 - Now, create more `worker` replicas:
   ```bash
