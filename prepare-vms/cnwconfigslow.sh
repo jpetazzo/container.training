@@ -5,4 +5,6 @@ then
 	exit 1
 fi
 
+sh cnwmanagevar.sh
+
 ./workshopctl pull_images $1

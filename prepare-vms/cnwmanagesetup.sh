@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sh cnwmanagevar.sh
+
 if [ $# -eq 0 ]
 then
 	echo "A shell script to spin up workshops."

@@ -5,6 +5,8 @@ then
 	exit 1
 fi
 
+sh cnwmanagevar.sh
+
 ./workshopctl deploy $1 settings/workshop-settings.yaml
 ./workshopctl kube $1
 ./workshopctl cards $1 settings/workshop-settings.yaml
