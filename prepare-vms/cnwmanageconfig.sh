@@ -28,7 +28,9 @@ for ((i=0;i<$1;i++)); do
 done
 
 for ((i=0;i<$1;i++)); do
-	echo "Starting config slow" ${arr[i]}
-	sh cnwconfigslow.sh ${arr[i]}
-	echo ${arr[i]} "config slow complete"
+	{
+		echo "Starting config slow" ${arr[i]}
+		sh cnwconfigslow.sh ${arr[i]}
+		echo ${arr[i]} "config slow complete"
+	} &
 done
