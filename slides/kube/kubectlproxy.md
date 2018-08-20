@@ -47,7 +47,7 @@
 .exercise[
 
 - Run an open proxy to the Kubernetes API:
-  ```bash
+  ```
   kubectl proxy --port=8888 --address=0.0.0.0 --accept-hosts=.*
   ```
 

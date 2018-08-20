@@ -8,8 +8,9 @@
 
 <!--
 ```bash
+cd ~
 if [ -d container.training ]; then
-  mv container.training container.training.$$
+  mv container.training container.training.$RANDOM
 fi
 ```
 -->

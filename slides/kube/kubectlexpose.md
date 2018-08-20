@@ -131,7 +131,10 @@ Note: please DO NOT call the service `search`. It would collide with the TLD.
   IP=$(kubectl get svc elastic -o go-template --template '{{ .spec.clusterIP }}')
   ```
 
-<!-- ```hide kubectl wait deploy elastic --for condition=available``` -->
+<!--
+```hide kubectl wait deploy elastic --for condition=available```
+```hide sleep 5``` (give some time for elasticsearch to start... hopefully this is enough!)
+-->
 
 - Send a few requests:
   ```bash

@@ -191,6 +191,7 @@ done
 if which kubectl; then
   kubectl get deploy,ds -o name | xargs -rn1 kubectl delete
   kubectl get all -o name | grep -v service/kubernetes | xargs -rn1 kubectl delete --ignore-not-found=true
+  kubectl -n kube-system get deploy,svc -o name | grep -v dns | xargs -rn1 kubectl -n kube-system delete
 fi
 ```
 -->
