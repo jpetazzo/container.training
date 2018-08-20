@@ -6,6 +6,5 @@ then
 fi
 
 ./workshopctl deploy $1 settings/workshop-settings.yaml
-./workshopctl pull_images $1
 ./workshopctl kube $1
 ./workshopctl cards $1 settings/workshop-settings.yaml
