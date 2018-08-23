@@ -42,7 +42,6 @@ chapters:
   - k8s/rollout.md
 - - k8s/logs-cli.md
 # Bridget hasn't added EFK yet
-<<<<<<< HEAD
   #- k8s/logs-centralized.md
   - k8s/helm.md
   - k8s/namespaces.md
