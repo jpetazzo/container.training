@@ -47,22 +47,24 @@ Exactly what we need!
 
 ## Installing Stern
 
-- For simplicity, let's just grab a binary release
+- Run `stern` (without arguments) to check if it's installed:
 
-.exercise[
+  ```
+  $ stern
+  Tail multiple pods and containers from Kubernetes
 
-- Download a binary release from GitHub:
-  ```bash
-  sudo curl -L -o /usr/local/bin/stern \
-       https://github.com/wercker/stern/releases/download/1.6.0/stern_linux_amd64
-  sudo chmod +x /usr/local/bin/stern
+  Usage:
+    stern pod-query [flags]
   ```
 
-]
+- If it is not installed, the easiest method is to download a [binary release](https://github.com/wercker/stern/releases)
 
-These installation instructions will work on our clusters, since they are Linux amd64 VMs.
-
-However, you will have to adapt them if you want to install Stern on your local machine.
+- The following commands will install Stern on a Linux Intel 64 bits machine:
+  ```bash
+  sudo curl -L -o /usr/local/bin/stern \
+       https://github.com/wercker/stern/releases/download/1.8.0/stern_linux_amd64
+  sudo chmod +x /usr/local/bin/stern
+  ```
 
 ---
 
