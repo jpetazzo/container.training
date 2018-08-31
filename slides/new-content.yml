@@ -1,0 +1,59 @@
+title: New content september 2018
+chat: "In person!"
+gitrepo: github.com/jpetazzo/container.training
+slides: http://container.training/
+
+exclude:
+- self-paced
+
+chapters:
+- shared/toc.md
+- - k8s/volumes.md
+  - k8s/build-with-docker.md
+  - k8s/build-with-kaniko.md
+  - k8s/configuration.md
+  - |
+    # Stateful sets
+
+    setting up consul with stateful sets
+  - |
+    # Persistence
+
+    setting up portworx using consul
+
+    losetup trick
+
+    explain install/remove
+
+    in action with PostgreSQL
+- - |
+    # RBAC
+
+    explain roles and systemaccounts and bindings
+
+    run kubectl in a pod with a view systemaccount
+
+    putting it together with namespaces
+
+    generate namespace + systemaccount for the namespace (for deployment)
+  - |
+    # Ingress
+
+    show traefik running in daemonset mode
+  - |
+    # CI/CD pipeline
+
+    gitlab maybe?
+  - |
+    # metrics
+
+    prometheus
+
+  - |
+    # misc todo
+
+    after build-with-docker and build-with-kaniko, show clean up orphan pods
+
+    healthchecks / liveness
+
+

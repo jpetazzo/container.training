@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: registry
+spec:
+  containers:
+  - name: registry
+    image: registry
+    env:
+    - name: REGISTRY_HTTP_ADDR
+      valueFrom:
+        configMapKeyRef:
+          name: registry
+          key: http.addr
+
