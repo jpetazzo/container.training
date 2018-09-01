@@ -26,16 +26,7 @@ chapters:
     explain install/remove
 
     in action with PostgreSQL
-- - |
-    # RBAC
-
-    explain roles and systemaccounts and bindings
-
-    run kubectl in a pod with a view systemaccount
-
-    putting it together with namespaces
-
-    generate namespace + systemaccount for the namespace (for deployment)
+- - k8s/authn-authz.md
   - |
     # Ingress
 
