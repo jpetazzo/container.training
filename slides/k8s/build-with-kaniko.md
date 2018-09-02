@@ -178,6 +178,22 @@ spec:
 
 *What should we use? The Docker build technique shown earlier? Kaniko? Something else?*
 
+- The Docker build technique is simple, and has the potential to be very fast
+
+- However, it doesn't play nice with Kubernetes resource limits
+
+- Kaniko plays nice with resource limits
+
+- However, it's slower (there is no caching at all)
+
+- The ultimate building tool will probably be [Jessica Frazelle](https://twitter.com/jessfraz)'s [img](https://github.com/genuinetools/img) builder
+
+But ... is it all about [speed](https://github.com/AkihiroSuda/buildbench/issues/1)? (No!)
+
+---
+
+## The big picture
+
 - For starters: the [Docker Hub automated builds](https://docs.docker.com/docker-hub/builds/) are very easy to set up
 
   - link a GitHub repository with the Docker Hub
