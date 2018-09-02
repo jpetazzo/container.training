@@ -12,10 +12,7 @@ chapters:
   - k8s/build-with-docker.md
   - k8s/build-with-kaniko.md
   - k8s/configuration.md
-  - |
-    # Stateful sets
-
-    setting up consul with stateful sets
+  - k8s/statefulsets.md
   - |
     # Persistence
 
