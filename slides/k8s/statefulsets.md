@@ -175,6 +175,8 @@ spec:
 
 - Conversely, it is not necessary to define one if you will create volumes manually
 
+  (we will see dynamic provisioning in action later)
+
 ---
 
 ## Defining a Persistent Volume Claim
