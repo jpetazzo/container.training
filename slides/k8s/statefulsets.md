@@ -64,7 +64,7 @@
 
   - traditional storage systems (NFS, iSCSI, FC...)
 
-  - distributed storage (Ceph, Clusterfs, Portworx...)
+  - distributed storage (Ceph, Glusterfs, Portworx...)
 
 - Using a persistent volume requires:
 
