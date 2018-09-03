@@ -579,3 +579,23 @@ class: extra-details
   ```
 
   (on each node where Portworx was running)
+
+---
+
+class: extra-details
+
+## Dynamic provisioning without a provider
+
+- What if we want to use Stateful sets without a storage provider?
+
+- We will have to create volumes manually
+
+  (by creating Persistent Volume objects)
+
+- These volumes will be automatically bound with matching Persistent Volume Claims
+
+- We can use local volumes (essentially bind mounts of host directories)
+
+- Of course, these volumes won't be available in case of node failure
+
+- Check [this blog post](https://kubernetes.io/blog/2018/04/13/local-persistent-volumes-beta/) for more information and gotchas

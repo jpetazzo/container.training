@@ -155,6 +155,45 @@ spec:
 
     e.g.: "replicate the data 3 times, and use SSD media"
 
+- The extra details are provided by specifying a Storage Class
+
+---
+
+## What's a Storage Class?
+
+- A Storage Class is yet another Kubernetes API resource
+
+  (visible with e.g. `kubectl get storageclass` or `kubectl get sc`)
+
+- It indicates which *provisioner* to use
+
+- And arbitrary paramters for that provisioner
+
+  (replications levels, type of disk ... anything relevant!)
+
+- It is necessary to define a Storage Class to use [dynamic provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
+
+- Conversely, it is not necessary to define one if you will create volumes manually
+
+---
+
+## Defining a Persistent Volume Claim
+
+Here is a minimal PVC:
+
+```yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+   name: my-claim
+spec:
+   accessModes:
+     - ReadWriteOnce
+   resources:
+     requests:
+       storage: 1Gi
+```
+
 ---
 
 ## Using a Persistent Volume Claim
