@@ -617,3 +617,22 @@ class: extra-details
 - Of course, these volumes won't be available in case of node failure
 
 - Check [this blog post](https://kubernetes.io/blog/2018/04/13/local-persistent-volumes-beta/) for more information and gotchas
+
+---
+
+## Acknowledgements
+
+The Portworx installation tutorial, and the PostgreSQL example,
+were inspired by [Portworx examples on Katacoda](https://katacoda.com/portworx/scenarios/), in particular:
+
+- [installing Portworx on Kubernetes](https://www.katacoda.com/portworx/scenarios/deploy-px-k8s)
+
+  (with adapatations to use a loop device and an embedded key/value store)
+
+- [persistent volumes on Kubernetes using Portworx](https://www.katacoda.com/portworx/scenarios/px-k8s-vol-basic)
+
+  (with adapatations to specify a default Storage Class)
+
+- [HA PostgreSQL on Kubernetes with Portworx](https://www.katacoda.com/portworx/scenarios/px-k8s-postgres-all-in-one)
+
+  (with adaptations to use a Stateful Set and simplify PostgreSQL's setup)
