@@ -56,6 +56,24 @@
 
 ---
 
+## A useful reminder
+
+- We're installing Portworx because we need a storage system
+
+- If you are using AKS, EKS, GKE ... you already have a storage system
+
+  (but you might want another one, e.g. to leverage local storage)
+
+- If you have setup Kubernetes yourself, there are other solutions available too
+
+  - on premises, you can use a good old SAN/NAS
+
+  - on a private cloud like OpenStack, you can use e.g. Cinder
+
+  - everywhere, you can use other systems, e.g. Gluster, StorageOS
+
+---
+
 ## Portworx requirements
 
 - Kubernetes cluster ✔️
