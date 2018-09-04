@@ -16,10 +16,7 @@ chapters:
   - k8s/statefulsets.md
   - k8s/portworx.md
 - - k8s/authn-authz.md
-  - |
-    # Ingress
-
-    show traefik running in daemonset mode
+  - k8s/ingress.md
   - |
     # CI/CD pipeline
 
