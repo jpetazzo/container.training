@@ -26,11 +26,5 @@ chapters:
 
     prometheus
 
-  - |
-    # misc todo
-
-    after build-with-docker and build-with-kaniko, show clean up orphan pods
-
-    healthchecks / liveness
-
+- - k8s/healthchecks.md
 
