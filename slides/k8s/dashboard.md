@@ -32,14 +32,10 @@ There is an additional step to make the dashboard available from outside (we'll 
 
 - Create all the dashboard resources, with the following command:
   ```bash
-  kubectl apply -f https://goo.gl/Qamqab
+  kubectl apply -f ~/container.training/k8s/kubernetes-dashboard.yaml
   ```
 
 ]
-
-The goo.gl URL expands to:
-<br/>
-.small[https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml]
 
 ---
 
@@ -72,14 +68,10 @@ The goo.gl URL expands to:
 
 - Apply the convenient YAML file, and defeat SSL protection:
   ```bash
-  kubectl apply -f https://goo.gl/tA7GLz
+  kubectl apply -f ~/container.training/k8s/socat.yaml
   ```
 
 ]
-
-The goo.gl URL expands to:
-<br/>
-.small[.small[https://gist.githubusercontent.com/jpetazzo/c53a28b5b7fdae88bc3c5f0945552c04/raw/da13ef1bdd38cc0e90b7a4074be8d6a0215e1a65/socat.yaml]]
 
 .warning[All our dashboard traffic is now clear-text, including passwords!]
 
@@ -135,7 +127,7 @@ The dashboard will then ask you which authentication you want to use.
 
 - Grant admin privileges to the dashboard so we can see our resources:
   ```bash
-  kubectl apply -f https://goo.gl/CHsLTA
+  kubectl apply -f ~/container.training/k8s/grant-admin-to-dashboard.yaml
   ```
 
 - Reload the dashboard and enjoy!
@@ -175,7 +167,7 @@ The dashboard will then ask you which authentication you want to use.
 
 ## Editing the `kubernetes-dashboard` service
 
-- If we look at the [YAML](https://goo.gl/Qamqab) that we loaded before, we'll get a hint
+- If we look at the [YAML](https://github.com/jpetazzo/container.training/blob/master/k8s/kubernetes-dashboard.yaml) that we loaded before, we'll get a hint
 
 --
 
