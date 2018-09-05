@@ -34,26 +34,46 @@
 
 ## Installing Helm
 
-- We need to install the `helm` CLI; then use it to deploy `tiller`
+- If the `helm` CLI is not installed in your environment, install it
 
 .exercise[
 
-- Install the `helm` CLI:
+- Check if `helm` is installed:
+  ```bash
+  helm
+  ```
+
+- If it's not installed, run the following command:
   ```bash
   curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
   ```
 
-- Deploy `tiller`:
+]
+
+---
+
+## Installing Tiller
+
+- Tiller is composed of a *service* and a *deployment* in the `kube-system` namespace
+
+- They can be managed (installed, upgraded...) with the `helm` CLI
+
+.exercise[
+
+- Deploy Tiller:
   ```bash
   helm init
   ```
 
-- Add the `helm` completion:
-  ```bash
-  . <(helm completion $(basename $SHELL))
-  ```
-
 ]
+
+If Tiller was already installed, don't worry: this won't break it.
+
+At the end of the install process, you will see:
+
+```
+Happy Helming!
+```
 
 ---
 
