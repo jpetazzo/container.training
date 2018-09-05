@@ -506,3 +506,24 @@ It's important to note a couple of details in these flags ...
   ```
 
 ]
+
+---
+
+## Testing directly with `kubectl`
+
+- We can also check for permission with `kubectl auth can-i`:
+  ```bash
+  kubectl auth can-i list nodes
+  kubectl auth can-i create pods
+  kubectl auth can-i get pod/name-of-pod
+  kubectl auth can-i get /url-fragment-of-api-request/
+  kubectl auth can-i '*' services
+  ```
+
+- And we can check permissions on behalf of other users:
+  ```bash
+  kubectl auth can-i list nodes \
+          --as some-user
+  kubectl auth can-i list nodes \
+          --as system:serviceaccount:<namespace>:<name-of-service-account>
+  ```
