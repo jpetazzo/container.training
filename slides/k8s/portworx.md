@@ -212,7 +212,7 @@ If you want to use an external key/value store, add one of the following:
 
 - It is also possible to mark a Storage Class as "default"
 
-  (it will be used if a `volumeClaimTeamplate` doesn't specify one)
+  (it will be used if a `volumeClaimTemplate` doesn't specify one)
 
 ---
 
@@ -235,7 +235,7 @@ parameters:
 
 - It says "use Portworx to create volumes"
 
-- It tells to Portworx "keep 2 replicas of these volumes"
+- It tells Portworx to "keep 2 replicas of these volumes"
 
 - It marks the Storage Class as being the default one
 
@@ -497,7 +497,7 @@ By "disrupt" we mean: "disconnect it from the network".
 
 .exercise[
 
-- Look on which node the pod is now running
+- Look at which node the pod is now running on
   ```bash
   kubectl get pod postgres-0 -o wide
   ```
