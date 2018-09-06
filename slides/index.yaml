@@ -1,3 +1,11 @@
+- date: 2018-11-23
+  city: Copenhagen
+  country: dk
+  event: GOTO
+  title: Build Container Orchestration with Docker Swarm
+  speaker: bretfisher
+  attend: https://gotocph.com/2018/workshops/121
+
 - date: 2018-11-08
   city: San Francisco, CA
   country: us
@@ -21,6 +29,14 @@
   title: Kubernetes 101
   speaker: bridgetkromhout
   attend: https://conferences.oreilly.com/velocity/vl-eu/public/schedule/detail/71149
+
+- date: 2018-10-30
+  city: London, UK
+  country: uk
+  event: Velocity EU
+  title: "Docker Zero to Hero: Docker, Compose and Production Swarm"
+  speaker: bretfisher
+  attend: https://conferences.oreilly.com/velocity/vl-eu/public/schedule/detail/71231
 
 - date: 2018-07-12
   city: Minneapolis, MN
@@ -46,6 +62,14 @@
   title: Kubernetes Bootcamp - Deploying and Scaling Microservices
   speaker: jpetazzo
   attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/69875
+
+- date: 2018-09-30
+  city: New York, NY
+  country: us
+  event: Velocity
+  title: "Docker Zero to Hero: Docker, Compose and Production Swarm"
+  speaker: bretfisher
+  attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/70147
 
 - date: 2018-09-17
   country: fr
