@@ -55,7 +55,7 @@ class: extra-details
 
   (You do not need a matching egress rule to allow response traffic to go through)
 
-- This also stands for UDP traffic
+- This also applies for UDP traffic
 
   (Allowing DNS traffic can be done with a single rule)
 
