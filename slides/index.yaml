@@ -34,7 +34,7 @@
   city: London, UK
   country: uk
   event: Velocity EU
-  title: Docker Zero to Hero: Docker, Compose and Production Swarm
+  title: "Docker Zero to Hero: Docker, Compose and Production Swarm"
   speaker: bretfisher
   attend: https://conferences.oreilly.com/velocity/vl-eu/public/schedule/detail/71231
 
@@ -67,7 +67,7 @@
   city: New York, NY
   country: us
   event: Velocity
-  title: Docker Zero to Hero: Docker, Compose and Production Swarm
+  title: "Docker Zero to Hero: Docker, Compose and Production Swarm"
   speaker: bretfisher
   attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/70147
 
