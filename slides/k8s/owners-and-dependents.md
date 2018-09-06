@@ -154,4 +154,4 @@ so the lines should not be indented (otherwise the indentation will insert space
 
 ]
 
-As always, the [doc](https://kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/) has useful extra information and pointers.
+As always, the [documentation](https://kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/) has useful extra information and pointers.

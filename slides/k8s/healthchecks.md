@@ -106,7 +106,7 @@
 
 - Rolling updates proceed when containers are *actually ready*
 
-  (as opposed top merely started)
+  (as opposed to merely started)
 
 - Containers in a broken state gets killed and restarted
 
@@ -167,7 +167,7 @@ If the Redis process becomes unresponsive, it will be killed.
 
 ## Details about liveness and readiness probes
 
-- Probes are executed at intervals of `periodseconds` (default: 10)
+- Probes are executed at intervals of `periodSeconds` (default: 10)
 
 - The timeout for a probe is set with `timeoutSeconds` (default: 1)
 

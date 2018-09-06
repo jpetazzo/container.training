@@ -62,9 +62,9 @@ spec:
 
 - The port for the registry is passed through an environment variable
 
-  (this avoids to repeat it in the specification, which would be error-prone)
+  (this avoids repeating it in the specification, which would be error-prone)
 
-.warning[The environment variable has to be a string, so the `"` are mandatory!]
+.warning[The environment variable has to be a string, so the `"`s are mandatory!]
 
 ---
 
@@ -74,7 +74,7 @@ spec:
 
 - It is then mounted in the container onto the default Docker socket path
 
-- We show a creative way to specify the commands to run in the container:
+- We show a interesting way to specify the commands to run in the container:
 
   - the command executed will be `sh -c <args>`
 
@@ -133,7 +133,7 @@ What do we need to change to make this production-ready?
 
 --
 
-That's why systems like Docker Hub are helpful.
+That's why services like Docker Hub (with [automated builds](https://docs.docker.com/docker-hub/builds/)) are helpful.
 <br/>
 They handle the whole "code repository → Docker image" workflow.
 
@@ -143,7 +143,7 @@ They handle the whole "code repository → Docker image" workflow.
 
 - This is talking directly to a node's Docker Engine to build images
 
-- It bypasses ressource allocation mechanisms used by Kubernetes
+- It bypasses resource allocation mechanisms used by Kubernetes
 
   (but you can use *taints* and *tolerations* to dedicate builder nodes)
 

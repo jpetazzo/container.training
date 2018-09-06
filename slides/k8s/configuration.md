@@ -14,7 +14,7 @@
 
   - ... and more (because programmers can be very creative!)
 
-- How can we fit that with containers and Kubernetes?
+- How can we do these things with containers and Kubernetes?
 
 ---
 

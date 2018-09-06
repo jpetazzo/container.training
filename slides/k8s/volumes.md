@@ -14,7 +14,7 @@
 
   - store persistent data for stateful services
 
-  - access storage systems (like Ceph, EBS, NFS, portworx, and many others)
+  - access storage systems (like Ceph, EBS, NFS, Portworx, and many others)
 
 ---
 
@@ -28,9 +28,9 @@
 
 - Docker volumes allow to share data between containers running on the same host
 
-- Kubernetes volumes allow to share data between containers in the same pod
+- Kubernetes volumes allow us to share data between containers in the same pod
 
-- Both Docker and Kubernetes volumes allow access to storage systems
+- Both Docker and Kubernetes volumes allow us access to storage systems
 
 - Kubernetes volumes are also used to expose configuration and secrets
 

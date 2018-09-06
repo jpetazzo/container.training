@@ -67,7 +67,9 @@ We use `--net host` so that we can connect to the registry over `127.0.0.1`.
 
 - We need to mount or copy the build context to the pod
 
-- For bonus points, we are going to build straight from the git repository
+- We are going to build straight from the git repository
+
+  (to avoid depending on files sitting on a node, outside of containers)
 
 - We need to `git clone` the repository before running Kaniko
 

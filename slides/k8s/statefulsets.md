@@ -147,7 +147,7 @@ spec:
 
   - the access mode (e.g. "read-write by a single pod")
 
-- In can also give extra details, like:
+- It can also give extra details, like:
 
   - which storage system to use (e.g. Portworx, EBS...)
 
@@ -298,7 +298,7 @@ consul agent -data=dir=/consul/data -client=0.0.0.0 -server -ui \
 
 - We can specify DNS names, but then they have to be FQDN
 
-- It's OK to specify ourselves in the list as well
+- It's OK for a pod to include itself in the list as well
 
 - We can therefore use the same command-line on all nodes (easier!)
 
