@@ -46,7 +46,7 @@
 
   (look at [jpetazzo/aiguillage](https://github.com/jpetazzo/aiguillage) for a minimal reverse proxy configuration using NGINX)
 
-- Most of these options require to update/edit configuration files after each change
+- Most of these options require us to update/edit configuration files after each change
 
 - Some of them can pick up virtual hosts and backends from a configuration store
 
@@ -176,7 +176,7 @@
 
 - We are going to use a Daemon Set so that each node can accept connections
 
-- We will do two minor changes to the [YAML provided my Traefik](https://github.com/containous/traefik/blob/master/examples/k8s/traefik-ds.yaml):
+- We will do two minor changes to the [YAML provided by Traefik](https://github.com/containous/traefik/blob/master/examples/k8s/traefik-ds.yaml):
 
   - enable `hostNetwork`
 
@@ -503,7 +503,7 @@ spec:
 
 - Annotations can encode special features
 
-  (rate-limiting, A/B testing, session stickyness, etc.) 
+  (rate-limiting, A/B testing, session stickiness, etc.) 
 
 ---
 
