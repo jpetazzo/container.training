@@ -25,7 +25,7 @@ be user `system:anonymous`, which doesn't have any access rights by default.
 
 - Let's see what happens if we try to access the API directly with `curl`
 
-.exercice[
+.exercise[
 
 - Retrieve the ClusterIP allocated to the `kubernetes` service:
   ```bash
