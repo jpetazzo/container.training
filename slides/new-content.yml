@@ -17,10 +17,7 @@ chapters:
   - k8s/portworx.md
 - - k8s/authn-authz.md
   - k8s/ingress.md
-  - |
-    # CI/CD pipeline
-
-    gitlab maybe?
+  - k8s/gitworkflows.md
   - |
     # metrics
 
