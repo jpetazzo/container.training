@@ -190,6 +190,8 @@ spec:
 
 - The ultimate building tool will probably be [Jessica Frazelle](https://twitter.com/jessfraz)'s [img](https://github.com/genuinetools/img) builder
 
+  (it depends on upstream changes that are not in Kubernetes 1.11.2 yet)
+
 But ... is it all about [speed](https://github.com/AkihiroSuda/buildbench/issues/1)? (No!)
 
 ---

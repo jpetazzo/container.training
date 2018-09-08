@@ -116,6 +116,26 @@ so the lines should not be indented (otherwise the indentation will insert space
 
 ---
 
+class: extra-details
+
+## When and why would we have orphans?
+
+- If we remove an owner and explicitly instruct the API to orphan dependents
+
+  (like on the previous slide)
+
+- If we change the labels on a dependent, so that it's not selected anymore
+
+  (e.g. change the `run: yanginx` in the pods of the previous example)
+
+- If a deployment tool that we're using does these things for us
+
+- If there is a serious problem within API machinery or other components
+
+  (i.e. "this should not happen")
+
+---
+
 ## Finding orphan objects
 
 - We're going to output all pods in JSON format

@@ -247,6 +247,10 @@
 
   - as holding individual configuration parameters
 
+*Note: to hold sensitive information, se can use "Secrets", which
+are another type of resource behaving very much like configmaps.
+We'll cover them just after!*
+
 ---
 
 ## Configmaps storing entire files

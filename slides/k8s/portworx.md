@@ -92,7 +92,7 @@
 
 - For simplicity, we are going to use the latter option
 
-  (but we could use the Consul service that we deployed earlier, too)
+  (but if we have deployed Consul or etcd, we can use that, too)
 
 ---
 

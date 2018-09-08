@@ -169,7 +169,7 @@ spec:
 
 - And arbitrary paramters for that provisioner
 
-  (replications levels, type of disk ... anything relevant!)
+  (replication levels, type of disk ... anything relevant!)
 
 - It is necessary to define a Storage Class to use [dynamic provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
 
@@ -371,7 +371,7 @@ nodes and encryption of gossip traffic) were removed for simplicity.
 
 - That's because we don't have a storage provider yet
 
-  (except if you're running this on your own on a full-featured cluster)
+  (except if you're running this on your own and your cluster has one)
 
 - What happens if we lose a pod?
 
