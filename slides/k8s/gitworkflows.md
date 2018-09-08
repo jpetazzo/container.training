@@ -22,7 +22,7 @@
 
 - These resources have a perfect YAML representation
 
-- All we do is manpulating these YAML representations
+- All we do is manipulating these YAML representations
 
   (`kubectl run` generates a YAML file that gets applied)
 
@@ -148,7 +148,7 @@
 
 - Gitkube is a git server (or "git remote")
 
-- After making changes to the repository, we push to GitKube
+- After making changes to the repository, we push to Gitkube
 
 - Gitkube applies the resources to the cluster
 
@@ -234,6 +234,6 @@
 
   (see the [documentation](https://github.com/hasura/gitkube/blob/master/docs/remote.md) for more details)
 
-- Gitkube can also deploy a Helm Charts
+- Gitkube can also deploy Helm Charts
 
   (instead of raw YAML files)
