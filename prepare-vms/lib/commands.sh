@@ -168,6 +168,22 @@ _cmd_kube() {
         sudo kubeadm join --discovery-token-unsafe-skip-ca-verification --token \$TOKEN node1:6443
     fi"
 
+    # Install stern
+    pssh "
+    if [ ! -x /usr/local/bin/stern ]; then
+        sudo curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/download/1.8.0/stern_linux_amd64
+        sudo chmod +x /usr/local/bin/stern
+        stern --completion bash | sudo tee /etc/bash_completion.d/stern
+    fi"
+
+    # Install helm
+    pssh "
+    if [ ! -x /usr/local/bin/helm ]; then
+        curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | sudo bash
+        helm completion bash | sudo tee /etc/bash_completion.d/helm
+    fi"
+
+
     sep "Done"
 }
 

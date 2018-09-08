@@ -38,10 +38,11 @@ chapters:
 - - k8s/kubectlscale.md
   - k8s/daemonset.md
   - k8s/rollout.md
-  #- k8s/logs-cli.md
-  #- k8s/logs-centralized.md
-  #- k8s/helm.md
-  #- k8s/namespaces.md
+  - k8s/logs-cli.md
+  - k8s/logs-centralized.md
+  - k8s/helm.md
+  - k8s/namespaces.md
+  - k8s/netpol.md
   - k8s/whatsnext.md
   - k8s/links.md
   - shared/thankyou.md
