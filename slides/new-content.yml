@@ -18,10 +18,6 @@ chapters:
 - - k8s/authn-authz.md
   - k8s/ingress.md
   - k8s/gitworkflows.md
-  - |
-    # metrics
-
-    prometheus
-
+  - k8s/prometheus.md
 - - k8s/healthchecks.md
 
