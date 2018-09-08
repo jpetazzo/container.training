@@ -40,12 +40,12 @@
 
 - Load the YAML file into our cluster:
   ```bash
-  kubectl apply -f https://goo.gl/MUZhE4
+  kubectl apply -f ~/container.training/k8s/efk.yaml
   ```
 
 ]
 
-If we [look at the YAML file](https://goo.gl/MUZhE4), we see that
+If we [look at the YAML file](https://github.com/jpetazzo/container.training/blob/master/k8s/efk.yaml), we see that
 it creates a daemon set, two deployments, two services,
 and a few roles and role bindings (to give fluentd the required permissions).
 

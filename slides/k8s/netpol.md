@@ -55,7 +55,7 @@ class: extra-details
 
   (You do not need a matching egress rule to allow response traffic to go through)
 
-- This also stands for UDP traffic
+- This also applies for UDP traffic
 
   (Allowing DNS traffic can be done with a single rule)
 
@@ -75,7 +75,8 @@ class: extra-details
   <br/>
   the restriction cannot be overridden by a network policy selecting another pod
 
-- This prevents an entity with access to namespace A (but no access to namespace B)
+- This prevents an entity managing network policies in namespace A
+  (but without permission to do so in namespace B)
   from adding network policies giving them access to namespace B
 
 ---
@@ -98,7 +99,7 @@ class: extra-details
 
 ---
 
-## Our first network policies
+## Our first network policy
 
 This is our game plan:
 
@@ -417,4 +418,3 @@ troubleshoot easily, without having to poke holes at our firewall.
   - a [very good talk about network policies](https://www.youtube.com/watch?list=PLj6h78yzYM2P-3-xqvmWaZbbI1sW-ulZb&v=3gGpMmYeEO8) at KubeCon North America 2017
 
   - a repository of [ready-to-use recipes](https://github.com/ahmetb/kubernetes-network-policy-recipes) for network policies
-
