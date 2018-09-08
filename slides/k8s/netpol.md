@@ -365,9 +365,9 @@ spec:
 
 ]
 
-Note: using `kubectl proxy` or `kubectl port-forward` allows to connect
+Note: using `kubectl proxy` or `kubectl port-forward` allows us to connect
 regardless of existing network policies. This allows us to debug and
-troubleshoot easily, without having to poke holes at our firewall.
+troubleshoot easily, without having to poke holes in our firewall.
 
 ---
 
