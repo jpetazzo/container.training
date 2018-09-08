@@ -75,7 +75,8 @@ class: extra-details
   <br/>
   the restriction cannot be overridden by a network policy selecting another pod
 
-- This prevents an entity with access to namespace A (but no access to namespace B)
+- This prevents an entity managing network policies in namespace A
+  (but without permission to do so in namespace B)
   from adding network policies giving them access to namespace B
 
 ---
