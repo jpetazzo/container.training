@@ -2,7 +2,7 @@
 
 - When we are logged in on a cluster node, we can access internal services
 
-  (by virtue of the CNI model: all nodes can reach all pods and services)
+  (by virtue of the Kubernetes network model: all nodes can reach all pods and services)
 
 - When we are accessing a remote cluster, things are different
 
@@ -29,7 +29,8 @@ from our local machine.
 You can also run these exercises directly on the cluster (if you haven't
 installed and set up `kubectl` locally).
 
-It will be less useful (since you could access services and pods directly),
+Running commands locally will be less useful
+(since you could access services and pods directly),
 but keep in mind that these commands will work anywhere as long as you have
 installed and set up `kubectl` to communicate with your cluster.
 
