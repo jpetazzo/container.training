@@ -257,9 +257,161 @@ The second command will fail and time out after 3 seconds.
 
 ---
 
+## Network policies, pods, and services
+
+- Network policies apply to *pods*
+
+- A *service* can select multiple pods
+
+  (And load balance traffic across them)
+
+- It is possible that we can connect to some pods, but not some others
+
+  (Because of how network policies have been defined for these pods)
+
+- In that case, connections to the service will randomly pass or fail
+
+  (Depending on whether the connection was sent to a pod that we have access to or not)
+
+---
+
+## Network policies and namespaces
+
+- A good strategy is to isolate a namespace, so that:
+
+  - all the pods in the namespace can communicate together
+
+  - other namespaces cannot access the pods
+
+  - external access has to be enabled explicitly
+
+- Let's see what this would look like for the DockerCoins app!
+
+---
+
+## Network policies for DockerCoins
+
+- We are going to apply two policies
+
+- The first policy will prevent traffic from other namespaces
+
+- The second policy will allow traffic to the `webui` pods
+
+- That's all we need for that app!
+
+---
+
+## Blocking traffic from other namespaces
+
+This policy selects all pods in the current namespace.
+
+It allows traffic only from pods in the current namespace.
+
+(An empty `podSelector` means "all pods".)
+
+```yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: deny-from-other-namespaces
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - podSelector: {}
+```
+
+---
+
+## Allowing traffic to `webui` pods
+
+This policy selects all pods with label `run=webui`.
+
+It allows traffic from any source.
+
+(An empty `from` fields means "all sources".)
+
+```yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-webui
+spec:
+  podSelector:
+    matchLabels:
+      run: webui
+  ingress:
+  - from: []
+```
+
+---
+
+## Applying both network policies
+
+- Both network policies are declared in the file `k8s/netpol-dockercoins.yaml`
+
+.exercise[
+
+- Apply the network policies:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/netpol-dockercoins.yaml
+  ```
+
+- Check that we can still access the web UI from outside
+  <br/>
+  (and that the app is still working correctly!)
+
+- Check that we can't connect anymore to `rng` or `hasher` through their ClusterIP
+
+]
+
+Note: using `kubectl proxy` or `kubectl port-forward` allows us to connect
+regardless of existing network policies. This allows us to debug and
+troubleshoot easily, without having to poke holes in our firewall.
+
+---
+
+## Protecting the control plane
+
+- Should we add network policies to block unauthorized access to the control plane?
+
+  (etcd, API server, etc.)
+
+--
+
+- At first, it seems like a good idea ...
+
+--
+
+- But it *shouldn't* be necessary:
+
+  - not all network plugins support network policies
+
+  - the control plane is secured by other methods (mutual TLS, mostly)
+
+  - the code running in our pods can reasonably expect to contact the API
+    <br/>
+    (and it can do so safely thanks to the API permission model)
+
+- If we block access to the control plane, we might disrupt legitimate code
+
+- ... Without necessarily improving security
+
+---
+
 ## Further resources
 
 - As always, the [Kubernetes documentation](https://kubernetes.io/docs/concepts/services-networking/network-policies/) is a good starting point
+
+- The API documentation has a lot of detail about the format of various objects:
+
+  - [NetworkPolicy](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#networkpolicy-v1-networking-k8s-io)
+
+  - [NetworkPolicySpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#networkpolicyspec-v1-networking-k8s-io)
+
+  - [NetworkPolicyIngressRule](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#networkpolicyingressrule-v1-networking-k8s-io)
+
+  - etc.
 
 - And two resources by [Ahmet Alp Balkan](https://ahmet.im/):
 
