@@ -22,27 +22,39 @@ chapters:
 - - shared/prereqs.md
   - k8s/versions-k8s.md
   - shared/sampleapp.md
-  #- shared/composescale.md
+  - shared/composescale.md
   - shared/composedown.md
-- - k8s/concepts-k8s.md
+  - k8s/concepts-k8s.md
   - shared/declarative.md
   - k8s/declarative.md
-  - k8s/kubenet.md
+- - k8s/kubenet.md
   - k8s/kubectlget.md
   - k8s/setup-k8s.md
   - k8s/kubectlrun.md
-- - k8s/kubectlexpose.md
-  - k8s/ourapponkube.md
+  - k8s/kubectlexpose.md
+- - k8s/ourapponkube.md
   - k8s/kubectlproxy.md
   - k8s/dashboard.md
-- - k8s/kubectlscale.md
+  - k8s/kubectlscale.md
   - k8s/daemonset.md
-  - k8s/rollout.md
+- - k8s/rollout.md
+  - k8s/healthchecks.md
   - k8s/logs-cli.md
   - k8s/logs-centralized.md
-  - k8s/helm.md
+- - k8s/helm.md
   - k8s/namespaces.md
   - k8s/netpol.md
-  - k8s/whatsnext.md
+  - k8s/authn-authz.md
+- - k8s/ingress.md
+  - k8s/gitworkflows.md
+  - k8s/prometheus.md
+- - k8s/volumes.md
+  - k8s/build-with-docker.md
+  - k8s/build-with-kaniko.md
+  - k8s/configuration.md
+- - k8s/owners-and-dependents.md
+  - k8s/statefulsets.md
+  - k8s/portworx.md
+- - k8s/whatsnext.md
   - k8s/links.md
   - shared/thankyou.md
