@@ -73,7 +73,10 @@
   [kubespray](https://github.com/kubernetes-incubator/kubespray)
 
 - If you like Terraform:
-  [typhoon](https://github.com/poseidon/typhoon/)
+  [typhoon](https://github.com/poseidon/typhoon)
+
+- If you like Terraform and Puppet:
+  [tarmak](https://github.com/jetstack/tarmak)
 
 - You can also learn how to install every component manually, with
   the excellent tutorial [Kubernetes The Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way)
