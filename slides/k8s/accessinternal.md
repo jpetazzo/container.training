@@ -1,6 +1,6 @@
 # Accessing internal services
 
-- When we are logged on a cluster node, we can access internal services
+- When we are logged in on a cluster node, we can access internal services
 
   (by virtue of the Kubernetes network model: all nodes can reach all pods and services)
 
@@ -8,7 +8,7 @@
 
   (generally, our local machine won't have access to the cluster's internal subnet)
 
-- How can we temporarily access to a service without exposing it to everyone?
+- How can we temporarily access a service without exposing it to everyone?
 
 --
 
@@ -32,7 +32,7 @@ installed and set up `kubectl` locally).
 Running commands locally will be less useful
 (since you could access services and pods directly),
 but keep in mind that these commands will work anywhere as long as you have
-installed and setup `kubectl` to communicate with your cluster.
+installed and set up `kubectl` to communicate with your cluster.
 
 ---
 
