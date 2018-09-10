@@ -20,6 +20,43 @@ And *then* it is time to look at orchestration!
 
 ---
 
+
+## Options for our first production cluster
+
+- Get a managed cluster from a major cloud provider (AKS, EKS, GKE...)
+
+  (price: $, difficulty: medium)
+
+- Hire someone to deploy it for us
+
+  (price: $$, difficulty: easy)
+
+- Do it ourselves
+
+  (price: $-$$$, dificulty: hard)
+
+---
+
+## One big cluster vs. multiple small ones
+
+- Yes, it is possible to have prod+dev in a single cluster
+
+  (and implement good isolation and security with RBAC, network policies...)
+
+- But it is not a good idea to do that for our first deployment
+
+- Start with a production cluster + at least a test cluster
+
+- Implement and check RBAC and isolation on the test cluster
+
+  (e.g. deploy multiple test versions side-by-side)
+
+- Make sure that all our devs have usable dev clusters
+
+  (wether it's a local minikube or a full-blown multi-node cluster)
+
+---
+
 ## Namespaces
 
 - Namespaces let you run multiple identical stacks side by side
@@ -62,15 +99,19 @@ And *then* it is time to look at orchestration!
 
 ## Stateful services (second take)
 
-- If you really want to host stateful services on Kubernetes, you can look into:
+- If we want to host stateful services on Kubernetes, we can use:
 
-  - volumes (to carry persistent data)
+  - a storage provider
 
-  - storage plugins
+  - persistent volumes, persistent volume claims
 
-  - persistent volume claims (to ask for specific volume characteristics)
+  - stateful sets
 
-  - stateful sets (pods that are *not* ephemeral)
+- Good questions to ask:
+
+  - what's the *operational cost* of running this service ourselves?
+
+  - what do we gain by deploying this stateful service on Kubernetes?
 
 ---
 
@@ -122,8 +163,6 @@ And *then* it is time to look at orchestration!
 - [Heapster](https://github.com/kubernetes/heapster) was a popular add-on
 
   (but is being [deprecated](https://github.com/kubernetes/heapster/blob/master/docs/deprecation.md) starting with Kubernetes 1.11)
-
-
 
 ---
 
