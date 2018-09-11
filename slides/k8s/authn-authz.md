@@ -216,7 +216,7 @@ class: extra-details
 
 - View the secret:
   ```bash
-  kubectl get $SECRET -o yaml
+  kubectl get secret $SECRET -o yaml
   ```
 
 - Extract the token and decode it:
@@ -501,9 +501,13 @@ It's important to note a couple of details in these flags ...
   ```
 
 - But that we can't create things:
-  ```bash
+  ```
   ./kubectl run tryme --image=nginx
   ```
+
+- Exit the container with `exit` or `^D`
+
+<!-- ```keys ^D``` -->
 
 ]
 

@@ -107,6 +107,11 @@ spec:
   stern build-image
   ```
 
+<!--
+```longwait latest: digest: sha256:```
+```keys ^C```
+-->
+
 ]
 
 ---

@@ -85,6 +85,11 @@ Exactly what we need!
   stern rng
   ```
 
+<!--
+```wait HTTP/1.1```
+```keys ^C```
+-->
+
 ]
 
 ---
@@ -105,6 +110,12 @@ Exactly what we need!
   ```bash
   stern --tail 1 --timestamps --all-namespaces weave
   ```
+
+<!--
+```wait weave-npc```
+```keys ^C```
+-->
+
 ]
 
 ---
@@ -125,5 +136,10 @@ Exactly what we need!
   ```bash
   stern -l run
   ```
+
+<!--
+```wait units of work```
+```keys ^C```
+-->
 
 ]

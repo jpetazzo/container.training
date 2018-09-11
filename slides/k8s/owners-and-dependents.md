@@ -29,7 +29,7 @@
 
 - Once it's up, check the corresponding pods:
   ```bash
-  kuebectl get pods -l run=yanginx -o yaml | head -n 25
+  kubectl get pods -l run=yanginx -o yaml | head -n 25
   ```
 
 ]

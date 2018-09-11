@@ -188,7 +188,7 @@ spec:
 
 - Apply another policy:
   ```bash
-  kubectl apply -f ~/container.training/netpol-allow-testcurl-for-testweb.yaml
+  kubectl apply -f ~/container.training/k8s/netpol-allow-testcurl-for-testweb.yaml
   ```
 
 ]

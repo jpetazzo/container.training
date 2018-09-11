@@ -19,7 +19,7 @@ spec:
     image: gcr.io/kaniko-project/executor:latest
     args:
       - "--context=/workspace/dockercoins/rng"
-      - "--insecure-skip-tls-verify"
+      - "--skip-tls-verify"
       - "--destination=registry:5000/rng-kaniko:latest"
     volumeMounts:
     - name: workspace

@@ -356,6 +356,11 @@ nodes and encryption of gossip traffic) were removed for simplicity.
   stern consul
   ```
 
+<!--
+```wait Synced node info```
+```keys ^C```
+-->
+
 - Check the health of the cluster:
   ```bash
   kubectl exec consul-0 consul members

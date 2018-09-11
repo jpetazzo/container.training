@@ -335,14 +335,19 @@ We'll cover them just after!*
 
 .exercise[
 
+- Go to the `k8s` directory in the repository:
+  ```bash
+  cd ~/container.training/k8s
+  ```
+
 - Create a configmap named `haproxy` and holding the configuration file:
   ```bash
-  kubectl create configmap haproxy --from-file=~/container.training/k8s/haproxy.cfg
+  kubectl create configmap haproxy --from-file=haproxy.cfg
   ```
 
 - Check what our configmap looks like:
   ```bash
-  kuebectl get configmap haproxy -o yaml
+  kubectl get configmap haproxy -o yaml
   ```
 
 ]
@@ -383,6 +388,8 @@ spec:
   ```bash
   kubectl apply -f ~/container.training/k8s/haproxy.yaml
   ```
+
+<!-- ```hide kubectl wait pod haproxy --for condition=ready``` -->
 
 - Check the IP address allocated to the pod:
   ```bash
@@ -442,7 +449,7 @@ We should see connections served by Google (look for the `Location` header) and 
 
 - Check our configmap:
   ```bash
-  kubectl get configmap regsitry -o yaml
+  kubectl get configmap registry -o yaml
   ```
 
 ]
@@ -482,6 +489,8 @@ spec:
   ```bash
   kubectl apply -f ~/container.training/k8s/registry.yaml
   ```
+
+<!-- ```hide kubectl wait pod registry --for condition=ready``` -->
 
 - Check the IP address allocated to the pod:
   ```bash

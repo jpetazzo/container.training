@@ -99,6 +99,11 @@ If we wanted to talk to the API, we would need to:
   curl localhost:8001
   ```
 
+<!--
+```wait /version```
+```keys ^J```
+-->
+
 - Terminate the proxy:
   ```bash
   kill %1
@@ -155,7 +160,7 @@ The output is a list of available API routes.
 
   (and copy credentials, e.g. `~/.kube/config`, to that place)
 
-- It is even better to use a limited account with reduced permissions 
+- It is even better to use a limited account with reduced permissions
 
 ---
 

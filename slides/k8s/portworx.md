@@ -180,6 +180,30 @@ If you want to use an external key/value store, add one of the following:
 
 ---
 
+## Waiting for Portworx to be ready
+
+- The installation process will take a few minutes
+
+.exercise[
+
+- Check out the logs:
+  ```bash
+  stern -n kube-system portworx
+  ```
+
+- Wait until it gets quiet
+
+  (you should see `portworx service is healthy`, too)
+
+<!--
+```longwait PX node status reports portworx service is healthy```
+```keys ^C```
+-->
+
+]
+
+---
+
 ## Dynamic provisioning of persistent volumes
 
 - We are going to run PostgreSQL in a Stateful set
@@ -330,6 +354,8 @@ spec:
   kubectl apply -f ~/container.training/k8s/postgres.yaml
   ```
 
+<!-- ```hide kubectl wait pod postgres-0 --for condition=ready``` -->
+
 ]
 
 ---
@@ -346,6 +372,13 @@ spec:
   ```bash
   kubectl exec -ti postgres-0 su postgres
   ```
+
+<!--
+autopilot prompt detection expects $ or # at the beginning of the line.
+```wait postgres@postgres```
+```keys PS1="\u@\h:\w\n\$ "```
+```keys ^J```
+-->
 
 - Check that default databases have been created correctly:
   ```bash
@@ -398,6 +431,8 @@ spec:
   psql demo -c "select count(*) from pgbench_accounts"
   ```
 
+<!-- ```keys ^D``` -->
+
 ]
 
 (We should see a count of 1,000,000 rows.)
@@ -412,7 +447,7 @@ spec:
 
 - Check the node running the database:
   ```bash
-  kuebectl get pod postgres-0 -o wide
+  kubectl get pod postgres-0 -o wide
   ```
 
 ]
@@ -453,11 +488,13 @@ By "disrupt" we mean: "disconnect it from the network".
 .exercise[
 
 - Check that the node can't communicate with other nodes:
-  ```bash
-  ping -c 3 node1
+  ```
+  ping node1
   ```
 
 - Logout to go back on `node1`
+
+<!-- ```keys ^D``` -->>
 
 - Watch the events unfolding with `kubectl get events -w` and `kubectl get pods -w`
 
@@ -482,10 +519,18 @@ By "disrupt" we mean: "disconnect it from the network".
   kubectl exec -ti postgres-0 su postgres
   ```
 
+<!--
+```wait postgres@postgres```
+```keys PS1="\u@\h:\w\n\$ "```
+```keys ^J```
+-->
+
 - Check the number of rows in the `pgbench_accounts` table:
   ```bash
-  psql demo -c "select count(*) from pgbench_accounts
+  psql demo -c "select count(*) from pgbench_accounts"
   ```
+
+<!-- ```keys ^D``` -->
 
 ]
 

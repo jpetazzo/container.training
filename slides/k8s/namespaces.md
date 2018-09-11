@@ -200,3 +200,23 @@ Note: it might take a minute or two for the app to be up and running.
   - the [Kubernetes documentation about network policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
 
   - this [talk about network policies at KubeCon 2017 US](https://www.youtube.com/watch?v=3gGpMmYeEO8) by [@ahmetb](https://twitter.com/ahmetb)
+
+---
+
+## Switch back to the default namespace
+
+- Let's make sure that we don't run future exercises in the `blue` namespace
+
+.exercise[
+
+- View the names of the contexts:
+  ```bash
+  kubectl config get-contexts
+  ```
+
+- Switch back to the original context:
+  ```bash
+  kubectl config use-context kubernetes-admin@kubernetes
+  ```
+
+]
