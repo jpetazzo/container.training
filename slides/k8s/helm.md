@@ -224,7 +224,7 @@ The chart's metadata includes an URL to the project's home page.
 .exercise[
 
 - Let's install our helm chart! (`dockercoins` is the path to the chart)
-  ```bash
+  ```
   helm install dockercoins
   ```
 ]

@@ -78,7 +78,7 @@ Platform:"linux/amd64"}
 .exercise[
 
 - Copy the file from `node1`; if you are using macOS or Linux, you can do:
-  ```bash
+  ```
   scp `USER`@`X.X.X.X`:.kube/config ~/.kube/config
   # Make sure to replace X.X.X.X with the IP address of node1,
   # and USER with the user name used to log into node1!

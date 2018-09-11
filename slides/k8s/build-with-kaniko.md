@@ -54,7 +54,7 @@
       -v ~/container.training/dockercoins/worker:/workspace \
       gcr.io/kaniko-project/executor \
       --context=/workspace \
-      --destination=127.0.0.1:30448/worker-kaniko:latest 
+      --destination=127.0.0.1:$PORT/worker-kaniko:latest 
   ```
 
 ]
@@ -128,7 +128,7 @@ spec:
     image: gcr.io/kaniko-project/executor:latest
     args:
       - "--context=/workspace/dockercoins/rng"
-      - "--insecure-skip-tls-verify"
+      - "--insecure"
       - "--destination=registry:5000/rng-kaniko:latest"
     volumeMounts:
     - name: workspace
@@ -152,7 +152,7 @@ spec:
 
 - We use our self-hosted registry DNS name (`registry`)
 
-- We add `--insecure-skip-tls-verify` since our registry doesn't have TLS certs
+- We add `--insecure` to use plain HTTP to talk to the registry
 
 ---
 
@@ -171,6 +171,11 @@ spec:
   ```bash
   stern kaniko
   ```
+
+<!--
+```longwait registry:5000/rng-kaniko:latest:```
+```keys ^C```
+-->
 
 ]
 

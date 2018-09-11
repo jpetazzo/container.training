@@ -235,7 +235,7 @@ The provided flags:
 
 - Figure out the NodePort that was allocated to the Prometheus server:
   ```bash
-  kubectl get svc prometheus-server
+  kubectl get svc | grep prometheus-server
   ```
 
 - With your browser, connect to that port

@@ -95,7 +95,7 @@ You'll want the `3xxxx` port.
 
 - Connect to http://oneofournodes:3xxxx/
 
-<!-- ```open https://node1:3xxxx/``` -->
+<!-- ```open http://node1:3xxxx/``` -->
 
 ]
 

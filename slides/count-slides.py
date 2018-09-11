@@ -51,7 +51,7 @@ for line in open(sys.argv[1]):
 
 state.show()
 
-for chapter in sorted(state.chapters):
+for chapter in sorted(state.chapters, key=lambda f: int(f.split("-")[1])):
     chapter_size = sum(state.sections[s] for s in state.chapters[chapter])
     print("{}\t{}\t{}".format("total size for", chapter, chapter_size))
 
