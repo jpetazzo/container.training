@@ -38,8 +38,8 @@ chapters:
   - k8s/accessinternal.md
   - k8s/dashboard.md
   - k8s/kubectlscale.md
-  - k8s/daemonset.md
-- - k8s/rollout.md
+- - k8s/daemonset.md
+  - k8s/rollout.md
   - k8s/healthchecks.md
   - k8s/logs-cli.md
   - k8s/logs-centralized.md
