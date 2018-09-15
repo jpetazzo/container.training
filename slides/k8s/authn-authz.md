@@ -182,23 +182,23 @@ class: extra-details
   kubectl get sa
   ```
 
- ]
+]
 
- There should be just one service account in the default namespace: `default`.
+There should be just one service account in the default namespace: `default`.
 
- ---
+---
 
- class: extra-details
+class: extra-details
 
- ## Finding the secret
+## Finding the secret
 
- .exercise[
+.exercise[
 
- - List the secrets for the `default` service account:
-   ```bash
-   kubectl get sa default -o yaml
-   SECRET=$(kubectl get sa default -o json | jq -r .secrets[0].name)
-   ```
+- List the secrets for the `default` service account:
+  ```bash
+  kubectl get sa default -o yaml
+  SECRET=$(kubectl get sa default -o json | jq -r .secrets[0].name)
+  ```
 
 ]
 
