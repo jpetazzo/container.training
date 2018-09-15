@@ -344,7 +344,7 @@ This is normal: we haven't provided any ingress rule yet.
 
 - To make our lives easier, we will use [nip.io](http://nip.io)
 
-- Check out `http://cheddar.A.B.C.D.mip.io`
+- Check out `http://cheddar.A.B.C.D.nip.io`
 
   (replacing A.B.C.D with the IP address of `node1`)
 
