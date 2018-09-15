@@ -43,13 +43,13 @@ Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables`
   - an external load balancer is allocated for the service
   - the load balancer is configured accordingly
     <br/>(e.g.: a `NodePort` service is created, and the load balancer sends traffic to that port)
+  - available only when the underlying infrastructure provides some "load balancer as a service"
+    <br/>(e.g. AWS, Azure, GCE, OpenStack...)
 
 - `ExternalName`
 
   - the DNS entry managed by CoreDNS will just be a `CNAME` to a provided record
   - no port, no IP address, no nothing else is allocated
-
-The `LoadBalancer` type is currently only available on AWS, Azure, and GCE.
 
 ---
 

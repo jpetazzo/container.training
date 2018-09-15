@@ -182,7 +182,7 @@ The dashboard will then ask you which authentication you want to use.
   kubectl -n kube-system edit service kubernetes-dashboard
   ```
 
-- Change `ClusterIP` to `NodePort`, save, and exit
+- Change type `type:` from `ClusterIP` to `NodePort`, save, and exit
 
 <!--
 ```wait Please edit the object below```
