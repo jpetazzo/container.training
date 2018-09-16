@@ -494,7 +494,7 @@ By "disrupt" we mean: "disconnect it from the network".
 
 - Logout to go back on `node1`
 
-<!-- ```keys ^D``` -->>
+<!-- ```keys ^D``` -->
 
 - Watch the events unfolding with `kubectl get events -w` and `kubectl get pods -w`
 
