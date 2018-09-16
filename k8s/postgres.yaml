@@ -17,7 +17,7 @@ spec:
       - name: postgres
         image: postgres:10.5
         volumeMounts:
-        - mountPath: /var/lib/postgresql
+        - mountPath: /var/lib/postgresql/data
           name: postgres
   volumeClaimTemplates:
   - metadata:
