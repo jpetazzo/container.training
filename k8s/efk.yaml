@@ -72,6 +72,8 @@ spec:
             value: "elastic"
           - name: FLUENT_ELASTICSEARCH_PASSWORD
             value: "changeme"
+          - name: FLUENT_UID
+            value: "0"
         resources:
           limits:
             memory: 200Mi
