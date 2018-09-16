@@ -6,6 +6,12 @@ class: title, self-paced
 
 ---
 
+class: title, pic
+
+![ENIX logo](images/enix-io.svg)
+
+---
+
 class: title, in-person
 
 @@TITLE@@<br/></br>

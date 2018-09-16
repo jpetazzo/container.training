@@ -1,4 +1,4 @@
-.remark-slide-content {
+.remark-slide-content:not(.pic) {
     background-repeat: no-repeat;
     background-position: 99% 1%;
     background-size: 8%;

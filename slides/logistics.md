@@ -6,9 +6,38 @@
 
    - .emoji[🚁] Alexandre ([@alexbuisine](https://twitter.com/alexbuisine), Enix SAS)
 
-- The workshop will run from FIXME
+- Who are you?
 
-- There will be a lunch break at FIXME
+  - devs?
+
+  - ops?
+
+  - architects?
+
+  - other?
+
+---
+
+## Who's Enix?
+
+- Virtualization
+
+- Hosting
+
+- Container Orchestration
+
+- Consulting
+
+- Training
+
+---
+
+
+## Logistics
+
+- The workshop will run until 17:30
+
+- There will be a lunch break at 12:15
 
   (And coffee breaks!)
 
