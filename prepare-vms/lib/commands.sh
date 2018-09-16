@@ -134,13 +134,13 @@ _cmd_kube() {
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
     pssh --timeout 200 "
     sudo apt-get update -q &&
-    sudo apt-get install -qy kubelet kubeadm kubectl
+    sudo apt-get install -qy kubelet kubeadm kubectl &&
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl"
 
     # Initialize kube master
     pssh --timeout 200 "
     if grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/admin.conf ]; then
-        kubeadm token generate > /tmp/token
+        kubeadm token generate > /tmp/token &&
 	sudo kubeadm init --token \$(cat /tmp/token)
     fi"
 
@@ -157,29 +157,29 @@ _cmd_kube() {
     # Install weave as the pod network
     pssh "
     if grep -q node1 /tmp/node; then
-        kubever=\$(kubectl version | base64 | tr -d '\n')
+        kubever=\$(kubectl version | base64 | tr -d '\n') &&
         kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=\$kubever
     fi"
 
     # Join the other nodes to the cluster
     pssh --timeout 200 "
     if ! grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/kubelet.conf ]; then
-        TOKEN=\$(ssh -o StrictHostKeyChecking=no node1 cat /tmp/token)
+        TOKEN=\$(ssh -o StrictHostKeyChecking=no node1 cat /tmp/token) &&
         sudo kubeadm join --discovery-token-unsafe-skip-ca-verification --token \$TOKEN node1:6443
     fi"
 
     # Install stern
     pssh "
     if [ ! -x /usr/local/bin/stern ]; then
-        sudo curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/download/1.8.0/stern_linux_amd64
-        sudo chmod +x /usr/local/bin/stern
+        sudo curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/download/1.8.0/stern_linux_amd64 &&
+        sudo chmod +x /usr/local/bin/stern &&
         stern --completion bash | sudo tee /etc/bash_completion.d/stern
     fi"
 
     # Install helm
     pssh "
     if [ ! -x /usr/local/bin/helm ]; then
-        curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | sudo bash
+        curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | sudo bash &&
         helm completion bash | sudo tee /etc/bash_completion.d/helm
     fi"
 
@@ -378,6 +378,32 @@ _cmd_test() {
     TAG=$1
     need_tag $TAG
     test_tag $TAG
+}
+
+_cmd netfix "Disable GRO and run a pinger job on the VMs"
+_cmd_netfix () {
+    TAG=$1
+    need_tag $TAG
+    link_tag $TAG
+
+    pssh "
+    sudo ethtool -K ens3 gro off
+    sudo tee /root/pinger.service <<EOF
+[Unit]
+Description=pinger
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+WorkingDirectory=/
+ExecStart=/bin/ping -w60 1.1
+User=nobody
+Group=nogroup
+Restart=always
+EOF
+    sudo systemctl enable /root/pinger.service
+    sudo systemctl start pinger"
 }
 
 ###
