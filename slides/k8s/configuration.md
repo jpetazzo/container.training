@@ -327,7 +327,7 @@ We'll cover them just after!*
 
 - We will provide a simple HAproxy configuration, `k8s/haproxy.cfg`
 
-- It listens on port 80, and load balances connections between Google and Bing
+- It listens on port 80, and load balances connections between IBM and Google
 
 ---
 

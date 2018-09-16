@@ -167,7 +167,7 @@ spec:
 
 - It indicates which *provisioner* to use
 
-- And arbitrary paramters for that provisioner
+- And arbitrary parameters for that provisioner
 
   (replication levels, type of disk ... anything relevant!)
 
