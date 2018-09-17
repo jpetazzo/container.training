@@ -17,8 +17,8 @@ class: title, in-person
 @@TITLE@@<br/></br>
 
 .footnote[
-**WiFi: FIXME**<br/>
-**Password: FIXME**
+**WiFi: EnixTraining5G**<br/>
+**Password: kubeforever**
 
 **Slides: @@SLIDES@@**
 ]
