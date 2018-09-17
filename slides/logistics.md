@@ -24,6 +24,8 @@
 
 - Hosting
 
+- Networking
+
 - Container Orchestration
 
 - Consulting
