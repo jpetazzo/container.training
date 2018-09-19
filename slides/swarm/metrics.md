@@ -949,7 +949,7 @@ class: prom
 
 ## It's all about the `/metrics`
 
-- This is was the *node exporter* looks like:
+- This is what the *node exporter* looks like:
 
   http://demo.robustperception.io:9100/metrics
 

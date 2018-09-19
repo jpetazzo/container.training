@@ -295,7 +295,7 @@ It should show as `portworx-replicated (default)`.
 
 - With a `volumeClaimTemplate` requesting a 1 GB volume
 
-- That volume will be mounted to `/var/lib/postgresql`
+- That volume will be mounted to `/var/lib/postgresql/data`
 
 - There is another little detail: we enable the `stork` scheduler
 
@@ -328,7 +328,7 @@ spec:
       - name: postgres
         image: postgres:10.5
         volumeMounts:
-        - mountPath: /var/lib/postgresql
+        - mountPath: /var/lib/postgresql/data
           name: postgres
   volumeClaimTemplates:
   - metadata:
