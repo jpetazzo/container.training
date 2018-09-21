@@ -24,15 +24,9 @@
 
   (it examines headers, certificates ... anything available)
 
-- Many authentication methods can be used simultaneously:
+- Many authentication methods are available and can be used simultaneously
 
-  - TLS client certificates (that's what we've been doing with `kubectl` so far)
-
-  - bearer tokens (a secret token in the HTTP headers of the request)
-
-  - [HTTP basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication) (carrying user and password in a HTTP header)
-
-  - authentication proxy (sitting in front of the API and setting trusted headers)
+  (we will see them on the next slide)
 
 - It's the job of the authentication method to produce:
 
@@ -41,6 +35,26 @@
   - a list of groups
 
 - The API server doesn't interpret these; it'll be the job of *authorizers*
+
+---
+
+## Authentication methods
+
+- TLS client certificates
+
+  (that's what we've been doing with `kubectl` so far)
+
+- Bearer tokens
+
+  (a secret token in the HTTP headers of the request)
+
+- [HTTP basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication)
+
+  (carrying user and password in a HTTP header)
+
+- Authentication proxy
+
+  (sitting in front of the API and setting trusted headers)
 
 ---
 
