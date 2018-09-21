@@ -145,7 +145,7 @@ scrape_configs:
 
   (it will even be gentler on the I/O subsystem since it needs to write less)
 
-FIXME link to Goutham's talk
+[Storage in Prometheus 2.0](https://www.youtube.com/watch?v=C4YV-9CrawA) by [Goutham V](https://twitter.com/putadent) at DC17EU
 
 ---
 
