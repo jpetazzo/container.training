@@ -1,5 +1,4 @@
 {# Feel free to customize or override anything in there! #}
-{%- set url = "http://container.training/" -%}
 {%- set pagesize = 12 -%}
 {%- if clustersize == 1 -%}
     {%- set workshop_name = "Docker workshop" -%}
@@ -98,7 +97,7 @@ img {
             </table>
         </p>
         <p>You can find the slides at:
-            <center>{{ url }}</center>
+            <center>{{ slides_url }}</center>
         </p>
     </div>
 {% endfor %}
