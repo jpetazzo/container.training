@@ -43,7 +43,7 @@ What does `-it` stand for?
 
 ## Detaching cont. (Win PowerShell and cmd.exe)
 
-* Docker for Windows has a different detach expirence due to shell features.
+* Docker for Windows has a different detach experience due to shell features.
 
 * `^P^Q` does not work.
 
@@ -51,7 +51,7 @@ What does `-it` stand for?
 
 * Using Bash, Subsystem for Linux, etc. on Windows behaves like Linux/macOS shells.
 
-* Both PowerShell and Bash work well in Win 10, just be savy of differences.
+* Both PowerShell and Bash work well in Win 10; just be aware of differences.
 
 ---
 
