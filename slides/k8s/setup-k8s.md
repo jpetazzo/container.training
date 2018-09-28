@@ -45,7 +45,7 @@
 ## Other deployment options
 
 - If you are on Azure:
-  [AKS](https://azure.microsoft.com/services/container-service/)
+  [AKS](https://azure.microsoft.com/services/kubernetes-service/)
 
 - If you are on Google Cloud:
   [GKE](https://cloud.google.com/kubernetes-engine/)
@@ -56,7 +56,7 @@
   [kops](https://github.com/kubernetes/kops)
 
 - On a local machine:
-  [minikube](https://kubernetes.io/docs/getting-started-guides/minikube/),
+  [minikube](https://kubernetes.io/docs/setup/minikube/),
   [kubespawn](https://github.com/kinvolk/kube-spawn),
   [Docker4Mac](https://docs.docker.com/docker-for-mac/kubernetes/)
 
