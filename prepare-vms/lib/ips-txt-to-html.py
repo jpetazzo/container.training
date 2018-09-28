@@ -31,7 +31,13 @@ while ips:
     clusters.append(cluster)
 
 template_file_name = SETTINGS["cards_template"]
-template = jinja2.Template(open(template_file_name).read())
+template_file_path = os.path.join(
+    os.path.dirname(__file__),
+    "..",
+    "templates",
+    template_file_name
+    )
+template = jinja2.Template(open(template_file_path).read())
 with open("ips.html", "w") as f:
 	f.write(template.render(clusters=clusters, **SETTINGS))
 print("Generated ips.html")

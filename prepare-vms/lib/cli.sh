@@ -50,27 +50,38 @@ sep() {
     fi
 }
 
-need_tag() {
+need_infra() {
     if [ -z "$1" ]; then
+        die "Please specify infrastructure file. (e.g.: infra/aws)"
+    fi
+    if [ ! -f "$1" ]; then
+        die "Infrastructure file $1 doesn't exist."
+    fi
+    . "$1"
+    . "lib/infra/$INFRACLASS.sh"
+}
+
+need_tag() {
+    if [ -z "$TAG" ]; then
         die "Please specify a tag or token. To see available tags and tokens, run: $0 list"
     fi
+    if [ ! -d "tags/$TAG" ]; then
+        die "Tag $TAG not found (directory tags/$TAG does not exist)."
+    fi
+    for FILE in settings.yaml ips.txt infra.sh; do
+        if [ ! -f "tags/$TAG/$FILE" ]; then
+          warning "File tags/$TAG/$FILE not found."
+        fi
+    done
+    . "tags/$TAG/infra.sh"
+    . "lib/infra/$INFRACLASS.sh"
 }
 
 need_settings() {
     if [ -z "$1" ]; then
-        die "Please specify a settings file."
-    elif [ ! -f "$1" ]; then
+        die "Please specify a settings file. (e.g.: settings/kube101.yaml)"
+    fi
+    if [ ! -f "$1" ]; then
         die "Settings file $1 doesn't exist."
-    fi
-}
-
-need_ips_file() {
-    IPS_FILE=$1
-    if [ -z "$IPS_FILE" ]; then
-        die "IPS_FILE not set."
-    fi
-
-    if [ ! -s "$IPS_FILE" ]; then
-        die "IPS_FILE $IPS_FILE not found. Please run: $0 ips <TAG>"
     fi
 }

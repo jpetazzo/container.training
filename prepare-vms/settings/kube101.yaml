@@ -4,7 +4,7 @@
 clustersize: 3
 
 # Jinja2 template to use to generate ready-to-cut cards
-cards_template: settings/kube101.html
+cards_template: kube101.html
 
 # Use "Letter" in the US, and "A4" everywhere else
 paper_size: Letter
