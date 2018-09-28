@@ -14,11 +14,11 @@
 
 - Download the `kubectl` binary from one of these links:
 
-  [Linux](https://storage.googleapis.com/kubernetes-release/release/v1.11.2/bin/linux/amd64/kubectl)
+  [Linux](https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl)
   |
-  [macOS](https://storage.googleapis.com/kubernetes-release/release/v1.11.2/bin/darwin/amd64/kubectl)
+  [macOS](https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/darwin/amd64/kubectl)
   |
-  [Windows](https://storage.googleapis.com/kubernetes-release/release/v1.11.2/bin/windows/amd64/kubectl.exe)
+  [Windows](https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/windows/amd64/kubectl.exe)
 
 - On Linux and macOS, make the binary executable with `chmod +x kubectl`
 
