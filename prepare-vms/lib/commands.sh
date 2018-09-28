@@ -143,6 +143,23 @@ _cmd_kube() {
         sudo kubeadm join --discovery-token-unsafe-skip-ca-verification --token \$TOKEN node1:6443
     fi"
 
+    # Install kubectx and kubens
+    pssh "
+    [ -d kubectx ] || git clone https://github.com/ahmetb/kubectx &&
+    sudo ln -sf /home/ubuntu/kubectx/kubectx /usr/local/bin/kctx &&
+    sudo ln -sf /home/ubuntu/kubectx/kubens /usr/local/bin/kns &&
+    sudo cp /home/ubuntu/kubectx/completion/*.bash /etc/bash_completion.d &&
+    [ -d kube-ps1 ] || git clone https://github.com/jonmosco/kube-ps1 &&
+    sudo -u docker sed s/docker-prompt/kube_ps1/ /home/docker/.bashrc &&
+    sudo -u docker tee -a /home/docker/.bashrc <<EOF
+. /home/ubuntu/kube-ps1/kube-ps1.sh
+KUBE_PS1_PREFIX=""
+KUBE_PS1_SUFFIX=""
+KUBE_PS1_SYMBOL_ENABLE="false"
+KUBE_PS1_CTX_COLOR="green"
+KUBE_PS1_NS_COLOR="green"
+EOF"
+
     # Install stern
     pssh "
     if [ ! -x /usr/local/bin/stern ]; then
