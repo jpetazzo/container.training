@@ -1,0 +1,9 @@
+INFRACLASS=openstack
+# If you are using OpenStack, copy this file (e.g. to "openstack" or "enix")
+# and customize the variables below.
+export TF_VAR_user="jpetazzo"
+export TF_VAR_tenant="training"
+export TF_VAR_domain="Default"
+export TF_VAR_password="..."
+export TF_VAR_auth_url="https://api.r1.nxs.enix.io/v3"
+export TF_VAR_flavor="GP1.S"
