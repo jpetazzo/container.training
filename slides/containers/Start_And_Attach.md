@@ -24,7 +24,7 @@ Analogy: attaching to a container is like plugging a keyboard and screen to a ph
 
 ---
 
-## Detaching from a container
+## Detaching from a container (Linux/macOS)
 
 * If you have started an *interactive* container (with option `-it`), you can detach from it.
 
@@ -38,6 +38,20 @@ What does `-it` stand for?
 
 * `-t` means "allocate a terminal."
 * `-i` means "connect stdin to the terminal."
+
+---
+
+## Detaching cont. (Win PowerShell and cmd.exe)
+
+* Docker for Windows has a different detach expirence due to shell features.
+
+* `^P^Q` does not work.
+
+* `^C` will detach, rather than stop the container.
+
+* Using Bash, Subsystem for Linux, etc. on Windows behaves like Linux/macOS shells.
+
+* Both PowerShell and Bash work well in Win 10, just be savy of differences.
 
 ---
 
