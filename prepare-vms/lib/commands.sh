@@ -35,7 +35,7 @@ _cmd_cards() {
 
     info "Cards created. You can view them with:"
     info "xdg-open tags/$TAG/ips.html tags/$TAG/ips.pdf (on Linux)"
-    info "open tags/$TAG/ips.html tags/$TAG/ips.pdf (on MacOS)"
+    info "open tags/$TAG/ips.html (on macOS)"
 }
 
 _cmd deploy "Install Docker on a bunch of running VMs"
@@ -150,7 +150,7 @@ _cmd_kube() {
     sudo ln -sf /home/ubuntu/kubectx/kubens /usr/local/bin/kns &&
     sudo cp /home/ubuntu/kubectx/completion/*.bash /etc/bash_completion.d &&
     [ -d kube-ps1 ] || git clone https://github.com/jonmosco/kube-ps1 &&
-    sudo -u docker sed s/docker-prompt/kube_ps1/ /home/docker/.bashrc &&
+    sudo -u docker sed -i s/docker-prompt/kube_ps1/ /home/docker/.bashrc &&
     sudo -u docker tee -a /home/docker/.bashrc <<EOF
 . /home/ubuntu/kube-ps1/kube-ps1.sh
 KUBE_PS1_PREFIX=""

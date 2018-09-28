@@ -43,6 +43,7 @@ infra_start() {
         --count $COUNT \
         --instance-type ${AWS_INSTANCE_TYPE-t2.medium} \
         --client-token $TAG \
+        --block-device-mapping 'DeviceName=/dev/sda1,Ebs={VolumeSize=20}' \
         --image-id $AMI)
     reservation_id=$(echo "$result" | head -1 | awk '{print $2}')
     info "Reservation ID: $reservation_id"
