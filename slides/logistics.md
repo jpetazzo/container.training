@@ -2,23 +2,9 @@
 
 - This slide should be customized by the tutorial instructor(s).
 
-- Hello! We are:
+- Hello! I'm Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
 
-   - .emoji[👩🏻‍🏫] Ann O'Nymous ([@...](https://twitter.com/...), Megacorp Inc)
-
-   - .emoji[👨🏾‍🎓] Stu Dent ([@...](https://twitter.com/...), University of Wakanda)
-
- <!-- .dummy[
-
-   - .emoji[👷🏻‍♀️] AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
-
-   - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
-
-   - .emoji[⛵] Jérémy ([@jeremygarrouste](twitter.com/jeremygarrouste), Inpiwee)
-
-] -->
-
-- The workshop will run from ...
+- The workshop will run from 9am to 5pm
 
 - There will be a lunch break at ...
 
