@@ -33,7 +33,7 @@ And *then* it is time to look at orchestration!
 
 - Do it ourselves
 
-  (price: $-$$$, dificulty: hard)
+  (price: $-$$$, difficulty: hard)
 
 ---
 
@@ -240,7 +240,7 @@ Sorry Star Trek fans, this is not the federation you're looking for!
 
 ## Developer experience
 
-*I've put this last, but it's pretty important!*
+*We've put this last, but it's pretty important!*
 
 - How do you on-board a new developer?
 
