@@ -20,6 +20,42 @@ And *then* it is time to look at orchestration!
 
 ---
 
+## Options for our first production cluster
+
+- Get a managed cluster from a major cloud provider (AKS, EKS, GKE...)
+
+  (price: $, difficulty: medium)
+
+- Hire someone to deploy it for us
+
+  (price: $$, difficulty: easy)
+
+- Do it ourselves
+
+  (price: $-$$$, difficulty: hard)
+
+---
+
+## One big cluster vs. multiple small ones
+
+- Yes, it is possible to have prod+dev in a single cluster
+
+  (and implement good isolation and security with RBAC, network policies...)
+
+- But it is not a good idea to do that for our first deployment
+
+- Start with a production cluster + at least a test cluster
+
+- Implement and check RBAC and isolation on the test cluster
+
+  (e.g. deploy multiple test versions side-by-side)
+
+- Make sure that all our devs have usable dev clusters
+
+  (wether it's a local minikube or a full-blown multi-node cluster)
+
+---
+
 ## Stateful services (databases etc.)
 
 - As a first step, it is wiser to keep stateful services *outside* of the cluster
@@ -98,7 +134,7 @@ Sorry Star Trek fans, this is not the federation you're looking for!
 
 ## Developer experience
 
-*I've put this last, but it's pretty important!*
+*We've put this last, but it's pretty important!*
 
 - How do you on-board a new developer?
 
