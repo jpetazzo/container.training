@@ -35,7 +35,7 @@ _cmd_cards() {
 
     info "Cards created. You can view them with:"
     info "xdg-open tags/$TAG/ips.html tags/$TAG/ips.pdf (on Linux)"
-    info "open tags/$TAG/ips.html tags/$TAG/ips.pdf (on MacOS)"
+    info "open tags/$TAG/ips.html (on macOS)"
 }
 
 _cmd deploy "Install Docker on a bunch of running VMs"
