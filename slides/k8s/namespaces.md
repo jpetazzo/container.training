@@ -175,34 +175,6 @@ Note: it might take a minute or two for the app to be up and running.
 
 ---
 
-## Network policies overview
-
-- We can create as many network policies as we want
-
-- Each network policy has:
-
-  - a *pod selector*: "which pods are targeted by the policy?"
-
-  - lists of ingress and/or egress rules: "which peers and ports are allowed or blocked?"
-
-- If a pod is not targeted by any policy, traffic is allowed by default
-
-- If a pod is targeted by at least one policy, traffic must be allowed explicitly
-
----
-
-## More about network policies
-
-- This remains a high level overview of network policies
-
-- For more details, check:
-
-  - the [Kubernetes documentation about network policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
-
-  - this [talk about network policies at KubeCon 2017 US](https://www.youtube.com/watch?v=3gGpMmYeEO8) by [@ahmetb](https://twitter.com/ahmetb)
-
----
-
 ## Switch back to the default namespace
 
 - Let's make sure that we don't run future exercises in the `blue` namespace
