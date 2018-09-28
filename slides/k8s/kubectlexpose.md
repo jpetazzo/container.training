@@ -59,9 +59,9 @@ Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables`
 
 .exercise[
 
-- Start a bunch of ElasticSearch containers:
+- Start a bunch of HTTP servers:
   ```bash
-  kubectl run elastic --image=elasticsearch:2 --replicas=7
+  kubectl run httpenv --image=jpetazzo/httpenv --replicas=10
   ```
 
 - Watch them being started:
@@ -70,15 +70,17 @@ Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables`
   ```
 
 <!--
-```wait elastic-```
+```wait httpenv-```
 ```keys ^C```
 -->
 
 ]
 
-The `-w` option "watches" events happening on the specified resources.
+The `jpetazzo/httpenv` image runs an HTTP server on port 8888.
+<br/>
+It serves its environment variables in JSON format.
 
-Note: please DO NOT call the service `search`. It would collide with the TLD.
+The `-w` option "watches" events happening on the specified resources.
 
 ---
 
@@ -88,9 +90,9 @@ Note: please DO NOT call the service `search`. It would collide with the TLD.
 
 .exercise[
 
-- Expose the ElasticSearch HTTP API port:
+- Expose the HTTP port of our server:
   ```bash
-  kubectl expose deploy/elastic --port 9200
+  kubectl expose deploy/httpenv --port 8888
   ```
 
 - Look up which IP address was allocated:
@@ -122,36 +124,34 @@ Note: please DO NOT call the service `search`. It would collide with the TLD.
 
 ## Testing our service
 
-- We will now send a few HTTP requests to our ElasticSearch pods
+- We will now send a few HTTP requests to our pods
 
 .exercise[
 
 - Let's obtain the IP address that was allocated for our service, *programmatically:*
   ```bash
-  IP=$(kubectl get svc elastic -o go-template --template '{{ .spec.clusterIP }}')
+  IP=$(kubectl get svc httpenv -o go-template --template '{{ .spec.clusterIP }}')
   ```
 
 <!--
-```hide kubectl wait deploy elastic --for condition=available```
-```hide sleep 5``` (give some time for elasticsearch to start... hopefully this is enough!)
+```hide kubectl wait deploy httpenv --for condition=available```
 -->
 
 - Send a few requests:
   ```bash
-  curl http://$IP:9200/
+  curl http://$IP:8888/
+  ```
+
+- Too much output? Filter it with `jq`:
+  ```bash
+  curl -s http://$IP:8888/ | jq .HOSTNAME
   ```
 
 ]
 
 --
 
-We may see `curl: (7) Failed to connect to _IP_ port 9200: Connection refused`.
-
-This is normal while the service starts up.
-
---
-
-Once it's running, our requests are load balanced across multiple pods.
+Our requests are load balanced across multiple pods.
 
 ---
 
@@ -205,9 +205,9 @@ class: extra-details
 
 .exercise[
 
-- Check the endpoints that Kubernetes has associated with our `elastic` service:
+- Check the endpoints that Kubernetes has associated with our `httpenv` service:
   ```bash
-  kubectl describe service elastic
+  kubectl describe service httpenv
   ```
 
 ]
@@ -229,15 +229,15 @@ class: extra-details
 
 - If we want to see the full list, we can use one of the following commands:
   ```bash
-  kubectl describe endpoints elastic
-  kubectl get endpoints elastic -o yaml
+  kubectl describe endpoints httpenv
+  kubectl get endpoints httpenv -o yaml
   ```
 
 - These commands will show us a list of IP addresses
 
 - These IP addresses should match the addresses of the corresponding pods:
   ```bash
-  kubectl get pods -l run=elastic -o wide
+  kubectl get pods -l run=httpenv -o wide
   ```
 
 ---
