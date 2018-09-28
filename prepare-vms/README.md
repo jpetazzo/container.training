@@ -23,7 +23,7 @@ And if you want to generate printable cards:
 ## General Workflow
 
 - fork/clone repo
-- create an infrastructure configuration in the `infra` sdirectory
+- create an infrastructure configuration in the `prepare-vms/infra` directory
   (using one of the example files in that directory)
 - create your own setting file from `settings/example.yaml`
 - if necessary, increase allowed open files: `ulimit -Sn 10000`
@@ -134,7 +134,7 @@ wrap         Run this program in a container
 
 ### Example Steps to Launch Azure Instances
 
-- Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) and authenticate with a valid account
+- Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) and authenticate with a valid account (`az login`)
 - Customize `azuredeploy.parameters.json`
   - Required:
     - Provide the SSH public key you plan to use for instance configuration
@@ -180,11 +180,16 @@ az group delete --resource-group workshop
 ### Example Steps to Configure Instances from a non-AWS Source
 
 - Copy `infra/example.generic` to `infra/generic`
-- Run `./workshopctl --infra infra/generic --settings settings/...yaml`
+- Run `./workshopctl start --infra infra/generic --settings settings/...yaml`
+- Note the `prepare-vms/tags/TAG/` path that has been auto-created.
 - Launch instances via your preferred method. You'll need to get the instance IPs and be able to SSH into them.
-- Create the file `prepare-vms/tags/TAG/ips.txt`, it should list the IP addresses of the VMs (one per line, without any comments or other info)
-- Continue deployment with `./workshopctl deploy TAG`
-  (all subsequent commands are the same as with VMs created with another method)
+- Edit the file `prepare-vms/tags/TAG/ips.txt`, it should list the IP addresses of the VMs (one per line, without any comments or other info)
+- Continue deployment of cluster configuration with `./workshopctl deploy TAG`
+- Optionally, configure Kubernetes clusters of the size in the settings: workshopctl kube `TAG`
+- Optionally, test your Kubernetes clusters. They may take a little time to become ready: workshopctl kubetest `TAG`
+- Generate cards to print and hand out: workshopctl cards `TAG`
+- Print the cards file: prepare-vms/tags/`TAG`/ips.html
+
 
 ## Even More Details
 
