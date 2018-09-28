@@ -407,20 +407,22 @@ spec:
 
   - half of the connections to Google
 
-  - the other half to Bing
+  - the other half to IBM
 
 .exercise[
 
 - Access the load balancer a few times:
   ```bash
-  curl -I $IP
-  curl -I $IP
-  curl -I $IP
+  curl $IP
+  curl $IP
+  curl $IP
   ```
 
 ]
 
-We should see connections served by Google (look for the `Location` header) and others served by Bing (indicated by the `X-MSEdge-Ref` header).
+We should see connections served by Google, and others served by IBM.
+<br/>
+(Each server sends us a redirect page. Look at the URL that they send us to!)
 
 ---
 
