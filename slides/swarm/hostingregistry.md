@@ -1,7 +1,6 @@
 # Hosting our own registry
 
-- We need to run a `registry:2` container
-  <br/>(make sure you specify tag `:2` to run the new version!)
+- We need to run a `registry` container
 
 - It will store images and layers to the local filesystem
   <br/>(but you can add a config file to use S3, Swift, etc.)
@@ -28,7 +27,7 @@
 
 - Create the registry service:
   ```bash
-  docker service create --name registry --publish 5000:5000 registry:2
+  docker service create --name registry --publish 5000:5000 registry
   ```
 
 - Now try the following command; it should return `{"repositories":[]}`:

@@ -63,7 +63,7 @@ We need a registry to move images around.
 Without a stack file, it would be deployed with the following command:
 
 ```bash
-docker service create --publish 5000:5000 registry:2
+docker service create --publish 5000:5000 registry
 ```
 
 Now, we are going to deploy it with the following stack file:
@@ -73,7 +73,7 @@ version: "3"
 
 services:
   registry:
-    image: registry:2
+    image: registry
     ports:
       - "5000:5000"
 ```
