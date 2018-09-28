@@ -2,7 +2,7 @@
 clustersize: 5
 
 # Jinja2 template to use to generate ready-to-cut cards
-cards_template: settings/enix.html
+cards_template: enix.html
 
 # Use "Letter" in the US, and "A4" everywhere else
 paper_size: A4

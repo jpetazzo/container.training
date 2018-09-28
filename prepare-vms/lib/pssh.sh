@@ -1,12 +1,17 @@
 # This file can be sourced in order to directly run commands on
-# a batch of VMs whose IPs are located in ips.txt of the directory in which
+# a group of VMs whose IPs are located in ips.txt of the directory in which
 # the command is run.
 
 pssh() {
-    HOSTFILE="ips.txt"
+    if [ -z "$TAG" ]; then
+        >/dev/stderr echo "Variable \$TAG is not set."
+        return
+    fi
+
+    HOSTFILE="tags/$TAG/ips.txt"
 
     [ -f $HOSTFILE ] || {
-        >/dev/stderr echo "No hostfile found at $HOSTFILE"
+        >/dev/stderr echo "Hostfile $HOSTFILE not found."
         return
     }
 
