@@ -309,54 +309,6 @@ and *canary deployments*.
 
 ---
 
-## Improving the workflow
-
-The workflow that we showed is nice, but it requires us to:
-
-* keep track of all the `docker run` flags required to run the container,
-
-* inspect the `Dockerfile` to know which path(s) to mount,
-
-* write scripts to hide that complexity.
-
-There has to be a better way!
-
----
-
-## Docker Compose to the rescue
-
-* Docker Compose allows us to "encode" `docker run` parameters in a YAML file.
-
-* Here is the `docker-compose.yml` file that we can use for our "namer" app:
-
-  ```yaml
-  www:
-    build: .
-    volumes:
-      - .:/src
-    ports:
-      - 80:9292
-  ```
-
-* Try it:
-  ```bash
-  $ docker-compose up -d
-  ```
-
----
-
-## Working with Docker Compose
-
-* When you see a `docker-compose.yml` file, you can use `docker-compose up`.
-
-* It can build images and run them with the required parameters.
-
-* Compose can also deal with complex, multi-container apps.
-
-  (More on this later!)
-
----
-
 ## Recap of the development workflow
 
 1. Write a Dockerfile to build an image containing our development environment.
