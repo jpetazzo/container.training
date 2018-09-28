@@ -1,11 +1,8 @@
 *.pyc
 *.swp
 *~
-prepare-vms/ips.txt
-prepare-vms/ips.html
-prepare-vms/ips.pdf
-prepare-vms/settings.yaml
 prepare-vms/tags
+prepare-vms/infra
 slides/*.yml.html
 slides/autopilot/state.yaml
 slides/index.html

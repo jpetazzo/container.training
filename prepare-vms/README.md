@@ -1,10 +1,19 @@
-# Trainer tools to create and prepare VMs for Docker workshops on AWS or Azure
+# Trainer tools to create and prepare VMs for Docker workshops
+
+These tools can help you to create VMs on:
+
+- Azure
+- EC2
+- OpenStack
 
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 - [Parallel SSH](https://code.google.com/archive/p/parallel-ssh/) (on a Mac: `brew install pssh`) - the configuration scripts require this
+
+Depending on the infrastructure that you want to use, you also need to install
+the Azure CLI, the AWS CLI, or terraform (for OpenStack deployment).
 
 And if you want to generate printable cards:
 
@@ -14,19 +23,24 @@ And if you want to generate printable cards:
 ## General Workflow
 
 - fork/clone repo
-- set required environment variables
+- create an infrastructure configuration in the `prepare-vms/infra` directory
+  (using one of the example files in that directory)
 - create your own setting file from `settings/example.yaml`
 - if necessary, increase allowed open files: `ulimit -Sn 10000`
-- run `./workshopctl` commands to create instances, install docker, setup each users environment in node1, other management tasks
-- run `./workshopctl cards` command to generate PDF for printing handouts of each users host IP's and login info
+- run `./workshopctl start` to create instances
+- run `./workshopctl deploy` to install Docker and setup environment
+- run `./workshopctl kube` (if you want to install and setup Kubernetes)
+- run `./workshopctl cards` (if you want to generate PDF for printing handouts of each users host IP's and login info)
+- run `./workshopctl stop` at the end of the workshop to terminate instances
 
 ## Clone/Fork the Repo, and Build the Tools Image
 
 The Docker Compose file here is used to build a image with all the dependencies to run the `./workshopctl` commands and optional tools. Each run of the script will check if you have those dependencies locally on your host, and will only use the container if you're [missing a dependency](workshopctl#L5).
 
-    $ git clone https://github.com/jpetazzo/orchestration-workshop.git
-    $ cd orchestration-workshop/prepare-vms
+    $ git clone https://github.com/jpetazzo/container.training
+    $ cd container.training/prepare-vms
     $ docker-compose build
+
 
 ## Preparing to Run `./workshopctl`
 
@@ -36,27 +50,37 @@ The Docker Compose file here is used to build a image with all the dependencies 
 - Using a non-default VPC or Security Group isn't supported out of box yet, so you will have to customize `lib/commands.sh` if you want to change that.
 - These instances will assign the default VPC Security Group, which does not open any ports from Internet by default. So you'll need to add Inbound rules for `SSH | TCP | 22 | 0.0.0.0/0` and `Custom TCP Rule | TCP | 8000 - 8002 | 0.0.0.0/0`, or run `./workshopctl opensg` which opens up all ports.
 
-### Required Environment Variables
+### Create your `infra` file
 
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
-- `AWS_DEFAULT_REGION`
+You need to do this only once. (On AWS, you can create one `infra`
+file per region.)
 
-If you're not using AWS, set these to placeholder values:
+Make a copy of one of the example files in the `infra` directory.
 
+For instance:
+
+```bash
+cp infra/example.aws infra/aws-us-west-2
 ```
-export AWS_ACCESS_KEY_ID="foo"
-export AWS_SECRET_ACCESS_KEY="foo"
-export AWS_DEFAULT_REGION="foo"
-```
+
+Edit your infrastructure file to customize it.
+You will probably need to put your cloud provider credentials,
+select region...
 
 If you don't have the `aws` CLI installed, you will get a warning that it's a missing dependency. If you're not using AWS you can ignore this.
 
-### Update/copy `settings/example.yaml`
+### Create your `settings` file
 
-Then pass `settings/YOUR_WORKSHOP_NAME-settings.yaml` as an argument to `./workshopctl deploy`, `./workshopctl cards`, etc.
+Similarly, pick one of the files in `settings` and copy it
+to customize it.
 
-./workshopctl cards 2016-09-28-00-33-bret settings/orchestration.yaml
+For instance:
+
+```bash
+cp settings/example.yaml settings/myworkshop.yaml
+```
+
+You're all set!
 
 ## `./workshopctl` Usage
 
@@ -66,7 +90,7 @@ Commands:
 ami          Show the AMI that will be used for deployment
 amis         List Ubuntu AMIs in the current region
 build        Build the Docker image to run this program in a container
-cards        Generate ready-to-print cards for a batch of VMs
+cards        Generate ready-to-print cards for a group of VMs
 deploy       Install Docker on a bunch of running VMs
 ec2quotas    Check our EC2 quotas (max instances)
 help         Show available commands
@@ -74,14 +98,14 @@ ids          List the instance IDs belonging to a given tag or token
 ips          List the IP addresses of the VMs for a given tag or token
 kube         Setup kubernetes clusters with kubeadm (must be run AFTER deploy)
 kubetest     Check that all notes are reporting as Ready
-list         List available batches in the current region
+list         List available groups in the current region
 opensg       Open the default security group to ALL ingress traffic
 pull_images  Pre-pull a bunch of Docker images
-retag        Apply a new tag to a batch of VMs
-start        Start a batch of VMs
-status       List instance status for a given batch
+retag        Apply a new tag to a group of VMs
+start        Start a group of VMs
+status       List instance status for a given group
 stop         Stop (terminate, shutdown, kill, remove, destroy...) instances
-test         Run tests (pre-flight checks) on a batch of VMs
+test         Run tests (pre-flight checks) on a group of VMs
 wrap         Run this program in a container
 ```
 
@@ -95,22 +119,22 @@ wrap         Run this program in a container
 - During `start` it will add your default local SSH key to all instances under the `ubuntu` user.
 - During `deploy` it will create the `docker` user with password `training`, which is printing on the cards for students. This can be configured with the `docker_user_password` property in the settings file.
 
-### Example Steps to Launch a Batch of AWS Instances for a Workshop
+### Example Steps to Launch a group of AWS Instances for a Workshop
 
-- Run `./workshopctl start N` Creates `N` EC2 instances
+- Run `./workshopctl start --infra infra/aws-us-east-2 --settings/myworkshop.yaml --count 60` to create 60 EC2 instances
   - Your local SSH key will be synced to instances under `ubuntu` user
   - AWS instances will be created and tagged based on date, and IP's stored in `prepare-vms/tags/`
-- Run `./workshopctl deploy TAG settings/somefile.yaml` to run `lib/postprep.py` via parallel-ssh
+- Run `./workshopctl deploy TAG` to run `lib/postprep.py` via parallel-ssh
   - If it errors or times out, you should be able to rerun
   - Requires good connection to run all the parallel SSH connections, up to 100 parallel (ProTip: create dedicated management instance in same AWS region where you run all these utils from)
 - Run `./workshopctl pull_images TAG` to pre-pull a bunch of Docker images to the instances
-- Run `./workshopctl cards TAG settings/somefile.yaml` generates PDF/HTML files to print and cut and hand out to students
+- Run `./workshopctl cards TAG` generates PDF/HTML files to print and cut and hand out to students
 - *Have a great workshop*
 - Run `./workshopctl stop TAG` to terminate instances.
 
 ### Example Steps to Launch Azure Instances
 
-- Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) and authenticate with a valid account
+- Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) and authenticate with a valid account (`az login`)
 - Customize `azuredeploy.parameters.json`
   - Required:
     - Provide the SSH public key you plan to use for instance configuration
@@ -155,27 +179,16 @@ az group delete --resource-group workshop
 
 ### Example Steps to Configure Instances from a non-AWS Source
 
-- Launch instances via your preferred method. You'll need to get the instance IPs and be able to ssh into them.
-- Set placeholder values for [AWS environment variable settings](#required-environment-variables).
-- Choose a tag. It could be an event name, datestamp, etc. Ensure you have created a directory for your tag: `prepare-vms/tags/<tag>/`
-- If you have not already generated a file with the IPs to be configured:
-  - The file should be named `prepare-vms/tags/<tag>/ips.txt`
-  - Format is one IP per line, no other info needed.
-- Ensure the settings file is as desired (especially the number of nodes): `prepare-vms/settings/kube101.yaml`
-- For a tag called `myworkshop`, configure instances: `workshopctl deploy myworkshop settings/kube101.yaml`
-- Optionally, configure Kubernetes clusters of the size in the settings: `workshopctl kube myworkshop`
-- Optionally, test your Kubernetes clusters. They may take a little time to become ready: `workshopctl kubetest myworkshop`
-- Generate cards to print and hand out: `workshopctl cards myworkshop settings/kube101.yaml`
-- Print the cards file: `prepare-vms/tags/myworkshop/ips.html`
-
-
-## Other Tools
-
-### Deploying your SSH key to all the machines
-
-- Make sure that you have SSH keys loaded (`ssh-add -l`).
-- Source `rc`.
-- Run `pcopykey`.
+- Copy `infra/example.generic` to `infra/generic`
+- Run `./workshopctl start --infra infra/generic --settings settings/...yaml`
+- Note the `prepare-vms/tags/TAG/` path that has been auto-created.
+- Launch instances via your preferred method. You'll need to get the instance IPs and be able to SSH into them.
+- Edit the file `prepare-vms/tags/TAG/ips.txt`, it should list the IP addresses of the VMs (one per line, without any comments or other info)
+- Continue deployment of cluster configuration with `./workshopctl deploy TAG`
+- Optionally, configure Kubernetes clusters of the size in the settings: workshopctl kube `TAG`
+- Optionally, test your Kubernetes clusters. They may take a little time to become ready: workshopctl kubetest `TAG`
+- Generate cards to print and hand out: workshopctl cards `TAG`
+- Print the cards file: prepare-vms/tags/`TAG`/ips.html
 
 
 ## Even More Details
@@ -188,7 +201,7 @@ To see which local key will be uploaded, run `ssh-add -l | grep RSA`.
 
 #### Instance + tag creation
 
-10 VMs will be started, with an automatically generated tag (timestamp + your username).
+The VMs will be started, with an automatically generated tag (timestamp + your username).
 
 Your SSH key will be added to the `authorized_keys` of the ubuntu user.
 
@@ -196,15 +209,11 @@ Your SSH key will be added to the `authorized_keys` of the ubuntu user.
 
 Following the creation of the VMs, a text file will be created containing a list of their IPs.
 
-This ips.txt file will be created in the $TAG/ directory and a symlink will be placed in the working directory of the script.
-
-If you create new VMs, the symlinked file will be overwritten.
-
 #### Deployment
 
 Instances can be deployed manually using the `deploy` command:
 
-    $ ./workshopctl deploy TAG settings/somefile.yaml
+    $ ./workshopctl deploy TAG
 
 The `postprep.py` file will be copied via parallel-ssh to all of the VMs and executed.
 
@@ -214,7 +223,7 @@ The `postprep.py` file will be copied via parallel-ssh to all of the VMs and exe
 
 #### Generate cards
 
-    $ ./workshopctl cards TAG settings/somefile.yaml
+    $ ./workshopctl cards TAG
 
 If you want to generate both HTML and PDF cards, install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html); without that installed, only HTML cards will be generated.
 
@@ -222,13 +231,11 @@ If you don't have `wkhtmltopdf` installed, you will get a warning that it is a m
 
 #### List tags
 
-    $ ./workshopctl list
+    $ ./workshopctl list infra/some-infra-file
 
-#### List VMs
+    $ ./workshopctl listall
 
-    $ ./workshopctl list TAG
-
-This will print a human-friendly list containing some information about each instance.
+    $ ./workshopctl tags
 
 #### Stop and destroy VMs
 
