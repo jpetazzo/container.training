@@ -50,8 +50,7 @@ In this part, we will:
 
 ## Using the open source registry
 
-- We need to run a `registry:2` container
-  <br/>(make sure you specify tag `:2` to run the new version!)
+- We need to run a `registry` container
 
 - It will store images and layers to the local filesystem
   <br/>(but you can add a config file to use S3, Swift, etc.)
@@ -75,7 +74,7 @@ In this part, we will:
 
 - Create the registry service:
   ```bash
-  kubectl run registry --image=registry:2
+  kubectl run registry --image=registry
   ```
 
 - Expose it on a NodePort:
