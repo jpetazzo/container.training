@@ -62,6 +62,7 @@
   title: Kubernetes Bootcamp - Deploying and Scaling Microservices
   speaker: jpetazzo
   attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/69875
+  slides: https://k8s2d.container.training
 
 - date: 2018-09-30
   city: New York, NY
@@ -79,6 +80,7 @@
   title: Déployer ses applications avec Kubernetes (in French)
   lang: fr
   attend:  https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
+  slides: https://septembre2018.container.training
 
 - date: 2018-07-17
   city: Portland, OR
