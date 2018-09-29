@@ -263,7 +263,7 @@ We could! But the *deployment* would notice it right away, and scale back to the
 - `kubectl create -f foo.yaml` or `kubectl apply -f foo.yaml`
 
   - all features are available
-  - requires to write YAML
+  - requires writing YAML
 
 ---
 
