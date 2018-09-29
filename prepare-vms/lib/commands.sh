@@ -114,6 +114,7 @@ _cmd_kube() {
 
     # Initialize kube master
     pssh --timeout 200 "
+    sudo kubeadm reset -f
     if grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/admin.conf ]; then
         kubeadm token generate > /tmp/token &&
 	sudo kubeadm init --token \$(cat /tmp/token)
