@@ -6,9 +6,9 @@
 
 - The workshop will run from 9am to 5pm
 
-- There will be a lunch break at ...
+- Lunch will be served at 12:30pm (in Rhinelander)
 
-  (And coffee breaks!)
+- Morning and afternoon breaks are scheduled at 10:30am and 3pm (in Sutton Foyer)
 
 - Feel free to interrupt for questions at any time
 
