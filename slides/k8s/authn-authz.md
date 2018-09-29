@@ -135,6 +135,26 @@ class: extra-details
 
 ---
 
+## User certificates in practice
+
+- The Kubernetes API server does not support certificate revocation
+
+  (see issue [#18982](https://github.com/kubernetes/kubernetes/issues/18982))
+
+- There are workarounds, but they are very inconvenient:
+
+  - issue short-lived certificates (e.g. 24 hours) and regenerate them often
+
+  - re-create the CA and re-issue all certificates in case of compromise
+
+  - grant permissions to individual users, not groups
+    <br/>
+    (and remove all permissions to a compromised user)
+
+- Until this is fixed, we probably want to use other methods
+
+---
+
 ## Authentication with tokens
 
 - Tokens are passed as HTTP headers:
