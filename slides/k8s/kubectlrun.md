@@ -32,7 +32,8 @@
 
 --
 
-OK, what just happened?
+(Starting with Kubernetes 1.12, we get a message telling us that
+`kubectl run` is deprecated. Let's ignore it for now.)
 
 ---
 
@@ -225,6 +226,44 @@ We could! But the *deployment* would notice it right away, and scale back to the
   <br/>and create them on the cluster with `kubectl apply -f` (discussed later)
 
 - With `kubectl run --schedule=...`, we can also create *cronjobs*
+
+---
+
+## What about that deprecation warning?
+
+- As we can see from the previous slide, `kubectl run` can do many things
+
+- The exact type of resource created is not obvious
+
+- To make things more explicit, it is better to use `kubectl create`:
+
+  - `kubectl create deployment` to create a deployment
+
+  - `kubectl create job` to create a job
+
+- Eventually, `kubectl run` will be used only to start one-shot pods
+
+  (see https://github.com/kubernetes/kubernetes/pull/68132)
+
+---
+
+## Various ways of creating resources
+
+- `kubectl run` 
+
+  - easy way to get started
+  - versatile
+
+- `kubectl create <resource>` 
+
+  - explicit, but lacks some features
+  - can't create a CronJob
+  - can't pass command-line arguments to deployments
+
+- `kubectl create -f foo.yaml` or `kubectl apply -f foo.yaml`
+
+  - all features are available
+  - requires writing YAML
 
 ---
 
