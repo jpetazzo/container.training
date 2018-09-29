@@ -1,11 +1,11 @@
-.remark-slide-content {
+.remark-slide-content:not(.pic) {
     background-repeat: no-repeat;
     background-position: 99% 1%;
     background-size: 8%;
     background-image: url(https://enix.io/static/img/logos/logo-domain-cropped.png);
 }
 
-div.extra-details {
+div.extra-details:not(.pic) {
   background-image: url("images/extra-details.png"), url(https://enix.io/static/img/logos/logo-domain-cropped.png);
   background-position: 0.5% 1%, 99% 1%;
   background-size: 4%, 8%;
