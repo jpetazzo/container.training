@@ -1,0 +1,15 @@
+version: "3.4"
+
+services:
+  web:
+    image: portainer/portainer
+    ports:
+      - "9000:9000"
+  agent:
+    image: portainer/agent
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      mode: global
+    environment:
+      AGENT_CLUSTER_ADDR: tasks.agent

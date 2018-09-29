@@ -55,6 +55,7 @@ chapters:
   - swarm/apiscope.md
 - - swarm/logging.md
   - swarm/metrics.md
+  - swarm/gui.md
   - swarm/stateful.md
   - swarm/extratips.md
   - shared/thankyou.md
