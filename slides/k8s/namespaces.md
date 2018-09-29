@@ -192,3 +192,38 @@ Note: it might take a minute or two for the app to be up and running.
   ```
 
 ]
+
+---
+
+## Switching namespaces more easily
+
+- Defining a new context for each namespace can be cumbersome
+
+- We can also alter the current context with this one-liner:
+
+  ```bash
+  kubectl config set-context --current --namespace=foo
+  ```
+
+- We can also use a little helper tool called `kubens`:
+
+  ```bash
+  # Switch to namespace foo
+  kubens foo
+  # Switch back to the previous namespace
+  kubens -
+  ```
+
+---
+
+##  `kubens` and `kubectx`
+
+- With `kubens`, we can switch quickly between namespaces
+
+- With `kubectx`, we can switch quickly between contexts
+
+- Both tools are simple shell scripts available from https://github.com/ahmetb/kubectx
+
+- On our clusters, they are installed as `kns` and `kctx`
+
+  (for brevity and to avoid completion clashes between `kubectx` and `kubectl`)
