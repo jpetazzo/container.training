@@ -1,19 +1,21 @@
 # Rolling updates
 
-- Let's change a scaled service: `worker`
+- Let's change a scaled service: `hasher`
 
 .exercise[
 
-- Edit `worker/worker.py`
-
-- Locate the `sleep` instruction and change the delay
+- Update the `sleep` delay in the code to 0.2:
+  ```bash
+  sed -i "s/sleep 0.1/sleep 0.2/" dockercoins/hasher/hasher.rb
+  ```
 
 - Build, ship, and run our changes:
   ```bash
   export TAG=v0.4
   docker-compose -f dockercoins.yml build
   docker-compose -f dockercoins.yml push
-  docker stack deploy -c dockercoins.yml dockercoins
+  docker service update dockercoins_hasher \
+       --image=127.0.0.1:5000/hasher:$TAG
   ```
 
 ]
@@ -46,7 +48,7 @@ If you had stopped the workers earlier, this will automatically restart them.
 
 By default, SwarmKit does a rolling upgrade, one instance at a time.
 
-We should therefore see the workers being updated one my one.
+We should therefore see the workers being updated one by one.
 
 ---
 
