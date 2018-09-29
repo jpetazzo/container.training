@@ -1,6 +1,6 @@
 class: btp-manual
 
-## Integration with Compose
+## Integrtaion with Compose
 
 - We saw how to manually build, tag, and push images to a registry
 
@@ -22,7 +22,7 @@ class: btp-manual
 
 ---
 
-# Integration with Compose
+# Swarm Stacks
 
 - Compose is great for local development
 
