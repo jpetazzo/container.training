@@ -1,7 +1,5 @@
 ## Intros
 
-- This slide should be customized by the tutorial instructor(s).
-
 - Hello! I'm Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
 
 - The workshop will run from 9am to 5pm
