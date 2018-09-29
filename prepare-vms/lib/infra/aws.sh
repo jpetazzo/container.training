@@ -94,14 +94,11 @@ wait_until_tag_is_running() {
     done_count=0
     while [[ $done_count -lt $COUNT ]]; do
         let "i += 1"
-        info "$(printf "%d instances online" $done_count)"
+        info "$(printf "%d/%d instances online" $done_count $COUNT)"
         done_count=$(aws ec2 describe-instances \
-            --filters "Name=instance-state-name,Values=running" \
-            "Name=tag:Name,Values=$TAG" \
-            --query "Reservations[*].Instances[*].State.Name" \
-            | tr "\t" "\n" \
-            | wc -l)
-
+            --filters "Name=tag:Name,Values=$TAG" \
+            "Name=instance-state-name,Values=running" \
+            --query "length(Reservations[].Instances[])")
         if [[ $i -gt $max_retry ]]; then
             die "Timed out while waiting for instance creation (after $max_retry retries)"
         fi
@@ -165,7 +162,6 @@ aws_get_instance_ids_by_filter() {
 
 aws_get_instance_ids_by_client_token() {
     TOKEN=$1
-    need_tag $TOKEN
     aws_get_instance_ids_by_filter Name=client-token,Values=$TOKEN
 }
 

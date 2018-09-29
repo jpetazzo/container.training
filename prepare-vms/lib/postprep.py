@@ -83,7 +83,7 @@ system("sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /e
 
 system("sudo service ssh restart")
 system("sudo apt-get -q update")
-system("sudo apt-get -qy install git jq python-pip")
+system("sudo apt-get -qy install git jq")
 
 #######################
 ### DOCKER INSTALLS ###
@@ -98,7 +98,6 @@ system("sudo apt-get -q update")
 system("sudo apt-get -qy install docker-ce")
 
 ### Install docker-compose
-#system("sudo pip install -U docker-compose=={}".format(COMPOSE_VERSION))
 system("sudo curl -sSL -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/{}/docker-compose-{}-{}".format(COMPOSE_VERSION, platform.system(), platform.machine()))
 system("sudo chmod +x /usr/local/bin/docker-compose")
 system("docker-compose version")

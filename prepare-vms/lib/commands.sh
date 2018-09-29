@@ -53,11 +53,18 @@ _cmd_deploy() {
 
     echo deploying > tags/$TAG/status
     sep "Deploying tag $TAG"
+
+    # Wait for cloudinit to be done
+    pssh "
+    while [ ! -f /var/lib/cloud/instance/boot-finished ]; do
+        sleep 1
+    done"
+
+    # Copy settings and install Python YAML parser
     pssh -I tee /tmp/settings.yaml <tags/$TAG/settings.yaml
     pssh "
     sudo apt-get update &&
-    sudo apt-get install -y python-setuptools &&
-    sudo easy_install pyyaml"
+    sudo apt-get install -y python-yaml"
 
     # Copy postprep.py to the remote machines, and execute it, feeding it the list of IP addresses
     pssh -I tee /tmp/postprep.py <lib/postprep.py
@@ -178,6 +185,14 @@ EOF"
     sep "Done"
 }
 
+_cmd kubereset "Wipe out Kubernetes configuration on all nodes"
+_cmd_kubereset() {
+    TAG=$1
+    need_tag
+
+    pssh "sudo kubeadm reset --force"
+}
+
 _cmd kubetest "Check that all nodes are reporting as Ready"
 _cmd_kubetest() {
     TAG=$1
@@ -259,6 +274,15 @@ _cmd opensg "Open the default security group to ALL ingress traffic"
 _cmd_opensg() {
     need_infra $1
     infra_opensg
+}
+
+_cmd pssh "Run an arbitrary command on all nodes"
+_cmd_pssh() {
+    TAG=$1
+    need_tag
+    shift
+
+    pssh "$@"
 }
 
 _cmd pull_images "Pre-pull a bunch of Docker images"
@@ -374,6 +398,22 @@ _cmd_test() {
     TAG=$1
     need_tag
     test_tag
+}
+
+# Sometimes, weave fails to come up on some nodes.
+# Symptom: the pods on a node are unreachable (they don't even ping).
+# Remedy: wipe out Weave state and delete weave pod on that node.
+# Specifically, identify the weave pod that is defective, then:
+# kubectl -n kube-system exec weave-net-XXXXX -c weave rm /weavedb/weave-netdata.db
+# kubectl -n kube-system delete pod weave-net-XXXXX
+_cmd weavetest "Check that weave seems properly setup"
+_cmd_weavetest() {
+    TAG=$1
+    need_tag
+    pssh "
+    kubectl -n kube-system get pods -o name | grep weave | cut -d/ -f2 |
+    xargs -I POD kubectl -n kube-system exec POD -c weave -- \
+    sh -c \"./weave --local status | grep Connections | grep -q ' 1 failed' || ! echo POD \""
 }
 
 greet() {
@@ -500,13 +540,4 @@ make_tag() {
         export USER=anonymous
     fi
     date +%Y-%m-%d-%H-%M-$USER
-}
-
-describe_tag() {
-    FIXME
-    # Display instance details and reachability/status information
-    TAG=$1
-    need_tag $TAG
-    aws_display_instances_by_tag $TAG
-    aws_display_instance_statuses_by_tag $TAG
 }
