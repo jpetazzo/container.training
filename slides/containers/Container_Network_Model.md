@@ -107,9 +107,17 @@ class: pic
 
 class: pic
 
+## Two containers on a single Docker network
+
+![bridge2](images/bridge2.png)
+
+---
+
+class: pic
+
 ## Two containers on two Docker networks
 
-![bridge3](images/bridge2.png)
+![bridge3](images/bridge3.png)
 
 ---
 
