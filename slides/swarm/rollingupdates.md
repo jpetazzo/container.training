@@ -1,54 +1,20 @@
 # Rolling updates
 
-- Let's change a scaled service: `hasher`
+- Let's force an update on worker to watch it update
 
 .exercise[
 
-- Update the `sleep` delay in the code to 0.2:
+- First lets scale hasher to 5 replicas:
   ```bash
-  sed -i "s/sleep 0.1/sleep 0.2/" dockercoins/hasher/hasher.rb
+  docker service scale dockercoins_worker=5
   ```
 
-- Build, ship, and run our changes:
+- Force a rolling update (replace containers) without a change:
   ```bash
-  export TAG=v0.4
-  docker-compose -f dockercoins.yml build
-  docker-compose -f dockercoins.yml push
-  docker service update dockercoins_hasher \
-       --image=127.0.0.1:5000/hasher:$TAG
+  docker service update --force dockercoins_worker
   ```
 
 ]
-
----
-
-## Viewing our update as it rolls out
-
-.exercise[
-
-- Check the status of the `dockercoins_worker` service:
-  ```bash
-  watch docker service ps dockercoins_worker
-  ```
-
-<!-- ```wait dockercoins_worker.1``` -->
-<!-- ```keys ^C``` -->
-
-- Hide the tasks that are shutdown:
-  ```bash
-  watch -n1 "docker service ps dockercoins_worker | grep -v Shutdown.*Shutdown"
-  ```
-
-<!-- ```wait dockercoins_worker.1``` -->
-<!-- ```keys ^C``` -->
-
-]
-
-If you had stopped the workers earlier, this will automatically restart them.
-
-By default, SwarmKit does a rolling upgrade, one instance at a time.
-
-We should therefore see the workers being updated one by one.
 
 ---
 
