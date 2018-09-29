@@ -122,13 +122,13 @@
 
 - Create a 10 GB file on each node:
   ```bash
-  for N in $(seq 1 5); do ssh node$N sudo truncate --size 10G /portworx.blk; done
+  for N in $(seq 1 4); do ssh node$N sudo truncate --size 10G /portworx.blk; done
   ```
   (If SSH asks to confirm host keys, enter `yes` each time.)
 
 - Associate the file to a loop device on each node:
   ```bash
-  for N in $(seq 1 5); do ssh node$N sudo losetup /dev/loop0 /portworx.blk; done
+  for N in $(seq 1 4); do ssh node$N sudo losetup /dev/loop4 /portworx.blk; done
   ```
 
 ]
@@ -168,7 +168,7 @@ way is to use https://install.portworx.com/.
 FYI, this is how we obtained the YAML file used earlier:
 ```
 KBVER=$(kubectl version -o json | jq -r .serverVersion.gitVersion)
-BLKDEV=/dev/loop0
+BLKDEV=/dev/loop4
 curl https://install.portworx.com/1.4/?kbver=$KBVER&b=true&s=$BLKDEV&c=px-workshop&stork=true&lh=true
 ```
 If you want to use an external key/value store, add one of the following:
