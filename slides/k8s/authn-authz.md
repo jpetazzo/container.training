@@ -141,6 +141,8 @@ class: extra-details
 
   (see issue [#18982](https://github.com/kubernetes/kubernetes/issues/18982))
 
+- As a result, we cannot easily suspend a user's access
+
 - There are workarounds, but they are very inconvenient:
 
   - issue short-lived certificates (e.g. 24 hours) and regenerate them often
