@@ -10,6 +10,11 @@ class: title, in-person
 
 @@TITLE@@<br/></br>
 
+
+
+WiFi: OReilly18
+Password: velocity
+
 .footnote[
 **Be kind to the WiFi!**<br/>
 <!-- *Use the 5G network.* -->

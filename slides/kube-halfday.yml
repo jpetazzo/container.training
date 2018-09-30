@@ -35,19 +35,18 @@ chapters:
 - - k8s/kubectlrun.md
   - k8s/kubectlexpose.md
   - k8s/ourapponkube.md
-  #- k8s/kubectlproxy.md
-  #- k8s/localkubeconfig.md
-  #- k8s/accessinternal.md
+  - k8s/kubectlproxy.md
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
 - - k8s/dashboard.md
   - k8s/kubectlscale.md
   - k8s/daemonset.md
   - k8s/rollout.md
 - - k8s/logs-cli.md
-# Bridget hasn't added EFK yet
-  #- k8s/logs-centralized.md
+  - k8s/logs-centralized.md
   - k8s/helm.md
   - k8s/namespaces.md
-  #- k8s/netpol.md
+  - k8s/netpol.md
   - k8s/whatsnext.md
 #  - k8s/links.md
 # Bridget-specific
