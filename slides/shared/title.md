@@ -8,12 +8,13 @@ class: title, self-paced
 
 class: title, in-person
 
-@@TITLE@@<br/></br>
+@@TITLE@@
 
-
-
-WiFi: OReilly18
+WiFi: OReilly18<br>
 Password: velocity
+
+<br>
+<br>
 
 .footnote[
 **Be kind to the WiFi!**<br/>
