@@ -1,4 +1,4 @@
-# SOURCE: https://install.portworx.com/?kbver=1.11.2&b=true&s=/dev/loop0&c=px-workshop&stork=true&lh=true
+# SOURCE: https://install.portworx.com/?kbver=1.11.2&b=true&s=/dev/loop4&c=px-workshop&stork=true&lh=true
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -372,7 +372,7 @@ metadata:
   name: portworx
   namespace: kube-system
   annotations:
-    portworx.com/install-source: "https://install.portworx.com/?kbver=1.11.2&b=true&s=/dev/loop0&c=px-workshop&stork=true&lh=true"
+    portworx.com/install-source: "https://install.portworx.com/?kbver=1.11.2&b=true&s=/dev/loop4&c=px-workshop&stork=true&lh=true"
 spec:
   minReadySeconds: 0
   updateStrategy:
@@ -402,7 +402,7 @@ spec:
           image: portworx/oci-monitor:1.4.2.2
           imagePullPolicy: Always
           args:
-            ["-c", "px-workshop", "-s", "/dev/loop0", "-b",
+            ["-c", "px-workshop", "-s", "/dev/loop4", "-b",
              "-x", "kubernetes"]
           env:
             - name: "PX_TEMPLATE_VERSION"
