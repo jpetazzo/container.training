@@ -371,6 +371,23 @@ troubleshoot easily, without having to poke holes in our firewall.
 
 ---
 
+## Cleaning up our network policies
+
+- The network policies that we have installed block all traffic to the default namespace
+
+- We should remove them, otherwise further exercises will fail!
+
+.exercise[
+
+- Remove all network policies:
+  ```bash
+  kubectl delete networkpolicies --all
+  ```
+
+]
+
+---
+
 ## Protecting the control plane
 
 - Should we add network policies to block unauthorized access to the control plane?
