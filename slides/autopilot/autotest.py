@@ -223,7 +223,7 @@ def check_exit_status():
 def setup_tmux_and_ssh():
     if subprocess.call(["tmux", "has-session"]):
         logging.error("Couldn't connect to tmux. Please setup tmux first.")
-        ipaddr = open("../../prepare-vms/ips.txt").read().split("\n")[0]
+        ipaddr = "$IPADDR"
         uid = os.getuid()
 
         raise Exception("""
