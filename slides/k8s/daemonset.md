@@ -268,7 +268,7 @@ The master node has [taints](https://kubernetes.io/docs/concepts/configuration/t
 
 - Check the logs of all the pods having a label `run=rng`:
   ```bash
-  kubectl logs -l run=rng --tail 1
+  kubectl get pods -l run=rng -o name | xargs -n 1 kubectl logs --tail 1
   ```
 
 ]
