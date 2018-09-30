@@ -227,3 +227,21 @@ Note: it might take a minute or two for the app to be up and running.
 - On our clusters, they are installed as `kns` and `kctx`
 
   (for brevity and to avoid completion clashes between `kubectx` and `kubectl`)
+
+---
+
+## `kube-ps1`
+
+- It's easy to lose track of our current cluster / context / namespace
+
+- `kube-ps1` makes it easy to track these, by showing them in our shell prompt
+
+- It's a simple shell script availble from https://github.com/jonmosco/kube-ps1
+
+- On our clusters, `kube-ps1` is installed and included in `PS1`:
+  ```
+  [123.45.67.89] `(kubernetes-admin@kubernetes:default)` docker@node1 ~
+  ```
+  (The highlighted part is `context:namespace`, managed by `kube-ps1`)
+
+- Highly recommended if you work across multiple contexts or namespaces!
