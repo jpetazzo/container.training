@@ -53,7 +53,7 @@ And *then* it is time to look at orchestration!
 
 - Make sure that all our devs have usable dev clusters
 
-  (wether it's a local minikube or a full-blown multi-node cluster)
+  (whether it's a local minikube or a full-blown multi-node cluster)
 
 ---
 
