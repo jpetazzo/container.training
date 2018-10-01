@@ -6,7 +6,7 @@ Thank you!
 
 # Final words
 
-- For $$$ reasons, our clusters will be shutdown *now*
+- For $$$ reasons, our clusters will be shut down *now*
 
   - if you want another cluster that you can keep longer, come talk to me
 
