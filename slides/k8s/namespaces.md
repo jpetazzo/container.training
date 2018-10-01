@@ -205,7 +205,9 @@ Note: it might take a minute or two for the app to be up and running.
   kubectl config set-context --current --namespace=foo
   ```
 
-- We can also use a little helper tool called `kubens`:
+- We can also use a little helper tool called `kubens`.
+
+  (These examples are for illustration, and are not functional.)
 
   ```bash
   # Switch to namespace foo
