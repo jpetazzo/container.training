@@ -71,7 +71,7 @@
   cd ~/container.training/stacks
   ```
 
-- Edit `dockercoins/worker/worker.py`, update the `sleep` line to sleep 1 second
+- Edit `dockercoins/worker/worker.py`; update the first `sleep` line to sleep 1 second
 
 - Build a new tag and push it to the registry:
   ```bash
