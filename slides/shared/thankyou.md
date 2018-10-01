@@ -4,14 +4,15 @@ Thank you!
 
 ---
 
-class: title, in-person
+# Thank you!
 
-Thanks!
+- The clusters will be shut down tomorrow morning
 
-Review this tutorial: <br>
-https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/70102
+- If you like:
 
-Questions, pull requests, and more: <br>
-https://github.com/jpetazzo/container.training/
+  - [rate this tutorial on the Velocity website](https://conferences.oreilly.com/velocity/vl-ny/public/schedule/evaluate/70102)
 
-![end](images/end.jpg)
+  - [tweet about it](https://twitter.com/intent/tweet?url=https%3A%2F%2Fcontainer.training&text=Learning%20k8s%20with%20@bridgetkromhout%21&hashtags=VelocityConf), mentioning @bridgetkromhout and #VelocityConf
+
+  - [questions, comments, pull requests, workshop invitations, etc](https://github.com/jpetazzo/container.training/)
+
