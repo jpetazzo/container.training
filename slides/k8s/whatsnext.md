@@ -1,26 +1,3 @@
-# Next steps
-
-*Alright, how do I get started and containerize my apps?*
-
---
-
-Suggested containerization checklist:
-
-.checklist[
-- write a Dockerfile for one service in one app
-- write Dockerfiles for the other (buildable) services
-- write a Compose file for that whole app
-- make sure that devs are empowered to run the app in containers
-- set up automated builds of container images from the code repo
-- set up a CI pipeline using these container images
-- set up a CD pipeline (for staging/QA) using these images
-]
-
-And *then* it is time to look at orchestration!
-
----
-
-
 ## Options for our first production cluster
 
 - Get a managed cluster from a major cloud provider (AKS, EKS, GKE...)
@@ -53,27 +30,7 @@ And *then* it is time to look at orchestration!
 
 - Make sure that all our devs have usable dev clusters
 
-  (wether it's a local minikube or a full-blown multi-node cluster)
-
----
-
-## Namespaces
-
-- Namespaces let you run multiple identical stacks side by side
-
-- Two namespaces (e.g. `blue` and `green`) can each have their own `redis` service
-
-- Each of the two `redis` services has its own `ClusterIP`
-
-- CoreDNS creates two entries, mapping to these two `ClusterIP` addresses:
-
-  `redis.blue.svc.cluster.local` and `redis.green.svc.cluster.local`
-
-- Pods in the `blue` namespace get a *search suffix* of `blue.svc.cluster.local`
-
-- As a result, resolving `redis` from a pod in the `blue` namespace yields the "local" `redis`
-
-.warning[This does not provide *isolation*! That would be the job of network policies.]
+  (whether it's a local minikube or a full-blown multi-node cluster)
 
 ---
 
@@ -236,16 +193,3 @@ Sorry Star Trek fans, this is not the federation you're looking for!
 
 - Discover resources across clusters
 
----
-
-## Developer experience
-
-*We've put this last, but it's pretty important!*
-
-- How do you on-board a new developer?
-
-- What do they need to install to get a dev stack?
-
-- How does a code change make it from dev to prod?
-
-- How does someone add a component to a stack?
