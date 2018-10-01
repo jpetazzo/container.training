@@ -151,7 +151,7 @@ The `-w` option "watches" events happening on the specified resources.
 
 --
 
-Our requests are load balanced across multiple pods.
+Try it a few times! Our requests are load balanced across multiple pods.
 
 ---
 
