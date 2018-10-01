@@ -54,6 +54,7 @@
   title: Kubernetes 101
   speaker: bridgetkromhout
   attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/70102
+  slides: https://velny-k8s101-2018.container.training
 
 - date: 2018-09-30
   city: New York, NY
