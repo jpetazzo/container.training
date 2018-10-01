@@ -171,11 +171,7 @@ class: pic
 
 ---
 
-## Do we need to run Docker at all?
-
-No!
-
---
+## Default container runtime
 
 - By default, Kubernetes uses the Docker Engine to run containers
 
@@ -184,42 +180,6 @@ No!
 - Or leverage other pluggable runtimes through the *Container Runtime Interface*
 
   (like CRI-O, or containerd)
-
----
-
-## Do we need to run Docker at all?
-
-Yes!
-
---
-
-- In this workshop, we run our app on a single node first
-
-- We will need to build images and ship them around
-
-- We can do these things without Docker
-  <br/>
-  (and get diagnosed with NIH¹ syndrome)
-
-- Docker is still the most stable container engine today
-  <br/>
-  (but other options are maturing very quickly)
-
-.footnote[¹[Not Invented Here](https://en.wikipedia.org/wiki/Not_invented_here)]
-
----
-
-## Do we need to run Docker at all?
-
-- On our development environments, CI pipelines ... :
-
-  *Yes, almost certainly*
-
-- On our production servers:
-
-  *Yes (today)*
-
-  *Probably not (in the future)*
 
 .footnote[More information about CRI [on the Kubernetes blog](https://kubernetes.io/blog/2016/12/container-runtime-interface-cri-in-kubernetes)]
 
@@ -235,11 +195,12 @@ Yes!
 
   - node (a machine — physical or virtual — in our cluster)
   - pod (group of containers running together on a node)
+    - IP addresses are associated with *pods*, not with individual containers
   - service (stable network endpoint to connect to one or multiple containers)
   - namespace (more-or-less isolated group of things)
   - secret (bundle of sensitive data to be passed to a container)
- 
-  And much more!
+
+-  And much more!
 
 - We can see the full list by running `kubectl api-resources`
 
@@ -250,25 +211,3 @@ Yes!
 class: pic
 
 ![Node, pod, container](images/k8s-arch3-thanks-weave.png)
-
----
-
-class: pic
-
-![One of the best Kubernetes architecture diagrams available](images/k8s-arch4-thanks-luxas.png)
-
----
-
-## Credits
-
-- The first diagram is courtesy of Weave Works
-
-  - a *pod* can have multiple containers working together
-
-  - IP addresses are associated with *pods*, not with individual containers
-
-- The second diagram is courtesy of Lucas Käldström, in [this presentation](https://speakerdeck.com/luxas/kubeadm-cluster-creation-internals-from-self-hosting-to-upgradability-and-ha)
-
-  - it's one of the best Kubernetes architecture diagrams available!
-
-Both diagrams used with permission.

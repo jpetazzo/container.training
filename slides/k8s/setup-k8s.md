@@ -36,10 +36,6 @@
 
   (At least ... not yet! Though it's [experimental in 1.12](https://kubernetes.io/docs/setup/independent/high-availability/).)
 
---
-
-- "It's still twice as many steps as setting up a Swarm cluster 😕" -- Jérôme
-
 ---
 
 ## Other deployment options
