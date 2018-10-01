@@ -59,7 +59,7 @@ Exactly what we need!
 
 - If it is not installed, the easiest method is to download a [binary release](https://github.com/wercker/stern/releases)
 
-- The following commands will install Stern on a Linux Intel 64 bits machine:
+- The following commands will install Stern on a Linux Intel 64 bit machine:
   ```bash
   sudo curl -L -o /usr/local/bin/stern \
        https://github.com/wercker/stern/releases/download/1.8.0/stern_linux_amd64
