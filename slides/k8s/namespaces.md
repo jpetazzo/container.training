@@ -236,7 +236,7 @@ Note: it might take a minute or two for the app to be up and running.
 
 - `kube-ps1` makes it easy to track these, by showing them in our shell prompt
 
-- It's a simple shell script availble from https://github.com/jonmosco/kube-ps1
+- It's a simple shell script available from https://github.com/jonmosco/kube-ps1
 
 - On our clusters, `kube-ps1` is installed and included in `PS1`:
   ```
