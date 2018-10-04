@@ -139,7 +139,7 @@
 
 - To install Portworx, we need to go to https://install.portworx.com/
 
-- This website will ask us a bunch of questoins about our cluster
+- This website will ask us a bunch of questions about our cluster
 
 - Then, it will generate a YAML file that we should apply to our cluster
 
