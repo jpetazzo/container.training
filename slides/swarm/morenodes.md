@@ -160,19 +160,21 @@ class: self-paced
 
 - Keep managers in one region (multi-zone/datacenter/rack)
 
-- Groups of 3 or 5 nodes: all of them are managers. Beyond 5, seperate out managers and workers.
-  <br/>
-  (Cloud pro-tip: use separate auto-scaling groups for managers and workers)
+- Groups of 3 or 5 nodes: all are managers. Beyond 5, seperate out managers and workers
 
 - Groups of 10-100 nodes: pick 5 "stable" nodes to be managers
 
 - Groups of more than 100 nodes: watch your managers' CPU and RAM
 
-- Groups of more than 1000 nodes:
+  - 16GB memory or more, 4 CPU's or more, SSD's for Raft I/O
+  - otherwise, break down your nodes in multiple smaller clusters
 
-  - if you can afford to have fast, stable managers, add more of them
-  - otherwise, break down your nodes in multiple clusters
+.footnote[
 
+  Cloud pro-tip: use separate auto-scaling groups for managers and workers
+
+  See docker's "[Running Docker at scale](http://success.docker.com/article/running-docker-ee-at-scale)" document
+]
 ---
 
 ## What's the upper limit?
