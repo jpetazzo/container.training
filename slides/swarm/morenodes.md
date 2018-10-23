@@ -131,32 +131,36 @@ class: self-paced
 
 - 5 managers = 2 failures (or 1 failure during 1 maintenance)
 
-- 7 managers and more = now you might be overdoing it a little bit
+- 7 managers and more = now you might be overdoing it for most designs
+
+.footnote[
+
+ see [Docker's admin guide](https://docs.docker.com/engine/swarm/admin_guide/#add-manager-nodes-for-fault-tolerance) 
+ on node failure and datacenter redundancy
+
+]
 
 ---
 
 ## Why not have *all* nodes be managers?
 
-- Intuitively, it's harder to reach consensus in larger groups
-
 - With Raft, writes have to go to (and be acknowledged by) all nodes
 
-- More nodes = more network traffic
+- Thus, it's harder to reach consensus in larger groups
 
-- Bigger network = more latency
+- Only one manager is Leader (writable), so more managers ≠ more capacity
+
+- Managers should be &#60; 10ms latency from each other
+
+- These design parameters lead us to recommended designs
 
 ---
 
 ## What would McGyver do?
 
-- If some of your machines are more than 10ms away from each other,
-  <br/>
-  try to break them down in multiple clusters
-  (keeping internal latency low)
+- Keep managers in one region (multi-zone/datacenter/rack)
 
 - Groups of 3 or 5 nodes: all of them are managers. Beyond 5, seperate out managers and workers.
-
-- Groups of 5-10 nodes: pick 3 "stable" nodes to be managers
   <br/>
   (Cloud pro-tip: use separate auto-scaling groups for managers and workers)
 
@@ -185,9 +189,9 @@ class: self-paced
 
   - it just works, assuming they have the resources
 
-  - more nodes require more manager CPU and Networking; more containers require more RAM
+  - more nodes require manager CPU and networking; more containers require RAM
 
-  - scheduling of large jobs (70,000 containers) is slow, though (working on it!)
+  - scheduling of large jobs (70,000 containers) is slow, though ([getting better](https://github.com/moby/moby/pull/37372)!)
 
 ---
 
