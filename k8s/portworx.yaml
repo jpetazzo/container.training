@@ -1,0 +1,580 @@
+# SOURCE: https://install.portworx.com/?kbver=1.11.2&b=true&s=/dev/loop4&c=px-workshop&stork=true&lh=true
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stork-config
+  namespace: kube-system
+data:
+  policy.cfg: |-
+    {
+      "kind": "Policy",
+      "apiVersion": "v1",
+      "extenders": [
+        {
+          "urlPrefix": "http://stork-service.kube-system.svc:8099",
+          "apiVersion": "v1beta1",
+          "filterVerb": "filter",
+          "prioritizeVerb": "prioritize",
+          "weight": 5,
+          "enableHttps": false,
+          "nodeCacheCapable": false
+        }
+      ]
+    }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: stork-account
+  namespace: kube-system
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+   name: stork-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["list", "watch", "create", "update", "patch"]
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["create", "list", "watch", "delete"]
+  - apiGroups: ["volumesnapshot.external-storage.k8s.io"]
+    resources: ["volumesnapshots"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["volumesnapshot.external-storage.k8s.io"]
+    resources: ["volumesnapshotdatas"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "create", "update"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["*"]
+    resources: ["deployments", "deployments/extensions"]
+    verbs: ["list", "get", "watch", "patch", "update", "initialize"]
+  - apiGroups: ["*"]
+    resources: ["statefulsets", "statefulsets/extensions"]
+    verbs: ["list", "get", "watch", "patch", "update", "initialize"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: stork-role-binding
+subjects:
+- kind: ServiceAccount
+  name: stork-account
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: stork-role
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: stork-service
+  namespace: kube-system
+spec:
+  selector:
+    name: stork
+  ports:
+    - protocol: TCP
+      port: 8099
+      targetPort: 8099
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+  labels:
+    tier: control-plane
+  name: stork
+  namespace: kube-system
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  replicas: 3
+  template:
+    metadata:
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+      labels:
+        name: stork
+        tier: control-plane
+    spec:
+      containers:
+      - command:
+        - /stork
+        - --driver=pxd
+        - --verbose
+        - --leader-elect=true
+        - --health-monitor-interval=120
+        imagePullPolicy: Always
+        image: openstorage/stork:1.1.3
+        resources:
+          requests:
+            cpu: '0.1'
+        name: stork
+      hostPID: false
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "name"
+                    operator: In
+                    values:
+                    - stork
+              topologyKey: "kubernetes.io/hostname"
+      serviceAccountName: stork-account
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: stork-snapshot-sc
+provisioner: stork-snapshot
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: stork-scheduler-account
+  namespace: kube-system
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: stork-scheduler-role
+rules:
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "update"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch", "update"]
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resourceNames: ["kube-scheduler"]
+    resources: ["endpoints"]
+    verbs: ["delete", "get", "patch", "update"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["delete", "get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["bindings", "pods/binding"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resources: ["pods/status"]
+    verbs: ["patch", "update"]
+  - apiGroups: [""]
+    resources: ["replicationcontrollers", "services"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["app", "extensions"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["policy"]
+    resources: ["poddisruptionbudgets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims", "persistentvolumes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: stork-scheduler-role-binding
+subjects:
+- kind: ServiceAccount
+  name: stork-scheduler-account
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: stork-scheduler-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    component: scheduler
+    tier: control-plane
+    name: stork-scheduler
+  name: stork-scheduler
+  namespace: kube-system
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        component: scheduler
+        tier: control-plane
+      name: stork-scheduler
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/kube-scheduler
+        - --address=0.0.0.0
+        - --leader-elect=true
+        - --scheduler-name=stork
+        - --policy-configmap=stork-config
+        - --policy-configmap-namespace=kube-system
+        - --lock-object-name=stork-scheduler
+        image: gcr.io/google_containers/kube-scheduler-amd64:v1.11.2
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10251
+          initialDelaySeconds: 15
+        name: stork-scheduler
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10251
+        resources:
+          requests:
+            cpu: '0.1'
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "name"
+                    operator: In
+                    values:
+                    - stork-scheduler
+              topologyKey: "kubernetes.io/hostname"
+      hostPID: false
+      serviceAccountName: stork-scheduler-account
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: portworx-service
+  namespace: kube-system
+  labels:
+    name: portworx
+spec:
+  selector:
+    name: portworx
+  ports:
+    - name: px-api
+      protocol: TCP
+      port: 9001
+      targetPort: 9001
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: px-account
+  namespace: kube-system
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+   name: node-get-put-list-role
+rules:
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["watch", "get", "update", "list"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["delete", "get", "list"]
+- apiGroups: [""]
+  resources: ["persistentvolumeclaims", "persistentvolumes"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list", "update", "create"]
+- apiGroups: ["extensions"]
+  resources: ["podsecuritypolicies"]
+  resourceNames: ["privileged"]
+  verbs: ["use"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: node-role-binding
+subjects:
+- kind: ServiceAccount
+  name: px-account
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: node-get-put-list-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: portworx
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: px-role
+  namespace: portworx
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "create", "update", "patch"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: px-role-binding
+  namespace: portworx
+subjects:
+- kind: ServiceAccount
+  name: px-account
+  namespace: kube-system
+roleRef:
+  kind: Role
+  name: px-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: portworx
+  namespace: kube-system
+  annotations:
+    portworx.com/install-source: "https://install.portworx.com/?kbver=1.11.2&b=true&s=/dev/loop4&c=px-workshop&stork=true&lh=true"
+spec:
+  minReadySeconds: 0
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        name: portworx
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: px/enabled
+                operator: NotIn
+                values:
+                - "false"
+              - key: node-role.kubernetes.io/master
+                operator: DoesNotExist
+      hostNetwork: true
+      hostPID: false
+      containers:
+        - name: portworx
+          image: portworx/oci-monitor:1.4.2.2
+          imagePullPolicy: Always
+          args:
+            ["-c", "px-workshop", "-s", "/dev/loop4", "-b",
+             "-x", "kubernetes"]
+          env:
+            - name: "PX_TEMPLATE_VERSION"
+              value: "v4"
+            
+          livenessProbe:
+            periodSeconds: 30
+            initialDelaySeconds: 840 # allow image pull in slow networks
+            httpGet:
+              host: 127.0.0.1
+              path: /status
+              port: 9001
+          readinessProbe:
+            periodSeconds: 10
+            httpGet:
+              host: 127.0.0.1
+              path: /health
+              port: 9015
+          terminationMessagePath: "/tmp/px-termination-log"
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: dockersock
+              mountPath: /var/run/docker.sock
+            - name: etcpwx
+              mountPath: /etc/pwx
+            - name: optpwx
+              mountPath: /opt/pwx
+            - name: proc1nsmount
+              mountPath: /host_proc/1/ns
+            - name: sysdmount
+              mountPath: /etc/systemd/system
+            - name: diagsdump
+              mountPath: /var/cores
+            - name: journalmount1
+              mountPath: /var/run/log
+              readOnly: true
+            - name: journalmount2
+              mountPath: /var/log
+              readOnly: true
+            - name: dbusmount
+              mountPath: /var/run/dbus
+      restartPolicy: Always
+      serviceAccountName: px-account
+      volumes:
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: etcpwx
+          hostPath:
+            path: /etc/pwx
+        - name: optpwx
+          hostPath:
+            path: /opt/pwx
+        - name: proc1nsmount
+          hostPath:
+            path: /proc/1/ns
+        - name: sysdmount
+          hostPath:
+            path: /etc/systemd/system
+        - name: diagsdump
+          hostPath:
+            path: /var/cores
+        - name: journalmount1
+          hostPath:
+            path: /var/run/log
+        - name: journalmount2
+          hostPath:
+            path: /var/log
+        - name: dbusmount
+          hostPath:
+            path: /var/run/dbus
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: px-lh-account
+  namespace: kube-system
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+   name: px-lh-role
+   namespace: kube-system
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "create", "update"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: px-lh-role-binding
+  namespace: kube-system
+subjects:
+- kind: ServiceAccount
+  name: px-lh-account
+  namespace: kube-system
+roleRef:
+  kind: Role
+  name: px-lh-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: px-lighthouse
+  namespace: kube-system
+  labels:
+    tier: px-web-console
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 80
+      nodePort: 32678
+    - name: https
+      port: 443
+      nodePort: 32679
+  selector:
+    tier: px-web-console
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: px-lighthouse
+  namespace: kube-system
+  labels:
+    tier: px-web-console
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      tier: px-web-console
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        tier: px-web-console
+    spec:
+      initContainers:
+      - name: config-init
+        image: portworx/lh-config-sync:0.2
+        imagePullPolicy: Always
+        args:
+        - "init"
+        volumeMounts:
+        - name: config
+          mountPath: /config/lh
+      containers:
+      - name: px-lighthouse
+        image: portworx/px-lighthouse:1.5.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        volumeMounts:
+        - name: config
+          mountPath: /config/lh
+      - name: config-sync
+        image: portworx/lh-config-sync:0.2
+        imagePullPolicy: Always
+        args:
+        - "sync"
+        volumeMounts:
+        - name: config
+          mountPath: /config/lh
+      serviceAccountName: px-lh-account
+      volumes:
+      - name: config
+        emptyDir: {}

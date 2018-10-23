@@ -1,55 +1,59 @@
 title: |
   Introduction
-  to Docker and
-  Containers
+  to Containers
 
 chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://container.training/
 
 exclude:
 - in-person
 
 chapters:
-- common/title.md
-# - common/logistics.md
-- intro/intro.md
-- common/about-slides.md
-- common/toc.md
-- - intro/Docker_Overview.md
-  - intro/Docker_History.md
-  - intro/Training_Environment.md
-  - intro/Installing_Docker.md
-  - intro/First_Containers.md
-  - intro/Background_Containers.md
-  - intro/Start_And_Attach.md
-- - intro/Initial_Images.md
-  - intro/Building_Images_Interactively.md
-  - intro/Building_Images_With_Dockerfiles.md
-  - intro/Cmd_And_Entrypoint.md
-  - intro/Copying_Files_During_Build.md
-  - intro/Multi_Stage_Builds.md
-  - intro/Publishing_To_Docker_Hub.md
-  - intro/Dockerfile_Tips.md
-- - intro/Naming_And_Inspecting.md
-  - intro/Labels.md
-  - intro/Getting_Inside.md
-  - intro/Container_Networking_Basics.md
-  - intro/Network_Drivers.md
-  - intro/Container_Network_Model.md
-  #- intro/Connecting_Containers_With_Links.md
-  - intro/Ambassadors.md
-- - intro/Local_Development_Workflow.md
-  - intro/Working_With_Volumes.md
-  - intro/Compose_For_Dev_Stacks.md
-  - intro/Docker_Machine.md
-  - intro/Advanced_Dockerfiles.md
-  - intro/Application_Configuration.md
-  - intro/Logging.md
-- - intro/Namespaces_Cgroups.md
-  - intro/Copy_On_Write.md
-  #- intro/Containers_From_Scratch.md
-  - intro/Container_Engines.md
-  - intro/Ecosystem.md
-  - intro/Orchestration_Overview.md
-  - common/thankyou.md
-  - intro/links.md
+- shared/title.md
+# - shared/logistics.md
+- containers/intro.md
+- shared/about-slides.md
+- shared/toc.md
+- - containers/Docker_Overview.md
+  - containers/Docker_History.md
+  - containers/Training_Environment.md
+  - containers/Installing_Docker.md
+  - containers/First_Containers.md
+  - containers/Background_Containers.md
+  - containers/Start_And_Attach.md
+- - containers/Initial_Images.md
+  - containers/Building_Images_Interactively.md
+  - containers/Building_Images_With_Dockerfiles.md
+  - containers/Cmd_And_Entrypoint.md
+  - containers/Copying_Files_During_Build.md
+- - containers/Multi_Stage_Builds.md
+  - containers/Publishing_To_Docker_Hub.md
+  - containers/Dockerfile_Tips.md
+- - containers/Naming_And_Inspecting.md
+  - containers/Labels.md
+  - containers/Getting_Inside.md
+- - containers/Container_Networking_Basics.md
+  - containers/Network_Drivers.md
+  - containers/Container_Network_Model.md
+  #- containers/Connecting_Containers_With_Links.md
+  - containers/Ambassadors.md
+- - containers/Local_Development_Workflow.md
+  - containers/Working_With_Volumes.md
+  - containers/Compose_For_Dev_Stacks.md
+  - containers/Docker_Machine.md
+- - containers/Advanced_Dockerfiles.md
+  - containers/Application_Configuration.md
+  - containers/Logging.md
+  - containers/Resource_Limits.md
+- - containers/Namespaces_Cgroups.md
+  - containers/Copy_On_Write.md
+  #- containers/Containers_From_Scratch.md
+- - containers/Container_Engines.md
+  - containers/Ecosystem.md
+  - containers/Orchestration_Overview.md
+  - shared/thankyou.md
+  - containers/links.md

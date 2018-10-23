@@ -7,19 +7,9 @@ _cmd() {
 
 _cmd help "Show available commands"
 _cmd_help() {
-    printf "$(basename $0) - the orchestration workshop swiss army knife\n"
+    printf "$(basename $0) - the container training swiss army knife\n"
     printf "Commands:"
     printf "%s" "$HELP" | sort
-}
-
-_cmd amis "List Ubuntu AMIs in the current region"
-_cmd_amis() {
-    find_ubuntu_ami -r $AWS_DEFAULT_REGION "$@"
-}
-
-_cmd ami "Show the AMI that will be used for deployment"
-_cmd_ami() {
-    find_ubuntu_ami -r $AWS_DEFAULT_REGION -a amd64 -v 16.04 -t hvm:ebs -N -q
 }
 
 _cmd build "Build the Docker image to run this program in a container"
@@ -32,64 +22,53 @@ _cmd_wrap() {
     docker-compose run --rm workshopctl "$@"
 }
 
-_cmd cards "Generate ready-to-print cards for a batch of VMs"
+_cmd cards "Generate ready-to-print cards for a group of VMs"
 _cmd_cards() {
     TAG=$1
-    SETTINGS=$2
-    need_tag $TAG
-    need_settings $SETTINGS
+    need_tag
 
-    # If you're not using AWS, populate the ips.txt file manually
-    if [ ! -f tags/$TAG/ips.txt ]; then
-      aws_get_instance_ips_by_tag $TAG >tags/$TAG/ips.txt
-    fi
-
-    # Remove symlinks to old cards
-    rm -f ips.html ips.pdf
-
-    # This will generate two files in the base dir: ips.pdf and ips.html
-    python lib/ips-txt-to-html.py $SETTINGS
-
-    for f in ips.html ips.pdf; do
-        # Remove old versions of cards if they exist
-        rm -f tags/$TAG/$f
-
-        # Move the generated file and replace it with a symlink
-        mv -f $f tags/$TAG/$f && ln -s tags/$TAG/$f $f
-    done
+    # This will process ips.txt to generate two files: ips.pdf and ips.html
+    (
+        cd tags/$TAG
+        ../../lib/ips-txt-to-html.py settings.yaml
+    )
 
     info "Cards created. You can view them with:"
-    info "xdg-open ips.html ips.pdf (on Linux)"
-    info "open ips.html ips.pdf (on MacOS)"
+    info "xdg-open tags/$TAG/ips.html tags/$TAG/ips.pdf (on Linux)"
+    info "open tags/$TAG/ips.html (on macOS)"
 }
 
 _cmd deploy "Install Docker on a bunch of running VMs"
 _cmd_deploy() {
     TAG=$1
-    SETTINGS=$2
-    need_tag $TAG
-    need_settings $SETTINGS
-    link_tag $TAG
-    count=$(wc -l ips.txt)
+    need_tag
 
     # wait until all hosts are reachable before trying to deploy
     info "Trying to reach $TAG instances..."
-    while ! tag_is_reachable $TAG; do
+    while ! tag_is_reachable; do
         >/dev/stderr echo -n "."
         sleep 2
     done
     >/dev/stderr echo ""
 
+    echo deploying > tags/$TAG/status
     sep "Deploying tag $TAG"
-    pssh -I tee /tmp/settings.yaml <$SETTINGS
+
+    # Wait for cloudinit to be done
+    pssh "
+    while [ ! -f /var/lib/cloud/instance/boot-finished ]; do
+        sleep 1
+    done"
+
+    # Copy settings and install Python YAML parser
+    pssh -I tee /tmp/settings.yaml <tags/$TAG/settings.yaml
     pssh "
     sudo apt-get update &&
-    sudo apt-get install -y python-setuptools &&
-    sudo easy_install pyyaml"
+    sudo apt-get install -y python-yaml"
 
     # Copy postprep.py to the remote machines, and execute it, feeding it the list of IP addresses
     pssh -I tee /tmp/postprep.py <lib/postprep.py
-    pssh --timeout 900 --send-input "python /tmp/postprep.py >>/tmp/pp.out 2>>/tmp/pp.err" <ips.txt
+    pssh --timeout 900 --send-input "python /tmp/postprep.py >>/tmp/pp.out 2>>/tmp/pp.err" <tags/$TAG/ips.txt
 
     # Install docker-prompt script
     pssh -I sudo tee /usr/local/bin/docker-prompt <lib/docker-prompt
@@ -117,14 +96,17 @@ _cmd_deploy() {
     fi"
 
     sep "Deployed tag $TAG"
+    echo deployed > tags/$TAG/status
     info "You may want to run one of the following commands:"
     info "$0 kube $TAG"
     info "$0 pull_images $TAG"
-    info "$0 cards $TAG $SETTINGS"
+    info "$0 cards $TAG"
 }
 
 _cmd kube "Setup kubernetes clusters with kubeadm (must be run AFTER deploy)"
 _cmd_kube() {
+    TAG=$1
+    need_tag
 
     # Install packages
     pssh --timeout 200 "
@@ -134,13 +116,13 @@ _cmd_kube() {
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
     pssh --timeout 200 "
     sudo apt-get update -q &&
-    sudo apt-get install -qy kubelet kubeadm kubectl
+    sudo apt-get install -qy kubelet kubeadm kubectl &&
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl"
 
     # Initialize kube master
     pssh --timeout 200 "
     if grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/admin.conf ]; then
-        kubeadm token generate > /tmp/token
+        kubeadm token generate > /tmp/token &&
 	sudo kubeadm init --token \$(cat /tmp/token)
     fi"
 
@@ -157,22 +139,65 @@ _cmd_kube() {
     # Install weave as the pod network
     pssh "
     if grep -q node1 /tmp/node; then
-        kubever=\$(kubectl version | base64 | tr -d '\n')
+        kubever=\$(kubectl version | base64 | tr -d '\n') &&
         kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=\$kubever
     fi"
 
     # Join the other nodes to the cluster
     pssh --timeout 200 "
     if ! grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/kubelet.conf ]; then
-        TOKEN=\$(ssh -o StrictHostKeyChecking=no node1 cat /tmp/token)
+        TOKEN=\$(ssh -o StrictHostKeyChecking=no node1 cat /tmp/token) &&
         sudo kubeadm join --discovery-token-unsafe-skip-ca-verification --token \$TOKEN node1:6443
+    fi"
+
+    # Install kubectx and kubens
+    pssh "
+    [ -d kubectx ] || git clone https://github.com/ahmetb/kubectx &&
+    sudo ln -sf /home/ubuntu/kubectx/kubectx /usr/local/bin/kctx &&
+    sudo ln -sf /home/ubuntu/kubectx/kubens /usr/local/bin/kns &&
+    sudo cp /home/ubuntu/kubectx/completion/*.bash /etc/bash_completion.d &&
+    [ -d kube-ps1 ] || git clone https://github.com/jonmosco/kube-ps1 &&
+    sudo -u docker sed -i s/docker-prompt/kube_ps1/ /home/docker/.bashrc &&
+    sudo -u docker tee -a /home/docker/.bashrc <<EOF
+. /home/ubuntu/kube-ps1/kube-ps1.sh
+KUBE_PS1_PREFIX=""
+KUBE_PS1_SUFFIX=""
+KUBE_PS1_SYMBOL_ENABLE="false"
+KUBE_PS1_CTX_COLOR="green"
+KUBE_PS1_NS_COLOR="green"
+EOF"
+
+    # Install stern
+    pssh "
+    if [ ! -x /usr/local/bin/stern ]; then
+        sudo curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/download/1.8.0/stern_linux_amd64 &&
+        sudo chmod +x /usr/local/bin/stern &&
+        stern --completion bash | sudo tee /etc/bash_completion.d/stern
+    fi"
+
+    # Install helm
+    pssh "
+    if [ ! -x /usr/local/bin/helm ]; then
+        curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | sudo bash &&
+        helm completion bash | sudo tee /etc/bash_completion.d/helm
     fi"
 
     sep "Done"
 }
 
-_cmd kubetest "Check that all notes are reporting as Ready"
+_cmd kubereset "Wipe out Kubernetes configuration on all nodes"
+_cmd_kubereset() {
+    TAG=$1
+    need_tag
+
+    pssh "sudo kubeadm reset --force"
+}
+
+_cmd kubetest "Check that all nodes are reporting as Ready"
 _cmd_kubetest() {
+    TAG=$1
+    need_tag
+
     # There are way too many backslashes in the command below.
     # Feel free to make that better ♥
     pssh "
@@ -186,7 +211,7 @@ _cmd_kubetest() {
     fi"
 }
 
-_cmd ids "List the instance IDs belonging to a given tag or token"
+_cmd ids "(FIXME) List the instance IDs belonging to a given tag or token"
 _cmd_ids() {
     TAG=$1
     need_tag $TAG
@@ -199,248 +224,242 @@ _cmd_ids() {
     aws_get_instance_ids_by_client_token $TAG
 }
 
-_cmd ips "List the IP addresses of the VMs for a given tag or token"
-_cmd_ips() {
-    TAG=$1
-    need_tag $TAG
-    mkdir -p tags/$TAG
-    aws_get_instance_ips_by_tag $TAG | tee tags/$TAG/ips.txt
-    link_tag $TAG
-}
-
-_cmd list "List available batches in the current region"
+_cmd list "List available groups for a given infrastructure"
 _cmd_list() {
-    info "Listing batches in region $AWS_DEFAULT_REGION:"
-    aws_display_tags
+    need_infra $1
+    infra_list
 }
 
-_cmd status "List instance status for a given batch"
-_cmd_status() {
-    info "Using region $AWS_DEFAULT_REGION."
+_cmd listall "List VMs running on all configured infrastructures"
+_cmd_listall() {
+    for infra in infra/*; do
+        case $infra in
+        infra/example.*)
+            ;;
+        *)
+            info "Listing infrastructure $infra:"
+            need_infra $infra
+            infra_list
+            ;;
+        esac
+    done
+}
+
+_cmd netfix "Disable GRO and run a pinger job on the VMs"
+_cmd_netfix () {
     TAG=$1
-    need_tag $TAG
-    describe_tag $TAG
-    tag_is_reachable $TAG
-    info "You may be interested in running one of the following commands:"
-    info "$0 ips $TAG"
-    info "$0 deploy $TAG <settings/somefile.yaml>"
+    need_tag
+
+    pssh "
+    sudo ethtool -K ens3 gro off
+    sudo tee /root/pinger.service <<EOF
+[Unit]
+Description=pinger
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+WorkingDirectory=/
+ExecStart=/bin/ping -w60 1.1
+User=nobody
+Group=nogroup
+Restart=always
+EOF
+    sudo systemctl enable /root/pinger.service
+    sudo systemctl start pinger"
 }
 
 _cmd opensg "Open the default security group to ALL ingress traffic"
 _cmd_opensg() {
-    aws ec2 authorize-security-group-ingress \
-        --group-name default \
-        --protocol icmp \
-        --port -1 \
-        --cidr 0.0.0.0/0
+    need_infra $1
+    infra_opensg
+}
 
-    aws ec2 authorize-security-group-ingress \
-        --group-name default \
-        --protocol udp \
-        --port 0-65535 \
-        --cidr 0.0.0.0/0
+_cmd pssh "Run an arbitrary command on all nodes"
+_cmd_pssh() {
+    TAG=$1
+    need_tag
+    shift
 
-    aws ec2 authorize-security-group-ingress \
-        --group-name default \
-        --protocol tcp \
-        --port 0-65535 \
-        --cidr 0.0.0.0/0
+    pssh "$@"
 }
 
 _cmd pull_images "Pre-pull a bunch of Docker images"
 _cmd_pull_images() {
     TAG=$1
-    need_tag $TAG
-    pull_tag $TAG
+    need_tag
+    pull_tag
 }
 
-_cmd retag "Apply a new tag to a batch of VMs"
+_cmd quotas "Check our infrastructure quotas (max instances)"
+_cmd_quotas() {
+    need_infra $1
+    infra_quotas
+}
+
+_cmd retag "(FIXME) Apply a new tag to a group of VMs"
 _cmd_retag() {
     OLDTAG=$1
     NEWTAG=$2
-    need_tag $OLDTAG
+    TAG=$OLDTAG
+    need_tag
     if [[ -z "$NEWTAG" ]]; then
         die "You must specify a new tag to apply."
     fi
     aws_tag_instances $OLDTAG $NEWTAG
 }
 
-_cmd start "Start a batch of VMs"
+_cmd start "Start a group of VMs"
 _cmd_start() {
-    # Number of instances to create
-    COUNT=$1
-    # Optional settings file (to carry on with deployment)
-    SETTINGS=$2
-
+    while [ ! -z "$*" ]; do
+        case "$1" in
+        --infra) INFRA=$2; shift 2;;
+        --settings) SETTINGS=$2; shift 2;;
+        --count) COUNT=$2; shift 2;;
+        --tag) TAG=$2; shift 2;;
+        *) die "Unrecognized parameter: $1."
+        esac
+    done
+    
+    if [ -z "$INFRA" ]; then
+        die "Please add --infra flag to specify which infrastructure file to use."
+    fi
+    if [ -z "$SETTINGS" ]; then
+        die "Please add --settings flag to specify which settings file to use."
+    fi
     if [ -z "$COUNT" ]; then
-        die "Indicate number of instances to start."
+        COUNT=$(awk '/^clustersize:/ {print $2}' $SETTINGS)
+        warning "No --count option was specified. Using value from settings file ($COUNT)."
     fi
+    
+    # Check that the specified settings and infrastructure are valid.        
+    need_settings $SETTINGS
+    need_infra $INFRA
 
-    # Print our AWS username, to ease the pain of credential-juggling
-    greet
-
-    # Upload our SSH keys to AWS if needed, to be added to each VM's authorized_keys
-    key_name=$(sync_keys)
-
-    AMI=$(_cmd_ami)    # Retrieve the AWS image ID
-    if [ -z "$AMI" ]; then
-        die "I could not find which AMI to use in this region. Try another region?"
+    if [ -z "$TAG" ]; then
+        TAG=$(make_tag)
     fi
-    TOKEN=$(get_token) # generate a timestamp token for this batch of VMs
-    AWS_KEY_NAME=$(make_key_name)
+    mkdir -p tags/$TAG
+    ln -s ../../$INFRA tags/$TAG/infra.sh
+    ln -s ../../$SETTINGS tags/$TAG/settings.yaml
+    echo creating > tags/$TAG/status
 
-    sep "Starting instances"
-    info "         Count: $COUNT"
-    info "        Region: $AWS_DEFAULT_REGION"
-    info "     Token/tag: $TOKEN"
-    info "           AMI: $AMI"
-    info "      Key name: $AWS_KEY_NAME"
-    result=$(aws ec2 run-instances \
-        --key-name $AWS_KEY_NAME \
-        --count $COUNT \
-        --instance-type ${AWS_INSTANCE_TYPE-t2.medium} \
-        --client-token $TOKEN \
-        --image-id $AMI)
-    reservation_id=$(echo "$result" | head -1 | awk '{print $2}')
-    info "Reservation ID: $reservation_id"
-    sep
-
-    # if instance creation succeeded, we should have some IDs
-    IDS=$(aws_get_instance_ids_by_client_token $TOKEN)
-    if [ -z "$IDS" ]; then
-        die "Instance creation failed."
-    fi
-
-    # Tag these new instances with a tag that is the same as the token
-    TAG=$TOKEN
-    aws_tag_instances $TOKEN $TAG
-
-    wait_until_tag_is_running $TAG $COUNT
-
+    infra_start $COUNT
     sep
     info "Successfully created $COUNT instances with tag $TAG"
     sep
+    echo created > tags/$TAG/status
 
-    mkdir -p tags/$TAG
-    IPS=$(aws_get_instance_ips_by_tag $TAG)
-    echo "$IPS" >tags/$TAG/ips.txt
-    link_tag $TAG
-    if [ -n "$SETTINGS" ]; then
-        _cmd_deploy $TAG $SETTINGS
-    else
-        info "To deploy or kill these instances, run one of the following:"
-        info "$0 deploy $TAG <settings/somefile.yaml>"
-        info "$0 stop $TAG"
-    fi
-}
-
-_cmd ec2quotas "Check our EC2 quotas (max instances)"
-_cmd_ec2quotas() {
-    greet
-
-    max_instances=$(aws ec2 describe-account-attributes \
-        --attribute-names max-instances \
-        --query 'AccountAttributes[*][AttributeValues]')
-    info "In the current region ($AWS_DEFAULT_REGION) you can deploy up to $max_instances instances."
-
-    # Print list of AWS EC2 regions, highlighting ours ($AWS_DEFAULT_REGION) in the list
-    # If our $AWS_DEFAULT_REGION is not valid, the error message will be pretty descriptive:
-    # Could not connect to the endpoint URL: "https://ec2.foo.amazonaws.com/"
-    info "Available regions:"
-    aws ec2 describe-regions | awk '{print $3}' | grep --color=auto $AWS_DEFAULT_REGION -C50
+    info "To deploy Docker on these instances, you can run:"
+    info "$0 deploy $TAG"
+    info "To terminate these instances, you can run:"
+    info "$0 stop $TAG"
 }
 
 _cmd stop "Stop (terminate, shutdown, kill, remove, destroy...) instances"
 _cmd_stop() {
     TAG=$1
-    need_tag $TAG
-    aws_kill_instances_by_tag $TAG
+    need_tag
+    infra_stop
+    echo stopped > tags/$TAG/status
 }
 
-_cmd test "Run tests (pre-flight checks) on a batch of VMs"
+_cmd tags "List groups of VMs known locally"
+_cmd_tags() {
+    (
+        cd tags
+        echo "[#] [Status] [Tag] [Infra]" \
+           | awk '{ printf "%-7s %-12s %-25s %-25s\n", $1, $2, $3, $4}'
+        for tag in *; do
+            if [ -f $tag/ips.txt ]; then
+                count="$(wc -l < $tag/ips.txt)"
+            else
+                count="?"
+            fi
+            if [ -f $tag/status ]; then
+                status="$(cat $tag/status)"
+            else
+                status="?"
+            fi
+            if [ -f $tag/infra.sh ]; then
+                infra="$(basename $(readlink $tag/infra.sh))"
+            else
+                infra="?"
+            fi
+            echo "$count $status $tag $infra" \
+               | awk '{ printf "%-7s %-12s %-25s %-25s\n", $1, $2, $3, $4}'
+        done
+    )
+}
+
+_cmd test "Run tests (pre-flight checks) on a group of VMs"
 _cmd_test() {
     TAG=$1
-    need_tag $TAG
-    test_tag $TAG
+    need_tag
+    test_tag
 }
 
-###
+# Sometimes, weave fails to come up on some nodes.
+# Symptom: the pods on a node are unreachable (they don't even ping).
+# Remedy: wipe out Weave state and delete weave pod on that node.
+# Specifically, identify the weave pod that is defective, then:
+# kubectl -n kube-system exec weave-net-XXXXX -c weave rm /weavedb/weave-netdata.db
+# kubectl -n kube-system delete pod weave-net-XXXXX
+_cmd weavetest "Check that weave seems properly setup"
+_cmd_weavetest() {
+    TAG=$1
+    need_tag
+    pssh "
+    kubectl -n kube-system get pods -o name | grep weave | cut -d/ -f2 |
+    xargs -I POD kubectl -n kube-system exec POD -c weave -- \
+    sh -c \"./weave --local status | grep Connections | grep -q ' 1 failed' || ! echo POD \""
+}
 
 greet() {
     IAMUSER=$(aws iam get-user --query 'User.UserName')
     info "Hello! You seem to be UNIX user $USER, and IAM user $IAMUSER."
 }
 
-link_tag() {
-    TAG=$1
-    need_tag $TAG
-    IPS_FILE=tags/$TAG/ips.txt
-    need_ips_file $IPS_FILE
-    ln -sf $IPS_FILE ips.txt
-}
-
 pull_tag() {
-    TAG=$1
-    need_tag $TAG
-    link_tag $TAG
-    if [ ! -s $IPS_FILE ]; then
-        die "Nonexistent or empty IPs file $IPS_FILE."
-    fi
-
     # Pre-pull a bunch of images
     pssh --timeout 900 'for I in \
-            debian:latest \
-            ubuntu:latest \
-            fedora:latest \
-            centos:latest \
-            postgres \
-            redis \
-            training/namer \
-            nathanleclaire/redisonrails; do
+        debian:latest \
+        ubuntu:latest \
+        fedora:latest \
+        centos:latest \
+        elasticsearch:2 \
+        postgres \
+        redis \
+        alpine \
+        registry \
+        nicolaka/netshoot \
+        jpetazzo/trainingwheels \
+        golang \
+        training/namer \
+        dockercoins/hasher \
+        dockercoins/rng \
+        dockercoins/webui \
+        dockercoins/worker \
+        logstash \
+        prom/node-exporter \
+        google/cadvisor \
+        dockersamples/visualizer \
+        nathanleclaire/redisonrails; do
         sudo -u docker docker pull $I
     done'
 
     info "Finished pulling images for $TAG."
-    info "You may now want to run:"
-    info "$0 cards $TAG <settings/somefile.yaml>"
-}
-
-wait_until_tag_is_running() {
-    max_retry=50
-    TAG=$1
-    COUNT=$2
-    i=0
-    done_count=0
-    while [[ $done_count -lt $COUNT ]]; do
-        let "i += 1"
-        info "$(printf "%d/%d instances online" $done_count $COUNT)"
-        done_count=$(aws ec2 describe-instances \
-            --filters "Name=instance-state-name,Values=running" \
-            "Name=tag:Name,Values=$TAG" \
-            --query "Reservations[*].Instances[*].State.Name" \
-            | tr "\t" "\n" \
-            | wc -l)
-
-        if [[ $i -gt $max_retry ]]; then
-            die "Timed out while waiting for instance creation (after $max_retry retries)"
-        fi
-        sleep 1
-    done
 }
 
 tag_is_reachable() {
-    TAG=$1
-    need_tag $TAG
-    link_tag $TAG
     pssh -t 5 true 2>&1 >/dev/null
 }
 
 test_tag() {
-    TAG=$1
     ips_file=tags/$TAG/ips.txt
     info "Picking a random IP address in $ips_file to run tests."
-    n=$((1 + $RANDOM % $(wc -l <$ips_file)))
-    ip=$(head -n $n $ips_file | tail -n 1)
+    ip=$(shuf -n1 $ips_file)
     test_vm $ip
     info "Tests complete."
 }
@@ -516,17 +535,9 @@ sync_keys() {
     fi
 }
 
-get_token() {
+make_tag() {
     if [ -z $USER ]; then
         export USER=anonymous
     fi
     date +%Y-%m-%d-%H-%M-$USER
-}
-
-describe_tag() {
-    # Display instance details and reachability/status information
-    TAG=$1
-    need_tag $TAG
-    aws_display_instances_by_tag $TAG
-    aws_display_instance_statuses_by_tag $TAG
 }

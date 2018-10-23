@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kaniko-build
+spec:
+  initContainers:
+  - name: git-clone
+    image: alpine
+    command: ["sh", "-c"]
+    args: 
+    - |
+      apk add --no-cache git &&
+      git clone git://github.com/jpetazzo/container.training /workspace
+    volumeMounts:
+    - name: workspace
+      mountPath: /workspace
+  containers:
+  - name: build-image
+    image: gcr.io/kaniko-project/executor:latest
+    args:
+      - "--context=/workspace/dockercoins/rng"
+      - "--insecure"
+      - "--destination=registry:5000/rng-kaniko:latest"
+    volumeMounts:
+    - name: workspace
+      mountPath: /workspace
+  volumes:
+  - name: workspace
+

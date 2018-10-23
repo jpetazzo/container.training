@@ -29,6 +29,10 @@ class State(object):
         self.interactive = True
         self.verify_status = False
         self.simulate_type = True
+        self.switch_desktop = False
+        self.sync_slides = False
+        self.open_links = False
+        self.run_hidden = True
         self.slide = 1
         self.snippet = 0
 
@@ -37,6 +41,10 @@ class State(object):
         self.interactive = bool(data["interactive"])
         self.verify_status = bool(data["verify_status"])
         self.simulate_type = bool(data["simulate_type"])
+        self.switch_desktop = bool(data["switch_desktop"])
+        self.sync_slides = bool(data["sync_slides"])
+        self.open_links = bool(data["open_links"])
+        self.run_hidden = bool(data["run_hidden"])
         self.slide = int(data["slide"])
         self.snippet = int(data["snippet"])
 
@@ -46,6 +54,10 @@ class State(object):
                 interactive=self.interactive,
                 verify_status=self.verify_status,
                 simulate_type=self.simulate_type,
+                switch_desktop=self.switch_desktop,
+                sync_slides=self.sync_slides,
+                open_links=self.open_links,
+                run_hidden=self.run_hidden,
                 slide=self.slide,
                 snippet=self.snippet,
                 ), f, default_flow_style=False)
@@ -122,14 +134,20 @@ class Slide(object):
 
 
 def focus_slides():
+    if not state.switch_desktop:
+        return
     subprocess.check_output(["i3-msg", "workspace", "3"])
     subprocess.check_output(["i3-msg", "workspace", "1"])
 
 def focus_terminal():
+    if not state.switch_desktop:
+        return
     subprocess.check_output(["i3-msg", "workspace", "2"])
     subprocess.check_output(["i3-msg", "workspace", "1"])
 
 def focus_browser():
+    if not state.switch_desktop:
+        return
     subprocess.check_output(["i3-msg", "workspace", "4"])
     subprocess.check_output(["i3-msg", "workspace", "1"])
 
@@ -205,7 +223,7 @@ def check_exit_status():
 def setup_tmux_and_ssh():
     if subprocess.call(["tmux", "has-session"]):
         logging.error("Couldn't connect to tmux. Please setup tmux first.")
-        ipaddr = open("../../prepare-vms/ips.txt").read().split("\n")[0]
+        ipaddr = "$IPADDR"
         uid = os.getuid()
 
         raise Exception("""
@@ -307,17 +325,21 @@ while True:
     slide = slides[state.slide]
     snippet = slide.snippets[state.snippet-1] if state.snippet else None
     click.clear()
-    print("[Slide {}/{}] [Snippet {}/{}] [simulate_type:{}] [verify_status:{}]"
+    print("[Slide {}/{}] [Snippet {}/{}] [simulate_type:{}] [verify_status:{}] "
+          "[switch_desktop:{}] [sync_slides:{}] [open_links:{}] [run_hidden:{}]"
           .format(state.slide, len(slides)-1,
                   state.snippet, len(slide.snippets) if slide.snippets else 0,
-                  state.simulate_type, state.verify_status))
+                  state.simulate_type, state.verify_status,
+                  state.switch_desktop, state.sync_slides,
+                  state.open_links, state.run_hidden))
     print(hrule())
     if snippet:
         print(slide.content.replace(snippet.content, ansi(7)(snippet.content)))
         focus_terminal()
     else:
         print(slide.content)
-        subprocess.check_output(["./gotoslide.js", str(slide.number)])
+        if state.sync_slides:
+            subprocess.check_output(["./gotoslide.js", str(slide.number)])
         focus_slides()
     print(hrule())
     if state.interactive:
@@ -326,6 +348,10 @@ while True:
         print("n/→     Next")
         print("s       Simulate keystrokes")
         print("v       Validate exit status")
+        print("d       Switch desktop")
+        print("k       Sync slides")
+        print("o       Open links")
+        print("h       Run hidden commands")
         print("g       Go to a specific slide")
         print("q       Quit")
         print("c       Continue non-interactively until next error")
@@ -341,6 +367,14 @@ while True:
         state.simulate_type = not state.simulate_type
     elif command == "v":
         state.verify_status = not state.verify_status
+    elif command == "d":
+        state.switch_desktop = not state.switch_desktop
+    elif command == "k":
+        state.sync_slides = not state.sync_slides
+    elif command == "o":
+        state.open_links = not state.open_links
+    elif command == "h":
+        state.run_hidden = not state.run_hidden
     elif command == "g":
         state.slide = click.prompt("Enter slide number", type=int)
         state.snippet = 0
@@ -366,7 +400,7 @@ while True:
         logging.info("Running with method {}: {}".format(method, data))
         if method == "keys":
             send_keys(data)
-        elif method == "bash":
+        elif method == "bash" or (method == "hide" and state.run_hidden):
             # Make sure that we're ready
             wait_for_prompt()
             # Strip leading spaces
@@ -405,11 +439,12 @@ while True:
             screen = capture_pane()
             url = data.replace("/node1", "/{}".format(IPADDR))
             # This should probably be adapted to run on different OS
-            subprocess.check_output(["xdg-open", url])
-            focus_browser()
-            if state.interactive:
-                print("Press any key to continue to next step...")
-                click.getchar()
+            if state.open_links:
+                subprocess.check_output(["xdg-open", url])
+                focus_browser()
+                if state.interactive:
+                    print("Press any key to continue to next step...")
+                    click.getchar()
         else:
             logging.warning("Unknown method {}: {!r}".format(method, data))
         move_forward()

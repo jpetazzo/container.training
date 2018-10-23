@@ -96,7 +96,7 @@ class: extra-details
 
 - Scale the service to ensure 2 copies per node:
   ```bash
-  docker service update pingpong --replicas 10
+  docker service update pingpong --replicas 6
   ```
 
 - Check that we have two containers on the current node:
@@ -168,12 +168,12 @@ class: extra-details
 
 - Scale the service to ensure 3 copies per node:
   ```bash
-  docker service update pingpong --replicas 15 --detach=false
+  docker service update pingpong --replicas 9 --detach=false
   ```
 
 - And then to 4 copies per node:
   ```bash
-  docker service update pingpong --replicas 20 --detach=true
+  docker service update pingpong --replicas 12 --detach=true
   ```
 
 ]
@@ -207,7 +207,7 @@ class: extra-details
 
 - Create an ElasticSearch service (and give it a name while we're at it):
   ```bash
-  docker service create --name search --publish 9200:9200 --replicas 7 \
+  docker service create --name search --publish 9200:9200 --replicas 5 \
          elasticsearch`:2`
   ```
 
@@ -291,10 +291,10 @@ apk add --no-cache jq
 
 ## Load balancing results
 
-Traffic is handled by our clusters [TCP routing mesh](
+Traffic is handled by our clusters [routing mesh](
 https://docs.docker.com/engine/swarm/ingress/).
 
-Each request is served by one of the 7 instances, in rotation.
+Each request is served by one of the instances, in rotation.
 
 Note: if you try to access the service from your browser,
 you will probably see the same
@@ -303,7 +303,13 @@ to re-use the same connection.
 
 ---
 
-## Under the hood of the TCP routing mesh
+class: pic
+
+![routing mesh](images/ingress-routing-mesh.png)
+
+---
+
+## Under the hood of the routing mesh
 
 - Load balancing is done by IPVS
 
@@ -322,9 +328,9 @@ to re-use the same connection.
 
 There are many ways to deal with inbound traffic on a Swarm cluster.
 
-- Put all (or a subset) of your nodes in a DNS `A` record
+- Put all (or a subset) of your nodes in a DNS `A` record (good for web clients)
 
-- Assign your nodes (or a subset) to an ELB
+- Assign your nodes (or a subset) to an external load balancer (ELB, etc.)
 
 - Use a virtual IP and make sure that it is assigned to an "alive" node
 
@@ -332,24 +338,31 @@ There are many ways to deal with inbound traffic on a Swarm cluster.
 
 ---
 
-class: btw-labels
+class: pic
+
+![external LB](images/ingress-lb.png)
+
+---
 
 ## Managing HTTP traffic
 
 - The TCP routing mesh doesn't parse HTTP headers
 
-- If you want to place multiple HTTP services on port 80, you need something more
+- If you want to place multiple HTTP services on port 80/443, you need something more
 
-- You can set up NGINX or HAProxy on port 80 to do the virtual host switching
+- You can set up NGINX or HAProxy on port 80/443 to route connections to the correct
+  Service, but they need to be "Swarm aware" to dynamically update configs
 
-- Docker Universal Control Plane provides its own [HTTP routing mesh](
-  https://docs.docker.com/datacenter/ucp/2.1/guides/admin/configure/use-domain-names-to-access-services/)
+--
 
-  - add a specific label starting with `com.docker.ucp.mesh.http` to your services
+- Docker EE provides its own [Layer 7 routing](https://docs.docker.com/ee/ucp/interlock/)
 
-  - labels are detected automatically and dynamically update the configuration
+  - Service labels like `com.docker.lb.hosts=<FQDN>` are detected automatically via Docker 
+  API and dynamically update the configuration
 
-- Two common open source "reverse proxy" options:
+--
+
+- Two common open source options:
 
   - [Traefik](https://traefik.io/) - popular, many features, requires running on managers, 
   needs key/value for HA
@@ -373,7 +386,7 @@ class: btw-labels
 
   - owner of a service (for billing, paging...)
 
-  - etc.
+  - correlate Swarm objects together (services, volumes, configs, secrets, etc.)
 
 ---
 
@@ -426,16 +439,10 @@ class: extra-details
 
 .exercise[
 
-- Get the source code of this simple-yet-beautiful visualization app:
+- Run this simple-yet-beautiful visualization app:
   ```bash
-  cd ~
-  git clone git://github.com/dockersamples/docker-swarm-visualizer
-  ```
-
-- Build and run the Swarm visualizer:
-  ```bash
-  cd docker-swarm-visualizer
-  docker-compose up -d
+  cd ~/container.training/stacks
+  docker-compose -f visualizer.yml up -d
   ```
 
   <!-- ```longwait Creating dockerswarmvisualizer_viz_1``` -->
@@ -476,7 +483,7 @@ class: extra-details
 
 - Instead of viewing your cluster, this could take care of logging, metrics, autoscaling ...
 
-- We can run it within a service, too! We won't do it, but the command would look like:
+- We can run it within a service, too! We won't do it yet, but the command would look like:
 
   ```bash
     docker service create \
@@ -484,11 +491,15 @@ class: extra-details
       --name viz --constraint node.role==manager ...
   ```
 
+.footnote[
+
 Credits: the visualization code was written by
 [Francisco Miranda](https://github.com/maroshii).
-<br/>
+
 [Mano Marks](https://twitter.com/manomarks) adapted
 it to Swarm and maintains it.
+
+]
 
 ---
 

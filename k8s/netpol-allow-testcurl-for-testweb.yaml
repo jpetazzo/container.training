@@ -1,0 +1,14 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-testcurl-for-testweb
+spec:
+  podSelector:
+    matchLabels:
+      run: testweb
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          run: testcurl
+

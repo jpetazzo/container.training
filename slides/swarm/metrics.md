@@ -554,7 +554,7 @@ class: snap
 
 ## Instruct all nodes to join the agreement
 
-- We dont need another fancy global service!
+- We don't need another fancy global service!
 
 - We can join nodes from any existing node of the cluster
 
@@ -949,7 +949,7 @@ class: prom
 
 ## It's all about the `/metrics`
 
-- This is was the *node exporter* looks like:
+- This is what the *node exporter* looks like:
 
   http://demo.robustperception.io:9100/metrics
 
@@ -1183,7 +1183,7 @@ class: prom
 
 ]
 
-You should see 11 endpoints (5 cadvisor, 5 node, 1 prometheus).
+You should see 7 endpoints (3 cadvisor, 3 node, 1 prometheus).
 
 Their state should be "UP".
 

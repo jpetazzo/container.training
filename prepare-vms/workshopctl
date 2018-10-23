@@ -1,19 +1,18 @@
 #!/bin/bash
 
-# Get the script's real directory, whether we're being called directly or via a symlink
+# Get the script's real directory.
+# This should work whether we're being called directly or via a symlink.
 if [ -L "$0" ]; then
     export SCRIPT_DIR=$(dirname $(readlink "$0"))
 else
     export SCRIPT_DIR=$(dirname "$0")
 fi
 
-# Load all scriptlets
+# Load all scriptlets.
 cd "$SCRIPT_DIR"
 for lib in lib/*.sh; do
     . $lib
 done
-
-TRAINER_IMAGE="preparevms_prepare-vms"
 
 DEPENDENCIES="
     aws
@@ -25,49 +24,26 @@ DEPENDENCIES="
     man
     "
 
-ENVVARS="
-    AWS_ACCESS_KEY_ID
-    AWS_SECRET_ACCESS_KEY
-    AWS_DEFAULT_REGION
-    SSH_AUTH_SOCK
-    "
+# Check for missing dependencies, and issue a warning if necessary.
+missing=0
+for dependency in $DEPENDENCIES; do
+    if ! command -v $dependency >/dev/null; then
+        warning "Dependency $dependency could not be found."
+        missing=1
+    fi
+done
+if [ $missing = 1 ]; then
+    warning "At least one dependency is missing. Install it or try the image wrapper."
+fi
 
-check_envvars() {
-    status=0
-    for envvar in $ENVVARS; do
-        if [ -z "${!envvar}" ]; then
-            error "Environment variable $envvar is not set."
-            if [ "$envvar" = "SSH_AUTH_SOCK" ]; then
-                error "Hint: run 'eval \$(ssh-agent) ; ssh-add' and try again?"
-            fi
-            status=1
-        fi
-    done
-    return $status
-}
+# Check if SSH_AUTH_SOCK is set.
+# (If it's not, deployment will almost certainly fail.)
+if [ -z "${SSH_AUTH_SOCK}" ]; then
+    warning "Environment variable SSH_AUTH_SOCK is not set."
+    warning "Hint: run 'eval \$(ssh-agent) ; ssh-add' and try again?"
+fi
 
-check_dependencies() {
-    status=0
-    for dependency in $DEPENDENCIES; do
-        if ! command -v $dependency >/dev/null; then
-            warning "Dependency $dependency could not be found."
-            status=1
-        fi
-    done
-    return $status
-}
-
-check_image() {
-    docker inspect $TRAINER_IMAGE >/dev/null 2>&1
-}
-
-check_envvars \
-    || die "Please set all required environment variables."
-
-check_dependencies \
-    || warning "At least one dependency is missing. Install it or try the image wrapper."
-
-# Now check which command was invoked and execute it
+# Now check which command was invoked and execute it.
 if [ "$1" ]; then
     cmd="$1"
     shift
@@ -77,6 +53,3 @@ fi
 fun=_cmd_$cmd
 type -t $fun | grep -q function || die "Invalid command: $cmd"
 $fun "$@"
-
-#    export SSH_AUTH_DIRNAME=$(dirname $SSH_AUTH_SOCK)
-#    docker-compose run prepare-vms "$@"

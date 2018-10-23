@@ -1,0 +1,423 @@
+- date: 2018-11-23
+  city: Copenhagen
+  country: dk
+  event: GOTO
+  title: Build Container Orchestration with Docker Swarm
+  speaker: bretfisher
+  attend: https://gotocph.com/2018/workshops/121
+
+- date: 2018-11-08
+  city: San Francisco, CA
+  country: us
+  event: QCON
+  title: Introduction to Docker and Containers
+  speaker: jpetazzo
+  attend: https://qconsf.com/sf2018/workshop/introduction-docker-and-containers
+
+- date: 2018-11-09
+  city: San Francisco, CA
+  country: us
+  event: QCON
+  title: Getting Started With Kubernetes and Container Orchestration
+  speaker: jpetazzo
+  attend: https://qconsf.com/sf2018/workshop/getting-started-kubernetes-and-container-orchestration
+
+- date: 2018-10-31
+  city: London, UK
+  country: uk
+  event: Velocity EU
+  title: Kubernetes 101
+  speaker: bridgetkromhout
+  attend: https://conferences.oreilly.com/velocity/vl-eu/public/schedule/detail/71149
+
+- date: 2018-10-30
+  city: London, UK
+  country: uk
+  event: Velocity EU
+  title: "Docker Zero to Hero: Docker, Compose and Production Swarm"
+  speaker: bretfisher
+  attend: https://conferences.oreilly.com/velocity/vl-eu/public/schedule/detail/71231
+
+- date: 2018-07-12
+  city: Minneapolis, MN
+  country: us
+  event: devopsdays Minneapolis
+  title: Kubernetes 101
+  speaker: "ashleymcnamara, bketelsen"
+  slides: https://devopsdaysmsp2018.container.training
+  attend: https://www.devopsdays.org/events/2018-minneapolis/registration/
+
+- date: 2018-10-01
+  city: New York, NY
+  country: us
+  event: Velocity
+  title: Kubernetes 101
+  speaker: bridgetkromhout
+  attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/70102
+  slides: https://velny-k8s101-2018.container.training
+
+- date: 2018-10-01
+  city: New York, NY
+  country: us
+  event: Velocity
+  title: Kubernetes Bootcamp - Deploying and Scaling Microservices
+  speaker: jpetazzo
+  attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/69875
+  slides: https://k8s2d.container.training
+
+- date: 2018-10-01
+  city: New York, NY
+  country: us
+  event: Velocity
+  title: "Docker Zero to Hero: Docker, Compose and Production Swarm"
+  speaker: bretfisher
+  attend: https://conferences.oreilly.com/velocity/vl-ny/public/schedule/detail/70147
+
+- date: 2018-09-17
+  country: fr
+  city: Paris
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Déployer ses applications avec Kubernetes (in French)
+  lang: fr
+  attend:  https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
+  slides: https://septembre2018.container.training
+
+- date: 2018-07-17
+  city: Portland, OR
+  country: us
+  event: OSCON
+  title: Kubernetes 101
+  speaker: bridgetkromhout
+  slides: https://oscon2018.container.training/
+  attend: https://conferences.oreilly.com/oscon/oscon-or/public/schedule/detail/66287
+
+- date: 2018-06-27
+  city: Amsterdam
+  country: nl
+  event: devopsdays
+  title: Kubernetes 101
+  speaker: bridgetkromhout
+  slides: https://devopsdaysams2018.container.training
+  attend: https://www.devopsdays.org/events/2018-amsterdam/registration/
+
+- date: 2018-06-12
+  city: San Jose, CA
+  country: us
+  event: Velocity
+  title: Kubernetes 101
+  speaker: bridgetkromhout
+  slides: https://velocitysj2018.container.training
+  attend: https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/66286
+
+- date: 2018-06-12
+  city: San Jose, CA
+  country: us
+  event: Velocity
+  title: "Kubernetes two-day kickstart: Deploying and Scaling Microservices with Kubernetes"
+  speaker: "bketelsen, erikstmartin"
+  slides: http://kubernetes.academy/kube-fullday.yml.html#1
+  attend: https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/66932
+
+- date: 2018-06-11
+  city: San Jose, CA
+  country: us
+  event: Velocity
+  title: "Kubernetes two-day kickstart: Introduction to Docker and Containers"
+  speaker: "bketelsen, erikstmartin"
+  slides: http://kubernetes.academy/intro-fullday.yml.html#1
+  attend: https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/66932
+
+- date: 2018-05-17
+  city: Virginia Beach, FL
+  country: us
+  event: Revolution Conf
+  title: Docker 101
+  speaker: bretfisher
+  slides: https://revconf18.bretfisher.com
+
+- date: 2018-05-10
+  city: Saint Paul, MN
+  country: us
+  event: NDC Minnesota
+  title: Kubernetes 101
+  slides: https://ndcminnesota2018.container.training
+
+- date: 2018-05-08
+  city: Budapest
+  country: hu
+  event: CRAFT
+  title: Swarm Orchestration
+  slides: https://craftconf18.bretfisher.com
+
+- date: 2018-04-27
+  city: Chicago, IL
+  country: us
+  event: GOTO
+  title: Swarm Orchestration
+  slides: https://gotochgo18.bretfisher.com
+
+- date: 2018-04-24
+  city: Chicago, IL
+  country: us
+  event: GOTO
+  title: Kubernetes 101
+  slides: http://gotochgo2018.container.training/
+
+- date: 2018-04-11
+  city: Paris
+  country: fr
+  title: Introduction aux conteneurs
+  lang: fr
+  slides: https://avril2018.container.training/intro.yml.html
+
+- date: 2018-04-13
+  city: Paris
+  country: fr
+  lang: fr
+  title: Introduction à l'orchestration
+  slides: https://avril2018.container.training/kube.yml.html
+
+- date: 2018-04-06
+  city: Sacramento, CA
+  country: us
+  event: MuraCon
+  title: Docker 101
+  slides: https://muracon18.bretfisher.com
+
+- date: 2018-03-27
+  city: Santa Clara, CA
+  country: us
+  event: SREcon Americas
+  title: Kubernetes 101
+  slides: http://srecon2018.container.training/
+
+- date: 2018-03-27
+  city: Bergen
+  country: no
+  event: Boosterconf
+  title: Kubernetes 101
+  slides: http://boosterconf2018.container.training/
+
+- date: 2018-02-22
+  city: San Francisco, CA
+  country: us
+  event: IndexConf
+  title: Kubernetes 101
+  slides: http://indexconf2018.container.training/
+  #attend: https://developer.ibm.com/indexconf/sessions/#!?id=5474
+
+- date: 2017-11-17
+  city: San Francisco, CA
+  country: us
+  event: QCON SF
+  title: Orchestrating Microservices with Docker Swarm
+  slides: http://qconsf2017swarm.container.training/
+
+- date: 2017-11-16
+  city: San Francisco, CA
+  country: us
+  event: QCON SF
+  title: Introduction to Docker and Containers
+  slides: http://qconsf2017intro.container.training/
+  video: https://www.youtube.com/playlist?list=PLBAFXs0YjviLgqTum8MkspG_8VzGl6C07
+
+- date: 2017-10-30
+  city: San Franciso, CA
+  country: us
+  event: LISA
+  title: (M7) Getting Started with Docker and Containers
+  slides: http://lisa17m7.container.training/
+
+- date: 2017-10-31
+  city: San Franciso, CA
+  country: us
+  event: LISA
+  title: (T9) Build, Ship, and Run Microservices on a Docker Swarm Cluster
+  slides: http://lisa17t9.container.training/
+
+- date: 2017-10-26
+  city: Prague
+  country: cz
+  event: Open Source Summit Europe
+  title: Deploying and scaling microservices with Docker and Kubernetes
+  slides: http://osseu17.container.training/
+  video: https://www.youtube.com/playlist?list=PLBAFXs0YjviLrsyydCzxWrIP_1-wkcSHS
+
+- date: 2017-10-16
+  city: Copenhagen
+  country: dk
+  event: DockerCon
+  title: Swarm from Zero to Hero
+  slides: http://dc17eu.container.training/
+
+- date: 2017-10-16
+  city: Copenhagen
+  country: dk
+  event: DockerCon
+  title: Orchestration for Advanced Users
+  slides: https://www.bretfisher.com/dockercon17eu
+
+- date: 2017-07-25
+  city: Minneapolis, MN
+  country: us
+  event: devopsdays
+  title: Deploying & Scaling microservices with Docker Swarm
+  video: https://www.youtube.com/watch?v=DABbqyJeG_E
+
+- date: 2017-06-12
+  city: Berlin
+  country: de
+  event: DevOpsCon
+  title: Deploying and scaling containerized Microservices with Docker and Swarm
+
+- date: 2017-05-18
+  city: Portland, OR
+  country: us
+  event: PyCon
+  title: Deploy and scale containers with Docker native, open source orchestration
+  video: https://www.youtube.com/watch?v=EuzoEaE6Cqs
+
+- date: 2017-05-08
+  city: Austin, TX
+  country: us
+  event: OSCON
+  title: Deploying and scaling applications in containers with Docker
+
+- date: 2017-05-04
+  city: Chicago, IL
+  country: us
+  event: GOTO
+  title: Container deployment, scaling, and orchestration with Docker Swarm
+
+- date: 2017-04-17
+  city: Austin, TX
+  country: us
+  event: DockerCon
+  title: Orchestration Workshop
+
+- date: 2017-03-22
+  city: San Jose, CA
+  country: us
+  event: Devoxx
+  title: Container deployment, scaling, and orchestration with Docker Swarm
+
+- date: 2017-03-03
+  city: Pasadena, CA
+  country: us
+  event: SCALE
+  title: Container deployment, scaling, and orchestration with Docker Swarm
+
+- date: 2016-12-06
+  city: Boston, MA
+  country: us
+  event: LISA
+  title: Deploying and Scaling Applications with Docker Swarm
+  slides: http://lisa16t1.container.training/
+  video: https://www.youtube.com/playlist?list=PLBAFXs0YjviIDDhr8vIwCN1wkyNGXjbbc
+
+- date: 2016-10-07
+  city: Berlin
+  country: de
+  event: LinuxCon
+  title: Orchestrating Containers in Production at Scale with Docker Swarm
+
+- date: 2016-09-20
+  city: New York, NY
+  country: us
+  event: Velocity
+  title: Deployment and orchestration at scale with Docker
+
+- date: 2016-08-25
+  city: Toronto
+  country: ca
+  event: LinuxCon
+  title: Orchestrating Containers in Production at Scale with Docker Swarm
+
+- date: 2016-06-22
+  city: Seattle, WA
+  country: us
+  event: DockerCon
+  title: Orchestration Workshop
+
+- date: 2016-05-29
+  city: Portland, OR
+  country: us
+  event: PyCon
+  title: Introduction to Docker and containers
+  slides: https://us.pycon.org/2016/site_media/media/tutorial_handouts/DockerSlides.pdf
+  video: https://www.youtube.com/watch?v=ZVaRK10HBjo
+
+- date: 2016-05-17
+  city: Austin, TX
+  country: us
+  event: OSCON
+  title: Deployment and orchestration at scale with Docker Swarm
+
+- date: 2016-04-27
+  city: Budapest
+  country: hu
+  event: CRAFT
+  title: Advanced Docker concepts and container orchestration
+
+- date: 2016-04-22
+  city: Berlin
+  country: de
+  event: Neofonie
+  title: Orchestration Workshop
+
+- date: 2016-04-05
+  city: Stockholm
+  country: se
+  event: Praqma
+  title: Orchestration Workshop
+
+- date: 2016-03-22
+  city: Munich
+  country: de
+  event: Stylight
+  title: Orchestration Workshop
+
+- date: 2016-03-11
+  city: London
+  country: uk
+  event: QCON
+  title: Containers in production with Docker Swarm
+
+- date: 2016-02-19
+  city: Amsterdam
+  country: nl
+  event: Container Solutions
+  title: Orchestration Workshop
+
+- date: 2016-02-15
+  city: Paris
+  country: fr
+  event: Zenika
+  title: Orchestration Workshop
+
+- date: 2016-01-22
+  city: Pasadena, CA
+  country: us
+  event: SCALE
+  title: Advanced Docker concepts and container orchestration
+
+#- date: 2015-11-10
+#  city: Washington DC
+#  country: us
+#  event: LISA
+#  title: Deploying and Scaling Applications with Docker Swarm
+
+#2015-09-24-strangeloop
+
+
+
+- title: Introduction to Docker and Containers
+  slides: intro-selfpaced.yml.html
+
+- title: Container Orchestration with Docker and Swarm
+  slides: swarm-selfpaced.yml.html
+
+- title: Deploying and Scaling Microservices with Docker and Kubernetes
+  slides: kube-selfpaced.yml.html
+

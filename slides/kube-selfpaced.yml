@@ -5,37 +5,57 @@ title: |
 chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
 
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://container.training/
+
 exclude:
 - in-person
 
 chapters:
-- common/title.md
+- shared/title.md
 #- logistics.md
-- kube/intro.md
-- common/about-slides.md
-- common/toc.md
-- - common/prereqs.md
-  - kube/versions-k8s.md
-  - common/sampleapp.md
-  - common/composescale.md
-  - common/composedown.md
-- - kube/concepts-k8s.md
-  - common/declarative.md
-  - kube/declarative.md
-  - kube/kubenet.md
-  - kube/kubectlget.md
-  - kube/setup-k8s.md
-  - kube/kubectlrun.md
-- - kube/kubectlexpose.md
-  - kube/ourapponkube.md
-  - kube/dashboard.md
-- - kube/kubectlscale.md
-  - kube/daemonset.md
-  - kube/rollout.md
-- - kube/logs-cli.md
-  - kube/logs-centralized.md
-  - kube/helm.md
-  - kube/namespaces.md
-  - kube/whatsnext.md
-  - kube/links.md
-  - common/thankyou.md
+- k8s/intro.md
+- shared/about-slides.md
+- shared/toc.md
+- - shared/prereqs.md
+  - k8s/versions-k8s.md
+  - shared/sampleapp.md
+  - shared/composescale.md
+  - shared/composedown.md
+  - k8s/concepts-k8s.md
+  - shared/declarative.md
+  - k8s/declarative.md
+- - k8s/kubenet.md
+  - k8s/kubectlget.md
+  - k8s/setup-k8s.md
+  - k8s/kubectlrun.md
+  - k8s/kubectlexpose.md
+- - k8s/ourapponkube.md
+  - k8s/kubectlproxy.md
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
+  - k8s/dashboard.md
+  - k8s/kubectlscale.md
+  - k8s/daemonset.md
+- - k8s/rollout.md
+  - k8s/healthchecks.md
+  - k8s/logs-cli.md
+  - k8s/logs-centralized.md
+- - k8s/helm.md
+  - k8s/namespaces.md
+  - k8s/netpol.md
+  - k8s/authn-authz.md
+- - k8s/ingress.md
+  - k8s/gitworkflows.md
+  - k8s/prometheus.md
+- - k8s/volumes.md
+  - k8s/build-with-docker.md
+  - k8s/build-with-kaniko.md
+  - k8s/configuration.md
+- - k8s/owners-and-dependents.md
+  - k8s/statefulsets.md
+  - k8s/portworx.md
+- - k8s/whatsnext.md
+  - k8s/links.md
+  - shared/thankyou.md

@@ -4,17 +4,21 @@ title: |
 
 chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://container.training/
+
 exclude:
 - in-person
 - btp-auto
 
 chapters:
-- common/title.md
-#- common/logistics.md
+- shared/title.md
+#- shared/logistics.md
 - swarm/intro.md
-- common/about-slides.md
-- common/toc.md
-- - common/prereqs.md
+- shared/about-slides.md
+- shared/toc.md
+- - shared/prereqs.md
   - swarm/versions.md
   - |
     name: part-1
@@ -22,11 +26,11 @@ chapters:
     class: title, self-paced
 
     Part 1
-  - common/sampleapp.md
-  - common/composescale.md
-  - common/composedown.md
+  - shared/sampleapp.md
+  - shared/composescale.md
+  - shared/composedown.md
   - swarm/swarmkit.md
-  - common/declarative.md
+  - shared/declarative.md
   - swarm/swarmmode.md
   - swarm/creatingswarm.md
   #- swarm/machine.md
@@ -62,5 +66,5 @@ chapters:
   - swarm/metrics.md
   - swarm/stateful.md
   - swarm/extratips.md
-  - common/thankyou.md
+  - shared/thankyou.md
   - swarm/links.md

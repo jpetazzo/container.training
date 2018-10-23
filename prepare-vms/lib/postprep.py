@@ -13,6 +13,7 @@ COMPOSE_VERSION = config["compose_version"]
 MACHINE_VERSION = config["machine_version"]
 CLUSTER_SIZE = config["clustersize"]
 ENGINE_VERSION = config["engine_version"]
+DOCKER_USER_PASSWORD = config["docker_user_password"]
 
 #################################
 
@@ -54,9 +55,9 @@ system("curl --silent {} > /tmp/ipv4".format(ipv4_retrieval_endpoint))
 
 ipv4 = open("/tmp/ipv4").read()
 
-# Add a "docker" user with password "training"
+# Add a "docker" user with password coming from the settings
 system("id docker || sudo useradd -d /home/docker -m -s /bin/bash docker")
-system("echo docker:training | sudo chpasswd")
+system("echo docker:{} | sudo chpasswd".format(DOCKER_USER_PASSWORD))
 
 # Fancy prompt courtesy of @soulshake.
 system("""sudo -u docker tee -a /home/docker/.bashrc <<SQRL
@@ -82,7 +83,7 @@ system("sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /e
 
 system("sudo service ssh restart")
 system("sudo apt-get -q update")
-system("sudo apt-get -qy install git jq python-pip")
+system("sudo apt-get -qy install git jq")
 
 #######################
 ### DOCKER INSTALLS ###
@@ -97,7 +98,6 @@ system("sudo apt-get -q update")
 system("sudo apt-get -qy install docker-ce")
 
 ### Install docker-compose
-#system("sudo pip install -U docker-compose=={}".format(COMPOSE_VERSION))
 system("sudo curl -sSL -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/{}/docker-compose-{}-{}".format(COMPOSE_VERSION, platform.system(), platform.machine()))
 system("sudo chmod +x /usr/local/bin/docker-compose")
 system("docker-compose version")
@@ -108,7 +108,7 @@ system("sudo chmod +x /usr/local/bin/docker-machine")
 system("docker-machine version")
 
 system("sudo apt-get remove -y --purge dnsmasq-base")
-system("sudo apt-get -qy install python-setuptools pssh apache2-utils httping htop unzip mosh")
+system("sudo apt-get -qy install python-setuptools pssh apache2-utils httping htop unzip mosh tree")
 
 ### Wait for Docker to be up.
 ### (If we don't do this, Docker will not be responsive during the next step.)

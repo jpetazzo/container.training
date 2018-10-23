@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: build-image
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: docker-build
+    image: docker
+    env:
+    - name: REGISTRY_PORT
+      value: #"30000"
+    command: ["sh", "-c"]
+    args:
+    - |
+      apk add --no-cache git &&
+      mkdir /workspace &&
+      git clone https://github.com/jpetazzo/container.training /workspace &&
+      docker build -t localhost:$REGISTRY_PORT/worker /workspace/dockercoins/worker &&
+      docker push localhost:$REGISTRY_PORT/worker
+    volumeMounts:
+    - name: docker-socket
+      mountPath: /var/run/docker.sock
+  volumes:
+  - name: docker-socket
+    hostPath:
+      path: /var/run/docker.sock
+

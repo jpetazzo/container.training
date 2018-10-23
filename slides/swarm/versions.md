@@ -1,8 +1,8 @@
 ## Brand new versions!
 
-- Engine 17.12
-- Compose 1.17
-- Machine 0.13
+- Engine 18.06
+- Compose 1.22
+- Machine 0.15
 
 .exercise[
 
@@ -69,7 +69,7 @@ class: extra-details
 
   (containerd, libcontainer, SwarmKit...)
 
-- More predictible release schedule (see next slide)
+- More predictable release schedule (see next slide)
 
 ---
 
@@ -89,8 +89,11 @@ class: pic
 | 2016 |  1.12 | Swarm mode, routing mesh, encrypted networking, healthchecks
 | 2017 |  1.13 | Stacks, attachable overlays, image squash and compress
 | 2017 |  1.13 | Windows Server 2016 Swarm mode
-| 2017 | 17.03 | Secrets
+| 2017 | 17.03 | Secrets, encrypted Raft
 | 2017 | 17.04 | Update rollback, placement preferences (soft constraints)
-| 2017 | 17.05 | Multi-stage image builds, service logs
-| 2017 | 17.06 | Swarm configs, node/service events
+| 2017 | 17.06 | Swarm configs, node/service events, multi-stage build, service logs
 | 2017 | 17.06 | Windows Server 2016 Swarm overlay networks, secrets
+| 2017 | 17.09 | ADD/COPY chown, start\_period, stop-signal, overlay2 default
+| 2017 | 17.12 | containerd, Hyper-V isolation, Windows routing mesh
+| 2018 | 18.03 | Templates for secrets/configs, multi-yaml stacks, LCOW
+| 2018 | 18.03 | Stack deploy to Kubernetes, `docker trust`, tmpfs, manifest CLI

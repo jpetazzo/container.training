@@ -1,11 +1,22 @@
 *.pyc
 *.swp
 *~
-prepare-vms/ips.txt
-prepare-vms/ips.html
-prepare-vms/ips.pdf
-prepare-vms/settings.yaml
 prepare-vms/tags
+prepare-vms/infra
 slides/*.yml.html
 slides/autopilot/state.yaml
+slides/index.html
+slides/past.html
 node_modules
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+### Windows ###
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
