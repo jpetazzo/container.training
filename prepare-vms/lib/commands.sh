@@ -226,7 +226,7 @@ _cmd_ids() {
 
 _cmd list "List available groups for a given infrastructure"
 _cmd_list() {
-    need_infra $1
+    need_infra $2
     infra_list
 }
 
@@ -272,7 +272,7 @@ EOF
 
 _cmd opensg "Open the default security group to ALL ingress traffic"
 _cmd_opensg() {
-    need_infra $1
+    need_infra $2
     infra_opensg
 }
 
@@ -294,7 +294,7 @@ _cmd_pull_images() {
 
 _cmd quotas "Check our infrastructure quotas (max instances)"
 _cmd_quotas() {
-    need_infra $1
+    need_infra $2
     infra_quotas
 }
 
