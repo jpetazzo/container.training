@@ -1,11 +1,3 @@
-- date: 2018-11-23
-  city: Copenhagen
-  country: dk
-  event: GOTO
-  title: Build Container Orchestration with Docker Swarm
-  speaker: bretfisher
-  attend: https://gotocph.com/2018/workshops/121
-
 - date: 2018-11-08
   city: San Francisco, CA
   country: us
