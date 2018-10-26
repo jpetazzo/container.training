@@ -201,5 +201,5 @@ aws_tag_instances() {
 }
 
 aws_get_ami() {
-    find_ubuntu_ami -r $AWS_DEFAULT_REGION -a amd64 -v 16.04 -t hvm:ebs -N -q
+    find_ubuntu_ami -r $AWS_DEFAULT_REGION -a amd64 -v 18.04 -t hvm:ebs -N -q
 }
