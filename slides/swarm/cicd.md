@@ -1,4 +1,4 @@
-name: What about CI/CD for orchestration?
+name: cicd
 
 # CI/CD for Docker and orchestration
 
@@ -18,7 +18,7 @@ A quick note about continuous integration and deployment
 
 - If you security scan, do it then on your images after tests but before push
 
-- Optionally, have CI do continious deployment if build/test/push is successful
+- Optionally, have CI do continuous deployment if build/test/push is successful
 
 - CD tool would SSH into nodes, or use docker cli against remote engine
 
