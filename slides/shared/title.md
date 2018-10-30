@@ -10,8 +10,8 @@ class: title, in-person
 
 @@TITLE@@
 
-WiFi: OReilly18<br>
-Password: velocity
+WiFi: OReillyCon<br>
+Password: oreilly18
 
 <br>
 <br>
