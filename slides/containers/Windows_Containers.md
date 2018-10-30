@@ -12,31 +12,35 @@ At the end of this section, you will be able to:
 
 * Understand Windows Container vs. Linux Container.
 
-* Features of Docker for Windows for choosing architecture.
+* Know about the features of Docker for Windows for choosing architecture.
 
 * Run other container architectures via QEMU emulation.
 
 ---
 
-## Are Containers *just* for Linux?
+## Are containers *just* for Linux?
 
-Remember that a container must run on the kernel of the OS it's on
+Remember that a container must run on the kernel of the OS it's on.
 
-  - This is both a benefit and a limitation. 
-  
-  - Since 2013 Docker launch, many OS's have added support for the Docker runtime.
+- This is both a benefit and a limitation.
+ 
+  (It makes containers lightweight, but limits them to a specific kernel.)
+ 
+- At its launch in 2013, Docker did only support Linux, and only on amd64 CPUs.
 
-  - We can now run more than "amd64/linux": including Windows, ARM, i386, IBM mainframes, and more, but no macOS or iOS yet :/
+- Since then, many platforms and OS have been added.
+
+  (Windows, ARM, i386, IBM mainframes ...  But no macOS or iOS yet!)
 
 --
 
-  - Docker Desktop (macOS/Win) has a emulator too for ARM/PPC and others
-  
-  - Later, try running a [Raspberry Pi (ARM) or PPC container](https://docs.docker.com/docker-for-mac/multi-arch/)
+- Docker Desktop (macOS and Windows) can run containers for other architectures
+
+  (Check the docs to see how to [run a Raspberry Pi (ARM) or PPC container](https://docs.docker.com/docker-for-mac/multi-arch/)!)
 
 ---
 
-## History of Windows Containers
+## History of Windows containers
 
 - Early 2016, Windows 10 gained support for running Windows binaries in containers.
 
@@ -46,7 +50,7 @@ Remember that a container must run on the kernel of the OS it's on
 
   - These must run in Hyper-V mini-VM's with a Windows Server x64 kernel 
 
-  - No "scrach" containers, so use "Core" and "Nano" Server OS base layers
+  - No "scratch" containers, so use "Core" and "Nano" Server OS base layers
 
   - Since Hyper-V is required, Windows 10 Home won't work (yet...)
 
@@ -60,37 +64,35 @@ Remember that a container must run on the kernel of the OS it's on
 
 ---
 
-## Windows Containers Cont.
+## LCOW (Linux Containers On Windows)
 
-Windows is largely playing catch up with Linux but moving fast!
+While Docker on Windows is largely playing catch up with Docker on Linux,
+it's moving fast; and this is one thing that you *cannot* do on Linux!
 
-You can now do things on Windows you *can't* do on Linux:
+- LCOW came with the [2017 Fall Creators Update](https://blog.docker.com/2018/02/docker-for-windows-18-02-with-windows-10-fall-creators-update/).
 
-LCOW: "Linux Containers on Windows" 
+- It can run Linux and Windows containers side-by-side on Win 10.
 
-  - Came with the ([Fall 2017 Creators Update](https://blog.docker.com/2018/02/docker-for-windows-18-02-with-windows-10-fall-creators-update/))
+- It is no longer necessary to switch the Engine to "Linux Containers".
 
-  - Run Linux and Windows containers side-by-side on Win 10
-  
-  - No longer required to switch to "Linux Containers"
-
---
-
-Docker for Windows Users, Start Your Engines:
-
-  ```bash
-    docker pull microsoft/nanoserver:1803
-  ```
+  (In fact, if you want to run both Linux and Windows containers at the same time,
+   make sure that your Engine is set to "Windows Containers" mode!)
 
 --
 
-Doh! We need to switch to Windows Containers mode (do that now)
+If you are a Docker for Windows user, start your engine and try this:
+
+```bash
+docker pull microsoft/nanoserver:1803
+```
+
+(Make sure to switch to "Windows Containers mode" if necessary.)
 
 ---
 
 ## Run Both Windows and Linux containers
 
-- Run a Nano Windows Server (minimal cli-only server)
+- Run a Windows Nano Server (minimal CLI-only server)
 
   ```bash
   docker run --rm -it microsoft/nanoserver:1803 powershell
@@ -98,33 +100,38 @@ Doh! We need to switch to Windows Containers mode (do that now)
   exit
   ```
 
-- Run a Busybox Linux in LCOW
+- Run busybox on Linux in LCOW
 
   ```bash
   docker run --rm --platform linux busybox echo hello
   ```
 
-(You'll notice nothing in Hyper-V but they are there, hidden Nano and "LinuxKit" VMs)
+(Although you will not be able to see them, this will create hidden
+Nano and LinuxKit VMs in Hyper-V!)
 
 ---
 
 ## Did We Say Things Move Fast
 
-- Things keep improving. Now `--platform` defaults to `windows`, some images support both
+- Things keep improving.
 
-  - golang, mongo, python, redis, hello-world, and more being added
+- Now `--platform` defaults to `windows`, some images support both:
 
-  - You should still use `--plaform` with multi-os images to be certain 
+  - golang, mongo, python, redis, hello-world ... and more being added
+
+  - you should still use `--plaform` with multi-os images to be certain 
 
 - Windows Containers now support `localhost` accessable containers (July 2018)
 
-- Microsoft (April 2018) added Hyper-V support to Windows 10 Home, so stay tuned for Docker support, maybe?!?
+- Microsoft (April 2018) added Hyper-V support to Windows 10 Home ...
+
+  ... so stay tuned for Docker support, maybe?!?
 
 ---
 
-## Other Windows Container options
+## Other Windows container options
 
-Most "official" Docker images don't run on Windows yet
+Most "official" Docker images don't run on Windows yet.
 
 Places to Look:
 
