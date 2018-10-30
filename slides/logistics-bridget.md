@@ -6,13 +6,9 @@
 
    - .emoji[💁🏻‍♀️] Karen Chu ([@karenhchu](https://twitter.com/karenhchu))
 
-   - .emoji[🌟] Ralph Squillace ([@ralph_squillace](https://twitter.com/ralph_squillace))
+- The workshop will run from 9:30 - 13:00
 
-
-
-- The workshop will run from 9:00am - 12:30pm
-
-- There will be a break from 10:30am - 11:00am
+- There will be a break from 11:00 - 11:30
 
 - Feel free to interrupt for questions at any time
 
