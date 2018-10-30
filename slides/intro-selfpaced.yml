@@ -42,6 +42,7 @@ chapters:
   #- containers/Connecting_Containers_With_Links.md
   - containers/Ambassadors.md
 - - containers/Local_Development_Workflow.md
+  - containers/Windows_Containers.md
   - containers/Working_With_Volumes.md
   - containers/Compose_For_Dev_Stacks.md
   - containers/Docker_Machine.md
