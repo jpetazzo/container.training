@@ -103,6 +103,12 @@ and displays aggregated logs.
 
 ---
 
+class: pic
+
+![Diagram showing the 5 containers of the applications](images/dockercoins-diagram.svg)
+
+---
+
 ## Our application at work
 
 - On the left-hand side, the "rainbow strip" shows the container names

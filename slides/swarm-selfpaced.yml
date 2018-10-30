@@ -42,6 +42,7 @@ chapters:
   - swarm/btp-manual.md
   - swarm/swarmready.md
   - swarm/compose2swarm.md
+  - swarm/cicd.md
   - |
     name: part-2
 
