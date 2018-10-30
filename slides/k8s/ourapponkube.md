@@ -4,22 +4,6 @@ Our app on Kube
 
 ---
 
-## What's on the menu?
-
-In this part, we will:
-
-- **build** images for our app,
-
-- **ship** these images with a registry,
-
-- **run** deployments using these images,
-
-- expose these deployments so they can communicate with each other,
-
-- expose the web UI so we can access it from outside.
-
----
-
 ## The plan
 
 - Build on our control node (`node1`)
@@ -127,47 +111,6 @@ In this part, we will:
 We should see:
 ```json
 {"repositories":[]}
-```
-
----
-
-## Testing our local registry
-
-- We can retag a small image, and push it to the registry
-
-.exercise[
-
-- Make sure we have the busybox image, and retag it:
-  ```bash
-  docker pull busybox
-  docker tag busybox $REGISTRY/busybox
-  ```
-
-- Push it:
-  ```bash
-  docker push $REGISTRY/busybox
-  ```
-
-]
-
----
-
-## Checking again what's on our local registry
-
-- Let's use the same endpoint as before
-
-.exercise[
-
-- Ensure that our busybox image is now in the local registry:
-  ```bash
-  curl $REGISTRY/v2/_catalog
-  ```
-
-]
-
-The curl command should now output:
-```json
-{"repositories":["busybox"]}
 ```
 
 ---
