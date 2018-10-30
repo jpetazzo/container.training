@@ -4,7 +4,7 @@
 
    - .emoji[✨] Bridget Kromhout ([@bridgetkromhout](https://twitter.com/bridgetkromhout))
 
-   - .emoji[💁🏻‍♀️] Karen Chu ([@karenhchu](https://twitter.com/karenhchu))
+   - .emoji[🌟] Joe Laha ([@joelaha](https://twitter.com/joelaha))
 
 - The workshop will run from 9:30 - 13:00
 
