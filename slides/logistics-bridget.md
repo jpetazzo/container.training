@@ -4,15 +4,13 @@
 
    - .emoji[✨] Bridget Kromhout ([@bridgetkromhout](https://twitter.com/bridgetkromhout))
 
-   - .emoji[💁🏻‍♀️] Karen Chu ([@karenhchu](https://twitter.com/karenhchu))
-
-   - .emoji[🌟] Ralph Squillace ([@ralph_squillace](https://twitter.com/ralph_squillace))
+   - .emoji[🌟] Joe ([@joelaha](https://twitter.com/joelaha))
 
 
 
-- The workshop will run from 9:00am - 12:30pm
+- The workshop will run from 9:30 - 13:00
 
-- There will be a break from 10:30am - 11:00am
+- There will be a break from 11:00 - 11:30
 
 - Feel free to interrupt for questions at any time
 
