@@ -6,7 +6,7 @@ metadata:
   creationTimestamp: null
   generation: 1
   labels:
-    run: socat
+    app: socat
   name: socat
   namespace: kube-system
   selfLink: /apis/extensions/v1beta1/namespaces/kube-system/deployments/socat
@@ -14,7 +14,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      run: socat
+      app: socat
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -24,7 +24,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        run: socat
+        app: socat
     spec:
       containers:
       - args:
@@ -49,7 +49,7 @@ kind: Service
 metadata:
   creationTimestamp: null
   labels:
-    run: socat
+    app: socat
   name: socat
   namespace: kube-system
   selfLink: /api/v1/namespaces/kube-system/services/socat
@@ -60,7 +60,7 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    run: socat
+    app: socat
   sessionAffinity: None
   type: NodePort
 status:

@@ -538,7 +538,7 @@ It's important to note a couple of details in these flags ...
 
 - But that we can't create things:
   ```
-  ./kubectl run tryme --image=nginx
+  ./kubectl create deployment --image=nginx
   ```
 
 - Exit the container with `exit` or `^D`

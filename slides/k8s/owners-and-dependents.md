@@ -22,14 +22,19 @@
 
 .exercise[
 
-- Let's start a replicated `nginx` deployment:
+- Let's create a deployment running `nginx`:
   ```bash
-  kubectl run yanginx --image=nginx --replicas=3
+  kubectl create deployment yanginx --image=nginx
+  ```
+
+- Scale it to a few replicas:
+  ```bash
+  kubectl scale deployment yanginx --replicas=3
   ```
 
 - Once it's up, check the corresponding pods:
   ```bash
-  kubectl get pods -l run=yanginx -o yaml | head -n 25
+  kubectl get pods -l app=yanginx -o yaml | head -n 25
   ```
 
 ]
@@ -99,12 +104,12 @@ so the lines should not be indented (otherwise the indentation will insert space
 
 - Delete the Deployment:
   ```bash
-  kubectl delete deployment -l run=yanginx --cascade=false
+  kubectl delete deployment -l app=yanginx --cascade=false
   ```
 
 - Delete the Replica Set:
   ```bash
-  kubectl delete replicaset -l run=yanginx --cascade=false
+  kubectl delete replicaset -l app=yanginx --cascade=false
   ```
 
 - Check that the pods are still here:
@@ -126,7 +131,7 @@ class: extra-details
 
 - If we change the labels on a dependent, so that it's not selected anymore
 
-  (e.g. change the `run: yanginx` in the pods of the previous example)
+  (e.g. change the `app: yanginx` in the pods of the previous example)
 
 - If a deployment tool that we're using does these things for us
 

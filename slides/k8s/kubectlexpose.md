@@ -57,30 +57,48 @@ Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables`
 
 - Since `ping` doesn't have anything to connect to, we'll have to run something else
 
+- We could use the `nginx` official image, but ...
+
+  ... we wouldn't be able to tell the backends from each other!
+
+- We are going to use `jpetazzo/httpenv`, a tiny HTTP server written in Go
+
+- `jpetazzo/httpenv` listens on port 8888
+
+- It serves its environment variables in JSON format
+
+- The environment variables will include `HOSTNAME`, which will be the pod name
+
+  (and therefore, will be different on each backend)
+
+---
+
+## Creating a deployment for our HTTP server
+
+- We *could* do `kubectl run httpenv --image=jpetazzo/httpenv` ...
+
+- But since `kubectl run` is being deprecated, let's see how to use `kubectl create` instead
+
 .exercise[
 
-- Start a bunch of HTTP servers:
-  ```bash
-  kubectl run httpenv --image=jpetazzo/httpenv --replicas=10
-  ```
-
-- Watch them being started:
+- In another window, watch the pods (to see when they will be created):
   ```bash
   kubectl get pods -w
   ```
 
-<!--
-```wait httpenv-```
-```keys ^C```
--->
+<!-- ```keys ^C``` -->
+
+- Create a deployment for this very lightweight HTTP server:
+  ```bash
+  kubectl create deployment httpenv --image=jpetazzo/httpenv
+  ```
+
+- Scale it to 10 replicas:
+  ```bash
+  kubectl scale deployment httpenv --replicas=10
+  ```
 
 ]
-
-The `jpetazzo/httpenv` image runs an HTTP server on port 8888.
-<br/>
-It serves its environment variables in JSON format.
-
-The `-w` option "watches" events happening on the specified resources.
 
 ---
 
@@ -92,12 +110,12 @@ The `-w` option "watches" events happening on the specified resources.
 
 - Expose the HTTP port of our server:
   ```bash
-  kubectl expose deploy/httpenv --port 8888
+  kubectl expose deployment httpenv --port 8888
   ```
 
 - Look up which IP address was allocated:
   ```bash
-  kubectl get svc
+  kubectl get service
   ```
 
 ]
@@ -237,7 +255,7 @@ class: extra-details
 
 - These IP addresses should match the addresses of the corresponding pods:
   ```bash
-  kubectl get pods -l run=httpenv -o wide
+  kubectl get pods -l app=httpenv -o wide
   ```
 
 ---

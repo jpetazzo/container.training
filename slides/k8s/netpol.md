@@ -117,13 +117,13 @@ This is our game plan:
 
 - Let's use the `nginx` image:
   ```bash
-  kubectl run testweb --image=nginx
+  kubectl create deployment testweb --image=nginx
   ```
 
 - Find out the IP address of the pod with one of these two commands:
   ```bash
-  kubectl get pods -o wide -l run=testweb
-  IP=$(kubectl get pods -l run=testweb -o json | jq -r .items[0].status.podIP)
+  kubectl get pods -o wide -l app=testweb
+  IP=$(kubectl get pods -l app=testweb -o json | jq -r .items[0].status.podIP)
   ```
 
 - Check that we can connect to the server:
@@ -138,7 +138,7 @@ The `curl` command should show us the "Welcome to nginx!" page.
 
 ## Adding a very restrictive network policy
 
-- The policy will select pods with the label `run=testweb`
+- The policy will select pods with the label `app=testweb`
 
 - It will specify an empty list of ingress rules (matching nothing)
 
@@ -172,7 +172,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      run: testweb
+      app: testweb
   ingress: []
 ```
 
@@ -207,7 +207,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      run: testweb
+      app: testweb
   ingress:
   - from:
     - podSelector:
@@ -325,7 +325,7 @@ spec:
 
 ## Allowing traffic to `webui` pods
 
-This policy selects all pods with label `run=webui`.
+This policy selects all pods with label `app=webui`.
 
 It allows traffic from any source.
 
@@ -339,7 +339,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      run: webui
+      app: webui
   ingress:
   - from: []
 ```
