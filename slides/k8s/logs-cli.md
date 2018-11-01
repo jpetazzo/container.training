@@ -130,11 +130,13 @@ Exactly what we need!
 
 - We can use that property to view the logs of all the pods created with `kubectl run`
 
+- Similarly, everything created with `kubectl create deployment` has a label `app`
+
 .exercise[
 
-- View the logs for all the things started with `kubectl run`:
+- View the logs for all the things started with `kubectl create deployment`:
   ```bash
-  stern -l run
+  stern -l app
   ```
 
 <!--

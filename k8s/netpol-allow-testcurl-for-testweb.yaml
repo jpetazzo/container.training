@@ -5,7 +5,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      run: testweb
+      app: testweb
   ingress:
   - from:
     - podSelector:

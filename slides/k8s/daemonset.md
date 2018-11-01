@@ -256,19 +256,19 @@ The master node has [taints](https://kubernetes.io/docs/concepts/configuration/t
 
 - Let's check the logs of all these `rng` pods
 
-- All these pods have a `run=rng` label:
+- All these pods have the label `app=rng`:
 
-  - the first pod, because that's what `kubectl run` does
+  - the first pod, because that's what `kubectl create deployment` does
   - the other ones (in the daemon set), because we
     *copied the spec from the first one*
 
-- Therefore, we can query everybody's logs using that `run=rng` selector
+- Therefore, we can query everybody's logs using that `app=rng` selector
 
 .exercise[
 
-- Check the logs of all the pods having a label `run=rng`:
+- Check the logs of all the pods having a label `app=rng`:
   ```bash
-  kubectl logs -l run=rng --tail 1
+  kubectl logs -l app=rng --tail 1
   ```
 
 ]
@@ -283,7 +283,7 @@ It appears that *all the pods* are serving requests at the moment.
 
 - The `rng` *service* is load balancing requests to a set of pods
 
-- This set of pods is defined as "pods having the label `run=rng`"
+- This set of pods is defined as "pods having the label `app=rng`"
 
 .exercise[
 
@@ -310,7 +310,7 @@ to the associated load balancer.
 
 --
 
-- What would happen if we removed the `run=rng` label from that pod?
+- What would happen if we removed the `app=rng` label from that pod?
 
 --
 
@@ -322,7 +322,7 @@ to the associated load balancer.
 
 --
 
-- But but but ... Don't we have more than one pod with `run=rng` now?
+- But but but ... Don't we have more than one pod with `app=rng` now?
 
 --
 
@@ -345,7 +345,7 @@ to the associated load balancer.
   <br/>(The second command doesn't require you to get the exact name of the replica set)
   ```bash
   kubectl describe rs rng-yyyyyyyy
-  kubectl describe rs -l run=rng
+  kubectl describe rs -l app=rng
   ```
 
 ]
@@ -433,11 +433,11 @@ Of course, option 2 offers more learning opportunities. Right?
 
 <!--
 ```wait Please edit the object below```
-```keys /run: rng```
+```keys /app: rng```
 ```keys ^J```
 ```keys noisactive: "yes"```
 ```keys ^[``` ]
-```keys /run: rng```
+```keys /app: rng```
 ```keys ^J```
 ```keys oisactive: "yes"```
 ```keys ^[``` ]
@@ -452,7 +452,7 @@ Of course, option 2 offers more learning opportunities. Right?
 
 <!--
 ```wait Please edit the object below```
-```keys /run: rng```
+```keys /app: rng```
 ```keys ^J```
 ```keys noisactive: "yes"```
 ```keys ^[``` ]
@@ -468,9 +468,9 @@ Of course, option 2 offers more learning opportunities. Right?
 
 .exercise[
 
-- Check the most recent log line of all `run=rng` pods to confirm that exactly one per node is now active:
+- Check the most recent log line of all `app=rng` pods to confirm that exactly one per node is now active:
   ```bash
-  kubectl logs -l run=rng --tail 1
+  kubectl logs -l app=rng --tail 1
   ```
 
 ]
@@ -496,14 +496,14 @@ The timestamps should give us a hint about how many pods are currently receiving
 
 .exercise[
 
-- List the pods with `run=rng` but without `isactive=yes`:
+- List the pods with `app=rng` but without `isactive=yes`:
   ```bash
-  kubectl get pods -l run=rng,isactive!=yes
+  kubectl get pods -l app=rng,isactive!=yes
   ```
 
 - Remove these pods:
   ```bash
-  kubectl delete pods -l run=rng,isactive!=yes
+  kubectl delete pods -l app=rng,isactive!=yes
   ```
 
 ]
@@ -581,7 +581,7 @@ Ding, dong, the deployment is dead! And the daemon set lives on.
       labels:
         isactive: "yes"
     '
-    kubectl get pods -l run=rng -l controller-revision-hash -o name |
+    kubectl get pods -l app=rng -l controller-revision-hash -o name |
       xargs kubectl patch -p "$PATCH" 
   ```
 

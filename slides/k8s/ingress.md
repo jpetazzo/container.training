@@ -392,9 +392,9 @@ This is normal: we haven't provided any ingress rule yet.
 
 - Run all three deployments:
   ```bash
-  kubectl run cheddar --image=errm/cheese:cheddar
-  kubectl run stilton --image=errm/cheese:stilton
-  kubectl run wensleydale --image=errm/cheese:wensleydale
+  kubectl create deployment cheddar --image=errm/cheese:cheddar
+  kubectl create deployment stilton --image=errm/cheese:stilton
+  kubectl create deployment wensleydale --image=errm/cheese:wensleydale
   ```
 
 - Create a service for each of them:
