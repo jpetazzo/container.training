@@ -279,6 +279,46 @@ It appears that *all the pods* are serving requests at the moment.
 
 ---
 
+## Working around `kubectl logs` bugs
+
+- That last command didn't show what we needed
+
+- We mentioned earlier that regression affecting `kubectl logs` ...
+
+  (see [#70443](https://github.com/kubernetes/kubernetes/issues/70554) for more details)
+
+- Let's work around the issue by executing `kubectl logs` one pod at a time
+
+- For convenience, we'll define a little shell function
+
+---
+
+## Our helper function
+
+- The function `ktail` below will:
+
+  - list the names of all pods matching a selector
+  - display the last line of log for each pod
+
+.exercise[
+
+- Define `ktail`:
+  ```bash
+    ktail () {
+      kubectl get pods -o name -l $1 |
+        xargs -rn1 kubectl logs --tail 1
+    }
+  ```
+
+- Try it:
+  ```bash
+  ktail app=rng
+  ```
+
+]
+
+---
+
 ## The magic of selectors
 
 - The `rng` *service* is load balancing requests to a set of pods

@@ -290,6 +290,20 @@ Unfortunately, `--follow` cannot (yet) be used to stream the logs from multiple 
 
 ---
 
+## `kubectl logs -l ... --tail N`
+
+- With Kubernetes 1.12 (and up to at least 1.12.2), the last command shows multiple lines
+
+- This is a regression when `--tail` is used together with `-l`/`--selector`
+
+- It always shows the last 10 lines of output for each container
+
+  (instead of the number of lines specified on the command line)
+
+- See [#70554](https://github.com/kubernetes/kubernetes/issues/70554) for details
+
+---
+
 ## Aren't we flooding 1.1.1.1?
 
 - If you're wondering this, good question!
@@ -299,6 +313,7 @@ Unfortunately, `--follow` cannot (yet) be used to stream the logs from multiple 
   *APNIC's research group held the IP addresses 1.1.1.1 and 1.0.0.1. While the addresses were valid, so many people had entered them into various random systems that they were continuously overwhelmed by a flood of garbage traffic. APNIC wanted to study this garbage traffic but any time they'd tried to announce the IPs, the flood would overwhelm any conventional network.*
 
   (Source: https://blog.cloudflare.com/announcing-1111/)
+
 
 - It's very unlikely that our concerted pings manage to produce
   even a modest blip at Cloudflare's NOC!
