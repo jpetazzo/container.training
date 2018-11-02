@@ -246,6 +246,27 @@ class: extra-details
 
 ---
 
+## Catching up
+
+- If you have problems deploying the registry ...
+
+- Or building or pushing the images ...
+
+- Don't worry: we provide pre-built images hosted on the Docker Hub!
+
+- The images are named `dockercoins/worker:v0.1`, `dockercoins/rng:v0.1`, etc.
+
+- To use them, just set the `REGISTRY` environment variable to `dockercoins`:
+  ```bash
+  export REGISTRY=dockercoins
+  ```
+
+- Make sure to set the `TAG` to `v0.1`
+
+  (our repositories on the Docker Hub do not provide a `latest` tag)
+
+---
+
 ## Deploying all the things
 
 - We can now deploy our code (as well as a redis instance)
