@@ -285,7 +285,7 @@ It appears that *all the pods* are serving requests at the moment.
 
 - We mentioned earlier that regression affecting `kubectl logs` ...
 
-  (see [#70443](https://github.com/kubernetes/kubernetes/issues/70554) for more details)
+  (see [#70554](https://github.com/kubernetes/kubernetes/issues/70554) for more details)
 
 - Let's work around the issue by executing `kubectl logs` one pod at a time
 

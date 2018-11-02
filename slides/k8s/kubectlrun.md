@@ -314,6 +314,5 @@ Unfortunately, `--follow` cannot (yet) be used to stream the logs from multiple 
 
   (Source: https://blog.cloudflare.com/announcing-1111/)
 
-
 - It's very unlikely that our concerted pings manage to produce
   even a modest blip at Cloudflare's NOC!
