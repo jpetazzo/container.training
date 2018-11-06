@@ -65,6 +65,8 @@ What about web interfaces to control and manage Swarm?
 - now try to query the deployed stacks `http GET :9000/api/stacks "Authorization: Bearer $TOKEN"`
   you will only see the stack with the user rights
 
+- you could prevent access for stacks like monitoring, log-forwarding and the portainer agent
+
 ---
 
 ## Single GUI/API for multiple swarms
