@@ -1,26 +1,26 @@
 title: |
-  Introduction
-  to Containers
+  Introduction to
+  Docker and Containers
 
 chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+#chat: "[Gitter](https://gitter.im/qconsf18skshp)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://qconsf18wkshp.container.training/
 
 exclude:
 - self-paced
 
 chapters:
 - shared/title.md
-- logistics.md
+- logistics-alan.md
 - containers/intro.md
 - shared/about-slides.md
 - shared/toc.md
 - - containers/Docker_Overview.md
   - containers/Docker_History.md
-  - containers/Training_Environment.md
+  - containers/Training_Environment_GCP.md
   - containers/Installing_Docker.md
   - containers/First_Containers.md
   - containers/Background_Containers.md
