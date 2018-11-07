@@ -214,6 +214,10 @@ Note: it might take a minute or two for the app to be up and running.
   kubens -
   ```
 
+- On our clusters, `kubens` is called `kns` instead
+
+  (so that it's even fewer keystrokes to switch namespaces)
+
 ---
 
 ##  `kubens` and `kubectx`
