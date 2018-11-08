@@ -151,7 +151,7 @@ scrape_configs:
 
 ## Running Prometheus on our cluster
 
-We need to:
+We would need to:
 
 - Run the Prometheus server in a pod
 
@@ -171,19 +171,21 @@ We need to:
 
 ## Helm Charts to the rescue
 
-- To make our lives easier, we are going to use a Helm Chart
+- To make our lives easier, we could use a Helm Chart
 
-- The Helm Chart will take care of all the steps explained above
+- The Helm Chart would take care of all the steps explained above
 
   (including some extra features that we don't need, but won't hurt)
 
+- In fact, Prometheus has been pre-installed on our clusters with Helm
+
+  (it was pre-installed so that it would be populated with metrics by now)
+
 ---
 
-## Step 1: install Helm
+## Step 1: if we had to install Helm
 
-- If we already installed Helm earlier, these commands won't break anything
-
-.exercice[
+- Note that if Helm is already installed, these commands won't break anything
 
 - Install Tiller (Helm's server-side component) on our cluster:
   ```bash
@@ -196,26 +198,16 @@ We need to:
       --clusterrole=cluster-admin --serviceaccount=kube-system:default
   ```
 
-]
-
 ---
 
-## Step 2: install Prometheus
+## Step 2: if we had to install Prometheus
 
-- Skip this if we already installed Prometheus earlier
-
-  (in doubt, check with `helm list`)
-
-.exercice[
-
-- Install Prometheus on our cluster:
+- This is how we would use Helm to deploy Prometheus on the cluster:
   ```bash
   helm install stable/prometheus \
          --set server.service.type=NodePort \
          --set server.persistentVolume.enabled=false
   ```
-
-]
 
 The provided flags:
 
@@ -235,10 +227,12 @@ The provided flags:
 
 - Figure out the NodePort that was allocated to the Prometheus server:
   ```bash
-  kubectl get svc | grep prometheus-server
+  kubectl get svc -n kube-system | grep prometheus-server
   ```
 
 - With your browser, connect to that port
+
+  (spoiler alert: it should be 30090)
 
 ]
 
