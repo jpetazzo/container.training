@@ -81,16 +81,15 @@ individual Docker VM.*
 
 ---
 
-## Connecting to your GCP Shell (Virtual Machine)
+class: pic
 
-You only need a browser.
+## Access the GCP Shell from your Browser
 
 [![GCP shell](images/gcp-shell-setup.gif)](images/gcp-shell-setup.gif)
-<!-- TODO make bigger -->
 
 ---
 
-## Checking your Virtual Machine
+## Checking your Docker environment
 
 Once logged in, make sure that you can run a basic Docker command:
 
@@ -122,12 +121,10 @@ If this doesn't work, raise your hand so that an instructor can assist you!
 
 ---
 
-## How to edit files
+class: pic
 
-There is a built in editor.
-
-Look for the pencil icon when you have the shell open.
+## How to edit files *(or `vi, nano, etc`)*
 
 ![GCP shell](images/gcp-editor.png)
-<!-- TODO make bigger -->
+
 
