@@ -1,9 +1,10 @@
 ## Versions installed
 
-- Kubernetes 1.12.0
-- Docker Engine 18.06.1-ce
+- Kubernetes 1.12.2
+- Docker Engine 18.09.0
 - Docker Compose 1.21.1
 
+<!-- ##VERSION## -->
 
 .exercise[
 
