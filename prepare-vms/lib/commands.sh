@@ -123,7 +123,9 @@ _cmd_kube() {
     pssh --timeout 200 "
     if grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/admin.conf ]; then
         kubeadm token generate > /tmp/token &&
-	sudo kubeadm init --token \$(cat /tmp/token)
+	sudo kubeadm init \
+             --token \$(cat /tmp/token) \
+             --ignore-preflight-errors=SystemVerification
     fi"
 
     # Put kubeconfig in ubuntu's and docker's accounts
@@ -147,7 +149,10 @@ _cmd_kube() {
     pssh --timeout 200 "
     if ! grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/kubelet.conf ]; then
         TOKEN=\$(ssh -o StrictHostKeyChecking=no node1 cat /tmp/token) &&
-        sudo kubeadm join --discovery-token-unsafe-skip-ca-verification --token \$TOKEN node1:6443
+        sudo kubeadm join \
+             --discovery-token-unsafe-skip-ca-verification \
+             --ignore-preflight-errors=SystemVerification \
+             --token \$TOKEN node1:6443
     fi"
 
     # Install kubectx and kubens
