@@ -54,48 +54,83 @@ and displays aggregated logs.
 
 ---
 
-## More detail on our sample application
+## What's this application?
 
-- Visit the GitHub repository with all the materials of this workshop:
-  <br/>https://@@GITREPO@@
+--
 
-- The application is in the [dockercoins](
-  https://@@GITREPO@@/tree/master/dockercoins)
-  subdirectory
+- It is a DockerCoin miner! .emoji[💰🐳📦🚢]
 
-- Let's look at the general layout of the source code:
+--
 
-  there is a Compose file [docker-compose.yml](
-  https://@@GITREPO@@/blob/master/dockercoins/docker-compose.yml) ...
+- No, you can't buy coffee with DockerCoins
 
-  ... and 4 other services, each in its own directory:
+--
 
-  - `rng` = web service generating random bytes
-  - `hasher` = web service computing hash of POSTed data
-  - `worker` = background process using `rng` and `hasher`
-  - `webui` = web interface to watch progress
+- How DockerCoins works:
+
+  - generate a few random bytes
+
+  - hash these bytes
+
+  - increment a counter (to keep track of speed)
+
+  - repeat forever!
+
+--
+
+- DockerCoins is *not* a cryptocurrency
+
+  (the only common points are "randomness", "hashing", and "coins" in the name)
 
 ---
 
-class: extra-details
+## DockerCoins in the microservices era
 
-## Compose file format version
+- DockerCoins is made of 5 services:
 
-*Particularly relevant if you have used Compose before...*
+  - `rng` = web service generating random bytes
 
-- Compose 1.6 introduced support for a new Compose file format (aka "v2")
+  - `hasher` = web service computing hash of POSTed data
 
-- Services are no longer at the top level, but under a `services` section
+  - `worker` = background process calling `rng` and `hasher`
 
-- There has to be a `version` key at the top level, with value `"2"` (as a string, not an integer)
+  - `webui` = web interface to watch progress
 
-- Containers are placed on a dedicated network, making links unnecessary
+  - `redis` = data store (holds a counter updated by `worker`)
 
-- There are other minor differences, but upgrade is easy and straightforward
+- These 5 services are visible in the application's Compose file,
+  [docker-compose.yml](
+  https://@@GITREPO@@/blob/master/dockercoins/docker-compose.yml)
+
+---
+
+## How DockerCoins works
+
+- `worker` invokes web service `rng` to generate random bytes
+
+- `worker` invokes web servie `hasher` to hash these bytes
+
+- `worker` does this in an infinite loop
+
+- every second, `worker` updates `redis` to indicate how many loops were done
+
+- `webui` queries `redis`, and computes and exposes "hashing speed" in our browser
+
+*(See diagram on next slide!)*
+
+---
+
+class: pic
+
+![Diagram showing the 5 containers of the applications](images/dockercoins-diagram.svg)
 
 ---
 
 ## Service discovery in container-land
+
+How does each service find out the address of the other ones?
+
+--
 
 - We do not hard-code IP addresses in the code
 
@@ -150,35 +185,46 @@ class: extra-details
 
 ---
 
-## What's this application?
+## Show me the code!
 
---
+- You can check the GitHub repository with all the materials of this workshop:
+  <br/>https://@@GITREPO@@
 
-- It is a DockerCoin miner! .emoji[💰🐳📦🚢]
+- The application is in the [dockercoins](
+  https://@@GITREPO@@/tree/master/dockercoins)
+  subdirectory
 
---
+- The Compose file ([docker-compose.yml](
+  https://@@GITREPO@@/blob/master/dockercoins/docker-compose.yml))
+  lists all 5 services
 
-- No, you can't buy coffee with DockerCoins
+- `redis` is using an official image from the Docker Hub
 
---
+- `hasher`, `rng`, `worker`, `webui` are each built from a Dockerfile
 
-- How DockerCoins works:
+- Each service's Dockerfile and source code is in its own directory
 
-  - `worker` asks to `rng` to generate a few random bytes
-
-  - `worker` feeds these bytes into `hasher`
-
-  - and repeat forever!
-
-  - every second, `worker` updates `redis` to indicate how many loops were done
-
-  - `webui` queries `redis`, and computes and exposes "hashing speed" in your browser
+  (`hasher` is in the [hasher](https://@@GITREPO@@/blob/master/dockercoins/hasher/) directory,
+  `rng` is in the [rng](https://@@GITREPO@@/blob/master/dockercoins/rng/)
+  directory, etc.)
 
 ---
 
-class: pic
+class: extra-details
 
-![Diagram showing the 5 containers of the applications](images/dockercoins-diagram.svg)
+## Compose file format version
+
+*This is relevant only if you have used Compose before 2016...*
+
+- Compose 1.6 introduced support for a new Compose file format (aka "v2")
+
+- Services are no longer at the top level, but under a `services` section
+
+- There has to be a `version` key at the top level, with value `"2"` (as a string, not an integer)
+
+- Containers are placed on a dedicated network, making links unnecessary
+
+- There are other minor differences, but upgrade is easy and straightforward
 
 ---
 
