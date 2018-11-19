@@ -400,6 +400,28 @@ _cmd_test() {
     test_tag
 }
 
+_cmd helmprom "Install Helm and Prometheus"
+_cmd_helmprom() {
+    TAG=$1
+    need_tag
+    pssh "
+    if grep -q node1 /tmp/node; then
+        kubectl -n kube-system get serviceaccount helm ||
+            kubectl -n kube-system create serviceaccount helm
+        helm init --service-account helm
+        kubectl get clusterrolebinding helm-can-do-everything ||
+            kubectl create clusterrolebinding helm-can-do-everything \
+                --clusterrole=cluster-admin \
+                --serviceaccount=kube-system:helm
+        helm upgrade --install prometheus stable/prometheus \
+            --namespace kube-system \
+            --set server.service.type=NodePort \
+            --set server.service.nodePort=30090 \
+            --set server.persistentVolume.enabled=false \
+            --set alertmanager.enabled=false
+    fi"
+}
+
 # Sometimes, weave fails to come up on some nodes.
 # Symptom: the pods on a node are unreachable (they don't even ping).
 # Remedy: wipe out Weave state and delete weave pod on that node.
