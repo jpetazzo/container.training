@@ -173,6 +173,11 @@ pod/pingpong-7c8bbcd9bc-6c9qz   1/1       Running   0          10m
   kubectl scale deploy/pingpong --replicas 8
   ```
 
+- Note that this command does exactly the same thing:
+  ```bash
+  kubectl scale deployment pingpong --replicas 8
+  ```
+
 ]
 
 Note: what if we tried to scale `replicaset.apps/pingpong-xxxxxxxxxx`?

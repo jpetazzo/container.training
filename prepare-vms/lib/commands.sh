@@ -170,7 +170,8 @@ EOF"
     # Install stern
     pssh "
     if [ ! -x /usr/local/bin/stern ]; then
-        sudo curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/download/1.8.0/stern_linux_amd64 &&
+        ##VERSION##
+        sudo curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/download/1.10.0/stern_linux_amd64 &&
         sudo chmod +x /usr/local/bin/stern &&
         stern --completion bash | sudo tee /etc/bash_completion.d/stern
     fi"
@@ -398,6 +399,28 @@ _cmd_test() {
     TAG=$1
     need_tag
     test_tag
+}
+
+_cmd helmprom "Install Helm and Prometheus"
+_cmd_helmprom() {
+    TAG=$1
+    need_tag
+    pssh "
+    if grep -q node1 /tmp/node; then
+        kubectl -n kube-system get serviceaccount helm ||
+            kubectl -n kube-system create serviceaccount helm
+        helm init --service-account helm
+        kubectl get clusterrolebinding helm-can-do-everything ||
+            kubectl create clusterrolebinding helm-can-do-everything \
+                --clusterrole=cluster-admin \
+                --serviceaccount=kube-system:helm
+        helm upgrade --install prometheus stable/prometheus \
+            --namespace kube-system \
+            --set server.service.type=NodePort \
+            --set server.service.nodePort=30090 \
+            --set server.persistentVolume.enabled=false \
+            --set alertmanager.enabled=false
+    fi"
 }
 
 # Sometimes, weave fails to come up on some nodes.

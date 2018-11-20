@@ -62,9 +62,11 @@ Exactly what we need!
 - The following commands will install Stern on a Linux Intel 64 bit machine:
   ```bash
   sudo curl -L -o /usr/local/bin/stern \
-       https://github.com/wercker/stern/releases/download/1.8.0/stern_linux_amd64
+       https://github.com/wercker/stern/releases/download/1.10.0/stern_linux_amd64
   sudo chmod +x /usr/local/bin/stern
   ```
+
+<!-- ##VERSION## -->
 
 ---
 
@@ -130,11 +132,13 @@ Exactly what we need!
 
 - We can use that property to view the logs of all the pods created with `kubectl run`
 
+- Similarly, everything created with `kubectl create deployment` has a label `app`
+
 .exercise[
 
-- View the logs for all the things started with `kubectl run`:
+- View the logs for all the things started with `kubectl create deployment`:
   ```bash
-  stern -l run
+  stern -l app
   ```
 
 <!--

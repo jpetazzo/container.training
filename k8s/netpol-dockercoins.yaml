@@ -16,7 +16,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      run: webui
+      app: webui
   ingress:
   - from: []
 

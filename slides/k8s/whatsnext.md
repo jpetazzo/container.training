@@ -77,6 +77,18 @@ And *then* it is time to look at orchestration!
 
 ---
 
+## Relevant sections
+
+- [Namespaces](kube-selfpaced.yml.html#toc-namespaces)
+
+- [Network Policies](kube-selfpaced.yml.html#toc-network-policies)
+
+- [Role-Based Access Control](kube-selfpaced.yml.html#toc-authentication-and-authorization)
+
+  (covers permissions model, user and service accounts management ...)
+
+---
+
 ## Stateful services (databases etc.)
 
 - As a first step, it is wiser to keep stateful services *outside* of the cluster
@@ -113,6 +125,13 @@ And *then* it is time to look at orchestration!
 
   - what do we gain by deploying this stateful service on Kubernetes?
 
+- Relevant sections:
+  [Volumes](kube-selfpaced.yml.html#toc-volumes)
+  |
+  [Stateful Sets](kube-selfpaced.yml.html#toc-stateful-sets)
+  |
+  [Persistent Volumes](kube-selfpaced.yml.html#toc-highly-available-persistent-volumes)
+
 ---
 
 ## HTTP traffic handling
@@ -130,7 +149,7 @@ And *then* it is time to look at orchestration!
   - URI mapping
   - and much more!
 
-- Check out e.g. [Træfik](https://docs.traefik.io/user-guide/kubernetes/)
+- [This section](kube-selfpaced.yml.html#toc-exposing-http-services-with-ingress-resources) shows how to expose multiple HTTP apps using [Træfik](https://docs.traefik.io/user-guide/kubernetes/)
 
 ---
 
@@ -145,6 +164,8 @@ And *then* it is time to look at orchestration!
 - Log shipping to a central platform is usually done through these files
 
   (e.g. with an agent bind-mounting the log directory)
+
+- [This section](kube-selfpaced.yml.html#toc-centralized-logging) shows how to do that with [Fluentd](https://docs.fluentd.org/v0.12/articles/kubernetes-fluentd) and the EFK stack
 
 ---
 
@@ -179,6 +200,8 @@ And *then* it is time to look at orchestration!
 - **Never** store sensitive information in container images
 
   (It's the container equivalent of the password on a post-it note on your screen)
+
+- [This section](kube-selfpaced.yml.html#toc-managing-configuration) shows how to manage app config with config maps (among others)
 
 ---
 

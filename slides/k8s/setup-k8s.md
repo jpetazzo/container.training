@@ -4,7 +4,9 @@
 
 --
 
-- We used `kubeadm` on freshly installed VM instances running Ubuntu 16.04 LTS
+<!-- ##VERSION## -->
+
+- We used `kubeadm` on freshly installed VM instances running Ubuntu 18.04 LTS
 
     1. Install Docker
 

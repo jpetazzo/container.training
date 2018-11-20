@@ -132,6 +132,9 @@ spec:
         resources: {}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
+        env:
+        - name: ES_JAVA_OPTS
+          value: "-Xms1g -Xmx1g"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
