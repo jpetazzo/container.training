@@ -40,10 +40,10 @@ chapters:
   - swarm/testingregistry.md
   - swarm/btp-manual.md
   - swarm/swarmready.md
-  - swarm/compose2swarm.md
+  - swarm/stacks.md
   - swarm/cicd.md
   - swarm/updatingservices.md
-  #- swarm/rollingupdates.md
+  - swarm/rollingupdates.md
   - swarm/healthchecks.md
 - - swarm/operatingswarm.md
   - swarm/netshoot.md

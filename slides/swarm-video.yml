@@ -41,7 +41,7 @@ chapters:
   - swarm/testingregistry.md
   - swarm/btp-manual.md
   - swarm/swarmready.md
-  - swarm/compose2swarm.md
+  - swarm/stacks.md
   - |
     name: part-2
 

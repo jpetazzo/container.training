@@ -14,11 +14,12 @@
 
 ---
 
-## Updating a single service the hard way
+## Updating a single service with `service update`
 
 - To update a single service, we could do the following:
   ```bash
-  REGISTRY=localhost:5000 TAG=v0.3
+  export REGISTRY=127.0.0.1:5000
+  export TAG=v0.2
   IMAGE=$REGISTRY/dockercoins_webui:$TAG
   docker build -t $IMAGE webui/
   docker push $IMAGE
@@ -31,11 +32,11 @@
 
 ---
 
-## Updating services the easy way
+## Updating services with `stack deploy`
 
 - With the Compose integration, all we have to do is:
   ```bash
-  export TAG=v0.3
+  export TAG=v0.2
   docker-compose -f composefile.yml build
   docker-compose -f composefile.yml push
   docker stack deploy -c composefile.yml nameofstack
@@ -46,6 +47,8 @@
 - That's exactly what we used earlier to deploy the app
 
 - We don't need to learn new commands!
+
+- It will diff each service and only update ones that changed
 
 ---
 
@@ -77,13 +80,15 @@
 
 - Build, ship, and run:
   ```bash
-  export TAG=v0.3
+  export TAG=v0.2
   docker-compose -f dockercoins.yml build
   docker-compose -f dockercoins.yml push
   docker stack deploy -c dockercoins.yml dockercoins
   ```
 
 ]
+
+- Because we're tagging all images in this demo v0.2, deploy will update all apps, FYI
 
 ---
 

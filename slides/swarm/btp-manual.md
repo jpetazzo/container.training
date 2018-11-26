@@ -10,9 +10,10 @@
 - And run this little for loop:
   ```bash
     cd ~/container.training/dockercoins
-    REGISTRY=127.0.0.1:5000 TAG=v1
+    export REGISTRY=127.0.0.1:5000
+    export TAG=v0.1
     for SERVICE in hasher rng webui worker; do
-      docker tag dockercoins_$SERVICE $REGISTRY/$SERVICE:$TAG
+      docker build -t $REGISTRY/$SERVICE:$TAG ./$SERVICE
       docker push $REGISTRY/$SERVICE
     done
   ```
@@ -119,12 +120,12 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 - Start the other services:
   ```bash
-  REGISTRY=127.0.0.1:5000
-  TAG=v1
-  for SERVICE in hasher rng webui worker; do
-    docker service create --network dockercoins --detach=true \
-           --name $SERVICE $REGISTRY/$SERVICE:$TAG
-  done
+    export REGISTRY=127.0.0.1:5000
+    export TAG=v0.1
+    for SERVICE in hasher rng webui worker; do
+      docker service create --network dockercoins --detach=true \
+        --name $SERVICE $REGISTRY/$SERVICE:$TAG
+    done
   ```
 
 ]
