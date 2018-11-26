@@ -10,6 +10,8 @@ services:
   hasher:
     build: dockercoins/hasher
     image: ${REGISTRY-127.0.0.1:5000}/hasher:${TAG-latest}
+    healthcheck:
+      test: curl -f http://localhost/ || exit 1
     deploy:
       replicas: 7
       update_config:

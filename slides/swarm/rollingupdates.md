@@ -1,40 +1,44 @@
 # Rolling updates
 
-- Let's force an update on worker to watch it update
+- Let's force an update on hasher to watch it update
 
 .exercise[
 
-- First lets scale hasher to 5 replicas:
+- First lets scale up hasher to 7 replicas:
   ```bash
-  docker service scale dockercoins_worker=5
+  docker service scale dockercoins_hasher=7
   ```
 
-- Force a rolling update (replace containers) without a change:
+- Force a rolling update (replace containers) to different image:
   ```bash
-  docker service update --force dockercoins_worker
+  docker service update --image 127.0.0.1:5000/hasher:v0.1 dockercoins_hasher
   ```
 
 ]
+
+- You can run `docker events` in a seperate `node1` shell to see Swarm actions
+
+- You can use `--force` to replace containers without a config change
 
 ---
 
 ## Changing the upgrade policy
 
-- We can set upgrade parallelism (how many instances to update at the same time)
-
-- And upgrade delay (how long to wait between two batches of instances)
+- We can change many options on how updates happen
 
 .exercise[
 
-- Change the parallelism to 2 and the delay to 5 seconds:
+- Change the parallelism to 2, and the max failed container updates to 25%:
   ```bash
-    docker service update dockercoins_worker \
-      --update-parallelism 2 --update-delay 5s
+    docker service update --update-parallelism 2 \
+      --update-max-failure-ratio .25 dockercoins_hasher
   ```
 
 ]
 
-The current upgrade will continue at a faster pace.
+- No containers were replaced, this is called a "no op" change 
+
+- Service metadata-only changes don't require orchestrator operations
 
 ---
 
@@ -58,15 +62,17 @@ The current upgrade will continue at a faster pace.
 
 - At any time (e.g. before the upgrade is complete), we can rollback:
 
-  - by editing the Compose file and redeploying;
+  - by editing the Compose file and redeploying
 
-  - or with the special `--rollback` flag
+  - by using the special `--rollback` flag with `service update`
+
+  - by using `docker service rollback`
 
 .exercise[
 
-- Try to rollback the service:
+- Try to rollback the webui service:
   ```bash
-  docker service update dockercoins_worker --rollback
+  docker service rollback dockercoins_webui
   ```
 
 ]
@@ -78,6 +84,8 @@ What happens with the web UI graph?
 ## The fine print with rollback
 
 - Rollback reverts to the previous service definition
+
+  - see `PreviousSpec` in `docker service inspect <servicename>`
 
 - If we visualize successive updates as a stack:
 

@@ -96,6 +96,8 @@ We will use the following Compose file (`stacks/dockercoins+healthcheck.yml`):
   hasher:
     build: dockercoins/hasher
     image: ${REGISTRY-127.0.0.1:5000}/hasher:${TAG-latest}
+    healthcheck:
+      test: curl -f http://localhost/ || exit 1
     deploy:
       replicas: 7
       update_config:
@@ -127,17 +129,15 @@ We need to update our services with a healthcheck.
 
 ]
 
-This will also scale the `hasher` service to 7 instances.
-
 ---
 
 ## Visualizing an automated rollback
 
-Here's a good example of why healthchecks are necessary.
+- Here's a good example of why healthchecks are necessary
 
-This breaking change will prevent the app from listening on the correct port.
+- This breaking change will prevent the app from listening on the correct port
 
-The container still runs fine, it just won't accept connections on port 80.
+- The container still runs fine, it just won't accept connections on port 80
 
 .exercise[
 
@@ -148,11 +148,10 @@ The container still runs fine, it just won't accept connections on port 80.
 
 - Build, ship, and run the new image:
   ```bash
-  export TAG=v0.5
+  export TAG=v0.3
   docker-compose -f dockercoins+healthcheck.yml build
   docker-compose -f dockercoins+healthcheck.yml push
-  docker service update dockercoins_hasher \
-           --image=127.0.0.1:5000/hasher:$TAG
+  docker service update --image=127.0.0.1:5000/hasher:$TAG dockercoins_hasher
   ```
 
 ]
