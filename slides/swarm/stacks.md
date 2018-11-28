@@ -1,6 +1,6 @@
 class: btp-manual
 
-## Integrtaion with Compose
+## Integration with Compose
 
 - We saw how to manually build, tag, and push images to a registry
 
