@@ -1,3 +1,11 @@
+- date: 2019-03-07
+  country: uk
+  city: London
+  event: QCON
+  speaker: jpetazzo
+  title: Getting Started With Kubernetes and Container Orchestration
+  attend: https://qconlondon.com/london2019/workshop/getting-started-kubernetes-and-container-orchestration
+
 - date: [2019-01-07, 2019-01-08]
   country: fr
   city: Paris
