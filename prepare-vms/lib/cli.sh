@@ -54,6 +54,9 @@ need_infra() {
     if [ -z "$1" ]; then
         die "Please specify infrastructure file. (e.g.: infra/aws)"
     fi
+    if [ "$1" = "--infra" ]; then
+        die "The infrastructure file should be passed directly to this command. Remove '--infra' and try again."
+    fi
     if [ ! -f "$1" ]; then
         die "Infrastructure file $1 doesn't exist."
     fi
