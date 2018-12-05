@@ -295,6 +295,24 @@ Unfortunately, `--follow` cannot (yet) be used to stream the logs from multiple 
 
 ---
 
+class: extra-details
+
+## `kubectl logs -l ... --tail N`
+
+- If we run this with Kubernetes 1.12, the last command shows multiple lines
+
+- This is a regression when `--tail` is used together with `-l`/`--selector`
+
+- It always shows the last 10 lines of output for each container
+
+  (instead of the number of lines specified on the command line)
+
+- The problem was fixed in Kubernetes 1.13
+
+*See [#70554](https://github.com/kubernetes/kubernetes/issues/70554) for details.*
+
+---
+
 ## Aren't we flooding 1.1.1.1?
 
 - If you're wondering this, good question!
