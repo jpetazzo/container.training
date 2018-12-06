@@ -122,13 +122,13 @@
 
 - Create a 10 GB file on each node:
   ```bash
-  for N in $(seq 1 5); do ssh node$N sudo truncate --size 10G /portworx.blk; done
+  for N in $(seq 1 4); do ssh node$N sudo truncate --size 10G /portworx.blk; done
   ```
   (If SSH asks to confirm host keys, enter `yes` each time.)
 
 - Associate the file to a loop device on each node:
   ```bash
-  for N in $(seq 1 5); do ssh node$N sudo losetup /dev/loop4 /portworx.blk; done
+  for N in $(seq 1 4); do ssh node$N sudo losetup /dev/loop4 /portworx.blk; done
   ```
 
 ]
