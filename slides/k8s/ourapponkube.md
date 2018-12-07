@@ -1,12 +1,42 @@
-class: title
+# Shipping images with a registry
 
-Our app on Kube
+- Initially, our app was running on a single node
+
+- We could *build* and *run* in the same place
+
+- Therefore, we did not need to *ship* anything
+
+- Now that we want to run on a cluster, things are different
+
+- The easiest way to ship container images is to use a registry
 
 ---
 
-## What's on the menu?
+## How Docker registries work (a reminder)
 
-In this part, we will:
+- What happens when we execute `docker run alpine` ?
+
+- If the Engine needs to pull the `alpine` image, it expands it into `library/alpine`
+
+- `library/alpine` is expanded into `index.docker.io/library/alpine`
+
+- The Engine communicates with `index.docker.io` to retrieve `library/alpine:latest`
+
+- To use something else than `index.docker.io`, we specify it in the image name
+
+- Examples:
+  ```bash
+  docker pull gcr.io/google-containers/alpine-with-bash:1.0
+
+  docker build -t registry.mycompany.io:5000/myimage:awesome .
+  docker push registry.mycompany.io:5000/myimage:awesome
+  ```
+
+---
+
+## The plan
+
+We are going to:
 
 - **build** images for our app,
 
@@ -14,25 +44,42 @@ In this part, we will:
 
 - **run** deployments using these images,
 
-- expose these deployments so they can communicate with each other,
+- expose (with a ClusterIP) the deployments that need to communicate together,
 
-- expose the web UI so we can access it from outside.
+- expose (with a NodePort) the web UI so we can access it from outside.
 
 ---
 
-## The plan
+## Building and shipping our app
 
-- Build on our control node (`node1`)
+- We will pick a registry
 
-- Tag images so that they are named `$REGISTRY/servicename`
+  (let's pretend the address will be `REGISTRY:PORT`)
 
-- Upload them to a registry
+- We will build on our control node (`node1`)
 
-- Create deployments using the images
+  (the images will be named `REGISTRY:PORT/servicename`)
 
-- Expose (with a ClusterIP) the services that need to communicate
+- We will push the images to the registry
 
-- Expose (with a NodePort) the WebUI
+- These images will be usable by the other nodes of the cluster
+
+  (i.e., we could do `docker run REGISTRY:PORT/servicename` from these nodes)
+
+---
+
+## A shortcut opportunity
+
+- As it happens, the images that we need do already exist on the Docker Hub:
+
+  https://hub.docker.com/r/dockercoins/
+
+- We could use them instead of using our own registry and images
+
+*In the following slides, we are going to show how to run a registry
+and use it to host container images. We will also show you how to
+use the existing images from the Docker Hub, so that you can catch
+up (or skip altogether the build/push part) if needed.*
 
 ---
 
@@ -40,11 +87,20 @@ In this part, we will:
 
 - We could use the Docker Hub
 
-- Or a service offered by our cloud provider (ACR, GCR, ECR...)
+- There are alternatives like Quay
 
-- Or we could just self-host that registry
+- Each major cloud provider has an option as well
 
-*We'll self-host the registry because it's the most generic solution for this workshop.*
+  (ACR on Azure, ECR on AWS, GCR on Google Cloud...)
+
+- There are also commercial products to run our own registry
+
+  (Docker EE, Quay...)
+
+- And open source options, too!
+
+*We are going to self-host an open source registry because it's the most generic solution for this workshop. We will use Docker's reference
+implementation for simplicity.*
 
 ---
 
@@ -66,7 +122,7 @@ In this part, we will:
 
 ---
 
-# Deploying a self-hosted registry
+## Deploying a self-hosted registry
 
 - We will deploy a registry container, and expose it with a NodePort
 
@@ -252,7 +308,7 @@ class: extra-details
 
 - Or building or pushing the images ...
 
-- Don't worry: we provide pre-built images hosted on the Docker Hub!
+- Don't worry: you can easily use pre-built images from the Docker Hub!
 
 - The images are named `dockercoins/worker:v0.1`, `dockercoins/rng:v0.1`, etc.
 
@@ -267,7 +323,7 @@ class: extra-details
 
 ---
 
-## Deploying all the things
+# Running our application on Kubernetes
 
 - We can now deploy our code (as well as a redis instance)
 
@@ -320,7 +376,7 @@ kubectl wait deploy/worker --for condition=available
 
 ---
 
-# Exposing services internally
+## Connecting containers together
 
 - Three deployments need to be reachable by others: `hasher`, `redis`, `rng`
 
@@ -367,7 +423,7 @@ We should now see the `worker`, well, working happily.
 
 ---
 
-# Exposing services for external access
+## Exposing services for external access
 
 - Now we would like to access the Web UI
 
