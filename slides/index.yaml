@@ -1,3 +1,11 @@
+- date: 2019-04-28
+  country: us
+  city: Chicago, IL
+  event: QCON
+  speaker: jpetazzo
+  title: Getting Started With Kubernetes and Container Orchestration
+  attend: https://gotochgo.com/2019/workshops/148
+
 - date: 2019-03-07
   country: uk
   city: London
