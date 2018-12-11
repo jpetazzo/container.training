@@ -4,6 +4,7 @@ TEMPLATE="""<html>
 <head>
   <title>{{ title }}</title>
   <link rel="stylesheet" href="index.css">
+  <meta charset="UTF-8">
 </head>
 <body>
   <div class="main">
