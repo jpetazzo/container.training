@@ -1,6 +1,6 @@
 ## Versions installed
 
-- Kubernetes 1.12.2
+- Kubernetes 1.13.0
 - Docker Engine 18.09.0
 - Docker Compose 1.21.1
 
@@ -23,7 +23,7 @@ class: extra-details
 
 ## Kubernetes and Docker compatibility
 
-- Kubernetes 1.12.x only validates Docker Engine versions [1.11.2 to 1.13.1 and 17.03.x](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.12.md#external-dependencies)
+- Kubernetes 1.13.x only validates Docker Engine versions [up to 18.06](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.13.md#external-dependencies)
 
 --
 
@@ -35,7 +35,9 @@ class: extra-details
 
 class: extra-details
 
-- "Validates" = continuous integration builds
+- No!
+
+- "Validates" = continuous integration builds with very extensive (and expensive) testing
 
 - The Docker API is versioned, and offers strong backward-compatibility
 
