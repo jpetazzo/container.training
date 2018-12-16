@@ -133,6 +133,8 @@ class: extra-details
 
 → We are user `kubernetes-admin`, in group `system:masters`.
 
+(We will see later how and why this gives us the permissions that we have.)
+
 ---
 
 ## User certificates in practice
@@ -566,4 +568,46 @@ It's important to note a couple of details in these flags ...
           --as some-user
   kubectl auth can-i list nodes \
           --as system:serviceaccount:<namespace>:<name-of-service-account>
+  ```
+
+---
+
+class: extra-details
+
+## Where do our permissions come from?
+
+- When interacting with the Kubernetes API, we are using a client certificate
+
+- We saw previously that this client certificate contained:
+
+  `CN=kubernetes-admin` and `O=system:masters`
+
+- Let's look for these in existing ClusterRoleBindings:
+  ```bash
+  kubectl get clusterrolebindings -o yaml | 
+    grep -e kubernetes-admin -e system:masters
+  ```
+
+  (`system:masters` should show up, but not `kubernetes-admin`.)
+
+- Where does this match come from?
+
+---
+
+class: extra-details
+
+## The `system:masters` group
+
+- If we eyeball the output of `kubectl get clusterrolebindings -o yaml`, we'll find out!
+
+- It is in the `cluster-admin` binding:
+  ```bash
+  kubectl describe clusterrolebinding cluster-admin
+  ```
+
+- This binding associates `system:masters` to the cluster role `cluster-admin`
+
+- And the `cluster-admin` is, basically, `root`:
+  ```bash
+  kubectl describe clusterrole cluster-admin
   ```
