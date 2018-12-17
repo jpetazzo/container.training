@@ -6,9 +6,9 @@
 
    - .emoji[🎧] Romain ([@rdegez](https://twitter.com/rdegez), Enix SAS)
 
-- The workshop will run from ...
+- The workshop will run from 9:15 to 17:30
 
-- There will be a lunch break at ...
+- There will be a lunch break at noon
 
   (And coffee breaks!)
 
