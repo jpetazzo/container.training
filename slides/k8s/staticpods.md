@@ -161,19 +161,19 @@
 
 - If I'm a *user* of the cluster: I don't care, it makes no difference to me
 
-- What if I'm an *admin*, i.e. the person who installs, upgraes, repairs... the cluster?
+- What if I'm an *admin*, i.e. the person who installs, upgrades, repairs... the cluster?
 
 - If I'm using a managed Kubernetes cluster (AKS, EKS, GKE...) it's not my problem
 
   (I'm not the one setting up and managing the control plane)
 
-- If I already picked a tool (kubeadm, kops...) to setup my cluster, the tool decides for me
+- If I already picked a tool (kubeadm, kops...) to set up my cluster, the tool decides for me
 
 - What if I haven't picked a tool yet, or if I'm installing from scratch?
 
   - static pods = easier to set up, easier to troubleshoot, less risk of outage
 
-  - normal pods = easier to upgrade, easier to move (if nodes need to be shutdown)
+  - normal pods = easier to upgrade, easier to move (if nodes need to be shut down)
 
 ---
 
