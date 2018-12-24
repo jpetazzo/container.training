@@ -1,30 +1,28 @@
 # Static pods
 
-- Pods are usually created indirectly, through another resource:
+- Hosting the Kubernetes control plane on Kubernetes has advantages:
 
-  Deployment, Daemon Set, Job, Stateful Set ...
+  - we can use Kubernetes' replication and scaling features for the control plane
 
-- They can also be created directly
+  - we can leverage rolling updates to upgrade the control plane
 
-- This can be done by writing YAML and using `kubectl apply` or `kubectl create`
+- However, there is a catch:
 
-- Some resources (not all of them) can be created with `kubectl run`
+  - deploying on Kubernetes requires the API to be available
 
-- Creating a resource with `kubectl` requires the API to be up
+  - the API won't be available until the control plane is deployed
 
-- If we want to run the API server (and its dependencies) on Kubernetes itself ...
-
-  ... how can we create API pods (and other resources) when the API is not up yet?
+- How can we get out of that chicken-and-egg problem?
 
 ---
 
-## In theory
+## A possible approach
 
-- Each component of the control plane can be replicated
+- Since each component of the control plane can be replicated ...
 
 - We could set up the control plane outside of the cluster
 
-- Then, once the cluster is up, create replicas running on the cluster
+- Then, once the cluster is fully operational, create replicas running on the cluster
 
 - Finally, remove the replicas that are running outside of the cluster
 
@@ -88,9 +86,9 @@
 
 - We can run control plane components with these static pods
 
-- They don't need the API to be up (just the kubelet)
+- They can start without requiring access to the API server
 
-- Once they are up, the API becomes available
+- Once they are up and running, the API becomes available
 
 - These pods are then visible through the API
 
@@ -155,7 +153,7 @@
 
 ---
 
-## Where should the control plane be?
+## Where should the control plane run?
 
 *Is it better to run the control plane in static pods, or normal pods?*
 
