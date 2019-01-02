@@ -91,12 +91,12 @@ class: extra-details
 
 * We need a Dockerized repository!
 * Let's go to https://github.com/jpetazzo/trainingwheels and fork it.
-* Go to the Docker Hub (https://hub.docker.com/).
-* Select "Create" in the top-right bar, and select "Create Automated Build."
+* Go to the Docker Hub (https://hub.docker.com/) and sign-in. Select "Repositories" in the blue navigation menu.
+* Select "Create" in the top-right bar, and select "Create Repository+".
 * Connect your Docker Hub account to your GitHub account.
-* Select your user and the repository that we just forked.
-* Create.
-* Then go to "Build Settings."
-* Put `/www` in "Dockerfile Location" (or whichever directory the Dockerfile is in).
-* Click "Trigger" to build the repository immediately (without waiting for a git push).
+* Click "Create" button.
+* Then go to "Builds" folder.
+* Click on Github icon and select your user and the repository that we just forked.
+* In "Build rules" block near page bottom, put `/www` in "Build Context" column (or whichever directory the Dockerfile is in).
+* Click "Save and Build" to build the repository immediately (without waiting for a git push).
 * Subsequent builds will happen automatically, thanks to GitHub hooks.
