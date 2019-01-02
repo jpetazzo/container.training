@@ -141,7 +141,7 @@ today = datetime.date.today()
 coming_soon = [i for i in items if i.get("date") and i["end"] >= today]
 coming_soon.sort(key=lambda i: i["begin"])
 past_workshops = [i for i in items if i.get("date") and i["end"] < today]
-past_workshops.sort(key=lambda i: i["date"], reverse=True)
+past_workshops.sort(key=lambda i: i["begin"], reverse=True)
 self_paced = [i for i in items if not i.get("date")]
 recorded_workshops = [i for i in items if i.get("video")]
 
