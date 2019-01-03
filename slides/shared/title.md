@@ -11,7 +11,8 @@ class: title, in-person
 @@TITLE@@<br/></br>
 
 .footnote[
-**Be kind to the WiFi!**<br/>
+**WiFi: EnixTraining**<br/>
+**Password: kubeforever**<br/>
 <!-- *Use the 5G network.* -->
 *Don't use your hotspot.*<br/>
 *Don't stream videos or download big files during the workshop[.](https://www.youtube.com/watch?v=h16zyxiwDLY)*<br/>
