@@ -67,7 +67,8 @@ The following list is not exhaustive.
 
 Furthermore, we limited the scope to Linux containers.
 
-Containers also exist (sometimes with other names) on Windows, macOS, Solaris, FreeBSD ...
+We can also find containers (or things that look like containers) on other platforms
+like Windows, macOS, Solaris, FreeBSD ...
 
 ---
 
@@ -155,6 +156,36 @@ We're not aware of anyone using it directly (i.e. outside of Kubernetes).
 
 ---
 
+## Kata containers
+
+* OCI-compliant runtime.
+
+* Fusion of two projects: Intel Clear Containers and Hyper runV.
+
+* Run each container in a lightweight virtual machine.
+
+* Requires to run on bare metal *or* with nested virtualization.
+
+---
+
+## gVisor
+
+* OCI-compliant runtime.
+
+* Implements a subset of the Linux kernel system calls.
+
+* Written in go, uses a smaller subset of system calls.
+
+* Can be heavily sandboxed.
+
+* Can run in two modes:
+
+  * KVM (requires bare metal or nested virtualization),
+
+  * ptrace (no requirement, but slower).
+
+---
+
 ## Overall ...
 
 * The Docker Engine is very developer-centric:
@@ -174,4 +205,3 @@ We're not aware of anyone using it directly (i.e. outside of Kubernetes).
   - Docker is a good default choice
 
   - If you use Kubernetes, the engine doesn't matter
-

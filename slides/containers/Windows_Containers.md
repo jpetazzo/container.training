@@ -157,8 +157,8 @@ Places to Look:
 
 - Good Windows Container Blogs and How-To's
 
-  - Dockers DevRel [Elton Stoneman, Microsoft MVP](https://blog.sixeyed.com/)
+  - Docker DevRel [Elton Stoneman, Microsoft MVP](https://blog.sixeyed.com/)
 
-  - Docker Captian [Nicholas Dille](https://dille.name/blog/)
+  - Docker Captain [Nicholas Dille](https://dille.name/blog/)
 
   - Docker Captain [Stefan Scherer](https://stefanscherer.github.io/) 

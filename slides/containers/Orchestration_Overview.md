@@ -243,21 +243,27 @@ Scheduling = deciding which hypervisor to use for each VM.
 
 ---
 
+class: pic
+
 ## Scheduling with one resource
 
 .center[![Not-so-good bin packing](images/binpacking-1d-1.gif)]
 
-Can we do better?
+## Can we do better?
 
 ---
+
+class: pic
 
 ## Scheduling with one resource
 
 .center[![Better bin packing](images/binpacking-1d-2.gif)]
 
-Yup!
+## Yup!
 
 ---
+
+class: pic
 
 ## Scheduling with two resources
 
@@ -265,11 +271,15 @@ Yup!
 
 ---
 
+class: pic
+
 ## Scheduling with three resources
 
 .center[![3D bin packing](images/binpacking-3d.gif)]
 
 ---
+
+class: pic
 
 ## You need to be good at this
 
@@ -277,11 +287,15 @@ Yup!
 
 ---
 
+class: pic
+
 ## But also, you must be quick!
 
 .center[![Tetris](images/tetris-1.png)]
 
 ---
+
+class: pic
 
 ## And be web scale!
 
@@ -289,11 +303,15 @@ Yup!
 
 ---
 
+class: pic
+
 ## And think outside (?) of the box!
 
 .center[![3D tetris](images/tetris-3.png)]
 
 ---
+
+class: pic
 
 ## Good luck!
 

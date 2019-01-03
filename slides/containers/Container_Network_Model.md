@@ -721,3 +721,20 @@ eth0      Link encap:Ethernet  HWaddr 02:42:AC:15:00:03
 ...
 ```
 ]
+
+---
+
+class: extra-details
+
+## Building with a custom network
+
+* We can build a Dockerfile with a custom network with `docker build --network NAME`.
+
+* This can be used to check that a build doesn't access the network.
+
+  (But keep in mind that most Dockerfiles will fail,
+  <br/>because they need to install remote packages and dependencies!)
+
+* This may be used to access an internal package repository.
+
+  (But try to use a multi-stage build instead, if possible!)

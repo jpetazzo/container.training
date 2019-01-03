@@ -156,6 +156,36 @@ Different deployments will use different underlying technologies.
 
 ---
 
+## Service meshes
+
+* A service mesh is a configurable network layer.
+
+* It can provide service discovery, high availablity, load balancing, observability...
+
+* Service meshes are particularly useful for microservices applications.
+
+* Service meshes are often implemented as proxies.
+
+* Applications connect to the service mesh, which relays the connection where needed.
+
+*Does that sound familiar?*
+
+---
+
+## Ambassadors and service messhes
+
+* When using a service mesh, a "sidecar container" is often used as a proxy
+
+* Our services connect (transparently) to that sidecar container
+
+* That sidecar container figures out where to forward the traffic
+
+... Does that sound familiar?
+
+(It should, because service meshes are essentially app-wide or cluster-wide ambassadors!)
+
+---
+
 ## Section summary
 
 We've learned how to:
@@ -168,3 +198,10 @@ For more information about the ambassador pattern, including demos on Swarm and 
 
 * [SwarmWeek video about Swarm+Compose](https://youtube.com/watch?v=qbIvUvwa6As)
 
+Some services meshes and related projects:
+
+* [Istio](https://istio.io/)
+
+* [Linkerd](https://linkerd.io/)
+
+* [Gloo](https://gloo.solo.io/)

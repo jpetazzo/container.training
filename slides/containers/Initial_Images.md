@@ -66,14 +66,6 @@ class: pic
 
 ---
 
-class: pic
-
-## Multiple containers sharing the same image
-
-![layers](images/sharing-layers.jpg)
-
----
-
 ## Differences between containers and images
 
 * An image is a read-only filesystem.
@@ -85,6 +77,14 @@ class: pic
   instead of regular copy.
 
 * `docker run` starts a container from a given image.
+
+---
+
+class: pic
+
+## Multiple containers sharing the same image
+
+![layers](images/sharing-layers.jpg)
 
 ---
 
@@ -216,7 +216,7 @@ clock
 
 ---
 
-## Self-Hosted namespace
+## Self-hosted namespace
 
 This namespace holds images which are not hosted on Docker Hub, but on third
 party registries.
@@ -232,6 +232,13 @@ localhost:5000/wordpress
 
 * `localhost:5000` is the host and port of the registry
 * `wordpress` is the name of the image
+
+Other examples:
+
+```bash
+quay.io/coreos/etcd
+gcr.io/google-containers/hugo
+```
 
 ---
 
@@ -351,6 +358,8 @@ Do specify tags:
 * When going to production.
 * To ensure that the same version will be used everywhere.
 * To ensure repeatability later.
+
+This is similar to what we would do with `pip install`, `npm install`, etc.
 
 ---
 
