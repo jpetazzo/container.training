@@ -194,9 +194,13 @@ will have equal success with Fluent or other logging stacks!*
 
 - We are going to use a Compose file describing the ELK stack.
 
+- The Compose file is in the container.training repository on GitHub.
+
 ```bash
-$ cd ~/container.training/stacks
-$ docker-compose -f elk.yml up -d
+$ git clone https://github.com/jpetazzo/container.training
+$ cd container.training
+$ cd elk
+$ docker-compose up
 ```
 
 - Let's have a look at the Compose file while it's deploying.

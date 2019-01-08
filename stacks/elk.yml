@@ -5,7 +5,7 @@ services:
     image: elasticsearch:2
 
   logstash:
-    image: logstash
+    image: logstash:2
     command: |
       -e '
       input {
