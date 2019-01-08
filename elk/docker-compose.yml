@@ -2,14 +2,14 @@ version: "2"
 
 services:
   elasticsearch:
-    image: elasticsearch
+    image: elasticsearch:2
     # If you need to access ES directly, just uncomment those lines.
     #ports:
     #  - "9200:9200"
     #  - "9300:9300"
 
   logstash:
-    image: logstash
+    image: logstash:2
     command: |
       -e '
       input {
@@ -47,7 +47,7 @@ services:
       - "12201:12201/udp"
 
   kibana:
-    image: kibana
+    image: kibana:4
     ports:
       - "5601:5601"
     environment:
