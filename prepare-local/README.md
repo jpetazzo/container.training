@@ -32,7 +32,7 @@ Virtualbox, Vagrant and Ansible
 
           $ source path/to/your-ansible-clone/hacking/env-setup
 
-  - you need to repeat the last step everytime you open a new terminal session
+  - you need to repeat the last step every time you open a new terminal session
     and want to use any Ansible command (but you'll probably only need to run
     it once).
 

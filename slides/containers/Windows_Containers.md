@@ -121,7 +121,7 @@ Nano and LinuxKit VMs in Hyper-V!)
 
   - you should still use `--plaform` with multi-os images to be certain 
 
-- Windows Containers now support `localhost` accessable containers (July 2018)
+- Windows Containers now support `localhost` accessible containers (July 2018)
 
 - Microsoft (April 2018) added Hyper-V support to Windows 10 Home ...
 

@@ -30,7 +30,7 @@ class: self-paced
 
 - These slides include *tons* of exercises and examples
 
-- They assume that you have acccess to a machine running Docker
+- They assume that you have access to a machine running Docker
 
 - If you are attending a workshop or tutorial:
   <br/>you will be given specific instructions to access a cloud VM

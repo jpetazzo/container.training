@@ -16,7 +16,7 @@
 
 ]
 
-- You can run `docker events` in a seperate `node1` shell to see Swarm actions
+- You can run `docker events` in a separate `node1` shell to see Swarm actions
 
 - You can use `--force` to replace containers without a config change
 

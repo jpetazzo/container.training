@@ -199,7 +199,7 @@ this section is for you!
   locked-down computer, host firewall, etc.
 - Horrible wifi, or ssh port TCP/22 not open on network! If wifi sucks you
   can try using MOSH https://mosh.org which handles SSH over UDP. TMUX can also
-  prevent you from loosing your place if you get disconnected from servers.
+  prevent you from losing your place if you get disconnected from servers.
   https://tmux.github.io
 - Forget to print "cards" and cut them up for handing out IP's.
 - Forget to have fun and focus on your students!
