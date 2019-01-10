@@ -78,7 +78,7 @@ First step: clone the source code for the app we will be working on.
 
 ```bash
 $ cd
-$ git clone git://github.com/jpetazzo/trainingwheels
+$ git clone https://github.com/jpetazzo/trainingwheels
 ...
 $ cd trainingwheels
 ```
