@@ -91,7 +91,7 @@ $ ssh <login>@<ip-address>
 
   * Git BASH (https://git-for-windows.github.io/)
 
-  * MobaXterm (http://moabaxterm.mobatek.net)
+  * MobaXterm (https://mobaxterm.mobatek.net/)
 
 ---
 
