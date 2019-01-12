@@ -172,7 +172,7 @@ Different deployments will use different underlying technologies.
 
 ---
 
-## Ambassadors and service messhes
+## Ambassadors and service meshes
 
 * When using a service mesh, a "sidecar container" is often used as a proxy
 
