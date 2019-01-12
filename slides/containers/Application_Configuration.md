@@ -36,7 +36,7 @@ docker run jpetazzo/hamba 80 www1:80 www2:80
 
 * Appropriate for mandatory parameters (without which the service cannot start).
 
-* Convenient for "toolbelt" services instanciated many times.
+* Convenient for "toolbelt" services instantiated many times.
 
   (Because there is no extra step: just run it!)
 
@@ -63,7 +63,7 @@ docker run -e ELASTICSEARCH_URL=http://es42:9201/ kibana
 
 * Appropriate for optional parameters (since the image can provide default values).
 
-* Also convenient for services instanciated many times.
+* Also convenient for services instantiated many times.
 
   (It's as easy as command-line parameters.)
 
