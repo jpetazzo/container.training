@@ -475,12 +475,14 @@ class: extra-details
 
 - The Kubernetes service endpoints exporter uses tag `pod` instead
 
-- And this is why we can't have nice things
+- See [this blog post](https://www.robustperception.io/exposing-the-software-version-to-prometheus) or [this other one](https://www.weave.works/blog/aggregating-pod-resource-cpu-memory-usage-arbitrary-labels-prometheus/) to see how to perform "joins"
 
-- See [Prometheus issue #2204](https://github.com/prometheus/prometheus/issues/2204) for the rationale
+- Alas, Prometheus cannot "join" time series with different labels
 
-  ([this comment](https://github.com/prometheus/prometheus/issues/2204#issuecomment-261515520) in particular if you want a workaround involving relabeling)
+  (see [Prometheus issue #2204](https://github.com/prometheus/prometheus/issues/2204) for the rationale)
 
-- Then see [this blog post](https://www.robustperception.io/exposing-the-software-version-to-prometheus) or [this other one](https://www.weave.works/blog/aggregating-pod-resource-cpu-memory-usage-arbitrary-labels-prometheus/) to see how to perform "joins"
+- There is a workaround involving relabeling, but it's "not cheap"
 
-- There is a good chance that the situation will improve in the future
+  - see [this comment](https://github.com/prometheus/prometheus/issues/2204#issuecomment-261515520) for an overview
+
+  - or [this blog post](https://5pi.de/2017/11/09/use-prometheus-vector-matching-to-get-kubernetes-utilization-across-any-pod-label/) for a complete description of the process
