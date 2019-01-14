@@ -266,7 +266,9 @@ spec:
 
 ---
 
-## Stateful sets in action
+# Running a Consul cluster
+
+- Here is a good use-case for Stateful sets!
 
 - We are going to deploy a Consul cluster with 3 nodes
 
@@ -294,41 +296,53 @@ consul agent -data=dir=/consul/data -client=0.0.0.0 -server -ui \
        -retry-join=`Y.Y.Y.Y`
 ```
 
-- We need to replace X.X.X.X and Y.Y.Y.Y with the addresses of other nodes
+- Replace X.X.X.X and Y.Y.Y.Y with the addresses of other nodes
 
-- We can specify DNS names, but then they have to be FQDN
-
-- It's OK for a pod to include itself in the list as well
-
-- We can therefore use the same command-line on all nodes (easier!)
+- The same command-line can be used on all nodes (convenient!)
 
 ---
 
-## Discovering the addresses of other pods
+## Cloud Auto-join
 
-- When a service is created for a stateful set, individual DNS entries are created
+- Since version 1.4.0, Consul can use the Kubernetes API to find its peers
 
-- These entries are constructed like this:
+- This is called [Cloud Auto-join]
 
-  `<name-of-stateful-set>-<n>.<name-of-service>.<namespace>.svc.cluster.local`
+- Instead of passing an IP address, we need to pass a parameter like this:
 
-- `<n>` is the number of the pod in the set (starting at zero)
+  ```
+  consul agent -retry-join "provider=k8s label_selector=\"app=consul\""
+  ```
 
-- If we deploy Consul in the default namespace, the names could be:
+- Consul needs to be able to talk to the Kubernetes API
 
-  - `consul-0.consul.default.svc.cluster.local`
-  - `consul-1.consul.default.svc.cluster.local`
-  - `consul-2.consul.default.svc.cluster.local`
+- We can provide a `kubeconfig` file
+
+- If Consul runs in a pod, it will use the *service account* of the pod
+
+[Cloud Auto-join]: https://www.consul.io/docs/agent/cloud-auto-join.html#kubernetes-k8s-
+
+---
+
+## Setting up Cloud auto-join
+
+- We need to create a service account for Consul
+
+- We need to create a role that can `list` and `get` pods
+
+- We need to bind that role to the service account
+
+- And of course, we need to make sure that Consul pods use that service account
 
 ---
 
 ## Putting it all together
 
-- The file `k8s/consul.yaml` defines a service and a stateful set
+- The file `k8s/consul.yaml` defines the required resources
+
+  (service account, cluster role, cluster role binding, service, stateful set)
 
 - It has a few extra touches:
-
-  - the name of the namespace is injected through an environment variable
 
   - a `podAntiAffinity` prevents two pods from running on the same node
 
