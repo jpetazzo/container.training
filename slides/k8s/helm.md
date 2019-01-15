@@ -164,6 +164,21 @@ The chart's metadata includes an URL to the project's home page.
 
 ---
 
+## Viewing installed charts
+
+- Helm keeps track of what we've installed
+
+.exercise[
+
+- List installed Helm charts:
+  ```bash
+  helm list
+  ```
+
+]
+
+---
+
 ## Creating a chart
 
 - We are going to show a way to create a *very simplified* chart
