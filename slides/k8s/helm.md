@@ -138,6 +138,10 @@ fine for personal and development clusters.)
          --set server.service.type=NodePort \
          --set server.persistentVolume.enabled=false
   ```
+- List installed helm charts:
+  ```bash
+  helm list
+  ```
 
 ]
 
