@@ -247,9 +247,9 @@ The second command will fail and time out after 3 seconds.
 
 - Some network plugins only have partial support for network policies
 
-- For instance, Weave [doesn't support ipBlock (yet)](https://github.com/weaveworks/weave/issues/3168)
+- For instance, Weave added support for egress rules [in version 2.4](https://github.com/weaveworks/weave/pull/3313) (released in July 2018)
 
-- Weave added support for egress rules [in version 2.4](https://github.com/weaveworks/weave/pull/3313) (released in July 2018)
+- But only recently added support for ipBlock [in version 2.5](https://github.com/weaveworks/weave/pull/3367) (released in Nov 2018)
 
 - Unsupported features might be silently ignored
 
