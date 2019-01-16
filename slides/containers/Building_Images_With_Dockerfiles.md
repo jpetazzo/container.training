@@ -131,6 +131,12 @@ Sending build context to Docker daemon 2.048 kB
 
 * Be careful (or patient) if that directory is big and your link is slow.
 
+* You can speed up the process with a [`.dockerignore`](https://docs.docker.com/engine/reference/builder/#dockerignore-file) file 
+
+  * It tells docker to ignore specific files in the directory
+
+  * Only ignore files that you won't need in the build context!
+
 ---
 
 ## Executing each step
