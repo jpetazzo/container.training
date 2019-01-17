@@ -3,7 +3,7 @@ title: |
   with Kubernetes
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-chat: "[Gitter](https://gitter.im/enix/formation-kubernetes-20190114)"
+chat: "[Gitter](https://gitter.im/enix/formation-kubernetes-20190117)"
 
 gitrepo: github.com/jpetazzo/container.training
 
@@ -50,8 +50,8 @@ chapters:
   #- k8s/gitworkflows.md
   - k8s/prometheus.md
 - - k8s/volumes.md
-  - k8s/build-with-docker.md
-  - k8s/build-with-kaniko.md
+  #- k8s/build-with-docker.md
+  #- k8s/build-with-kaniko.md
   - k8s/configuration.md
 - - k8s/owners-and-dependents.md
   - k8s/statefulsets.md
