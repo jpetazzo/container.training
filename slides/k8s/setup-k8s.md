@@ -53,8 +53,8 @@
   [GKE](https://cloud.google.com/kubernetes-engine/)
 
 - If you are on AWS:
-  [EKS](https://aws.amazon.com/eks/)
-  or
+  [EKS](https://aws.amazon.com/eks/),
+  [eksctl](https://eksctl.io/),
   [kops](https://github.com/kubernetes/kops)
 
 - On a local machine:
