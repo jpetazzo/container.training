@@ -207,6 +207,8 @@ class: pic
 
 - [Custom Resources Definitions: how to use them](https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/)
 
+- [Service Catalog](https://kubernetes.io/docs/concepts/extend-kubernetes/service-catalog/)
+
 - [Built-in Admission Controllers](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/)
 
 - [Dynamic Admission Controllers](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)
