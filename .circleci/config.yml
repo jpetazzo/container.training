@@ -1,0 +1,48 @@
+version: 2
+
+jobs:
+  pack:
+    docker:
+      - image: circleci/python:2
+    steps:
+      - checkout
+      - run:
+          name: Website Pack
+          working_directory: slides
+          command: |
+            mkdir output/
+            pip install -r requirements.txt
+            ./build.sh once
+            cp *. html 
+      - persist_to_workspace:
+          root: packages/
+          paths: 
+            - "*.html"
+
+  gh-deploy:
+    docker:
+      - image: node:8.10.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: charts/
+      - run:
+          name: Install and configure dependencies
+          command: |
+            npm install -g --silent gh-pages@2.0.1
+            git config user.email "ci-build@soluto.com"
+            git config user.name "ci-build"
+      - add_ssh_keys:
+          fingerprints:
+            - "32:25:46:eb:9c:43:c0:25:4b:62:3f:f3:50:69:65:42"
+      - run:
+          name: Deploy docs to gh-pages branch
+          command: gh-pages --add --message "[skip ci] Updates" --dist charts/
+workflows:
+  version: 2
+  build:
+    jobs:
+      - pack
+      - gh-deploy:
+          requires:
+            - pack
