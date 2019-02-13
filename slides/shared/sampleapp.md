@@ -278,7 +278,7 @@ Docker Engine is running on a different machine. This can be the case if:
 
 When you run DockerCoins in development mode, the web UI static files
 are mapped to the container using a volume. Alas, volumes can only
-work on a local environment, or when using Docker4Mac or Docker4Windows.
+work on a local environment, or when using Docker Desktop for Mac or Windows.
 
 How to fix this?
 
