@@ -82,11 +82,11 @@ class: extra-details
 
 ## Installing Docker on macOS and Windows
 
-* On macOS, the recommended method is to use Docker for Mac:
+* On macOS, the recommended method is to use Docker Desktop for Mac:
 
   https://docs.docker.com/docker-for-mac/install/
 
-* On Windows 10 Pro, Enterprise, and Education, you can use Docker for Windows:
+* On Windows 10 Pro, Enterprise, and Education, you can use Docker Desktop for Windows:
 
   https://docs.docker.com/docker-for-windows/install/
 
@@ -100,7 +100,7 @@ class: extra-details
 
 ---
 
-## Docker for Mac and Docker for Windows
+## Docker Desktop for Mac and Docker Desktop for Windows
 
 * Special Docker Editions that integrate well with their respective host OS
 
