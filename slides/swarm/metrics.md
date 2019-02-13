@@ -454,7 +454,7 @@ class: snap
 
 .exercise[
 
-- Run the following command *on every node:*
+- Run the following command *on every node*:
   ```bash
   snapd -t 0 -l 1 --tribe --tribe-seed node1:6000
   ```
@@ -636,7 +636,7 @@ class: snap
 ]
 
 Note: this will allow any node to publish metrics data to `localhost:8086`,
-and it will allows us to access the admin interface by connecting to any node
+and it will allow us to access the admin interface by connecting to any node
 on port 8083.
 
 .warning[Make sure to use InfluxDB 0.13; a few things changed in 1.0
