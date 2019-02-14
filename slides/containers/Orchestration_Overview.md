@@ -155,7 +155,7 @@ processes or data flows are given access to system resources.*
 
 The scheduler is concerned mainly with:
 
-- throughput (total amount or work done per time unit);
+- throughput (total amount of work done per time unit);
 - turnaround time (between submission and completion);
 - response time (between submission and start);
 - waiting time (between job readiness and execution);
@@ -390,7 +390,7 @@ It depends on:
 
   (Marathon = long running processes; Chronos = run at intervals; ...)
 
-- Commercial offering through DC/OS my Mesosphere.
+- Commercial offering through DC/OS by Mesosphere.
 
 ---
 

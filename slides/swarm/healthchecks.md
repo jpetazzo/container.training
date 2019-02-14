@@ -65,7 +65,7 @@ name: healthchecks
 
 Here is a comprehensive example using the CLI:
 
-.sall[
+.small[
 ```bash
 docker service update \
   --update-delay 5s \

@@ -48,7 +48,7 @@ class: btp-manual
 
 - Resource limits are moved to this `deploy` section
 
-- See [here](https://github.com/aanand/docker.github.io/blob/8524552f99e5b58452fcb1403e1c273385988b71/compose/compose-file.md#upgrading) for the complete list of changes
+- See [here](https://github.com/docker/docker.github.io/blob/master/compose/compose-file/compose-versioning.md#upgrading) for the complete list of changes
 
 - Supersedes *Distributed Application Bundles*
 
@@ -149,7 +149,7 @@ Our registry is not *exactly* identical to the one deployed with `docker service
 
 - Each stack gets its own overlay network
 
-- Services of the task are connected to this network
+- Services of the stack are connected to this network
   <br/>(unless specified differently in the Compose file)
 
 - Services get network aliases matching their name in the Compose file
