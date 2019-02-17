@@ -14,9 +14,9 @@
 More resources on this topic:
 
 - [Do not use Docker-in-Docker for CI](
-  http://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/)
+  https://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/)
 - [One container to rule them all](
-  http://jpetazzo.github.io/2016/04/03/one-container-to-rule-them-all/)
+  https://jpetazzo.github.io/2016/04/03/one-container-to-rule-them-all/)
 
 ---
 

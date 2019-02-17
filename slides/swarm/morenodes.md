@@ -173,7 +173,7 @@ class: self-paced
 
   Cloud pro-tip: use separate auto-scaling groups for managers and workers
 
-  See docker's "[Running Docker at scale](http://success.docker.com/article/running-docker-ee-at-scale)" document
+  See docker's "[Running Docker at scale](https://success.docker.com/article/running-docker-ee-at-scale)" document
 ]
 ---
 

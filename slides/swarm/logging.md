@@ -417,4 +417,4 @@ that you don't drop messages on the floor. Good luck.
 
 If you want to learn more about the GELF driver,
 have a look at [this blog post](
-http://jpetazzo.github.io/2017/01/20/docker-logging-gelf/).
+https://jpetazzo.github.io/2017/01/20/docker-logging-gelf/).
