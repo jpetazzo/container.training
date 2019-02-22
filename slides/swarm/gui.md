@@ -8,7 +8,7 @@ What about web interfaces to control and manage Swarm?
 
 - [Portus](http://port.us.org) is a SUSE-backed open source web GUI for registry.
 
-- Find lots of other Swarm tools in the [Awesome Docker list](http://awesome-docker.netlify.com).
+- Find lots of other Swarm tools in the [Awesome Docker list](https://awesome-docker.netlify.com).
 
 ---
 

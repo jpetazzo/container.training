@@ -401,7 +401,7 @@ or providing extra features. For instance:
 * [REX-Ray](https://rexray.io/) - create and manage volumes backed by an enterprise storage system (e.g.
   SAN or NAS), or by cloud block stores (e.g. EBS, EFS).
 
-* [Portworx](http://portworx.com/) - provides distributed block store for containers.
+* [Portworx](https://portworx.com/) - provides distributed block store for containers.
 
 * [Gluster](https://www.gluster.org/) - open source software-defined distributed storage that can scale
   to several petabytes. It provides interfaces for object, block and file storage.

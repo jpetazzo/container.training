@@ -528,7 +528,7 @@ Very short instructions:
 - `docker network create mynet --driver overlay`
 - `docker service create --network mynet myimage`
 
-See http://jpetazzo.github.io/container.training for all the deets about clustering!
+See https://jpetazzo.github.io/container.training for all the deets about clustering!
 
 ---
 

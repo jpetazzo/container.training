@@ -25,7 +25,7 @@ class: self-paced
 ## Catching up
 
 Assuming you have 5 nodes provided by
-[Play-With-Docker](http://www.play-with-docker/), do this from `node1`:
+[Play-With-Docker](https://www.play-with-docker/), do this from `node1`:
 
 ```bash
 docker swarm init --advertise-addr eth0

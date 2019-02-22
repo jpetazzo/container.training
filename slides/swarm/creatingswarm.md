@@ -375,7 +375,7 @@ Some presentations from the Docker Distributed Systems Summit in Berlin:
   ([slides](https://speakerdeck.com/aluzzardi/heart-of-the-swarmkit-topology-management))
 
 - Heart of the SwarmKit: Store, Topology & Object Model
-  ([slides](http://www.slideshare.net/Docker/heart-of-the-swarmkit-store-topology-object-model))
+  ([slides](https://www.slideshare.net/Docker/heart-of-the-swarmkit-store-topology-object-model))
   ([video](https://www.youtube.com/watch?v=EmePhjGnCXY))
 
 And DockerCon Black Belt talks:

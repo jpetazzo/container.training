@@ -28,7 +28,7 @@
 Remove `-v` if you don't like verbose things.
 
 Shameless promo: for more Go and Docker love, check
-[this blog post](http://jpetazzo.github.io/2016/09/09/go-docker/)!
+[this blog post](https://jpetazzo.github.io/2016/09/09/go-docker/)!
 
 Note: in the unfortunate event of SwarmKit *master* branch being broken,
 the build might fail. In that case, just skip the Swarm tools section.

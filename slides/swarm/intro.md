@@ -2,7 +2,7 @@
 
 - This was initially written by [Jérôme Petazzoni](https://twitter.com/jpetazzo) to support in-person,
   instructor-led workshops and tutorials
-  
+
 - Over time, [multiple contributors](https://@@GITREPO@@/graphs/contributors) also helped to improve these materials — thank you!
 
 - You can also follow along on your own, at your own pace
@@ -15,7 +15,7 @@
  [documentation](https://docs.docker.com/) ...
 
 - ... And looking for answers in the [Docker forums](forums.docker.com),
-  [StackOverflow](http://stackoverflow.com/questions/tagged/docker),
+  [StackOverflow](https://stackoverflow.com/questions/tagged/docker),
   and other outlets
 
 ---
