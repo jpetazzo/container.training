@@ -1,3 +1,21 @@
+- date: 2019-06-18
+  country: ca
+  city: Montréal
+  event: Elapse Technologies
+  title: Getting Started With Kubernetes And Orchestration
+  speaker: jpetazzo
+  status: coming soon
+  hidden: http://elapsetech.com/formation/kubernetes-101
+
+- date: 2019-06-17
+  country: ca
+  city: Montréal
+  event: Elapse Technologies
+  title: Getting Started With Docker And Containers
+  speaker: jpetazzo
+  status: coming soon
+  hidden: http://elapsetech.com/formation/docker-101
+
 - date: 2019-04-28
   country: us
   city: Chicago, IL
@@ -37,16 +55,16 @@
   city: Montréal
   event: Elapse Technologies
   speaker: jpetazzo
-  title: Getting Started With Docker And Containers
-  attend: http://elapsetech.com/formation/docker-101
+  title: <strike>Getting Started With Docker And Containers</strike> (rescheduled for June 2019)
+  status: rescheduled
 
 - date: 2019-02-26
   country: ca
   city: Montréal
   event: Elapse Technologies
   speaker: jpetazzo
-  title: Getting Started With Kubernetes And Orchestration
-  attend: http://elapsetech.com/formation/kubernetes-101
+  title: <strike>Getting Started With Kubernetes And Orchestration</strike> (rescheduled for June 2019)
+  status: rescheduled
 
 - date: 2019-02-28
   country: ca
@@ -54,8 +72,8 @@
   lang: fr
   event: Elapse Technologies
   speaker: jpetazzo
-  title: Bien démarrer avec Docker et les conteneurs (in French)
-  attend: http://elapsetech.com/formation/docker-101
+  title: <strike>Bien démarrer avec Docker et les conteneurs (in French)</strike>
+  status: cancelled
 
 - date: 2019-03-01
   country: ca
@@ -63,8 +81,8 @@
   lang: fr
   event: Elapse Technologies
   speaker: jpetazzo
-  title: Bien démarrer avec Docker et l'orchestration (in French)
-  attend: http://elapsetech.com/formation/kubernetes-101
+  title: <strike>Bien démarrer avec Docker et l'orchestration (in French)</strike>
+  status: cancelled
 
 - date: [2019-01-07, 2019-01-08]
   country: fr
@@ -81,7 +99,7 @@
   city: Paris
   event: ENIX SAS
   speaker: "jpetazzo, rdegez"
-  title: Déployer ses applications avec Kubernetes (in French)
+  title: Déployer ses applications avec Kubernetes
   lang: fr
   attend: https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
   slides: http://decembre2018.container.training
@@ -169,7 +187,7 @@
   city: Paris
   event: ENIX SAS
   speaker: jpetazzo
-  title: Déployer ses applications avec Kubernetes (in French)
+  title: Déployer ses applications avec Kubernetes
   lang: fr
   attend:  https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
   slides: https://septembre2018.container.training

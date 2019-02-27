@@ -10,6 +10,7 @@ TEMPLATE="""<html>
   <div class="main">
     <table>
       <tr><td class="header" colspan="3">{{ title }}</td></tr>
+      <tr><td class="details" colspan="3">Note: while some workshops are delivered in French, slides are always in English.</td></tr>
 
       {% if coming_soon %}
         <tr><td class="title" colspan="3">Coming soon near you</td></tr>
@@ -18,7 +19,10 @@ TEMPLATE="""<html>
           <tr>
             <td>{{ item.title }}</td>
             <td>{% if item.slides %}<a class="slides" href="{{ item.slides }}" />{% endif %}</td>
-            <td><a class="attend" href="{{ item.attend }}" /></td>
+            <td>{% if item.attend %}<a class="attend" href="{{ item.attend }}" />
+            {% else %}
+              <p class="details">{{ item.status }}</p>
+            {% endif %}</td>
           </tr>
           <tr>
             <td class="details">Scheduled {{ item.prettydate }} at {{ item.event }} in {{item.city }}.</td>
@@ -32,7 +36,10 @@ TEMPLATE="""<html>
         {% for item in past_workshops[:5] %}
           <tr>
             <td>{{ item.title }}</td>
-            <td><a class="slides" href="{{ item.slides }}" /></td>
+            <td>{% if item.slides %}<a class="slides" href="{{ item.slides }}" />
+            {% else %}
+              <p class="details">{{ item.status }}</p>
+            {% endif %}</td>
             <td>{% if item.video %}<a class="video" href="{{ item.video }}" />{% endif %}</td>
           </tr>
           <tr>
