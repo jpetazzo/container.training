@@ -5,6 +5,7 @@
   title: Getting Started With Kubernetes And Orchestration
   speaker: jpetazzo
   status: coming soon
+  hidden: http://elapsetech.com/formation/kubernetes-101
 
 - date: 2019-06-17
   country: ca
@@ -13,6 +14,7 @@
   title: Getting Started With Docker And Containers
   speaker: jpetazzo
   status: coming soon
+  hidden: http://elapsetech.com/formation/docker-101
 
 - date: 2019-04-28
   country: us
