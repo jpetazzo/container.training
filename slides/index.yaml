@@ -29,7 +29,7 @@
   city: Paris
   event: ENIX SAS
   speaker: "jpetazzo, rdegez"
-  title: Déployer ses applications avec Kubernetes (delivered in French; slides in English)
+  title: Déployer ses applications avec Kubernetes (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
 
@@ -38,7 +38,7 @@
   city: Paris
   event: ENIX SAS
   speaker: "jpetazzo, alexbuisine"
-  title: Bien démarrer avec les conteneurs (delivered in French; slides in English)
+  title: Bien démarrer avec les conteneurs (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/bien-demarrer-avec-les-conteneurs/
 
@@ -89,7 +89,7 @@
   city: Paris
   event: ENIX SAS
   speaker: "jpetazzo, alexbuisine"
-  title: Bien démarrer avec les conteneurs (delivered in French; slides in English)
+  title: Bien démarrer avec les conteneurs (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/bien-demarrer-avec-les-conteneurs/
   slides: https://intro-2019-01.container.training
@@ -99,7 +99,7 @@
   city: Paris
   event: ENIX SAS
   speaker: "jpetazzo, rdegez"
-  title: Déployer ses applications avec Kubernetes (delivered in French; slides in English)
+  title: Déployer ses applications avec Kubernetes
   lang: fr
   attend: https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
   slides: http://decembre2018.container.training
@@ -187,7 +187,7 @@
   city: Paris
   event: ENIX SAS
   speaker: jpetazzo
-  title: Déployer ses applications avec Kubernetes (delivered in French; slides in English)
+  title: Déployer ses applications avec Kubernetes
   lang: fr
   attend:  https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
   slides: https://septembre2018.container.training

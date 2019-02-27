@@ -10,6 +10,7 @@ TEMPLATE="""<html>
   <div class="main">
     <table>
       <tr><td class="header" colspan="3">{{ title }}</td></tr>
+      <tr><td class="details" colspan="3">Note: while some workshops are delivered in French, slides are always in English.</td></tr>
 
       {% if coming_soon %}
         <tr><td class="title" colspan="3">Coming soon near you</td></tr>
