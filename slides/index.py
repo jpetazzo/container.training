@@ -35,7 +35,10 @@ TEMPLATE="""<html>
         {% for item in past_workshops[:5] %}
           <tr>
             <td>{{ item.title }}</td>
-            <td>{% if item.slides %}<a class="slides" href="{{ item.slides }}" />{% endif %}</td>
+            <td>{% if item.slides %}<a class="slides" href="{{ item.slides }}" />
+            {% else %}
+              <p class="details">{{ item.status }}</p>
+            {% endif %}</td>
             <td>{% if item.video %}<a class="video" href="{{ item.video }}" />{% endif %}</td>
           </tr>
           <tr>
