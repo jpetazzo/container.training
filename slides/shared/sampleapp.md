@@ -108,7 +108,7 @@ and displays aggregated logs.
 
 - `worker` invokes web service `rng` to generate random bytes
 
-- `worker` invokes web servie `hasher` to hash these bytes
+- `worker` invokes web service `hasher` to hash these bytes
 
 - `worker` does this in an infinite loop
 
