@@ -1,3 +1,19 @@
+- date: 2019-06-18
+  country: ca
+  city: Montréal
+  event: Elapse Technologies
+  title: Getting Started With Kubernetes And Orchestration
+  speaker: jpetazzo
+  status: coming soon
+
+- date: 2019-06-17
+  country: ca
+  city: Montréal
+  event: Elapse Technologies
+  title: Getting Started With Docker And Containers
+  speaker: jpetazzo
+  status: coming soon
+
 - date: 2019-04-28
   country: us
   city: Chicago, IL
@@ -38,7 +54,7 @@
   event: Elapse Technologies
   speaker: jpetazzo
   title: <strike>Getting Started With Docker And Containers</strike> (rescheduled for June 2019)
-  attend: http://elapsetech.com/formation/docker-101
+  status: rescheduled
 
 - date: 2019-02-26
   country: ca
@@ -46,7 +62,7 @@
   event: Elapse Technologies
   speaker: jpetazzo
   title: <strike>Getting Started With Kubernetes And Orchestration</strike> (rescheduled for June 2019)
-  attend: http://elapsetech.com/formation/kubernetes-101
+  status: rescheduled
 
 - date: 2019-02-28
   country: ca
@@ -54,8 +70,8 @@
   lang: fr
   event: Elapse Technologies
   speaker: jpetazzo
-  title: <strike>Bien démarrer avec Docker et les conteneurs (in French)</strike> (rescheduled for June 2019)
-  attend: http://elapsetech.com/formation/docker-101
+  title: <strike>Bien démarrer avec Docker et les conteneurs (in French)</strike>
+  status: cancelled
 
 - date: 2019-03-01
   country: ca
@@ -63,8 +79,8 @@
   lang: fr
   event: Elapse Technologies
   speaker: jpetazzo
-  title: <strike>Bien démarrer avec Docker et l'orchestration (in French)</strike> (rescheduled for June 2019)
-  attend: http://elapsetech.com/formation/kubernetes-101
+  title: <strike>Bien démarrer avec Docker et l'orchestration (in French)</strike>
+  status: cancelled
 
 - date: [2019-01-07, 2019-01-08]
   country: fr

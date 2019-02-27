@@ -18,7 +18,10 @@ TEMPLATE="""<html>
           <tr>
             <td>{{ item.title }}</td>
             <td>{% if item.slides %}<a class="slides" href="{{ item.slides }}" />{% endif %}</td>
-            <td><a class="attend" href="{{ item.attend }}" /></td>
+            <td>{% if item.attend %}<a class="attend" href="{{ item.attend }}" />
+            {% else %}
+              <p class="details">{{ item.status }}</p>
+            {% endif %}</td>
           </tr>
           <tr>
             <td class="details">Scheduled {{ item.prettydate }} at {{ item.event }} in {{item.city }}.</td>
@@ -32,7 +35,7 @@ TEMPLATE="""<html>
         {% for item in past_workshops[:5] %}
           <tr>
             <td>{{ item.title }}</td>
-            <td><a class="slides" href="{{ item.slides }}" /></td>
+            <td>{% if item.slides %}<a class="slides" href="{{ item.slides }}" />{% endif %}</td>
             <td>{% if item.video %}<a class="video" href="{{ item.video }}" />{% endif %}</td>
           </tr>
           <tr>
