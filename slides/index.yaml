@@ -11,7 +11,7 @@
   city: Paris
   event: ENIX SAS
   speaker: "jpetazzo, rdegez"
-  title: Déployer ses applications avec Kubernetes (in French)
+  title: Déployer ses applications avec Kubernetes (delivered in French; slides in English)
   lang: fr
   attend: https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
 
@@ -20,7 +20,7 @@
   city: Paris
   event: ENIX SAS
   speaker: "jpetazzo, alexbuisine"
-  title: Bien démarrer avec les conteneurs (in French)
+  title: Bien démarrer avec les conteneurs (delivered in French; slides in English)
   lang: fr
   attend: https://enix.io/fr/services/formation/bien-demarrer-avec-les-conteneurs/
 
@@ -37,7 +37,7 @@
   city: Montréal
   event: Elapse Technologies
   speaker: jpetazzo
-  title: Getting Started With Docker And Containers
+  title: <strike>Getting Started With Docker And Containers</strike> (rescheduled for June 2019)
   attend: http://elapsetech.com/formation/docker-101
 
 - date: 2019-02-26
@@ -45,7 +45,7 @@
   city: Montréal
   event: Elapse Technologies
   speaker: jpetazzo
-  title: Getting Started With Kubernetes And Orchestration
+  title: <strike>Getting Started With Kubernetes And Orchestration</strike> (rescheduled for June 2019)
   attend: http://elapsetech.com/formation/kubernetes-101
 
 - date: 2019-02-28
@@ -54,7 +54,7 @@
   lang: fr
   event: Elapse Technologies
   speaker: jpetazzo
-  title: Bien démarrer avec Docker et les conteneurs (in French)
+  title: <strike>Bien démarrer avec Docker et les conteneurs (in French)</strike> (rescheduled for June 2019)
   attend: http://elapsetech.com/formation/docker-101
 
 - date: 2019-03-01
@@ -63,7 +63,7 @@
   lang: fr
   event: Elapse Technologies
   speaker: jpetazzo
-  title: Bien démarrer avec Docker et l'orchestration (in French)
+  title: <strike>Bien démarrer avec Docker et l'orchestration (in French)</strike> (rescheduled for June 2019)
   attend: http://elapsetech.com/formation/kubernetes-101
 
 - date: [2019-01-07, 2019-01-08]
@@ -71,7 +71,7 @@
   city: Paris
   event: ENIX SAS
   speaker: "jpetazzo, alexbuisine"
-  title: Bien démarrer avec les conteneurs (in French)
+  title: Bien démarrer avec les conteneurs (delivered in French; slides in English)
   lang: fr
   attend: https://enix.io/fr/services/formation/bien-demarrer-avec-les-conteneurs/
   slides: https://intro-2019-01.container.training
@@ -81,7 +81,7 @@
   city: Paris
   event: ENIX SAS
   speaker: "jpetazzo, rdegez"
-  title: Déployer ses applications avec Kubernetes (in French)
+  title: Déployer ses applications avec Kubernetes (delivered in French; slides in English)
   lang: fr
   attend: https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
   slides: http://decembre2018.container.training
@@ -169,7 +169,7 @@
   city: Paris
   event: ENIX SAS
   speaker: jpetazzo
-  title: Déployer ses applications avec Kubernetes (in French)
+  title: Déployer ses applications avec Kubernetes (delivered in French; slides in English)
   lang: fr
   attend:  https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
   slides: https://septembre2018.container.training
