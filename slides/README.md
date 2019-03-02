@@ -34,6 +34,14 @@ compile each `foo.yml` file into `foo.yml.html`.
 You can also run `./build.sh forever`: it will monitor the current
 directory and rebuild slides automatically when files are modified.
 
+If you have problems running `./build.sh` (because of
+Python dependencies or whatever),
+you can also run `docker-compose up` in this directory.
+It will start the `./build.sh forever` script in a container.
+It will also start a web server exposing the slides
+(but the slides should also work if you load them from your
+local filesystem).
+
 
 ## Publishing pipeline
 
