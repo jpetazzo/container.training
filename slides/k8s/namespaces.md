@@ -189,7 +189,46 @@ we created our Helm chart before.
 
 ]
 
-Note: it might take a minute or two for the app to be up and running.
+If the graph shows up but stays at zero, check the next slide!
+
+---
+
+## Troubleshooting
+
+If did the exercices from the chapter about labels and selectors,
+the app that you just created may not work, because the `rng` service
+selector has `enabled=yes` but the pods created by the `rng` daemon set
+do not have that label.
+
+How can we troubleshoot that?
+
+- Query individual services manually
+
+  → the `rng` service will time out
+
+- Inspect the services with `kubectl describe service`
+  
+  → the `rng` service will have an empty list of backends
+
+---
+
+## Fixing the broken service
+
+The easiest option is to add the `enabled=yes` label to the relevant pods.
+
+.exercise[
+
+- Add the `enabled` label to the pods of the `rng` daemon set:
+  ```bash
+  kubectl label pods -l app=rng enabled=yes
+  ```
+
+]
+
+The *best* option is to change either the service definition, or the
+daemon set definition, so that their respective selectors match correctly.
+
+*This is left as an exercise for the reader!*
 
 ---
 
