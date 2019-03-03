@@ -1,7 +1,7 @@
 ## Versions installed
 
-- Kubernetes 1.13.2
-- Docker Engine 18.09.1
+- Kubernetes 1.13.4
+- Docker Engine 18.09.3
 - Docker Compose 1.21.1
 
 <!-- ##VERSION## -->
