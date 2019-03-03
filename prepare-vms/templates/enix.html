@@ -1,17 +1,17 @@
 {# Feel free to customize or override anything in there! #}
-{%- set url = "http://septembre2018.container.training" -%}
+{%- set url = "http://FIXME.container.training" -%}
 {%- set pagesize = 9 -%}
 {%- if clustersize == 1 -%}
     {%- set workshop_name = "Docker workshop" -%}
-    {%- set cluster_or_machine = "machine" -%}
-    {%- set this_or_each = "this" -%}
-    {%- set machine_is_or_machines_are = "machine is" -%}
+    {%- set cluster_or_machine = "machine virtuelle" -%}
+    {%- set this_or_each = "cette" -%}
+    {%- set plural = "" -%}
     {%- set image_src = "https://s3-us-west-2.amazonaws.com/www.breadware.com/integrations/docker.png" -%}
 {%- else -%}
     {%- set workshop_name = "Kubernetes workshop" -%}
     {%- set cluster_or_machine = "cluster" -%}
-    {%- set this_or_each = "each" -%}
-    {%- set machine_is_or_machines_are = "machines are" -%}
+    {%- set this_or_each = "chaque" -%}
+    {%- set plural = "s" -%}
     {%- set image_src_swarm = "https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png" -%}
     {%- set image_src_kube = "https://avatars1.githubusercontent.com/u/13629408" -%}
     {%- set image_src = image_src_kube -%}
@@ -19,11 +19,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head><style>
+@import url('https://fonts.googleapis.com/css?family=Slabo+27px');
+
 body, table {
     margin: 0;
     padding: 0;
     line-height: 1em;
-    font-size: 14px;
+    font-size: 15px;
+    font-family: 'Slabo 27px';
 }
 
 table {
@@ -56,8 +59,8 @@ img {
 }
 
 img.enix {
-    height: 4.5em;
-    margin-top: 0.2em;
+    height: 4.0em;
+    margin-top: 0.4em;
 }
 
 img.kube {
@@ -86,8 +89,9 @@ img.kube {
 
         <p>
             Voici les informations permettant de se connecter à votre
-            cluster pour cette formation. Vous pouvez vous connecter
-	    à ces machines virtuelles avec n'importe quel client SSH.
+	    {{ cluster_or_machine }} pour cette formation.
+	    Vous pouvez vous connecter à {{ this_or_each }} machine virtuelle
+	    avec n'importe quel client SSH.
         </p>
         <p>
 	    <img class="enix" src="https://enix.io/static/img/logos/logo-domain-cropped.png" />
@@ -100,8 +104,8 @@ img.kube {
 
         </p>
         <p>
-            Vos serveurs sont :
-            <img class="kube" src="{{ image_src }}" />
+	Adresse{{ plural }} IP :
+	<!--<img class="kube" src="{{ image_src }}" />-->
             <table>
                 {% for node in cluster %}
                 <tr><td>node{{ loop.index }}:</td><td>{{ node }}</td></tr>
