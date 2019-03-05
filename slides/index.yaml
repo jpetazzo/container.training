@@ -16,6 +16,14 @@
   status: coming soon
   hidden: http://elapsetech.com/formation/docker-101
 
+- date: 2019-05-01
+  country: us
+  city: Cleveland, OH
+  event: PyCon
+  speaker: jpetazzo, s0ulshake
+  title: Getting started with Kubernetes and container orchestration
+  attend: https://us.pycon.org/2019/schedule/presentation/74/
+
 - date: 2019-04-28
   country: us
   city: Chicago, IL
