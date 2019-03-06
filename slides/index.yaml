@@ -16,6 +16,14 @@
   status: coming soon
   hidden: http://elapsetech.com/formation/docker-101
 
+- date: 2019-05-01
+  country: us
+  city: Cleveland, OH
+  event: PyCon
+  speaker: jpetazzo, s0ulshake
+  title: Getting started with Kubernetes and container orchestration
+  attend: https://us.pycon.org/2019/schedule/presentation/74/
+
 - date: 2019-04-28
   country: us
   city: Chicago, IL
@@ -42,13 +50,14 @@
   lang: fr
   attend: https://enix.io/fr/services/formation/bien-demarrer-avec-les-conteneurs/
 
-- date: 2019-03-07
+- date: 2019-03-08
   country: uk
   city: London
   event: QCON
   speaker: jpetazzo
   title: Getting Started With Kubernetes and Container Orchestration
   attend: https://qconlondon.com/london2019/workshop/getting-started-kubernetes-and-container-orchestration
+  slides: https://qconuk2019.container.training/
 
 - date: 2019-02-25
   country: ca
