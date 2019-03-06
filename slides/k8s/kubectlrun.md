@@ -292,6 +292,8 @@ We could! But the *deployment* would notice it right away, and scale back to the
 ]
 
 Unfortunately, `--follow` cannot (yet) be used to stream the logs from multiple containers.
+<br/>
+(But this will change in the future; see [PR #67573](https://github.com/kubernetes/kubernetes/pull/67573).)
 
 ---
 
