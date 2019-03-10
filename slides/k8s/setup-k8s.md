@@ -60,7 +60,7 @@
 - On a local machine:
   [minikube](https://kubernetes.io/docs/setup/minikube/),
   [kubespawn](https://github.com/kinvolk/kube-spawn),
-  [Docker4Mac](https://docs.docker.com/docker-for-mac/kubernetes/)
+  [Docker Desktop](https://docs.docker.com/docker-for-mac/kubernetes/)
 
 - If you want something customizable:
   [kubicorn](https://github.com/kubicorn/kubicorn)
