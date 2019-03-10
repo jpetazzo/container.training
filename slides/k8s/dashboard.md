@@ -206,7 +206,7 @@ The dashboard will then ask you which authentication you want to use.
 
 - The steps that we just showed you are *for educational purposes only!*
 
-- If you do that on your production cluster, people [can and will abuse it](https://blog.redlock.io/cryptojacking-tesla)
+- If you do that on your production cluster, people [can and will abuse it](https://redlock.io/blog/cryptojacking-tesla)
 
 - For an in-depth discussion about securing the dashboard,
   <br/>
