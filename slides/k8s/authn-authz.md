@@ -260,7 +260,7 @@ class: extra-details
 - Extract the token and decode it:
   ```bash
   TOKEN=$(kubectl get secret $SECRET -o json \
-          | jq -r .data.token | base64 -d)
+          | jq -r .data.token | openssl base64 -d -A)
   ```
 
 ]
