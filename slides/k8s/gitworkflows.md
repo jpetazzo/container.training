@@ -111,7 +111,7 @@
 
 - Display that key:
   ```
-  kubectl logs deployment flux | grep identity
+  kubectl logs deployment/flux | grep identity
   ```
 
 - Then add that key to the repository, giving it **write** access
