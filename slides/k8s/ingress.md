@@ -194,7 +194,7 @@
 
 - When deploying with `kubeadm`:
 
-  - a taint is placed on the node dedicated the control plane
+  - a taint is placed on the node dedicated to the control plane
 
   - the pods running the control plane have a matching toleration
 
