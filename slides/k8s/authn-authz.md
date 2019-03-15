@@ -108,7 +108,7 @@ class: extra-details
           --raw \
           -o json \
           | jq -r .users[0].user[\"client-certificate-data\"] \
-          | base64 -d \
+          | openssl base64 -d -A \
           | openssl x509 -text \
           | grep Subject:
   ```
@@ -127,7 +127,7 @@ class: extra-details
 - `--raw` includes certificate information (which shows as REDACTED otherwise)
 - `-o json` outputs the information in JSON format
 - `| jq ...` extracts the field with the user certificate (in base64)
-- `| base64 -d` decodes the base64 format (now we have a PEM file)
+- `| openssl base64 -d -A` decodes the base64 format (now we have a PEM file)
 - `| openssl x509 -text` parses the certificate and outputs it as plain text
 - `| grep Subject:` shows us the line that interests us
 
@@ -260,7 +260,7 @@ class: extra-details
 - Extract the token and decode it:
   ```bash
   TOKEN=$(kubectl get secret $SECRET -o json \
-          | jq -r .data.token | base64 -d)
+          | jq -r .data.token | openssl base64 -d -A)
   ```
 
 ]
