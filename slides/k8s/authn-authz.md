@@ -64,7 +64,7 @@
 
   (`401 Unauthorized` HTTP code)
 
-- If a request is neither accepted nor accepted by anyone, it's anonymous
+- If a request is neither rejected nor accepted by anyone, it's anonymous
 
   - the user name is `system:anonymous`
 
