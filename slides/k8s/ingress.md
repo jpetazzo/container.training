@@ -176,7 +176,7 @@
 
 - We are going to use a Daemon Set so that each node can accept connections
 
-- We will do two minor changes to the [YAML provided by Traefik](https://github.com/containous/traefik/blob/master/examples/k8s/traefik-ds.yaml):
+- We will do two minor changes to the [YAML provided by Traefik](https://github.com/containous/traefik/blob/v1.7/examples/k8s/traefik-ds.yaml):
 
   - enable `hostNetwork`
 
@@ -306,9 +306,9 @@ This one is a special case that means "ignore all taints and run anyway."
 
 - We provide a YAML file (`k8s/traefik.yaml`) which is essentially the sum of:
 
-  - [Traefik's Daemon Set resources](https://github.com/containous/traefik/blob/master/examples/k8s/traefik-ds.yaml) (patched with `hostNetwork` and tolerations)
+  - [Traefik's Daemon Set resources](https://github.com/containous/traefik/blob/v1.7/examples/k8s/traefik-ds.yaml) (patched with `hostNetwork` and tolerations)
 
-  - [Traefik's RBAC rules](https://github.com/containous/traefik/blob/master/examples/k8s/traefik-rbac.yaml) allowing it to watch necessary API objects
+  - [Traefik's RBAC rules](https://github.com/containous/traefik/blob/v1.7/examples/k8s/traefik-rbac.yaml) allowing it to watch necessary API objects
 
 .exercise[
 
