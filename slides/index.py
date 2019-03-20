@@ -12,6 +12,23 @@ TEMPLATE="""<html>
       <tr><td class="header" colspan="3">{{ title }}</td></tr>
       <tr><td class="details" colspan="3">Note: while some workshops are delivered in French, slides are always in English.</td></tr>
 
+      <tr><td class="title" colspan="3">Free video of our latest workshop</td></tr>
+
+      <tr>
+      	<td>Getting Started With Kubernetes and Container Orchestration</td>
+      	<td><a class="slides" href="https://qconuk2019.container.training" /></td>
+      	<td><a class="video" href="https://www.youtube.com/playlist?list=PLBAFXs0YjviJwCoxSUkUPhsSxDJzpZbJd" /></td>
+      </tr>
+      <tr>
+        <td class="details">This is a live recording of a 1-day workshop that took place at QCON London in March 2019.</td>
+      </tr>
+      <tr>
+        <td class="details">If you're interested, we can deliver that workshop (or longer courses) to your team or organization.</td>
+      </tr>
+      <tr>
+        <td class="details">Contact <a href="mailto:jerome.petazzoni@gmail.com">Jérôme Petazzoni</a> to make that happen!</a></td>
+      </tr>
+
       {% if coming_soon %}
         <tr><td class="title" colspan="3">Coming soon near you</td></tr>
 
