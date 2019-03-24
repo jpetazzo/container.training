@@ -52,8 +52,10 @@ There are many possibilities!
 
 - *Operators* encapsulate complex sets of resources
 
-  (e.g.: a PostgreSQL replicated cluster; an etcd cluster;
-  [and more...](https://github.com/operator-framework/awesome-operators))
+  (e.g.: a PostgreSQL replicated cluster; an etcd cluster...
+  <br/>
+  see [awesome operators](https://github.com/operator-framework/awesome-operators) and
+  [OperatorHub](https://operatorhub.io/) to find more)
 
 - Custom use-cases like [gitkube](https://gitkube.sh/)
 
