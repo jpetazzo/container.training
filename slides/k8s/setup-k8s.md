@@ -46,26 +46,27 @@
 
 ## Other deployment options
 
-- If you are on Azure:
-  [AKS](https://azure.microsoft.com/services/kubernetes-service/)
+- [AKS](https://azure.microsoft.com/services/kubernetes-service/):
+  managed Kubernetes on Azure
 
-- If you are on Google Cloud:
-  [GKE](https://cloud.google.com/kubernetes-engine/)
+- [GKE](https://cloud.google.com/kubernetes-engine/):
+  managed Kubernetes on Google Cloud
 
-- If you are on AWS:
-  [EKS](https://aws.amazon.com/eks/),
-  [eksctl](https://eksctl.io/),
-  [kops](https://github.com/kubernetes/kops)
+- [EKS](https://aws.amazon.com/eks/),
+  [eksctl](https://eksctl.io/):
+  managed Kubernetes on AWS
 
-- On a local machine:
-  [minikube](https://kubernetes.io/docs/setup/minikube/),
+- [kops](https://github.com/kubernetes/kops):
+  customizable deployments on AWS, Digital Ocean, GCE (beta), vSphere (alpha)
+
+- [minikube](https://kubernetes.io/docs/setup/minikube/),
   [kubespawn](https://github.com/kinvolk/kube-spawn),
-  [Docker Desktop](https://docs.docker.com/docker-for-mac/kubernetes/)
+  [Docker Desktop](https://docs.docker.com/docker-for-mac/kubernetes/):
+  for local development
 
-- If you want something customizable:
-  [kubicorn](https://github.com/kubicorn/kubicorn)
-
-  Probably the closest to a multi-cloud/hybrid solution so far, but in development
+- [kubicorn](https://github.com/kubicorn/kubicorn),
+  the [Cluster API](https://blogs.vmware.com/cloudnative/2019/03/14/what-and-why-of-cluster-api/):
+  deploy your clusters declaratively, "the Kubernetes way"
 
 ---
 
