@@ -32,7 +32,10 @@ chapters:
   - k8s/setup-k8s.md
   - k8s/kubectlrun.md
   - k8s/kubectlexpose.md
-- - k8s/ourapponkube.md
+- - k8s/shippingimages.md
+#  - k8s/buildshiprun-selfhosted.md
+  - k8s/buildshiprun-dockerhub.md
+  - k8s/ourapponkube.md
 #  - k8s/kubectlproxy.md
 #  - k8s/localkubeconfig.md
 #  - k8s/accessinternal.md
