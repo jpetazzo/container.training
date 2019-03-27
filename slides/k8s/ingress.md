@@ -364,6 +364,8 @@ This is normal: we haven't provided any ingress rule yet.
 
 - Go to `http://node1:8080` (replacing `node1` with its IP address)
 
+<!-- ```open http://node1:8080``` -->
+
 ]
 
 ---
