@@ -150,6 +150,12 @@ _cmd_kube() {
         sudo kubeadm join --discovery-token-unsafe-skip-ca-verification --token \$TOKEN node1:6443
     fi"
 
+    # Install metrics server
+    pssh "
+    if grep -q node1 /tmp/node; then
+	kubectl apply -f https://raw.githubusercontent.com/jpetazzo/container.training/master/k8s/metrics-server.yaml
+    fi"
+
     # Install kubectx and kubens
     pssh "
     [ -d kubectx ] || git clone https://github.com/ahmetb/kubectx &&
