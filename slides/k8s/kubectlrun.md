@@ -170,12 +170,12 @@ pod/pingpong-7c8bbcd9bc-6c9qz   1/1       Running   0          10m
 
 - Scale our `pingpong` deployment:
   ```bash
-  kubectl scale deploy/pingpong --replicas 8
+  kubectl scale deploy/pingpong --replicas 3
   ```
 
 - Note that this command does exactly the same thing:
   ```bash
-  kubectl scale deployment pingpong --replicas 8
+  kubectl scale deployment pingpong --replicas 3
   ```
 
 ]
@@ -246,6 +246,9 @@ We could! But the *deployment* would notice it right away, and scale back to the
 
   - `kubectl create job` to create a job
 
+  - `kubectl create cronjob` to run a job periodically
+    <br/>(since Kubernetes 1.14)
+
 - Eventually, `kubectl run` will be used only to start one-shot pods
 
   (see https://github.com/kubernetes/kubernetes/pull/68132)
@@ -262,7 +265,7 @@ We could! But the *deployment* would notice it right away, and scale back to the
 - `kubectl create <resource>` 
 
   - explicit, but lacks some features
-  - can't create a CronJob
+  - can't create a CronJob before Kubernetes 1.14
   - can't pass command-line arguments to deployments
 
 - `kubectl create -f foo.yaml` or `kubectl apply -f foo.yaml`
