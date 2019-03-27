@@ -16,11 +16,11 @@
 
 - Download the `kubectl` binary from one of these links:
 
-  [Linux](https://storage.googleapis.com/kubernetes-release/release/v1.13.4/bin/linux/amd64/kubectl)
+  [Linux](https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl)
   |
-  [macOS](https://storage.googleapis.com/kubernetes-release/release/v1.13.4/bin/darwin/amd64/kubectl)
+  [macOS](https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/darwin/amd64/kubectl)
   |
-  [Windows](https://storage.googleapis.com/kubernetes-release/release/v1.13.4/bin/windows/amd64/kubectl.exe)
+  [Windows](https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/windows/amd64/kubectl.exe)
 
 - On Linux and macOS, make the binary executable with `chmod +x kubectl`
 
@@ -49,10 +49,7 @@ Note: if you are following along with a different platform (e.g. Linux on an arc
 
 The output should look like this:
 ```
-Client Version: version.Info{Major:"1", Minor:"11", GitVersion:"v1.11.2",
-GitCommit:"bb9ffb1654d4a729bb4cec18ff088eacc153c239", GitTreeState:"clean",
-BuildDate:"2018-08-07T23:17:28Z", GoVersion:"go1.10.3", Compiler:"gc",
-Platform:"linux/amd64"}
+Client Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.0", GitCommit:"641856db18352033a0d96dbc99153fa3b27298e5", GitTreeState:"clean", BuildDate:"2019-03-25T15:53:57Z", GoVersion:"go1.12.1", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
 ---
