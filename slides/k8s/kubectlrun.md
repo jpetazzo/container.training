@@ -294,9 +294,93 @@ We could! But the *deployment* would notice it right away, and scale back to the
 
 ]
 
-Unfortunately, `--follow` cannot (yet) be used to stream the logs from multiple containers.
-<br/>
-(But this will change in the future; see [PR #67573](https://github.com/kubernetes/kubernetes/pull/67573).)
+---
+
+### Streaming logs of multiple pods
+
+- Can we stream the logs of all our `pingpong` pods?
+
+.exercise[
+
+- Combine `-l` and `-f` flags:
+  ```bash
+  kubectl logs -l run=pingpong --tail 1 -f
+  ```
+
+<!--
+```wait seq=```
+```keys ^C```
+-->
+
+]
+
+*Note: combining `-l` and `-f` is only possible since Kubernetes 1.14!*
+
+*Let's try to understand why ...*
+
+---
+
+### Streaming logs of many pods
+
+- Let's see what happens if we try to stream the logs for more than 5 pods
+
+.exercise[
+
+- Scale up our deployment:
+  ```bash
+  kubectl scale deployment pingpong --replicas=8
+  ```
+
+- Stream the logs:
+  ```bash
+  kubectl logs -l run=pingpong --tail 1 -f
+  ```
+
+]
+
+We see a message like the following one:
+```
+error: you are attempting to follow 8 log streams,
+but maximum allowed concurency is 5,
+use --max-log-requests to increase the limit
+```
+
+---
+
+## Why can't we stream the logs of many pods?
+
+- `kubectl` opens one connection to the API server per pod
+
+- For each pod, the API server opens one extra connection to the corresponding kubelet
+
+- If there are 1000 pods in our deployment, that's 1000 inbound + 1000 outbound connections on the API server
+
+- This could easily put a lot of stress on the API server
+
+- Prior Kubernetes 1.14, it was decided to *not* allow multiple connections
+
+- From Kubernetes 1.14, it is allowed, but limited to 5 connections
+
+  (this can be changed with `--max-log-requests`)
+
+- For more details about the rationale, see
+  [PR #67573](https://github.com/kubernetes/kubernetes/pull/67573)
+
+---
+
+## Shortcomings of `kubectl logs`
+
+- We don't see which pod sent which log line
+
+- If pods are restarted / replaced, the log stream stops
+
+- If new pods are added, we don't see their logs
+
+- To stream the logs of multiple pods, we need to write a selector
+
+- There are external tools to address these shortcomings
+
+  (e.g.: [Stern](https://github.com/wercker/stern))
 
 ---
 
