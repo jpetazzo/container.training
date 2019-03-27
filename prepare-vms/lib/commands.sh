@@ -123,7 +123,7 @@ _cmd_kube() {
     pssh --timeout 200 "
     if grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/admin.conf ]; then
         kubeadm token generate > /tmp/token &&
-	sudo kubeadm init --token \$(cat /tmp/token)
+	sudo kubeadm init --token \$(cat /tmp/token) --apiserver-cert-extra-sans \$(cat /tmp/ipv4)
     fi"
 
     # Put kubeconfig in ubuntu's and docker's accounts
