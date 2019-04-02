@@ -27,6 +27,7 @@ chapters:
   - swarm/versions.md
   - shared/sampleapp.md
   - shared/composescale.md
+  - shared/hastyconclusions.md
   - shared/composedown.md
   - swarm/swarmkit.md
   - shared/declarative.md
