@@ -79,26 +79,102 @@
 
 ---
 
-## What's available?
-
-- `kubectl` has pretty good introspection facilities
+## Exploring types and definitions
 
 - We can list all available resource types by running `kubectl api-resources`
   <br/>
   (In Kubernetes 1.10 and prior, this command used to be `kubectl get`)
-
-- We can view details about a resource with:
-  ```bash
-  kubectl describe type/name
-  kubectl describe type name
-  ```
 
 - We can view the definition for a resource type with:
   ```bash
   kubectl explain type
   ```
 
-Each time, `type` can be singular, plural, or abbreviated type name.
+- We can view the definition of a field in a resource, for instance:
+  ```bash
+  kubectl explain node.spec
+  ```
+
+- Or get the full definition of all fields and sub-fields:
+  ```bash
+  kubectl explain node --recursive
+  ```
+
+---
+
+## Introspection vs. documentation
+
+- We can access the same information by reading the [API documentation](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/)
+
+- The API documentation is usually easier to read, but:
+
+  - it won't show custom types (like Custom Ressource Definitions)
+
+  - we need to make sure that we look at the correct version
+
+- `kubectl api-resources` and `kubectl explain` perform *introspection*
+
+  (they communicate with the API server and obtain the exact type definitions)
+
+---
+
+## Type names
+
+- The most common resource names have three forms:
+
+  - singular (e.g. `node`, `service`, `deployment`)
+
+  - plural (e.g. `nodes`, `services`, `deployments`)
+
+  - short (e.g. `no`, `svc`, `deploy`)
+
+- Some resources do not have a short names
+
+- `Endpoints` only have a plural form
+
+  (because even a single `Endpoints` resource is actually a list of endpoints)
+
+---
+
+## Viewing details
+
+- We can use `kubectl get -o yaml` to see all available details
+
+- However, YAML output is often simultaneously too much and not enough
+
+- For instance, `kubectl get node node1 -o yaml` is:
+
+  - too much information (e.g.: list of images available on this node)
+
+  - not enough information (e.g.: doesn't show pods running on this node)
+
+  - difficult to read for a human operator
+
+- For a comprehensive overview, we can use `kubectl describe` instead
+
+---
+
+## `kubectl describe`
+
+- `kubectl describe` needs a resource type and (optionally) a resource name
+
+- It is possible to provide a resource name *prefix*
+
+  (all matching objects will be displayed)
+
+- `kubectl describe` will retrieve some extra information about the resource
+
+.exercise[
+
+- Look at the information available for `node1` with one of the following commands:
+  ```bash
+  kubectl describe node/node1
+  kubectl describe node node1
+  ```
+
+]
+
+(We should notice a bunch of control plane pods.)
 
 ---
 
@@ -170,7 +246,7 @@ The error that we see is expected: the Kubernetes API requires authentication.
 
 --
 
-*These are not the pods you're looking for.* But where are they?!?
+*Where are the pods that we saw just a moment earlier?!?*
 
 ---
 
@@ -193,28 +269,33 @@ The error that we see is expected: the Kubernetes API requires authentication.
 
 *You know what ... This `kube-system` thing looks suspicious.*
 
+*In fact, I'm pretty sure it showed up earlier, when we did:*
+
+`kubectl describe node node1`
+
 ---
 
 ## Accessing namespaces
 
 - By default, `kubectl` uses the `default` namespace
 
-- We can switch to a different namespace with the `-n` option
+- We can see resources in all namespaces with `--all-namespaces`
 
 .exercise[
 
-- List the pods in the `kube-system` namespace:
+- List the pods in all namespaces:
   ```bash
-  kubectl -n kube-system get pods
+  kubectl get pods --all-namespaces
+  ```
+
+- Since Kubernetes 1.14, we can also use `-A` as a shorter version:
+  ```bash
+  kuectl get pods -A
   ```
 
 ]
 
---
-
-*Ding ding ding ding ding!*
-
-The `kube-system` namespace is used for the control plane.
+*Here are our system pods!*
 
 ---
 
@@ -224,7 +305,7 @@ The `kube-system` namespace is used for the control plane.
 
 - `kube-apiserver` is the API server
 
-- `kube-controller-manager` and `kube-scheduler` are other master components
+- `kube-controller-manager` and `kube-scheduler` are other control plane components
 
 - `coredns` provides DNS-based service discovery ([replacing kube-dns as of 1.11](https://kubernetes.io/blog/2018/07/10/coredns-ga-for-kubernetes-cluster-dns/))
 
@@ -234,11 +315,45 @@ The `kube-system` namespace is used for the control plane.
 
 - the `READY` column indicates the number of containers in each pod
 
-- the pods with a name ending with `-node1` are the master components
-  <br/>
-  (they have been specifically "pinned" to the master node)
+  (1 for most pods, but `weave` has 2, for instance)
 
 ---
+
+## Scoping another namespace
+
+- We can also look at a different namespace (other than `default`)
+
+.exercise[
+
+- List only the pods in the `kube-system` namespace:
+  ```bash
+  kubectl get pods --namespace=kube-system
+  kubectl get pods -n kube-system
+  ```
+
+]
+
+---
+
+## Namespaces and other `kubectl` commands
+
+- We can use `-n`/`--namespace` with almost every `kubectl` command
+
+- Example:
+
+  - `kubectl create --namespace=X` to create something in namespace X
+
+- We can use `-A`/`--all-namespaces` with most commands that manipulate multiple objects
+
+- Examples:
+
+  - `kubectl delete` can delete resources across multiple namespaces
+
+  - `kubectl label` can add/remove/update labels across multiple namespaces
+
+---
+
+class: extra-details
 
 ## What about `kube-public`?
 
@@ -251,20 +366,79 @@ The `kube-system` namespace is used for the control plane.
 
 ]
 
---
+Nothing!
 
-- Maybe it doesn't have pods, but what secrets is `kube-public` keeping?
+`kube-public` is created by kubeadm & [used for security bootstrapping](https://kubernetes.io/blog/2017/01/stronger-foundation-for-creating-and-managing-kubernetes-clusters).
 
---
+---
+
+class: extra-details
+
+## Exploring `kube-public`
+
+- The only interesting object in `kube-public` is a ConfigMap named `cluster-info`
 
 .exercise[
 
-- List the secrets in the `kube-public` namespace:
+- List ConfigMap objects:
   ```bash
-  kubectl -n kube-public get secrets
+  kubectl -n kube-public get configmaps
+  ```
+
+- Inspect `cluster-info`:
+  ```bash
+  kubectl -n kube-public get configmap cluster-info -o yaml
   ```
 
 ]
---
 
-- `kube-public` is created by kubeadm & [used for security bootstrapping](https://kubernetes.io/blog/2017/01/stronger-foundation-for-creating-and-managing-kubernetes-clusters)
+Note the `selfLink` URI: `/api/v1/namespaces/kube-public/configmaps/cluster-info`
+
+We can use that!
+
+---
+
+class: extra-details
+
+## Accessing `cluster-info`
+
+- Earlier, when trying to access the API server, we got a `Forbidden` message
+
+- But `cluster-info` is readable by everyone (even without authentication)
+
+.exercise[
+
+- Retrieve `cluster-info`:
+  ```bash
+  curl -k https://10.96.0.1/api/v1/namespaces/kube-public/configmaps/cluster-info
+  ```
+
+]
+
+- We were able to access `cluster-info` (without auth)
+
+- It contains a `kubeconfig` file
+
+---
+
+class: extra-details
+
+## Retrieving `kubeconfig`
+
+- We can easily extract the `kubeconfig` file from this ConfigMap
+
+.exercise[
+
+- Display the content of `kubeconfig`:
+  ```bash
+    curl -sk https://10.96.0.1/api/v1/namespaces/kube-public/configmaps/cluster-info \
+         | jq -r .data.kubeconfig
+  ```
+
+]
+
+- This file holds the canonical address of the API server, and the public key of the CA
+
+- This file *does not* hold client keys or tokens
+
+- This is not sensitive information, but allows to establish trust
