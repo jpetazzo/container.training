@@ -611,3 +611,26 @@ class: extra-details
   ```bash
   kubectl describe clusterrole cluster-admin
   ```
+
+---
+
+class: extra-details
+
+## Figuring out who can do what
+
+- For auditing purposes, sometimes we want to know who can perform an action
+
+- Here is a proof-of-concept tool by Aqua Security, doing exactly that:
+
+  https://github.com/aquasecurity/kubectl-who-can
+
+- This is one way to install it:
+  ```bash
+  docker run --rm -v /usr/local/bin:/go/bin golang \
+         go get -v github.com/aquasecurity/kubectl-who-can
+  ```
+
+- This is one way to use it:
+  ```bash
+  kubectl-who-can create pods
+  ```
