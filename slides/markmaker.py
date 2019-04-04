@@ -14,12 +14,6 @@ import yaml
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 
 
-class InvalidChapter(ValueError):
-
-    def __init__(self, chapter):
-        ValueError.__init__(self, "Invalid chapter: {!r}".format(chapter))
-
-
 def anchor(title):
     title = title.lower().replace(' ', '-')
     title = ''.join(c for c in title if c in string.ascii_letters+'-')
@@ -175,7 +169,8 @@ def processchapter(chapter, filename):
         markdown = "\n---\n".join(c[0] for c in chapters)
         titles = [t for (m,t) in chapters if t]
         return (markdown, titles)
-    raise InvalidChapter(chapter)
+    logging.warning("Invalid chapter: {}".format(chapter))
+    return "```\nInvalid chapter: {}\n```\n".format(chapter), []
 
 # Try to figure out the URL of the repo on GitHub.
 # This is used to generate "edit me on GitHub"-style links.
