@@ -290,7 +290,7 @@ The error that we see is expected: the Kubernetes API requires authentication.
 
 - Since Kubernetes 1.14, we can also use `-A` as a shorter version:
   ```bash
-  kuectl get pods -A
+  kubectl get pods -A
   ```
 
 ]
@@ -441,4 +441,4 @@ class: extra-details
 
 - This file *does not* hold client keys or tokens
 
-- This is not sensitive information, but allows to establish trust
+- This is not sensitive information, but allows us to establish trust
