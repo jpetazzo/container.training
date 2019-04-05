@@ -108,7 +108,7 @@
 
 - The API documentation is usually easier to read, but:
 
-  - it won't show custom types (like Custom Ressource Definitions)
+  - it won't show custom types (like Custom Resource Definitions)
 
   - we need to make sure that we look at the correct version
 
