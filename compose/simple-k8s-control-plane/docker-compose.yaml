@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+
+  pause:
+    ports:
+    - 8080:8080
+    image: k8s.gcr.io/pause
+
+  etcd:
+    network_mode: "service:pause"
+    image: k8s.gcr.io/etcd:3.3.10
+    command: etcd
+
+  kube-apiserver:
+    network_mode: "service:pause"
+    image: k8s.gcr.io/hyperkube:v1.14.0
+    command: kube-apiserver --etcd-servers http://127.0.0.1:2379 --address 0.0.0.0 --disable-admission-plugins=ServiceAccount
+
+  kube-controller-manager:
+    network_mode: "service:pause"
+    image: k8s.gcr.io/hyperkube:v1.14.0
+    command: kube-controller-manager --master http://localhost:8080
+    
+  kube-scheduler:
+    network_mode: "service:pause"
+    image: k8s.gcr.io/hyperkube:v1.14.0
+    command: kube-scheduler --master http://localhost:8080
