@@ -314,6 +314,14 @@ _cmd_opensg() {
     infra_opensg
 }
 
+_cmd disableaddrchecks "Disable source/destination IP address checks"
+_cmd_disableaddrchecks() {
+    TAG=$1
+    need_tag
+
+    infra_disableaddrchecks
+}
+
 _cmd pssh "Run an arbitrary command on all nodes"
 _cmd_pssh() {
     TAG=$1
