@@ -325,7 +325,7 @@ class: extra-details
 
 - We need to stop and restart all our kubelets
 
-- We will add the `--pod-cidr` flag
+- We will add the `--network-plugin` and `--pod-cidr` flags
 
 - We all have a "cluster number" (let's call that `C`)
 
@@ -335,7 +335,7 @@ class: extra-details
 
 - Stop all the kubelets (Ctrl-C is fine)
 
-- Restart them all, adding `--pod-cidr 10.C.N.0/24`
+- Restart them all, adding `--network-plugin=kubenet --pod-cidr 10.C.N.0/24`
 
 ]
 
