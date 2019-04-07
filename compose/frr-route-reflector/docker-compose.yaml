@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  bgpd:
+    image: ajones17/frr:662
+    volumes:
+    - ./conf:/etc/frr
+    - ./run:/var/run/frr
+    network_mode: host
+    entrypoint: /usr/lib/frr/bgpd -f /etc/frr/bgpd.conf --log=stdout --log-level=debug --no_kernel
+    restart: always
+
+  zebra:
+    image: ajones17/frr:662
+    volumes:
+    - ./conf:/etc/frr
+    - ./run:/var/run/frr
+    network_mode: host
+    entrypoint: /usr/lib/frr/zebra -f /etc/frr/zebra.conf --log=stdout --log-level=debug
+    restart: always
+
+  vtysh:
+    image: ajones17/frr:662
+    volumes:
+    - ./conf:/etc/frr
+    - ./run:/var/run/frr
+    network_mode: host
+    entrypoint: vtysh -c "show ip bgp"
+
+  chmod:
+    image: alpine
+    volumes:
+    - ./run:/var/run/frr
+    command: chmod 777 /var/run/frr
