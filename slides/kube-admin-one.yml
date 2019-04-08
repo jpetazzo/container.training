@@ -25,8 +25,6 @@ chapters:
 - - k8s/multinode.md
   - k8s/cni.md
   - k8s/apilb.md
-  - k8s/kuberouter.md
-  - k8s/interco.md
   #FIXME: check le talk de Laurent Corbes pour voir s'il y a d'autres choses utiles à mentionner
   #BONUS: intégration CoreDNS pour résoudre les noms des clusters des voisins
 - - k8s/setup-managed.md
