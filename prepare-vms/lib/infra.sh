@@ -24,3 +24,7 @@ infra_quotas() {
 infra_opensg() {
 	warning "infra_opensg is unsupported on $INFRACLASS."
 }
+
+infra_disableaddrchecks() {
+	warning "infra_disableaddrchecks is unsupported on $INFRACLASS."
+}

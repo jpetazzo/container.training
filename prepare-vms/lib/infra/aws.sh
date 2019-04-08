@@ -88,6 +88,14 @@ infra_opensg() {
         --cidr 0.0.0.0/0
 }
 
+infra_disableaddrchecks() {
+    IDS=$(aws_get_instance_ids_by_tag $TAG)
+    for ID in $IDS; do
+        info "Disabling source/destination IP checks on: $ID"
+        aws ec2 modify-instance-attribute --source-dest-check "{\"Value\": false}" --instance-id $ID
+    done
+}
+
 wait_until_tag_is_running() {
     max_retry=50
     i=0
