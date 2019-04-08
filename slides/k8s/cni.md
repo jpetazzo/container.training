@@ -425,7 +425,21 @@ We should see the local pod CIDR connected to `kube-bridge`, and the other nodes
 
 ## More troubleshooting
 
-- Of course, we can also look at the output of the kube-router pods
+- We can also look at the output of the kube-router pods
+
+  (with `kubectl logs`)
+
+- kube-router also comes with a special shell that gives lots of useful info
+
+  (we can access it with `kubectl exec`)
+
+- But with the current setup of the cluster, these options may not work!
+
+- Why?
+
+---
+
+## Trying `kubectl logs` / `kubectl exec`
 
 .exercise[
 
@@ -434,26 +448,31 @@ We should see the local pod CIDR connected to `kube-bridge`, and the other nodes
   kubectl -n kube-system logs ds/kube-router
   ```
 
+- Or to exec into one of the kube-router pods:
+  ```bash
+  kubectl -n kube-system exec kuber-router-xxxxx bash
+  ```
+
 ]
 
-We get an error message including:
+These commands will give an error message that includes:
 ```
 dial tcp: lookup kuberouterX on 127.0.0.11:53: no such host
 ```
 
-What is this about?
+What does that mean?
 
 ---
 
 ## Internal name resolution
 
-- When we do `kubectl logs`, the API server needs to connect to kubelet
+- To execute these commands, the API server needs to connect to kubelet
 
-  (also for e.g. `kubectl exec`)
+- By default, it creates a connection using the kubelet's name
 
-- By default, looks up the kubelet's provided node name in DNS
+  (e.g. `http://kuberouter1:...`)
 
-  (e.g. `kuberouter1`)
+- This requires our nodes names to be in DNS
 
 - We can change that by setting a flag on the API server:
 
