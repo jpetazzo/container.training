@@ -794,7 +794,7 @@ class: extra-details
 
 This is a `DNAT` rule to rewrite the destination address of the connection to our pod.
 
-This is how kube-router works!
+This is how kube-proxy works!
 
 ---
 
