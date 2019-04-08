@@ -164,14 +164,15 @@ class: extra-details
 
 - BGP (Border Gateway Protocol) is the protocol used between internet routers
 
-- [It scales pretty well](https://www.cidr-report.org/as2.0/)
+- [It scales](https://www.cidr-report.org/as2.0/)
+  [pretty well](https://www.cidr-report.org/cgi-bin/plota?file=%2fvar%2fdata%2fbgp%2fas2.0%2fbgp-active%2etxt&descr=Active%20BGP%20entries%20%28FIB%29&ylabel=Active%20BGP%20entries%20%28FIB%29&with=step)
   (more than 400k aggregated routes on internet)
 
 - It is spoken by many hardware routers from many vendors
 
 - It also has many software implementations (Quagga, Bird, FRR...)
 
-- The network folks may or may not love it; but at least they know it
+- Experimented network folks generally know it (and appreciate it)
 
 - It also used by Calico (another popular network system for Kubernetes)
 

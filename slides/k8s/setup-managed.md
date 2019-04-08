@@ -7,6 +7,10 @@ else to do it for you."
 
 - Let's see a few options to install managed clusters!
 
+- This is not an exhaustive list
+
+  (the goal is to show the actual steps to get started)
+
 - All the options mentioned here require an account
 with a cloud provider
 
