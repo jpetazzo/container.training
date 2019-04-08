@@ -233,3 +233,17 @@ with a cloud provider
   ```bash
   doctl kubernetes cluster delete my-do-cluster
   ```
+
+---
+
+## More options
+
+- Alibaba Cloud
+
+- [IBM Cloud](https://console.bluemix.net/docs/containers/cs_cli_install.html#cs_cli_install)
+
+- OVH
+
+- Scaleway (private beta)
+
+- ...
