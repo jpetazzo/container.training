@@ -12,6 +12,7 @@ slides: http://container.training/
 
 exclude:
 - self-paced
+- static-pods-exercise
 
 chapters:
 - shared/title.md
@@ -30,7 +31,7 @@ chapters:
 - - k8s/setup-managed.md
   - k8s/setup-selfhosted.md
   - k8s/cluster-upgrade.md
-  - k8s/cluster-configuration.md
+  - k8s/staticpods.md
   - k8s/cluster-backup.md
   - k8s/cloud-controller-manager.md
   - k8s/bootstrap.md  
