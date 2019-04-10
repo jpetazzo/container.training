@@ -24,11 +24,13 @@
 
 - Kubernetes *does not* help us with error recovery
 
-- This is the job of the storage layer
+- We still need to backup / snapshot our data:
 
-- We still need to do e.g. database backups
+  - with database backups (mysqldump, pgdump, etc.)
 
-  (with snapshots, or tools like mysqldump, pgdump, etc.)
+  - and/or snapshots at the storage layer
+
+  - and/or traditional full disk backups
 
 ---
 
@@ -196,7 +198,7 @@
 
   (and maybe others)
 
-- It should be run on a master node
+- It should be executed on a master node
 
 ```bash
 docker run --rm --net host -v $PWD:/vol \
@@ -238,6 +240,10 @@ docker run --rm --net host -v $PWD:/vol \
 
   (it's an offline operation; it doesn't interact with an etcd server)
 
+- It will create a new data directory in a temporary container
+
+  (leaving the running etcd node untouched)
+
 ---
 
 ## When using kubeadm
@@ -274,7 +280,7 @@ docker run --rm --net host -v $PWD:/vol \
 
 ---
 
-## More information
+## More information about etcd backups
 
 - [Kubernetes documentation](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#built-in-snapshot) about etcd backups
 
@@ -283,6 +289,25 @@ docker run --rm --net host -v $PWD:/vol \
 - [A good blog post by elastisys](https://elastisys.com/2018/12/10/backup-kubernetes-how-and-why/) explaining how to restore a snapshot
 
 - [Another good blog post by consol labs](https://labs.consol.de/kubernetes/2018/05/25/kubeadm-backup.html) on the same topic
+
+---
+
+## Don't forget ...
+
+- Also back up the TLS information
+
+  (at the very least: CA key and cert; API server key and cert)
+
+- With clusters provisioned by kubeadm, this is in `/etc/kubernetes/pki`
+
+- If you don't:
+
+  - you will still be able to restore etcd state and bring everyting back up
+
+  - you will need to redistribute user certificates
+
+.warning[**TLS information is highly sensitive! 
+<br/>Anyone who has it has full access to your cluster!**]
 
 ---
 
@@ -299,3 +324,19 @@ docker run --rm --net host -v $PWD:/vol \
 - Using Kubernetes for stateful services makes sense if you have *many*
 
   (because then you can leverage Kubernetes automation)
+
+---
+
+## Snapshotting persistent volumes
+
+- Option 1: snapshot volumes out of band
+
+  (with the API/CLI/GUI of our SAN/cloud/...)
+
+- Option 2: storage system integration
+
+  (e.g. [Portworx](https://docs.portworx.com/portworx-install-with-kubernetes/storage-operations/create-snapshots/) can [create snapshots through annotations](https://docs.portworx.com/portworx-install-with-kubernetes/storage-operations/create-snapshots/snaps-annotations/#taking-periodic-snapshots-on-a-running-pod))
+
+- Option 3: [snapshots through Kubernetes API](https://kubernetes.io/blog/2018/10/09/introducing-volume-snapshot-alpha-for-kubernetes/)
+
+  (now in alpha for a few storage providers: GCE, OpenSDS, Ceph, Portworx)
