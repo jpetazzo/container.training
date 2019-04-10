@@ -340,3 +340,23 @@ docker run --rm --net host -v $PWD:/vol \
 - Option 3: [snapshots through Kubernetes API](https://kubernetes.io/blog/2018/10/09/introducing-volume-snapshot-alpha-for-kubernetes/)
 
   (now in alpha for a few storage providers: GCE, OpenSDS, Ceph, Portworx)
+
+---
+
+## More backup tools
+
+- [Stash](https://appscode.com/products/stash/)
+
+  back up Kubernetes persistent volumes
+
+- [ReShifter](https://github.com/mhausenblas/reshifter)
+
+  cluster state management
+
+- ~~Heptio Ark~~ [Velero](https://github.com/heptio/velero)
+
+  full cluster backup
+
+- [kube-backup](https://github.com/pieterlange/kube-backup)
+
+  simple scripts to save resource YAML to a git repository
