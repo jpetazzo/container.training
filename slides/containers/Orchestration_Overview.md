@@ -249,7 +249,7 @@ class: pic
 
 .center[![Not-so-good bin packing](images/binpacking-1d-1.gif)]
 
-## Can we do better?
+## We can't fit a job of size 6 :(
 
 ---
 
@@ -259,7 +259,7 @@ class: pic
 
 .center[![Better bin packing](images/binpacking-1d-2.gif)]
 
-## Yup!
+## ... Now we can!
 
 ---
 
