@@ -499,6 +499,32 @@ What does that mean?
 
 ---
 
+class: extra-details
+
+## Other ways to distribute routing tables
+
+- We don't need kube-router and BGP to distribute routes
+
+- The list of nodes (and associated `podCIDR` subnets) is available through the API
+
+- This shell snippet generates the commands to add all required routes on a node:
+
+```bash
+NODES=$(kubectl get nodes -o name | cut -d/ -f2)
+for DESTNODE in $NODES; do
+  if [ "$DESTNODE" != "$HOSTNAME" ]; then
+    echo $(kubectl get node $DESTNODE -o go-template="
+      route add -net {{.spec.podCIDR}} gw {{(index .status.addresses 0).address}}")
+  fi
+done
+```
+
+- This could be useful for embedded platforms with very limited resources
+
+  (or lab environments for learning purposes)
+
+---
+
 # Interconnecting clusters
 
 - We assigned different Cluster CIDRs to each cluster
