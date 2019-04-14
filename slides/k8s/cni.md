@@ -164,9 +164,9 @@ class: extra-details
 
 - BGP (Border Gateway Protocol) is the protocol used between internet routers
 
-- [It scales](https://www.cidr-report.org/as2.0/)
-  [pretty well](https://www.cidr-report.org/cgi-bin/plota?file=%2fvar%2fdata%2fbgp%2fas2.0%2fbgp-active%2etxt&descr=Active%20BGP%20entries%20%28FIB%29&ylabel=Active%20BGP%20entries%20%28FIB%29&with=step)
-  (more than 400k aggregated routes on internet)
+- It [scales](https://www.cidr-report.org/as2.0/)
+  pretty [well](https://www.cidr-report.org/cgi-bin/plota?file=%2fvar%2fdata%2fbgp%2fas2.0%2fbgp-active%2etxt&descr=Active%20BGP%20entries%20%28FIB%29&ylabel=Active%20BGP%20entries%20%28FIB%29&with=step)
+  (it is used to announce the 700k CIDR prefixes of internet)
 
 - It is spoken by many hardware routers from many vendors
 
@@ -623,9 +623,11 @@ done
 
 ## Restarting kube-router
 
-- The DaemonSet will not restart the pods automatically
+- The DaemonSet will not update the pods automatically
 
-- For simplicity, we will delete the pods
+  (it is using the default `updateStrategy`, which is `OnDelete`)
+
+- We will therefore delete the pods
 
   (they will be recreated with the updated definition)
 
@@ -637,6 +639,10 @@ done
   ```
 
 ]
+
+Note: the other `updateStrategy` for a DaemonSet is RollingUpdate.
+<br/>
+For critical services, we might want to control precisely the update process.
 
 ---
 
