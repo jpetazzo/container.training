@@ -1,13 +1,13 @@
 title: |
-  Introduction
-  to Containers
+  Bien d&eacute;marrer
+  avec les conteneurs
 
-chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+chat: "[Gitter](https://gitter.im/enix/formation-docker-20190415)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://intro-2019-04.container.training/
 
 exclude:
 - self-paced
