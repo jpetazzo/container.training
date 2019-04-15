@@ -52,6 +52,12 @@ We can arbitrarily distinguish:
 
   https://docs.docker.com/engine/installation/linux/docker-ce/binaries/
 
+* To quickly setup a dev environment, Docker provides a convenience install script:
+
+  ```bash
+  curl -fsSL get.docker.com | sh
+  ```
+
 ---
 
 class: extra-details
