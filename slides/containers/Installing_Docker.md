@@ -38,11 +38,7 @@ We can arbitrarily distinguish:
 
 ## Installing Docker on Linux
 
-* The recommended method is to install the packages supplied by Docker Inc.:
-
-  https://store.docker.com
-
-* The general method is:
+* The recommended method is to install the packages supplied by Docker Inc :
 
   - add Docker Inc.'s package repositories to your system configuration
 
