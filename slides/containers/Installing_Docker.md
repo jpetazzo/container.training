@@ -38,11 +38,7 @@ We can arbitrarily distinguish:
 
 ## Installing Docker on Linux
 
-* The recommended method is to install the packages supplied by Docker Inc.:
-
-  https://store.docker.com
-
-* The general method is:
+* The recommended method is to install the packages supplied by Docker Inc :
 
   - add Docker Inc.'s package repositories to your system configuration
 
@@ -55,6 +51,12 @@ We can arbitrarily distinguish:
 * You can also install from binaries (if your distro is not supported):
 
   https://docs.docker.com/engine/installation/linux/docker-ce/binaries/
+
+* To quickly setup a dev environment, Docker provides a convenience install script:
+
+  ```bash
+  curl -fsSL get.docker.com | sh
+  ```
 
 ---
 
