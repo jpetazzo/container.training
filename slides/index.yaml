@@ -14,11 +14,19 @@
   title: Getting Started With Kubernetes and Container Orchestration
   attend: https://gotochgo.com/2019/workshops/148
 
+- date: 2019-04-26
+  country: fr
+  city: Paris
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Opérer et administrer Kubernetes
+  attend: https://enix.io/fr/services/formation/operer-et-administrer-kubernetes/
+
 - date: [2019-04-23, 2019-04-24]
   country: fr
   city: Paris
   event: ENIX SAS
-  speaker: "jpetazzo, rdegez"
+  speaker: jpetazzo
   title: Déployer ses applications avec Kubernetes (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
@@ -31,6 +39,7 @@
   title: Bien démarrer avec les conteneurs (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/bien-demarrer-avec-les-conteneurs/
+  slides: http://intro-2019-04.container.training
 
 - date: 2019-03-08
   country: uk
