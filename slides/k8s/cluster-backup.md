@@ -302,7 +302,7 @@ docker run --rm --net host -v $PWD:/vol \
 
 - If you don't:
 
-  - you will still be able to restore etcd state and bring everyting back up
+  - you will still be able to restore etcd state and bring everything back up
 
   - you will need to redistribute user certificates
 
