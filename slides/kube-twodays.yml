@@ -22,7 +22,8 @@ chapters:
 - - shared/prereqs.md
   - k8s/versions-k8s.md
   - shared/sampleapp.md
-  - shared/composescale.md
+  #- shared/composescale.md
+  #- shared/hastyconclusions.md
   - shared/composedown.md
   - k8s/concepts-k8s.md
   - shared/declarative.md
@@ -40,7 +41,9 @@ chapters:
   - k8s/localkubeconfig.md
   - k8s/accessinternal.md
   - k8s/dashboard.md
-  - k8s/kubectlscale.md
+  #- k8s/kubectlscale.md
+  - k8s/scalingdockercoins.md
+  - shared/hastyconclusions.md
 - - k8s/daemonset.md
   - k8s/rollout.md
   - k8s/healthchecks.md
