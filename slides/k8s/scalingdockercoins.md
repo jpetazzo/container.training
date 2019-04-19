@@ -119,7 +119,7 @@ class: extra-details
 
 - During that cycle, the instant speed will appear to be much bigger
   <br/>
-  (but it will be compensated by lower instand speed before and after)
+  (but it will be compensated by lower instant speed before and after)
 
 ---
 
