@@ -50,7 +50,7 @@
 
   (Certificate Signing Requests)
 
-- This is similar to the protocol used to obtain e.g. HTTPS certifiates:
+- This is similar to the protocol used to obtain e.g. HTTPS certificates:
 
   - subject (here, kubelet) generates TLS keys and CSR
 
