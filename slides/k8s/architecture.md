@@ -62,7 +62,7 @@ class: pic
 
 ## What's in the control plane
 
-- Everything is stored in an etcd
+- Everything is stored in etcd
 
   (it's the only stateful component)
 
@@ -161,7 +161,7 @@ What does that mean?
 
 - Storage and watch operations are provided by etcd
 
-  (note: the [k3s](https://k3s.io/) project allows to use sqlite instead of etcd)
+  (note: the [k3s](https://k3s.io/) project allows us to use sqlite instead of etcd)
 
 ---
 
