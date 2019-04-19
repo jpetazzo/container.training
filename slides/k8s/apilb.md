@@ -86,4 +86,4 @@
 
 - Tunnels are also fine
 
-  (e.g. k3s uses a tunnel to allow each node to contact the API server)
+  (e.g. [k3s](https://k3s.io/) uses a tunnel to allow each node to contact the API server)
