@@ -33,7 +33,7 @@ If it shows our nodes and their CPU and memory load, we're good!
 
 ## Installing metrics server
 
-- The  metrics server doesn't have any particular requirement
+- The metrics server doesn't have any particular requirements
 
   (it doesn't need persistence, as it doesn't *store* metrics)
 
@@ -53,7 +53,7 @@ If it shows our nodes and their CPU and memory load, we're good!
 
 ## Showing container resource usage
 
-- Once metrics server is running, we can check container resource usage
+- Once the metrics server is running, we can check container resource usage
 
 .exercise[
 
