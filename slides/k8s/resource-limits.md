@@ -114,7 +114,7 @@ Each pod is assigned a QoS class (visible in `status.qosClass`).
 
   (as long as they stay within their limits)
 
-(Pod QoS is also explained in [this page](https://kubernetes.io/docs/tasks/configure-pod-container/quality-service-pod/) of the Kubernetes documentation and in [this explanation of quality of service](https://medium.com/google-cloud/quality-of-service-class-qos-in-kubernetes-bb76a89eb2c6).)
+(Pod QoS is also explained in [this page](https://kubernetes.io/docs/tasks/configure-pod-container/quality-service-pod/) of the Kubernetes documentation and in [this blog post](https://medium.com/google-cloud/quality-of-service-class-qos-in-kubernetes-bb76a89eb2c6).)
 
 ---
 
