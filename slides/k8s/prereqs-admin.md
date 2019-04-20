@@ -16,7 +16,7 @@
 
 ## Labs and exercises
 
-- We are going to build and breaks multiple clusters
+- We are going to build and break multiple clusters
 
 - Everyone will get their own private environment(s)
 
