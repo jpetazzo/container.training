@@ -1,6 +1,6 @@
 # The Container Network Interface
 
-- Allows to decouple network configuration from Kubernetes
+- Allows us to decouple network configuration from Kubernetes
 
 - Implemented by *plugins*
 
@@ -166,13 +166,13 @@ class: extra-details
 
 - It [scales](https://www.cidr-report.org/as2.0/)
   pretty [well](https://www.cidr-report.org/cgi-bin/plota?file=%2fvar%2fdata%2fbgp%2fas2.0%2fbgp-active%2etxt&descr=Active%20BGP%20entries%20%28FIB%29&ylabel=Active%20BGP%20entries%20%28FIB%29&with=step)
-  (it is used to announce the 700k CIDR prefixes of internet)
+  (it is used to announce the 700k CIDR prefixes of the internet)
 
 - It is spoken by many hardware routers from many vendors
 
 - It also has many software implementations (Quagga, Bird, FRR...)
 
-- Experimented network folks generally know it (and appreciate it)
+- Experienced network folks generally know it (and appreciate it)
 
 - It also used by Calico (another popular network system for Kubernetes)
 
@@ -186,7 +186,7 @@ class: extra-details
 
 - We will run a simple control plane (like before)
 
-- ... But this time, the controller manager with allocate `podCIDR` subnets
+- ... But this time, the controller manager will allocate `podCIDR` subnets
 
 - We will start kube-router with a DaemonSet
 
@@ -288,7 +288,7 @@ class: extra-details
 
 ]
 
-Note: the DaemonSet won't create any pod (yet) since there are no nodes (yet).
+Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
 
 ---
 
@@ -449,7 +449,7 @@ We should see the local pod CIDR connected to `kube-bridge`, and the other nodes
   kubectl -n kube-system logs ds/kube-router
   ```
 
-- Or to exec into one of the kube-router pods:
+- Or try to exec into one of the kube-router pods:
   ```bash
   kubectl -n kube-system exec kuber-router-xxxxx bash
   ```
@@ -642,7 +642,7 @@ done
 
 Note: the other `updateStrategy` for a DaemonSet is RollingUpdate.
 <br/>
-For critical services, we might want to control precisely the update process.
+For critical services, we might want to precisely control the update process.
 
 ---
 
