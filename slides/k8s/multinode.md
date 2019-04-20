@@ -84,7 +84,7 @@
 
 class: extra-details
 
-## Differences with `dmuc`
+## Differences from `dmuc`
 
 - Our new control plane listens on `0.0.0.0` instead of the default `127.0.0.1`
 
@@ -144,7 +144,7 @@ class: extra-details
    sudo kubelet --kubeconfig ~/kubeconfig
    ```
 
-- Open more terminals and join the other nodes:
+- Open more terminals and join the other nodes to the cluster:
   ```bash
   ssh kubenet2 sudo kubelet --kubeconfig ~/kubeconfig
   ssh kubenet3 sudo kubelet --kubeconfig ~/kubeconfig
@@ -364,7 +364,7 @@ class: extra-details
 
 - The IP address of a pod cannot change
 
-- kubelet doesn't automatically kill/restart containers will "invalid" addresses
+- kubelet doesn't automatically kill/restart containers with "invalid" addresses
   <br/>
   (in fact, from kubelet's point of view, there is no such thing as an "invalid" address)
 
@@ -429,7 +429,7 @@ Sometimes it works, sometimes it doesn't. Why?
 
 ## Routing traffic
 
-- Our pods have new, distinct, IP addresses
+- Our pods have new, distinct IP addresses
 
 - But they are on host-local, isolated networks
 
@@ -467,7 +467,7 @@ Sometimes it works, sometimes it doesn't. Why?
 
 ## Routing basics
 
-- We need to tell to *each* node:
+- We need to tell *each* node:
 
   "The subnet 10.C.N.0/24 is located on node N" (for all values of N)
 
