@@ -49,7 +49,7 @@
 
 - Go to the `compose/simple-k8s-control-plane` directory:
   ```bash
-  cd orchestration-workshop/compose/simple-k8s-control-plane
+  cd container.training/compose/simple-k8s-control-plane
   ```
 
 - Start the control plane:
@@ -67,7 +67,7 @@
 
 .exercise[
 
-- Show control plane components statuses:
+- Show control plane component statuses:
   ```bash
   kubectl get componentstatuses
   kubectl get cs
