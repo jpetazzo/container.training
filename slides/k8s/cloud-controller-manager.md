@@ -6,7 +6,7 @@
 
 - These features were initially implemented in API server and controller manager
 
-- Since Kubernetes 1.6, these features are available through a separated process:
+- Since Kubernetes 1.6, these features are available through a separate process:
 
   the *Cloud Controller Manager*
 
@@ -87,7 +87,7 @@ The list includes the following providers:
 
 - What kind of details would you like to see in this section?
 
-- Would you appreciate to get details on clouds that you don't / won't use?
+- Would you appreciate details on clouds that you don't / won't use?
 
 ---
 
