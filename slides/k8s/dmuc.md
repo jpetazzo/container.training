@@ -734,7 +734,7 @@ This won't work. We need kube-proxy to enable internal communication.
 
 .exercise[
 
-- Check again the Service's ClusterIP, and retry connecting:
+- Check the Service's ClusterIP again, and retry connecting:
   ```bash
   kubectl get service web
   curl http://`X.X.X.X`
@@ -761,7 +761,7 @@ class: extra-details
   iptables -t nat -L OUTPUT
   ```
 
-- Traffic is sent to `KUBE-SERVICES`, check that too:
+- Traffic is sent to `KUBE-SERVICES`; check that too:
   ```bash
   iptables -t nat -L KUBE-SERVICES
   ```
