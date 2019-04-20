@@ -220,7 +220,7 @@ This is the TLS bootstrap mechanism, step by step.
 
 - The CSR object is accepted (automatically or by an admin)
 
-- The node gets notified, and retrives the certificate
+- The node gets notified, and retrieves the certificate
 
 - The node can now join the cluster
 
