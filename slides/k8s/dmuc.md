@@ -36,7 +36,7 @@
 - We will use the machine indicated as `dmuc`
 
   (this stands for "Dessine Moi Un Cluster" or "Draw Me A Sheep",
-  <br/>in hommage to Saint-Exupery's "The Little Prince")
+  <br/>in homage to Saint-Exupery's "The Little Prince")
 
 - This machine:
 
@@ -463,7 +463,7 @@ docker run alpine echo hello world
 
 - It will start in *standalone* mode
 
-- Just like with the controler manager, we need to tell kubelet where is the API server
+- Just like with the controller manager, we need to tell kubelet where the API server is
 
 - Alas, kubelet doesn't have a simple `--master` option
 
