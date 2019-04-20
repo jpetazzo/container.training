@@ -308,7 +308,7 @@ per Pod, but it's not [officially documented yet](https://github.com/kubernetes/
 
   (but the pods will not be created as long as the LimitRange is in effect)
 
-- If there are multiple LimitRange, they all apply together
+- If there are multiple LimitRange restrictions, they all apply together
 
   (which means that it's possible to specify conflicting LimitRanges,
   <br/>preventing any Pod from being created)
@@ -328,7 +328,7 @@ per Pod, but it's not [officially documented yet](https://github.com/kubernetes/
 
 - Quotas can apply to resource limits and/or requests
 
-  (like the CPU and memory limits that we saw earlire)
+  (like the CPU and memory limits that we saw earlier)
 
 - Quotas can also apply to other resources:
 
@@ -342,7 +342,7 @@ per Pod, but it's not [officially documented yet](https://github.com/kubernetes/
 
 ## Creating a quota for a namespace
 
-- Quotas are enforced by creating a ResourceQuotas object
+- Quotas are enforced by creating a ResourceQuota object
 
 - ResourceQuota objects are namespaced, and apply to their namespace only
 
@@ -440,7 +440,7 @@ services.nodeports               0     0
 
 - Quotas can be linked to a PriorityClass
 
-- This allows to reserve resources to pods within a namespace
+- This allows us to reserve resources for pods within a namespace
 
 - For more details, check [this documentation page](https://kubernetes.io/docs/concepts/policy/resource-quotas/#resource-quota-per-priorityclass)
 
@@ -508,7 +508,7 @@ services.nodeports               0     0
 
 - If you see trends: adjust the LimitRange
 
-  (rather that adjusting every individual set of pod limits)
+  (rather than adjusting every individual set of pod limits)
 
 - Observe the resource usage of your namespaces
 
