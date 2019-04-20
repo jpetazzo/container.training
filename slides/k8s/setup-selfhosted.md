@@ -92,7 +92,7 @@
 
 - Each distribution / installer has pros and cons
 
-- Before picking one, we should sort our priorities:
+- Before picking one, we should sort out our priorities:
 
   - cloud, on-premises, hybrid?
 
