@@ -142,7 +142,7 @@ with a cloud provider
   az login
   ```
 
-- Select a [region](https://azure.microsoft.com/en-us/global-infrastructure/services/?products=kubernetes-service&regions=all
+- Select a [region](https://azure.microsoft.com/en-us/global-infrastructure/services/?products=kubernetes-service\&regions=all
 )
 
 - Create a "resource group":
