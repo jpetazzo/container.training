@@ -509,7 +509,7 @@ services.nodeports               0     0
 
 - If you see trends: adjust the LimitRange
 
-  (rather that adjusting every individual set of pod limits)
+  (rather than adjusting every individual set of pod limits)
 
 - Observe the resource usage of your namespaces
 
