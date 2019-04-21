@@ -116,7 +116,7 @@ _cmd_kubebins() {
         | sudo tar --strip-components=1 --wildcards -zx '*/etcd' '*/etcdctl'
     fi
     if ! [ -x hyperkube ]; then
-        curl -L https://dl.k8s.io/v1.14.0/kubernetes-server-linux-amd64.tar.gz \
+        curl -L https://dl.k8s.io/v1.14.1/kubernetes-server-linux-amd64.tar.gz \
         | sudo tar --strip-components=3 -zx kubernetes/server/bin/hyperkube
     fi
     if ! [ -x kubelet ]; then
@@ -139,6 +139,15 @@ _cmd_kube() {
     TAG=$1
     need_tag
 
+    KUBEVERSION=$2
+    if [ "$KUBEVERSION" ]; then
+        EXTRA_KUBELET="=$KUBEVERSION-00"
+        EXTRA_KUBEADM="--kubernetes-version=v$KUBEVERSION"
+    else
+        EXTRA_KUBELET=""
+        EXTRA_KUBEADM=""
+    fi
+
     # Install packages
     pssh --timeout 200 "
     curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg |
@@ -147,14 +156,14 @@ _cmd_kube() {
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
     pssh --timeout 200 "
     sudo apt-get update -q &&
-    sudo apt-get install -qy kubelet kubeadm kubectl &&
+    sudo apt-get install -qy kubelet$EXTRA_KUBELET kubeadm kubectl &&
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl"
 
     # Initialize kube master
     pssh --timeout 200 "
     if grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/admin.conf ]; then
         kubeadm token generate > /tmp/token &&
-	sudo kubeadm init --token \$(cat /tmp/token) --apiserver-cert-extra-sans \$(cat /tmp/ipv4)
+	sudo kubeadm init $EXTRA_KUBEADM --token \$(cat /tmp/token) --apiserver-cert-extra-sans \$(cat /tmp/ipv4)
     fi"
 
     # Put kubeconfig in ubuntu's and docker's accounts
