@@ -77,7 +77,7 @@
 
 ## What version are we running anyway?
 
-- When I say, "I'm Kubernetes 1.11", is that the version of:
+- When I say, "I'm running Kubernetes 1.11", is that the version of:
 
   - kubectl
 

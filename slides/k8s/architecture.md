@@ -46,7 +46,7 @@ class: pic
 
 - Our containerized workloads
 
-- A container engine like Docker, CRI-O, container...
+- A container engine like Docker, CRI-O, containerd...
 
   (in theory, the choice doesn't matter, as the engine is abstracted by Kubernetes)
 
@@ -72,7 +72,7 @@ class: pic
 
   - the nodes register and get their instructions through the API server
 
-  - the other control plane components also register to the API server
+  - the other control plane components also register with the API server
 
 - API server is the only component that reads/writes from/to etcd
 
