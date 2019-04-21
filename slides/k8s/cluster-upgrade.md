@@ -232,7 +232,7 @@
 
 ## Checking what we've done
 
-- The API server will be shortly unavailable while kubelet restarts it
+- The API server will be briefly unavailable while kubelet restarts it
 
 .exercise[
 
