@@ -54,10 +54,18 @@
 
 - We are using basic cloud VMs with Ubuntu LTS
 
-- The Kubernetes packages have been installed
+- Kubernetes [packages] or [binaries] have been installed
 
-  (from official repos)
+  (depending on what we want to accomplish in the lab)
 
 - We disabled IP address checks
 
-  (to allow pod IP addresses to be carried by the cloud network)
+  - we want to route pod traffic directly between nodes
+
+  - most cloud providers will treat pod IP addresses as invalid
+
+  - ... and filter them out; so we disable that filter
+
+[packages]: https://kubernetes.io/docs/setup/independent/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
+
+[binaries]: https://kubernetes.io/docs/setup/release/notes/#server-binaries

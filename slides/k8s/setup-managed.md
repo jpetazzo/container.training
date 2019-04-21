@@ -159,7 +159,7 @@ with a cloud provider
   az aks create --resource-group my-aks-group --name my-aks-cluster
   ```
 
-- Wait 15 minutes (sometimes longer)
+- Wait about 5-10 minutes
 
 - Add credentials to `kubeconfig`:
   ```bash
@@ -179,12 +179,12 @@ with a cloud provider
 
 - Delete the resource group:
   ```bash
-  az group delete --resource-group aks-test
+  az group delete --resource-group my-aks-group
   ```
 
-- Note: delete actions can take a long time too!
+- Note: delete actions can take a while too!
 
-  (10 minutes is typical)
+  (5-10 minutes as well)
 
 ---
 
