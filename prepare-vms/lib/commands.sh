@@ -220,6 +220,13 @@ EOF"
         helm completion bash | sudo tee /etc/bash_completion.d/helm
     fi"
 
+    # Install ship
+    pssh "
+    if [ ! -x /usr/local/bin/ship ]; then
+        curl -L https://github.com/replicatedhq/ship/releases/download/v0.40.0/ship_0.40.0_linux_amd64.tar.gz |
+             sudo tar -C /usr/local/bin -zx ship
+    fi"
+
     sep "Done"
 }
 
