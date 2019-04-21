@@ -442,3 +442,24 @@ class: extra-details
 - This file *does not* hold client keys or tokens
 
 - This is not sensitive information, but allows us to establish trust
+
+---
+
+class: extra-details
+
+## What about `kube-node-lease`?
+
+- Starting with Kubernetes 1.14, there is a `kube-node-lease` namespace
+
+  (or in Kubernetes 1.13 if the NodeLease feature gate is enabled)
+
+- That namespace contains one Lease object per node
+
+- *Node leases* are a new way to implement node heartbeats
+
+  (i.e. node regularly pinging the control plane to say "I'm alive!")
+
+- For more details, see [KEP-0009] or the [node controller documentation]
+
+[KEP-0009]: https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/0009-node-heartbeat.md
+[node controller documentation]: https://kubernetes.io/docs/concepts/architecture/nodes/#node-controller

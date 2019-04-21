@@ -26,13 +26,15 @@
 
 ## Pre-existing namespaces
 
-- If we deploy a cluster with `kubeadm`, we have three namespaces:
+- If we deploy a cluster with `kubeadm`, we have three or four namespaces:
 
   - `default` (for our applications)
 
   - `kube-system` (for the control plane)
 
-  - `kube-public` (contains one secret used for cluster discovery)
+  - `kube-public` (contains one ConfigMap for cluster discovery)
+
+  - `kube-node-lease` (in Kubernetes 1.14 and later; contains Lease objects)
 
 - If we deploy differently, we may have different namespaces
 
