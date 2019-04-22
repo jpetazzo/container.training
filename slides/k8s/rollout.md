@@ -62,29 +62,6 @@
 
 ---
 
-## Building a new version of the `worker` service
-
-.exercise[
-
-- Go to the `stack` directory:
-  ```bash
-  cd ~/container.training/stacks
-  ```
-
-- Edit `dockercoins/worker/worker.py`; update the first `sleep` line to sleep 1 second
-
-- Build a new tag and push it to the registry:
-  ```bash
-  #export REGISTRY=localhost:3xxxx
-  export TAG=v0.2
-  docker-compose -f dockercoins.yml build
-  docker-compose -f dockercoins.yml push
-  ```
-
-]
-
----
-
 ## Rolling out the new `worker` service
 
 .exercise[
@@ -103,6 +80,7 @@
 
 - Update `worker` either with `kubectl edit`, or by running:
   ```bash
+  export TAG=v0.2
   kubectl set image deploy worker worker=$REGISTRY/worker:$TAG
   ```
 
@@ -205,35 +183,6 @@ class: extra-details
 - Now we have 8 replicas up and running, and 5 being deployed
 
 - Our rollout is stuck at this point!
-
----
-
-## Checking the dashboard during the bad rollout
-
-If you haven't deployed the Kubernetes dashboard earlier, just skip this slide.
-
-.exercise[
-
-- Check which port the dashboard is on:
-  ```bash
-  kubectl -n kube-system get svc socat
-  ```
-
-]
-
-Note the `3xxxx` port.
-
-.exercise[
-
-- Connect to http://oneofournodes:3xxxx/
-
-<!-- ```open https://node1:3xxxx/``` -->
-
-]
-
---
-
-- We have failures in Deployments, Pods, and Replica Sets
 
 ---
 

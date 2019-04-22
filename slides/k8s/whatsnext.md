@@ -223,44 +223,6 @@ And *then* it is time to look at orchestration!
 
 ---
 
-## Cluster federation
-
---
-
-![Star Trek Federation](images/startrek-federation.jpg)
-
---
-
-Sorry Star Trek fans, this is not the federation you're looking for!
-
---
-
-(If I add "Your cluster is in another federation" I might get a 3rd fandom wincing!)
-
----
-
-## Cluster federation
-
-- Kubernetes master operation relies on etcd
-
-- etcd uses the [Raft](https://raft.github.io/) protocol
-
-- Raft recommends low latency between nodes
-
-- What if our cluster spreads to multiple regions?
-
---
-
-- Break it down in local clusters
-
-- Regroup them in a *cluster federation*
-
-- Synchronize resources across clusters
-
-- Discover resources across clusters
-
----
-
 ## Developer experience
 
 *We've put this last, but it's pretty important!*
