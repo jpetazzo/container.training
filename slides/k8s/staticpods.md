@@ -192,6 +192,8 @@ We should see YAML files corresponding to the pods of the control plane.
 
 ---
 
+class: static-pods-exercise
+
 ## Running a static pod
 
 - We are going to add a pod manifest to the directory, and kubelet will run it
@@ -213,6 +215,8 @@ We should see YAML files corresponding to the pods of the control plane.
 The output should include a pod named `hello-node1`.
 
 ---
+
+class: static-pods-exercise
 
 ## Remarks
 
