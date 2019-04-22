@@ -155,7 +155,7 @@
 
 ## Using our new namespace
 
-- Let's check that we are in our new namespace, then deploy the DockerCoins chart
+- Let's check that we are in our new namespace, then deploy a new copy of Dockercoins
 
 .exercise[
 
@@ -163,6 +163,16 @@
   ```bash
   kubectl get all
   ```
+
+]
+
+---
+
+## Deploy DockerCoins with Helm
+
+*Follow these instructions if you previously created a Helm Chart.*
+
+.exercise[
 
 - Deploy DockerCoins:
   ```bash
@@ -176,9 +186,29 @@ we created our Helm chart before.
 
 ---
 
+## Deploy DockerCoins with Kustomize
+
+*Follow these instructions if you previously created a Kustomize overlay.*
+
+.exercise[
+
+- Deploy DockerCoins:
+  ```bash
+  kubectl apply -f rendered.yaml
+  ```
+
+- Or, with Kubernetes 1.14, you can also do this:
+  ```bash
+  kubectl apply -k overlays/ship
+  ```
+
+]
+
+---
+
 ## Viewing the deployed app
 
-- Let's see if our Helm chart worked correctly!
+- Let's see if this worked correctly!
 
 .exercise[
 
