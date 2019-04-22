@@ -1,8 +1,8 @@
 # Namespaces
 
-- We cannot have two resources with the same name
+- We would like to deploy multiple copies of our demo app
 
-  (Or can we...?)
+- But we cannot have two resources with the same name ... Or can we ?
 
 --
 
@@ -155,7 +155,7 @@
 
 ## Using our new namespace
 
-- Let's check that we are in our new namespace, then deploy the DockerCoins chart
+- Let's check that we are in our new namespace
 
 .exercise[
 
@@ -164,21 +164,36 @@
   kubectl get all
   ```
 
-- Deploy DockerCoins:
-  ```bash
-  helm install dockercoins
-  ```
-
 ]
 
-In the last command line, `dockercoins` is just the local path where
-we created our Helm chart before.
+---
+
+## Deploying another copy of DockerCoins
+
+- We will use YAML definitions from a GitHub repository:
+
+  https://github.com/jpetazzo/kubercoins
+
+.exercise[
+
+- Clone kubercoins:
+  ```bash
+  https://github.com/jpetazzo/kubercoins
+  ```
+
+- Deploy it:
+  ```bash
+  kubectl apply -f kubercoins
+  ```
+]
+
+Note how `kubectl apply` can work on a whole directory!
 
 ---
 
 ## Viewing the deployed app
 
-- Let's see if our Helm chart worked correctly!
+- Let's see if this worked correctly!
 
 .exercise[
 
@@ -192,45 +207,6 @@ we created our Helm chart before.
 ]
 
 If the graph shows up but stays at zero, check the next slide!
-
----
-
-## Troubleshooting
-
-If did the exercices from the chapter about labels and selectors,
-the app that you just created may not work, because the `rng` service
-selector has `enabled=yes` but the pods created by the `rng` daemon set
-do not have that label.
-
-How can we troubleshoot that?
-
-- Query individual services manually
-
-  → the `rng` service will time out
-
-- Inspect the services with `kubectl describe service`
-  
-  → the `rng` service will have an empty list of backends
-
----
-
-## Fixing the broken service
-
-The easiest option is to add the `enabled=yes` label to the relevant pods.
-
-.exercise[
-
-- Add the `enabled` label to the pods of the `rng` daemon set:
-  ```bash
-  kubectl label pods -l app=rng enabled=yes
-  ```
-
-]
-
-The *best* option is to change either the service definition, or the
-daemon set definition, so that their respective selectors match correctly.
-
-*This is left as an exercise for the reader!*
 
 ---
 

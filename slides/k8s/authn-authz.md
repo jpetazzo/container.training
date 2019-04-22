@@ -1,4 +1,4 @@
-# Authentication and authorization
+# Authentication and authorization (bonus)
 
 *And first, a little refresher!*
 

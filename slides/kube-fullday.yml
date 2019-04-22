@@ -1,14 +1,15 @@
 title: |
-  Deploying and Scaling Microservices
-  with Kubernetes
+  Getting started with
+  Kubernetes and
+  container orchestration
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
-chat: "In person!"
+chat: "[Gitter](https://gitter.im/jpetazzo/workshop-20190428)"
+#chat: "In person!"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://gotochgo2019.container.training/
 
 exclude:
 - self-paced
@@ -28,8 +29,8 @@ chapters:
   - k8s/concepts-k8s.md
   - shared/declarative.md
   - k8s/declarative.md
-- - k8s/kubenet.md
-  - k8s/kubectlget.md
+  - k8s/kubenet.md
+- - k8s/kubectlget.md
   - k8s/setup-k8s.md
   - k8s/kubectlrun.md
   - k8s/kubectlexpose.md
@@ -40,22 +41,22 @@ chapters:
 #  - k8s/kubectlproxy.md
 #  - k8s/localkubeconfig.md
 #  - k8s/accessinternal.md
-  - k8s/dashboard.md
+#  - k8s/dashboard.md
 #  - k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
   - k8s/daemonset.md
 - - k8s/rollout.md
 #  - k8s/healthchecks.md
-  - k8s/logs-cli.md
-  - k8s/logs-centralized.md
+# - k8s/logs-cli.md
+# - k8s/logs-centralized.md
 #- - k8s/helm.md
-#  - k8s/namespaces.md
-#  - k8s/netpol.md
-#  - k8s/authn-authz.md
+  - k8s/namespaces.md
+  - k8s/netpol.md
+  - k8s/authn-authz.md
 #- - k8s/ingress.md
 #  - k8s/gitworkflows.md
-  - k8s/prometheus.md
+# - k8s/prometheus.md
 #- - k8s/volumes.md
 #  - k8s/build-with-docker.md
 #  - k8s/build-with-kaniko.md
