@@ -13,6 +13,7 @@
   speaker: jpetazzo
   title: Getting Started With Kubernetes and Container Orchestration
   attend: https://gotochgo.com/2019/workshops/148
+  slides: https://gotochgo2019.container.training/
 
 - date: 2019-04-26
   country: fr
@@ -30,6 +31,7 @@
   title: Déployer ses applications avec Kubernetes (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
+  slides: https://kube-2019-04.container.training
 
 - date: [2019-04-15, 2019-04-16]
   country: fr
@@ -39,7 +41,7 @@
   title: Bien démarrer avec les conteneurs (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/bien-demarrer-avec-les-conteneurs/
-  slides: http://intro-2019-04.container.training
+  slides: http://intro-2019-04.container.training/
 
 - date: 2019-03-08
   country: uk
