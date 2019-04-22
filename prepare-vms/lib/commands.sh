@@ -2,7 +2,7 @@ export AWS_DEFAULT_OUTPUT=text
 
 HELP=""
 _cmd() {
-    HELP="$(printf "%s\n%-12s %s\n" "$HELP" "$1" "$2")"
+    HELP="$(printf "%s\n%-20s %s\n" "$HELP" "$1" "$2")"
 }
 
 _cmd help "Show available commands"
@@ -101,6 +101,16 @@ _cmd_deploy() {
     info "$0 kube $TAG"
     info "$0 pull_images $TAG"
     info "$0 cards $TAG"
+}
+
+_cmd disabledocker "Stop Docker Engine and don't restart it automatically"
+_cmd_disabledocker() {
+    TAG=$1
+    need_tag
+
+    pssh "sudo systemctl disable docker.service"
+    pssh "sudo systemctl disable docker.socket"
+    pssh "sudo systemctl stop docker"
 }
 
 _cmd kubebins "Install Kubernetes and CNI binaries but don't start anything"
