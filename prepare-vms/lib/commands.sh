@@ -74,10 +74,10 @@ _cmd_deploy() {
     pssh -I sudo tee /usr/local/bin/docker-prompt <lib/docker-prompt
     pssh sudo chmod +x /usr/local/bin/docker-prompt
 
-    # If /home/docker/.ssh/id_rsa doesn't exist, copy it from node1
+    # If /home/docker/.ssh/id_rsa doesn't exist, copy it from the first node
     pssh "
     sudo -u docker [ -f /home/docker/.ssh/id_rsa ] ||
-    ssh -o StrictHostKeyChecking=no node1 sudo -u docker tar -C /home/docker -cvf- .ssh |
+    ssh -o StrictHostKeyChecking=no \$(cat /etc/name_of_first_node) sudo -u docker tar -C /home/docker -cvf- .ssh |
     sudo -u docker tar -C /home/docker -xf-"
 
     # if 'docker@' doesn't appear in /home/docker/.ssh/authorized_keys, copy it there
@@ -86,11 +86,11 @@ _cmd_deploy() {
     cat /home/docker/.ssh/id_rsa.pub |
     sudo -u docker tee -a /home/docker/.ssh/authorized_keys"
 
-    # On node1, create and deploy TLS certs using Docker Machine
+    # On the first node, create and deploy TLS certs using Docker Machine
     # (Currently disabled.)
     true || pssh "
-    if grep -q node1 /tmp/node; then
-        grep ' node' /etc/hosts | 
+    if i_am_first_node; then
+        grep '[0-9]\$' /etc/hosts |
         xargs -n2 sudo -H -u docker \
         docker-machine create -d generic --generic-ssh-user docker --generic-ip-address
     fi"
@@ -139,6 +139,7 @@ _cmd_kube() {
     TAG=$1
     need_tag
 
+    # Optional version, e.g. 1.13.5
     KUBEVERSION=$2
     if [ "$KUBEVERSION" ]; then
         EXTRA_KUBELET="=$KUBEVERSION-00"
@@ -161,14 +162,14 @@ _cmd_kube() {
 
     # Initialize kube master
     pssh --timeout 200 "
-    if grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/admin.conf ]; then
+    if i_am_first_node && [ ! -f /etc/kubernetes/admin.conf ]; then
         kubeadm token generate > /tmp/token &&
 	sudo kubeadm init $EXTRA_KUBEADM --token \$(cat /tmp/token) --apiserver-cert-extra-sans \$(cat /tmp/ipv4)
     fi"
 
     # Put kubeconfig in ubuntu's and docker's accounts
     pssh "
-    if grep -q node1 /tmp/node; then
+    if i_am_first_node; then
         sudo mkdir -p \$HOME/.kube /home/docker/.kube &&
         sudo cp /etc/kubernetes/admin.conf \$HOME/.kube/config &&
         sudo cp /etc/kubernetes/admin.conf /home/docker/.kube/config &&
@@ -178,21 +179,22 @@ _cmd_kube() {
 
     # Install weave as the pod network
     pssh "
-    if grep -q node1 /tmp/node; then
+    if i_am_first_node; then
         kubever=\$(kubectl version | base64 | tr -d '\n') &&
         kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=\$kubever
     fi"
 
     # Join the other nodes to the cluster
     pssh --timeout 200 "
-    if ! grep -q node1 /tmp/node && [ ! -f /etc/kubernetes/kubelet.conf ]; then
-        TOKEN=\$(ssh -o StrictHostKeyChecking=no node1 cat /tmp/token) &&
-        sudo kubeadm join --discovery-token-unsafe-skip-ca-verification --token \$TOKEN node1:6443
+    if ! i_am_first_node && [ ! -f /etc/kubernetes/kubelet.conf ]; then
+        FIRSTNODE=\$(cat /etc/name_of_first_node) &&
+        TOKEN=\$(ssh -o StrictHostKeyChecking=no \$FIRSTNODE cat /tmp/token) &&
+        sudo kubeadm join --discovery-token-unsafe-skip-ca-verification --token \$TOKEN \$FIRSTNODE:6443
     fi"
 
     # Install metrics server
     pssh "
-    if grep -q node1 /tmp/node; then
+    if i_am_first_node; then
 	kubectl apply -f https://raw.githubusercontent.com/jpetazzo/container.training/master/k8s/metrics-server.yaml
     fi"
 
@@ -256,10 +258,9 @@ _cmd_kubetest() {
     # Feel free to make that better ♥
     pssh "
     set -e
-    [ -f /tmp/node ]
-    if grep -q node1 /tmp/node; then
+    if i_am_first_node; then
       which kubectl
-      for NODE in \$(awk /\ node/\ {print\ \\\$2} /etc/hosts); do
+      for NODE in \$(awk /[0-9]\$/\ {print\ \\\$2} /etc/hosts); do
         echo \$NODE ; kubectl get nodes | grep -w \$NODE | grep -w Ready
       done
     fi"
@@ -383,7 +384,7 @@ _cmd_start() {
         *) die "Unrecognized parameter: $1."
         esac
     done
-    
+
     if [ -z "$INFRA" ]; then
         die "Please add --infra flag to specify which infrastructure file to use."
     fi
@@ -394,8 +395,8 @@ _cmd_start() {
         COUNT=$(awk '/^clustersize:/ {print $2}' $SETTINGS)
         warning "No --count option was specified. Using value from settings file ($COUNT)."
     fi
-    
-    # Check that the specified settings and infrastructure are valid.        
+
+    # Check that the specified settings and infrastructure are valid.
     need_settings $SETTINGS
     need_infra $INFRA
 
@@ -467,7 +468,7 @@ _cmd_helmprom() {
     TAG=$1
     need_tag
     pssh "
-    if grep -q node1 /tmp/node; then
+    if i_am_first_node; then
         kubectl -n kube-system get serviceaccount helm ||
             kubectl -n kube-system create serviceaccount helm
         helm init --service-account helm
@@ -557,8 +558,8 @@ test_vm() {
     for cmd in "hostname" \
         "whoami" \
         "hostname -i" \
-        "cat /tmp/node" \
-        "cat /tmp/ipv4" \
+        "ls -l /usr/local/bin/i_am_first_node" \
+        "grep . /etc/name_of_first_node /etc/ipv4_of_first_node" \
         "cat /etc/hosts" \
         "hostnamectl status" \
         "docker version | grep Version -B1" \

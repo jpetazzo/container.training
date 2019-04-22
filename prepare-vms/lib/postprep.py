@@ -12,6 +12,7 @@ config = yaml.load(open("/tmp/settings.yaml"))
 COMPOSE_VERSION = config["compose_version"]
 MACHINE_VERSION = config["machine_version"]
 CLUSTER_SIZE = config["clustersize"]
+CLUSTER_PREFIX = config["clusterprefix"]
 ENGINE_VERSION = config["engine_version"]
 DOCKER_USER_PASSWORD = config["docker_user_password"]
 
@@ -121,7 +122,7 @@ addresses = list(l.strip() for l in sys.stdin)
 assert ipv4 in addresses
 
 def makenames(addrs):
-    return [ "node%s"%(i+1) for i in range(len(addrs)) ]
+    return [ "%s%s"%(CLUSTER_PREFIX, i+1) for i in range(len(addrs)) ]
 
 while addresses:
     cluster = addresses[:CLUSTER_SIZE]
@@ -135,15 +136,21 @@ while addresses:
     print(cluster)
 
     mynode = cluster.index(ipv4) + 1
-    system("echo node{} | sudo -u docker tee /tmp/node".format(mynode))
-    system("echo node{} | sudo tee /etc/hostname".format(mynode))
-    system("sudo hostname node{}".format(mynode))
+    system("echo {}{} | sudo tee /etc/hostname".format(CLUSTER_PREFIX, mynode))
+    system("sudo hostname {}{}".format(CLUSTER_PREFIX, mynode))
     system("sudo -u docker mkdir -p /home/docker/.ssh")
     system("sudo -u docker touch /home/docker/.ssh/authorized_keys")
 
+    # Create a convenience file to easily check if we're the first node
     if ipv4 == cluster[0]:
-        # If I'm node1 and don't have a private key, generate one (with empty passphrase)
+        system("sudo ln -sf /bin/true /usr/local/bin/i_am_first_node")
+        # On the first node, if we don't have a private key, generate one (with empty passphrase)
         system("sudo -u docker [ -f /home/docker/.ssh/id_rsa ] || sudo -u docker ssh-keygen -t rsa -f /home/docker/.ssh/id_rsa -P ''")
+    else:
+        system("sudo ln -sf /bin/false /usr/local/bin/i_am_first_node")
+    # Record the IPV4 and name of the first node
+    system("echo {} | sudo tee /etc/ipv4_of_first_node".format(cluster[0]))
+    system("echo {} | sudo tee /etc/name_of_first_node".format(names[0]))
 
 FINISH = time.time()
 duration = "Initial deployment took {}s".format(str(FINISH - START)[:5])
