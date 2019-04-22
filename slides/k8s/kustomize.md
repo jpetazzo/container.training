@@ -76,7 +76,7 @@
 
 - Later, it can watch that repository and/or update from it
 
-- We will use the [jpetazzo/kubercoins](https://github.com/jpetazzo/kubeercoins) repository
+- We will use the [jpetazzo/kubercoins](https://github.com/jpetazzo/kubercoins) repository
 
   (it contains all the DockerCoins resources as YAML files)
 
