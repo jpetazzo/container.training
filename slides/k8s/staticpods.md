@@ -1,4 +1,4 @@
-# Static pods
+# Static pods (extra)
 
 - Hosting the Kubernetes control plane on Kubernetes has advantages:
 

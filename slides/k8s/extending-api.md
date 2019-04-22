@@ -1,4 +1,4 @@
-# Extending the Kubernetes API
+# Extending the Kubernetes API (extra)
 
 There are multiple ways to extend the Kubernetes API.
 
