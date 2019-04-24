@@ -3,12 +3,12 @@ title: |
   for Admins and Ops
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
-chat: "In person!"
+chat: "[Gitter](https://gitter.im/enix/formation-kubernetes-ops-20190426)"
+#chat: "In person!"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://kadm-2019-04.container.training/
 
 exclude:
 - self-paced
