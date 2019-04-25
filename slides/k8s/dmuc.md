@@ -33,7 +33,7 @@
 
 ## Our environment
 
-- We will use the machine indicated as `dmuc`
+- We will use the machine indicated as `dmuc1`
 
   (this stands for "Dessine Moi Un Cluster" or "Draw Me A Sheep",
   <br/>in homage to Saint-Exupery's "The Little Prince")
@@ -54,7 +54,7 @@
 
 .exercise[
 
-- Log into the `dmuc` machine
+- Log into the `dmuc1` machine
 
 - Get root:
   ```bash
@@ -106,7 +106,7 @@
 - Try to start the API server:
   ```bash
   kube-apiserver
-  # It will fail with --etcd-servers must be specified
+  # It will fail with "--etcd-servers must be specified"
   ```
 
 ]
@@ -559,7 +559,7 @@ Success!
 
 Our node should show up.
 
-Its name will be its hostname (it should be `dmuc`).
+Its name will be its hostname (it should be `dmuc1`).
 
 ---
 

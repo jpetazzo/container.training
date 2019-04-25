@@ -165,6 +165,25 @@ What does that mean?
 
 ---
 
+## Let's experiment a bit!
+
+- For the exercises in this section, connect to the first node of the `test` cluster
+
+.exercise[
+
+- SSH to the first node of the test cluster
+
+- Check that the cluster is operational:
+  ```bash
+  kubectl get nodes
+  ```
+
+- All nodes should be `Ready`
+
+]
+
+---
+
 ## Create
 
 - Let's create a simple object

@@ -18,6 +18,8 @@
 
 .exercise[
 
+- Log into node `test1`
+
 - Check the version of kubectl and of the API server:
   ```bash
   kubectl version

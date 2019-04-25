@@ -650,7 +650,8 @@ For critical services, we might want to precisely control the update process.
 
 - We can see informative messages in the output of kube-router:
   ```
-  time="2019-04-07T15:53:56Z" level=info msg="Peer Up" Key=X.X.X.X State=BGP_FSM_OPENCONFIRM Topic=Peer
+  time="2019-04-07T15:53:56Z" level=info msg="Peer Up"
+  Key=X.X.X.X State=BGP_FSM_OPENCONFIRM Topic=Peer
   ```
 
 - We should see the routes of the other clusters show up
