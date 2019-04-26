@@ -535,7 +535,7 @@ clusters:
 
 - Start kubelet with that `kubeconfig.kubelet` file:
   ```bash
-  kubelet --kubeconfig kubelet.kubeconfig
+  kubelet --kubeconfig kubeconfig.kubelet
   ```
 
 ]
