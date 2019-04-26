@@ -307,7 +307,7 @@ class: extra-details
 
 - In the other, update our namespace:
   ```bash
-  kubectl label namespaces color=purple
+  kubectl label namespaces hello color=purple
   ```
 
 ]
