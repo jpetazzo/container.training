@@ -214,7 +214,7 @@ This is equivalent to `kubectl create namespace hello`.
 
 - Read back our object:
   ```bash
-  kuectl get namespace hello -o yaml
+  kubectl get namespace hello -o yaml
   ```
 
 ]
