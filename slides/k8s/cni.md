@@ -321,7 +321,7 @@ Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
 - Copy `kubeconfig` to the other nodes:
   ```bash
     for N in 2 3; do
-    	scp ~/kubeconfig kubenet$N:
+    	scp ~/kubeconfig kuberouter$N:
     done
   ```
 
@@ -346,8 +346,8 @@ Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
 
 - Open more terminals and join the other nodes:
   ```bash
-  ssh kubenet2 sudo kubelet --kubeconfig ~/kubeconfig --network-plugin=cni
-  ssh kubenet3 sudo kubelet --kubeconfig ~/kubeconfig --network-plugin=cni
+  ssh kuberouter2 sudo kubelet --kubeconfig ~/kubeconfig --network-plugin=cni
+  ssh kuberouter3 sudo kubelet --kubeconfig ~/kubeconfig --network-plugin=cni
   ```
 
 ]
