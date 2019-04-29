@@ -136,6 +136,8 @@ class: pic
 
 ---
 
+class: extra-details
+
 ## Running the control plane on special nodes
 
 - It is common to reserve a dedicated node for the control plane
@@ -158,6 +160,8 @@ class: pic
 
 ---
 
+class: extra-details
+
 ## Running the control plane outside containers
 
 - The services of the control plane can run in or out of containers
@@ -177,25 +181,81 @@ class: pic
 
 ---
 
-## Kubernetes resources
+class: extra-details
 
-- The Kubernetes API defines a lot of objects called *resources*
+## Do we need to run Docker at all?
 
-- These resources are organized by type, or `Kind` (in the API)
+No!
+
+--
+
+- By default, Kubernetes uses the Docker Engine to run containers
+
+- We could also use `rkt` ("Rocket") from CoreOS
+
+- Or leverage other pluggable runtimes through the *Container Runtime Interface*
+
+  (like CRI-O, or containerd)
+
+---
+
+class: extra-details
+
+## Do we need to run Docker at all?
+
+Yes!
+
+--
+
+- In this workshop, we run our app on a single node first
+
+- We will need to build images and ship them around
+
+- We can do these things without Docker
+  <br/>
+  (and get diagnosed with NIH¹ syndrome)
+
+- Docker is still the most stable container engine today
+  <br/>
+  (but other options are maturing very quickly)
+
+.footnote[¹[Not Invented Here](https://en.wikipedia.org/wiki/Not_invented_here)]
+
+---
+
+class: extra-details
+
+## Do we need to run Docker at all?
+
+- On our development environments, CI pipelines ... :
+
+  *Yes, almost certainly*
+
+- On our production servers:
+
+  *Yes (today)*
+
+  *Probably not (in the future)*
+
+.footnote[More information about CRI [on the Kubernetes blog](https://kubernetes.io/blog/2016/12/container-runtime-interface-cri-in-kubernetes)]
+
+---
+
+## Interacting with Kubernetes
+
+- We will interact with our Kubernetes cluster through the Kubernetes API
+
+- The Kubernetes API is (mostly) RESTful
+
+- It allows us to create, read, update, delete *resources*
 
 - A few common resource types are:
 
   - node (a machine — physical or virtual — in our cluster)
+
   - pod (group of containers running together on a node)
+
   - service (stable network endpoint to connect to one or multiple containers)
-  - namespace (more-or-less isolated group of things)
-  - secret (bundle of sensitive data to be passed to a container)
- 
-  And much more!
-
-- We can see the full list by running `kubectl api-resources`
-
-  (In Kubernetes 1.10 and prior, the command to list API resources was `kubectl get`)
 
 ---
 
