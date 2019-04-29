@@ -80,6 +80,7 @@
 
 - Update `worker` either with `kubectl edit`, or by running:
   ```bash
+  set -u
   export TAG=v0.2
   kubectl set image deploy worker worker=$REGISTRY/worker:$TAG
   ```
@@ -122,6 +123,7 @@ That rollout should be pretty quick. What shows in the web UI?
 
 - Update `worker` by specifying a non-existent image:
   ```bash
+  set -u
   export TAG=v0.3
   kubectl set image deploy worker worker=$REGISTRY/worker:$TAG
   ```
