@@ -11,6 +11,7 @@
 
 - Deploy everything else:
   ```bash
+    set -u
     for SERVICE in hasher rng webui worker; do
       kubectl create deployment $SERVICE --image=$REGISTRY/$SERVICE:$TAG
     done
