@@ -130,6 +130,12 @@ class: pic
 
 ---
 
+class: pic
+
+![One of the best Kubernetes architecture diagrams available](images/k8s-arch4-thanks-luxas.png)
+
+---
+
 ## Running the control plane on special nodes
 
 - It is common to reserve a dedicated node for the control plane
@@ -253,22 +259,16 @@ class: pic
 
 ---
 
-class: pic
-
-![One of the best Kubernetes architecture diagrams available](images/k8s-arch4-thanks-luxas.png)
-
----
-
 ## Credits
 
-- The first diagram is courtesy of Weave Works
+- The first diagram is courtesy of Lucas Käldström, in [this presentation](https://speakerdeck.com/luxas/kubeadm-cluster-creation-internals-from-self-hosting-to-upgradability-and-ha)
+
+  - it's one of the best Kubernetes architecture diagrams available!
+
+- The second diagram is courtesy of Weave Works
 
   - a *pod* can have multiple containers working together
 
   - IP addresses are associated with *pods*, not with individual containers
-
-- The second diagram is courtesy of Lucas Käldström, in [this presentation](https://speakerdeck.com/luxas/kubeadm-cluster-creation-internals-from-self-hosting-to-upgradability-and-ha)
-
-  - it's one of the best Kubernetes architecture diagrams available!
 
 Both diagrams used with permission.
