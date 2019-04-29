@@ -79,6 +79,8 @@
 
 ---
 
+class: extra-details
+
 ## Exploring types and definitions
 
 - We can list all available resource types by running `kubectl api-resources`
@@ -101,6 +103,8 @@
   ```
 
 ---
+
+class: extra-details
 
 ## Introspection vs. documentation
 
