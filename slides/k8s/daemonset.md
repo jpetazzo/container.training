@@ -73,17 +73,12 @@
 
 - Dump the `rng` resource in YAML:
   ```bash
-  kubectl get deploy/rng -o yaml --export >rng.yml 
+  kubectl get deploy/rng -o yaml >rng.yml
   ```
 
 - Edit `rng.yml`
 
 ]
-
-Note: `--export` will remove "cluster-specific" information, i.e.:
-- namespace (so that the resource is not tied to a specific namespace)
-- status and creation timestamp (useless when creating a new resource)
-- resourceVersion and uid (these would cause... *interesting* problems)
 
 ---
 
