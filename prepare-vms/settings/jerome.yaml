@@ -8,7 +8,7 @@ clusterprefix: node
 cards_template: jerome.html
 
 # Use "Letter" in the US, and "A4" everywhere else
-paper_size: A4
+paper_size: Letter
 
 # Feel free to reduce this if your printer can handle it
 paper_margin: 0.2in

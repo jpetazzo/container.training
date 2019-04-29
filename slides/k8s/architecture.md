@@ -165,6 +165,25 @@ What does that mean?
 
 ---
 
+## Let's experiment a bit!
+
+- For the exercises in this section, connect to the first node of the `test` cluster
+
+.exercise[
+
+- SSH to the first node of the test cluster
+
+- Check that the cluster is operational:
+  ```bash
+  kubectl get nodes
+  ```
+
+- All nodes should be `Ready`
+
+]
+
+---
+
 ## Create
 
 - Let's create a simple object
@@ -195,7 +214,7 @@ This is equivalent to `kubectl create namespace hello`.
 
 - Read back our object:
   ```bash
-  kuectl get namespace hello -o yaml
+  kubectl get namespace hello -o yaml
   ```
 
 ]
@@ -288,7 +307,7 @@ class: extra-details
 
 - In the other, update our namespace:
   ```bash
-  kubectl label namespaces color=purple
+  kubectl label namespaces hello color=purple
   ```
 
 ]
