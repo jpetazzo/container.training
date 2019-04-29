@@ -320,6 +320,8 @@ We could! But the *deployment* would notice it right away, and scale back to the
 
 ---
 
+class: extra-details
+
 ### Streaming logs of many pods
 
 - Let's see what happens if we try to stream the logs for more than 5 pods
@@ -346,6 +348,8 @@ use --max-log-requests to increase the limit
 ```
 
 ---
+
+class: extra-details
 
 ## Why can't we stream the logs of many pods?
 
