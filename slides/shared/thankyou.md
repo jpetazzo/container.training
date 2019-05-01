@@ -14,6 +14,10 @@ That's all, folks! <br/> Questions?
 
 ## Final words
 
+- Please **rate this workshop**:
+
+  https://www.surveymonkey.com/r/SDFL3PS
+
 - You can find more content on http://container.training/
 
   (More slides, videos, dates of upcoming workshops and tutorials...)
