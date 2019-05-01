@@ -5,6 +5,7 @@
   speaker: jpetazzo, s0ulshake
   title: Getting started with Kubernetes and container orchestration
   attend: https://us.pycon.org/2019/schedule/presentation/74/
+  slides: https://pycon2019.container.training/
 
 - date: 2019-04-28
   country: us
@@ -22,6 +23,7 @@
   speaker: jpetazzo
   title: Opérer et administrer Kubernetes
   attend: https://enix.io/fr/services/formation/operer-et-administrer-kubernetes/
+  slides: https://kadm-2019-04.container.training/
 
 - date: [2019-04-23, 2019-04-24]
   country: fr
@@ -31,7 +33,7 @@
   title: Déployer ses applications avec Kubernetes (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
-  slides: https://kube-2019-04.container.training
+  slides: https://kube-2019-04.container.training/
 
 - date: [2019-04-15, 2019-04-16]
   country: fr
