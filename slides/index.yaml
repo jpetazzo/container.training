@@ -1,3 +1,12 @@
+- date: 2019-11-13
+  country: fr
+  city: Marseille
+  event: DevopsDDay
+  speaker: jpetazzo
+  title: Déployer ses applications avec Kubernetes (in French)
+  lang: fr
+  attend: http://2019.devops-dday.com/Workshop.html
+
 - date: [2019-09-24, 2019-09-25]
   country: fr
   city: Paris
