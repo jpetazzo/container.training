@@ -1,3 +1,28 @@
+- date: [2019-09-24, 2019-09-25]
+  country: fr
+  city: Paris
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Déployer ses applications avec Kubernetes (in French)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
+
+- date: 2019-06-17
+  country: ca
+  city: Montréal
+  event: Zenika
+  speaker: jpetazzo
+  title: Getting Started With Kubernetes
+  attend: https://www.eventbrite.com/e/getting-started-with-kubernetes-1-day-en-tickets-61658444066
+
+- date: [2019-06-10, 2019-06-11]
+  city: San Jose, CA
+  country: us
+  event: Velocity
+  title: Kubernetes for administrators and operators
+  speaker: jpetazzo
+  attend: https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/75313
+
 - date: 2019-05-01
   country: us
   city: Cleveland, OH
