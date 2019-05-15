@@ -51,6 +51,8 @@ chapters:
   - k8s/logs-cli.md
   - k8s/logs-centralized.md
 #- - k8s/helm.md
+#  - k8s/create-chart.md
+#  - k8s/kustomize.md
 #  - k8s/namespaces.md
 #  - k8s/netpol.md
 #  - k8s/authn-authz.md
