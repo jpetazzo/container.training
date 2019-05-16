@@ -87,7 +87,11 @@ There are many possibilities!
 
   (and take action when they are created/updated)
 
-*Example: [YAML to install the gitkube CRD](https://storage.googleapis.com/gitkube/gitkube-setup-stable.yaml)*
+*
+Examples:
+[YAML to install the gitkube CRD](https://storage.googleapis.com/gitkube/gitkube-setup-stable.yaml),
+[YAML to install a redis operator CRD](https://github.com/amaizfinance/redis-operator/blob/master/deploy/crds/k8s_v1alpha1_redis_crd.yaml)
+*
 
 ---
 
