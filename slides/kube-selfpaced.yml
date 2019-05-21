@@ -48,6 +48,7 @@ chapters:
   - k8s/daemonset.md
 - - k8s/rollout.md
   - k8s/healthchecks.md
+  - k8s/healthchecks-more.md
   - k8s/logs-cli.md
   - k8s/logs-centralized.md
 - - k8s/helm.md
