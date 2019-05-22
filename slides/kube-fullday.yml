@@ -56,6 +56,7 @@ chapters:
 #  - k8s/namespaces.md
 #  - k8s/netpol.md
 #  - k8s/authn-authz.md
+#  - k8s/csr-api.md
 #- - k8s/ingress.md
 #  - k8s/gitworkflows.md
   - k8s/prometheus.md
