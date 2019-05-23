@@ -6,8 +6,6 @@ In this chapter, we will:
 
 * Present (from a high-level perspective) some orchestrators.
 
-* Show one orchestrator (Kubernetes) in action.
-
 ---
 
 class: pic
