@@ -1,15 +1,14 @@
 {# Feel free to customize or override anything in there! #}
-{%- set url = "http://qconuk2019.container.training/" -%}
+{%- set url = "http://wwrk-2019-05.container.training/" -%}
 {%- set pagesize = 9 -%}
+{%- set workshop_name = "training session" -%}
 {%- if clustersize == 1 -%}
-    {%- set workshop_name = "Docker workshop" -%}
-    {%- set cluster_or_machine = "machine" -%}
+    {%- set cluster_or_machine = "Docker machine" -%}
     {%- set this_or_each = "this" -%}
     {%- set machine_is_or_machines_are = "machine is" -%}
     {%- set image_src = "https://s3-us-west-2.amazonaws.com/www.breadware.com/integrations/docker.png" -%}
 {%- else -%}
-    {%- set workshop_name = "Kubernetes workshop" -%}
-    {%- set cluster_or_machine = "cluster" -%}
+    {%- set cluster_or_machine = "Kubernetes cluster" -%}
     {%- set this_or_each = "each" -%}
     {%- set machine_is_or_machines_are = "machines are" -%}
     {%- set image_src_swarm = "https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png" -%}
@@ -109,26 +108,6 @@ img {
             <center>{{ url }}</center>
         </p>
     </div>
-    {% if loop.index%pagesize==0 or loop.last %}
-        <span class="pagebreak"></span>
-	{% for x in range(pagesize) %}
-        <div class="back">
-        <br/>
-		<p>You got this at the workshop
-		"Getting Started With Kubernetes and Container Orchestration"
-		during QCON London (March 2019).</p>
-		<p>If you liked that workshop,
-		I can train your team or organization
-		on Docker, container, and Kubernetes,
-		with curriculums of 1 to 5 days.
-		</p>
-		<p>Interested? Contact me at:</p>
-		<p>jerome.petazzoni@gmail.com</p>
-		<p>Thank you!</p>
-        </div>
-	{% endfor %}
-	<span class="pagebreak"></span>
-    {% endif %}
 {% endfor %}
 </body>
 </html>
