@@ -92,7 +92,7 @@ class: extra-details
 
 - When a pod is created, Kubernetes delegates the network setup to these plugins
 
-  (in can be a single plugin, or a combination of plugins, each doing one task)
+  (it can be a single plugin, or a combination of plugins, each doing one task)
 
 - Typically, CNI plugins will:
 
