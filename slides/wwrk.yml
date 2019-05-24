@@ -43,7 +43,7 @@ chapters:
   - containers/Application_Configuration.md
   - containers/Orchestration_Overview.md
   - |
-    # Running complex applications
+    # From Docker to Kubernetes
 
     - We are now going to run a demo app made of multiple containers
 
@@ -54,7 +54,7 @@ chapters:
     - We will identify performance bottlenecks and scale out that app
 
       (and learn Kubernetes in the process)
-  
+
     ---
 
     ## Our new environment
@@ -63,15 +63,7 @@ chapters:
 
     - This environment is a 4-node Kubernetes cluster
 
-    - We will interact almost only with `node1`
-
-      (but we have SSH access to the other nodes for troubleshooting)
-
-    ---
-
-    ## Demos, labs, exercises
-    
-    - From now on, demos and labs are identified with these gray boxes
+    - Also, from now on, demos and labs are identified with these gray boxes
 
     .exercise[
     - You should run this command:
@@ -80,7 +72,8 @@ chapters:
       ```
 
     ]
-    
+
+  - shared/connecting.md
   - k8s/versions-k8s.md
   - shared/sampleapp.md
   - shared/composedown.md
@@ -89,6 +82,7 @@ chapters:
   - k8s/declarative.md
   - k8s/kubenet.md
   - k8s/kubectlget.md
+  - wek8s/visibility.md
   - k8s/kubectlrun.md
   - k8s/deploymentslideshow.md
   - k8s/kubectlexpose.md
