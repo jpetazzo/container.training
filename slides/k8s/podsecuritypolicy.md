@@ -4,11 +4,11 @@
 
   (including taking over the entire cluster)
 
-- We are going to show an example of malicious pod
+- We are going to show an example of a malicious pod
 
 - Then we will explain how to avoid this with PodSecurityPolicies
 
-- We will illustrate by creating a non-privileged user limited to a namespace
+- We will illustrate this by creating a non-privileged user limited to a namespace
 
 ---
 
@@ -213,7 +213,7 @@ We should see an empty list.
 
 ## One example of malicious pods
 
-- We will now show in action an escalation technique
+- We will now show an escalation technique in action
 
 - We will deploy a DaemonSet that adds our SSH key to the root account
 
@@ -343,7 +343,7 @@ We should see an empty list.
 
 - To enable Pod Security Policies, we need to enable their *admission plugin*
 
-- This is done by adding a flag to API server
+- This is done by adding a flag to the API server
 
 - On clusters deployed with `kubeadm`, the control plane runs in static pods
 
