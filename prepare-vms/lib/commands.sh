@@ -248,6 +248,14 @@ EOF"
              sudo tar -C /usr/local/bin -zx ship
     fi"
 
+    # Install the AWS IAM authenticator
+    pssh "
+    if [ ! -x /usr/local/bin/aws-iam-authenticator ]; then
+	##VERSION##
+        sudo curl -o /usr/local/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator
+	sudo chmod +x /usr/local/bin/aws-iam-authenticator
+    fi"
+
     sep "Done"
 }
 
