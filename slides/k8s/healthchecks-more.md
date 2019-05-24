@@ -24,7 +24,9 @@
 
 - Example: a web server requiring a database connection to operate
 
-  (make sure that the healthcheck can report "OK" even if the database is down)
+  (make sure that the healthcheck can report "OK" even if the database is down;
+  <br/>
+  because it won't help us to restart the web server if the issue is with the DB!)
 
 - Example: a microservice calling other microservices
 
