@@ -105,7 +105,6 @@ chapters:
   - k8s/accessinternal.md
   - k8s/dashboard.md
   - k8s/healthchecks.md
-  - k8s/kustomize.md
   - k8s/helm.md
   - k8s/create-chart.md
   - k8s/namespaces.md
