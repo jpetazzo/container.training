@@ -3,7 +3,7 @@ title: |
   Docker,
   Kubernetes
 
-chat: "[Slack](https://FIXME.slack.com/messages/FIXME)"
+chat: "Slack (channel [#k8s-training-may2019](https://wework.slack.com/messages/GJN9CBZLH/))"
 
 gitrepo: github.com/jpetazzo/container.training
 
@@ -80,7 +80,8 @@ chapters:
       ```
 
     ]
-
+    
+  - k8s/versions-k8s.md
   - shared/sampleapp.md
   - shared/composedown.md
   - k8s/concepts-k8s.md
