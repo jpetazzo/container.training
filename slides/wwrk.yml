@@ -94,6 +94,7 @@ chapters:
   - k8s/daemonset.md
   - k8s/rollout.md
   - k8s/setup-k8s.md
+  - wek8s/connecting.md
   - k8s/logs-cli.md
   - k8s/prometheus.md
   - k8s/localkubeconfig.md
