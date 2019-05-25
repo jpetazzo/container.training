@@ -22,9 +22,13 @@
 
 - A given operator can define one or multiple CRDs
 
-- The controller code (control loop) can run within the cluster or elsewhere
+- The controller code (control loop) typically runs within the cluster
 
   (running as a Deployment with 1 replica is a common scenario)
+
+- But it could also run elsewhere
+
+  (nothing mandates that the code run on the cluster, as long as it has API access)
 
 ---
 
@@ -76,7 +80,7 @@
 
   (Example: [Istio operator](https://operatorhub.io/operator/beta/istio-operator.0.1.6))
 
-- Deploying and managing our applications lifecycles
+- Deploying and managing our applications' lifecycles
 
   (more on that later)
 
@@ -90,7 +94,7 @@
 
 - The operator also runs a *controller* that will watch its resources
 
-- Each time we create/updated/delete a resource, the controller is notified
+- Each time we create/update/delete a resource, the controller is notified
 
   (we could write our own cheap controller with `kubectl get --watch`)
 
