@@ -25,6 +25,33 @@ name: connecting-to-wek8s
 
 ---
 
+## Pulling okta-aws and wek8s-tools images
+
+- If we are already logged into quay.io, we can skip that step
+  <br/>
+  (the images will be pulled automatically when we need them)
+
+- ... But this makes it easier to troubleshoot registry issues
+  <br/>
+  (if we get an error *now*, we know where it's coming from)
+
+.exercise[
+
+- Log into quay.io:
+  ```bash
+  docker login quay.io
+  ```
+
+- Pull both images:
+  ```bash
+  docker pull quay.io/wework/okta-aws
+  docker pull quay.io/wework/wek8s-tools:0.3.2
+  ```
+
+]
+
+---
+
 ## Obtaining AWS credentials
 
 - We will use okta-aws to obtain our AWS credentials

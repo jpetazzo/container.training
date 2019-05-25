@@ -96,18 +96,17 @@ chapters:
   - k8s/setup-k8s.md
   - wek8s/connecting.md
   - k8s/logs-cli.md
-  - k8s/prometheus.md
-  - k8s/localkubeconfig.md
-  - k8s/accessinternal.md
   - k8s/dashboard.md
   - wek8s/security.md
-  - k8s/healthchecks.md
-  - k8s/helm.md
-  - k8s/create-chart.md
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
+  - wek8s/helm.md
   - k8s/namespaces.md
   - k8s/ingress.md
+  - k8s/prometheus.md
   - k8s/volumes.md
   - k8s/configuration.md
+  - k8s/healthchecks.md
 - - k8s/whatsnext.md
   - k8s/links.md
   - shared/thankyou.md
