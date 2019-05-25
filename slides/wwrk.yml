@@ -100,6 +100,7 @@ chapters:
   - k8s/localkubeconfig.md
   - k8s/accessinternal.md
   - k8s/dashboard.md
+  - wek8s/security.md
   - k8s/healthchecks.md
   - k8s/helm.md
   - k8s/create-chart.md
