@@ -170,7 +170,7 @@
 
 ## Deploy DockerCoins with Helm
 
-*Follow these instructions if you previously created a Helm Chart.*
+*Follow these instructions if you previously created a Helm chart.*
 
 .exercise[
 

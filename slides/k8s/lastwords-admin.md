@@ -120,7 +120,7 @@
 
 - Team "build" ships ready-to-run manifests
 
-  (YAML, Helm Charts, Kustomize ...)
+  (YAML, Helm charts, Kustomize ...)
 
 - Team "run" adjusts some parameters and monitors the application 
 

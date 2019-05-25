@@ -190,11 +190,11 @@ We need to:
 
 ---
 
-## Helm Charts to the rescue
+## Helm charts to the rescue
 
-- To make our lives easier, we are going to use a Helm Chart
+- To make our lives easier, we are going to use a Helm chart
 
-- The Helm Chart will take care of all the steps explained above
+- The Helm chart will take care of all the steps explained above
 
   (including some extra features that we don't need, but won't hurt)
 
@@ -254,13 +254,13 @@ class: extra-details
 
   (a "release" is a unique name given to an app deployed with Helm)
 
-- `stable/prometheus` → ... of the Chart `prometheus` in repo `stable`
+- `stable/prometheus` → ... of the chart `prometheus` in repo `stable`
 
 - `--install` → if the app doesn't exist, create it
 
 - `--namespace kube-system` → put it in that specific namespace
 
-- And set the following *values* when rendering the Chart's templates:
+- And set the following *values* when rendering the chart's templates:
 
   - `server.service.type=NodePort` → expose the Prometheus server with a NodePort
   - `server.service.nodePort=30090` → set the specific NodePort number to use

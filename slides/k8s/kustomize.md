@@ -14,15 +14,15 @@
 
 ## Differences with Helm
 
-- Helm Charts use placeholders `{{ like.this }}`
+- Helm charts use placeholders `{{ like.this }}`
 
 - Kustomize "bases" are standard Kubernetes YAML
 
 - It is possible to use an existing set of YAML as a Kustomize base
 
-- As a result, writing a Helm Chart is more work ...
+- As a result, writing a Helm chart is more work ...
 
-- ... But Helm Charts are also more powerful; e.g. they can:
+- ... But Helm charts are also more powerful; e.g. they can:
 
   - use flags to conditionally include resources or blocks
 
