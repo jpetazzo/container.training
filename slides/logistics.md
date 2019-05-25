@@ -12,6 +12,8 @@
 
 - Live feedback, questions, help: @@CHAT@@
 
+  (Let's make sure right now that we all are on that channel!)
+
 ---
 
 ## Logistics
