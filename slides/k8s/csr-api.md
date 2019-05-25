@@ -24,7 +24,7 @@
 
 - When we access an https:// URL, the server authenticates itself
 
-  (it proves its identity to us; as if it were "showing its papers")
+  (it proves its identity to us; as if it were "showing its ID")
 
 - But we can also have mutual TLS authentication (mTLS)
 
@@ -94,7 +94,7 @@ The CA (or anyone else) never needs to know my private key.
 
 ## Using the CSR API
 
-- We will show a how to use the CSR API to obtain user certificates
+- We will show how to use the CSR API to obtain user certificates
 
 - This will be a rather complex demo
 
@@ -230,7 +230,7 @@ For a user named `jean.doe`, we will have:
 
 - Let's use OpenSSL; it's not the best one, but it's installed everywhere
 
-  (many people prefer cfssl, easyrsa, or other tools, that's fine too!)
+  (many people prefer cfssl, easyrsa, or other tools; that's fine too!)
  
 .exercise[
 
