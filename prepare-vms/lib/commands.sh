@@ -498,12 +498,12 @@ _cmd_helmprom() {
     if i_am_first_node; then
         kubectl -n kube-system get serviceaccount helm ||
             kubectl -n kube-system create serviceaccount helm
-        helm init --service-account helm
+        sudo -u docker -H helm init --service-account helm
         kubectl get clusterrolebinding helm-can-do-everything ||
             kubectl create clusterrolebinding helm-can-do-everything \
                 --clusterrole=cluster-admin \
                 --serviceaccount=kube-system:helm
-        helm upgrade --install prometheus stable/prometheus \
+        sudo -u docker -H helm upgrade --install prometheus stable/prometheus \
             --namespace kube-system \
             --set server.service.type=NodePort \
             --set server.service.nodePort=30090 \
