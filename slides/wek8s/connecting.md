@@ -56,7 +56,7 @@ For the `Dev` account, this should look like this:
 
 ```
 Account: 681484253316
-Role: AWS-Admin
+Role: AWS-Tech-User
 Profile: saml
 ```
 
