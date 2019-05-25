@@ -6,6 +6,24 @@
 
 ---
 
+## Requirements
+
+.warning[The exercises in this chapter should be done *on your local machine*.]
+
+- `kubectl` is officially available on Linux, macOS, Windows
+
+  (and unofficially anywhere we can build and run Go binaries)
+
+- You may skip these exercises if you are following along from:
+
+  - a tablet or phone
+
+  - a web-based terminal
+
+  - an environment where you can't install and run new binaries
+
+---
+
 ## Installing `kubectl`
 
 - If you already have `kubectl` on your local machine, you can skip this
@@ -65,9 +83,16 @@ Platform:"linux/amd64"}
 
 - If you never used `kubectl` on your machine before: nothing to do!
 
-- If you already used `kubectl` to control a Kubernetes cluster before:
+.exercise[
 
-  - rename `~/.kube/config` to e.g. `~/.kube/config.bak`
+- Make a copy of `~/.kube/config`; if you are using macOS or Linux, you can do:
+  ```bash
+  cp ~/.kube/config ~/.kube/config.before.training
+  ```
+
+- If you are using Windows, you will need to adapt this command
+
+]
 
 ---
 
