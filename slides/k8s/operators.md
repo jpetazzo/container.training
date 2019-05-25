@@ -14,6 +14,25 @@
 
 ## What are operators?
 
+*An operator represents **human operational knowledge in software,**
+<br/>
+to reliably manage an application.
+— [CoreOS](https://coreos.com/blog/introducing-operators.html)*
+
+Examples:
+
+- Deploying and configuring replication with MySQL, PostgreSQL ...
+
+- Setting up Elasticsearch, Kafka, RabbitMQ, Zookeeper ...
+
+- Reacting to failures when intervention is needed
+
+- Scaling up and down these systems
+
+---
+
+## What are they made from?
+
 - Operators combine two things:
 
   - Custom Resource Definitions
@@ -66,7 +85,7 @@
 
 - Systems that depend on other non-trivial systems
 
-  Examples: Flink, Kafka, ...
+  Examples: Flink or Kafka, which both depend on Zookeeper
 
 ---
 
