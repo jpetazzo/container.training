@@ -34,13 +34,13 @@
 
 - Each pod can discover the IP address of the others easily
 
-- The pods can have persistent volumes attached to them
+- The pods can persist data on attached volumes
 
 🤔 Wait a minute ... Can't we already attach volumes to pods and deployments?
 
 ---
 
-## Volumes and Persistent Volumes
+## Revisiting volumes
 
 - [Volumes](https://kubernetes.io/docs/concepts/storage/volumes/) are used for many purposes:
 
@@ -50,13 +50,13 @@
 
   - accessing storage systems
 
-- The last type of volumes is known as a "Persistent Volume"
+- Let's see examples of the latter usage
 
 ---
 
-## Persistent Volumes types
+## Volumes types
 
-- There are many [types of Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#types-of-persistent-volumes) available:
+- There are many [types of volumes](https://kubernetes.io/docs/concepts/storage/volumes/#types-of-volumes) available:
 
   - public cloud storage (GCEPersistentDisk, AWSElasticBlockStore, AzureDisk...)
 
@@ -74,7 +74,7 @@
 
 ---
 
-## Using a Persistent Volume
+## Using a cloud volume
 
 Here is a pod definition using an AWS EBS volume (that has to be created first):
 
@@ -99,7 +99,32 @@ spec:
 
 ---
 
-## Shortcomings of Persistent Volumes
+## Using an NFS volume
+
+Here is another example using a volume on an NFS server:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-using-my-nfs-volume
+spec:
+  containers:
+  - image: ...
+    name: container-using-my-nfs-volume
+    volumeMounts:
+    - mountPath: /my-nfs
+      name: my-nfs-volume
+  volumes:
+  - name: my-nfs-volume
+      nfs:
+        server: 192.168.0.55
+        path: "/exports/assets"
+```
+
+---
+
+## Shortcomings of volumes
 
 - Their lifecycle (creation, deletion...) is managed outside of the Kubernetes API
 
@@ -125,17 +150,47 @@ spec:
 
 - This type is a *Persistent Volume Claim*
 
+- A Persistent Volume Claim (PVC) is a resource type
+
+  (visible with `kubectl get persistentvolumeclaims` or `kubectl get pvc`)
+
+- A PVC is not a volume; it is a *request for a volume*
+
+---
+
+## Persistent Volume Claims in practice
+
 - Using a Persistent Volume Claim is a two-step process:
 
   - creating the claim
 
   - using the claim in a pod (as if it were any other kind of volume)
 
-- Between these two steps, something will happen behind the scenes:
+- A PVC starts by being Unbound (without an associated volume)
 
-  - Kubernetes will associate an existing volume with the claim
+- Once it is associated with a Persistent Volume, it becomes Bound
 
-  - ... or dynamically create a volume if possible and necessary
+- A Pod referring an unbound PVC will not start
+
+  (but as soon as the PVC is bound, the Pod can start)
+
+---
+
+## Binding PV and PVC
+
+- A Kubernetes controller continuously watches PV and PVC objects
+
+- When it notices an unbound PVC, it tries to find a satisfactory PV
+
+  ("satisfactory" in terms of size and other characteristics; see next slide)
+
+- If no PV fits the PVC, a PV can be created dynamically
+
+  (this requires to configure a *dynamic provisioner*, more on that later)
+
+- Otherwise, the PVC remains unbound indefinitely
+
+  (until we manually create a PV or setup dynamic provisioning)
 
 ---
 
@@ -147,15 +202,15 @@ spec:
 
   - the access mode (e.g. "read-write by a single pod")
 
-- It can also give extra details, like:
+- Optionally, it can also specify a Storage Class
+
+- The Storage Class indicates:
 
   - which storage system to use (e.g. Portworx, EBS...)
 
   - extra parameters for that storage system
 
     e.g.: "replicate the data 3 times, and use SSD media"
-
-- The extra details are provided by specifying a Storage Class
 
 ---
 
@@ -167,15 +222,15 @@ spec:
 
 - It indicates which *provisioner* to use
 
+  (which controller will create the actual volume)
+
 - And arbitrary parameters for that provisioner
 
   (replication levels, type of disk ... anything relevant!)
 
-- It is necessary to define a Storage Class to use [dynamic provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
+- Storage Classes are required if we want to use [dynamic provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
 
-- Conversely, it is not necessary to define one if you will create volumes manually
-
-  (we will see dynamic provisioning in action later)
+  (but we can also create volumes manually, and ignore Storage Classes)
 
 ---
 
@@ -200,7 +255,7 @@ spec:
 
 ## Using a Persistent Volume Claim
 
-Here is the same definition as earlier, but using a PVC:
+Here is a Pod definition like the ones shown earlier, but using a PVC:
 
 ```yaml
 apiVersion: v1
@@ -212,7 +267,7 @@ spec:
   - image: ...
     name: container-using-a-claim
     volumeMounts:
-    - mountPath: /my-ebs
+    - mountPath: /my-vol
       name: my-volume
   volumes:
   - name: my-volume

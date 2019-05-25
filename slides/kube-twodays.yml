@@ -67,6 +67,7 @@ chapters:
   #- k8s/owners-and-dependents.md
   - k8s/extending-api.md
 - - k8s/statefulsets.md
+  - k8s/local-persistent-volumes.md
   - k8s/portworx.md
   - k8s/staticpods.md
 - - k8s/whatsnext.md
