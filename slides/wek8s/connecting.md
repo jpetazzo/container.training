@@ -1,3 +1,5 @@
+name: connecting-to-wek8s
+
 ## Connecting to wek8s
 
 - Let's see what it entails to connect to one of our wek8s clusters
