@@ -391,6 +391,15 @@ _cmd_retag() {
     aws_tag_instances $OLDTAG $NEWTAG
 }
 
+_cmd ssh "Open an SSH session to the first node of a tag"
+_cmd_ssh() {
+    TAG=$1
+    need_tag
+    IP=$(head -1 tags/$TAG/ips.txt)
+    info "Logging into $IP"
+    ssh docker@$IP
+}
+
 _cmd start "Start a group of VMs"
 _cmd_start() {
     while [ ! -z "$*" ]; do
