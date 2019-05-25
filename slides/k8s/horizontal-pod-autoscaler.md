@@ -54,7 +54,7 @@
 
   - ... but only because there is no CPU time available!
 
-  - this makes sure that we won't add pods to nodes that are already starved
+  - this makes sure that we won't add pods to nodes that are already resource-starved
 
 ---
 
