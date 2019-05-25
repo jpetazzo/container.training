@@ -255,7 +255,7 @@ spec:
 
 ## Using a Persistent Volume Claim
 
-Here a Pod definition like the ones shown earlier, but using a PVC:
+Here is a Pod definition like the ones shown earlier, but using a PVC:
 
 ```yaml
 apiVersion: v1

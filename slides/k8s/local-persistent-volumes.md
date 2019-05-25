@@ -22,11 +22,13 @@
 
 - That cluster's StatefulSet will create PVCs
 
-- These PVCs will remain unbound, until we will create local volumes manually
+- These PVCs will remain unbound¹, until we will create local volumes manually
 
   (we will basically do the job of the dynamic provisioner)
 
 - Then, we will see how to automate that with a dynamic provisioner
+
+.footnote[¹Unbound = without an associated Persistent Volume.]
 
 ---
 
