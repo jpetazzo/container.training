@@ -22,17 +22,17 @@ chapters:
   - containers/First_Containers.md
   - containers/Background_Containers.md
   - containers/Initial_Images.md
-  - containers/Building_Images_Interactively.md
+- - containers/Building_Images_Interactively.md
   - containers/Building_Images_With_Dockerfiles.md
   - containers/Cmd_And_Entrypoint.md
   - containers/Copying_Files_During_Build.md
   - containers/Exercise_Dockerfile_Basic.md
-  - containers/Multi_Stage_Builds.md
+- - containers/Multi_Stage_Builds.md
   - containers/Dockerfile_Tips.md
   - containers/Exercise_Dockerfile_Advanced.md
   - containers/Naming_And_Inspecting.md
   - containers/Getting_Inside.md
-  - containers/Container_Networking_Basics.md
+- - containers/Container_Networking_Basics.md
   - containers/Network_Drivers.md
   - containers/Container_Network_Model.md
   - containers/Ambassadors.md
@@ -40,7 +40,7 @@ chapters:
   - containers/Working_With_Volumes.md
   - containers/Compose_For_Dev_Stacks.md
   - containers/Exercise_Composefile.md
-  - containers/Application_Configuration.md
+- - containers/Application_Configuration.md
   - containers/Orchestration_Overview.md
   - |
     # From Docker to Kubernetes
@@ -75,14 +75,14 @@ chapters:
 
   - shared/connecting.md
   - k8s/versions-k8s.md
-  - shared/sampleapp.md
+- - shared/sampleapp.md
   - shared/composedown.md
   - k8s/concepts-k8s.md
   - shared/declarative.md
   - k8s/declarative.md
   - k8s/kubenet.md
   - k8s/kubectlget.md
-  - wek8s/visibility.md
+- - wek8s/visibility.md
   - k8s/kubectlrun.md
   - k8s/deploymentslideshow.md
   - k8s/kubectlexpose.md
@@ -93,17 +93,17 @@ chapters:
   - shared/hastyconclusions.md
   - k8s/daemonset.md
   - k8s/namespaces.md
-  - k8s/rollout.md
+- - k8s/rollout.md
   - k8s/setup-k8s.md
   - wek8s/connecting.md
   - k8s/logs-cli.md
   - k8s/dashboard.md
   - wek8s/security.md
-  - k8s/localkubeconfig.md
+- - k8s/localkubeconfig.md
   - k8s/accessinternal.md
   - wek8s/helm.md
   - wek8s/ingress.md
-  - k8s/prometheus.md
+- - k8s/prometheus.md
   - k8s/volumes.md
   - k8s/configuration.md
   - k8s/healthchecks.md
