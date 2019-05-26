@@ -104,6 +104,7 @@ chapters:
   - k8s/accessinternal.md
   - wek8s/helm.md
   - wek8s/ingress.md
+  - wek8s/switchback.md
 - - k8s/prometheus.md
   - k8s/volumes.md
   - k8s/configuration.md
