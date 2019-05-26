@@ -1,4 +1,4 @@
-# Healthchecks
+# Healthchecks (extra material)
 
 - Kubernetes provides two kinds of healthchecks: liveness and readiness
 

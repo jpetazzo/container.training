@@ -88,10 +88,11 @@ chapters:
   - k8s/kubectlexpose.md
   - k8s/shippingimages.md
   - k8s/buildshiprun-dockerhub.md
-- - k8s/ourapponkube.md
-  - k8s/scalingdockercoins.md
+  - k8s/ourapponkube.md
+- - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
   - k8s/daemonset.md
+  - k8s/namespaces.md
   - k8s/rollout.md
   - k8s/setup-k8s.md
   - wek8s/connecting.md
@@ -101,8 +102,7 @@ chapters:
   - k8s/localkubeconfig.md
   - k8s/accessinternal.md
   - wek8s/helm.md
-  - k8s/namespaces.md
-  - k8s/ingress.md
+  - wek8s/ingress.md
   - k8s/prometheus.md
   - k8s/volumes.md
   - k8s/configuration.md
