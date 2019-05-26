@@ -107,7 +107,7 @@ chapters:
   - k8s/volumes.md
   - k8s/configuration.md
   - k8s/healthchecks.md
-- - k8s/whatsnext.md
+- - wek8s/whatsnext.md
   - k8s/links.md
   - shared/thankyou.md
 
