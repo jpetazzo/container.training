@@ -142,6 +142,6 @@ class: extra-details
 
   (with "meta-plugins" like CNI-Genie or Multus)
 
-- Some products can fill multiple roles
+- Some solutions can fill multiple roles
 
   (e.g. kube-router can be set up to provide the pod network and/or network policies and/or replace kube-proxy)
