@@ -143,19 +143,21 @@ class: extra-details
 
   (see issue [#18982](https://github.com/kubernetes/kubernetes/issues/18982))
 
-- As a result, we cannot easily suspend a user's access
+- As a result, we don't have an easy way to terminate someone's access
 
-- There are workarounds, but they are very inconvenient:
+  (if their key is compromised, or they leave the organization)
 
-  - issue short-lived certificates (e.g. 24 hours) and regenerate them often
+- Option 1: re-create a new CA and re-issue everyone's certificates 
+  <br/>
+  → Maybe OK if we only have a few users; no way otherwise
 
-  - re-create the CA and re-issue all certificates in case of compromise
+- Option 2: don't use groups; grant permissions to individual users
+  <br/>
+  → Inconvenient if we have many users and teams; error-prone
 
-  - grant permissions to individual users, not groups
-    <br/>
-    (and remove all permissions to a compromised user)
-
-- Until this is fixed, we probably want to use other methods
+- Option 3: issue short-lived certificates (e.g. 24 hours) and renew them often
+  <br/>
+  → This can be facilitated by e.g. Vault or by the Kubernetes CSR API
 
 ---
 
