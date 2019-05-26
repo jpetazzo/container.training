@@ -88,11 +88,11 @@
 
 - Change to a new directory:
   ```bash
-  mkdir ~/kubercoins
-  cd ~/kubercoins
+  mkdir ~/kustomcoins
+  cd ~/kustomcoins
   ```
 
-- Run `ship init` with the kubercoins repository:
+- Run `ship init` with the kustomcoins repository:
   ```bash
   ship init https://github.com/jpetazzo/kubercoins
   ```
@@ -146,3 +146,49 @@
 
 - We will create a new copy of DockerCoins in another namespace
 
+---
+
+## Deploy DockerCoins with Kustomize
+
+.exercise[
+
+- Create a new namespace:
+  ```bash
+  kubectl create namespace kustomcoins
+  ```
+
+- Deploy DockerCoins:
+  ```bash
+  kubectl apply -f rendered.yaml --namespace=kustomcoins
+  ```
+
+- Or, with Kubernetes 1.14, you can also do this:
+  ```bash
+  kubectl apply -k overlays/ship --namespace=kustomcoins
+  ```
+
+]
+
+---
+
+## Checking our new copy of DockerCoins
+
+- We can check the worker logs, or the web UI
+
+.exercise[
+
+- Retrieve the NodePort number of the web UI:
+  ```bash
+  kubectl get service webui --namespace=kustomcoins
+  ```
+
+- Open it in a web browser
+
+- Look at the worker logs:
+  ```bash
+  kubectl logs deploy/worker --tail=10 --follow --namespace=kustomcoins
+  ```
+
+]
+
+Note: it might take a minute or two for the worker to start.
