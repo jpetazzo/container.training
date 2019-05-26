@@ -30,27 +30,11 @@ chapters:
   - containers/Building_Images_With_Dockerfiles.md
   - containers/Cmd_And_Entrypoint.md
 - - containers/Copying_Files_During_Build.md
-  - |
-      # Exercise — writing Dockerfiles
-
-      Let's write Dockerfiles for an existing application!
-
-      The code is at: https://github.com/jpetazzo/wordsmith
-
+  - containers/Exercise_Dockerfile_Basic.md
   - containers/Multi_Stage_Builds.md
   - containers/Publishing_To_Docker_Hub.md
   - containers/Dockerfile_Tips.md
-  - |
-      # Exercise — writing better Dockerfiles
-
-      Let's update our Dockerfiles to leverage multi-stage builds!
-
-      The code is at: https://github.com/jpetazzo/wordsmith
-
-      Use a different tag for these images, so that we can compare their sizes.
-
-      What's the size difference between single-stage and multi-stage builds?
-
+  - containers/Exercise_Dockerfile_Advanced.md
 - - containers/Naming_And_Inspecting.md
   - containers/Labels.md
   - containers/Getting_Inside.md
@@ -64,13 +48,7 @@ chapters:
   - containers/Windows_Containers.md
   - containers/Working_With_Volumes.md
   - containers/Compose_For_Dev_Stacks.md
-  - |
-      # Exercise — writing a Compose file
-
-      Let's write a Compose file for the wordsmith app!
-
-      The code is at: https://github.com/jpetazzo/wordsmith
-
+  - containers/Exercise_Composefile.md
 - - containers/Docker_Machine.md
   - containers/Advanced_Dockerfiles.md
   - containers/Application_Configuration.md

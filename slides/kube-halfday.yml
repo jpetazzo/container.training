@@ -22,6 +22,7 @@ chapters:
 - shared/about-slides.md
 - shared/toc.md
 - - shared/prereqs.md
+  - shared/connecting.md
   - k8s/versions-k8s.md
   - shared/sampleapp.md
 # Bridget doesn't go into as much depth with compose
@@ -53,10 +54,10 @@ chapters:
 - - k8s/logs-cli.md
 # Bridget hasn't added EFK yet
   #- k8s/logs-centralized.md
+  - k8s/namespaces.md
   - k8s/helm.md
   - k8s/create-chart.md
   #- k8s/kustomize.md
-  - k8s/namespaces.md
   #- k8s/netpol.md
   - k8s/whatsnext.md
 #  - k8s/links.md

@@ -248,6 +248,14 @@ EOF"
              sudo tar -C /usr/local/bin -zx ship
     fi"
 
+    # Install the AWS IAM authenticator
+    pssh "
+    if [ ! -x /usr/local/bin/aws-iam-authenticator ]; then
+	##VERSION##
+        sudo curl -o /usr/local/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator
+	sudo chmod +x /usr/local/bin/aws-iam-authenticator
+    fi"
+
     sep "Done"
 }
 
@@ -383,6 +391,15 @@ _cmd_retag() {
     aws_tag_instances $OLDTAG $NEWTAG
 }
 
+_cmd ssh "Open an SSH session to the first node of a tag"
+_cmd_ssh() {
+    TAG=$1
+    need_tag
+    IP=$(head -1 tags/$TAG/ips.txt)
+    info "Logging into $IP"
+    ssh docker@$IP
+}
+
 _cmd start "Start a group of VMs"
 _cmd_start() {
     while [ ! -z "$*" ]; do
@@ -481,12 +498,12 @@ _cmd_helmprom() {
     if i_am_first_node; then
         kubectl -n kube-system get serviceaccount helm ||
             kubectl -n kube-system create serviceaccount helm
-        helm init --service-account helm
+        sudo -u docker -H helm init --service-account helm
         kubectl get clusterrolebinding helm-can-do-everything ||
             kubectl create clusterrolebinding helm-can-do-everything \
                 --clusterrole=cluster-admin \
                 --serviceaccount=kube-system:helm
-        helm upgrade --install prometheus stable/prometheus \
+        sudo -u docker -H helm upgrade --install prometheus stable/prometheus \
             --namespace kube-system \
             --set server.service.type=NodePort \
             --set server.service.nodePort=30090 \

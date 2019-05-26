@@ -61,7 +61,7 @@ There are many possibilities!
 
   - creates a new custom type, `Remote`, exposing a git+ssh server
 
-  - deploy by pushing YAML or Helm Charts to that remote
+  - deploy by pushing YAML or Helm charts to that remote
 
 - Replacing built-in types with CRDs
 

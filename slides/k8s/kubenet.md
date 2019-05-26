@@ -16,6 +16,8 @@
 
  - each pod is aware of its IP address (no NAT)
 
+ - pod IP addresses are assigned by the network implementation
+
 - Kubernetes doesn't mandate any particular implementation
 
 ---
@@ -30,7 +32,7 @@
 
 - No new protocol
 
-- Pods cannot move from a node to another and keep their IP address
+- The network implementation can decide how to allocate addresses
 
 - IP addresses don't have to be "portable" from a node to another
 
@@ -82,13 +84,17 @@
 
 ---
 
+class: extra-details
+
 ## The Container Network Interface (CNI)
 
-- The CNI has a well-defined [specification](https://github.com/containernetworking/cni/blob/master/SPEC.md#network-configuration) for network plugins
+- Most Kubernetes clusters use CNI "plugins" to implement networking
 
-- When a pod is created, Kubernetes delegates the network setup to CNI plugins
+- When a pod is created, Kubernetes delegates the network setup to these plugins
 
-- Typically, a CNI plugin will:
+  (it can be a single plugin, or a combination of plugins, each doing one task)
+
+- Typically, CNI plugins will:
 
   - allocate an IP address (by calling an IPAM plugin)
 
@@ -96,8 +102,46 @@
 
   - configure the interface as well as required routes etc.
 
-- Using multiple plugins can be done with "meta-plugins" like CNI-Genie or Multus
+---
 
-- Not all CNI plugins are equal
+class: extra-details
 
-  (e.g. they don't all implement network policies, which are required to isolate pods)
+## Multiple moving parts
+
+- The "pod-to-pod network" or "pod network":
+
+  - provides communication between pods and nodes
+
+  - is generally implemented with CNI plugins
+
+- The "pod-to-service network":
+
+  - provides internal communication and load balancing
+
+  - is generally implemented with kube-proxy (or e.g. kube-router)
+
+- Network policies:
+
+  - provide firewalling and isolation
+
+  - can be bundled with the "pod network" or provided by another component
+
+---
+
+class: extra-details
+
+## Even more moving parts
+
+- Inbound traffic can be handled by multiple components:
+
+  - something like kube-proxy or kube-router (for NodePort services)
+
+  - load balancers (ideally, connected to the pod network)
+
+- It is possible to use multiple pod networks in parallel
+
+  (with "meta-plugins" like CNI-Genie or Multus)
+
+- Some solutions can fill multiple roles
+
+  (e.g. kube-router can be set up to provide the pod network and/or network policies and/or replace kube-proxy)

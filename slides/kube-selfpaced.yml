@@ -20,6 +20,7 @@ chapters:
 - shared/about-slides.md
 - shared/toc.md
 - - shared/prereqs.md
+  - shared/connecting.md
   - k8s/versions-k8s.md
   - shared/sampleapp.md
   - shared/composescale.md
@@ -46,17 +47,18 @@ chapters:
 #  - k8s/scalingdockercoins.md
 #  - shared/hastyconclusions.md
   - k8s/daemonset.md
-- - k8s/rollout.md
+  - k8s/rollout.md
+- - k8s/namespaces.md
+  - k8s/kustomize.md
+  - k8s/helm.md
+  - k8s/create-chart.md
   - k8s/healthchecks.md
   - k8s/logs-cli.md
   - k8s/logs-centralized.md
-- - k8s/helm.md
-  #- k8s/create-chart.md
-  - k8s/kustomize.md
-  - k8s/namespaces.md
   - k8s/netpol.md
   - k8s/authn-authz.md
   - k8s/csr-api.md
+  - k8s/podsecuritypolicy.md
 - - k8s/ingress.md
   - k8s/gitworkflows.md
   - k8s/prometheus.md
@@ -67,6 +69,7 @@ chapters:
 - - k8s/owners-and-dependents.md
   - k8s/extending-api.md
   - k8s/statefulsets.md
+  - k8s/local-persistent-volumes.md
   - k8s/portworx.md
   - k8s/staticpods.md
 - - k8s/whatsnext.md
