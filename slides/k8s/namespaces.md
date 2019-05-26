@@ -1,26 +1,65 @@
 # Namespaces
 
+- We would like to deploy another copy of DockerCoins on our cluster
+
+- We could rename all our deployments and services:
+
+  hasher → hasher2, redis → redis2, rng → rng2, etc.
+
+- That would require updating the code
+
+- There as to be a better way!
+
+--
+
+- As hinted by the title of this section, we will use *namespaces*
+
+---
+
+## Identifying a resource
+
 - We cannot have two resources with the same name
 
-  (Or can we...?)
+  (or can we...?)
 
 --
 
-- We cannot have two resources *of the same type* with the same name
+- We cannot have two resources *of the same kind* with the same name
 
-  (But it's OK to have a `rng` service, a `rng` deployment, and a `rng` daemon set!)
-
---
-
-- We cannot have two resources of the same type with the same name *in the same namespace*
-
-  (But it's OK to have e.g. two `rng` services in different namespaces!)
+  (but it's OK to have a `rng` service, a `rng` deployment, and a `rng` daemon set)
 
 --
 
-- In other words: **the tuple *(type, name, namespace)* needs to be unique**
+- We cannot have two resources of the same kind with the same name *in the same namespace*
 
-  (In the resource YAML, the type is called `Kind`)
+  (but it's OK to have e.g. two `rng` services in different namespaces)
+
+--
+
+- Except for resources that exist at the *cluster scope*
+
+  (these do not belong to a namespace)
+
+---
+
+## Uniquely identifying a resource
+
+- For *namespaced* resources:
+
+  the tuple *(kind, name, namespace)* needs to be unique
+
+- For resources at the *cluster scope*:
+
+  the tuple *(kind, name)* needs to be unique
+
+.exercise[
+
+- List resource types again, and check the NAMESPACED column:
+  ```bash
+  kubectl api-resources
+  ```
+
+]
 
 ---
 
@@ -59,7 +98,7 @@
 
 - The two methods above are identical
 
-- If we are using a tool like Helm, it will create namespaces automatically
+- Some tools like Helm will create namespaces automatically when needed
 
 ---
 
@@ -168,41 +207,27 @@
 
 ---
 
-## Deploy DockerCoins with Helm
+## Deploying DockerCoins with YAML files
 
-*Follow these instructions if you previously created a Helm Chart.*
+- The GitHub repository `jpetazzo/kubercoins` contains everything we need!
 
 .exercise[
 
-- Deploy DockerCoins:
+- Clone the kubercoins repository:
   ```bash
-  helm install dockercoins
+  git clone https://github.com/jpetazzo/kubercoins
+  ```
+
+- Create all the DockerCoins resources:
+  ```bash
+  kubectl create -f kubercoins
   ```
 
 ]
 
-In the last command line, `dockercoins` is just the local path where
-we created our Helm chart before.
+If the argument behind `-f` is a directory, all the files in that directory are processed. 
 
----
-
-## Deploy DockerCoins with Kustomize
-
-*Follow these instructions if you previously created a Kustomize overlay.*
-
-.exercise[
-
-- Deploy DockerCoins:
-  ```bash
-  kubectl apply -f rendered.yaml
-  ```
-
-- Or, with Kubernetes 1.14, you can also do this:
-  ```bash
-  kubectl apply -k overlays/ship
-  ```
-
-]
+The subdirectories are *not* processed, unless we also add the `-R` flag.
 
 ---
 
@@ -221,46 +246,7 @@ we created our Helm chart before.
 
 ]
 
-If the graph shows up but stays at zero, check the next slide!
-
----
-
-## Troubleshooting
-
-If did the exercices from the chapter about labels and selectors,
-the app that you just created may not work, because the `rng` service
-selector has `enabled=yes` but the pods created by the `rng` daemon set
-do not have that label.
-
-How can we troubleshoot that?
-
-- Query individual services manually
-
-  → the `rng` service will time out
-
-- Inspect the services with `kubectl describe service`
-  
-  → the `rng` service will have an empty list of backends
-
----
-
-## Fixing the broken service
-
-The easiest option is to add the `enabled=yes` label to the relevant pods.
-
-.exercise[
-
-- Add the `enabled` label to the pods of the `rng` daemon set:
-  ```bash
-  kubectl label pods -l app=rng enabled=yes
-  ```
-
-]
-
-The *best* option is to change either the service definition, or the
-daemon set definition, so that their respective selectors match correctly.
-
-*This is left as an exercise for the reader!*
+If the graph shows up but stays at zero, give it a minute or two!
 
 ---
 

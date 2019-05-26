@@ -234,6 +234,6 @@
 
   (see the [documentation](https://github.com/hasura/gitkube/blob/master/docs/remote.md) for more details)
 
-- Gitkube can also deploy Helm Charts
+- Gitkube can also deploy Helm charts
 
   (instead of raw YAML files)

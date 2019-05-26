@@ -407,7 +407,7 @@ class: extra-details
 
 - We are going to create a service account
 
-- We will use an existing cluster role (`view`)
+- We will use a default cluster role (`view`)
 
 - We will bind together this role and this service account
 
@@ -569,6 +569,51 @@ It's important to note a couple of details in these flags ...
   kubectl auth can-i list nodes \
           --as system:serviceaccount:<namespace>:<name-of-service-account>
   ```
+
+---
+
+class: extra-details
+
+## Where does this `view` role come from?
+
+- Kubernetes defines a number of ClusterRoles intended to be bound to users
+
+- `cluster-admin` can do *everything* (think `root` on UNIX)
+
+- `admin` can do *almost everything* (except e.g. changing resource quotas and limits)
+
+- `edit` is similar to `admin`, but cannot view or edit permissions
+
+- `view` has read-only access to most resources, except permissions and secrets
+
+*In many situations, these roles will be all you need.*
+
+*You can also customize them if needed!*
+
+---
+
+class: extra-details
+
+## Customizing the default roles
+
+- If you need to *add* permissions to these default roles (or others),
+  <br/>
+  you can do it through the [ClusterRole Aggregation](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles) mechanism
+
+- This happens by creating a ClusterRole with the following labels:
+  ```yaml
+    metadata:
+      labels:
+        rbac.authorization.k8s.io/aggregate-to-admin: "true"
+        rbac.authorization.k8s.io/aggregate-to-edit: "true"
+        rbac.authorization.k8s.io/aggregate-to-view: "true"
+  ```
+
+- This ClusterRole permissions will be added to `admin`/`edit`/`view` respectively
+
+- This is particulary useful when using CustomResourceDefinitions
+
+  (since Kubernetes cannot guess which resources are sensitive and which ones aren't)
 
 ---
 

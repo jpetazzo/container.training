@@ -61,7 +61,7 @@ There are many possibilities!
 
   - creates a new custom type, `Remote`, exposing a git+ssh server
 
-  - deploy by pushing YAML or Helm Charts to that remote
+  - deploy by pushing YAML or Helm charts to that remote
 
 - Replacing built-in types with CRDs
 
@@ -87,7 +87,11 @@ There are many possibilities!
 
   (and take action when they are created/updated)
 
-*Example: [YAML to install the gitkube CRD](https://storage.googleapis.com/gitkube/gitkube-setup-stable.yaml)*
+*
+Examples:
+[YAML to install the gitkube CRD](https://storage.googleapis.com/gitkube/gitkube-setup-stable.yaml),
+[YAML to install a redis operator CRD](https://github.com/amaizfinance/redis-operator/blob/master/deploy/crds/k8s_v1alpha1_redis_crd.yaml)
+*
 
 ---
 
