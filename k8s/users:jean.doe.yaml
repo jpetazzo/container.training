@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: jean.doe
+  namespace: users
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: users:jean.doe
+rules:
+- apiGroups: [ certificates.k8s.io ]
+  resources: [ certificatesigningrequests ]
+  verbs:     [ create ]
+- apiGroups:     [ certificates.k8s.io ]
+  resourceNames: [ users:jean.doe ]
+  resources:     [ certificatesigningrequests ]
+  verbs:         [ get, create, delete, watch ]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: users:jean.doe
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: users:jean.doe
+subjects:
+- kind: ServiceAccount
+  name: jean.doe
+  namespace: users
+
