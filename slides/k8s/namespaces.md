@@ -81,12 +81,16 @@
 
 ## Creating namespaces
 
-- Creating a namespace is done with the `kubectl create namespace` command:
+- Let's see two identical methods to create a namespace
+
+.exercise[
+
+- We can use `kubectl create namespace`:
   ```bash
   kubectl create namespace blue
   ```
 
-- We can also get fancy and use a very minimal YAML snippet, e.g.:
+- Or we can construct a very minimal YAML snippet:
   ```bash
 	kubectl apply -f- <<EOF
 	apiVersion: v1
@@ -96,7 +100,7 @@
 	EOF
   ```
 
-- The two methods above are identical
+]
 
 - Some tools like Helm will create namespaces automatically when needed
 
@@ -215,6 +219,7 @@
 
 - Clone the kubercoins repository:
   ```bash
+  cd ~
   git clone https://github.com/jpetazzo/kubercoins
   ```
 

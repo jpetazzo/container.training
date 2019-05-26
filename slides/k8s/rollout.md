@@ -49,7 +49,6 @@
 
 ---
 
-
 ## Rolling updates in practice
 
 - As of Kubernetes 1.8, we can do rolling updates with:
@@ -64,12 +63,15 @@
 
 ## Building a new version of the `worker` service
 
+.warning[
+Only run these commands if you have built and pushed DockerCoins to a local registry.
+<br/>
+If you are using images from the Docker Hub (`dockercoins/worker:v0.1`), skip this.
+]
+
 .exercise[
 
-- Go to the `stack` directory:
-  ```bash
-  cd ~/container.training/stacks
-  ```
+- Go to the `stacks` directory (`~/container.training/stacks`)
 
 - Edit `dockercoins/worker/worker.py`; update the first `sleep` line to sleep 1 second
 
