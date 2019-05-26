@@ -1,7 +1,8 @@
 title: |
   Containers,
   Docker,
-  Kubernetes
+  Kubernetes,
+  WeK8S
 
 chat: "Slack (channel [#k8s-training-may2019](https://wework.slack.com/messages/GJN9CBZLH/))"
 
