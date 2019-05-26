@@ -60,7 +60,7 @@
 
 - Our operator will watch its CRDs *and associated resources*
 
-- Drawing state diagrams and finite state automatons helps a lot
+- Drawing state diagrams and finite state automata helps a lot
 
 - It's OK if some transitions lead to a big catch-all "human intervention"
 
