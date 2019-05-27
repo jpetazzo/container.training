@@ -193,6 +193,26 @@
 
 ---
 
+## About scaling
+
+- It is possible to use the HPA (Horizontal Pod Autoscaler) with CRDs
+
+- But it is not always desirable
+
+- The HPA works very well for homogenous, stateless workloads
+
+- For other workloads, your mileage may vary
+
+- Some systems can scale across multiple dimensions
+
+  (for instance: increase number of replicas, or number of shards?)
+
+- If autoscaling is desired, the operator will have to take complex decisions
+
+  (example: Zalando's Elasticsearch Operator ([Video](https://www.youtube.com/watch?v=lprE0J0kAq0)))
+
+---
+
 ## Versioning
 
 - As our operator evolves over time, we may have to change the CRD
