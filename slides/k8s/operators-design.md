@@ -4,7 +4,7 @@
 
 - Writing a robust operator is hard
 
-- We will describe the general idea 
+- We will describe the general idea
 
 - We will identify some of the associated challenges
 
@@ -164,7 +164,7 @@
 - CoreOS / RedHat Operator Framework
 
   [GitHub](https://github.com/operator-framework)
-  | 
+  |
   [Blog](https://developers.redhat.com/blog/2018/12/18/introduction-to-the-kubernetes-operator-framework/)
   |
   [Intro talk](https://www.youtube.com/watch?v=8k_ayO1VRXE)
@@ -299,6 +299,26 @@
 - We can provide [conversion webhooks](https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definition-versioning/#webhook-conversion) to "translate" requests
 
   (the alternative is to upgrade all stored resources and stop serving old versions)
+
+---
+
+## Operator reliability
+
+- Remember that the operator itself must be resilient
+
+  (e.g.: the node running it can fail)
+
+- Our operator must be able to restart and recover gracefully
+
+- Do not store state locally
+
+  (unless we can reconstruct that state when we restart)
+
+- As indicated earlier, we can use the Kubernetes API to store data:
+
+  - in the custom resources themselves
+
+  - in other resources' annotations
 
 ---
 
