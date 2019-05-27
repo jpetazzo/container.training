@@ -222,16 +222,16 @@ CMD ["hello world"]
 Let's build it:
 
 ```bash
-$ docker build -t figlet .
+$ docker build -t myfiglet .
 ...
 Successfully built 6e0b6a048a07
-Successfully tagged figlet:latest
+Successfully tagged myfiglet:latest
 ```
 
 Run it without parameters:
 
 ```bash
-$ docker run figlet
+$ docker run myfiglet
  _          _   _                             _        
 | |        | | | |                           | |    |  
 | |     _  | | | |  __             __   ,_   | |  __|  
@@ -246,7 +246,7 @@ $ docker run figlet
 Now let's pass extra arguments to the image.
 
 ```bash
-$ docker run figlet hola mundo
+$ docker run myfiglet hola mundo
  _           _                                               
 | |         | |                                      |       
 | |     __  | |  __,     _  _  _           _  _    __|   __  
@@ -262,13 +262,13 @@ We overrode `CMD` but still used `ENTRYPOINT`.
 
 What if we want to run a shell in our container?
 
-We cannot just do `docker run figlet bash` because
+We cannot just do `docker run myfiglet bash` because
 that would just tell figlet to display the word "bash."
 
 We use the `--entrypoint` parameter:
 
 ```bash
-$ docker run -it --entrypoint bash figlet
+$ docker run -it --entrypoint bash myfiglet
 root@6027e44e2955:/# 
 ```
 

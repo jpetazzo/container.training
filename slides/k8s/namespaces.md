@@ -8,7 +8,7 @@
 
 - That would require updating the code
 
-- There as to be a better way!
+- There has to be a better way!
 
 --
 

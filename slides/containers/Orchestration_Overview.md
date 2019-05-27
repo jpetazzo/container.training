@@ -119,7 +119,7 @@ Now, how are things for our IAAS provider?
 - Solution: *migrate* VMs and shutdown empty servers
   
   (e.g. combine two hypervisors with 40% load into 80%+0%,
-  <br/>and shutdown the one at 0%)
+  <br/>and shut down the one at 0%)
 
 ---
 
@@ -127,7 +127,7 @@ Now, how are things for our IAAS provider?
 
 How do we implement this?
 
-- Shutdown empty hosts (but keep some spare capacity)
+- Shut down empty hosts (but keep some spare capacity)
 
 - Start hosts again when capacity gets low
 
@@ -175,7 +175,7 @@ In practice, these goals often conflict.
 
   - 16 GB RAM, 8 cores, 1 TB disk
 
-- Each week, your team asks:
+- Each week, your team requests:
 
   - one VM with X RAM, Y CPU, Z disk
 

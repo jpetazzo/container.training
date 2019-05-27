@@ -29,7 +29,7 @@ class: extra-details
 
 - Kubernetes 1.13 only validates Docker Engine versions [up to 18.06](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.13.md#external-dependencies)
 
-- Is this a problem if I use Kubernetes with a "too recent" Docker Engine?
+- Is it a problem if I use Kubernetes with a "too recent" Docker Engine?
 
 --
 

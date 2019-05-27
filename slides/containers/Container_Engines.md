@@ -164,7 +164,7 @@ We're not aware of anyone using it directly (i.e. outside of Kubernetes).
 
 * Run each container in a lightweight virtual machine.
 
-* Requires to run on bare metal *or* with nested virtualization.
+* Requires running on bare metal *or* with nested virtualization.
 
 ---
 
