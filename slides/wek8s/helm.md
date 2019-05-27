@@ -645,3 +645,23 @@ class: extra-details
   (we can use `--set` multiple times if needed)
 
 .warning[If we specify `--set` without `--values`, it erases all the other values!]
+
+---
+
+class: extra-details
+
+## If the first deployment fails
+
+- If the first deployment of a release fails, it will be in an inconsistent state
+
+- Further attempts to `helm install` or `helm upgrade` will fail
+
+- To fix the problem, two solutions:
+
+  - `helm delete --purge` that release
+
+  - `helm upgrade --force` that release
+
+- This only applies to the first deployment
+
+  (i.e., Helm knows how to recover if a subsequent deployment fails)
