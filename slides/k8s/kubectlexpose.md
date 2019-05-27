@@ -81,7 +81,7 @@ Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables`
 
 .exercise[
 
-- In another window, watch the pods (to see when they will be created):
+- In another window, watch the pods (to see when they are created):
   ```bash
   kubectl get pods -w
   ```

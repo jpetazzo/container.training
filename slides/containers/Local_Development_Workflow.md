@@ -156,7 +156,7 @@ Option 3:
 
 * Use a *volume* to mount local files into the container
 * Make changes locally
-* Changes are reflected into the container
+* Changes are reflected in the container
 
 ---
 
@@ -176,7 +176,7 @@ $ docker run -d -v $(pwd):/src -P namer
 
 * `namer` is the name of the image we will run.
 
-* We don't specify a command to run because it is already set in the Dockerfile.
+* We don't specify a command to run because it is already set in the Dockerfile via `CMD`.
 
 Note: on Windows, replace `$(pwd)` with `%cd%` (or `${pwd}` if you use PowerShell).
 
@@ -192,7 +192,7 @@ The flag structure is:
 [host-path]:[container-path]:[rw|ro]
 ```
 
-* If `[host-path]` or `[container-path]` doesn't exist it is created.
+* `[host-path]` and `[container-path]` are created if they don't exist.
 
 * You can control the write status of the volume with the `ro` and
   `rw` options.
@@ -255,13 +255,13 @@ color: red;
 
 * Volumes are *not* copying or synchronizing files between the host and the container.
 
-* Volumes are *bind mounts*: a kernel mechanism associating a path to another.
+* Volumes are *bind mounts*: a kernel mechanism associating one path with another.
 
 * Bind mounts are *kind of* similar to symbolic links, but at a very different level.
 
 * Changes made on the host or on the container will be visible on the other side.
 
-  (Since under the hood, it's the same file on both anyway.)
+  (Under the hood, it's the same file anyway.)
 
 ---
 
@@ -273,7 +273,7 @@ by Chad Fowler, where he explains the concept of immutable infrastructure.)*
 
 --
 
-* Let's mess up majorly with our container.
+* Let's majorly mess up our container.
 
   (Remove files or whatever.)
 
@@ -319,7 +319,7 @@ and *canary deployments*.
    <br/>
    Use the `-v` flag to mount our source code inside the container.
 
-3. Edit the source code outside the containers, using regular tools.
+3. Edit the source code outside the container, using familiar tools.
    <br/>
    (vim, emacs, textmate...)
 

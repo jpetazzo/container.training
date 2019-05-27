@@ -371,7 +371,7 @@ But ... why do these pods (in particular, the *new* ones) have this `app=rng` la
 
 - Bottom line: if we remove our `app=rng` label ...
 
- ... The pod "diseappears" for its parent, which re-creates another pod to replace it
+ ... The pod "disappears" for its parent, which re-creates another pod to replace it
 
 ---
 

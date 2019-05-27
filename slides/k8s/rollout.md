@@ -28,7 +28,7 @@
 
   - there will therefore be up to `maxUnavailable`+`maxSurge` pods being updated
 
-- We have the possibility to rollback to the previous version
+- We have the possibility of rolling back to the previous version
   <br/>(if the update fails or is unsatisfactory in any way)
 
 ---

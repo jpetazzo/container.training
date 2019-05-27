@@ -259,7 +259,7 @@ bash: figlet: command not found
 
   * work on project
 
-  * when done, shutdown VM
+  * when done, shut down VM
 
   * next time we need to work on project, restart VM as we left it
 
@@ -281,7 +281,7 @@ bash: figlet: command not found
 
   * work on project
 
-  * when done, shutdown container
+  * when done, shut down container
 
   * next time we need to work on project, start a new container
 

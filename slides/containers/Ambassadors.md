@@ -150,7 +150,7 @@ Different deployments will use different underlying technologies.
 * Ad-hoc deployments can use a master-less discovery protocol
   like avahi to register and discover services.
 * It is also possible to do one-shot reconfiguration of the
-  ambassadors. It is slightly less dynamic but has much less
+  ambassadors. It is slightly less dynamic but has far fewer
   requirements.
 * Ambassadors can be used in addition to, or instead of, overlay networks.
 
