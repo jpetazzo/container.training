@@ -12,6 +12,32 @@
 
 ---
 
+## Top-down vs. bottom-up
+
+- Both approaches are possible
+
+- Let's see what they entail, and their respective pros and cons
+
+---
+
+## Top-down approach
+
+- Start with high-level design (see next slide)
+
+- Pros:
+
+  - can yield cleaner design that will be more robust
+
+- Cons:
+
+  - must be able to anticipate all the events that might happen
+
+  - design will be better only to the extend of what we anticipated
+
+  - hard to anticipate if we don't have production experience
+
+---
+
 ## High-level design
 
 - What are we solving?
@@ -53,6 +79,22 @@
   - things that are big and/or change a lot should go elsewhere
     <br/>
     (e.g.: metrics, bigger configuration file like GeoIP)
+
+---
+
+## Bottom-up approach
+
+- Start with existing Kubernetes resources (Deployment, Stateful Set...)
+
+- Run the system in production
+
+- Add scripts, automation, to facilitate day-to-day operations
+
+- Turn the scripts into an operator
+
+- Pros: simpler to get started; reflects actual use-cases
+
+- Cons: can result in convoluted designs requiring extensive refactor
 
 ---
 
