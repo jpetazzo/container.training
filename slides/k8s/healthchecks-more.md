@@ -326,6 +326,63 @@ It will use the default success threshold (1 successful attempt = alive).
 
 ---
 
+class: extra-details
+
+## Exec probes and zombies
+
+- When using exec probes, we should make sure that we have a *zombie reaper*
+
+  🤔🧐🧟 Wait, what?
+
+- When a process terminates, its parent must call `wait()`/`waitpid()`
+
+  (this is how the parent process retrieves the child's exit status)
+
+- In the meantime, the process is in *zombie* state
+
+  (the process state will show as `Z` in `ps`, `top` ...)
+
+- When a process is killed, its children are *orphaned* and attached to PID 1
+
+- PID 1 has the responsibility if *reaping* these processes when they terminate
+
+- OK, but how does that affect us?
+
+---
+
+class: extra-details
+
+## PID 1 in containers
+
+- On ordinary systems, PID 1 (`/sbin/init`) has logic to reap processes
+
+- In containers, PID 1 is typically our application process
+
+  (e.g. Apache, the JVM, NGINX, Redis ...)
+
+- These *do not* take care of reaping orphans
+
+- If we use exec probes, we need to add a process reaper
+
+- We can add [tini](https://github.com/krallin/tini) to our images
+
+- Or [share the PID namespace between containers of a pod](https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/)
+
+  (and have gcr.io/pause take care of the reaping)
+
+---
+
+## PID 1
+
+
+- W
+
+- On normal systems
+
+
+
+---
+
 ## Healthchecks for worker
 
 - Readiness isn't useful
