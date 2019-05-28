@@ -14,7 +14,7 @@ done
 ```
 
 ```bash
-# FIXME find a way to reset the cluster, maybe?
+## FIXME find a way to reset the cluster, maybe?
 ```
 -->
 
