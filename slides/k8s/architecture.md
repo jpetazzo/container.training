@@ -1,4 +1,4 @@
-# Kubernetes architecture
+# Kubernetes architecture deep dive
 
 We can arbitrarily split Kubernetes in two parts:
 
