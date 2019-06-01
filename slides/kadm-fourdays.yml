@@ -80,16 +80,17 @@ chapters:
 #DAY 4
 - - k8s/authn-authz.md
   - k8s/csr-api.md
+  - k8s/openid-connect.md
+- - k8s/control-plane-auth.md
   - k8s/bootstrap.md
-- - k8s/netpol.md
+  - k8s/netpol.md
   - k8s/podsecuritypolicy.md
-  - k8s/control-plane-auth.md
-- - k8s/statefulsets.md
-  - k8s/local-persistent-volumes.md
-  - k8s/portworx.md
 - - k8s/extending-api.md
   - k8s/operators.md
   - k8s/operators-design.md
+- - k8s/statefulsets.md
+  - k8s/local-persistent-volumes.md
+  - k8s/portworx.md
 - - k8s/lastwords-admin.md
   - k8s/links.md
   - shared/thankyou.md
