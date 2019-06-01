@@ -1,0 +1,97 @@
+title: |
+  Kubernetes
+  Administrator
+  Training
+
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+chat: "In person!"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://container.training/
+
+exclude:
+- self-paced
+
+chapters:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+- shared/toc.md
+# DAY 1
+- - shared/prereqs.md
+  - shared/connecting.md
+  - k8s/versions-k8s.md
+  - shared/sampleapp.md
+  - shared/composedown.md
+  - k8s/concepts-k8s.md
+  - shared/declarative.md
+  - k8s/declarative.md
+  - k8s/kubenet.md
+- - k8s/kubectlget.md
+  - k8s/setup-k8s.md
+  - k8s/kubectlrun.md
+  - k8s/deploymentslideshow.md
+- - k8s/kubectlexpose.md
+  - k8s/shippingimages.md
+  - k8s/buildshiprun-dockerhub.md
+  - k8s/ourapponkube.md
+  - k8s/scalingdockercoins.md
+  - shared/hastyconclusions.md
+  - k8s/daemonset.md
+- - k8s/rollout.md
+  - k8s/healthchecks.md
+  - k8s/healthchecks-more.md
+  - k8s/owners-and-dependents.md
+# DAY 2
+- - k8s/kubectlproxy.md
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
+  - k8s/dashboard.md
+  - k8s/ingress.md
+- - k8s/volumes.md
+  - k8s/configuration.md
+  - k8s/logs-cli.md
+  - k8s/logs-centralized.md
+- - k8s/namespaces.md
+  - k8s/kustomize.md
+  - k8s/helm.md
+  #- k8s/create-chart.md
+  - k8s/prometheus.md
+- - k8s/resource-limits.md
+  - k8s/metrics-server.md
+  - k8s/cluster-sizing.md
+  - k8s/horizontal-pod-autoscaler.md
+# DAY 3
+- - k8s/prereqs-admin.md
+  - k8s/architecture.md
+  - k8s/dmuc.md
+- - k8s/multinode.md
+  - k8s/cni.md
+- - k8s/setup-managed.md
+  - k8s/setup-selfhosted.md
+  - k8s/staticpods.md
+- - k8s/apilb.md
+  - k8s/cluster-upgrade.md
+  - k8s/cluster-backup.md
+  - k8s/cloud-controller-manager.md
+#DAY 4
+- - k8s/authn-authz.md
+  - k8s/csr-api.md
+  - k8s/bootstrap.md
+- - k8s/netpol.md
+  - k8s/podsecuritypolicy.md
+  - k8s/control-plane-auth.md
+- - k8s/statefulsets.md
+  - k8s/local-persistent-volumes.md
+  - k8s/portworx.md
+- - k8s/extending-api.md
+  - k8s/operators.md
+  - k8s/operators-design.md
+- - k8s/lastwords-admin.md
+  - k8s/links.md
+  - shared/thankyou.md
+
+
