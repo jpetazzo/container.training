@@ -1,0 +1,94 @@
+# This is mirrored from https://github.com/upmc-enterprises/elasticsearch-operator/blob/master/example/controller.yaml but using the elasticsearch-operator namespace instead of operator
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: elasticsearch-operator
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: elasticsearch-operator
+  namespace: elasticsearch-operator
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: elasticsearch-operator
+rules:
+- apiGroups: ["extensions"]
+  resources: ["deployments", "replicasets", "daemonsets"]
+  verbs: ["create", "get", "update", "delete", "list"]
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  verbs: ["create", "get", "update", "delete", "list"]
+- apiGroups: ["storage.k8s.io"]
+  resources: ["storageclasses"]
+  verbs: ["get", "list", "create", "delete", "deletecollection"]
+- apiGroups: [""]
+  resources: ["persistentvolumes", "persistentvolumeclaims", "services", "secrets", "configmaps"] 
+  verbs: ["create", "get", "update", "delete", "list"]
+- apiGroups: ["batch"]
+  resources: ["cronjobs", "jobs"]
+  verbs: ["create", "get", "deletecollection", "delete"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["list", "get", "watch"]
+- apiGroups: ["apps"]
+  resources: ["statefulsets", "deployments"]
+  verbs: ["*"]
+- apiGroups: ["enterprises.upmc.com"]
+  resources: ["elasticsearchclusters"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: elasticsearch-operator
+  namespace: elasticsearch-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: elasticsearch-operator
+subjects:
+- kind: ServiceAccount
+  name: elasticsearch-operator
+  namespace: elasticsearch-operator
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: elasticsearch-operator
+  namespace: elasticsearch-operator
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: elasticsearch-operator
+    spec:
+      containers:
+      - name: operator
+        image: upmcenterprises/elasticsearch-operator:0.2.0
+        imagePullPolicy: Always
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        ports:
+        - containerPort: 8000
+          name: http
+        livenessProbe:
+          httpGet:
+            path: /live
+            port: 8000
+          initialDelaySeconds: 10
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+      serviceAccount: elasticsearch-operator
