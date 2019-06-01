@@ -72,13 +72,30 @@
 
 - Do we need to store state? If so, where?
 
-  - the Kubernetes API can store state that is small and doesn't change much
+  - state that is small and doesn't change much can be stored via the Kubernetes API
     <br/>
     (e.g.: leader information, configuration, credentials)
 
   - things that are big and/or change a lot should go elsewhere
     <br/>
     (e.g.: metrics, bigger configuration file like GeoIP)
+
+---
+
+class: extra-details
+
+## What can we store via the Kubernetes API?
+
+- The API server stores most Kubernetes resources into etcd
+
+- Etcd is designed for reliability, not for performance
+
+- If our storage needs exceed what etcd can offer, we need to use something else:
+
+  - either directly
+
+  - or by extending the API server
+    <br/>(for instance by using the agregation layer, like [metrics server](https://github.com/kubernetes-incubator/metrics-server) does)
 
 ---
 

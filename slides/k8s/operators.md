@@ -83,7 +83,7 @@ Examples:
 
   Examples: ElasticSearch, MongoDB ...
 
-- Systems that depend on other non-trivial systems
+- Systems with complex dependencies (that are themselves managed with operators)
 
   Examples: Flink or Kafka, which both depend on Zookeeper
 
