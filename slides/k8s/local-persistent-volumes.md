@@ -32,6 +32,30 @@
 
 ---
 
+## If we have a dynamic provisioner ...
+
+- The labs in this section assume that we *do not* have a dynamic provisioner
+
+- If we do have one, we need to disable it
+
+.exercise[
+
+- Check if we have a dynamic provisioner:
+  ```bash
+  kubectl get storageclass
+  ```
+
+- If the output contains a line with `(default)`, run this command:
+  ```bash
+  kubectl annotate sc storageclass.kubernetes.io/is-default-class- --all
+  ```
+
+- Check again that it is no longer marked as `(default)`
+
+]
+
+---
+
 ## Work in a separate namespace
 
 - To avoid conflicts with existing resources, let's create and use a new namespace
@@ -50,7 +74,7 @@
 
 ]
 
-.warning[Make sure to call that namespace `orange`, because that name is hardcoded in the YAML files.]
+.warning[Make sure to call that namespace `orange`: it is hardcoded in the YAML files.]
 
 ---
 
