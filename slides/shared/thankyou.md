@@ -18,13 +18,16 @@ That's all, folks! <br/> Questions?
 
   (More slides, videos, dates of upcoming workshops and tutorials...)
 
-- This workshop is also available as longer training sessions:
+- If you liked this format, I can also teach the following courses:
 
   - [two-day Kubernetes bootstrap](https://tinyshellscript.com/kubernetes-bootstrap.html)
 
   - [four-day Kubernetes administrator training](https://tinyshellscript.com/kubernetes-ops-week.html)
 
-- If you want me to train your team:
-  [contact me!](https://docs.google.com/forms/d/e/1FAIpQLScm2evHMvRU8C5ZK59l8FGsLY_Kkup9P_GHgjfByUMyMpMmDA/viewform)
+  - custom courses of any length, covering Docker, Swarm, Kubernetes
+
+- If you want me to train your team, contact me:
+
+  jerome.petazzoni@gmail.com
 
 .footnote[*Thank you!*]
