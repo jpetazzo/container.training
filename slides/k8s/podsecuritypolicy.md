@@ -586,7 +586,7 @@ class: extra-details
 
 - Our cluster is currently broken
 
-  (we can't create pods in kube-system, default, ...)
+  (we can't create pods in namespaces kube-system, default, ...)
 
 - We need to either:
 

@@ -372,18 +372,6 @@ class: extra-details
 
 ---
 
-## PID 1
-
-
-- W
-
-- On normal systems
-
-- FIXME
-
-
----
-
 ## Healthchecks for worker
 
 - Readiness isn't useful
