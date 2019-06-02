@@ -88,7 +88,7 @@
 
 - We will use the JWT to authenticate
 
-.footnote[If you can't or won't use a Google Account, you can try to adapt to another provider.]
+.footnote[If you can't or won't use a Google account, you can try to adapt to another provider.]
 
 ---
 
@@ -276,11 +276,13 @@ cannot list resource "nodes" in API group "" at the cluster scope
 
 .exercise[
 
-- Create a ClusterRoleBinding allowing us read access to the cluster:
+- Create a ClusterRoleBinding allowing us to view resources:
   ```bash
     kubectl create clusterrolebinding i-can-view \
             --user=`jean.doe@gmail.com` --clusterrole=view
   ```
+
+  (make sure to put *your* Google email address there)
 
 - Confirm that we can now list pods with our token:
    ```bash
