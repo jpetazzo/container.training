@@ -104,7 +104,7 @@
 
 - We can `kubectl delete` a static pod ...
 
-  ... But the kubelet will restart it immediately
+  ... But the kubelet will re-mirror it immediately
 
 - Static pods can be selected just like other pods
 
