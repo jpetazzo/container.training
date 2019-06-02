@@ -8,11 +8,10 @@ chat: "In person!"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://sfsf-2019-06.container.training/
 
 exclude:
 - self-paced
-- static-pods-exercise
 
 chapters:
 - shared/title.md
@@ -22,19 +21,25 @@ chapters:
 - shared/toc.md
 - - k8s/prereqs-admin.md
   - k8s/architecture.md
+  - k8s/deploymentslideshow.md
   - k8s/dmuc.md
 - - k8s/multinode.md
   - k8s/cni.md
   - k8s/apilb.md
-  #FIXME: check le talk de Laurent Corbes pour voir s'il y a d'autres choses utiles à mentionner
-  #BONUS: intégration CoreDNS pour résoudre les noms des clusters des voisins
-- - k8s/setup-managed.md
-  - k8s/setup-selfhosted.md
-  - k8s/cluster-upgrade.md
-  - k8s/staticpods.md
-  - k8s/cluster-backup.md
-  - k8s/cloud-controller-manager.md
-  - k8s/bootstrap.md  
+- - k8s/volumes.md
+  - k8s/configuration.md
+  - k8s/statefulsets.md
+  - k8s/local-persistent-volumes.md
+  #- k8s/portworx.md
+- - k8s/logs-cli.md
+  - k8s/logs-centralized.md
+  - k8s/prometheus.md
+  - k8s/healthchecks.md
+  - k8s/healthchecks-more.md
+- - k8s/extending-api.md
+  - k8s/operators.md
+  - k8s/operators-design.md
+  - k8s/owners-and-dependents.md
 - - k8s/resource-limits.md
   - k8s/metrics-server.md
   - k8s/cluster-sizing.md
@@ -42,3 +47,4 @@ chapters:
 - - k8s/lastwords-admin.md
   - k8s/links.md
   - shared/thankyou.md
+
