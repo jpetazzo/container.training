@@ -34,7 +34,7 @@
   ```bash
 
 	while read kind name; do
-	  kubectl get -o yaml --export $kind $name > dockercoins/templates/$name-$kind.yaml
+	  kubectl get -o yaml $kind $name > dockercoins/templates/$name-$kind.yaml
 	done <<EOF
 	deployment worker
 	deployment hasher
