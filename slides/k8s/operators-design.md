@@ -1,4 +1,4 @@
-## What does it take to write an operator?
+# Designing an operator (extra material)
 
 - Writing a quick-and-dirty operator, or a POC/MVP, is easy
 
