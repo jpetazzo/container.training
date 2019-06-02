@@ -81,16 +81,6 @@ The list includes the following providers:
 
 ---
 
-## Audience questions
-
-- What kind of clouds are you using / planning to use?
-
-- What kind of details would you like to see in this section?
-
-- Would you appreciate details on clouds that you don't / won't use?
-
----
-
 ## Cloud Controller Manager in practice
 
 - Write a configuration file

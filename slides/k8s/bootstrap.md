@@ -1,4 +1,4 @@
-# TLS bootstrap
+# TLS bootstrap (extra material)
 
 - kubelet needs TLS keys and certificates to communicate with the control plane
 
