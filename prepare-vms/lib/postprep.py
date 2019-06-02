@@ -63,6 +63,7 @@ system("echo docker:{} | sudo chpasswd".format(DOCKER_USER_PASSWORD))
 # Fancy prompt courtesy of @soulshake.
 system("""sudo -u docker tee -a /home/docker/.bashrc <<SQRL
 export PS1='\e[1m\e[31m[{}] \e[32m(\\$(docker-prompt)) \e[34m\u@\h\e[35m \w\e[0m\n$ '
+export KUBE_PS1_ENABLED='off'
 SQRL""".format(ipv4))
 
 # Custom .vimrc

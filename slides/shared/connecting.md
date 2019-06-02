@@ -84,14 +84,14 @@ You will need a Docker ID to use Play-With-Docker.
 
 - Unless instructed, **all commands must be run from the first VM, `node1`**
 
-- We will only checkout/copy the code on `node1`
+- We will only check out/copy the code on `node1`
 
 - During normal operations, we do not need access to the other nodes
 
 - If we had to troubleshoot issues, we would use a combination of:
 
   - SSH (to access system logs, daemon status...)
-  
+
   - Docker API (to check running containers and container engine status)
 
 ---
