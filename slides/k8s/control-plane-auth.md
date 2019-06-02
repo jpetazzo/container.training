@@ -40,9 +40,15 @@
 
 - We will review the various communication channels in the control plane
 
-- We will indicate how they are secured (client- and server-side)
+- We will describe how they are secured
 
-- For TLS
+- When TLS certificates are used, we will indicate:
+
+  - which CA signs them
+
+  - what their subject (CN) should be, when applicable
+
+- We will indicate how to configure security (client- and server-side)
 
 ---
 
@@ -146,7 +152,9 @@
 
   (typically using the same CA as the API server)
 
-- API server is started with flags `--kubelet-client-certificate` and `--kubelet-client-key`
+- API server will use a dedicated key pair when contacting kubelet
+
+  (specified with `--kubelet-client-certificate` and `--kubelet-client-key`)
 
 - Authorization uses webhooks
 
