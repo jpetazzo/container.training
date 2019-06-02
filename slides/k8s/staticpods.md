@@ -62,7 +62,7 @@
 
 - These "manifests" are basically YAML definitions
 
-  (As produced by `kubectl get pod my-little-pod -o yaml --export`)
+  (As produced by `kubectl get pod my-little-pod -o yaml`)
 
 ---
 
