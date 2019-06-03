@@ -1,4 +1,4 @@
-# The Container Network Interface
+how
 
 - Allows us to decouple network configuration from Kubernetes
 
@@ -193,7 +193,7 @@ class: extra-details
 - This DaemonSet will start one instance of kube-router on each node
 
 ---
-  
+
 ## Logging into the new cluster
 
 .exercise[
@@ -254,7 +254,7 @@ class: extra-details
 
 ---
 
-## The kube-router DaemonSet 
+## The kube-router DaemonSet
 
 - In the same directory, there is a `kuberouter.yaml` file
 
@@ -321,7 +321,7 @@ Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
 - Copy `kubeconfig` to the other nodes:
   ```bash
     for N in 2 3; do
-    	scp ~/kubeconfig "kuberouter$N":
+       scp ~/kubeconfig kuberouter$N:
     done
   ```
 
@@ -494,7 +494,7 @@ What does that mean?
 
 - Then view the logs:
   ```bash
-  docker logs "$CID"
+  docker logs $CID
   ```
 
 ---
@@ -599,13 +599,13 @@ done
 
 ## Updating kube-router configuration
 
-- We need to add two command-line flags to the kube-router process
+- We need to pass two command-line flags to the kube-router process
 
 .exercise[
 
 - Edit the `kuberouter.yaml` file
 
-- Add the following flags to the kube-router arguments,:
+- Add the following flags to the kube-router arguments:
   ```
   - "--peer-router-ips=`X.X.X.X`"
   - "--peer-router-asns=64512"
