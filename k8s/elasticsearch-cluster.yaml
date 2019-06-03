@@ -1,0 +1,21 @@
+apiVersion: enterprises.upmc.com/v1
+kind: ElasticsearchCluster
+metadata:
+  name: es
+spec:
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.1.3
+    image-pull-policy: Always
+  cerebro:
+    image: upmcenterprises/cerebro:0.7.2
+    image-pull-policy: Always
+  elastic-search-image: upmcenterprises/docker-elasticsearch-kubernetes:6.1.3_0
+  image-pull-policy: Always
+  client-node-replicas: 2
+  master-node-replicas: 3
+  data-node-replicas: 3
+  network-host: 0.0.0.0
+  use-ssl: false
+  data-volume-size: 10Gi
+  java-options: "-Xms512m -Xmx512m"
+
