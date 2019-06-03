@@ -494,7 +494,7 @@ What does that mean?
 
 - Then view the logs:
   ```bash
-  docker logs "$CID"
+  docker logs $CID
   ```
 
 ---
