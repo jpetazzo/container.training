@@ -340,7 +340,7 @@ container_cpu_usage_seconds_total
 
   - that it's the total used since the container creation
 
-- Since it's a "total", it is an increasing quantity
+- Since it's a "total," it is an increasing quantity
 
   (we need to compute the derivative if we want e.g. CPU % over time)
 
@@ -495,7 +495,7 @@ class: extra-details
 
 ## Querying labels
 
-- What if we want to get metrics for containers belong to pod tagged `worker`?
+- What if we want to get metrics for containers belonging to a pod tagged `worker`?
 
 - The cAdvisor exporter does not give us Kubernetes labels
 

@@ -26,7 +26,7 @@
 
 The reference plugins are available [here].
 
-Look into each plugin's directory for its documentation.
+Look in each plugin's directory for its documentation.
 
 [here]: https://github.com/containernetworking/plugins/tree/master/plugins
 
@@ -98,7 +98,7 @@ class: extra-details
 
   - CNI_NETNS: path to network namespace file
 
-  - CNI_IFNAME: how the network interface should be named
+  - CNI_IFNAME: what the network interface should be named
 
 - The network configuration must be provided to the plugin on stdin
 
@@ -321,7 +321,7 @@ Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
 - Copy `kubeconfig` to the other nodes:
   ```bash
     for N in 2 3; do
-    	scp ~/kubeconfig kuberouter$N:
+    	scp ~/kubeconfig "kuberouter$N":
     done
   ```
 
@@ -494,7 +494,7 @@ What does that mean?
 
 - Then view the logs:
   ```bash
-  docker logs $CID
+  docker logs "$CID"
   ```
 
 ---

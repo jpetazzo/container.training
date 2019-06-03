@@ -88,7 +88,7 @@
 
   - the control loop watches over ingress resources, and configures the LB accordingly
 
-- Step 2: setup DNS
+- Step 2: set up DNS
 
   - associate DNS entries with the load balancer address
 
@@ -126,7 +126,7 @@
 
 - We could use pods specifying `hostPort: 80` 
 
-  ... but with most CNI plugins, this [doesn't work or require additional setup](https://github.com/kubernetes/kubernetes/issues/23920)
+  ... but with most CNI plugins, this [doesn't work or requires additional setup](https://github.com/kubernetes/kubernetes/issues/23920)
 
 - We could use a `NodePort` service
 
@@ -142,7 +142,7 @@
 
   (sometimes called sandbox or network sandbox)
 
-- An IP address is associated to the pod
+- An IP address is assigned to the pod
 
 - This IP address is routed/connected to the cluster network
 
@@ -239,7 +239,7 @@ class: extra-details
 
   - an error condition on the node
     <br/>
-    (for instance: "disk full", do not start new pods here!)
+    (for instance: "disk full," do not start new pods here!)
 
 - The `effect` can be:
 
@@ -501,11 +501,11 @@ spec:
 
   (as long as it has access to the cluster subnet)
 
-- This allows to use external (hardware, physical machines...) load balancers
+- This allows the use of external (hardware, physical machines...) load balancers
 
 - Annotations can encode special features
 
-  (rate-limiting, A/B testing, session stickiness, etc.) 
+  (rate-limiting, A/B testing, session stickiness, etc.)
 
 ---
 

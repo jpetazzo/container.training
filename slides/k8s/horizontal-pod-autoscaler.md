@@ -34,7 +34,7 @@
 
   `TargetNumOfPods = ceil(sum(CurrentPodsCPUUtilization) / Target)`
 
-- It scales up/down the related object to this target number of pods
+- It scales the related object up/down to this target number of pods
 
 ---
 
