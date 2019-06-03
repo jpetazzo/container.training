@@ -177,7 +177,7 @@ class: extra-details
 
 - In that case, there is no "master node"
 
-*For this reason, it is more accurate to say "control plane" rather than "master".*
+*For this reason, it is more accurate to say "control plane" rather than "master."*
 
 ---
 

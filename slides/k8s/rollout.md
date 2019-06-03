@@ -5,9 +5,9 @@
   - new pods are created
 
   - old pods are terminated
-  
+
   - ... all at the same time
-  
+
   - if something goes wrong, ¯\\\_(ツ)\_/¯
 
 ---
@@ -212,7 +212,7 @@ class: extra-details
 
 ## Checking the dashboard during the bad rollout
 
-If you haven't deployed the Kubernetes dashboard earlier, just skip this slide.
+If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 .exercise[
 
@@ -255,7 +255,7 @@ Note the `3xxxx` port.
 ```
 -->
 
-- Cancel the deployment and wait for the dust to settle down:
+- Cancel the deployment and wait for the dust to settle:
   ```bash
   kubectl rollout undo deploy worker
   kubectl rollout status deploy worker

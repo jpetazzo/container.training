@@ -2,7 +2,7 @@
 
 - We will now use new sets of VMs
 
-- Look out for new individual card with connection information!
+- Look out for new individual cards with connection information!
 
 ---
 

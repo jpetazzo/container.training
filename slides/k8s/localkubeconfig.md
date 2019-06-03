@@ -75,9 +75,9 @@ Platform:"linux/amd64"}
 
 ---
 
-## Moving away the existing `~/.kube/config`
+## Preserving the existing `~/.kube/config`
 
-- If you already have a `~/.kube/config` file, move it away
+- If you already have a `~/.kube/config` file, rename it
 
   (we are going to overwrite it in the following slides!)
 
@@ -192,4 +192,4 @@ class: extra-details
 
 ]
 
-We can now utilize the cluster exactly as we did before, ignoring that it's remote.
+We can now utilize the cluster exactly as we did before, except that it's remote.

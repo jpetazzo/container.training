@@ -356,9 +356,9 @@ We demonstrated *update* and *watch* semantics.
 
   - we create a Deployment object
 
-  - the Deployment controller notices it, creates a ReplicaSet
+  - the Deployment controller notices it, and creates a ReplicaSet
 
-  - the ReplicaSet controller notices it, creates a Pod
+  - the ReplicaSet controller notices the ReplicaSet, and creates a Pod
 
 ---
 

@@ -26,7 +26,7 @@
 
 - We cannot have two resources *of the same kind* with the same name
 
-  (but it's OK to have a `rng` service, a `rng` deployment, and a `rng` daemon set)
+  (but it's OK to have an `rng` service, an `rng` deployment, and an `rng` daemon set)
 
 --
 

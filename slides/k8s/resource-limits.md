@@ -392,7 +392,7 @@ These quotas will apply to the namespace where the ResourceQuota is created.
         count/roles.rbac.authorization.k8s.io: 10
   ```
 
-(The `count/` syntax allows to limit arbitrary objects, including CRDs.)
+(The `count/` syntax allows limiting arbitrary objects, including CRDs.)
 
 ---
 

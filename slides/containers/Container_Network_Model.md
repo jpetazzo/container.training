@@ -474,7 +474,7 @@ When creating a network, extra options can be provided.
 
 * `--ip-range` (in CIDR notation) indicates the subnet to allocate from.
 
-* `--aux-address` allows to specify a list of reserved addresses (which won't be allocated to containers).
+* `--aux-address` allows specifying a list of reserved addresses (which won't be allocated to containers).
 
 ---
 
@@ -556,7 +556,7 @@ General idea:
 
 * So far, we have specified which network to use when starting the container.
 
-* The Docker Engine also allows to connect and disconnect while the container runs.
+* The Docker Engine also allows connecting and disconnecting while the container is running.
 
 * This feature is exposed through the Docker API, and through two Docker CLI commands:
 
