@@ -321,7 +321,7 @@ Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
 - Copy `kubeconfig` to the other nodes:
   ```bash
     for N in 2 3; do
-    	scp ~/kubeconfig "kuberouter$N":
+    	scp ~/kubeconfig kuberouter$N:
     done
   ```
 
