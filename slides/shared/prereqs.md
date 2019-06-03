@@ -80,9 +80,9 @@ class: in-person
 
 - You should have a little card with login+password+IP addresses
 
-- You can SSH from one VM to another
+- You can SSH from one VM to another without typing a password
 
-- The nodes have SSH aliases: `node1`, `node2`, etc.
+- The nodes have aliases: `node1`, `node2`, etc.
 
 ---
 
