@@ -304,9 +304,9 @@ It will use the default success threshold (1 successful attempt = alive).
 - We need to make sure that the healthcheck doesn't trip when
   performance degrades due to external pressure
 
-- Using a readiness check would have lesser effects
+- Using a readiness check would have fewer effects
 
-  (but it still would be an imperfect solution)
+  (but it would still be an imperfect solution)
 
 - A possible combination:
 
@@ -344,7 +344,7 @@ class: extra-details
 
 - When a process is killed, its children are *orphaned* and attached to PID 1
 
-- PID 1 has the responsibility if *reaping* these processes when they terminate
+- PID 1 has the responsibility of *reaping* these processes when they terminate
 
 - OK, but how does that affect us?
 
@@ -378,11 +378,11 @@ class: extra-details
 
   (because worker isn't a backend for a service)
 
-- Liveness may help us to restart a broken worker, but how can we check it?
+- Liveness may help us restart a broken worker, but how can we check it?
 
 - Embedding an HTTP server is an option
 
-  (but it has a high potential for unwanted side-effects and false positives)
+  (but it has a high potential for unwanted side effects and false positives)
 
 - Using a "lease" file can be relatively easy:
 
