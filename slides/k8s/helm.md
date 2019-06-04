@@ -158,7 +158,7 @@ Where do these `--set` options come from?
 
 ]
 
-The chart's metadata includes an URL to the project's home page.
+The chart's metadata includes a URL to the project's home page.
 
 (Sometimes it conveniently points to the documentation for the chart.)
 

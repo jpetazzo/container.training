@@ -132,7 +132,7 @@ class: extra-details
 
   - short (e.g. `no`, `svc`, `deploy`)
 
-- Some resources do not have a short names
+- Some resources do not have a short name
 
 - `Endpoints` only have a plural form
 
