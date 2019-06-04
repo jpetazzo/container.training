@@ -90,7 +90,7 @@ class: in-person
 
 ## Why don't we run containers locally?
 
-- Installing that stuff can be hard on some machines
+- Installing this stuff can be hard on some machines
 
   (32 bits CPU or OS... Laptops without administrator access... etc.)
 

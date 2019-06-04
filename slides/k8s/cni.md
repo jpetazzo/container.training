@@ -26,7 +26,7 @@
 
 The reference plugins are available [here].
 
-Look into each plugin's directory for its documentation.
+Look in each plugin's directory for its documentation.
 
 [here]: https://github.com/containernetworking/plugins/tree/master/plugins
 
@@ -98,7 +98,7 @@ class: extra-details
 
   - CNI_NETNS: path to network namespace file
 
-  - CNI_IFNAME: how the network interface should be named
+  - CNI_IFNAME: what the network interface should be named
 
 - The network configuration must be provided to the plugin on stdin
 
@@ -193,7 +193,7 @@ class: extra-details
 - This DaemonSet will start one instance of kube-router on each node
 
 ---
-  
+
 ## Logging into the new cluster
 
 .exercise[
@@ -221,7 +221,7 @@ class: extra-details
 - It is similar to the one we used with the `kubenet` cluster
 
 - The API server is started with `--allow-privileged`
-  
+
   (because we will start kube-router in privileged pods)
 
 - The controller manager is started with extra flags too:
@@ -254,7 +254,7 @@ class: extra-details
 
 ---
 
-## The kube-router DaemonSet 
+## The kube-router DaemonSet
 
 - In the same directory, there is a `kuberouter.yaml` file
 
@@ -599,13 +599,13 @@ done
 
 ## Updating kube-router configuration
 
-- We need to add two command-line flags to the kube-router process
+- We need to pass two command-line flags to the kube-router process
 
 .exercise[
 
 - Edit the `kuberouter.yaml` file
 
-- Add the following flags to the kube-router arguments,:
+- Add the following flags to the kube-router arguments:
   ```
   - "--peer-router-ips=`X.X.X.X`"
   - "--peer-router-asns=64512"
