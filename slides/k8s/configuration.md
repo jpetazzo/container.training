@@ -22,7 +22,7 @@
 
 - There are many ways to pass configuration to code running in a container:
 
-  - baking it in a custom image
+  - baking it into a custom image
 
   - command-line arguments
 
@@ -125,7 +125,7 @@
 
 - We can also use a mechanism called the *downward API*
 
-- The downward API allows to expose pod or container information
+- The downward API allows exposing pod or container information
 
   - either through special files (we won't show that for now)
 
@@ -436,7 +436,7 @@ We should see connections served by Google, and others served by IBM.
 
 - We are going to store the port number in a configmap
 
-- Then we will expose that configmap to a container environment variable
+- Then we will expose that configmap as a container environment variable
 
 ---
 

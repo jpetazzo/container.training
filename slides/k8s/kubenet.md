@@ -54,7 +54,7 @@
 
   (15 are listed in the Kubernetes documentation)
 
-- Pods have level 3 (IP) connectivity, but *services* are level 4
+- Pods have level 3 (IP) connectivity, but *services* are level 4 (TCP or UDP)
 
   (Services map to a single UDP or TCP port; no port ranges or arbitrary IP packets)
 
