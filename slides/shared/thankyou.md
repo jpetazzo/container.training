@@ -14,9 +14,7 @@ That's all, folks! <br/> Questions?
 
 ## Final words
 
-- You can find more content on http://container.training/
-
-  (More slides, videos, dates of upcoming workshops and tutorials...)
+- **Please rate this session!** (with [this link](https://conferences.oreilly.com/velocity/vl-ca/public/schedule/detail/75313))
 
 - If you liked this format, I can also teach the following courses:
 
