@@ -300,12 +300,10 @@ Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
 
 - Generate the kubeconfig file (replacing `X.X.X.X` with the address of `kuberouter1`):
   ```bash
-    kubectl --kubeconfig ~/kubeconfig config \
-            set-cluster kubenet --server http://`X.X.X.X`:8080
-    kubectl --kubeconfig ~/kubeconfig config \
-            set-context kubenet --cluster kubenet
-    kubectl --kubeconfig ~/kubeconfig config\
-            use-context kubenet
+    kubectl config set-cluster cni --server http://`X.X.X.X`:8080
+    kubectl config set-context cni --cluster cni
+    kubectl config use-context cni
+    cp ~/.kube/config ~/kubeconfig
   ```
 
 ]
