@@ -70,7 +70,7 @@
 
 - We need to run `ship init` in a new directory
 
-- `ship init` requires an URL to a remote repository containing Kubernetes YAML
+- `ship init` requires a URL to a remote repository containing Kubernetes YAML
 
 - It will clone that repository and start a web UI
 

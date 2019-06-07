@@ -72,7 +72,7 @@
 
 - For memory usage, the mechanism is part of the *cgroup* subsystem.
 
-- This subsystem allows to limit the memory for a process or a group of processes.
+- This subsystem allows limiting the memory for a process or a group of processes.
 
 - A container engine leverages these mechanisms to limit memory for a container.
 
