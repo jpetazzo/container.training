@@ -20,7 +20,7 @@ with a cloud provider
 
 ## EKS (the hard way)
 
-- [Read the doc](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
+- [Read the doc](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html)
 
 - Create service roles, VPCs, and a bunch of other oddities
 
@@ -68,6 +68,8 @@ with a cloud provider
   ```bash
   eksctl get clusters
   ```
+
+.footnote[Note: the AWS documentation has been updated and now includes [eksctl instructions](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html).]
 
 ---
 
