@@ -36,9 +36,9 @@
 
 ---
 
-## Adding healthchecks to an app
+# Adding healthchecks to an app (bonus material)
 
-- Let's add healthchecks to DockerCoins!
+- Let's add healthchecks to the DockerCoins demo app!
 
 - We will examine the questions of the previous slide
 
