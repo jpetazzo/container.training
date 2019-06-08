@@ -37,7 +37,8 @@ chapters:
   - k8s/healthchecks.md
   - k8s/healthchecks-more.md
 # DAY 2
-- - k8s/logs-cli.md
+- - k8s/kubercoins.md
+  - k8s/logs-cli.md
   - k8s/logs-centralized.md
   - k8s/authn-authz.md
   - k8s/csr-api.md
