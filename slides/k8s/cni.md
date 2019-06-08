@@ -188,9 +188,13 @@ class: extra-details
 
 - ... But this time, the controller manager will allocate `podCIDR` subnets
 
-- We will start kube-router with a DaemonSet
+  (so that we don't have to manually assign subnets to individual nodes)
 
-- This DaemonSet will start one instance of kube-router on each node
+- We will create a DaemonSet for kube-router
+
+- We will join nodes to the cluster
+
+- The DaemonSet will automatically start a kube-router pod on each node
 
 ---
 
