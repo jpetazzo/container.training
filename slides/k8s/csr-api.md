@@ -58,9 +58,9 @@
 
 This is what I do if I want to obtain a certificate.
 
-1. Create public and private key.
+1. Create public and private keys.
 
-2. Create a Certificate Signing Request (CSR) using this private key.
+2. Create a Certificate Signing Request (CSR).
 
    (The CSR contains the identity that I claim and an expiration date.)
 
