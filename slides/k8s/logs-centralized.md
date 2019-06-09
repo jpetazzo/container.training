@@ -73,12 +73,12 @@ and a few roles and role bindings (to give fluentd the required permissions).
 
 - Fluentd runs on each node (thanks to a daemon set)
 
-- It binds-mounts `/var/log/containers` from the host (to access these files)
+- It bind-mounts `/var/log/containers` from the host (to access these files)
 
 - It continuously scans this directory for new files; reads them; parses them
 
 - Each log line becomes a JSON object, fully annotated with extra information:
-  <br/>container id, pod name, Kubernetes labels ...
+  <br/>container id, pod name, Kubernetes labels...
 
 - These JSON objects are stored in ElasticSearch
 
