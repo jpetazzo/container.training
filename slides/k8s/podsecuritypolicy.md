@@ -8,11 +8,17 @@
 
 - Then we will explain how to avoid this with PodSecurityPolicies
 
-- We will illustrate this by creating a non-privileged user limited to a namespace
+- We will enable PodSecurityPolicies on our cluster
+
+- We will create a couple of policies (restricted and permissive)
+
+- Finally we will see how to use them to improve security on our cluster
 
 ---
 
 ## Setting up a namespace
+
+- For simplicity, let's work in a separate namespace
 
 - Let's create a new namespace called "green"
 
@@ -32,168 +38,9 @@
 
 ---
 
-## Using limited credentials
-
-- When a namespace is created, a `default` ServiceAccount is added
-
-- By default, this ServiceAccount doesn't have any access rights
-
-- We will use this ServiceAccount as our non-privileged user
-
-- We will obtain this ServiceAccount's token and add it to a context
-
-- Then we will give basic access rights to this ServiceAccount
-
----
-
-## Obtaining the ServiceAccount's token
-
-- The token is stored in a Secret
-
-- The Secret is listed in the ServiceAccount
-
-.exercise[
-
-- Obtain the name of the Secret from the ServiceAccount::
-  ```bash
-  SECRET=$(kubectl get sa default -o jsonpath={.secrets[0].name})
-  ```
-
-- Extract the token from the Secret object:
-  ```bash
-  TOKEN=$(kubectl get secrets $SECRET -o jsonpath={.data.token}
-          | base64 -d)
-  ```
-
-]
-
----
-
-class: extra-details
-
-## Inspecting a Kubernetes token
-
-- Kubernetes tokens are JSON Web Tokens
-
-  (as defined by [RFC 7519](https://tools.ietf.org/html/rfc7519))
-
-- We can view their content (and even verify them) easily
-
-.exercise[
-
-- Display the token that we obtained:
-  ```bash
-  echo $TOKEN
-  ```
-
-- Copy paste the token in the verification form on https://jwt.io
-
-]
-
----
-
-## Authenticating using the ServiceAccount token
-
-- Let's create a new *context* accessing our cluster with that token
-
-.exercise[
-
-- First, add the token credentials to our kubeconfig file:
-  ```bash
-  kubectl config set-credentials green --token=$TOKEN
-  ```
-
-- Then, create a new context using these credentials:
-  ```bash
-  kubectl config set-context green --user=green --cluster=kubernetes
-  ```
-
-- Check the results:
-  ```bash
-  kubectl config get-contexts
-  ```
-
-]
-
----
-
-## Using the new context
-
-- Normally, this context doesn't let us access *anything* (yet)
-
-.exercise[
-
-- Change to the new context with one of these two commands:
-  ```bash
-  kctx green
-  kubectl config use-context green
-  ```
-
-- Also change to the green namespace in that context:
-  ```bash
-  kns green
-  ```
-
-- Confirm that we don't have access to anything:
-  ```bash
-  kubectl get all
-  ```
-
-]
-
----
-
-## Giving basic access rights
-
-- Let's bind the ClusterRole `edit` to our ServiceAccount
-
-- To allow access only to the namespace, we use a RoleBinding
-
-  (instead of a ClusterRoleBinding, which would give global access)
-
-.exercise[
-
-- Switch back to `cluster-admin`:
-  ```bash
-  kctx -
-  ```
-
-- Create the Role Binding:
-  ```bash
-  kubectl create rolebinding green --clusterrole=edit --serviceaccount=green:default
-  ```
-
-]
-
----
-
-## Verifying access rights
-
-- Let's switch back to the `green` context and check that we have rights
-
-.exercise[
-
-- Switch back to `green`:
-  ```bash
-  kctx green
-  ```
-
-- Check our permissions:
-  ```bash
-  kubectl get all
-  ```
-
-]
-
-We should see an empty list.
-
-(Better than a series of permission errors!)
-
----
-
 ## Creating a basic Deployment
 
-- Just to demonstrate that everything works correctly, deploy NGINX
+- Just to check that everything works correctly, deploy NGINX
 
 .exercise[
 
@@ -474,11 +321,64 @@ We can get hints at what's happening by looking at the ReplicaSet and Events.
 
 ---
 
+## Check that we can create Pods again
+
+- We haven't bound the policy to any user yet
+
+- But `cluster-admin` can implicitly `use` all policies
+
+.exercise[
+
+- Check that we can now create a Pod directly:
+  ```bash
+  kubectl run testpsp3 --image=nginx --restart=Never
+  ```
+
+- Create a Deployment as well:
+  ```bash
+  kubectl run testpsp4 --image=nginx
+  ```
+
+- Confirm that the Deployment is *not* creating any Pods:
+  ```bash
+  kubectl get all
+  ```
+
+]
+
+---
+
+## What's going on?
+
+- We can create Pods directly (thanks to our root-like permissions)
+
+- The Pods corresponding to a Deployment are created by the ReplicaSet controller
+
+- The ReplicaSet controller does *not* have root-like permissions
+
+- We need to either:
+
+  - grant permissions to the ReplicaSet controller
+
+  *or*
+
+  - grant permissions to our Pods' ServiceAccount
+
+- The first option would allow *anyone* to create pods
+
+- The second option will allow us to scope the permissions better
+
+---
+
 ## Binding the restricted policy
 
 - Let's bind the role `psp:restricted` to ServiceAccount `green:default`
 
   (aka the default ServiceAccount in the green Namespace)
+
+- This will allow Pod creation in the green Namespace
+
+  (because these Pods will be using that ServiceAccount automatically)
 
 .exercise[
 
@@ -495,18 +395,17 @@ We can get hints at what's happening by looking at the ReplicaSet and Events.
 
 ## Trying it out
 
-- Let's switch to the `green` context, and try to create resources
+- The Deployments that we created earlier will *eventually* recover
+
+  (the ReplicaSet controller will retry to create Pods once in a while)
+
+- If we create a new Deployment now, it should work immediately
 
 .exercise[
 
-- Switch to the `green` context:
-  ```bash
-  kctx green
-  ```
-
 - Create a simple Deployment:
   ```bash
-  kubectl create deployment web --image=nginx
+  kubectl create deployment testpsp5 --image=nginx
   ```
 
 - Look at the Pods that have been created:
