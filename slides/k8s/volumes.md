@@ -28,11 +28,11 @@ class: extra-details
   <br/>
   but it refers to Docker 1.7, which was released in 2015!)
 
-- Docker volumes allow to share data between containers running on the same host
+- Docker volumes allow us to share data between containers running on the same host
 
 - Kubernetes volumes allow us to share data between containers in the same pod
 
-- Both Docker and Kubernetes volumes allow us access to storage systems
+- Both Docker and Kubernetes volumes enable access to storage systems
 
 - Kubernetes volumes are also used to expose configuration and secrets
 
@@ -60,7 +60,7 @@ class: extra-details
 
   - correspond to concrete volumes (e.g. on a SAN, EBS, etc.)
 
-  - cannot be associated to a Pod directly; but through a Persistent Volume Claim
+  - cannot be associated with a Pod directly; but through a Persistent Volume Claim
 
   - won't be discussed further in this section
 

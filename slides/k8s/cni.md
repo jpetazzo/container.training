@@ -26,7 +26,7 @@
 
 The reference plugins are available [here].
 
-Look into each plugin's directory for its documentation.
+Look in each plugin's directory for its documentation.
 
 [here]: https://github.com/containernetworking/plugins/tree/master/plugins
 
@@ -98,7 +98,7 @@ class: extra-details
 
   - CNI_NETNS: path to network namespace file
 
-  - CNI_IFNAME: how the network interface should be named
+  - CNI_IFNAME: what the network interface should be named
 
 - The network configuration must be provided to the plugin on stdin
 
@@ -188,12 +188,16 @@ class: extra-details
 
 - ... But this time, the controller manager will allocate `podCIDR` subnets
 
-- We will start kube-router with a DaemonSet
+  (so that we don't have to manually assign subnets to individual nodes)
 
-- This DaemonSet will start one instance of kube-router on each node
+- We will create a DaemonSet for kube-router
+
+- We will join nodes to the cluster
+
+- The DaemonSet will automatically start a kube-router pod on each node
 
 ---
-  
+
 ## Logging into the new cluster
 
 .exercise[
@@ -221,7 +225,7 @@ class: extra-details
 - It is similar to the one we used with the `kubenet` cluster
 
 - The API server is started with `--allow-privileged`
-  
+
   (because we will start kube-router in privileged pods)
 
 - The controller manager is started with extra flags too:
@@ -254,7 +258,7 @@ class: extra-details
 
 ---
 
-## The kube-router DaemonSet 
+## The kube-router DaemonSet
 
 - In the same directory, there is a `kuberouter.yaml` file
 
@@ -300,12 +304,10 @@ Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
 
 - Generate the kubeconfig file (replacing `X.X.X.X` with the address of `kuberouter1`):
   ```bash
-    kubectl --kubeconfig ~/kubeconfig config \
-            set-cluster kubenet --server http://`X.X.X.X`:8080
-    kubectl --kubeconfig ~/kubeconfig config \
-            set-context kubenet --cluster kubenet
-    kubectl --kubeconfig ~/kubeconfig config\
-            use-context kubenet
+    kubectl config set-cluster cni --server http://`X.X.X.X`:8080
+    kubectl config set-context cni --cluster cni
+    kubectl config use-context cni
+    cp ~/.kube/config ~/kubeconfig
   ```
 
 ]
@@ -487,8 +489,8 @@ What does that mean?
 
 - First, get the container ID, with `docker ps` or like this:
   ```bash
-  CID=$(docker ps
-        --filter label=io.kubernetes.pod.namespace=kube-system
+  CID=$(docker ps -q \
+        --filter label=io.kubernetes.pod.namespace=kube-system \
         --filter label=io.kubernetes.container.name=kube-router)
   ```
 
@@ -599,13 +601,13 @@ done
 
 ## Updating kube-router configuration
 
-- We need to add two command-line flags to the kube-router process
+- We need to pass two command-line flags to the kube-router process
 
 .exercise[
 
 - Edit the `kuberouter.yaml` file
 
-- Add the following flags to the kube-router arguments,:
+- Add the following flags to the kube-router arguments:
   ```
   - "--peer-router-ips=`X.X.X.X`"
   - "--peer-router-asns=64512"

@@ -77,9 +77,9 @@ If we wanted to talk to the API, we would need to:
 
 - This is a great tool to learn and experiment with the Kubernetes API
 
-- ... And for serious usages as well (suitable for one-shot scripts)
+- ... And for serious uses as well (suitable for one-shot scripts)
 
-- For unattended use, it is better to create a [service account](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
+- For unattended use, it's better to create a [service account](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
 
 ---
 

@@ -40,7 +40,8 @@ chapters:
   - k8s/operators.md
   - k8s/operators-design.md
   - k8s/owners-and-dependents.md
-- - k8s/logs-cli.md
+- - k8s/kubercoins.md
+  - k8s/logs-cli.md
   - k8s/logs-centralized.md
   - k8s/healthchecks.md
   - k8s/healthchecks-more.md

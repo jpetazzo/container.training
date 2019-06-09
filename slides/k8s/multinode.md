@@ -104,12 +104,10 @@ class: extra-details
 
 - Generate the `kubeconfig` file:
   ```bash
-    kubectl --kubeconfig ~/kubeconfig config \
-            set-cluster kubenet --server http://`X.X.X.X`:8080
-    kubectl --kubeconfig ~/kubeconfig config \
-            set-context kubenet --cluster kubenet
-    kubectl --kubeconfig ~/kubeconfig config\
-            use-context kubenet
+    kubectl config set-cluster kubenet --server http://`X.X.X.X`:8080
+    kubectl config set-context kubenet --cluster kubenet
+    kubectl config use-context kubenet
+    cp ~/.kube/config ~/kubeconfig
   ```
 
 ]
