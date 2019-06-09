@@ -46,7 +46,7 @@
 
   (and vice versa)
 
-- If I use someone's public key to encrypt / decrypt their messages,
+- If I use someone's public key to encrypt/decrypt their messages,
   <br/>
   I can be certain that I am talking to them / they are talking to me
 
@@ -58,7 +58,7 @@
 
 This is what I do if I want to obtain a certificate.
 
-1. Create public and private key.
+1. Create public and private keys.
 
 2. Create a Certificate Signing Request (CSR).
 
@@ -84,7 +84,7 @@ The CA (or anyone else) never needs to know my private key.
 
   (= upload a CSR to the Kubernetes API)
 
-- Then, using the Kubernetes API, we can approve / deny the request
+- Then, using the Kubernetes API, we can approve/deny the request
 
 - If we approve the request, the Kubernetes API generates a certificate
 
@@ -122,7 +122,7 @@ The CA (or anyone else) never needs to know my private key.
 
 - Users can then retrieve their certificate from their CSR object
 
-- ... And use that certificate for subsequent interactions
+- ...And use that certificate for subsequent interactions
 
 ---
 
@@ -387,7 +387,7 @@ The command above generates:
 
 ## What's missing?
 
-We shown, step by step, a method to issue short-lived certificates for users.
+We have just shown, step by step, a method to issue short-lived certificates for users.
 
 To be usable in real environments, we would need to add:
 
@@ -417,7 +417,7 @@ To be usable in real environments, we would need to add:
 
 - This provides enhanced security:
 
-  - the long-term credentials can use long passphrases, 2FA, HSM ...
+  - the long-term credentials can use long passphrases, 2FA, HSM...
 
   - the short-term credentials are more convenient to use
 
