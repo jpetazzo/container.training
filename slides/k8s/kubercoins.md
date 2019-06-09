@@ -209,7 +209,7 @@ https://@@GITREPO@@/blob/8279a3bce9398f7c1a53bdd95187c53eda4e6435/dockercoins/wo
 
 ## Our application at work
 
-- We can check the logs our application pods
+- We can check the logs of our application's pods
 
 .exercise[
 

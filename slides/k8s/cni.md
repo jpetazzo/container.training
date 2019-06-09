@@ -489,8 +489,8 @@ What does that mean?
 
 - First, get the container ID, with `docker ps` or like this:
   ```bash
-  CID=$(docker ps
-        --filter label=io.kubernetes.pod.namespace=kube-system
+  CID=$(docker ps -q \
+        --filter label=io.kubernetes.pod.namespace=kube-system \
         --filter label=io.kubernetes.container.name=kube-router)
   ```
 

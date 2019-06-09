@@ -80,7 +80,7 @@ and displays aggregated logs.
 
 - DockerCoins is *not* a cryptocurrency
 
-  (the only common points are "randomness", "hashing", and "coins" in the name)
+  (the only common points are "randomness," "hashing," and "coins" in the name)
 
 ---
 
