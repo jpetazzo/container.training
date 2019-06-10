@@ -117,7 +117,7 @@ Examples:
 
 ## Admission controllers
 
-- When a Pod is created, it is associated to a ServiceAccount
+- When a Pod is created, it is associated with a ServiceAccount
 
   (even if we did not specify one explicitly)
 
@@ -163,7 +163,7 @@ class: pic
 
 - These webhooks can be *validating* or *mutating*
 
-- Webhooks can be setup dynamically (without restarting the API server)
+- Webhooks can be set up dynamically (without restarting the API server)
 
 - To setup a dynamic admission webhook, we create a special resource:
 
@@ -171,7 +171,7 @@ class: pic
 
 - These resources are created and managed like other resources
 
-  (i.e. `kubectl create`, `kubectl get` ...)
+  (i.e. `kubectl create`, `kubectl get`...)
 
 ---
 
