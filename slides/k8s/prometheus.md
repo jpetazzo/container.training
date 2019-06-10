@@ -541,7 +541,7 @@ class: extra-details
 
 - That person can set up queries and dashboards for the rest of the team
 
-- It's a little bit likeknowing how to optimize SQL queries, Dockerfiles...
+- It's a little bit like knowing how to optimize SQL queries, Dockerfiles...
 
   Don't panic if you don't know these tools!
 
