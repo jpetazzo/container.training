@@ -49,7 +49,7 @@
   kubectl create deployment web --image=nginx
   ```
 
-- Confirm that the Deployment, ReplicaSet, and Pod exist, and Pod is running:
+- Confirm that the Deployment, ReplicaSet, and Pod exist, and that the Pod is running:
   ```bash
   kubectl get all
   ```
@@ -163,7 +163,7 @@
 - If we create a Pod directly, it can use a PSP to which *we* have access
 
 - If the Pod is created by e.g. a ReplicaSet or DaemonSet, it's different:
- 
+
   - the ReplicaSet / DaemonSet controllers don't have access to *our* policies
 
   - therefore, we need to give access to the PSP to the Pod's ServiceAccount
@@ -178,7 +178,7 @@
 
 - Then we will create a couple of PodSecurityPolicies
 
-- ... And associated ClusterRoles (giving `use` access to the policies)
+- ...And associated ClusterRoles (giving `use` access to the policies)
 
 - Then we will create RoleBindings to grant these roles to ServiceAccounts
 

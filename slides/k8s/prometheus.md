@@ -20,7 +20,7 @@
 
 - We don't endorse Prometheus more or less than any other system
 
-- It's relatively well integrated within the Cloud Native ecosystem
+- It's relatively well integrated within the cloud-native ecosystem
 
 - It can be self-hosted (this is useful for tutorials like this)
 
@@ -182,7 +182,7 @@ We need to:
 
 - Run the *node exporter* on each node (with a Daemon Set)
 
-- Setup a Service Account so that Prometheus can query the Kubernetes API
+- Set up a Service Account so that Prometheus can query the Kubernetes API
 
 - Configure the Prometheus server
 
@@ -250,7 +250,7 @@ class: extra-details
 
 ## Explaining all the Helm flags
 
-- `helm upgrade prometheus` → upgrade release "prometheus" to the latest version ...
+- `helm upgrade prometheus` → upgrade release "prometheus" to the latest version...
 
   (a "release" is a unique name given to an app deployed with Helm)
 
@@ -288,7 +288,7 @@ class: extra-details
 
 ## Querying some metrics
 
-- This is easy ... if you are familiar with PromQL
+- This is easy... if you are familiar with PromQL
 
 .exercise[
 
@@ -433,9 +433,9 @@ class: extra-details
 
 - I/O activity (disk, network), per operation or volume
 
-- Physical/hardware (when applicable): temperature, fan speed ...
+- Physical/hardware (when applicable): temperature, fan speed...
 
-- ... and much more!
+- ...and much more!
 
 ---
 
@@ -448,7 +448,7 @@ class: extra-details
 - RAM breakdown will be different
 
   - active vs inactive memory
-  - some memory is *shared* between containers, and accounted specially
+  - some memory is *shared* between containers, and specially accounted for
 
 - I/O activity is also harder to track
 
@@ -467,11 +467,11 @@ class: extra-details
 
 - Arbitrary metrics related to your application and business
 
-- System performance: request latency, error rate ...
+- System performance: request latency, error rate...
 
-- Volume information: number of rows in database, message queue size ...
+- Volume information: number of rows in database, message queue size...
 
-- Business data: inventory, items sold, revenue ...
+- Business data: inventory, items sold, revenue...
 
 ---
 
@@ -541,8 +541,8 @@ class: extra-details
 
 - That person can set up queries and dashboards for the rest of the team
 
-- It's a little bit likeknowing how to optimize SQL queries, Dockerfiles ...
+- It's a little bit like knowing how to optimize SQL queries, Dockerfiles...
 
   Don't panic if you don't know these tools!
 
-  ... But make sure at least one person in your team is on it 💯
+  ...But make sure at least one person in your team is on it 💯

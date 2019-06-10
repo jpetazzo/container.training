@@ -6,15 +6,15 @@
 
 - Horizontal scaling = changing the number of replicas
 
-  (adding / removing pods)
+  (adding/removing pods)
 
 - Vertical scaling = changing the size of individual replicas
 
-  (increasing / reducing CPU and RAM per pod)
+  (increasing/reducing CPU and RAM per pod)
 
 - Cluster scaling = changing the size of the cluster
 
-  (adding / removing nodes)
+  (adding/removing nodes)
 
 ---
 
@@ -50,9 +50,9 @@
 
 - The latter actually makes a lot of sense:
 
-  - if a Pod doesn't have a CPU request, it might be using 10% of CPU ...
+  - if a Pod doesn't have a CPU request, it might be using 10% of CPU...
 
-  - ... but only because there is no CPU time available!
+  - ...but only because there is no CPU time available!
 
   - this makes sure that we won't add pods to nodes that are already resource-starved
 
@@ -238,7 +238,7 @@ This can also be set with `--cpu-percent=`.
 
 - Kubernetes doesn't implement any of these API groups
 
-- Using these metrics requires to [register additional APIs](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-metrics-apis)
+- Using these metrics requires [registering additional APIs](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-metrics-apis)
 
 - The metrics provided by metrics server are standard; everything else is custom
 
