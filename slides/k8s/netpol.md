@@ -307,7 +307,7 @@ This policy selects all pods in the current namespace.
 
 It allows traffic only from pods in the current namespace.
 
-(An empty `podSelector` means "all pods".)
+(An empty `podSelector` means "all pods.")
 
 ```yaml
 kind: NetworkPolicy
@@ -329,7 +329,7 @@ This policy selects all pods with label `app=webui`.
 
 It allows traffic from any source.
 
-(An empty `from` fields means "all sources".)
+(An empty `from` field means "all sources.")
 
 ```yaml
 kind: NetworkPolicy
@@ -412,7 +412,7 @@ troubleshoot easily, without having to poke holes in our firewall.
 
 - If we block access to the control plane, we might disrupt legitimate code
 
-- ... Without necessarily improving security
+- ...Without necessarily improving security
 
 ---
 
