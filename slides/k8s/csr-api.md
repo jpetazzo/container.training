@@ -62,7 +62,7 @@ This is what I do if I want to obtain a certificate.
 
 2. Create a Certificate Signing Request (CSR).
 
-   (The CSR contains the identity that I claim and an expiration date.)
+   (The CSR contains the identity that I claim and a public key.)
 
 3. Send that CSR to the Certificate Authority (CA).
 
@@ -345,7 +345,7 @@ The command above generates:
   kctx -
   ```
 
-- Retrieve the certificate from the CSR:
+- Retrieve the certificate from the controller:
   ```bash
   kubectl get csr users:jean.doe \
           -o jsonpath={.status.certificate} \
