@@ -86,7 +86,7 @@ like Windows, macOS, Solaris, FreeBSD ...
 
 * No notion of image (container filesystems have to be managed manually).
 
-* Networking has to be setup manually.
+* Networking has to be set up manually.
 
 ---
 
@@ -112,7 +112,7 @@ like Windows, macOS, Solaris, FreeBSD ...
 
 * Strong emphasis on security (through privilege separation).
 
-* Networking has to be setup separately (e.g. through CNI plugins).
+* Networking has to be set up separately (e.g. through CNI plugins).
 
 * Partial image management (pull, but no push).
 
@@ -152,7 +152,7 @@ We're not aware of anyone using it directly (i.e. outside of Kubernetes).
 
 * Basic image support (tar archives and raw disk images).
 
-* Network has to be setup manually.
+* Network has to be set up manually.
 
 ---
 
