@@ -28,7 +28,7 @@
 
 - Managing *some* volumes (e.g. ELBs, AzureDisks...)
 
-  (Eventually, volumes will be managed by the CSI) (the what?)
+  (Eventually, volumes will be managed by the CSI) (FIXME: the what?)
 
 ---
 

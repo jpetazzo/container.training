@@ -48,7 +48,7 @@
 
 - Acknowledge that a lot of tasks are outsourced
 
-  (e.g. if we add "buy / rack / provision machines" in that list)
+  (e.g. if we add "buy/rack/provision machines" in that list)
 
 ---
 
@@ -122,7 +122,7 @@
 
   (YAML, Helm charts, Kustomize ...)
 
-- Team "run" adjusts some parameters and monitors the application 
+- Team "run" adjusts some parameters and monitors the application
 
 ✔️ parity between dev and prod environments
 
@@ -150,7 +150,7 @@
 
   - do we reward on-call duty without encouraging hero syndrome?
 
-  - do we give resources (time, money) to people to learn?
+  - do we give people resources (time, money) to learn?
 
 ---
 
@@ -183,9 +183,9 @@ are a few tools that can help us.*
 
 - If cloud: public vs. private
 
-- Which vendor / distribution to pick?
+- Which vendor/distribution to pick?
 
-- Which versions / features to enable?
+- Which versions/features to enable?
 
 ---
 
@@ -205,6 +205,6 @@ are a few tools that can help us.*
 
 - Transfer knowledge
 
-  (make sure everyone is on the same page / same level)
+  (make sure everyone is on the same page/level)
 
 - Iterate!
