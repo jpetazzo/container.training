@@ -20,15 +20,15 @@
 
 - Configuring routing tables in the cloud network (specific to GCE)
 
-- Updating node labels to indicate region, zone, instance type ...
+- Updating node labels to indicate region, zone, instance type...
 
 - Obtain node name, internal and external addresses from cloud metadata service
 
 - Deleting nodes from Kubernetes when they're deleted in the cloud
 
-- Managing *some* volumes (e.g. ELBs, AzureDisks ...)
+- Managing *some* volumes (e.g. ELBs, AzureDisks...)
 
-  (Eventually, volumes will be managed by the CSI)
+  (Eventually, volumes will be managed by the Container Storage Interface)
 
 ---
 
@@ -83,7 +83,7 @@ The list includes the following providers:
 
 ## Audience questions
 
-- What kind of clouds are you using / planning to use?
+- What kind of clouds are you using/planning to use?
 
 - What kind of details would you like to see in this section?
 
@@ -105,7 +105,7 @@ The list includes the following providers:
 
 - When using managed clusters, this is done automatically
 
-- There is very little documentation to write the configuration file
+- There is very little documentation on writing the configuration file
 
   (except for OpenStack)
 
@@ -123,7 +123,7 @@ The list includes the following providers:
 
 - To get these addresses, the node needs to communicate with the control plane
 
-- ... Which means joining the cluster
+- ...Which means joining the cluster
 
 (The problem didn't occur when cloud-specific code was running in kubelet: kubelet could obtain the required information directly from the cloud provider's metadata service.)
 

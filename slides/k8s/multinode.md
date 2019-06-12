@@ -96,7 +96,7 @@ class: extra-details
 
 - We need to generate a `kubeconfig` file for kubelet
 
-- This time, we need to put the IP address of `kubenet1`
+- This time, we need to put the public IP address of `kubenet1`
 
   (instead of `localhost` or `127.0.0.1`)
 

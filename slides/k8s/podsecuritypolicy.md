@@ -212,7 +212,7 @@
 
 - Have a look at the static pods:
   ```bash
-  ls -l /etc/kubernetes/manifest
+  ls -l /etc/kubernetes/manifests
   ```
 
 - Edit the one corresponding to the API server:
@@ -236,7 +236,7 @@
 
 - Add `PodSecurityPolicy`
 
-  (It should read `--enable-admission-plugins=NodeRestriction,PodSecurityPolicy`)
+  It should read: `--enable-admission-plugins=NodeRestriction,PodSecurityPolicy`
 
 - Save, quit
 
