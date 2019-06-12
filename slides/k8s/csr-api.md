@@ -345,7 +345,7 @@ The command above generates:
   kctx -
   ```
 
-- Retrieve the certificate from the controller:
+- Retrieve the updated CSR object and extract the certificate:
   ```bash
   kubectl get csr users:jean.doe \
           -o jsonpath={.status.certificate} \
