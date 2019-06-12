@@ -319,7 +319,7 @@ The command above generates:
 
 - Switch back to `cluster-admin`:
   ```bash
-  kctx -  # mraa? FIXME?
+  kctx -
   ```
 
 - Inspect the CSR:
