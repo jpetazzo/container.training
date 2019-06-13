@@ -167,11 +167,13 @@ What does that mean?
 
 ## Let's experiment a bit!
 
-- For the exercises in this section, connect to the first node of the `test` cluster
+- For this section, we will use a cluster with 4 nodes
+
+  (named node1, node2, node3, node4)
 
 .exercise[
 
-- SSH to the first node of the test cluster
+- SSH to the first node of the cluster
 
 - Check that the cluster is operational:
   ```bash
