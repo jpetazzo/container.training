@@ -24,28 +24,32 @@ chapters:
 - - k8s/prereqs-admin.md
   - k8s/architecture.md
   - k8s/deploymentslideshow.md
-  - k8s/kustomize.md
-  - k8s/helm.md
-- - k8s/dmuc.md
-  - k8s/multinode.md
-- - k8s/cni.md
+  - k8s/dmuc.md
+- - k8s/multinode.md
+  - k8s/cni.md
   - k8s/apilb.md
-- - k8s/volumes.md
-  - k8s/configuration.md
-  - k8s/statefulsets.md
-  - k8s/local-persistent-volumes.md
-  #- k8s/portworx.md
-# DAY 2
-- - k8s/extending-api.md
-  - k8s/operators.md
-  - k8s/operators-design.md
-  - k8s/owners-and-dependents.md
 - - k8s/kubercoins.md
   - k8s/logs-cli.md
   - k8s/logs-centralized.md
   - k8s/healthchecks.md
   - k8s/healthchecks-more.md
+- - k8s/volumes.md
+  - k8s/configuration.md
+  - k8s/statefulsets.md
+  - k8s/local-persistent-volumes.md
+  - k8s/portworx.md
+# DAY 2
+- - k8s/namespaces.md
+  - k8s/kustomize.md
+  - k8s/helm.md
+  - k8s/create-chart.md
+  - k8s/create-more-charts.md
+- - k8s/extending-api.md
+  - k8s/operators.md
+  - k8s/operators-design.md
+  - k8s/owners-and-dependents.md
 - - k8s/authn-authz.md
+  - k8s/control-plane-auth.md
   - k8s/prometheus.md
 - - k8s/resource-limits.md
   - k8s/metrics-server.md

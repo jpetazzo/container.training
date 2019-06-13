@@ -1,4 +1,4 @@
-# Highly available Persistent Volumes
+# Highly available Persistent Volumes (extra material)
 
 - How can we achieve true durability?
 
