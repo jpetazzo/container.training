@@ -1,13 +1,15 @@
 title: |
-  Introduction
-  to Containers
+  Docker
+  &
+  Containers
 
-chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+chat: ""
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://intro-2019-06.container.training/
 
 exclude:
 - self-paced
@@ -26,10 +28,10 @@ chapters:
   - containers/Background_Containers.md
   #- containers/Start_And_Attach.md
   - containers/Initial_Images.md
-- - containers/Building_Images_Interactively.md
+  - containers/Building_Images_Interactively.md
   - containers/Building_Images_With_Dockerfiles.md
   - containers/Cmd_And_Entrypoint.md
-  - containers/Copying_Files_During_Build.md
+- - containers/Copying_Files_During_Build.md
   - containers/Exercise_Dockerfile_Basic.md
   - containers/Multi_Stage_Builds.md
   #- containers/Publishing_To_Docker_Hub.md
@@ -59,5 +61,5 @@ chapters:
   #- containers/Container_Engines.md
   #- containers/Ecosystem.md
   - containers/Orchestration_Overview.md
-- - shared/thankyou.md
+  - shared/thankyou.md
   - containers/links.md
