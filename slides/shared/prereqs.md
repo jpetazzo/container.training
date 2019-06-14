@@ -50,8 +50,6 @@ Misattributed to Benjamin Franklin
 
 - Go to @@SLIDES@@ to view these slides
 
-- Join the chat room: @@CHAT@@
-
 <!-- ```open @@SLIDES@@``` -->
 
 ]
