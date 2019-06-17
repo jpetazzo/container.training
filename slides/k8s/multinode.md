@@ -195,7 +195,7 @@ class: extra-details
 
 ## Check our pods
 
-- The pods will be scheduled to the nodes
+- The pods will be scheduled on the nodes
 
 - The nodes will pull the `nginx` image, and start the pods
 
@@ -325,7 +325,7 @@ class: extra-details
 
 - We will add the `--network-plugin` and `--pod-cidr` flags
 
-- We all have a "cluster number" (let's call that `C`)
+- We all have a "cluster number" (let's call that `C`) printed on your VM info card
 
 - We will use pod CIDR `10.C.N.0/24` (where `N` is the node number: 1, 2, 3)
 
@@ -480,6 +480,23 @@ Sometimes it works, sometimes it doesn't. Why?
   ```bash
   kubectl get nodes -o wide
   ```
+
+---
+
+## Firewalling
+
+- By default, Docker prevents containers from using arbitrary IP addresses
+
+  (by setting up iptables rules)
+
+- We need to allow our containers to use our pod CIDR
+
+- For simplicity, we will insert a blanket iptables rule allowing all traffic:
+
+  `iptables -I FORWARD -j ACCEPT`
+
+- This has to be done on every node
+
 ---
 
 ## Setting up routing
@@ -487,6 +504,8 @@ Sometimes it works, sometimes it doesn't. Why?
 .exercise[
 
 - Create all the routes on all the nodes
+
+- Insert the iptables rule allowing traffic
 
 - Check that you can ping all the pods from one of the nodes
 

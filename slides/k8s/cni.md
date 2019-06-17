@@ -66,6 +66,8 @@ Look in each plugin's directory for its documentation.
 
 ---
 
+class: extra-details
+
 ## Conf vs conflist
 
 - There are two slightly different configuration formats
