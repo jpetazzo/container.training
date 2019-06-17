@@ -18,7 +18,7 @@
 
   (it gives us replication primitives)
 
-- Kubernetes helps us clone/replicate environments
+- Kubernetes helps us clone / replicate environments
 
   (all resources can be described with manifests)
 
