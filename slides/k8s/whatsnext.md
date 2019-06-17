@@ -1,59 +1,8 @@
 # Next steps
 
-*Alright, how do I get started and containerize my apps?*
+- One day is not a lot of time to learn everything about Kubernetes
 
---
-
-Suggested containerization checklist:
-
-.checklist[
-- write a Dockerfile for one service in one app
-- write Dockerfiles for the other (buildable) services
-- write a Compose file for that whole app
-- make sure that devs are empowered to run the app in containers
-- set up automated builds of container images from the code repo
-- set up a CI pipeline using these container images
-- set up a CD pipeline (for staging/QA) using these images
-]
-
-And *then* it is time to look at orchestration!
-
----
-
-
-## Options for our first production cluster
-
-- Get a managed cluster from a major cloud provider (AKS, EKS, GKE...)
-
-  (price: $, difficulty: medium)
-
-- Hire someone to deploy it for us
-
-  (price: $$, difficulty: easy)
-
-- Do it ourselves
-
-  (price: $-$$$, difficulty: hard)
-
----
-
-## One big cluster vs. multiple small ones
-
-- Yes, it is possible to have prod+dev in a single cluster
-
-  (and implement good isolation and security with RBAC, network policies...)
-
-- But it is not a good idea to do that for our first deployment
-
-- Start with a production cluster + at least a test cluster
-
-- Implement and check RBAC and isolation on the test cluster
-
-  (e.g. deploy multiple test versions side-by-side)
-
-- Make sure that all our devs have usable dev clusters
-
-  (whether it's a local minikube or a full-blown multi-node cluster)
+- Here is a short list of things you might want to look at later ...
 
 ---
 
@@ -155,40 +104,6 @@ And *then* it is time to look at orchestration!
 
 ---
 
-## Logging
-
-- Logging is delegated to the container engine
-
-- Logs are exposed through the API
-
-- Logs are also accessible through local files (`/var/log/containers`)
-
-- Log shipping to a central platform is usually done through these files
-
-  (e.g. with an agent bind-mounting the log directory)
-
-- [This section](kube-selfpaced.yml.html#toc-centralized-logging) shows how to do that with [Fluentd](https://docs.fluentd.org/v0.12/articles/kubernetes-fluentd) and the EFK stack
-
----
-
-## Metrics
-
-- The kubelet embeds [cAdvisor](https://github.com/google/cadvisor), which exposes container metrics
-
-  (cAdvisor might be separated in the future for more flexibility)
-
-- It is a good idea to start with [Prometheus](https://prometheus.io/)
-
-  (even if you end up using something else)
-
-- Starting from Kubernetes 1.8, we can use the [Metrics API](https://kubernetes.io/docs/tasks/debug-application-cluster/core-metrics-pipeline/)
-
-- [Heapster](https://github.com/kubernetes/heapster) was a popular add-on
-
-  (but is being [deprecated](https://github.com/kubernetes/heapster/blob/master/docs/deprecation.md) starting with Kubernetes 1.11)
-
----
-
 ## Managing the configuration of our applications
 
 - Two constructs are particularly useful: secrets and config maps
@@ -207,59 +122,239 @@ And *then* it is time to look at orchestration!
 
 ---
 
-## Managing stack deployments
+## And everything else
 
-- The best deployment tool will vary, depending on:
+- Congratulations!
 
-  - the size and complexity of your stack(s)
-  - how often you change it (i.e. add/remove components)
-  - the size and skills of your team
+- We learned a lot about Kubernetes
 
-- A few examples:
+--
 
-  - shell scripts invoking `kubectl`
-  - YAML resources descriptions committed to a repo
-  - [Helm](https://github.com/kubernetes/helm) (~package manager)
-  - [Spinnaker](https://www.spinnaker.io/) (Netflix' CD platform)
-  - [Brigade](https://brigade.sh/) (event-driven scripting; no YAML)
+- That was just the easy part
+
+- The hard challenges will revolve around *culture* and *people*
+
+--
+
+- ... What does that mean?
 
 ---
 
-## Cluster federation
+## Running an app involves many steps
 
---
+- Write the app
 
-![Star Trek Federation](images/startrek-federation.jpg)
+- Tests, QA ...
 
---
+- Ship *something* (more on that later)
 
-Sorry Star Trek fans, this is not the federation you're looking for!
+- Provision resources (e.g. VMs, clusters)
 
---
+- Deploy the *something* on the resources
 
-(If I add "Your cluster is in another federation" I might get a 3rd fandom wincing!)
+- Manage, maintain, monitor the resources
+
+- Manage, maintain, monitor the app
+
+- And much more
 
 ---
 
-## Cluster federation
+## Who does what?
 
-- Kubernetes master operation relies on etcd
+- The old "devs vs ops" division has changed
 
-- etcd uses the [Raft](https://raft.github.io/) protocol
+- In some organizations, "ops" are now called "SRE" or "platform" teams
 
-- Raft recommends low latency between nodes
+  (and they have very different sets of skills)
 
-- What if our cluster spreads to multiple regions?
+- Do you know which team is responsible for each item on the list on the previous page?
+
+- Acknowledge that a lot of tasks are outsourced
+
+  (e.g. if we add "buy/rack/provision machines" in that list)
+
+---
+
+## What do we ship?
+
+- Some organizations embrace "you build it, you run it"
+
+- When "build" and "run" are owned by different teams, where's the line?
+
+- What does the "build" team ship to the "run" team?
+
+- Let's see a few options, and what they imply
+
+---
+
+## Shipping code
+
+- Team "build" ships code
+
+  (hopefully in a repository, identified by a commit hash)
+
+- Team "run" containerizes that code
+
+✔️ no extra work for developers
+
+❌ very little advantage of using containers
+
+---
+
+## Shipping container images
+
+- Team "build" ships container images
+
+  (hopefully built automatically from a source repository)
+
+- Team "run" uses theses images to create e.g. Kubernetes resources
+
+✔️ universal artefact (support all languages uniformly)
+
+✔️ easy to start a single component (good for monoliths)
+
+❌ complex applications will require a lot of extra work
+
+❌ adding/removing components in the stack also requires extra work
+
+❌ complex applications will run very differently between dev and prod
+
+---
+
+## Shipping Compose files
+
+(Or another kind of dev-centric manifest)
+
+- Team "build" ships a manifest that works on a single node
+
+  (as well as images, or ways to build them)
+
+- Team "run" adapts that manifest to work on a cluster
+
+✔️ all teams can start the stack in a reliable, deterministic manner
+
+❌ adding/removing components still requires *some* work (but less than before)
+
+❌ there will be *some* differences between dev and prod
+
+---
+
+## Shipping Kubernetes manifests
+
+- Team "build" ships ready-to-run manifests
+
+  (YAML, Helm charts, Kustomize ...)
+
+- Team "run" adjusts some parameters and monitors the application
+
+✔️ parity between dev and prod environments
+
+✔️ "run" team can focus on SLAs, SLOs, and overall quality
+
+❌ requires *a lot* of extra work (and new skills) from the "build" team
+
+❌ Kubernetes is not a very convenient development platform (at least, not yet)
+
+---
+
+## What's the right answer?
+
+- It depends on our teams
+
+  - existing skills (do they know how to do it?)
+
+  - availability (do they have the time to do it?)
+
+  - potential skills (can they learn to do it?)
+
+- It depends on our culture
+
+  - owning "run" often implies being on call
+
+  - do we reward on-call duty without encouraging hero syndrome?
+
+  - do we give people resources (time, money) to learn?
+
+---
+
+## Some guidelines
+
+- Start small
+
+- Outsource what we don't know
+
+- Start simple, and stay simple as long as possible
+
+  (try to stay away from complex features that we don't need)
+
+- Automate
+
+  (regularly check that we can successfully redeploy by following scripts)
+
+- Transfer knowledge
+
+  (make sure everyone is on the same page/level)
+
+- Iterate!
+
+---
+
+## Where do we start?
+
+*Alright, how do I get started and containerize my apps?*
 
 --
 
-- Break it down in local clusters
+Suggested containerization checklist:
 
-- Regroup them in a *cluster federation*
+.checklist[
+- write a Dockerfile for one service in one app
+- write Dockerfiles for the other (buildable) services
+- write a Compose file for that whole app
+- make sure that devs are empowered to run the app in containers
+- set up automated builds of container images from the code repo
+- set up a CI pipeline using these container images
+- set up a CD pipeline (for staging/QA) using these images
+]
 
-- Synchronize resources across clusters
+And *then* it is time to look at orchestration!
 
-- Discover resources across clusters
+---
+
+## Options for our first production cluster
+
+- Get a managed cluster from a major cloud provider (AKS, EKS, GKE...)
+
+  (price: $, difficulty: medium)
+
+- Hire someone to deploy it for us
+
+  (price: $$, difficulty: easy)
+
+- Do it ourselves
+
+  (price: $-$$$, difficulty: hard)
+
+---
+
+## One big cluster vs. multiple small ones
+
+- Yes, it is possible to have prod+dev in a single cluster
+
+  (and implement good isolation and security with RBAC, network policies...)
+
+- But it is not a good idea to do that for our first deployment
+
+- Start with a production cluster + at least a test cluster
+
+- Implement and check RBAC and isolation on the test cluster
+
+  (e.g. deploy multiple test versions side-by-side)
+
+- Make sure that all our devs have usable dev clusters
+
+  (whether it's a local minikube or a full-blown multi-node cluster)
 
 ---
 

@@ -70,8 +70,9 @@ chapters:
 - - |
     # (Extra material)
   - k8s/kustomize.md
-  #- k8s/helm.md
-  #- k8s/create-chart.md
+  - k8s/helm.md
+  - k8s/create-chart.md
+  - k8s/create-more-charts.md
   - k8s/logs-centralized.md
   - k8s/prometheus.md
   - k8s/healthchecks.md
