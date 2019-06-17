@@ -175,7 +175,7 @@ Success!
 
 ]
 
-We should get `No resources found.` and the kubernetes service, respectively.
+We should get `No resources found.` and the `kubernetes` service, respectively.
 
 Note: the API server automatically created the `kubernetes` service entry.
 
