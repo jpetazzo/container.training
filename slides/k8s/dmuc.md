@@ -175,7 +175,7 @@ Success!
 
 ]
 
-So far, so good.
+We should get `No resources found.` and the `kubernetes` service, respectively.
 
 Note: the API server automatically created the `kubernetes` service entry.
 
@@ -225,7 +225,7 @@ Success?
 
 ]
 
-Our Deployment is in a bad shape:
+Our Deployment is in bad shape:
 ```
 NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/web   0/1     0            0           2m26s
