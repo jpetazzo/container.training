@@ -30,9 +30,9 @@ TAG=$PREFIX-$SETTINGS
 	--settings settings/$SETTINGS.yaml \
 	--count $((3*$STUDENTS))
 
+./workshopctl disableaddrchecks $TAG
 ./workshopctl deploy $TAG
 ./workshopctl kubebins $TAG
-./workshopctl disableaddrchecks $TAG
 ./workshopctl cards $TAG
 
 SETTINGS=admin-kuberouter
@@ -43,10 +43,14 @@ TAG=$PREFIX-$SETTINGS
 	--settings settings/$SETTINGS.yaml \
 	--count $((3*$STUDENTS))
 
+./workshopctl disableaddrchecks $TAG
 ./workshopctl deploy $TAG
 ./workshopctl kubebins $TAG
-./workshopctl disableaddrchecks $TAG
 ./workshopctl cards $TAG
+
+#INFRA=infra/aws-us-west-1
+
+export AWS_INSTANCE_TYPE=t3a.medium
 
 SETTINGS=admin-test
 TAG=$PREFIX-$SETTINGS
@@ -59,3 +63,4 @@ TAG=$PREFIX-$SETTINGS
 ./workshopctl deploy $TAG
 ./workshopctl kube $TAG 1.13.5
 ./workshopctl cards $TAG
+
