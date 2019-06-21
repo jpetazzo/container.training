@@ -31,6 +31,7 @@ infra_start() {
         die "I could not find which AMI to use in this region. Try another region?"
     fi
     AWS_KEY_NAME=$(make_key_name)
+    AWS_INSTANCE_TYPE=${AWS_INSTANCE_TYPE-t3a.medium}
 
     sep "Starting instances"
     info "         Count: $COUNT"
@@ -38,10 +39,11 @@ infra_start() {
     info "     Token/tag: $TAG"
     info "           AMI: $AMI"
     info "      Key name: $AWS_KEY_NAME"
+    info " Instance type: $AWS_INSTANCE_TYPE"
     result=$(aws ec2 run-instances \
         --key-name $AWS_KEY_NAME \
         --count $COUNT \
-        --instance-type ${AWS_INSTANCE_TYPE-t2.medium} \
+        --instance-type $AWS_INSTANCE_TYPE \
         --client-token $TAG \
         --block-device-mapping 'DeviceName=/dev/sda1,Ebs={VolumeSize=20}' \
         --image-id $AMI)
@@ -97,7 +99,7 @@ infra_disableaddrchecks() {
 }
 
 wait_until_tag_is_running() {
-    max_retry=50
+    max_retry=100
     i=0
     done_count=0
     while [[ $done_count -lt $COUNT ]]; do
