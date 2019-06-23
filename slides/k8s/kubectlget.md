@@ -79,6 +79,8 @@
 
 ---
 
+class: extra-details
+
 ## Exploring types and definitions
 
 - We can list all available resource types by running `kubectl api-resources`
@@ -102,9 +104,11 @@
 
 ---
 
+class: extra-details
+
 ## Introspection vs. documentation
 
-- We can access the same information by reading the [API documentation](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/)
+- We can access the same information by reading the [API documentation](https://kubernetes.io/docs/reference/#api-reference)
 
 - The API documentation is usually easier to read, but:
 
@@ -128,7 +132,7 @@
 
   - short (e.g. `no`, `svc`, `deploy`)
 
-- Some resources do not have a short names
+- Some resources do not have a short name
 
 - `Endpoints` only have a plural form
 

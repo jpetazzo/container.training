@@ -70,8 +70,9 @@ class: pic
 
 * An image is a read-only filesystem.
 
-* A container is an encapsulated set of processes running in a
-  read-write copy of that filesystem.
+* A container is an encapsulated set of processes,
+
+  running in a read-write copy of that filesystem.
 
 * To optimize container boot time, *copy-on-write* is used
   instead of regular copy.
@@ -177,8 +178,11 @@ Let's explain each of them.
 
 ## Root namespace
 
-The root namespace is for official images. They are put there by Docker Inc.,
-but they are generally authored and maintained by third parties.
+The root namespace is for official images.
+
+They are gated by Docker Inc.
+
+They are generally authored and maintained by third parties.
 
 Those images include:
 
@@ -188,7 +192,7 @@ Those images include:
 
 * Ready-to-use components and services, like redis, postgresql...
 
-* Over 130 at this point!
+* Over 150 at this point!
 
 ---
 

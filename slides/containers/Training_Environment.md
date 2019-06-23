@@ -45,13 +45,13 @@ individual Docker VM.*
 
 - The Docker Engine is a daemon (a service running in the background).
 
-- This daemon manages containers, the same way that an hypervisor manages VMs.
+- This daemon manages containers, the same way that a hypervisor manages VMs.
 
 - We interact with the Docker Engine by using the Docker CLI.
 
 - The Docker CLI and the Docker Engine communicate through an API.
 
-- There are many other programs, and many client libraries, to use that API.
+- There are many other programs and client libraries which use that API.
 
 ---
 

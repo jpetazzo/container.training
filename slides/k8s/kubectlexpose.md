@@ -81,7 +81,7 @@ Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables`
 
 .exercise[
 
-- In another window, watch the pods (to see when they will be created):
+- In another window, watch the pods (to see when they are created):
   ```bash
   kubectl get pods -w
   ```
@@ -276,3 +276,21 @@ error: the server doesn't have a resource type "endpoint"
 - There is no `endpoint` object: `type Endpoints struct`
 
 - The type doesn't represent a single endpoint, but a list of endpoints
+
+---
+
+## Exposing services to the outside world
+
+- The default type (ClusterIP) only works for internal traffic
+
+- If we want to accept external traffic, we can use one of these:
+
+  - NodePort (expose a service on a TCP port between 30000-32768)
+
+  - LoadBalancer (provision a cloud load balancer for our service)
+
+  - ExternalIP (use one node's external IP address)
+
+  - Ingress (a special mechanism for HTTP services)
+
+*We'll see NodePorts and Ingresses more in detail later.*

@@ -257,7 +257,7 @@ $ docker kill 068 57ad
 The `stop` and `kill` commands can take multiple container IDs.
 
 Those containers will be terminated immediately (without
-the 10 seconds delay).
+the 10-second delay).
 
 Let's check that our containers don't show up anymore:
 

@@ -19,6 +19,7 @@ chapters:
 - shared/about-slides.md
 - shared/toc.md
 - - shared/prereqs.md
+  - shared/connecting.md
   - swarm/versions.md
   - |
     name: part-1

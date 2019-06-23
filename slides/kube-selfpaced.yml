@@ -20,6 +20,7 @@ chapters:
 - shared/about-slides.md
 - shared/toc.md
 - - shared/prereqs.md
+  - shared/connecting.md
   - k8s/versions-k8s.md
   - shared/sampleapp.md
   - shared/composescale.md
@@ -33,8 +34,8 @@ chapters:
   - k8s/setup-k8s.md
   - k8s/kubectlrun.md
   - k8s/deploymentslideshow.md
-  - k8s/kubectlexpose.md
-- - k8s/shippingimages.md
+- - k8s/kubectlexpose.md
+  - k8s/shippingimages.md
   - k8s/buildshiprun-selfhosted.md
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
@@ -42,21 +43,23 @@ chapters:
   - k8s/localkubeconfig.md
   - k8s/accessinternal.md
   - k8s/dashboard.md
-  - k8s/kubectlscale.md
+- - k8s/kubectlscale.md
 #  - k8s/scalingdockercoins.md
 #  - shared/hastyconclusions.md
   - k8s/daemonset.md
-- - k8s/rollout.md
+  - k8s/rollout.md
+  - k8s/namespaces.md
+- - k8s/kustomize.md
+  - k8s/helm.md
+  - k8s/create-chart.md
   - k8s/healthchecks.md
   - k8s/healthchecks-more.md
   - k8s/logs-cli.md
   - k8s/logs-centralized.md
-- - k8s/helm.md
-  #- k8s/create-chart.md
-  - k8s/kustomize.md
-  - k8s/namespaces.md
-  - k8s/netpol.md
+- - k8s/netpol.md
   - k8s/authn-authz.md
+  - k8s/csr-api.md
+  - k8s/podsecuritypolicy.md
 - - k8s/ingress.md
   - k8s/gitworkflows.md
   - k8s/prometheus.md
@@ -66,7 +69,10 @@ chapters:
   - k8s/configuration.md
 - - k8s/owners-and-dependents.md
   - k8s/extending-api.md
-  - k8s/statefulsets.md
+  - k8s/operators.md
+  - k8s/operators-design.md
+- - k8s/statefulsets.md
+  - k8s/local-persistent-volumes.md
   - k8s/portworx.md
   - k8s/staticpods.md
 - - k8s/whatsnext.md

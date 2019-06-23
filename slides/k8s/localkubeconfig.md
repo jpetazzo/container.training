@@ -6,6 +6,24 @@
 
 ---
 
+## Requirements
+
+.warning[The exercises in this chapter should be done *on your local machine*.]
+
+- `kubectl` is officially available on Linux, macOS, Windows
+
+  (and unofficially anywhere we can build and run Go binaries)
+
+- You may skip these exercises if you are following along from:
+
+  - a tablet or phone
+
+  - a web-based terminal
+
+  - an environment where you can't install and run new binaries
+
+---
+
 ## Installing `kubectl`
 
 - If you already have `kubectl` on your local machine, you can skip this
@@ -16,11 +34,11 @@
 
 - Download the `kubectl` binary from one of these links:
 
-  [Linux](https://storage.googleapis.com/kubernetes-release/release/v1.14.1/bin/linux/amd64/kubectl)
+  [Linux](https://storage.googleapis.com/kubernetes-release/release/v1.14.2/bin/linux/amd64/kubectl)
   |
-  [macOS](https://storage.googleapis.com/kubernetes-release/release/v1.14.1/bin/darwin/amd64/kubectl)
+  [macOS](https://storage.googleapis.com/kubernetes-release/release/v1.14.2/bin/darwin/amd64/kubectl)
   |
-  [Windows](https://storage.googleapis.com/kubernetes-release/release/v1.14.1/bin/windows/amd64/kubectl.exe)
+  [Windows](https://storage.googleapis.com/kubernetes-release/release/v1.14.2/bin/windows/amd64/kubectl.exe)
 
 - On Linux and macOS, make the binary executable with `chmod +x kubectl`
 
@@ -57,17 +75,24 @@ Platform:"linux/amd64"}
 
 ---
 
-## Moving away the existing `~/.kube/config`
+## Preserving the existing `~/.kube/config`
 
-- If you already have a `~/.kube/config` file, move it away
+- If you already have a `~/.kube/config` file, rename it
 
   (we are going to overwrite it in the following slides!)
 
 - If you never used `kubectl` on your machine before: nothing to do!
 
-- If you already used `kubectl` to control a Kubernetes cluster before:
+.exercise[
 
-  - rename `~/.kube/config` to e.g. `~/.kube/config.bak`
+- Make a copy of `~/.kube/config`; if you are using macOS or Linux, you can do:
+  ```bash
+  cp ~/.kube/config ~/.kube/config.before.training
+  ```
+
+- If you are using Windows, you will need to adapt this command
+
+]
 
 ---
 
@@ -167,4 +192,4 @@ class: extra-details
 
 ]
 
-We can now utilize the cluster exactly as we did before, ignoring that it's remote.
+We can now utilize the cluster exactly as we did before, except that it's remote.

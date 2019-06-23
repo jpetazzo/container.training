@@ -18,6 +18,8 @@
 
 ---
 
+class: extra-details
+
 ## Kubernetes volumes vs. Docker volumes
 
 - Kubernetes and Docker volumes are very similar
@@ -26,19 +28,41 @@
   <br/>
   but it refers to Docker 1.7, which was released in 2015!)
 
-- Docker volumes allow to share data between containers running on the same host
+- Docker volumes allow us to share data between containers running on the same host
 
 - Kubernetes volumes allow us to share data between containers in the same pod
 
-- Both Docker and Kubernetes volumes allow us access to storage systems
+- Both Docker and Kubernetes volumes enable access to storage systems
 
 - Kubernetes volumes are also used to expose configuration and secrets
 
 - Docker has specific concepts for configuration and secrets
-
+  <br/>
   (but under the hood, the technical implementation is similar)
 
 - If you're not familiar with Docker volumes, you can safely ignore this slide!
+
+---
+
+## Volumes ≠ Persistent Volumes
+
+- Volumes and Persistent Volumes are related, but very different!
+
+- *Volumes*:
+
+  - appear in Pod specifications (see next slide)
+
+  - do not exist as API resources (**cannot** do `kubectl get volumes`)
+
+- *Persistent Volumes*:
+
+  - are API resources (**can** do `kubectl get persistentvolumes`)
+
+  - correspond to concrete volumes (e.g. on a SAN, EBS, etc.)
+
+  - cannot be associated with a Pod directly; but through a Persistent Volume Claim
+
+  - won't be discussed further in this section
 
 ---
 

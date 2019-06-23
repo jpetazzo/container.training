@@ -86,17 +86,17 @@ Each pod is assigned a QoS class (visible in `status.qosClass`).
 
   - as long as the container uses less than the limit, it won't be affected
 
-  - if all containers in a pod have *(limits=requests)*, QoS is "Guaranteed"
+  - if all containers in a pod have *(limits=requests)*, QoS is considered "Guaranteed"
 
 - If requests &lt; limits:
 
   - as long as the container uses less than the request, it won't be affected
 
-  - otherwise, it might be killed / evicted if the node gets overloaded
+  - otherwise, it might be killed/evicted if the node gets overloaded
 
-  - if at least one container has *(requests&lt;limits)*, QoS is "Burstable"
+  - if at least one container has *(requests&lt;limits)*, QoS is considered "Burstable"
 
-- If a pod doesn't have any request nor limit, QoS is "BestEffort"
+- If a pod doesn't have any request nor limit, QoS is considered "BestEffort"
 
 ---
 
@@ -392,7 +392,7 @@ These quotas will apply to the namespace where the ResourceQuota is created.
         count/roles.rbac.authorization.k8s.io: 10
   ```
 
-(The `count/` syntax allows to limit arbitrary objects, including CRDs.)
+(The `count/` syntax allows limiting arbitrary objects, including CRDs.)
 
 ---
 
@@ -400,7 +400,7 @@ These quotas will apply to the namespace where the ResourceQuota is created.
 
 - Quotas can be created with a YAML definition
 
-- ... Or with the `kubectl create quota` command
+- ...Or with the `kubectl create quota` command
 
 - Example:
   ```bash

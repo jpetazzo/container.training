@@ -18,7 +18,7 @@
 
 ## A possible approach
 
-- Since each component of the control plane can be replicated ...
+- Since each component of the control plane can be replicated...
 
 - We could set up the control plane outside of the cluster
 
@@ -39,9 +39,9 @@
 - Worst case scenario, we might need to:
 
   - set up a new control plane (outside of the cluster)
-  
+
   - restore a backup from the old control plane
-  
+
   - move the new control plane to the cluster (again)
 
 - This doesn't sound like a great experience
@@ -57,12 +57,12 @@
 - The kubelet can also get a list of *static pods* from:
 
   - a directory containing one (or multiple) *manifests*, and/or
-  
+
   - a URL (serving a *manifest*)
 
 - These "manifests" are basically YAML definitions
 
-  (As produced by `kubectl get pod my-little-pod -o yaml --export`)
+  (As produced by `kubectl get pod my-little-pod -o yaml`)
 
 ---
 
@@ -100,11 +100,11 @@
 
 ## Static pods vs normal pods
 
-- The API only gives us a read-only access to static pods
+- The API only gives us read-only access to static pods
 
-- We can `kubectl delete` a static pod ...
+- We can `kubectl delete` a static pod...
 
-  ... But the kubelet will restart it immediately
+  ...But the kubelet will re-mirror it immediately
 
 - Static pods can be selected just like other pods
 

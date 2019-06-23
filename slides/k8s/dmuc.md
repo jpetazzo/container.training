@@ -175,7 +175,7 @@ Success!
 
 ]
 
-So far, so good.
+We should get `No resources found.` and the `kubernetes` service, respectively.
 
 Note: the API server automatically created the `kubernetes` service entry.
 
@@ -225,7 +225,7 @@ Success?
 
 ]
 
-Our Deployment is in a bad shape:
+Our Deployment is in bad shape:
 ```
 NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/web   0/1     0            0           2m26s
@@ -584,7 +584,7 @@ Our pod is still `Pending`. 🤔
 
 Which is normal: it needs to be *scheduled*.
 
-(i.e., something needs to decide on which node it should go.)
+(i.e., something needs to decide which node it should go on.)
 
 ---
 
@@ -658,7 +658,7 @@ class: extra-details
 
 - This is actually how the scheduler works!
 
-- It watches pods, takes scheduling decisions, creates Binding objects
+- It watches pods, makes scheduling decisions, and creates Binding objects
 
 ---
 
@@ -686,7 +686,7 @@ We should see the `Welcome to nginx!` page.
 
 ## Exposing our Deployment
 
-- We can now create a Service associated to this Deployment
+- We can now create a Service associated with this Deployment
 
 .exercise[
 
@@ -711,11 +711,11 @@ This won't work. We need kube-proxy to enable internal communication.
 
 ## Starting kube-proxy
 
-- kube-proxy also needs to connect to API server
+- kube-proxy also needs to connect to the API server
 
 - It can work with the `--master` flag
 
-  (even though that will be deprecated in the future)
+  (although that will be deprecated in the future)
 
 .exercise[
 
@@ -832,6 +832,6 @@ class: extra-details
 
 - By default, the API server expects to be running directly on the nodes
 
-  (it could be as a bare process, or in a container/pod using host network)
+  (it could be as a bare process, or in a container/pod using the host network)
 
 - ... And it expects to be listening on port 6443 with TLS
