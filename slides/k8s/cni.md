@@ -66,6 +66,8 @@ Look in each plugin's directory for its documentation.
 
 ---
 
+class: extra-details
+
 ## Conf vs conflist
 
 - There are two slightly different configuration formats
@@ -276,7 +278,7 @@ class: extra-details
 
 - The address of the API server will be `http://A.B.C.D:8080`
 
-  (where `A.B.C.D` is the address of `kuberouter1`, running the control plane)
+  (where `A.B.C.D` is the public address of `kuberouter1`, running the control plane)
 
 .exercise[
 
@@ -453,7 +455,7 @@ We should see the local pod CIDR connected to `kube-bridge`, and the other nodes
 
 - Or try to exec into one of the kube-router pods:
   ```bash
-  kubectl -n kube-system exec kuber-router-xxxxx bash
+  kubectl -n kube-system exec kube-router-xxxxx bash
   ```
 
 ]
@@ -575,7 +577,7 @@ done
 
 ## Starting the route reflector
 
-- Only do this if you are doing this on your own
+- Only do this slide if you are doing this on your own
 
 - There is a Compose file in the `compose/frr-route-reflector` directory
 

@@ -287,8 +287,8 @@
 - Download the configuration on each node, and upgrade kubelet:
   ```bash
     for N in 1 2 3; do
-    	ssh node$N sudo kubeadm upgrade node config --kubelet-version v1.14.2
-  	  ssh node $N sudo apt install kubelet=1.14.2-00
+      ssh test$N sudo kubeadm upgrade node config --kubelet-version v1.14.2
+      ssh test$N sudo apt install kubelet=1.14.2-00
     done
   ```
 ]

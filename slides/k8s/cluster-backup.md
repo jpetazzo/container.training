@@ -6,7 +6,7 @@
 
   - error recovery (human or process has altered or corrupted data)
 
-  - cloning environments (for testing, validation ...)
+  - cloning environments (for testing, validation...)
 
 - Let's see the strategies and tools available with Kubernetes!
 
@@ -18,13 +18,13 @@
 
   (it gives us replication primitives)
 
-- Kubernetes helps us to clone / replicate environments
+- Kubernetes helps us clone / replicate environments
 
   (all resources can be described with manifests)
 
 - Kubernetes *does not* help us with error recovery
 
-- We still need to backup / snapshot our data:
+- We still need to back up/snapshot our data:
 
   - with database backups (mysqldump, pgdump, etc.)
 
@@ -58,7 +58,7 @@
 
 - If our deployment system isn't fully automated, it should at least be documented
 
-- Litmus test: how long does it take to deploy a cluster ...
+- Litmus test: how long does it take to deploy a cluster...
 
   - for a senior engineer?
 
@@ -66,7 +66,7 @@
 
 - Does it require external intervention?
 
-  (e.g. provisioning servers, signing TLS certs ...)
+  (e.g. provisioning servers, signing TLS certs...)
 
 ---
 
@@ -108,7 +108,7 @@
 
 - For real applications: add resources (as YAML files)
 
-- For applications deployed multiple times: Helm, Kustomize ...
+- For applications deployed multiple times: Helm, Kustomize...
 
   (staging and production count as "multiple times")
 

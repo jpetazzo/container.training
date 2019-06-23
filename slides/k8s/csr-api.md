@@ -62,7 +62,7 @@ This is what I do if I want to obtain a certificate.
 
 2. Create a Certificate Signing Request (CSR).
 
-   (The CSR contains the identity that I claim and an expiration date.)
+   (The CSR contains the identity that I claim and a public key.)
 
 3. Send that CSR to the Certificate Authority (CA).
 
@@ -231,7 +231,7 @@ For a user named `jean.doe`, we will have:
 - Let's use OpenSSL; it's not the best one, but it's installed everywhere
 
   (many people prefer cfssl, easyrsa, or other tools; that's fine too!)
- 
+
 .exercise[
 
 - Generate the key and certificate signing request:
@@ -244,7 +244,7 @@ For a user named `jean.doe`, we will have:
 
 The command above generates:
 
-- a 2048-bit RSA key, without DES encryption, stored in key.pem
+- a 2048-bit RSA key, without encryption, stored in key.pem
 - a CSR for the name `jean.doe` in group `devs`
 
 ---
@@ -345,7 +345,7 @@ The command above generates:
   kctx -
   ```
 
-- Retrieve the certificate from the CSR:
+- Retrieve the updated CSR object and extract the certificate:
   ```bash
   kubectl get csr users:jean.doe \
           -o jsonpath={.status.certificate} \
