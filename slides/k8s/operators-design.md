@@ -86,7 +86,7 @@ class: extra-details
 
 ## What can we store via the Kubernetes API?
 
-- The API server stores most Kubernetes resources into etcd
+- The API server stores most Kubernetes resources in etcd
 
 - Etcd is designed for reliability, not for performance
 
