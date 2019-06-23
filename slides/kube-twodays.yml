@@ -67,7 +67,9 @@ chapters:
   #- k8s/build-with-kaniko.md
   - k8s/configuration.md
   #- k8s/owners-and-dependents.md
-  #- k8s/extending-api.md
+  - k8s/extending-api.md
+  - k8s/operators.md
+  - k8s/operators-design.md
 - - k8s/statefulsets.md
   - k8s/local-persistent-volumes.md
   - k8s/portworx.md
