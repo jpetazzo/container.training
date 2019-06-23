@@ -2,7 +2,7 @@
 
 - Hello! I', Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
 
-- The training will run from 9am to 5pm
+- The training will run from 9am to 6pm
 
 - There will be a lunch break (and coffee breaks!)
 
