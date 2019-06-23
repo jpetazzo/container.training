@@ -5,9 +5,9 @@
   - new pods are created
 
   - old pods are terminated
-  
+
   - ... all at the same time
-  
+
   - if something goes wrong, ¯\\\_(ツ)\_/¯
 
 ---
@@ -28,7 +28,7 @@
 
   - there will therefore be up to `maxUnavailable`+`maxSurge` pods being updated
 
-- We have the possibility to rollback to the previous version
+- We have the possibility of rolling back to the previous version
   <br/>(if the update fails or is unsatisfactory in any way)
 
 ---
@@ -49,7 +49,6 @@
 
 ---
 
-
 ## Rolling updates in practice
 
 - As of Kubernetes 1.8, we can do rolling updates with:
@@ -64,12 +63,15 @@
 
 ## Building a new version of the `worker` service
 
+.warning[
+Only run these commands if you have built and pushed DockerCoins to a local registry.
+<br/>
+If you are using images from the Docker Hub (`dockercoins/worker:v0.1`), skip this.
+]
+
 .exercise[
 
-- Go to the `stack` directory:
-  ```bash
-  cd ~/container.training/stacks
-  ```
+- Go to the `stacks` directory (`~/container.training/stacks`)
 
 - Edit `dockercoins/worker/worker.py`; update the first `sleep` line to sleep 1 second
 
@@ -210,7 +212,7 @@ class: extra-details
 
 ## Checking the dashboard during the bad rollout
 
-If you haven't deployed the Kubernetes dashboard earlier, just skip this slide.
+If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 .exercise[
 
@@ -253,7 +255,7 @@ Note the `3xxxx` port.
 ```
 -->
 
-- Cancel the deployment and wait for the dust to settle down:
+- Cancel the deployment and wait for the dust to settle:
   ```bash
   kubectl rollout undo deploy worker
   kubectl rollout status deploy worker

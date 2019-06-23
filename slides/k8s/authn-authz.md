@@ -22,7 +22,7 @@
 
 - When the API server receives a request, it tries to authenticate it
 
-  (it examines headers, certificates ... anything available)
+  (it examines headers, certificates... anything available)
 
 - Many authentication methods are available and can be used simultaneously
 
@@ -34,7 +34,7 @@
   - the user ID
   - a list of groups
 
-- The API server doesn't interpret these; it'll be the job of *authorizers*
+- The API server doesn't interpret these; that'll be the job of *authorizers*
 
 ---
 
@@ -50,7 +50,7 @@
 
 - [HTTP basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication)
 
-  (carrying user and password in a HTTP header)
+  (carrying user and password in an HTTP header)
 
 - Authentication proxy
 
@@ -88,7 +88,7 @@
 
   (i.e. they are not stored in etcd or anywhere else)
 
-- Users can be created (and given membership to groups) independently of the API
+- Users can be created (and added to groups) independently of the API
 
 - The Kubernetes API can be set up to use your custom CA to validate client certs
 
@@ -143,19 +143,21 @@ class: extra-details
 
   (see issue [#18982](https://github.com/kubernetes/kubernetes/issues/18982))
 
-- As a result, we cannot easily suspend a user's access
+- As a result, we don't have an easy way to terminate someone's access
 
-- There are workarounds, but they are very inconvenient:
+  (if their key is compromised, or they leave the organization)
 
-  - issue short-lived certificates (e.g. 24 hours) and regenerate them often
+- Option 1: re-create a new CA and re-issue everyone's certificates 
+  <br/>
+  → Maybe OK if we only have a few users; no way otherwise
 
-  - re-create the CA and re-issue all certificates in case of compromise
+- Option 2: don't use groups; grant permissions to individual users
+  <br/>
+  → Inconvenient if we have many users and teams; error-prone
 
-  - grant permissions to individual users, not groups
-    <br/>
-    (and remove all permissions to a compromised user)
-
-- Until this is fixed, we probably want to use other methods
+- Option 3: issue short-lived certificates (e.g. 24 hours) and renew them often
+  <br/>
+  → This can be facilitated by e.g. Vault or by the Kubernetes CSR API
 
 ---
 
@@ -191,7 +193,7 @@ class: extra-details
 
   (the kind that you can view with `kubectl get secrets`)
 
-- Service accounts are generally used to grant permissions to applications, services ...
+- Service accounts are generally used to grant permissions to applications, services...
 
   (as opposed to humans)
 
@@ -215,7 +217,7 @@ class: extra-details
 
 .exercise[
 
-- The resource name is `serviceaccount` or `sa` in short:
+- The resource name is `serviceaccount` or `sa` for short:
   ```bash
   kubectl get sa
   ```
@@ -307,7 +309,7 @@ class: extra-details
 
 - The API "sees" us as a different user
 
-- But neither user has any right, so we can't do nothin'
+- But neither user has any rights, so we can't do nothin'
 
 - Let's change that!
 
@@ -337,9 +339,9 @@ class: extra-details
 
 - A rule is a combination of:
 
-  - [verbs](https://kubernetes.io/docs/reference/access-authn-authz/authorization/#determine-the-request-verb) like create, get, list, update, delete ...
+  - [verbs](https://kubernetes.io/docs/reference/access-authn-authz/authorization/#determine-the-request-verb) like create, get, list, update, delete...
 
-  - resources (as in "API resource", like pods, nodes, services ...)
+  - resources (as in "API resource," like pods, nodes, services...)
 
   - resource names (to specify e.g. one specific pod instead of all pods)
 
@@ -373,13 +375,13 @@ class: extra-details
 
 - We can also define API resources ClusterRole and ClusterRoleBinding
 
-- These are a superset, allowing to:
+- These are a superset, allowing us to:
 
   - specify actions on cluster-wide objects (like nodes)
 
   - operate across all namespaces
 
-- We can create Role and RoleBinding resources within a namespaces
+- We can create Role and RoleBinding resources within a namespace
 
 - ClusterRole and ClusterRoleBinding resources are global
 
@@ -387,13 +389,13 @@ class: extra-details
 
 ## Pods and service accounts
 
-- A pod can be associated to a service account
+- A pod can be associated with a service account
 
-  - by default, it is associated to the `default` service account
+  - by default, it is associated with the `default` service account
 
-  - as we've seen earlier, this service account has no permission anyway
+  - as we saw earlier, this service account has no permissions anyway
 
-- The associated token is exposed into the pod's filesystem
+- The associated token is exposed to the pod's filesystem
 
   (in `/var/run/secrets/kubernetes.io/serviceaccount/token`)
 
@@ -407,7 +409,7 @@ class: extra-details
 
 - We are going to create a service account
 
-- We will use an existing cluster role (`view`)
+- We will use a default cluster role (`view`)
 
 - We will bind together this role and this service account
 
@@ -458,7 +460,7 @@ class: extra-details
 
 ]
 
-It's important to note a couple of details in these flags ...
+It's important to note a couple of details in these flags...
 
 ---
 
@@ -491,13 +493,13 @@ It's important to note a couple of details in these flags ...
 
   - again, the command would have worked fine (no error)
 
-  - ... but our API requests would have been denied later
+  - ...but our API requests would have been denied later
 
 - What's about the `default:` prefix?
 
   - that's the namespace of the service account
 
-  - yes, it could be inferred from context, but ... `kubectl` requires it
+  - yes, it could be inferred from context, but... `kubectl` requires it
 
 ---
 
@@ -574,6 +576,51 @@ It's important to note a couple of details in these flags ...
 
 class: extra-details
 
+## Where does this `view` role come from?
+
+- Kubernetes defines a number of ClusterRoles intended to be bound to users
+
+- `cluster-admin` can do *everything* (think `root` on UNIX)
+
+- `admin` can do *almost everything* (except e.g. changing resource quotas and limits)
+
+- `edit` is similar to `admin`, but cannot view or edit permissions
+
+- `view` has read-only access to most resources, except permissions and secrets
+
+*In many situations, these roles will be all you need.*
+
+*You can also customize them!*
+
+---
+
+class: extra-details
+
+## Customizing the default roles
+
+- If you need to *add* permissions to these default roles (or others),
+  <br/>
+  you can do it through the [ClusterRole Aggregation](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles) mechanism
+
+- This happens by creating a ClusterRole with the following labels:
+  ```yaml
+    metadata:
+      labels:
+        rbac.authorization.k8s.io/aggregate-to-admin: "true"
+        rbac.authorization.k8s.io/aggregate-to-edit: "true"
+        rbac.authorization.k8s.io/aggregate-to-view: "true"
+  ```
+
+- This ClusterRole permissions will be added to `admin`/`edit`/`view` respectively
+
+- This is particulary useful when using CustomResourceDefinitions
+
+  (since Kubernetes cannot guess which resources are sensitive and which ones aren't)
+
+---
+
+class: extra-details
+
 ## Where do our permissions come from?
 
 - When interacting with the Kubernetes API, we are using a client certificate
@@ -605,7 +652,7 @@ class: extra-details
   kubectl describe clusterrolebinding cluster-admin
   ```
 
-- This binding associates `system:masters` to the cluster role `cluster-admin`
+- This binding associates `system:masters` with the cluster role `cluster-admin`
 
 - And the `cluster-admin` is, basically, `root`:
   ```bash
@@ -620,7 +667,7 @@ class: extra-details
 
 - For auditing purposes, sometimes we want to know who can perform an action
 
-- Here is a proof-of-concept tool by Aqua Security, doing exactly that:
+- There is a proof-of-concept tool by Aqua Security which does exactly that:
 
   https://github.com/aquasecurity/kubectl-who-can
 

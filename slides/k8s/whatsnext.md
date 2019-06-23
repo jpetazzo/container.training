@@ -132,6 +132,8 @@ And *then* it is time to look at orchestration!
   |
   [Persistent Volumes](kube-selfpaced.yml.html#toc-highly-available-persistent-volumes)
 
+- Excellent [blog post](http://www.databasesoup.com/2018/07/should-i-run-postgres-on-kubernetes.html) tackling the question: “Should I run Postgres on Kubernetes?”
+
 ---
 
 ## HTTP traffic handling

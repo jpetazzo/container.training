@@ -12,7 +12,7 @@
 
   - an *alert manager* to notify us according to metrics values or trends
 
-- We are going to deploy it on our Kubernetes cluster and see how to query it
+- We are going to use it to collect and query some metrics on our Kubernetes cluster
 
 ---
 
@@ -20,7 +20,7 @@
 
 - We don't endorse Prometheus more or less than any other system
 
-- It's relatively well integrated within the Cloud Native ecosystem
+- It's relatively well integrated within the cloud-native ecosystem
 
 - It can be self-hosted (this is useful for tutorials like this)
 
@@ -145,7 +145,28 @@ scrape_configs:
 
   (it will even be gentler on the I/O subsystem since it needs to write less)
 
-[Storage in Prometheus 2.0](https://www.youtube.com/watch?v=C4YV-9CrawA) by [Goutham V](https://twitter.com/putadent) at DC17EU
+- Would you like to know more? Check this video:
+
+  [Storage in Prometheus 2.0](https://www.youtube.com/watch?v=C4YV-9CrawA) by [Goutham V](https://twitter.com/putadent) at DC17EU
+
+---
+
+## Checking if Prometheus is installed
+
+- Before trying to install Prometheus, let's check if it's already there
+
+.exercise[
+
+- Look for services with a label `app=prometheus` across all namespaces:
+  ```bash
+  kubectl get services --selector=app=prometheus --all-namespaces
+  ```
+
+]
+
+If we see a `NodePort` service called `prometheus-server`, we're good!
+
+(We can then skip to "Connecting to the Prometheus web UI".)
 
 ---
 
@@ -161,7 +182,7 @@ We need to:
 
 - Run the *node exporter* on each node (with a Daemon Set)
 
-- Setup a Service Account so that Prometheus can query the Kubernetes API
+- Set up a Service Account so that Prometheus can query the Kubernetes API
 
 - Configure the Prometheus server
 
@@ -169,11 +190,11 @@ We need to:
 
 ---
 
-## Helm Charts to the rescue
+## Helm charts to the rescue
 
-- To make our lives easier, we are going to use a Helm Chart
+- To make our lives easier, we are going to use a Helm chart
 
-- The Helm Chart will take care of all the steps explained above
+- The Helm chart will take care of all the steps explained above
 
   (including some extra features that we don't need, but won't hurt)
 
@@ -210,20 +231,41 @@ We need to:
 
 - Install Prometheus on our cluster:
   ```bash
-  helm install stable/prometheus \
-         --set server.service.type=NodePort \
-         --set server.persistentVolume.enabled=false
+    helm upgrade prometheus stable/prometheus \
+        --install \
+        --namespace kube-system \
+        --set server.service.type=NodePort \
+        --set server.service.nodePort=30090 \
+        --set server.persistentVolume.enabled=false \
+        --set alertmanager.enabled=false
   ```
 
 ]
 
-The provided flags:
+Curious about all these flags? They're explained in the next slide.
 
-- expose the server web UI (and API) on a NodePort
+---
 
-- use an ephemeral volume for metrics storage
-  <br/>
-  (instead of requesting a Persistent Volume through a Persistent Volume Claim)
+class: extra-details
+
+## Explaining all the Helm flags
+
+- `helm upgrade prometheus` → upgrade release "prometheus" to the latest version...
+
+  (a "release" is a unique name given to an app deployed with Helm)
+
+- `stable/prometheus` → ... of the chart `prometheus` in repo `stable`
+
+- `--install` → if the app doesn't exist, create it
+
+- `--namespace kube-system` → put it in that specific namespace
+
+- And set the following *values* when rendering the chart's templates:
+
+  - `server.service.type=NodePort` → expose the Prometheus server with a NodePort
+  - `server.service.nodePort=30090` → set the specific NodePort number to use
+  - `server.persistentVolume.enabled=false` → do not use a PersistentVolumeClaim
+  - `alertmanager.enabled=false` → disable the alert manager entirely
 
 ---
 
@@ -235,7 +277,7 @@ The provided flags:
 
 - Figure out the NodePort that was allocated to the Prometheus server:
   ```bash
-  kubectl get svc | grep prometheus-server
+  kubectl get svc --all-namespaces | grep prometheus-server
   ```
 
 - With your browser, connect to that port
@@ -246,7 +288,7 @@ The provided flags:
 
 ## Querying some metrics
 
-- This is easy ... if you are familiar with PromQL
+- This is easy... if you are familiar with PromQL
 
 .exercise[
 
@@ -292,13 +334,13 @@ This query will show us CPU usage across all containers:
 container_cpu_usage_seconds_total
 ```
 
-- The suffix of the metrics name tells us: 
+- The suffix of the metrics name tells us:
 
   - the unit (seconds of CPU)
 
   - that it's the total used since the container creation
 
-- Since it's a "total", it is an increasing quantity
+- Since it's a "total," it is an increasing quantity
 
   (we need to compute the derivative if we want e.g. CPU % over time)
 
@@ -391,9 +433,9 @@ class: extra-details
 
 - I/O activity (disk, network), per operation or volume
 
-- Physical/hardware (when applicable): temperature, fan speed ...
+- Physical/hardware (when applicable): temperature, fan speed...
 
-- ... and much more!
+- ...and much more!
 
 ---
 
@@ -406,7 +448,7 @@ class: extra-details
 - RAM breakdown will be different
 
   - active vs inactive memory
-  - some memory is *shared* between containers, and accounted specially
+  - some memory is *shared* between containers, and specially accounted for
 
 - I/O activity is also harder to track
 
@@ -425,11 +467,11 @@ class: extra-details
 
 - Arbitrary metrics related to your application and business
 
-- System performance: request latency, error rate ...
+- System performance: request latency, error rate...
 
-- Volume information: number of rows in database, message queue size ...
+- Volume information: number of rows in database, message queue size...
 
-- Business data: inventory, items sold, revenue ...
+- Business data: inventory, items sold, revenue...
 
 ---
 
@@ -453,7 +495,7 @@ class: extra-details
 
 ## Querying labels
 
-- What if we want to get metrics for containers belong to pod tagged `worker`?
+- What if we want to get metrics for containers belonging to a pod tagged `worker`?
 
 - The cAdvisor exporter does not give us Kubernetes labels
 
@@ -486,3 +528,21 @@ class: extra-details
   - see [this comment](https://github.com/prometheus/prometheus/issues/2204#issuecomment-261515520) for an overview
 
   - or [this blog post](https://5pi.de/2017/11/09/use-prometheus-vector-matching-to-get-kubernetes-utilization-across-any-pod-label/) for a complete description of the process
+
+---
+
+## In practice
+
+- Grafana is a beautiful (and useful) frontend to display all kinds of graphs
+
+- Not everyone needs to know Prometheus, PromQL, Grafana, etc.
+
+- But in a team, it is valuable to have at least one person who know them
+
+- That person can set up queries and dashboards for the rest of the team
+
+- It's a little bit like knowing how to optimize SQL queries, Dockerfiles...
+
+  Don't panic if you don't know these tools!
+
+  ...But make sure at least one person in your team is on it 💯

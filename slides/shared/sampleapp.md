@@ -80,7 +80,7 @@ and displays aggregated logs.
 
 - DockerCoins is *not* a cryptocurrency
 
-  (the only common points are "randomness", "hashing", and "coins" in the name)
+  (the only common points are "randomness," "hashing," and "coins" in the name)
 
 ---
 
@@ -134,7 +134,7 @@ How does each service find out the address of the other ones?
 
 - We do not hard-code IP addresses in the code
 
-- We do not hard-code FQDN in the code, either
+- We do not hard-code FQDNs in the code, either
 
 - We just connect to a service name, and container-magic does the rest
 
@@ -173,7 +173,7 @@ class: extra-details
 
 - Compose file version 2+ makes each container reachable through its service name
 
-- Compose file version 1 did require "links" sections
+- Compose file version 1 required "links" sections to accomplish this
 
 - Network aliases are automatically namespaced
 

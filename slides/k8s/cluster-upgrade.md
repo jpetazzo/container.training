@@ -166,7 +166,7 @@
 
 - Upgrade kubelet:
   ```bash
-  apt install kubelet=1.14.1-00
+  apt install kubelet=1.14.2-00
   ```
 
 ]
@@ -267,7 +267,7 @@
 
 - Perform the upgrade:
   ```bash
-  sudo kubeadm upgrade apply v1.14.1
+  sudo kubeadm upgrade apply v1.14.2
   ```
 
 ]
@@ -287,8 +287,8 @@
 - Download the configuration on each node, and upgrade kubelet:
   ```bash
     for N in 1 2 3; do
-    	ssh node$N sudo kubeadm upgrade node config --kubelet-version v1.14.1
-  	  ssh node $N sudo apt install kubelet=1.14.1-00
+      ssh test$N sudo kubeadm upgrade node config --kubelet-version v1.14.2
+      ssh test$N sudo apt install kubelet=1.14.2-00
     done
   ```
 ]
@@ -297,7 +297,7 @@
 
 ## Checking what we've done
 
-- All our nodes should now be updated to version 1.14.1
+- All our nodes should now be updated to version 1.14.2
 
 .exercise[
 

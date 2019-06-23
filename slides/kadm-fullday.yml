@@ -38,6 +38,7 @@ chapters:
 - - k8s/resource-limits.md
   - k8s/metrics-server.md
   - k8s/cluster-sizing.md
+  - k8s/horizontal-pod-autoscaler.md
 - - k8s/lastwords-admin.md
   - k8s/links.md
   - shared/thankyou.md

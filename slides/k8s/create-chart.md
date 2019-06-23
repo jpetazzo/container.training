@@ -34,7 +34,7 @@
   ```bash
 
 	while read kind name; do
-	  kubectl get -o yaml --export $kind $name > dockercoins/templates/$name-$kind.yaml
+	  kubectl get -o yaml $kind $name > dockercoins/templates/$name-$kind.yaml
 	done <<EOF
 	deployment worker
 	deployment hasher
@@ -69,3 +69,46 @@
 `Error: release loitering-otter failed: services "hasher" already exists`
 
 - To avoid naming conflicts, we will deploy the application in another *namespace*
+
+---
+
+## Switching to another namespace
+
+- We can create a new namespace and switch to it
+
+  (Helm will automatically use the namespace specified in our context)
+
+- We can also tell Helm which namespace to use
+
+.exercise[
+
+- Tell Helm to use a specific namespace:
+  ```bash
+  helm install dockercoins --namespace=magenta
+  ```
+
+]
+
+---
+
+## Checking our new copy of DockerCoins
+
+- We can check the worker logs, or the web UI
+
+.exercise[
+
+- Retrieve the NodePort number of the web UI:
+  ```bash
+  kubectl get service webui --namespace=magenta
+  ```
+
+- Open it in a web browser
+
+- Look at the worker logs:
+  ```bash
+  kubectl logs deploy/worker --tail=10 --follow --namespace=magenta
+  ```
+
+]
+
+Note: it might take a minute or two for the worker to start.

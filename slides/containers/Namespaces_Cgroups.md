@@ -86,13 +86,13 @@ class: extra-details, deep-dive
 
   - the `unshare()` system call.
 
-- The Linux tool `unshare` allows to do that from a shell.
+- The Linux tool `unshare` allows doing that from a shell.
 
 - A new process can re-use none / all / some of the namespaces of its parent.
 
 - It is possible to "enter" a namespace with the `setns()` system call.
 
-- The Linux tool `nsenter` allows to do that from a shell.
+- The Linux tool `nsenter` allows doing that from a shell.
 
 ---
 
@@ -138,11 +138,11 @@ class: extra-details, deep-dive
 
 - gethostname / sethostname
 
-- Allows to set a custom hostname for a container.
+- Allows setting a custom hostname for a container.
 
 - That's (mostly) it!
 
-- Also allows to set the NIS domain.
+- Also allows setting the NIS domain.
 
   (If you don't know what a NIS domain is, you don't have to worry about it!)
 
@@ -392,13 +392,13 @@ class: extra-details
 
 - Processes can have their own root fs (à la chroot).
 
-- Processes can also have "private" mounts. This allows to:
+- Processes can also have "private" mounts. This allows:
 
-  - isolate `/tmp` (per user, per service...)
+  - isolating `/tmp` (per user, per service...)
 
-  - mask `/proc`, `/sys` (for processes that don't need them)
+  - masking `/proc`, `/sys` (for processes that don't need them)
 
-  - mount remote filesystems or sensitive data,
+  - mounting remote filesystems or sensitive data,
     <br/>but make it visible only for allowed processes
 
 - Mounts can be totally private, or shared.
@@ -570,7 +570,7 @@ Check `man 2 unshare` and `man pid_namespaces` if you want more details.
 
 ## User namespace
 
-- Allows to map UID/GID; e.g.:
+- Allows mapping UID/GID; e.g.:
 
   - UID 0→1999 in container C1 is mapped to UID 10000→11999 on host
   - UID 0→1999 in container C2 is mapped to UID 12000→13999 on host
@@ -947,7 +947,7 @@ Killed
 
   (i.e., "this group of process used X seconds of CPU0 and Y seconds of CPU1".)
 
-- Allows to set relative weights used by the scheduler.
+- Allows setting relative weights used by the scheduler.
 
 ---
 
@@ -1101,9 +1101,9 @@ See `man capabilities` for the full list and details.
 
 - Original seccomp only allows `read()`, `write()`, `exit()`, `sigreturn()`.
 
-- The seccomp-bpf extension allows to specify custom filters with BPF rules.
+- The seccomp-bpf extension allows specifying custom filters with BPF rules.
 
-- This allows to filter by syscall, and by parameter.
+- This allows filtering by syscall, and by parameter.
 
 - BPF code can perform arbitrarily complex checks, quickly, and safely.
 

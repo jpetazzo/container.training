@@ -30,9 +30,11 @@ chapters:
   - containers/Building_Images_With_Dockerfiles.md
   - containers/Cmd_And_Entrypoint.md
   - containers/Copying_Files_During_Build.md
+  - containers/Exercise_Dockerfile_Basic.md
 - - containers/Multi_Stage_Builds.md
   - containers/Publishing_To_Docker_Hub.md
   - containers/Dockerfile_Tips.md
+  - containers/Exercise_Dockerfile_Advanced.md
 - - containers/Naming_And_Inspecting.md
   - containers/Labels.md
   - containers/Getting_Inside.md
@@ -45,6 +47,7 @@ chapters:
   - containers/Windows_Containers.md
   - containers/Working_With_Volumes.md
   - containers/Compose_For_Dev_Stacks.md
+  - containers/Exercise_Composefile.md
   - containers/Docker_Machine.md
 - - containers/Advanced_Dockerfiles.md
   - containers/Application_Configuration.md

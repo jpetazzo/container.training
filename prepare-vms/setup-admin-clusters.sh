@@ -1,15 +1,20 @@
 #!/bin/sh
 set -e
 
-INFRA=infra/aws-eu-west-3
+export AWS_INSTANCE_TYPE=t3a.small
+
+INFRA=infra/aws-us-west-2
 
 STUDENTS=2
 
-TAG=admin-dmuc
+PREFIX=$(date +%Y-%m-%d-%H-%M)
+
+SETTINGS=admin-dmuc
+TAG=$PREFIX-$SETTINGS
 ./workshopctl start \
 	--tag $TAG \
 	--infra $INFRA \
-	--settings settings/$TAG.yaml \
+	--settings settings/$SETTINGS.yaml \
 	--count $STUDENTS
 
 ./workshopctl deploy $TAG
@@ -17,37 +22,45 @@ TAG=admin-dmuc
 ./workshopctl kubebins $TAG
 ./workshopctl cards $TAG
 
-TAG=admin-kubenet
+SETTINGS=admin-kubenet
+TAG=$PREFIX-$SETTINGS
 ./workshopctl start \
 	--tag $TAG \
 	--infra $INFRA \
-	--settings settings/$TAG.yaml \
+	--settings settings/$SETTINGS.yaml \
 	--count $((3*$STUDENTS))
 
+./workshopctl disableaddrchecks $TAG
 ./workshopctl deploy $TAG
 ./workshopctl kubebins $TAG
-./workshopctl disableaddrchecks $TAG
 ./workshopctl cards $TAG
 
-TAG=admin-kuberouter
+SETTINGS=admin-kuberouter
+TAG=$PREFIX-$SETTINGS
 ./workshopctl start \
 	--tag $TAG \
 	--infra $INFRA \
-	--settings settings/$TAG.yaml \
+	--settings settings/$SETTINGS.yaml \
 	--count $((3*$STUDENTS))
 
+./workshopctl disableaddrchecks $TAG
 ./workshopctl deploy $TAG
 ./workshopctl kubebins $TAG
-./workshopctl disableaddrchecks $TAG
 ./workshopctl cards $TAG
 
-TAG=admin-test
+#INFRA=infra/aws-us-west-1
+
+export AWS_INSTANCE_TYPE=t3a.medium
+
+SETTINGS=admin-test
+TAG=$PREFIX-$SETTINGS
 ./workshopctl start \
 	--tag $TAG \
 	--infra $INFRA \
-	--settings settings/$TAG.yaml \
+	--settings settings/$SETTINGS.yaml \
 	--count $((3*$STUDENTS))
 
 ./workshopctl deploy $TAG
 ./workshopctl kube $TAG 1.13.5
 ./workshopctl cards $TAG
+

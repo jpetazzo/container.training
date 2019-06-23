@@ -108,7 +108,7 @@
 
   (as opposed to merely started)
 
-- Containers in a broken state gets killed and restarted
+- Containers in a broken state get killed and restarted
 
   (instead of serving errors or timeouts)
 
