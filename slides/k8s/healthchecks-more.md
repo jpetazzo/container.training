@@ -312,7 +312,7 @@ It will use the default success threshold (1 successful attempt = alive).
 
   - readiness check with a short timeout / low failure threshold
 
-  - liveness check with a longer timeout / higher failure treshold
+  - liveness check with a longer timeout / higher failure threshold
 
 ---
 
