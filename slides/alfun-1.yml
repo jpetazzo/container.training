@@ -47,7 +47,6 @@ chapters:
   - containers/Container_Network_Model.md
   - containers/Ambassadors.md
 - - containers/Local_Development_Workflow.md
-  #- containers/Windows_Containers.md
   - containers/Working_With_Volumes.md
   - containers/Compose_For_Dev_Stacks.md
   - containers/Exercise_Composefile.md
@@ -55,6 +54,7 @@ chapters:
   - containers/Application_Configuration.md
   - containers/Logging.md
   - containers/Container_Engines.md
+  - containers/Windows_Containers.md
 - - containers/Orchestration_Overview.md
   - k8s/concepts-k8s.md
   - shared/declarative.md
