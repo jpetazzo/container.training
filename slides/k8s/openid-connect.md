@@ -88,7 +88,7 @@
 
 - We will use the JWT to authenticate
 
-.footnote[If you can't or won't use a Google account, you can try to adapt to another provider.]
+.footnote[If you can't or won't use a Google account, you can try to adapt this to another provider.]
 
 ---
 
