@@ -206,7 +206,7 @@ We should get an `Unauthorized` response, since we haven't enabled OpenID Connec
 
   (or where the control plane is deployed in static pods)
 
-- If your cluster is different, you will need to adapt them
+- If your cluster is deployed differently, you will need to adapt them
 
 .exercise[
 
