@@ -64,7 +64,7 @@
 
   - indicate which audience (or "client id") should be allowed
 
-  - if necessary, map or prefix user and group names
+  - optionally, map or prefix user and group names
 
 - Client side
 
