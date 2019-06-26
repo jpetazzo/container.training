@@ -318,6 +318,14 @@ _cmd_listall() {
     done
 }
 
+_cmd ping "Ping VMs in a given tag, to check that they have network access"
+_cmd_ping() {
+    TAG=$1
+    need_tag
+
+    fping < tags/$TAG/ips.txt
+}
+
 _cmd netfix "Disable GRO and run a pinger job on the VMs"
 _cmd_netfix () {
     TAG=$1
