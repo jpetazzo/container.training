@@ -28,7 +28,7 @@
 
   - an *id token* (a short-lived signed JSON Web Token, see next slide)
 
-  - a *refresh token* (to renew the previous one when needed)
+  - a *refresh token* (to renew the *id token* when needed)
 
 - We can now issue requests to the Kubernetes API with the *id token*
 
