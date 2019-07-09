@@ -1,8 +1,8 @@
 # Checking pod and node resource usage
 
-- Since Kubernetes 1.8, metrics are collected by the [core metrics pipeline](https://v1-13.docs.kubernetes.io/docs/tasks/debug-application-cluster/core-metrics-pipeline/)
+- Since Kubernetes 1.8, metrics are collected by the [resource metrics pipeline](https://kubernetes.io/docs/tasks/debug-application-cluster/resource-metrics-pipeline/)
 
-- The core metrics pipeline is:
+- The resource metrics pipeline is:
 
   - optional (Kubernetes can function without it)
 
@@ -37,7 +37,7 @@ If it shows our nodes and their CPU and memory load, we're good!
 
   (it doesn't need persistence, as it doesn't *store* metrics)
 
-- It has its own repository, [kubernetes-incubator/metrics-server](https://github.com/kubernetes-incubator/metrics-server])
+- It has its own repository, [kubernetes-incubator/metrics-server](https://github.com/kubernetes-incubator/metrics-server)
 
 - The repository comes with [YAML files for deployment](https://github.com/kubernetes-incubator/metrics-server/tree/master/deploy/1.8%2B)
 
