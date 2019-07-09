@@ -1,10 +1,10 @@
 # Links and resources
 
-- [Microsoft Learn](https://docs.microsoft.com/learn/)
+- [What is Kubernetes? by Microsoft Azure](https://aka.ms/k8slearning)
 
 - [Azure Kubernetes Service](https://docs.microsoft.com/azure/aks/)
 
-- [Cloud Developer Advocates](https://developer.microsoft.com/advocates/)
+- [Deis Labs](https://deislabs.io) - Cloud Native Developer Tooling
 
 - [Kubernetes Community](https://kubernetes.io/community/) - Slack, Google Groups, meetups
 
@@ -12,4 +12,8 @@
 
 - [devopsdays](https://www.devopsdays.org/)
 
-.footnote[These slides (and future updates) are on → http://container.training/]
+- [Training with Jérôme](https://tinyshellscript.com/)
+
+- **Please rate this session!** (with [this link](https://conferences.oreilly.com/oscon/oscon-or/public/schedule/detail/76390))
+
+.footnote[These slides (and future updates) are on → https://container.training/]

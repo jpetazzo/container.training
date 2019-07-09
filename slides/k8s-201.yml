@@ -1,0 +1,38 @@
+title: |
+  Kubernetes 201
+  Production tooling
+
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+#chat: "In person!"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://container.training/
+
+exclude:
+- self-paced
+- static-pods-exercise
+
+chapters:
+- shared/title.md
+- logistics-bridget.md
+- k8s/intro.md
+- shared/about-slides.md
+- shared/toc.md
+- - k8s/prereqs-k8s201.md
+  - k8s/architecture-k8s201.md
+  - k8s/setup-managed.md
+- - k8s/healthchecks.md
+# kubercoins?
+  - k8s/authn-authz.md
+  - k8s/podsecuritypolicy.md
+- - k8s/resource-limits.md
+  - k8s/metrics-server.md
+- - k8s/cluster-sizing.md
+  - k8s/horizontal-pod-autoscaler.md
+  - k8s/extending-api.md
+  - k8s/operators.md
+- - k8s/lastwords-admin.md
+  - k8s/links-bridget.md
+  - shared/thankyou.md
