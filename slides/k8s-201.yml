@@ -21,6 +21,7 @@ chapters:
 - shared/about-slides.md
 - shared/toc.md
 - - k8s/prereqs-k8s201.md
+  - k8s/localkubeconfig.md
   - k8s/architecture-k8s201.md
   - k8s/setup-managed.md
 - - k8s/healthchecks.md
