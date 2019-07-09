@@ -24,6 +24,14 @@
   lang: fr
   attend: https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
 
+- date: 2019-07-16
+  country: us
+  city: Portland, OR
+  event: OSCON
+  speaker: bridgetkromhout
+  title: "Kubernetes 201: Production tooling"
+  attend: https://conferences.oreilly.com/oscon/oscon-or/public/schedule/detail/76390
+
 - date: 2019-06-17
   country: ca
   city: Montréal
