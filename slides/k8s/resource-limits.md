@@ -404,7 +404,7 @@ These quotas will apply to the namespace where the ResourceQuota is created.
 
 - Example:
   ```bash
-  kubectl create quota sparta --hard=pods=300,limits.memory=300Gi
+  kubectl create quota my-resource-quota --hard=pods=300,limits.memory=300Gi
   ```
 
 - With both YAML and CLI form, the values are always under the `hard` section
