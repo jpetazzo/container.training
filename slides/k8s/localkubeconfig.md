@@ -1,8 +1,8 @@
-# Controlling the cluster remotely
+# Controlling a Kubernetes cluster remotely
 
-- All the operations that we do with `kubectl` can be done remotely
+- `kubectl` can be used either on cluster instances or outside the cluster
 
-- In this section, we are going to use `kubectl` from our local machine
+- Here, we are going to use `kubectl` from our local machine
 
 ---
 
@@ -67,10 +67,10 @@ Note: if you are following along with a different platform (e.g. Linux on an arc
 
 The output should look like this:
 ```
-Client Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.0",
-GitCommit:"641856db18352033a0d96dbc99153fa3b27298e5", GitTreeState:"clean",
-BuildDate:"2019-03-25T15:53:57Z", GoVersion:"go1.12.1", Compiler:"gc",
-Platform:"linux/amd64"}
+Client Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.0",
+GitCommit:"e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529", GitTreeState:"clean",
+BuildDate:"2019-06-19T16:40:16Z", GoVersion:"go1.12.5", Compiler:"gc",
+Platform:"darwin/amd64"}
 ```
 
 ---
