@@ -62,7 +62,7 @@ Exactly what we need!
 - The following commands will install Stern on a Linux Intel 64 bit machine:
   ```bash
   sudo curl -L -o /usr/local/bin/stern \
-       https://github.com/wercker/stern/releases/download/1.10.0/stern_linux_amd64
+       https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64
   sudo chmod +x /usr/local/bin/stern
   ```
 
