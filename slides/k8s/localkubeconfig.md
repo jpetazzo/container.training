@@ -192,4 +192,4 @@ class: extra-details
 
 ]
 
-We can now utilize the cluster exactly as we did before, except that it's remote.
+We can now utilize the cluster exactly as if we're logged into a node, except that it's remote.
