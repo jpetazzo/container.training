@@ -23,7 +23,7 @@ paper_margin: 0.2in
 engine_version: stable
 
 # These correspond to the version numbers visible on their respective GitHub release pages
-compose_version: 1.22.0
+compose_version: 1.24.1
 machine_version: 0.15.0
 
 # Password used to connect with the "docker user"

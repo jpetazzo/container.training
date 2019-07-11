@@ -229,7 +229,7 @@ EOF"
     pssh "
     if [ ! -x /usr/local/bin/stern ]; then
         ##VERSION##
-        sudo curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/download/1.10.0/stern_linux_amd64 &&
+        sudo curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64 &&
         sudo chmod +x /usr/local/bin/stern &&
         stern --completion bash | sudo tee /etc/bash_completion.d/stern
     fi"
