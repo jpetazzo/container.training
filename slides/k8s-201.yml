@@ -26,7 +26,7 @@ chapters:
 - - k8s/healthchecks.md
   - k8s/kubercoins-k8s201.md
   - k8s/authn-authz-k8s201.md
-- - k8s/resource-limits.md
+- - k8s/resource-limits-k8s201.md
   - k8s/metrics-server.md
 - - k8s/cluster-sizing.md
   - k8s/horizontal-pod-autoscaler.md
