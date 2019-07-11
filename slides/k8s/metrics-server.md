@@ -59,7 +59,7 @@ If it shows our nodes and their CPU and memory load, we're good!
 
 - Show resource usage across all containers:
   ```bash
-  kuebectl top pods --containers --all-namespaces
+  kubectl top pods --containers --all-namespaces
   ```
 ]
 
