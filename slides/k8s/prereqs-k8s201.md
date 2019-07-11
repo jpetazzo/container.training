@@ -44,7 +44,9 @@
 
 - We will connect to these clusters with `kubectl`
 
-  (if you don't have `kubectl` installed, install it **now!**)
+- If you don't have `kubectl` installed, we'll explain how to install it shortly
+
+- You will also want to install `jq`
 
 ---
 

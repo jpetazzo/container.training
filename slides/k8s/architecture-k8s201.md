@@ -192,7 +192,12 @@ What does that mean?
 
 .exercise[
 
-- Create a namespace with the following command:
+- List existing namespaces:
+  ```bash
+    kubectl get ns
+  ```
+
+- Create a new namespace with the following command:
   ```bash
     kubectl create -f- <<EOF
     apiVersion: v1

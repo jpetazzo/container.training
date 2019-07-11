@@ -21,13 +21,11 @@ chapters:
 - shared/about-slides.md
 - shared/toc.md
 - - k8s/prereqs-k8s201.md
-  - k8s/localkubeconfig.md
+  - k8s/localkubeconfig-k8s201.md
   - k8s/architecture-k8s201.md
-  - k8s/setup-managed.md
 - - k8s/healthchecks.md
-# kubercoins?
-  - k8s/authn-authz.md
-  - k8s/podsecuritypolicy.md
+  - k8s/kubercoins-k8s201.md
+  - k8s/authn-authz-k8s201.md
 - - k8s/resource-limits.md
   - k8s/metrics-server.md
 - - k8s/cluster-sizing.md
