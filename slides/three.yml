@@ -1,0 +1,123 @@
+title: |
+  Containers,
+  Docker,
+  Kubernetes
+
+chat: "[Gitter](https://gitter.im/jpetazzo/training-20190717-copenhagen)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://maersk-2019-07.container.training/
+
+exclude:
+- self-paced
+
+chapters:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+- shared/toc.md
+# DAY 1
+- - containers/Training_Environment.md
+  - containers/First_Containers.md
+  - containers/Background_Containers.md
+  - containers/Initial_Images.md
+- - containers/Building_Images_Interactively.md
+  - containers/Building_Images_With_Dockerfiles.md
+  - containers/Cmd_And_Entrypoint.md
+  - containers/Copying_Files_During_Build.md
+  - containers/Exercise_Dockerfile_Basic.md
+- - containers/Multi_Stage_Builds.md
+  - containers/Dockerfile_Tips.md
+  - containers/Exercise_Dockerfile_Advanced.md
+  - containers/Naming_And_Inspecting.md
+  - containers/Getting_Inside.md
+- - containers/Container_Networking_Basics.md
+  - containers/Network_Drivers.md
+  - containers/Container_Network_Model.md
+  - containers/Ambassadors.md
+# DAY 2
+- - containers/Local_Development_Workflow.md
+  - containers/Working_With_Volumes.md
+  - containers/Compose_For_Dev_Stacks.md
+  - containers/Exercise_Composefile.md
+- - containers/Application_Configuration.md
+  - containers/Orchestration_Overview.md
+  - |
+    # From Docker to Kubernetes
+
+    - We are now going to run a demo app made of multiple containers
+
+    - We will start by running it on one node, with Compose
+
+    - Then we will deploy that application on a Kubernetes cluster
+
+    - We will identify performance bottlenecks and scale out that app
+
+      (and learn Kubernetes in the process)
+
+    ---
+
+    ## Our new environment
+
+    - Since a 1-node cluster isn't fun, we will switch to a new environment!
+
+    - This environment is a 4-node Kubernetes cluster
+
+    - Also, from now on, demos and labs are identified with these gray boxes
+
+    .exercise[
+    - You should run this command:
+      ```bash
+      echo Hello world
+      ```
+
+    ]
+
+  - shared/connecting.md
+  - k8s/versions-k8s.md
+- - shared/sampleapp.md
+  - shared/composedown.md
+  - k8s/concepts-k8s.md
+  - k8s/kubectlget.md
+  - k8s/kubectlrun.md
+- - k8s/logs-cli.md
+  - shared/declarative.md
+  - k8s/declarative.md
+  - k8s/deploymentslideshow.md
+  - k8s/kubenet.md
+  - k8s/kubectlexpose.md
+  - k8s/shippingimages.md
+  - k8s/buildshiprun-dockerhub.md
+  - k8s/ourapponkube.md
+# DAY 3
+- - k8s/setup-k8s.md
+  - k8s/dashboard.md
+  - k8s/scalingdockercoins.md
+  - shared/hastyconclusions.md
+  - k8s/daemonset.md
+- - k8s/rollout.md
+  - k8s/namespaces.md
+  - k8s/ingress.md
+- - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
+  - k8s/volumes.md
+  - k8s/configuration.md
+- - k8s/statefulsets.md
+  - k8s/local-persistent-volumes.md
+  - k8s/portworx.md
+- - k8s/whatsnext.md
+  - k8s/links.md
+  - shared/thankyou.md
+# EXTRA
+- - |
+    # (Extra material)
+  - k8s/healthchecks.md
+  - k8s/healthchecks-more.md
+  - k8s/kustomize.md
+  - k8s/helm.md
+  - k8s/create-chart.md
+  - k8s/create-more-charts.md
+  - k8s/authn-authz.md
+  - k8s/netpol.md
