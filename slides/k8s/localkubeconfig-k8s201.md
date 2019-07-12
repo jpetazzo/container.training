@@ -14,7 +14,7 @@
 
   (and unofficially anywhere we can build and run Go binaries)
 
-- You may skip these exercises if you are following along from:
+- You may want to try Azure cloud shell if you are following along from:
 
   - a tablet or phone
 
@@ -46,7 +46,7 @@
 
 ]
 
-Note: if you are following along with a different platform (e.g. Linux on an architecture different from amd64, or with a phone or tablet), installing `kubectl` might be more complicated (or even impossible) so feel free to skip this section.
+Note: if you are following along with a different platform (e.g. Linux on an architecture different from amd64, or with a phone or tablet), installing `kubectl` might be more complicated (or even impossible) so check with us about cloud shell.
 
 ---
 
@@ -96,44 +96,75 @@ Platform:"darwin/amd64"}
 
 ---
 
-## Copying the configuration file from `node1`
+## Connecting to your AKS cluster via Azure Cloud Shell
 
-- The `~/.kube/config` file that is on `node1` contains all the credentials we need
+- open portal.azure.com in a browser
+- auth with the info on your card
 
-- Let's copy it over!
+- click `[>_]` in the top menu bar to open cloud shell
 
 .exercise[
 
-- Copy the file from `node1`; if you are using macOS or Linux, you can do:
-  ```
-  scp `USER`@`X.X.X.X`:.kube/config ~/.kube/config
-  # Make sure to replace X.X.X.X with the IP address of node1,
-  # and USER with the user name used to log into node1!
+- get your cluster credentials:
+  ```bash
+  az aks get-credentials -g $RESOURCE_GROUP -n $CLUSTER_NAME
   ```
 
-- If you are using Windows, adapt these instructions to your SSH client
+- check out your cluster:
+  ```bash
+  kubectl get nodes
+  ```
 
 ]
 
 ---
 
-## Updating the server address
+## Connecting to your AKS cluster via local tools
 
-- There is a good chance that we need to update the server address
+.exercise[
 
-- To know if it is necessary, run `kubectl config view`
+- install the [az CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 
-- Look for the `server:` address:
-
-  - if it matches the public IP address of `node1`, you're good!
-
-  - if it is anything else (especially a private IP address), update it!
-
-- To update the server address, run:
+- log in to azure:
   ```bash
-  kubectl config set-cluster kubernetes --server=https://`X.X.X.X`:6443
-  # Make sure to replace X.X.X.X with the IP address of node1!
+  az login
   ```
+
+- get your cluster credentials:
+  ```bash
+  az aks get-credentials -g $RESOURCE_GROUP -n $CLUSTER_NAME
+  ```
+
+- optionally, if you don't have kubectl:
+  ```bash
+  az aks install-cli
+  ```
+
+- check out your cluster:
+  ```bash
+  kubectl get nodes
+  ```
+
+]
+
+---
+
+## Let's look at your cluster!
+
+
+- First, inspect the config
+  ```bash
+  kubectl config view
+  ```
+
+- Look for the `server:` address that matches your new cluster
+
+```
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://aks-test-c-aks-test-group-0d35f7-28c7d691.hcp.eastus.azmk8s.io:443
+  name: aks-test-cluster
+```
 
 ---
 
@@ -148,7 +179,7 @@ class: extra-details
   - `kubernetes.default.svc`
   - `kubernetes.default.svc.cluster.local`
   - the ClusterIP address of the `kubernetes` service
-  - the hostname of the node hosting the control plane (e.g. `node1`)
+  - the hostname of the node hosting the control plane
   - the IP address of the node hosting the control plane
 
 - On most clouds, the IP address of the node is an internal IP address
@@ -169,7 +200,7 @@ class: extra-details
 
 - The following command will do the trick:
   ```bash
-  kubectl config set-cluster kubernetes --insecure-skip-tls-verify
+  kubectl config set-cluster <clustername> --insecure-skip-tls-verify
   ```
 
 ---
@@ -184,6 +215,8 @@ class: extra-details
   ```bash
   kubectl version
   ```
+
+It is okay if you have a newer client than what is available on the server.
 
 - View the nodes of the cluster:
   ```bash

@@ -24,14 +24,20 @@
 
 .exercise[
 
-- Create the "green" namespace:
+- Show existing namespaces
+  ```bash
+  kubectl get namespaces --show-labels
+  ```
+
+- Create the "green" namespace
   ```bash
   kubectl create namespace green
   ```
 
 - Change to that namespace:
   ```bash
-  kns green
+  kubectl config set-context --current --namespace=green
+  kubectl config view | grep namespace:
   ```
 
 ]

@@ -120,7 +120,7 @@
 
 ## Example: HTTP probe
 
-Here is a pod template for the `rng` web service of the DockerCoins app:
+Here is a pod template for the `rng` web service of our DockerCoins sample app:
 
 ```yaml
 apiVersion: v1
