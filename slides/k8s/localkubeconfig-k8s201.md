@@ -96,9 +96,56 @@ Platform:"darwin/amd64"}
 
 ---
 
-## Connecting to your AKS cluster
+## Connecting to your AKS cluster via Azure Cloud Shell
 
-[fill in]
+- open portal.azure.com in a browser
+- auth with the info on your card
+
+- click `[>_]` in the top menu bar to open cloud shell
+
+.exercise[
+
+- get your cluster credentials:
+  ```bash
+  az aks get-credentials -g $RESOURCE_GROUP -n $CLUSTER_NAME
+  ```
+
+- check out your cluster:
+  ```bash
+  kubectl get nodes
+  ```
+
+]
+
+---
+
+## Connecting to your AKS cluster via local tools
+
+.exercise[
+
+- install the [az CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+
+- log in to azure:
+  ```bash
+  az login
+  ```
+
+- get your cluster credentials:
+  ```bash
+  az aks get-credentials -g $RESOURCE_GROUP -n $CLUSTER_NAME
+  ```
+
+- optionally, if you don't have kubectl:
+  ```bash
+  az aks install-cli
+  ```
+
+- check out your cluster:
+  ```bash
+  kubectl get nodes
+  ```
+
+]
 
 ---
 
