@@ -46,7 +46,7 @@
 
 - If you don't have `kubectl` installed, we'll explain how to install it shortly
 
-- You will also want to install `jq`
+- You will also want to install [jq](https://stedolan.github.io/jq/)
 
 ---
 
