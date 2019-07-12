@@ -59,8 +59,8 @@ chapters:
   - k8s/authn-authz.md
 - - k8s/netpol.md
   - k8s/prometheus.md
-- - k8s/statefulsets.md
-  - k8s/local-persistent-volumes.md
+  - k8s/statefulsets.md
+- - k8s/local-persistent-volumes.md
   - k8s/portworx.md
 - - k8s/whatsnext.md
   - k8s/links.md
