@@ -265,6 +265,8 @@ Note the `3xxxx` port.
 
 ---
 
+class: extra-details
+
 ## Changing rollout parameters
 
 - We want to:
@@ -293,6 +295,8 @@ spec:
 ]
 
 ---
+
+class: extra-details
 
 ## Applying changes through a YAML patch
 

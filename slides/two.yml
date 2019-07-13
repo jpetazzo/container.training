@@ -44,6 +44,7 @@ chapters:
   - shared/hastyconclusions.md
   - k8s/daemonset.md
 - - k8s/rollout.md 
+  - k8s/record.md
   - k8s/logs-centralized.md
   - k8s/ingress.md
 # DAY 2

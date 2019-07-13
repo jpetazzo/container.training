@@ -76,6 +76,78 @@ CMD ["python", "app.py"]
 
 ---
 
+## Be careful with `chown`, `chmod`, `mv`
+
+* Layers cannot store efficiently changes in permissions or ownership.
+
+* Layers cannot represent efficiently when a file is moved either.
+
+* As a result, operations like `chown`, `chown`, `mv` can be expensive.
+
+* For instance, in the Dockerfile snippet below, each `RUN` line
+  creates a layer with an entire copy of `some-file`.
+
+  ```dockerfile
+  COPY some-file .
+  RUN chown www-data:www-data some-file
+  RUN chmod 644 some-file
+  RUN mv some-file /var/www
+  ```
+
+* How can we avoid that?
+
+---
+
+## Put files on the right place
+
+* Instead of using `mv`, directly put files at the right place.
+
+* When extracting archives (tar, zip...), merge operations in a single layer.
+
+  Example:
+
+  ```dockerfile
+    ...
+    RUN wget http://.../foo.tar.gz \
+     && tar -zxf foo.tar.gz \
+     && mv foo/fooctl /usr/local/bin \
+     && rm -rf foo
+  ...
+  ```
+
+---
+
+## Use `COPY --chown`
+
+* The Dockerfile instruction `COPY` can take a `--chown` parameter.
+
+  Examples:
+
+  ```dockerfile
+  ...
+  COPY --chown=1000 some-file .
+  COPY --chown=1000:1000 some-file .
+  COPY --chown=www-data:www-data some-file .
+  ```
+
+* The `--chown` flag can specify a user, or a user:group pair.
+
+* The user and group can be specified as names or numbers.
+
+* When using names, the names must exist in `/etc/passwd` or `/etc/group`.
+
+  *(In the container, not on the host!)*
+
+---
+
+## Set correct permissions locally
+
+* Instead of using `chmod`, set the right file permissions locally.
+
+* When files are copied with `COPY`, permissions are preserved.
+
+---
+
 ## Embedding unit tests in the build process
 
 ```dockerfile
