@@ -2,13 +2,68 @@
 
 - `kubectl` can be used either on cluster instances or outside the cluster
 
-- Here, we are going to use `kubectl` from our local machine
+- Since we're using [AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough), we'll be running `kubectl` outside the cluster
+
+- We can use Azure Cloud Shell
+
+- Or we can use `kubectl` from our local machine
 
 ---
 
-## Requirements
+## Connecting to your AKS cluster via Azure Cloud Shell
 
-.warning[The exercises in this chapter should be done *on your local machine*.]
+- open portal.azure.com in a browser
+- auth with the info on your card
+
+- click `[>_]` in the top menu bar to open cloud shell
+
+.exercise[
+
+- get your cluster credentials:
+  ```bash
+  RESOURCE_GROUP=$(az group list | jq -r '[.[].name|select(. | startswith("Group-"))][0]')
+  AKS_NAME=$(az aks list -g $RESOURCE_GROUP | jq -r '.[0].name')
+  az aks get-credentials -g $RESOURCE_GROUP -n $AKS_NAME
+  ```
+
+]
+
+- If you're going to use Cloud Shell, you can skip ahead
+
+---
+
+## Connecting to your AKS cluster via local tools
+
+.exercise[
+
+- install the [az CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+
+- log in to azure:
+  ```bash
+  az login
+  ```
+
+
+- get your cluster credentials (requires jq):
+  ```bash
+  RESOURCE_GROUP=$(az group list | jq -r '[.[].name|select(. | startswith("Group-"))][0]')
+  AKS_NAME=$(az aks list -g $RESOURCE_GROUP | jq -r '.[0].name')
+  az aks get-credentials -g $RESOURCE_GROUP -n $AKS_NAME
+  ```
+
+- optionally, if you don't have kubectl:
+  ```bash
+  az aks install-cli
+  ```
+
+]
+
+---
+
+class: extra-details
+
+## Getting started with kubectl
+
 
 - `kubectl` is officially available on Linux, macOS, Windows
 
@@ -23,6 +78,7 @@
   - an environment where you can't install and run new binaries
 
 ---
+class: extra-details
 
 ## Installing `kubectl`
 
@@ -48,6 +104,29 @@
 
 Note: if you are following along with a different platform (e.g. Linux on an architecture different from amd64, or with a phone or tablet), installing `kubectl` might be more complicated (or even impossible) so check with us about cloud shell.
 
+
+---
+class: extra-details
+
+## Preserving the existing `~/.kube/config`
+
+- If you already have a `~/.kube/config` file, rename it
+
+  (we are going to overwrite it in the following slides!)
+
+- If you never used `kubectl` on your machine before: nothing to do!
+
+.exercise[
+
+- Make a copy of `~/.kube/config`; if you are using macOS or Linux, you can do:
+  ```bash
+  cp ~/.kube/config ~/.kube/config.before.training
+  ```
+
+- If you are using Windows, you will need to adapt this command
+
+]
+
 ---
 
 ## Testing `kubectl`
@@ -72,82 +151,8 @@ GitCommit:"e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529", GitTreeState:"clean",
 BuildDate:"2019-06-19T16:40:16Z", GoVersion:"go1.12.5", Compiler:"gc",
 Platform:"darwin/amd64"}
 ```
-
 ---
 
-## Preserving the existing `~/.kube/config`
-
-- If you already have a `~/.kube/config` file, rename it
-
-  (we are going to overwrite it in the following slides!)
-
-- If you never used `kubectl` on your machine before: nothing to do!
-
-.exercise[
-
-- Make a copy of `~/.kube/config`; if you are using macOS or Linux, you can do:
-  ```bash
-  cp ~/.kube/config ~/.kube/config.before.training
-  ```
-
-- If you are using Windows, you will need to adapt this command
-
-]
-
----
-
-## Connecting to your AKS cluster via Azure Cloud Shell
-
-- open portal.azure.com in a browser
-- auth with the info on your card
-
-- click `[>_]` in the top menu bar to open cloud shell
-
-.exercise[
-
-- get your cluster credentials:
-  ```bash
-  az aks get-credentials -g $RESOURCE_GROUP -n $CLUSTER_NAME
-  ```
-
-- check out your cluster:
-  ```bash
-  kubectl get nodes
-  ```
-
-]
-
----
-
-## Connecting to your AKS cluster via local tools
-
-.exercise[
-
-- install the [az CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
-
-- log in to azure:
-  ```bash
-  az login
-  ```
-
-- get your cluster credentials:
-  ```bash
-  az aks get-credentials -g $RESOURCE_GROUP -n $CLUSTER_NAME
-  ```
-
-- optionally, if you don't have kubectl:
-  ```bash
-  az aks install-cli
-  ```
-
-- check out your cluster:
-  ```bash
-  kubectl get nodes
-  ```
-
-]
-
----
 
 ## Let's look at your cluster!
 
