@@ -51,6 +51,7 @@ chapters:
   - shared/hastyconclusions.md
   - k8s/daemonset.md
   - k8s/rollout.md
+  #- k8s/record.md
 - - k8s/logs-cli.md
 # Bridget hasn't added EFK yet
   #- k8s/logs-centralized.md
