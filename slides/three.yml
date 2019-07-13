@@ -100,6 +100,13 @@ chapters:
 - - k8s/rollout.md
   - k8s/namespaces.md
   - k8s/ingress.md
+  - |
+    # Exercise — from Compose to Kubernetes
+
+    Let's run the wordsmith app on Kubernetes!
+
+    The code is at: https://github.com/jpetazzo/wordsmith
+
 - - k8s/localkubeconfig.md
   - k8s/accessinternal.md
   - k8s/volumes.md
