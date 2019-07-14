@@ -277,20 +277,22 @@ class: extra-details
 
 .exercise[
 
-- Find the ClusterIP for the `kubernetes` service:
+- Find the URL for the `kubernetes` master:
   ```bash
-  kubectl get svc kubernetes
-  API=$(kubectl get svc kubernetes -o json | jq -r .spec.clusterIP)
+  kubectl cluster-info
   ```
-
+- Set it programmatically, if AKS_NAME is set: (choose from `kubectl config view`):
+  ```bash
+  API=$(kubectl config view -o \
+        jsonpath="{.clusters[?(@.name==\"$AKS_NAME\")].cluster.server}")
+  ```
 - Connect without the token:
   ```bash
-  curl -k https://$API
+  curl -k $API
   ```
-
 - Connect with the token:
   ```bash
-  curl -k -H "Authorization: Bearer $TOKEN" https://$API
+  curl -k -H "Authorization: Bearer $TOKEN" $API
   ```
 
 ]
@@ -665,7 +667,7 @@ class: extra-details
 
 class: extra-details
 
-# Pod Security Policies
+## Pod Security Policies
 
 - If you'd like to check out pod-level controls in AKS, they are [available in preview](https://docs.microsoft.com/en-us/azure/aks/use-pod-security-policies)
 
