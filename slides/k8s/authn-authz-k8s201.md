@@ -286,12 +286,9 @@ class: extra-details
   API=$(kubectl config view -o \
         jsonpath="{.clusters[?(@.name==\"$AKS_NAME\")].cluster.server}")
   ```
-- Connect without the token:
+- Connect without the token, then with the token::
   ```bash
   curl -k $API
-  ```
-- Connect with the token:
-  ```bash
   curl -k -H "Authorization: Bearer $TOKEN" $API
   ```
 
@@ -303,17 +300,11 @@ class: extra-details
 
 ## Results
 
-- In both cases, we will get a "Forbidden" error
-
 - Without authentication, the user is `system:anonymous`
 
 - With authentication, it is shown as `system:serviceaccount:default:default`
 
 - The API "sees" us as a different user
-
-- But neither user has any rights, so we can't do nothin'
-
-- Let's change that!
 
 ---
 
