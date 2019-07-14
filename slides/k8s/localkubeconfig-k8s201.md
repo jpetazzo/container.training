@@ -156,20 +156,19 @@ Platform:"darwin/amd64"}
 
 ## Let's look at your cluster!
 
+.exercise[
 
-- First, inspect the config
+- Scan for the `server:` address that matches the `name` of your new cluster
   ```bash
   kubectl config view
   ```
 
-- Look for the `server:` address that matches your new cluster
-
-```
-- cluster:
-    certificate-authority-data: DATA+OMITTED
-    server: https://aks-test-c-aks-test-group-0d35f7-28c7d691.hcp.eastus.azmk8s.io:443
-  name: aks-test-cluster
-```
+- Store the API endpoint you find:
+  ```bash 
+  API_URL=$(kubectl config view -o json | jq -r ".clusters[]  \
+            | select(.name == \"$AKS_NAME\") | .cluster.server")
+  echo $API_URL
+]
 
 ---
 
@@ -205,7 +204,7 @@ class: extra-details
 
 - The following command will do the trick:
   ```bash
-  kubectl config set-cluster <clustername> --insecure-skip-tls-verify
+  kubectl config set-cluster $AKS_NAME --insecure-skip-tls-verify
   ```
 
 ---
