@@ -21,7 +21,8 @@
 
 - get your cluster credentials:
   ```bash
-  RESOURCE_GROUP=$(az group list | jq -r '[.[].name|select(. | startswith("Group-"))][0]')
+  RESOURCE_GROUP=$(az group list | jq -r \
+    '[.[].name|select(. | startswith("Group-"))][0]')
   AKS_NAME=$(az aks list -g $RESOURCE_GROUP | jq -r '.[0].name')
   az aks get-credentials -g $RESOURCE_GROUP -n $AKS_NAME
   ```
@@ -46,7 +47,8 @@
 
 - get your cluster credentials (requires jq):
   ```bash
-  RESOURCE_GROUP=$(az group list | jq -r '[.[].name|select(. | startswith("Group-"))][0]')
+  RESOURCE_GROUP=$(az group list | jq -r \
+    '[.[].name|select(. | startswith("Group-"))][0]')
   AKS_NAME=$(az aks list -g $RESOURCE_GROUP | jq -r '.[0].name')
   az aks get-credentials -g $RESOURCE_GROUP -n $AKS_NAME
   ```
