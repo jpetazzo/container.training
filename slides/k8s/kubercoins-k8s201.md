@@ -202,20 +202,20 @@ https://@@GITREPO@@/blob/8279a3bce9398f7c1a53bdd95187c53eda4e6435/dockercoins/wo
 
 ## Connecting to the web UI
 
-- "Logs are exciting and fun!" (No-one, ever)
-
 - The `webui` container exposes a web dashboard; let's view it
 
 .exercise[
 
-- Check the NodePort allocated to the web UI:
+- Open a proxy to our cluster:
   ```bash
-  kubectl get svc webui
+  kubectl proxy &
   ```
 
-- Open that in a web browser
+- Open in a web browser: [our webui](http://localhost:8001/api/v1/namespaces/default/services/webui/proxy/index.html)
 
 ]
 
 A drawing area should show up, and after a few seconds, a blue
 graph will appear.
+
+- If using Cloud Shell, use the [Cloud Shell Web Preview](https://docs.microsoft.com/en-us/azure/cloud-shell/using-the-shell-window#web-preview)
