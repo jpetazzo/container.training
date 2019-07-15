@@ -32,6 +32,7 @@ chapters:
   - k8s/horizontal-pod-autoscaler.md
   - k8s/extending-api.md
   - k8s/operators.md
+  - k8s/helm.md
 - - k8s/lastwords-admin.md
   - k8s/links-bridget.md
   - shared/thankyou.md
