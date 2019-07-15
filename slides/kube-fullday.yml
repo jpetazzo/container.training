@@ -48,6 +48,7 @@ chapters:
   - shared/hastyconclusions.md
   - k8s/daemonset.md
 - - k8s/rollout.md
+  #- k8s/record.md
   - k8s/namespaces.md
   #- k8s/kustomize.md
   #- k8s/helm.md

@@ -302,7 +302,7 @@ Now, the StorageClass should have `(default)` next to its name.
 
 - Retrieve the NodePort that was allocated:
   ```bash
-  kubectl get svc cerebreo-es
+  kubectl get svc cerebro-es
   ```
 
 - Connect to that port with a browser
