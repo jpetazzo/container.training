@@ -99,18 +99,13 @@
 
 ## Monitor what's going on
 
-- Let's start a bunch of commands to watch what is happening
+- Let's use some commands to watch what is happening
 
 .exercise[
 
 - Monitor pod CPU usage:
   ```bash
-  watch kubectl top pods
-  ```
-
-- Monitor service latency:
-  ```bash
-  httping http://`ClusterIP`/
+  kubectl top pods
   ```
 
 - Monitor cluster events:
@@ -198,6 +193,7 @@ This can also be set with `--cpu-percent=`.
     resources:
       requests:
         cpu: "1"
+        memory: 64Mi
   ```
 
 ]
@@ -208,7 +204,7 @@ This can also be set with `--cpu-percent=`.
 
 - After saving and quitting, a rolling update happens
 
-  (if `ab` or `httping` exits, make sure to restart it)
+  (if `ab` exits, make sure to restart it)
 
 - It will take a minute or two for the HPA to kick in:
 
