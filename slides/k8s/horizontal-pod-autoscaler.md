@@ -120,18 +120,18 @@
 
 ## Send traffic to the service
 
-- We will use `ab` (Apache Bench) to send traffic
+- We will use [hey](https://github.com/rakyll/hey/releases) to send traffic
 
 .exercise[
 
-- Send a lot of requests to the service, with a concurrency level of 3:
+- Send a lot of requests to the service with a concurrency level of 3:
   ```bash
-  ab -c 3 -n 100000 http://`ClusterIP`/
+  curl https://storage.googleapis.com/jblabs/dist/hey_linux_v0.1.2 > hey 
+  chmod +x hey
+  ./hey http://localhost:8080 -c 3 -n 200
   ```
 
 ]
-
-The latency (reported by `httping`) should increase above 3s.
 
 The CPU utilization should increase to 100%.
 
@@ -164,7 +164,7 @@ This can also be set with `--cpu-percent=`.
 
 ## What did we miss?
 
-- The events stream gives us a hint, but to be honest, it's not very clear:
+- The events stream (`kubectl get events -w`) gives us a hint, but to be honest, it's not very clear:
 
   `missing request for cpu`
 
@@ -190,13 +190,9 @@ This can also be set with `--cpu-percent=`.
   ```
 
 - In the `containers` list, add the following block:
-  ```yaml
-    resources:
-      requests:
-        cpu: "1"
-        memory: 64Mi
   ```
-
+  resources: {"requests":{"cpu":"1", "memory":"64Mi"}
+  ```
 ]
 
 ---
@@ -205,7 +201,7 @@ This can also be set with `--cpu-percent=`.
 
 - After saving and quitting, a rolling update happens
 
-  (if `ab` exits, make sure to restart it)
+  (if `hey` exits, make sure to restart it)
 
 - It will take a minute or two for the HPA to kick in:
 
