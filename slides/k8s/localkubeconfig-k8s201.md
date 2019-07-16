@@ -32,6 +32,28 @@
 - If you're going to use Cloud Shell, you can skip ahead
 
 ---
+class: extra-details
+
+## Preserving the existing `~/.kube/config` (optional)
+
+- If you already have a `~/.kube/config` file, rename it
+
+  (we are going to overwrite it in the following slides!)
+
+- If you never used `kubectl` on your machine before: nothing to do!
+
+.exercise[
+
+- Make a copy of `~/.kube/config`; if you are using macOS or Linux, you can do:
+  ```bash
+  cp ~/.kube/config ~/.kube/config.before.training
+  ```
+
+- If you are using Windows, you will need to adapt this command
+
+]
+
+---
 
 ## Connecting to your AKS cluster via local tools
 
@@ -107,27 +129,6 @@ class: extra-details
 Note: if you are following along with a different platform (e.g. Linux on an architecture different from amd64, or with a phone or tablet), installing `kubectl` might be more complicated (or even impossible) so check with us about cloud shell.
 
 
----
-class: extra-details
-
-## Preserving the existing `~/.kube/config`
-
-- If you already have a `~/.kube/config` file, rename it
-
-  (we are going to overwrite it in the following slides!)
-
-- If you never used `kubectl` on your machine before: nothing to do!
-
-.exercise[
-
-- Make a copy of `~/.kube/config`; if you are using macOS or Linux, you can do:
-  ```bash
-  cp ~/.kube/config ~/.kube/config.before.training
-  ```
-
-- If you are using Windows, you will need to adapt this command
-
-]
 
 ---
 
@@ -170,6 +171,7 @@ Platform:"darwin/amd64"}
   API_URL=$(kubectl config view -o json | jq -r ".clusters[]  \
             | select(.name == \"$AKS_NAME\") | .cluster.server")
   echo $API_URL
+  ```
 ]
 
 ---

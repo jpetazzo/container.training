@@ -28,7 +28,7 @@ chapters:
   - k8s/authn-authz-k8s201.md
 - - k8s/resource-limits-k8s201.md
   - k8s/metrics-server.md
-- - k8s/cluster-sizing.md
+- - k8s/cluster-sizing-k8s201.md
   - k8s/horizontal-pod-autoscaler.md
   - k8s/extending-api.md
   - k8s/operators.md

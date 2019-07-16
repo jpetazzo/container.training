@@ -432,10 +432,6 @@ When a ResourceQuota is created, we can see how much of it is used:
 
   ```
 
-]
-
-.exercise[
-
 - Remove quota:
   ```bash
     kubectl delete quota my-resource-quota
