@@ -211,11 +211,11 @@ https://@@GITREPO@@/blob/8279a3bce9398f7c1a53bdd95187c53eda4e6435/dockercoins/wo
   kubectl proxy &
   ```
 
-- Open in a web browser: [our webui](http://localhost:8001/api/v1/namespaces/default/services/webui/proxy/index.html)
+- Open in a web browser: [http://localhost:8001/api/v1/namespaces/default/services/webui/proxy/index.html](http://localhost:8001/api/v1/namespaces/default/services/webui/proxy/index.html)
 
 ]
 
 A drawing area should show up, and after a few seconds, a blue
 graph will appear.
 
-- If using Cloud Shell, use the [Cloud Shell Web Preview](https://docs.microsoft.com/en-us/azure/cloud-shell/using-the-shell-window#web-preview)
+- If using Cloud Shell, use the [Cloud Shell Web Preview](https://docs.microsoft.com/en-us/azure/cloud-shell/using-the-shell-window#web-preview) and append `/api/v1/namespaces/default/services/webui/proxy/index.html` to the existing path

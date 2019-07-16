@@ -88,9 +88,10 @@
   kubectl expose deployment busyhttp --port=80
   ```
 
-- Get the ClusterIP allocated to the service:
+- Port-forward to our service
   ```bash
-  kubectl get svc busyhttp
+  kubectl port-forward service/busyhttp 8080:80 &
+  curl -k localhost:8080
   ```
 
 ]
