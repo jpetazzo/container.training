@@ -3,7 +3,7 @@ title: |
   Production tooling
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+chat: "[Gitter](https://gitter.im/k8s-workshops/oscon2019)"
 #chat: "In person!"
 
 gitrepo: github.com/jpetazzo/container.training
@@ -31,8 +31,8 @@ chapters:
 - - k8s/cluster-sizing-k8s201.md
   - k8s/horizontal-pod-autoscaler.md
   - k8s/extending-api.md
-  - k8s/operators.md
   - k8s/helm.md
 - - k8s/lastwords-admin.md
   - k8s/links-bridget.md
   - shared/thankyou.md
+  - k8s/operators.md
