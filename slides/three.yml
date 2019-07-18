@@ -91,15 +91,11 @@ chapters:
   - k8s/shippingimages.md
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
-# DAY 3
-- - k8s/setup-k8s.md
-  - k8s/dashboard.md
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
+# DAY 3
+- - k8s/namespaces.md
   - k8s/daemonset.md
-- - k8s/rollout.md
-  - k8s/namespaces.md
-  - k8s/ingress.md
   - |
     # Exercise — from Compose to Kubernetes
 
@@ -107,8 +103,17 @@ chapters:
 
     The code is at: https://github.com/jpetazzo/wordsmith
 
-- - k8s/localkubeconfig.md
-  - k8s/accessinternal.md
+- - k8s/rollout.md
+  - k8s/healthchecks.md
+  - k8s/healthchecks-more.md
+  - k8s/ingress.md
+  - |
+    # Exercise — creating an Ingress
+
+    Add an Ingress resource for the wordsmith app.
+
+- - k8s/setup-k8s.md
+  - k8s/dashboard.md
   - k8s/volumes.md
   - k8s/configuration.md
 - - k8s/statefulsets.md
@@ -120,8 +125,8 @@ chapters:
 # EXTRA
 - - |
     # (Extra material)
-  - k8s/healthchecks.md
-  - k8s/healthchecks-more.md
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
   - k8s/kustomize.md
   - k8s/helm.md
   - k8s/create-chart.md

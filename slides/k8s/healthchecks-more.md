@@ -123,12 +123,12 @@
 
 - Create the yellow namespace:
   ```bash
-  kubectl create namespace yellow
+  kubectl create namespace probes
   ```
 
 - Switch to that namespace:
   ```bash
-  kns yellow
+  kns probes
   ```
 
 ]
@@ -143,7 +143,7 @@
 
 .exercise[
 
-- Clone that repository:
+- Clone that repository, if we haven't done it yet:
   ```bash
   cd ~
   git clone https://github.com/jpetazzo/kubercoins
@@ -192,9 +192,9 @@ It will use the default success threshold (1 successful attempt = alive).
 
 .exercise[
 
-- Edit `rng-daemonset.yaml` and add the liveness probe
+- Edit `rng-deployment.yaml` and add the liveness probe
   ```bash
-  vim rng-daemonset.yaml
+  vim rng-deployment.yaml
   ```
 
 - Load the YAML for all the resources of DockerCoins:
