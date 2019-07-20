@@ -191,7 +191,7 @@ This can also be set with `--cpu-percent=`.
 
 - In the `containers` list, add the following block:
   ```
-  resources: {"requests":{"cpu":"1", "memory":"64Mi"}
+  resources: {"requests":{"cpu":"1", "memory":"64Mi"}}
   ```
 ]
 
