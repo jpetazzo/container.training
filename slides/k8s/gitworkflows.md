@@ -87,7 +87,7 @@
 
 - Clone the Flux repository:
   ```
-  git clone https://github.com/weaveworks/flux
+  git clone https://github.com/fluxcd/flux
   ```
 
 - Edit `deploy/flux-deployment.yaml`
