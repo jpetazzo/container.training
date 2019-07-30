@@ -199,6 +199,7 @@ will have equal success with Fluent or other logging stacks!*
 ```bash
 $ git clone https://github.com/jpetazzo/container.training
 $ cd container.training
+$ cd compose
 $ cd elk
 $ docker-compose up
 ```

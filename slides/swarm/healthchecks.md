@@ -89,7 +89,10 @@ docker service update \
 
 ## Implementing auto-rollback in practice
 
-We will use the following Compose file (`stacks/dockercoins+healthcheck.yml`):
+We will use the following Compose file,
+<br/>
+`compose/dockercoins/stack-with-healthcheck.yml`:
+
 
 ```yaml
 ...
@@ -117,14 +120,14 @@ We need to update our services with a healthcheck.
 
 .exercise[
 
-- Go to the `stacks` directory:
+- Go to the directory:
   ```bash
-  cd ~/container.training/stacks
+  cd ~/container.training/compose/dockercoins
   ```
 
 - Deploy the updated stack with healthchecks built-in:
   ```bash
-  docker stack deploy --compose-file dockercoins+healthcheck.yml dockercoins 
+  docker stack deploy --compose-file stack-with-healthcheck.yml dockercoins 
   ```
 
 ]
@@ -149,8 +152,8 @@ We need to update our services with a healthcheck.
 - Build, ship, and run the new image:
   ```bash
   export TAG=v0.3
-  docker-compose -f dockercoins+healthcheck.yml build
-  docker-compose -f dockercoins+healthcheck.yml push
+  docker-compose build
+  docker-compose push
   docker service update --image=127.0.0.1:5000/hasher:$TAG dockercoins_hasher
   ```
 

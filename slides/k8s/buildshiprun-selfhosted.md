@@ -145,22 +145,22 @@ The curl command should now output:
 
 .exercise[
 
-- Go to the `stacks` directory:
+- Go to this directory:
   ```bash
-  cd ~/container.training/stacks
+  cd ~/container.training/compose/dockercoins
   ```
 
 - Build and push the images:
   ```bash
   export REGISTRY
   export TAG=v0.1
-  docker-compose -f dockercoins.yml build
-  docker-compose -f dockercoins.yml push
+  docker-compose build
+  docker-compose push
   ```
 
 ]
 
-Let's have a look at the `dockercoins.yml` file while this is building and pushing.
+Let's have a look at the `docker-compose.yml` file while this is building and pushing.
 
 ---
 
