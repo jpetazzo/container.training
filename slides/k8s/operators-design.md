@@ -32,7 +32,7 @@
 
   - must be able to anticipate all the events that might happen
 
-  - design will be better only to the extend of what we anticipated
+  - design will be better only to the extent of what we anticipated
 
   - hard to anticipate if we don't have production experience
 
