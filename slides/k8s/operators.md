@@ -386,4 +386,6 @@ We should see at least one index being created in cerebro.
 
 - What if we want different images or parameters for the different nodes?
 
-*Operators can be very powerful, if we know exactly the scenarios that they can handle.*
+*Operators can be very powerful.
+<br/>
+But we need to know exactly the scenarios that they can handle.*
