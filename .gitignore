@@ -3,6 +3,7 @@
 *~
 prepare-vms/tags
 prepare-vms/infra
+prepare-vms/www
 slides/*.yml.html
 slides/autopilot/state.yaml
 slides/index.html

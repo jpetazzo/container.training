@@ -33,9 +33,14 @@ _cmd_cards() {
         ../../lib/ips-txt-to-html.py settings.yaml
     )
 
+    ln -sf ../tags/$TAG/ips.html www/$TAG.html
+    ln -sf ../tags/$TAG/ips.pdf www/$TAG.pdf
+
     info "Cards created. You can view them with:"
     info "xdg-open tags/$TAG/ips.html tags/$TAG/ips.pdf (on Linux)"
     info "open tags/$TAG/ips.html (on macOS)"
+    info "Or you can start a web server with:"
+    info "$0 www"
 }
 
 _cmd deploy "Install Docker on a bunch of running VMs"
@@ -566,6 +571,18 @@ EOF"
     pssh "
     sudo systemctl enable \$PWD/webssh.service &&
     sudo systemctl start webssh.service"
+}
+
+_cmd www "Run a web server to access card HTML and PDF"
+_cmd_www() {
+    cd www
+    IPADDR=$(curl -sL canihazip.com/s)
+    info "The following files are available:"
+    for F in *; do
+        echo "http://$IPADDR:8000/$F"
+    done
+    info "Press Ctrl-C to stop server."
+    python -m http.server
 }
 
 greet() {

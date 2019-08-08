@@ -1,0 +1,4 @@
+This directory will contain symlinks to HTML and PDF files for the cards
+with the IP address, login, and password for the training environments.
+
+The file "index.html" is empty on purpose: it prevents listing the files.
