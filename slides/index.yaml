@@ -24,6 +24,33 @@
   lang: fr
   attend: https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
 
+- date: 2019-27-08
+  country: tr
+  city: Izmir
+  event: HacknBreak
+  speaker: gurayyildirim
+  title: Deploying and scaling applications with Kubernetes (in Turkish)
+  lang: tr
+  attend: https://hacknbreak.com
+
+- date: 2019-26-08
+  country: tr
+  city: Izmir
+  event: HacknBreak
+  speaker: gurayyildirim
+  title: Container Orchestration with Docker and Swarm (in Turkish)
+  lang: tr
+  attend: https://hacknbreak.com
+
+- date: 2019-25-08
+  country: tr
+  city: Izmir
+  event: HackBreak
+  speaker: gurayyildirim
+  title: Introduction to Docker and Containers (in Turkish)
+  lang: tr
+  attend: https://hacknbreak.com
+
 - date: 2019-07-16
   country: us
   city: Portland, OR
