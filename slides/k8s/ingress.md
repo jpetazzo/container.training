@@ -415,7 +415,7 @@ This is normal: we haven't provided any ingress rule yet.
 Here is a minimal host-based ingress resource:
 
 ```yaml
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: cheddar
@@ -523,4 +523,4 @@ spec:
 
 - This should eventually stabilize
 
-  (remember that ingresses are currently `apiVersion: extensions/v1beta1`)
+  (remember that ingresses are currently `apiVersion: networking.k8s.io/v1beta1`)
