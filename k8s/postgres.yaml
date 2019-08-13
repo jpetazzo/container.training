@@ -15,7 +15,7 @@ spec:
       schedulerName: stork
       containers:
       - name: postgres
-        image: postgres:10.5
+        image: postgres:11
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: postgres
