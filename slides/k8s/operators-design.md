@@ -32,7 +32,7 @@
 
   - must be able to anticipate all the events that might happen
 
-  - design will be better only to the extend of what we anticipated
+  - design will be better only to the extent of what we anticipated
 
   - hard to anticipate if we don't have production experience
 
@@ -187,6 +187,8 @@ class: extra-details
   [Intro talk](https://www.youtube.com/watch?v=8k_ayO1VRXE)
   |
   [Deep dive talk](https://www.youtube.com/watch?v=fu7ecA2rXmc)
+  |
+  [Simple example](https://medium.com/faun/writing-your-first-kubernetes-operator-8f3df4453234)
 
 - Zalando Kubernetes Operator Pythonic Framework (KOPF)
 

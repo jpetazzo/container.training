@@ -345,7 +345,7 @@ spec:
 we figure out the minimal command-line to run our Consul cluster.*
 
 ```
-consul agent -data=dir=/consul/data -client=0.0.0.0 -server -ui \
+consul agent -data-dir=/consul/data -client=0.0.0.0 -server -ui \
        -bootstrap-expect=3 \
        -retry-join=`X.X.X.X` \
        -retry-join=`Y.Y.Y.Y`

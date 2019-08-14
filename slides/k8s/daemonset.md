@@ -4,15 +4,29 @@
 
 - We want one (and exactly one) instance of `rng` per node
 
-- What if we just scale up `deploy/rng` to the number of nodes?
+- We *do not want* two instances of `rng` on the same node
 
-  - nothing guarantees that the `rng` containers will be distributed evenly
+- We will do that with a *daemon set*
 
-  - if we add nodes later, they will not automatically run a copy of `rng`
+---
 
-  - if we remove (or reboot) a node, one `rng` container will restart elsewhere
+## Why not a deployment?
 
-- Instead of a `deployment`, we will use a `daemonset`
+- Can't we just do `kubectl scale deployment rng --replicas=...`?
+
+--
+
+- Nothing guarantees that the `rng` containers will be distributed evenly
+
+- If we add nodes later, they will not automatically run a copy of `rng`
+
+- If we remove (or reboot) a node, one `rng` container will restart elsewhere
+
+  (and we will end up with two instances `rng` on the same node)
+
+- By contrast, a daemon set will start one pod per node and keep it that way
+
+  (as nodes are added or removed)
 
 ---
 

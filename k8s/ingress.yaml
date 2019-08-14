@@ -1,14 +1,14 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: cheddar
 spec:
   rules:
-  - host: cheddar.A.B.C.D.nip.io
+  - host: px.3.123.33.38.nip.io
     http:
       paths:
       - path: /
         backend:
-          serviceName: cheddar
+          serviceName: px-lighthouse
           servicePort: 80
 

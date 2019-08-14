@@ -72,7 +72,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: consul
-          image: "consul:1.4.4"
+          image: "consul:1.5"
           args:
             - "agent"
             - "-bootstrap-expect=3"

@@ -39,7 +39,7 @@ your own tutorials.
 All these materials have been gathered in a single repository
 because they have a few things in common:
 
-- some [common slides](slides/common/) that are re-used
+- some [shared slides](slides/shared/) that are re-used
   (and updated) identically between different decks;
 - a [build system](slides/) generating HTML slides from
   Markdown source files;

@@ -302,7 +302,7 @@ Now, the StorageClass should have `(default)` next to its name.
 
 - Retrieve the NodePort that was allocated:
   ```bash
-  kubectl get svc cerebreo-es
+  kubectl get svc cerebro-es
   ```
 
 - Connect to that port with a browser
@@ -386,4 +386,6 @@ We should see at least one index being created in cerebro.
 
 - What if we want different images or parameters for the different nodes?
 
-*Operators can be very powerful, iff we know exactly the scenarios that they can handle.*
+*Operators can be very powerful.
+<br/>
+But we need to know exactly the scenarios that they can handle.*

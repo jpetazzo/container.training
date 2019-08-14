@@ -33,9 +33,14 @@ _cmd_cards() {
         ../../lib/ips-txt-to-html.py settings.yaml
     )
 
+    ln -sf ../tags/$TAG/ips.html www/$TAG.html
+    ln -sf ../tags/$TAG/ips.pdf www/$TAG.pdf
+
     info "Cards created. You can view them with:"
     info "xdg-open tags/$TAG/ips.html tags/$TAG/ips.pdf (on Linux)"
     info "open tags/$TAG/ips.html (on macOS)"
+    info "Or you can start a web server with:"
+    info "$0 www"
 }
 
 _cmd deploy "Install Docker on a bunch of running VMs"
@@ -534,6 +539,50 @@ _cmd_weavetest() {
     kubectl -n kube-system get pods -o name | grep weave | cut -d/ -f2 |
     xargs -I POD kubectl -n kube-system exec POD -c weave -- \
     sh -c \"./weave --local status | grep Connections | grep -q ' 1 failed' || ! echo POD \""
+}
+
+_cmd webssh "Install a WEB SSH server on the machines (port 1080)"
+_cmd_webssh() {
+    TAG=$1
+    need_tag
+    pssh "
+    sudo apt-get update &&
+    sudo apt-get install python-tornado python-paramiko -y"
+    pssh "
+    [ -d webssh ] || git clone https://github.com/jpetazzo/webssh"
+    pssh "
+    for KEYFILE in /etc/ssh/*.pub; do
+      read a b c < \$KEYFILE; echo localhost \$a \$b
+    done > webssh/known_hosts"
+    pssh "cat >webssh.service <<EOF
+[Unit]
+Description=webssh
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+WorkingDirectory=/home/ubuntu/webssh
+ExecStart=/usr/bin/env python run.py --fbidhttp=false --port=1080 --policy=reject
+User=nobody
+Group=nogroup
+Restart=always
+EOF"
+    pssh "
+    sudo systemctl enable \$PWD/webssh.service &&
+    sudo systemctl start webssh.service"
+}
+
+_cmd www "Run a web server to access card HTML and PDF"
+_cmd_www() {
+    cd www
+    IPADDR=$(curl -sL canihazip.com/s)
+    info "The following files are available:"
+    for F in *; do
+        echo "http://$IPADDR:8000/$F"
+    done
+    info "Press Ctrl-C to stop server."
+    python -m http.server
 }
 
 greet() {
