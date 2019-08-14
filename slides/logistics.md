@@ -2,9 +2,9 @@
 
 - Hello! I'm Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Tiny Shell Script LLC)
 
-- The workshop will run from ...
+- The workshop will run from 9am to 5pm
 
-- There will be a lunch break at ...
+- There will be a lunch break around noon
 
   (And coffee breaks!)
 
