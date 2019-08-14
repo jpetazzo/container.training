@@ -1,6 +1,5 @@
 title: |
-  Deploying and Scaling Microservices
-  with Kubernetes
+  Kubernetes Training
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
@@ -8,7 +7,7 @@ chat: "In person!"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://kube-2019-08.container.training/
 
 exclude:
 - self-paced
