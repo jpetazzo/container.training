@@ -34,6 +34,8 @@
 
 - For example:
 
-  `export REGISTRY=dockercoins TAG=v0.1`
+  ```bash
+  export REGISTRY=dockercoins TAG=v0.1
+  ```
 
   (this will expand `$REGISTRY/worker:$TAG` to `dockercoins/worker:v0.1`)
