@@ -76,7 +76,6 @@ chapters:
   - k8s/local-persistent-volumes.md
   - k8s/portworx.md
 - # DAY 3
-  - k8s/prereqs-admin.md
   - k8s/architecture.md
   - k8s/deploymentslideshow.md
   - k8s/dmuc.md
