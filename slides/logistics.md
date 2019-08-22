@@ -1,7 +1,5 @@
 ## Intros
 
-- This slide should be customized by the tutorial instructor(s).
-
 - Hello! We are:
 
    - .emoji[👷🏻‍♀️] AJ ([@s0ulshake](https://twitter.com/s0ulshake), Tiny Shell Script LLC)
