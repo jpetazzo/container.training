@@ -157,10 +157,10 @@ _cmd_kube() {
     # Optional version, e.g. 1.13.5
     KUBEVERSION=$2
     if [ "$KUBEVERSION" ]; then
-        EXTRA_KUBELET="=$KUBEVERSION-00"
+        EXTRA_APTGET="=$KUBEVERSION-00"
         EXTRA_KUBEADM="--kubernetes-version=v$KUBEVERSION"
     else
-        EXTRA_KUBELET=""
+        EXTRA_APTGET=""
         EXTRA_KUBEADM=""
     fi
 
@@ -172,7 +172,7 @@ _cmd_kube() {
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
     pssh --timeout 200 "
     sudo apt-get update -q &&
-    sudo apt-get install -qy kubelet$EXTRA_KUBELET kubeadm kubectl &&
+    sudo apt-get install -qy kubelet$EXTRA_APTGET kubeadm$EXTRA_APTGET kubectl$EXTRA_APTGET &&
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl"
 
     # Initialize kube master
