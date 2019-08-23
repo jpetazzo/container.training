@@ -386,6 +386,20 @@ _cmd_pull_images() {
     pull_tag
 }
 
+_cmd remap_nodeports "Remap NodePort range to 10000-10999"
+_cmd_remap_nodeports() {
+    TAG=$1
+    need_tag
+
+    FIND_LINE="    - --service-cluster-ip-range=10.96.0.0\/12"
+    ADD_LINE="    - --service-node-port-range=10000-10999"
+    MANIFEST_FILE=/etc/kubernetes/manifests/kube-apiserver.yaml
+    pssh "
+    if i_am_first_node && ! grep -q '$ADD_LINE' $MANIFEST_FILE; then
+        sudo sed -i 's/\($FIND_LINE\)\$/\1\n$ADD_LINE/' $MANIFEST_FILE
+    fi"
+}
+
 _cmd quotas "Check our infrastructure quotas (max instances)"
 _cmd_quotas() {
     need_infra $1
