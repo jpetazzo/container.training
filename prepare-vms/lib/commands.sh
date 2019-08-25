@@ -157,10 +157,10 @@ _cmd_kube() {
     # Optional version, e.g. 1.13.5
     KUBEVERSION=$2
     if [ "$KUBEVERSION" ]; then
-        EXTRA_KUBELET="=$KUBEVERSION-00"
+        EXTRA_APTGET="=$KUBEVERSION-00"
         EXTRA_KUBEADM="--kubernetes-version=v$KUBEVERSION"
     else
-        EXTRA_KUBELET=""
+        EXTRA_APTGET=""
         EXTRA_KUBEADM=""
     fi
 
@@ -172,7 +172,7 @@ _cmd_kube() {
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
     pssh --timeout 200 "
     sudo apt-get update -q &&
-    sudo apt-get install -qy kubelet$EXTRA_KUBELET kubeadm kubectl &&
+    sudo apt-get install -qy kubelet$EXTRA_APTGET kubeadm$EXTRA_APTGET kubectl$EXTRA_APTGET &&
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl"
 
     # Initialize kube master
@@ -384,6 +384,20 @@ _cmd_pull_images() {
     TAG=$1
     need_tag
     pull_tag
+}
+
+_cmd remap_nodeports "Remap NodePort range to 10000-10999"
+_cmd_remap_nodeports() {
+    TAG=$1
+    need_tag
+
+    FIND_LINE="    - --service-cluster-ip-range=10.96.0.0\/12"
+    ADD_LINE="    - --service-node-port-range=10000-10999"
+    MANIFEST_FILE=/etc/kubernetes/manifests/kube-apiserver.yaml
+    pssh "
+    if i_am_first_node && ! grep -q '$ADD_LINE' $MANIFEST_FILE; then
+        sudo sed -i 's/\($FIND_LINE\)\$/\1\n$ADD_LINE/' $MANIFEST_FILE
+    fi"
 }
 
 _cmd quotas "Check our infrastructure quotas (max instances)"
