@@ -22,6 +22,7 @@ chapters:
 - shared/toc.md
 - # DAY 1
   - shared/prereqs.md
+  - shared/webssh.md
   - shared/connecting.md
   - k8s/versions-k8s.md
   - shared/sampleapp.md
