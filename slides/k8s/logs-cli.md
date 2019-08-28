@@ -149,3 +149,17 @@ Exactly what we need!
 -->
 
 ]
+
+---
+
+## Cleanup ping pong deployment
+
+- Time to clean up pingpong and move on
+
+.exercise[
+
+  - delete the pingpong deployment
+  ```bash
+  kubectl delete deployment pingpong
+  ```
+]
