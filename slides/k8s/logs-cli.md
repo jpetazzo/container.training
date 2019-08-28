@@ -84,7 +84,7 @@ Exactly what we need!
 
 - View the logs for all the rng containers:
   ```bash
-  stern rng
+  stern ping
   ```
 
 <!--
@@ -136,9 +136,9 @@ Exactly what we need!
 
 .exercise[
 
-- View the logs for all the things started with `kubectl create deployment`:
+- View the logs for all the things started with `kubectl run`:
   ```bash
-  stern -l app
+  stern -l run
   ```
 
 <!--
@@ -146,4 +146,18 @@ Exactly what we need!
 ```keys ^C```
 -->
 
+]
+
+---
+
+## Cleanup ping pong deployment
+
+- Time to clean up pingpong and move on
+
+.exercise[
+
+  - delete the pingpong deployment
+  ```bash
+  kubectl delete deployment pingpong
+  ```
 ]
