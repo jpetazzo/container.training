@@ -85,6 +85,7 @@ chapters:
   #- k8s/owners-and-dependents.md
   #- k8s/gitworkflows.md
   - pks/helm.md
+  - pks/helm-wordpress.md
 -
   - k8s/whatsnext.md
   - k8s/links.md

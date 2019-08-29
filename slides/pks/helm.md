@@ -154,6 +154,7 @@ fine for personal and development clusters.)
   - Add the stable repo
   ```bash
   helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+  helm repo update
   ```
 ]
 
@@ -165,16 +166,16 @@ fine for personal and development clusters.)
 
 - Most charts require persistent volumes to store data
 
-- We need to relax these requirements a bit
+- We can relax these requirements a bit
 
 .exercise[
 
-- Install the Prometheus metrics collector on our cluster:
+- Install  on our cluster:
   ```bash
-  helm install stable/prometheus \
-         prometheus \
-         --set server.service.type=ClusterIP \
-         --set server.persistentVolume.enabled=false
+  helm install wp stable/wordpress \
+         --set service.type=ClusterIP \
+         --set persistence.enabled=false \
+         --set mariadb.master.persistence.enabled=false
   ```
 
 ]
@@ -189,9 +190,9 @@ Where do these `--set` options come from?
 
 .exercise[
 
-- See the metadata and all available options for `stable/prometheus`:
+- See the metadata and all available options for `stable/wordpress`:
   ```bash
-  helm inspect stable/prometheus
+  helm inspect stable/wordpress
   ```
 
 ]
