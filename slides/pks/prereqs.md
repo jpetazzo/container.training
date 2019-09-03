@@ -30,8 +30,8 @@
 - Bonus tools
 
 * [octant](https://github.com/vmware/octant#installation)
-* [stern]()
-* [jq]()
+* [stern](https://github.com/wercker/stern/releases/tag/1.11.0)
+* [jq](https://stedolan.github.io/jq/download/)
 
 ---
 
