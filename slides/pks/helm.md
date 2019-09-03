@@ -177,8 +177,8 @@ fine for personal and development clusters.)
          --set persistence.enabled=false \
          --set mariadb.master.persistence.enabled=false
   ```
-
 ]
+
 
 Where do these `--set` options come from?
 
