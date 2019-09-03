@@ -26,3 +26,5 @@ machine_version: 0.14.0
 
 # Password used to connect with the "docker user"
 docker_user_password: training
+
+image:

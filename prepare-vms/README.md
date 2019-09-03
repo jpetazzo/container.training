@@ -87,26 +87,37 @@ You're all set!
 ```
 workshopctl - the orchestration workshop swiss army knife
 Commands:
-ami          Show the AMI that will be used for deployment
-amis         List Ubuntu AMIs in the current region
-build        Build the Docker image to run this program in a container
-cards        Generate ready-to-print cards for a group of VMs
-deploy       Install Docker on a bunch of running VMs
-ec2quotas    Check our EC2 quotas (max instances)
-help         Show available commands
-ids          List the instance IDs belonging to a given tag or token
-ips          List the IP addresses of the VMs for a given tag or token
-kube         Setup kubernetes clusters with kubeadm (must be run AFTER deploy)
-kubetest     Check that all notes are reporting as Ready
-list         List available groups in the current region
-opensg       Open the default security group to ALL ingress traffic
-pull_images  Pre-pull a bunch of Docker images
-retag        Apply a new tag to a group of VMs
-start        Start a group of VMs
-status       List instance status for a given group
-stop         Stop (terminate, shutdown, kill, remove, destroy...) instances
-test         Run tests (pre-flight checks) on a group of VMs
-wrap         Run this program in a container
+build                Build the Docker image to run this program in a container
+cards                Generate ready-to-print cards for a group of VMs
+deploy               Install Docker on a bunch of running VMs
+disableaddrchecks    Disable source/destination IP address checks
+disabledocker        Stop Docker Engine and don't restart it automatically
+helmprom             Install Helm and Prometheus
+help                 Show available commands
+ids                  (FIXME) List the instance IDs belonging to a given tag or token
+kubebins             Install Kubernetes and CNI binaries but don't start anything
+kubereset            Wipe out Kubernetes configuration on all nodes
+kube                 Setup kubernetes clusters with kubeadm (must be run AFTER deploy)
+kubetest             Check that all nodes are reporting as Ready
+listall              List VMs running on all configured infrastructures
+list                 List available groups for a given infrastructure
+netfix               Disable GRO and run a pinger job on the VMs
+opensg               Open the default security group to ALL ingress traffic
+ping                 Ping VMs in a given tag, to check that they have network access
+pssh                 Run an arbitrary command on all nodes
+pull_images          Pre-pull a bunch of Docker images
+quotas               Check our infrastructure quotas (max instances)
+remap_nodeports      Remap NodePort range to 10000-10999
+retag                (FIXME) Apply a new tag to a group of VMs
+ssh                  Open an SSH session to the first node of a tag
+start                Start a group of VMs
+stop                 Stop (terminate, shutdown, kill, remove, destroy...) instances
+tags                 List groups of VMs known locally
+test                 Run tests (pre-flight checks) on a group of VMs
+weavetest            Check that weave seems properly setup
+webssh               Install a WEB SSH server on the machines (port 1080)
+wrap                 Run this program in a container
+www                  Run a web server to access card HTML and PDF
 ```
 
 ### Summary of What `./workshopctl` Does For You
