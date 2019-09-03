@@ -73,6 +73,7 @@ set expandtab
 set number
 set shiftwidth=2
 set softtabstop=2
+set nowrap
 SQRL""")
 
 # Custom .tmux.conf
