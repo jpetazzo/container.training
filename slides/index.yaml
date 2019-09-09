@@ -14,6 +14,14 @@
   title: Déployer ses applications avec Kubernetes (in French)
   lang: fr
   attend: http://2019.devops-dday.com/Workshop.html
+  
+- date: 2019-10-22
+  country: de
+  city: Berlin
+  event: GOTO
+  speaker: bretfisher
+  title: Kubernetes or Swarm? Build Both, Deploy Apps, Learn The Differences
+  attend: https://gotober.com/2019/workshops/194
 
 - date: [2019-09-24, 2019-09-25]
   country: fr
