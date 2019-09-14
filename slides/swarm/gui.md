@@ -18,14 +18,14 @@ What about web interfaces to control and manage Swarm?
 
 .exercise[
 
-- Make sure we are in the stacks directory:
+- Make sure we are in the right directory:
   ```bash
-  cd ~/container.training/stacks
+  cd ~/container.training/compose/portainer
   ```
 
 - Deploy the Portainer stack:
   ```bash
-  docker stack deploy -c portainer.yml portainer
+  docker stack deploy -c docker-compose.yml portainer
   ```
 
 ]

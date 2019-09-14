@@ -32,4 +32,4 @@ services:
 
 configs:
   prometheus:
-    file: ../prom/prometheus.yml
+    file: ./prometheus.yml

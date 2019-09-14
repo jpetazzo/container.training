@@ -1153,16 +1153,16 @@ class: prom-auto
 
 .exercise[
 
-- Make sure we are in the stacks directory:
+- Go to the directory of the Prometheus stack:
   ```bash
-  cd ~/container.training/stacks
+  cd ~/container.training/compose/prometheus
   ```
 
 - Build, ship, and run the Prometheus stack:
   ```bash
-  docker-compose -f prometheus.yml build
-  docker-compose -f prometheus.yml push
-  docker stack deploy -c prometheus.yml prometheus
+  docker-compose build
+  docker-compose push
+  docker stack deploy -c docker-compose.yml prometheus
   ```
 
 ]
@@ -1237,7 +1237,7 @@ class: prom-auto, config
 
 ## Deploying Prometheus with a `config`
 
-The following Compose file (`prometheus+config.yml`) achieves
+The following Compose file (`stack-with-config.yml`) achieves
 the same result, but by using a `config` instead of baking the
 configuration into the image.
 
@@ -1259,7 +1259,7 @@ prometheus:
 
 configs:
   prometheus:
-    file: ../prom/prometheus.yml
+    file: ./prometheus.yml
 ```
 ]
 
@@ -1291,13 +1291,13 @@ class: prom-auto, config
 
 ## Re-deploying Prometheus with a config
 
-- We will update the existing stack using `prometheus+config.yml`
+- We will update the existing stack using `stack-with-config.yml`
 
 .exercise[
 
 - Redeploy the `prometheus` stack:
   ```bash
-  docker stack deploy -c prometheus+config.yml prometheus
+  docker stack deploy -c stack-with-config.yml prometheus
   ```
 
 - Check that Prometheus still works as intended

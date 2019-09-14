@@ -71,7 +71,7 @@ If you are using images from the Docker Hub (`dockercoins/worker:v0.1`), skip th
 
 .exercise[
 
-- Go to the `stacks` directory (`~/container.training/stacks`)
+- Go to the directory `~/container.training/compose/dockercoins`)
 
 - Edit `dockercoins/worker/worker.py`; update the first `sleep` line to sleep 1 second
 
@@ -79,8 +79,8 @@ If you are using images from the Docker Hub (`dockercoins/worker:v0.1`), skip th
   ```bash
   #export REGISTRY=localhost:3xxxx
   export TAG=v0.2
-  docker-compose -f dockercoins.yml build
-  docker-compose -f dockercoins.yml push
+  docker-compose build
+  docker-compose push
   ```
 
 ]

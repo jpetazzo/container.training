@@ -185,17 +185,17 @@ class: elk-auto
 
 - Build, ship, and run our ELK stack:
   ```bash
-  docker-compose -f elk.yml build
-  docker-compose -f elk.yml push
-  docker stack deploy -c elk.yml elk
+  cd ~/container.training/compose/elk
+  docker stack deploy -c docker-compose.yml elk
   ```
 
 ]
 
-Note: the *build* and *push* steps are not strictly necessary, but they don't hurt!
+Note: we didn't need the *build* and *push* steps here, since
+we are only using images from the Docker Hub.
 
 Let's have a look at the [Compose file](
-https://@@GITREPO@@/blob/master/stacks/elk.yml).
+https://@@GITREPO@@/blob/master/compose/elk/docker-compose.yml).
 
 ---
 

@@ -34,11 +34,12 @@ for N in $(seq 2 5); do
   DOCKER_HOST=tcp://node$N:2375 docker swarm join --token $TOKEN node1:2377
 done
 git clone https://@@GITREPO@@
-cd container.training/stacks
-docker stack deploy --compose-file registry.yml registry
-docker-compose -f dockercoins.yml build
-docker-compose -f dockercoins.yml push
-docker stack deploy --compose-file dockercoins.yml dockercoins
+cd container.training/compose/registry
+docker stack deploy --compose-file docker-compose.yml registry
+cd container.training/compose/dockercoins
+docker-compose build
+docker-compose push
+docker stack deploy --compose-file docker-compose.yml dockercoins
 ```
 
 You should now be able to connect to port 8000 and see the DockerCoins web UI.

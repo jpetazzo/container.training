@@ -66,7 +66,7 @@ Without a stack file, it would be deployed with the following command:
 docker service create --publish 5000:5000 registry
 ```
 
-Now, we are going to deploy it with the following stack file:
+Now, we are going to deploy it with the following Compose file:
 
 ```yaml
 version: "3"
@@ -80,20 +80,22 @@ services:
 
 ---
 
-## Checking our stack files
+## Checking our Compose file
 
-- All the stack files that we will use are in the `stacks` directory
+- The Compose file for the registry is in its own directory
+
+  (like the other Compose files that we will use)
 
 .exercise[
 
-- Go to the `stacks` directory:
+- Go to the `compose/registry` directory:
   ```bash
-  cd ~/container.training/stacks
+  cd ~/container.training/compose/registry
   ```
 
-- Check `registry.yml`:
+- Check the Compose file:
   ```bash
-  cat registry.yml
+  cat docker-compose.yml
   ```
 
 ]
@@ -114,7 +116,7 @@ services:
 
 - Deploy our local registry:
   ```bash
-  docker stack deploy --compose-file registry.yml registry
+  docker stack deploy --compose-file docker-compose.yml registry
   ```
 
 ]
@@ -263,13 +265,14 @@ The curl command should now output:
 
 - Try it:
   ```bash
-  docker-compose -f dockercoins.yml build
-  docker-compose -f dockercoins.yml push
+  cd ~/container.training/compose/dockercoins
+  docker-compose build
+  docker-compose push
   ```
 
 ]
 
-Let's have a look at the `dockercoins.yml` file while this is building and pushing.
+Let's have a look at the `docker-compose.yml` file while this is building and pushing.
 
 ---
 
@@ -304,7 +307,7 @@ services:
 
 - Create the application stack:
   ```bash
-  docker stack deploy --compose-file dockercoins.yml dockercoins
+  docker stack deploy --compose-file docker-compose.yml dockercoins
   ```
 
 ]

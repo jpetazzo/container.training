@@ -441,11 +441,11 @@ class: extra-details
 
 - Run this simple-yet-beautiful visualization app:
   ```bash
-  cd ~/container.training/stacks
-  docker-compose -f visualizer.yml up -d
+  cd ~/container.training/compose/visualizer
+  docker-compose up -d
   ```
 
-  <!-- ```longwait Creating dockerswarmvisualizer_viz_1``` -->
+  <!-- ```longwait Creating visualizer_viz_1``` -->
 
 ]
 
