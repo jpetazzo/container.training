@@ -596,7 +596,7 @@ _cmd_www() {
         echo "http://$IPADDR:8000/$F"
     done
     info "Press Ctrl-C to stop server."
-    python -m http.server
+    python3 -m http.server
 }
 
 greet() {
