@@ -224,7 +224,7 @@ In the manifest, the pod was named `hello`.
 
 ```yaml
 apiVersion: v1
-Kind: Pod
+kind: Pod
 metadata:
   name: hello
   namespace: default
