@@ -31,6 +31,7 @@
   title: Déployer ses applications avec Kubernetes (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
+  slides: https://kube-2019-09.container.training/
 
 - date: 2019-08-27
   country: tr
