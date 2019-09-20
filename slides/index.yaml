@@ -15,6 +15,14 @@
   lang: fr
   attend: http://2019.devops-dday.com/Workshop.html
 
+- date: 2019-10-30
+  country: us
+  city: Portland, OR
+  event: LISA
+  speaker: jpetazzo
+  title: Deep Dive into Kubernetes Internals for Builders and Operators
+  attend: https://www.usenix.org/conference/lisa19/presentation/petazzoni-tutorial
+
 - date: [2019-10-22, 2019-10-24]
   country: us
   city: Charlotte, NC
