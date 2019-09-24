@@ -45,7 +45,7 @@ subjects:
   name: local-path-provisioner-service-account
   namespace: local-path-storage
 ---
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: local-path-provisioner
