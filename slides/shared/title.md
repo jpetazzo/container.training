@@ -11,8 +11,11 @@ class: title, in-person
 @@TITLE@@<br/></br>
 
 .footnote[
-**WiFi: CONFERENCE**<br/>
+**WiFi sans DNS: CONFERENCE**<br/>
 **Password: 123conference**<br/>
-
+<br/>
+**WiFi avec DNS (et portail captif): ASTOTEL_WIFI**<br/>
+**Password: Astotel75**<br/>
+<br/>
 **Slides: @@SLIDES@@**
 ]
