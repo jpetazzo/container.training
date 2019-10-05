@@ -33,7 +33,7 @@
   **make sure that you set `$REGISTRY` and `$TAG` first!**
 
 - For example:
-  ```
+  ```bash
   export REGISTRY=dockercoins TAG=v0.1
   ```
 
