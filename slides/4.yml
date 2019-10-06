@@ -1,0 +1,31 @@
+title: |
+  Day 4
+  Advanced Kubernetes 
+
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://container.training/
+
+exclude:
+- self-paced
+
+chapters:
+- shared/title.md
+- shared/toc.md
+-
+  - k8s/kustomize.md
+  - k8s/helm.md
+  - k8s/create-chart.md
+  - k8s/create-more-charts.md
+-
+  - k8s/resource-limits.md
+  - k8s/metrics-server.md
+  - k8s/cluster-sizing.md
+  - k8s/horizontal-pod-autoscaler.md
+-
+  - k8s/extending-api.md
+  - k8s/operators.md
+  - k8s/operators-design.md

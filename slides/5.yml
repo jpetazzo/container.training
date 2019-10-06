@@ -1,0 +1,40 @@
+title: |
+  Day 5
+  Kubernetes Operations
+
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://container.training/
+
+exclude:
+- self-paced
+
+chapters:
+- shared/title.md
+- shared/toc.md
+-
+  - k8s/prereqs-admin.md
+  - k8s/architecture.md
+  - k8s/deploymentslideshow.md
+  - k8s/dmuc.md
+-
+  - k8s/multinode.md
+  - k8s/cni.md
+-
+  - k8s/apilb.md
+  - k8s/setup-managed.md
+  - k8s/setup-selfhosted.md
+  - k8s/cluster-upgrade.md
+  - k8s/staticpods.md
+-
+  - k8s/cluster-backup.md
+  - k8s/logs-centralized.md
+  - k8s/prometheus.md
+-
+  - k8s/control-plane-auth.md
+  - k8s/csr-api.md
+  - k8s/openid-connect.md
+  - k8s/podsecuritypolicy.md
