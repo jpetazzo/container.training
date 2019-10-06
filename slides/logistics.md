@@ -2,9 +2,9 @@
 
 - Hello! I'm .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
 
-- The workshop will run from ...
+- The workshop will run from 9am to 5pm
 
-- There will be a lunch break at ...
+- There will be a lunch break at noon
 
   (And coffee breaks!)
 
