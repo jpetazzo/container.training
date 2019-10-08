@@ -2,8 +2,9 @@ title: |
   Kubernetes Training
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-chat: "[Gitter](https://gitter.im/jpetazzo/training-20191008-santamonica)"
+#chat: "[Gitter](https://gitter.im/jpetazzo/training-20191008-santamonica)"
 #chat: "In person!"
+chat: Slack
 
 gitrepo: github.com/jpetazzo/container.training
 
