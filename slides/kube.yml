@@ -16,6 +16,7 @@ exclude:
 
 chapters:
 - shared/title.md
+- shared/toc.md
 - # DAY 1
   - shared/prereqs.md
   - shared/connecting.md
