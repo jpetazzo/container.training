@@ -48,10 +48,5 @@ Misattributed to Benjamin Franklin
 
 - This is the stuff you're supposed to do!
 
-- The following command should work and show us at least one node:
-  ```bash
-  kubectl get nodes
-  ```
-
 ]
 

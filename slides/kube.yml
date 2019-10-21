@@ -19,7 +19,7 @@ chapters:
 - shared/toc.md
 - # DAY 1
   - shared/prereqs.md
-  - shared/connecting.md
+  - assignments/setup.md
   - shared/sampleapp.md
   - shared/composedown.md
   - k8s/concepts-k8s.md
@@ -36,8 +36,9 @@ chapters:
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
 -
-  - k8s/setup-k8s.md
-  - k8s/dashboard.md
+  #- k8s/setup-selfhosted.md
+  #- k8s/setup-k8s.md
+  #- k8s/dashboard.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
@@ -50,9 +51,10 @@ chapters:
   - k8s/record.md
 - # DAY 2
   - k8s/namespaces.md
+  - k8s/setup-managed.md
   - k8s/localkubeconfig.md
   - k8s/accessinternal.md
-  - k8s/kubectlproxy.md
+  #- k8s/kubectlproxy.md
   - k8s/ingress.md
 -
   - k8s/logs-centralized.md

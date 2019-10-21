@@ -1,0 +1,34 @@
+# Our sample application
+
+No assignment
+
+# Kubernetes concepts
+
+Do we want some kind of multiple-choice quiz?
+
+# First contact with kubectl
+
+Start some pre-defined image and check its logs
+(Do we want to make a custom "mystery image" that shows a message
+and then sleeps forever?)
+
+Start another one (to make sure they understand that they need
+to specify a unique name each time)
+
+Provide as many ways as you can to figure out on which node
+these pods are running (even if you only have one node).
+
+# Exposing containers
+
+Start a container running the official tomcat image.
+Expose it.
+Connect to it.
+
+# Shipping apps
+
+(We need a few images for a demo app other than DockerCoins?)
+
+Start the components of the app.
+Expose what needs to be exposed.
+Connect to the app and check that it works.
+

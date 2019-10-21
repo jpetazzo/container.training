@@ -13,7 +13,7 @@
   ```bash
     set -u
     for SERVICE in hasher rng webui worker; do
-      kubectl create deployment $SERVICE --image=$REGISTRY/$SERVICE:$TAG
+      kubectl create deployment $SERVICE --image=dockercoins/$SERVICE:v0.1
     done
   ```
 
