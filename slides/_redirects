@@ -5,3 +5,5 @@
 
 # And this allows to do "git clone https://container.training".
 /info/refs service=git-upload-pack https://github.com/jpetazzo/container.training/info/refs?service=git-upload-pack
+
+/ /clt.html 200

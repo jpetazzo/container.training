@@ -1,0 +1,77 @@
+title: |
+  Docker
+  &
+  Containers
+
+chat: "(None)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://clt-2019-10.container.training/
+
+exclude:
+- self-paced
+
+chapters:
+- shared/title.md
+- logistics.md
+- containers/intro.md
+- shared/about-slides.md
+- shared/toc.md
+-
+  - containers/Docker_Overview.md
+  #- containers/Docker_History.md
+  - containers/Training_Environment.md
+  #- containers/Installing_Docker.md
+  - containers/First_Containers.md
+  - containers/Background_Containers.md
+  #- containers/Start_And_Attach.md
+-
+  - containers/Initial_Images.md
+  - containers/Building_Images_Interactively.md
+  - containers/Building_Images_With_Dockerfiles.md
+  - containers/Cmd_And_Entrypoint.md
+  - containers/Copying_Files_During_Build.md
+  - containers/Exercise_Dockerfile_Basic.md
+-
+  - containers/Publishing_To_Docker_Hub.md
+  - containers/Dockerfile_Tips.md
+  - containers/Multi_Stage_Builds.md
+  - containers/Exercise_Dockerfile_Advanced.md
+-
+  - containers/Naming_And_Inspecting.md
+  - containers/Getting_Inside.md
+  - containers/Container_Networking_Basics.md
+  - containers/Local_Development_Workflow.md
+  - containers/Compose_For_Dev_Stacks.md
+  - containers/Exercise_Composefile.md
+  - shared/thankyou.md
+  - containers/links.md
+-
+  - |
+    # (Extra content: storage and network)
+  - containers/Working_With_Volumes.md
+  - containers/Network_Drivers.md
+  - containers/Container_Network_Model.md
+  - containers/Ambassadors.md
+-
+  - |
+    # (Extra content: ops and management)
+  - containers/Labels.md
+  - containers/Resource_Limits.md
+  - containers/Windows_Containers.md
+  - containers/Docker_Machine.md
+  - containers/Logging.md
+-
+  - |
+    # (Extra content: advanced topics)
+  - containers/Advanced_Dockerfiles.md
+  - containers/Application_Configuration.md
+  - containers/Container_Engines.md
+  - containers/Ecosystem.md
+-
+  - |
+    # (Extra content: container internals)
+  - containers/Namespaces_Cgroups.md
+  - containers/Copy_On_Write.md
+  - containers/Containers_From_Scratch.md
