@@ -105,6 +105,22 @@ The dashboard will then ask you which authentication you want to use.
 
 ---
 
+## Other dashboards
+
+- [Kube Web View](https://codeberg.org/hjacobs/kube-web-view)
+
+  - read-only dashboard
+
+  - optimized for "troubleshooting and incident response"
+
+  - see [vision and goals](https://kube-web-view.readthedocs.io/en/latest/vision.html#vision) for details
+
+- [Kube Ops View](https://github.com/hjacobs/kube-ops-view)
+
+  - "provides a common operational picture for multiple Kubernetes clusters"
+
+---
+
 # Security implications of `kubectl apply`
 
 - When we do `kubectl apply -f <URL>`, we create arbitrary resources
@@ -156,4 +172,3 @@ The dashboard will then ask you which authentication you want to use.
 - It introduces new failure modes
 
   (for instance, if you try to apply YAML from a link that's no longer valid)
-
