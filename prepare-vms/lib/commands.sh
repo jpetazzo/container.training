@@ -127,11 +127,11 @@ _cmd_kubebins() {
     set -e
     cd /usr/local/bin
     if ! [ -x etcd ]; then
-        curl -L https://github.com/etcd-io/etcd/releases/download/v3.3.10/etcd-v3.3.10-linux-amd64.tar.gz \
+        curl -L https://github.com/etcd-io/etcd/releases/download/v3.3.15/etcd-v3.3.15-linux-amd64.tar.gz \
         | sudo tar --strip-components=1 --wildcards -zx '*/etcd' '*/etcdctl'
     fi
     if ! [ -x hyperkube ]; then
-        curl -L https://dl.k8s.io/v1.14.1/kubernetes-server-linux-amd64.tar.gz \
+        curl -L https://dl.k8s.io/v1.16.2/kubernetes-server-linux-amd64.tar.gz \
         | sudo tar --strip-components=3 -zx kubernetes/server/bin/hyperkube
     fi
     if ! [ -x kubelet ]; then
@@ -143,7 +143,7 @@ _cmd_kubebins() {
     sudo mkdir -p /opt/cni/bin
     cd /opt/cni/bin
     if ! [ -x bridge ]; then
-        curl -L https://github.com/containernetworking/plugins/releases/download/v0.7.5/cni-plugins-amd64-v0.7.5.tgz \
+        curl -L https://github.com/containernetworking/plugins/releases/download/v0.8.2/cni-plugins-amd64-v0.8.2.tgz \
         | sudo tar -zx
     fi
     "
