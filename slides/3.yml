@@ -1,6 +1,6 @@
 title: |
   Day 3
-  More Kubernetes
+  Developing Cloud Native Apps
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
@@ -16,18 +16,9 @@ chapters:
 - shared/title.md
 - shared/toc.md
 -
-  - k8s/namespaces.md
-  - k8s/kubectlproxy.md
-  - k8s/localkubeconfig.md
-  - k8s/accessinternal.md
--
-  - k8s/netpol.md
-  - k8s/authn-authz.md
--
-  - k8s/ingress.md
   - k8s/volumes.md
   - k8s/configuration.md
--
-  - k8s/statefulsets.md
-  - k8s/local-persistent-volumes.md
-  - k8s/portworx.md
+  - k8s/kustomize.md
+  - k8s/helm.md
+  - k8s/create-chart.md
+  #- k8s/create-more-charts.md
