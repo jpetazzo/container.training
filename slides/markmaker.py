@@ -157,7 +157,7 @@ def processchapter(chapter, filename):
         return processchapter(chapter.encode("utf-8"), filename)
     if isinstance(chapter, str):
         if "\n" in chapter:
-            titles = re.findall("^# (.*)", chapter, re.MULTILINE)
+            titles = [] # re.findall("^# (.*)", chapter, re.MULTILINE)
             slidefooter = ".debug[{}]".format(makelink(filename))
             chapter = chapter.replace("\n---\n", "\n{}\n---\n".format(slidefooter))
             chapter += "\n" + slidefooter

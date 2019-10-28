@@ -1,0 +1,22 @@
+title: |
+ Deep Dive into
+ Kubernetes Internals
+ for Builders and Operators
+ 
+ (LISA2019)
+
+chat: ""
+gitrepo: ""
+slides: ""
+
+exclude:
+- tutorial-only
+
+chapters:
+- lisa/begin.md
+- k8s/deploymentslideshow.md
+- lisa/dmuc.md
+- lisa/kubeproxy.md
+- lisa/kubenet.md
+- lisa/cni.md
+- lisa/end.md
