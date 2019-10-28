@@ -2,6 +2,8 @@ class: title
 
 @@TITLE@@
 
+.footnote[![QR Code to the slides](images/qrcode-lisa.png)☝🏻 Slides!]
+
 ---
 
 ## Outline
@@ -195,6 +197,11 @@ kubectl expose deployment web --port=80
 curl http://...
 ```
 
+???
+
+Kubernetes might feel like an imperative system,
+because we can say "run this; do that."
+
 ---
 
 ## What really happens
@@ -210,6 +217,12 @@ curl http://...
 - Some *controllers* wake up and do a bunch of stuff
 
 .footnote[*The amazing diagram on the next slide is courtesy of [Lucas Käldström](https://twitter.com/kubernetesonarm).*]
+
+???
+
+In reality, it is a declarative system.
+
+We write manifests, descriptions of what we want, and Kubernetes tries to make it happen.
 
 ---
 
