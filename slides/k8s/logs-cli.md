@@ -66,6 +66,8 @@ Exactly what we need!
   sudo chmod +x /usr/local/bin/stern
   ```
 
+- On OS X, just `brew install stern`
+
 <!-- ##VERSION## -->
 
 ---
