@@ -370,6 +370,8 @@ If the pods aren't running, it could be:
 
 ]
 
+Note: if you provisioned a new control plane, re-create and re-expose the deployment.
+
 ---
 
 ## Checking that everything works
@@ -391,6 +393,20 @@ If the pods aren't running, it could be:
 Note that if you send multiple requests, they are load-balanced in a round robin manner.
 
 This shows that we are using IPVS (vs. iptables, which picked random endpoints).
+
+Problems? Check next slide!
+
+---
+
+## If it doesn't quite work ...
+
+- If we used kubenet before, we now have a `cbr0` bridge
+
+- This bridge (and its subnet) might conflict with what we're using now
+
+- To see if it's the case, check if you have duplicate routes with `ip ro`
+
+- To fix it, delete the old bridge with `ip link del cbr0`
 
 ---
 
