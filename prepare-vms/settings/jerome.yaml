@@ -26,3 +26,8 @@ machine_version: 0.14.0
 
 # Password used to connect with the "docker user"
 docker_user_password: training
+
+url: https://lisa-2019-10.container.training
+event: tutorial
+backside: true
+clusternumber: 10
