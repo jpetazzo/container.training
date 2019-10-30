@@ -143,7 +143,7 @@ _cmd_kubebins() {
     sudo mkdir -p /opt/cni/bin
     cd /opt/cni/bin
     if ! [ -x bridge ]; then
-        curl -L https://github.com/containernetworking/plugins/releases/download/v0.8.2/cni-plugins-amd64-v0.8.2.tgz \
+        curl -L https://github.com/containernetworking/plugins/releases/download/v0.7.6/cni-plugins-amd64-v0.7.6.tgz \
         | sudo tar -zx
     fi
     "
