@@ -1,5 +1,5 @@
 # Number of VMs per cluster
-clustersize: 4
+clustersize: 3
 
 # The hostname of each node will be clusterprefix + a number
 clusterprefix: node
