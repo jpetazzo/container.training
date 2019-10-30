@@ -65,7 +65,8 @@ Exactly what we need!
        https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64
   sudo chmod +x /usr/local/bin/stern
   ```
-  On OS X, `brew install stern`
+
+- On OS X, just `brew install stern`
 
 <!-- ##VERSION## -->
 
