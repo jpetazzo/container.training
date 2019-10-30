@@ -300,8 +300,6 @@ class: extra-details
 
 ]
 
-Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
-
 ---
 
 ## Restarting kubelets
@@ -326,6 +324,29 @@ Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
   ```
 
 ]
+
+---
+
+## Check kuberouter pods
+
+- Make sure that kuberouter pods are running
+
+.exercise[
+
+- List pods in the `kube-system` namespace:
+  ```bash
+  kubectl get pods --namespace=kube-system
+  ```
+
+]
+
+If the pods aren't running, it could be:
+
+- privileged containers aren't enabled
+  <br/>(add `--allow-privileged` flag to the API server)
+
+- missing service account token
+  <br/>(add `--disable-admission-plugins=ServiceAccount` flag)
 
 ---
 
