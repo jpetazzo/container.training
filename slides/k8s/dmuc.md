@@ -31,30 +31,11 @@
 
 ---
 
-## Our environment
-
-- We will use the machine indicated as `dmuc1`
-
-  (this stands for "Dessine Moi Un Cluster" or "Draw Me A Sheep",
-  <br/>in homage to Saint-Exupery's "The Little Prince")
-
-- This machine:
-
-  - runs Ubuntu LTS
-
-  - has Kubernetes, Docker, and etcd binaries installed
-
-  - but nothing is running
-
----
-
 ## Checking our environment
 
 - Let's make sure we have everything we need first
 
 .exercise[
-
-- Log into the `dmuc1` machine
 
 - Get root:
   ```bash
@@ -559,7 +540,7 @@ Success!
 
 Our node should show up.
 
-Its name will be its hostname (it should be `dmuc1`).
+Its name will be its hostname (it should be `node1`).
 
 ---
 

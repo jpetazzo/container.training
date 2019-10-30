@@ -28,6 +28,24 @@ Introductions
 
 ---
 
+class: tutorial-only
+
+## Viewer advisory
+
+- Have you attended my talk on Monday?
+
+--
+
+- Then you may experience *déjà-vu* during the next few minutes
+
+  (Sorry!)
+
+--
+
+- But I promise we'll soon build (and break) some clusters!
+
+---
+
 ## Hi!
 
 - Jérôme Petazzoni ([@jpetazzo](https://twitter.com/jpetazzo))
@@ -127,6 +145,12 @@ As you can see, I love emojis, but if you don't, it's OK.
 --
 
 - (Other, please specify)
+
+--
+
+class: tutorial-only
+
+.footnote[*Damn. Jérôme is even using the same jokes for his talk and his tutorial!<br/>This guy really has no shame. Tsk.*]
 
 ---
 

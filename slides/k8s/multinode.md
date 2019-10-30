@@ -4,47 +4,67 @@
 
 - Let's see what it takes to add more nodes
 
-- We are going to use another set of machines: `kubenet`
-
 ---
 
-## The environment
+## Next steps
 
-- We have 3 identical machines: `kubenet1`, `kubenet2`, `kubenet3`
-
-- The Docker Engine is installed (and running) on these machines
-
-- The Kubernetes packages are installed, but nothing is running
-
-- We will use `kubenet1` to run the control plane
-
----
-
-## The plan
-
-- Start the control plane on `kubenet1`
-
-- Join the 3 nodes to the cluster
-
-- Deploy and scale a simple web server
-
-.exercise[
-
-- Log into `kubenet1`
-
-]
-
----
-
-## Running the control plane
-
-- We will use a Compose file to start the control plane components
+- We will need some files that are on the tutorial GitHub repo
 
 .exercise[
 
 - Clone the repository containing the workshop materials:
   ```bash
   git clone https://@@GITREPO@@
+  ```
+
+]
+
+---
+
+## Control plane
+
+- We can use the control plane that we deployed on node1
+
+- If that didn't quite work, don't panic!
+
+- We provide a way to catch up and get a control plane in a pinch
+
+---
+
+## Cleaning up
+
+- Only do this if your control plane doesn't work and want to start over
+
+.exercise[
+
+- Reboot the node to make sure nothing else is running:
+  ```bash
+  sudo reboot
+  ```
+
+- Log in again:
+  ```bash
+  ssh docker@`A.B.C.D`
+  ```
+
+- Get root:
+  ```
+  sudo -i
+  ```
+
+]
+
+---
+
+## Catching up
+
+- We will use a Compose file to start the control plane components
+
+.exercise[
+
+- Start the Docker Engine:
+  ```bash
+  dockerd
   ```
 
 - Go to the `compose/simple-k8s-control-plane` directory:
@@ -84,7 +104,7 @@
 
 class: extra-details
 
-## Differences from `dmuc`
+## Differences with the other control plane
 
 - Our new control plane listens on `0.0.0.0` instead of the default `127.0.0.1`
 
@@ -123,7 +143,7 @@ class: extra-details
 - Copy `kubeconfig` to the other nodes:
   ```bash
     for N in 2 3; do
-    	scp ~/kubeconfig kubenet$N:
+    	scp ~/kubeconfig node$N:
     done
   ```
 
@@ -144,17 +164,35 @@ class: extra-details
 
 - Open more terminals and join the other nodes to the cluster:
   ```bash
-  ssh kubenet2 sudo kubelet --kubeconfig ~/kubeconfig
-  ssh kubenet3 sudo kubelet --kubeconfig ~/kubeconfig
+  ssh node2 sudo kubelet --kubeconfig ~/kubeconfig
+  ssh node3 sudo kubelet --kubeconfig ~/kubeconfig
   ```
 
 ]
 
 ---
 
+## If we're running the "old" control plane
+
+- By default, the API server only listens on localhost
+
+- The other nodes will not be able to connect
+
+  (symptom: a flood of `node "nodeX" not found` messages)
+
+- We need to add `--address 0.0.0.0` to the API server
+
+  (yes, [this will expose our API server to all kinds of shenanigans](https://twitter.com/TabbySable/status/1188901099446554624))
+
+- Restarting API server might cause scheduler and controller manager to quit
+
+  (you might have to restart them)
+
+---
+
 ## Checking cluster status
 
-- We should now see all 3 nodes
+- We should now see all the nodes
 
 - At first, their `STATUS` will be `NotReady`
 
@@ -179,14 +217,14 @@ class: extra-details
 
 .exercise[
 
-- Create a Deployment running NGINX:
+- Create a Deployment running httpenv:
   ```bash
-  kubectl create deployment web --image=nginx
+  kubectl create deployment httpenv --image=jpetazzo/httpenv
   ```
 
 - Scale it:
   ```bash
-  kubectl scale deployment web --replicas=5
+  kubectl scale deployment httpenv --replicas=5
   ```
 
 ]
@@ -197,7 +235,7 @@ class: extra-details
 
 - The pods will be scheduled on the nodes
 
-- The nodes will pull the `nginx` image, and start the pods
+- The nodes will pull the `jpetazzo/httpenv` image, and start the pods
 
 - What are the IP addresses of our pods?
 
@@ -399,7 +437,7 @@ class: extra-details
 
 - Expose our Deployment:
   ```bash
-  kubectl expose deployment web --port=80
+  kubectl expose deployment httpenv --port=8888
   ```
 
 ]
@@ -412,7 +450,7 @@ class: extra-details
 
 - Retrieve the ClusterIP address:
   ```bash
-  kubectl get svc web
+  kubectl get svc httpenv
   ```
 
 - Send a few requests to the ClusterIP address (with `curl`)

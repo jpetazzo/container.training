@@ -110,9 +110,9 @@ class: extra-details
 
 ## In practice: kube-router
 
-- We are going to set up a new cluster
+- We are going to reconfigure our cluster
 
-- For this new cluster, we will use kube-router
+  (control plane and kubelets
 
 - kube-router will provide the "pod network"
 
@@ -184,72 +184,78 @@ class: extra-details
 
 ## The plan
 
-- We'll work in a new cluster (named `kuberouter`)
+- We'll update the control plane's configuration
 
-- We will run a simple control plane (like before)
+  - the controller manager will allocate `podCIDR` subnets
 
-- ... But this time, the controller manager will allocate `podCIDR` subnets
-
-  (so that we don't have to manually assign subnets to individual nodes)
+  - we will allow privileged containers
 
 - We will create a DaemonSet for kube-router
 
-- We will join nodes to the cluster
+- We will restart kubelets in CNI mode
 
 - The DaemonSet will automatically start a kube-router pod on each node
 
 ---
 
-## Logging into the new cluster
+## Getting the files
 
 .exercise[
 
-- Log into node `kuberouter1`
-
-- Clone the workshop repository:
+- If you haven't cloned the training repo yet, do it:
   ```bash
-  git clone https://@@GITREPO@@
+  cd ~
+  git clone https://container.training
   ```
 
-- Move to this directory:
+- Then move to this directory:
   ```bash
-  cd container.training/compose/kube-router-k8s-control-plane
+  cd ~/container.training/compose/kube-router-k8s-control-plane
   ```
 
 ]
 
 ---
 
-## Our control plane
+## Changes to the control plane
 
-- We will use a Compose file to start the control plane
-
-- It is similar to the one we used with the `kubenet` cluster
-
-- The API server is started with `--allow-privileged`
+- The API server must be started with `--allow-privileged`
 
   (because we will start kube-router in privileged pods)
 
-- The controller manager is started with extra flags too:
+- The controller manager must be started with extra flags too:
 
   `--allocate-node-cidrs` and `--cluster-cidr`
 
-- We need to edit the Compose file to set the Cluster CIDR
+.exercise[
+
+- Make these changes!
+
+  (You might have to restart scheduler and controller manager, too.)
+
+]
+
+.footnote[If your control plane is broken, don't worry!
+<br/>We provide a Compose file to catch up.]
 
 ---
 
-## Starting the control plane
+## Catching up
 
-- Our cluster CIDR will be `10.C.0.0/16`
-
-  (where `C` is our cluster number)
+- If your control plane is broken, here is how to start a new one
 
 .exercise[
 
-- Edit the Compose file to set the Cluster CIDR:
+- Make sure the Docker Engine is running, or start it with:
   ```bash
-  vim docker-compose.yaml
+  dockerd
   ```
+
+- Edit the Compose file to change the `--cluster-cidr`
+
+- Our cluster CIDR will be `10.C.0.0/16`
+  <br/>
+  (where `C` is our cluster number)
 
 - Start the control plane:
   ```bash
@@ -278,7 +284,7 @@ class: extra-details
 
 - The address of the API server will be `http://A.B.C.D:8080`
 
-  (where `A.B.C.D` is the public address of `kuberouter1`, running the control plane)
+  (where `A.B.C.D` is the public address of `node1`, running the control plane)
 
 .exercise[
 
@@ -298,42 +304,7 @@ Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
 
 ---
 
-## Generating the kubeconfig for kubelet
-
-- This is similar to what we did for the `kubenet` cluster
-
-.exercise[
-
-- Generate the kubeconfig file (replacing `X.X.X.X` with the address of `kuberouter1`):
-  ```bash
-    kubectl config set-cluster cni --server http://`X.X.X.X`:8080
-    kubectl config set-context cni --cluster cni
-    kubectl config use-context cni
-    cp ~/.kube/config ~/kubeconfig
-  ```
-
-]
-
----
-
-## Distributing kubeconfig
-
-- We need to copy that kubeconfig file to the other nodes
-
-.exercise[
-
-- Copy `kubeconfig` to the other nodes:
-  ```bash
-    for N in 2 3; do
-    	scp ~/kubeconfig kuberouter$N:
-    done
-  ```
-
-]
-
----
-
-## Starting kubelet
+## Restarting kubelets
 
 - We don't need the `--pod-cidr` option anymore
 
@@ -350,33 +321,30 @@ Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
 
 - Open more terminals and join the other nodes:
   ```bash
-  ssh kuberouter2 sudo kubelet --kubeconfig ~/kubeconfig --network-plugin=cni
-  ssh kuberouter3 sudo kubelet --kubeconfig ~/kubeconfig --network-plugin=cni
+  ssh node2 sudo kubelet --kubeconfig ~/kubeconfig --network-plugin=cni
+  ssh node3 sudo kubelet --kubeconfig ~/kubeconfig --network-plugin=cni
   ```
 
 ]
 
 ---
 
-## Setting up a test
+## Testing
 
-- Let's create a Deployment and expose it with a Service
+- Let's delete all pods
+
+- They should be re-created with new, correct addresses
 
 .exercise[
 
-- Create a Deployment running a web server:
+- Delete all pods:
   ```bash
-  kubectl create deployment web --image=jpetazzo/httpenv
+  kubectl delete pods --all
   ```
 
-- Scale it so that it spans multiple nodes:
+- Check the new pods:
   ```bash
-  kubectl scale deployment web --replicas=5
-  ```
-
-- Expose it with a Service:
-  ```bash
-  kubectl expose deployment web --port=8888
+  kuectl get pods -o wide
   ```
 
 ]
@@ -462,7 +430,7 @@ We should see the local pod CIDR connected to `kube-bridge`, and the other nodes
 
 These commands will give an error message that includes:
 ```
-dial tcp: lookup kuberouterX on 127.0.0.11:53: no such host
+dial tcp: lookup nodeX on 127.0.0.11:53: no such host
 ```
 
 What does that mean?
@@ -475,7 +443,7 @@ What does that mean?
 
 - By default, it creates a connection using the kubelet's name
 
-  (e.g. `http://kuberouter1:...`)
+  (e.g. `http://node1:...`)
 
 - This requires our nodes names to be in DNS
 

@@ -1,4 +1,4 @@
-class: title
+class: title, talk-only
 
 What's missing?
 
