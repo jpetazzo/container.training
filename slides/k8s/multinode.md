@@ -140,12 +140,9 @@ class: extra-details
 
 .exercise[
 
-- Copy `kubeconfig` to the other nodes:
-  ```bash
-    for N in 2 3; do
-    	scp ~/kubeconfig node$N:
-    done
-  ```
+- Copy `~/.kube/config` to the other nodes
+
+  (Given the size of the file, you can copy-paste it!)
 
 ]
 
@@ -153,22 +150,25 @@ class: extra-details
 
 ## Starting kubelet
 
-- Reminder: kubelet needs to run as root; don't forget `sudo`!
+*The following assumes that you copied the kubeconfig file to /tmp/kubeconfig.*
 
 .exercise[
 
-- Join the first node:
-   ```bash
-   sudo kubelet --kubeconfig ~/kubeconfig
-   ```
+- Log into node2
 
-- Open more terminals and join the other nodes to the cluster:
+- Start the Docker Engine:
   ```bash
-  ssh node2 sudo kubelet --kubeconfig ~/kubeconfig
-  ssh node3 sudo kubelet --kubeconfig ~/kubeconfig
+  sudo dockerd &
+  ```
+
+- Start kubelet:
+  ```bash
+  sudo kubelet --kubeconfig /tmp/kubeconfig
   ```
 
 ]
+
+Repeat on more nodes if desired.
 
 ---
 
