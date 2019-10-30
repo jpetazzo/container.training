@@ -398,7 +398,7 @@ class: extra-details
 
 - Start kube-proxy:
   ```bash
-  sudo kube-proxy --kubeconfig ~/kubeconfig
+  sudo kube-proxy --kubeconfig ~/.kube/config
   ```
 
 - Expose our Deployment:
