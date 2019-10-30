@@ -9,7 +9,6 @@ workshop.
 ## 1. Prerequisites
 Virtualbox, Vagrant and Ansible
 
-Before installing, navigate to container.training/prepare-local/. 
 
 - Virtualbox: https://www.virtualbox.org/wiki/Downloads
 
@@ -26,7 +25,7 @@ Before installing, navigate to container.training/prepare-local/.
 
         $ git clone --recursive https://github.com/ansible/ansible.git
         $ cd ansible
-        $ git checkout stable-{{ getStableVersionFromProject }}
+        $ git checkout stable-{{ getStableVersionFromAnsibleProject }}
         $ git submodule update
 
   - source the setup script to make Ansible available on this terminal session:
@@ -39,6 +38,7 @@ Before installing, navigate to container.training/prepare-local/.
 
 
 ## 2. Preparing the environment
+Change into directory that has your Vagrantfile
 
 Run the following commands:
 
