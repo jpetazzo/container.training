@@ -10,17 +10,22 @@ These tools can help you to create VMs on:
 
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
-- [Parallel SSH](https://code.google.com/archive/p/parallel-ssh/) (on a Mac: `brew install pssh`) - the configuration scripts require this
+- [Parallel SSH](https://code.google.com/archive/p/parallel-ssh/) (on a Mac: `brew install pssh`) 
 
 Depending on the infrastructure that you want to use, you also need to install
 the Azure CLI, the AWS CLI, or terraform (for OpenStack deployment).
 
 And if you want to generate printable cards:
 
-- [pyyaml](https://pypi.python.org/pypi/PyYAML) `pip install pyyaml`
-- [jinja2](https://pypi.python.org/pypi/Jinja2) `pip install jinja2`
--
--(These require Python 3; see below for information on setting Python3 as your default Python on the Mac. If you installed `mosh`, Homebrew may have changed your default Python to Python 2.) 
+- [pyyaml](https://pypi.python.org/pypi/PyYAML)
+- [jinja2](https://pypi.python.org/pypi/Jinja2)
+
+You can install them with pip (perhaps with `pip install --user`, or even use `virtualenv` if that's your thing).
+
+These require Python 3. If you are on a Mac, see below for specific instructions on setting up
+Python 3 to be the default Python on a Mac. In particular, if you installed `mosh`, Homebrew
+may have changed your default Python to Python 2.
+
 ## General Workflow
 
 - fork/clone repo
@@ -258,21 +263,31 @@ If you don't have `wkhtmltopdf` installed, you will get a warning that it is a m
   - Don't write to bash history in system() in postprep
   - compose, etc version inconsistent (int vs str)
 
-## Making sure Python3 is your default on the Mac
+## Making sure Python3 is the default (Mac only)
 
-Check the `/usr/local/bin/python` symlink. It should be pointing to `//usr/local/Cellar/python/3`-something. If it isn't, do the following:
+Check the `/usr/local/bin/python` symlink. It should be pointing to
+`/usr/local/Cellar/python/3`-something. If it isn't, follow these
+instructions.
 
- - Verify that python 3 is installed:
- -
-   ls -la /usr/local/Cellar/Python
+1) Verify that Python 3 is installed.
 
- - You should see one or more versions of Python 3. If you don't, `brew install python` to install it.
- - Verify that `python` points to Python3.
+```
+ls -la /usr/local/Cellar/Python
+```
+
+You should see one or more versions of Python 3. If you don't,
+install it with `brew install python`.
+
+2) Verify that `python` points to Python3.
  
-    ls -la /usr/local/bin/python
+```
+ls -la /usr/local/bin/python
+```
 
- - If this points to `/usr/local/Cellar/python@2`, then we'll need to change it.
- 
-   rm /usr/local/bin/python
-   ln -s /usr/local/Cellar/Python/xxxx /usr/local/bin/python # where xxxx is the most recent Python 3 version you saw above
+If this points to `/usr/local/Cellar/python@2`, then we'll need to change it.
 
+```
+rm /usr/local/bin/python
+ln -s /usr/local/Cellar/Python/xxxx /usr/local/bin/python
+# where xxxx is the most recent Python 3 version you saw above
+```
