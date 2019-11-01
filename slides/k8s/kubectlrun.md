@@ -153,10 +153,7 @@ pod/pingpong-7c8bbcd9bc-6c9qz   1/1       Running   0          10m
   kubectl logs deploy/pingpong --tail 1 --follow
   ```
 
-<!--
-```wait seq=3```
-```keys ^C```
--->
+- Leave that command running, so that we can keep an eye on these logs
 
 ]
 
@@ -186,6 +183,44 @@ We could! But the *deployment* would notice it right away, and scale back to the
 
 ---
 
+## Log streaming
+
+- Let's look again at the output of `kubectl logs`
+
+  (the one we started before scaling up)
+
+- `kubectl logs` shows us one line per second
+
+- We could expect 3 lines per second
+
+  (since we should now have 3 pods running `ping`)
+
+- Let's try to figure out what's happening!
+
+---
+
+## Streaming logs of multiple pods
+
+- What happens if we restart `kubectl logs`?
+
+.exercise[
+
+- Interrupt `kubectl logs` (with Ctrl-C)
+
+- Restart it:
+  ```bash
+  kubectl logs deploy/pingpong --tail 1 --follow
+  ```
+
+]
+
+`kubectl logs` will warn us that multiple pods were found, and that it's showing us only one of them.
+
+Let's leave `kubectl logs` running while we keep exploring.
+
+---
+
+
 ## Resilience
 
 - The *deployment* `pingpong` watches its *replica set*
@@ -196,26 +231,35 @@ We could! But the *deployment* would notice it right away, and scale back to the
 
 .exercise[
 
-- In a separate window, list pods, and keep watching them:
+- In a separate window, watch the list of pods:
   ```bash
-  kubectl get pods -w
+  watch kubectl get pods
   ```
 
-<!--
-```wait Running```
-```keys ^C```
-```hide kubectl wait deploy pingpong --for condition=available```
-```keys kubectl delete pod ping```
-```copypaste pong-..........-.....```
--->
-
-- Destroy a pod:
+- Destroy the pod currently shown by `kubectl logs`:
   ```
   kubectl delete pod pingpong-xxxxxxxxxx-yyyyy
   ```
 ]
 
 ---
+
+## What happened?
+
+- `kubectl delete pod` terminates the pod gracefully
+
+  (sending it the TERM signal and waiting for it to shutdown)
+
+- As soon as the pod is in "Terminating" state, the Replica Set replaces it
+
+- But we can still see the output of the "Terminating" pod in `kubectl logs`
+
+- Until 30 seconds later, when the grace period expires
+
+- The pod is then killed, and `kubectl logs` exits
+
+---
+
 
 ## What if we wanted something different?
 
