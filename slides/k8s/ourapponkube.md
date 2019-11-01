@@ -11,13 +11,33 @@
 
 - Deploy everything else:
   ```bash
-    set -u
-    for SERVICE in hasher rng webui worker; do
-      kubectl create deployment $SERVICE --image=$REGISTRY/$SERVICE:$TAG
-    done
+  kubectl create deployment hasher --image=dockercoins/hasher:v0.1
+  kubectl create deployment rng --image=dockercoins/rng:v0.1
+  kubectl create deployment webui --image=dockercoins/webui:v0.1
+  kubectl create deployment worker --image=dockercoins/worker:v0.1
   ```
 
 ]
+
+---
+
+class: extra-details
+
+## Deploying other images
+
+- If we wanted to deploy images from another registry ...
+
+- ... Or with a different tag ...
+
+- ... We could use the following snippet:
+
+```bash
+  REGISTRY=dockercoins
+  TAG=v0.1
+  for SERVICE in hasher rng webui worker; do
+    kubectl create deployment $SERVICE --image=$REGISTRY/$SERVICE:$TAG
+  done
+```
 
 ---
 
