@@ -278,6 +278,72 @@ Let's leave `kubectl logs` running while we keep exploring.
 
 ---
 
+## Scheduling periodic background work
+
+- A Cron Job is a job that will be executed at specific intervals
+
+  (the name comes from the traditional cronjobs executed by the UNIX crond)
+
+- It requires a *schedule*, represented as five space-separated fields:
+
+  - minute [0,59]
+  - hour [0,23]
+  - day of the month [1,31]
+  - month of the year [1,12]
+  - day of the week ([0,6] with 0=Sunday)
+
+- `*` means "all valid values"; `/N` means "every N"
+
+- Example: `*/3 * * * *` means "every three minutes"
+
+---
+
+## Creating a Cron Job
+
+- Let's create a simple job to be executed every three minutes
+
+- Cron Jobs need to terminate, otherwise they'd run forever
+
+.exercise[
+
+- Create the Cron Job:
+  ```bash
+  kubectl run --schedule="*/3 * * * *" --restart=OnFailure --image=alpine sleep 10
+  ```
+
+- Check the resource that was created:
+  ```bash
+  kubectl get cronjobs
+  ```
+
+]
+
+---
+
+## Cron Jobs in action
+
+- At the specified schedule, the Cron Job will create a Job
+
+- The Job will create a Pod
+
+- The Job will make sure that the Pod completes
+
+  (re-creating another one if it fails, for instance if its node fails)
+
+.exercise[
+
+- Check the Jobs that are created:
+  ```bash
+  kubectl get jobs
+  ```
+
+]
+
+(It will take a few minutes before the first job is scheduled.)
+
+---
+
+
 ## What about that deprecation warning?
 
 - As we can see from the previous slide, `kubectl run` can do many things
