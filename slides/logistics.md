@@ -3,9 +3,7 @@
 - Hello! We are:
 
    - .emoji[👷🏻‍♀️] AJ ([@s0ulshake](https://twitter.com/s0ulshake))
-
    - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
-
    - .emoji[] Sean ([@someara](https://twitter.com/someara))
 
 - The workshop will run from 9am to 5pm
