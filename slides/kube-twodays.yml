@@ -11,7 +11,7 @@ gitrepo: github.com/jpetazzo/container.training
 
 slides: http://velocity-2019-11.container.training/
 
-#slidenumberprefix: "#SomeHashTag &mdash; "
+slidenumberprefix: "#VelocityConf &mdash; "
 
 exclude:
 - self-paced
