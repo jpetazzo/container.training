@@ -8,6 +8,8 @@ gitrepo: github.com/jpetazzo/container.training
 
 slides: http://container.training/
 
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
 exclude:
 - in-person
 - btp-auto
