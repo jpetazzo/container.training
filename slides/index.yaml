@@ -5,6 +5,7 @@
   speaker: jpetazzo
   title: Deploying and scaling applications with Kubernetes
   attend: https://conferences.oreilly.com/velocity/vl-eu/public/schedule/detail/79109
+  slides: https://velocity-2019-11.container.training/
 
 - date: 2019-11-13
   country: fr
