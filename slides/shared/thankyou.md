@@ -14,17 +14,20 @@ That's all, folks! <br/> Questions?
 
 ## Final words
 
-- You can find more content on http://container.training/
+Did you like that tutorial? Then:
 
-  (More slides, videos, dates of upcoming workshops and tutorials...)
+1. Please [rate](https://conferences.oreilly.com/velocity/vl-eu/public/schedule/detail/79109) it on the O'Reilly website
 
-- This workshop is also available as longer training sessions:
+   (your feedback is important to the conference organizers!)
 
-  - [two-day Kubernetes bootstrap](https://tinyshellscript.com/kubernetes-bootstrap.html)
+2. Feel free to use, re-use, and share these slides
 
-  - [four-day Kubernetes administrator training](https://tinyshellscript.com/kubernetes-ops-week.html)
+   (they will remain online for at least a year)
 
-- If you want me to train your team:
-  [contact me!](https://docs.google.com/forms/d/e/1FAIpQLScm2evHMvRU8C5ZK59l8FGsLY_Kkup9P_GHgjfByUMyMpMmDA/viewform)
+3. Hire me to train your team, anywhere in the world
 
-.footnote[*Thank you!*]
+   (contact me: **jerome.petazzoni@gmail.com**)
+
+*Keep the little cards with the VM IP addresses.
+The VMs will be shut down shortly, but the URL
+of the slides and my e-mail address are on the cards.*
