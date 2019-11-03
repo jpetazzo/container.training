@@ -11,11 +11,11 @@ class: title, in-person
 @@TITLE@@<br/></br>
 
 .footnote[
-**Be kind to the WiFi!**<br/>
-<!-- *Use the 5G network.* -->
-*Don't use your hotspot.*<br/>
+**WiFi: OReillyCon** —
+**Password: oreillycon19**
+
 *Don't stream videos or download big files during the workshop[.](https://www.youtube.com/watch?v=h16zyxiwDLY)*<br/>
-*Thank you!*
+*Don't use your hotspot. Thank you!*
 
 **Slides: @@SLIDES@@**
 ]
