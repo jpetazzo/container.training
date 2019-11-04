@@ -62,6 +62,7 @@ chapters:
   - k8s/healthchecks.md
   #- k8s/healthchecks-more.md
   - k8s/record.md
+  - electricity.md
 -
   - k8s/namespaces.md
   - k8s/ingress.md
