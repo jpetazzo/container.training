@@ -5,15 +5,15 @@
 #}
 
 {%- set url = url
-    | default("http://FIXME.container.training/") -%}
+    | default("http://velocity-2019-11.container.training/") -%}
 {%- set pagesize = pagesize
     | default(9) -%}
 {%- set lang = lang
     | default("en") -%}
 {%- set event = event
-    | default("training session") -%}
+    | default("tutorial") -%}
 {%- set backside = backside
-    | default(False) -%}
+    | default(True) -%}
 {%- set image = image
     | default("kube") -%}
 {%- set clusternumber = clusternumber
@@ -212,16 +212,17 @@ img.kube {
 			{% for x in range(pagesize) %}
 		        <div class="back">
 		        <br/>
-				<p>You got this at the workshop
-				"Getting Started With Kubernetes and Container Orchestration"
-				during QCON London (March 2019).</p>
-				<p>If you liked that workshop,
+				<p>You got this at the tutorial
+				"Deploying and Scaling Applications
+                                with Kubernetes"
+                                during Velocity Berlin (November 2019).</p>
+				<p>If you liked that tutorial,
 				I can train your team or organization
 				on Docker, container, and Kubernetes,
 				with curriculums of 1 to 5 days.
 				</p>
 				<p>Interested? Contact me at:</p>
-				<p>jerome.petazzoni@gmail.com</p>
+				<p><strong>jerome.petazzoni@gmail.com</strong></p>
 				<p>Thank you!</p>
 		        </div>
 			{% endfor %}
