@@ -1,3 +1,7 @@
+# End of day 1!
+
+---
+
 class: pic
 
 ![Electricity map](images/electricity-map.png)
