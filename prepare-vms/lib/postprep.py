@@ -106,6 +106,7 @@ system("sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /e
 system("sudo service ssh restart")
 system("sudo apt-get -q update")
 system("sudo apt-get -qy install git jq")
+system("sudo apt-get -qy install emacs-nox joe")
 
 #######################
 ### DOCKER INSTALLS ###
