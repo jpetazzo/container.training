@@ -136,141 +136,227 @@ And *then* it is time to look at orchestration!
 
 ---
 
-## HTTP traffic handling
+## Congratulations!
 
-- *Services* are layer 4 constructs
-
-- HTTP is a layer 7 protocol
-
-- It is handled by *ingresses* (a different resource kind)
-
-- *Ingresses* allow:
-
-  - virtual host routing
-  - session stickiness
-  - URI mapping
-  - and much more!
-
-- [This section](kube-selfpaced.yml.html#toc-exposing-http-services-with-ingress-resources) shows how to expose multiple HTTP apps using [Træfik](https://docs.traefik.io/user-guide/kubernetes/)
-
----
-
-## Logging
-
-- Logging is delegated to the container engine
-
-- Logs are exposed through the API
-
-- Logs are also accessible through local files (`/var/log/containers`)
-
-- Log shipping to a central platform is usually done through these files
-
-  (e.g. with an agent bind-mounting the log directory)
-
-- [This section](kube-selfpaced.yml.html#toc-centralized-logging) shows how to do that with [Fluentd](https://docs.fluentd.org/v0.12/articles/kubernetes-fluentd) and the EFK stack
-
----
-
-## Metrics
-
-- The kubelet embeds [cAdvisor](https://github.com/google/cadvisor), which exposes container metrics
-
-  (cAdvisor might be separated in the future for more flexibility)
-
-- It is a good idea to start with [Prometheus](https://prometheus.io/)
-
-  (even if you end up using something else)
-
-- Starting from Kubernetes 1.8, we can use the [Metrics API](https://kubernetes.io/docs/tasks/debug-application-cluster/core-metrics-pipeline/)
-
-- [Heapster](https://github.com/kubernetes/heapster) was a popular add-on
-
-  (but is being [deprecated](https://github.com/kubernetes/heapster/blob/master/docs/deprecation.md) starting with Kubernetes 1.11)
-
----
-
-## Managing the configuration of our applications
-
-- Two constructs are particularly useful: secrets and config maps
-
-- They allow to expose arbitrary information to our containers
-
-- **Avoid** storing configuration in container images
-
-  (There are some exceptions to that rule, but it's generally a Bad Idea)
-
-- **Never** store sensitive information in container images
-
-  (It's the container equivalent of the password on a post-it note on your screen)
-
-- [This section](kube-selfpaced.yml.html#toc-managing-configuration) shows how to manage app config with config maps (among others)
-
----
-
-## Managing stack deployments
-
-- The best deployment tool will vary, depending on:
-
-  - the size and complexity of your stack(s)
-  - how often you change it (i.e. add/remove components)
-  - the size and skills of your team
-
-- A few examples:
-
-  - shell scripts invoking `kubectl`
-  - YAML resources descriptions committed to a repo
-  - [Helm](https://github.com/kubernetes/helm) (~package manager)
-  - [Spinnaker](https://www.spinnaker.io/) (Netflix' CD platform)
-  - [Brigade](https://brigade.sh/) (event-driven scripting; no YAML)
-
----
-
-## Cluster federation
+- We learned a lot about Kubernetes, its internals, its advanced concepts
 
 --
 
-![Star Trek Federation](images/startrek-federation.jpg)
+- That was just the easy part
+
+- The hard challenges will revolve around *culture* and *people*
 
 --
 
-Sorry Star Trek fans, this is not the federation you're looking for!
-
---
-
-(If I add "Your cluster is in another federation" I might get a 3rd fandom wincing!)
+- ... What does that mean?
 
 ---
 
-## Cluster federation
+## Running an app involves many steps
 
-- Kubernetes master operation relies on etcd
+- Write the app
 
-- etcd uses the [Raft](https://raft.github.io/) protocol
+- Tests, QA ...
 
-- Raft recommends low latency between nodes
+- Ship *something* (more on that later)
 
-- What if our cluster spreads to multiple regions?
+- Provision resources (e.g. VMs, clusters)
 
---
+- Deploy the *something* on the resources
 
-- Break it down in local clusters
+- Manage, maintain, monitor the resources
 
-- Regroup them in a *cluster federation*
+- Manage, maintain, monitor the app
 
-- Synchronize resources across clusters
-
-- Discover resources across clusters
+- And much more
 
 ---
 
-## Developer experience
+## Who does what?
 
-*We've put this last, but it's pretty important!*
+- The old "devs vs ops" division has changed
 
-- How do you on-board a new developer?
+- In some organizations, "ops" are now called "SRE" or "platform" teams
 
-- What do they need to install to get a dev stack?
+  (and they have very different sets of skills)
 
-- How does a code change make it from dev to prod?
+- Do you know which team is responsible for each item on the list on the previous page?
 
-- How does someone add a component to a stack?
+- Acknowledge that a lot of tasks are outsourced
+
+  (e.g. if we add "buy/rack/provision machines" in that list)
+
+---
+
+## What do we ship?
+
+- Some organizations embrace "you build it, you run it"
+
+- When "build" and "run" are owned by different teams, where's the line?
+
+- What does the "build" team ship to the "run" team?
+
+- Let's see a few options, and what they imply
+
+---
+
+## Shipping code
+
+- Team "build" ships code
+
+  (hopefully in a repository, identified by a commit hash)
+
+- Team "run" containerizes that code
+
+✔️ no extra work for developers
+
+❌ very little advantage of using containers
+
+---
+
+## Shipping container images
+
+- Team "build" ships container images
+
+  (hopefully built automatically from a source repository)
+
+- Team "run" uses theses images to create e.g. Kubernetes resources
+
+✔️ universal artefact (support all languages uniformly)
+
+✔️ easy to start a single component (good for monoliths)
+
+❌ complex applications will require a lot of extra work
+
+❌ adding/removing components in the stack also requires extra work
+
+❌ complex applications will run very differently between dev and prod
+
+---
+
+## Shipping Compose files
+
+(Or another kind of dev-centric manifest)
+
+- Team "build" ships a manifest that works on a single node
+
+  (as well as images, or ways to build them)
+
+- Team "run" adapts that manifest to work on a cluster
+
+✔️ all teams can start the stack in a reliable, deterministic manner
+
+❌ adding/removing components still requires *some* work (but less than before)
+
+❌ there will be *some* differences between dev and prod
+
+---
+
+## Shipping Kubernetes manifests
+
+- Team "build" ships ready-to-run manifests
+
+  (YAML, Helm charts, Kustomize ...)
+
+- Team "run" adjusts some parameters and monitors the application
+
+✔️ parity between dev and prod environments
+
+✔️ "run" team can focus on SLAs, SLOs, and overall quality
+
+❌ requires *a lot* of extra work (and new skills) from the "build" team
+
+❌ Kubernetes is not a very convenient development platform (at least, not yet)
+
+---
+
+## What's the right answer?
+
+- It depends on our teams
+
+  - existing skills (do they know how to do it?)
+
+  - availability (do they have the time to do it?)
+
+  - potential skills (can they learn to do it?)
+
+- It depends on our culture
+
+  - owning "run" often implies being on call
+
+  - do we reward on-call duty without encouraging hero syndrome?
+
+  - do we give people resources (time, money) to learn?
+
+---
+
+class: extra-details
+
+## Tools to develop on Kubernetes
+
+*If we decide to make Kubernetes the primary development platform, here
+are a few tools that can help us.*
+
+- Docker Desktop
+
+- Draft
+
+- Minikube
+
+- Skaffold
+
+- Tilt
+
+- ...
+
+---
+
+## Where do we run?
+
+- Managed vs. self-hosted
+
+- Cloud vs. on-premises
+
+- If cloud: public vs. private
+
+- Which vendor/distribution to pick?
+
+- Which versions/features to enable?
+
+---
+
+## Some guidelines
+
+- Start small
+
+- Outsource what we don't know
+
+- Start simple, and stay simple as long as possible
+
+  (try to stay away from complex features that we don't need)
+
+- Automate
+
+  (regularly check that we can successfully redeploy by following scripts)
+
+- Transfer knowledge
+
+  (make sure everyone is on the same page/level)
+
+- Iterate!
+
+---
+
+## Recommended sessions
+
+Dev?
+
+**The state of Kubernetes development tooling**<br/>
+by Ellen Korbes (Garden)<br/>
+13:25–14:05 Wednesday, Hall A1
+
+Ops?
+
+**Kubernetes the very hard way**<br/>
+by Laurent Bernaille (Datadog)<br/>
+11:35–12:15 Wednesday, Hall A1
