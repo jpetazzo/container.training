@@ -36,18 +36,14 @@ chapters:
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
 -
-  #- k8s/dashboard.md
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
   - k8s/daemonset.md
-  - k8s/rollout.md
 -
+  - k8s/rollout.md
   #- k8s/dryrun.md
   - k8s/healthchecks.md
   #- k8s/healthchecks-more.md
-  #- k8s/record.md
-  - k8s/namespaces.md
-  #- k8s/kubectlproxy.md
-  - k8s/localkubeconfig.md
-  - k8s/accessinternal.md
+  - k8s/record.md
+  - k8s/dashboard.md
   - k8s/ingress.md

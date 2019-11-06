@@ -16,9 +16,38 @@ chapters:
 - shared/title.md
 - shared/toc.md
 -
+  - |
+    # Bien démarrer en local (minikube, kind)
+  - k8s/namespaces.md
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
+  #- k8s/kubectlproxy.md
+-
+  - |
+    # (Industrialiser)
   - k8s/volumes.md
   - k8s/configuration.md
   - k8s/kustomize.md
   - k8s/helm.md
   - k8s/create-chart.md
   #- k8s/create-more-charts.md
+-
+  - |
+    # (Automatiser)
+  - |
+    # Fabrication d'image
+  - |
+    # Skaffold
+  - |
+    # Registries
+  - |
+    # Gitlab, CI
+  - |
+    # ROllout avancé, blue green, canary
+-
+  - |
+    # Monitoring applicatif
+  - |
+    # Prometheus Grafana
+  - |
+    # Telemetry
