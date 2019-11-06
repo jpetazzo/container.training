@@ -7,8 +7,8 @@ workshop.
 
 
 ## 1. Prerequisites
-
 Virtualbox, Vagrant and Ansible
+
 
 - Virtualbox: https://www.virtualbox.org/wiki/Downloads
 
@@ -25,7 +25,7 @@ Virtualbox, Vagrant and Ansible
 
         $ git clone --recursive https://github.com/ansible/ansible.git
         $ cd ansible
-        $ git checkout stable-2.0.0.1
+        $ git checkout stable-{{ getStableVersionFromAnsibleProject }}
         $ git submodule update
 
   - source the setup script to make Ansible available on this terminal session:
@@ -38,6 +38,7 @@ Virtualbox, Vagrant and Ansible
 
 
 ## 2. Preparing the environment
+Change into directory that has your Vagrantfile
 
 Run the following commands:
 
@@ -65,6 +66,14 @@ will reflect inside the instance.
 ## 3. Possible problems and solutions
 
 - Depending on the Vagrant version, `sudo apt-get install bsdtar` may be needed
+
+- If you get an error like "no Vagrant file found" or you have a file but  "cannot open base box" when running `vagrant up`, 
+chances are good you not in the correct directory. 
+Make sure you are in sub directory named "prepare-local". It has all the config files required by ansible, vagrant and virtualbox
+
+- If you are using Python 3.7, running the ansible-playbook provisioning, see an error like "SyntaxError: invalid syntax" and it mentions
+the word "async", you need to upgrade your Ansible version to 2.6 or higher to resolve the keyword conflict. 
+https://github.com/ansible/ansible/issues/42105
 
 - If you get strange Ansible errors about dependencies, try to check your pip
   version with `pip --version`. The current version is 8.1.1. If your pip is

@@ -218,6 +218,18 @@ class: extra-details
 
 ## What's going on?
 
+- Without the `--network-plugin` flag, kubelet defaults to "no-op" networking
+
+- It lets the container engine use a default network
+
+  (in that case, we end up with the default Docker bridge)
+
+- Our pods are running on independent, disconnected, host-local networks
+
+---
+
+## What do we need to do?
+
 - On a normal cluster, kubelet is configured to set up pod networking with CNI plugins
 
 - This requires:
@@ -227,14 +239,6 @@ class: extra-details
   - writing CNI configuration files
 
   - running kubelet with `--network-plugin=cni`
-
-- Without the `--network-plugin` flag, kubelet defaults to "no-op" networking
-
-- It lets the container engine use a default network
-
-  (in that case, we end up with the default Docker bridge)
-
-- Our pods are running on independent, disconnected, host-local networks
 
 ---
 
@@ -394,7 +398,7 @@ class: extra-details
 
 - Start kube-proxy:
   ```bash
-  sudo kube-proxy --kubeconfig ~/kubeconfig
+  sudo kube-proxy --kubeconfig ~/.kube/config
   ```
 
 - Expose our Deployment:

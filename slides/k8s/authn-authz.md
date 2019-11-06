@@ -667,17 +667,12 @@ class: extra-details
 
 - For auditing purposes, sometimes we want to know who can perform an action
 
-- There is a proof-of-concept tool by Aqua Security which does exactly that:
+- There are a few tools to help us with that
 
-  https://github.com/aquasecurity/kubectl-who-can
+  - [kubectl-who-can](https://github.com/aquasecurity/kubectl-who-can) by Aqua Security
 
-- This is one way to install it:
-  ```bash
-  docker run --rm -v /usr/local/bin:/go/bin golang \
-         go get -v github.com/aquasecurity/kubectl-who-can
-  ```
+  - [Review Access (aka Rakkess)](https://github.com/corneliusweig/rakkess)
 
-- This is one way to use it:
-  ```bash
-  kubectl-who-can create pods
-  ```
+- Both are available as standalone programs, or as plugins for `kubectl`
+
+  (`kubectl` plugins can be installed and managed with `krew`)

@@ -9,6 +9,8 @@ gitrepo: github.com/jpetazzo/container.training
 
 slides: http://container.training/
 
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
 exclude:
 - self-paced
 - snap

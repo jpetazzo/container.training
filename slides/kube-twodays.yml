@@ -10,6 +10,8 @@ gitrepo: github.com/jpetazzo/container.training
 
 slides: http://container.training/
 
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
 exclude:
 - self-paced
 
@@ -23,7 +25,7 @@ chapters:
   - shared/prereqs.md
   #- shared/webssh.md
   - shared/connecting.md
-  - k8s/versions-k8s.md
+  #- k8s/versions-k8s.md
   - shared/sampleapp.md
   #- shared/composescale.md
   #- shared/hastyconclusions.md
@@ -43,20 +45,21 @@ chapters:
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
 -
-  - k8s/kubectlproxy.md
-  - k8s/localkubeconfig.md
-  - k8s/accessinternal.md
-  - k8s/setup-k8s.md
+  - k8s/yamldeploy.md
+  #- k8s/setup-k8s.md
   - k8s/dashboard.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
   - k8s/daemonset.md
--
   - k8s/dryrun.md
+-
+  #- k8s/kubectlproxy.md
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
   - k8s/rollout.md
   - k8s/healthchecks.md
-  - k8s/healthchecks-more.md
+  #- k8s/healthchecks-more.md
   - k8s/record.md
 -
   - k8s/namespaces.md
