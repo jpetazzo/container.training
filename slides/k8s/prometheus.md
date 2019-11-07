@@ -60,9 +60,11 @@
 
   (by default: every minute; can be more/less frequent)
 
-- If you're worried about parsing overhead: exporters can also use protobuf
-
 - The list of URLs to scrape (the *scrape targets*) is defined in configuration
+
+.footnote[Worried about the overhead of parsing a text format?
+<br/>
+Check this [comparison](https://github.com/RichiH/OpenMetrics/blob/master/markdown/protobuf_vs_text.md) of the text format with the (now deprecated) protobuf format!]
 
 ---
 
