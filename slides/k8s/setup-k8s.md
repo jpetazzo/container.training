@@ -61,7 +61,8 @@
 
 - [minikube](https://kubernetes.io/docs/setup/minikube/),
   [kubespawn](https://github.com/kinvolk/kube-spawn),
-  [Docker Desktop](https://docs.docker.com/docker-for-mac/kubernetes/):
+  [Docker Desktop](https://docs.docker.com/docker-for-mac/kubernetes/),
+  [kind](https://kind.sigs.k8s.io):
   for local development
 
 - [kubicorn](https://github.com/kubicorn/kubicorn),
