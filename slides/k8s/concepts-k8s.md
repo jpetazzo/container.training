@@ -191,11 +191,11 @@ No!
 
 - By default, Kubernetes uses the Docker Engine to run containers
 
-- We could also use `rkt` ("Rocket") from CoreOS
-
 - Or leverage other pluggable runtimes through the *Container Runtime Interface*
 
   (like CRI-O, or containerd)
+
+- Different install methods and distributions use different runtimes
 
 ---
 
