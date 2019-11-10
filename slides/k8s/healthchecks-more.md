@@ -1,41 +1,3 @@
-## Questions to ask before adding healthchecks
-
-- Do we want liveness, readiness, both?
-
-  (sometimes, we can use the same check, but with different failure thresholds)
-
-- Do we have existing HTTP endpoints that we can use?
-
-- Do we need to add new endpoints, or perhaps use something else?
-
-- Are our healthchecks likely to use resources and/or slow down the app?
-
-- Do they depend on additional services?
-
-  (this can be particularly tricky, see next slide)
-
----
-
-## Healthchecks and dependencies
-
-- A good healthcheck should always indicate the health of the service itself
-
-- It should not be affected by the state of the service's dependencies
-
-- Example: a web server requiring a database connection to operate
-
-  (make sure that the healthcheck can report "OK" even if the database is down;
-  <br/>
-  because it won't help us to restart the web server if the issue is with the DB!)
-
-- Example: a microservice calling other microservices
-
-- Example: a worker process
-
-  (these will generally require minor code changes to report health)
-
----
-
 ## Adding healthchecks to an app
 
 - Let's add healthchecks to DockerCoins!
@@ -370,24 +332,4 @@ class: extra-details
 
   (and have gcr.io/pause take care of the reaping)
 
----
-
-## Healthchecks for worker
-
-- Readiness isn't useful
-
-  (because worker isn't a backend for a service)
-
-- Liveness may help us restart a broken worker, but how can we check it?
-
-- Embedding an HTTP server is an option
-
-  (but it has a high potential for unwanted side effects and false positives)
-
-- Using a "lease" file can be relatively easy:
-
-  - touch a file during each iteration of the main loop
-
-  - check the timestamp of that file from an exec probe
-
-- Writing logs (and checking them from the probe) also works
+- Discussion of this in [Video - 10 Ways to Shoot Yourself in the Foot with Kubernetes, #9 Will Surprise You](https://www.youtube.com/watch?v=QKI-JRs2RIE)

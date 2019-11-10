@@ -153,10 +153,7 @@ pod/pingpong-7c8bbcd9bc-6c9qz   1/1       Running   0          10m
   kubectl logs deploy/pingpong --tail 1 --follow
   ```
 
-<!--
-```wait seq=3```
-```keys ^C```
--->
+- Leave that command running, so that we can keep an eye on these logs
 
 ]
 
@@ -186,6 +183,44 @@ We could! But the *deployment* would notice it right away, and scale back to the
 
 ---
 
+## Log streaming
+
+- Let's look again at the output of `kubectl logs`
+
+  (the one we started before scaling up)
+
+- `kubectl logs` shows us one line per second
+
+- We could expect 3 lines per second
+
+  (since we should now have 3 pods running `ping`)
+
+- Let's try to figure out what's happening!
+
+---
+
+## Streaming logs of multiple pods
+
+- What happens if we restart `kubectl logs`?
+
+.exercise[
+
+- Interrupt `kubectl logs` (with Ctrl-C)
+
+- Restart it:
+  ```bash
+  kubectl logs deploy/pingpong --tail 1 --follow
+  ```
+
+]
+
+`kubectl logs` will warn us that multiple pods were found, and that it's showing us only one of them.
+
+Let's leave `kubectl logs` running while we keep exploring.
+
+---
+
+
 ## Resilience
 
 - The *deployment* `pingpong` watches its *replica set*
@@ -196,26 +231,35 @@ We could! But the *deployment* would notice it right away, and scale back to the
 
 .exercise[
 
-- In a separate window, list pods, and keep watching them:
+- In a separate window, watch the list of pods:
   ```bash
-  kubectl get pods -w
+  watch kubectl get pods
   ```
 
-<!--
-```wait Running```
-```keys ^C```
-```hide kubectl wait deploy pingpong --for condition=available```
-```keys kubectl delete pod ping```
-```copypaste pong-..........-.....```
--->
-
-- Destroy a pod:
+- Destroy the pod currently shown by `kubectl logs`:
   ```
   kubectl delete pod pingpong-xxxxxxxxxx-yyyyy
   ```
 ]
 
 ---
+
+## What happened?
+
+- `kubectl delete pod` terminates the pod gracefully
+
+  (sending it the TERM signal and waiting for it to shutdown)
+
+- As soon as the pod is in "Terminating" state, the Replica Set replaces it
+
+- But we can still see the output of the "Terminating" pod in `kubectl logs`
+
+- Until 30 seconds later, when the grace period expires
+
+- The pod is then killed, and `kubectl logs` exits
+
+---
+
 
 ## What if we wanted something different?
 
@@ -233,6 +277,72 @@ We could! But the *deployment* would notice it right away, and scale back to the
 - With `kubectl run --schedule=...`, we can also create *cronjobs*
 
 ---
+
+## Scheduling periodic background work
+
+- A Cron Job is a job that will be executed at specific intervals
+
+  (the name comes from the traditional cronjobs executed by the UNIX crond)
+
+- It requires a *schedule*, represented as five space-separated fields:
+
+  - minute [0,59]
+  - hour [0,23]
+  - day of the month [1,31]
+  - month of the year [1,12]
+  - day of the week ([0,6] with 0=Sunday)
+
+- `*` means "all valid values"; `/N` means "every N"
+
+- Example: `*/3 * * * *` means "every three minutes"
+
+---
+
+## Creating a Cron Job
+
+- Let's create a simple job to be executed every three minutes
+
+- Cron Jobs need to terminate, otherwise they'd run forever
+
+.exercise[
+
+- Create the Cron Job:
+  ```bash
+  kubectl run --schedule="*/3 * * * *" --restart=OnFailure --image=alpine sleep 10
+  ```
+
+- Check the resource that was created:
+  ```bash
+  kubectl get cronjobs
+  ```
+
+]
+
+---
+
+## Cron Jobs in action
+
+- At the specified schedule, the Cron Job will create a Job
+
+- The Job will create a Pod
+
+- The Job will make sure that the Pod completes
+
+  (re-creating another one if it fails, for instance if its node fails)
+
+.exercise[
+
+- Check the Jobs that are created:
+  ```bash
+  kubectl get jobs
+  ```
+
+]
+
+(It will take a few minutes before the first job is scheduled.)
+
+---
+
 
 ## What about that deprecation warning?
 

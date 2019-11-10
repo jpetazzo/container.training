@@ -1,12 +1,23 @@
-{# Feel free to customize or override anything in there! #}
+{#
+   The variables below can be customized here directly, or in your
+   settings.yaml file. Any variable in settings.yaml will be exposed
+   in here as well.
+#}
 
-{%- set url = "http://FIXME.container.training/" -%}
-{%- set pagesize = 9 -%}
-{%- set lang = "en" -%}
-{%- set event = "training session" -%}
-{%- set backside = False -%}
-{%- set image = "kube" -%}
-{%- set clusternumber = 100 -%}
+{%- set url = url
+    | default("http://FIXME.container.training/") -%}
+{%- set pagesize = pagesize
+    | default(9) -%}
+{%- set lang = lang
+    | default("en") -%}
+{%- set event = event
+    | default("training session") -%}
+{%- set backside = backside
+    | default(False) -%}
+{%- set image = image
+    | default("kube") -%}
+{%- set clusternumber = clusternumber
+    | default(None) -%}
 
 {%- set image_src = {
 	"docker": "https://s3-us-west-2.amazonaws.com/www.breadware.com/integrations/docker.png",
@@ -161,7 +172,9 @@ img.kube {
     <div>
         <p>{{ intro }}</p>
         <p>
+            {% if image_src %}
             <img src="{{ image_src }}" />
+            {% endif %}
             <table>
             	{% if clusternumber != None %}
 	            <tr><td>cluster:</td></tr>
@@ -187,8 +200,10 @@ img.kube {
         </p>
 
         <p>
+            {% if url %}
         	{{ slides_are_at }}
             <center>{{ url }}</center>
+            {% endif %}
         </p>
     </div>
     {% if loop.index%pagesize==0 or loop.last %}

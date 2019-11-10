@@ -5,6 +5,7 @@
   speaker: jpetazzo
   title: Deploying and scaling applications with Kubernetes
   attend: https://conferences.oreilly.com/velocity/vl-eu/public/schedule/detail/79109
+  slides: https://velocity-2019-11.container.training/
 
 - date: 2019-11-13
   country: fr
@@ -15,6 +16,38 @@
   lang: fr
   attend: http://2019.devops-dday.com/Workshop.html
 
+- date: 2019-10-30
+  country: us
+  city: Portland, OR
+  event: LISA
+  speaker: jpetazzo
+  title: Deep Dive into Kubernetes Internals for Builders and Operators
+  attend: https://www.usenix.org/conference/lisa19/presentation/petazzoni-tutorial
+
+- date: [2019-10-22, 2019-10-24]
+  country: us
+  city: Charlotte, NC
+  event: Ardan Labs
+  speaker: jpetazzo
+  title: Kubernetes Training
+  attend: https://www.eventbrite.com/e/containers-docker-and-kubernetes-training-for-devs-and-ops-charlotte-nc-november-2019-tickets-73296659281
+
+- date: 2019-10-22
+  country: us
+  city: Charlotte, NC
+  event: Ardan Labs
+  speaker: jpetazzo
+  title: Docker & Containers Training
+  attend: https://www.eventbrite.com/e/containers-docker-and-kubernetes-training-for-devs-and-ops-charlotte-nc-november-2019-tickets-73296659281
+  
+- date: 2019-10-22
+  country: de
+  city: Berlin
+  event: GOTO
+  speaker: bretfisher
+  title: Kubernetes or Swarm? Build Both, Deploy Apps, Learn The Differences
+  attend: https://gotober.com/2019/workshops/194
+
 - date: [2019-09-24, 2019-09-25]
   country: fr
   city: Paris
@@ -23,6 +56,7 @@
   title: Déployer ses applications avec Kubernetes (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/
+  slides: https://kube-2019-09.container.training/
 
 - date: 2019-08-27
   country: tr

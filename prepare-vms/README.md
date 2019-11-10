@@ -10,15 +10,21 @@ These tools can help you to create VMs on:
 
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
-- [Parallel SSH](https://code.google.com/archive/p/parallel-ssh/) (on a Mac: `brew install pssh`) - the configuration scripts require this
+- [Parallel SSH](https://code.google.com/archive/p/parallel-ssh/) (on a Mac: `brew install pssh`) 
 
 Depending on the infrastructure that you want to use, you also need to install
 the Azure CLI, the AWS CLI, or terraform (for OpenStack deployment).
 
 And if you want to generate printable cards:
 
-- [pyyaml](https://pypi.python.org/pypi/PyYAML) (on a Mac: `brew install pyyaml`)
-- [jinja2](https://pypi.python.org/pypi/Jinja2) (on a Mac: `brew install jinja2`)
+- [pyyaml](https://pypi.python.org/pypi/PyYAML)
+- [jinja2](https://pypi.python.org/pypi/Jinja2)
+
+You can install them with pip (perhaps with `pip install --user`, or even use `virtualenv` if that's your thing).
+
+These require Python 3. If you are on a Mac, see below for specific instructions on setting up
+Python 3 to be the default Python on a Mac. In particular, if you installed `mosh`, Homebrew
+may have changed your default Python to Python 2.
 
 ## General Workflow
 
@@ -87,26 +93,37 @@ You're all set!
 ```
 workshopctl - the orchestration workshop swiss army knife
 Commands:
-ami          Show the AMI that will be used for deployment
-amis         List Ubuntu AMIs in the current region
-build        Build the Docker image to run this program in a container
-cards        Generate ready-to-print cards for a group of VMs
-deploy       Install Docker on a bunch of running VMs
-ec2quotas    Check our EC2 quotas (max instances)
-help         Show available commands
-ids          List the instance IDs belonging to a given tag or token
-ips          List the IP addresses of the VMs for a given tag or token
-kube         Setup kubernetes clusters with kubeadm (must be run AFTER deploy)
-kubetest     Check that all notes are reporting as Ready
-list         List available groups in the current region
-opensg       Open the default security group to ALL ingress traffic
-pull_images  Pre-pull a bunch of Docker images
-retag        Apply a new tag to a group of VMs
-start        Start a group of VMs
-status       List instance status for a given group
-stop         Stop (terminate, shutdown, kill, remove, destroy...) instances
-test         Run tests (pre-flight checks) on a group of VMs
-wrap         Run this program in a container
+build                Build the Docker image to run this program in a container
+cards                Generate ready-to-print cards for a group of VMs
+deploy               Install Docker on a bunch of running VMs
+disableaddrchecks    Disable source/destination IP address checks
+disabledocker        Stop Docker Engine and don't restart it automatically
+helmprom             Install Helm and Prometheus
+help                 Show available commands
+ids                  (FIXME) List the instance IDs belonging to a given tag or token
+kubebins             Install Kubernetes and CNI binaries but don't start anything
+kubereset            Wipe out Kubernetes configuration on all nodes
+kube                 Setup kubernetes clusters with kubeadm (must be run AFTER deploy)
+kubetest             Check that all nodes are reporting as Ready
+listall              List VMs running on all configured infrastructures
+list                 List available groups for a given infrastructure
+netfix               Disable GRO and run a pinger job on the VMs
+opensg               Open the default security group to ALL ingress traffic
+ping                 Ping VMs in a given tag, to check that they have network access
+pssh                 Run an arbitrary command on all nodes
+pull_images          Pre-pull a bunch of Docker images
+quotas               Check our infrastructure quotas (max instances)
+remap_nodeports      Remap NodePort range to 10000-10999
+retag                (FIXME) Apply a new tag to a group of VMs
+ssh                  Open an SSH session to the first node of a tag
+start                Start a group of VMs
+stop                 Stop (terminate, shutdown, kill, remove, destroy...) instances
+tags                 List groups of VMs known locally
+test                 Run tests (pre-flight checks) on a group of VMs
+weavetest            Check that weave seems properly setup
+webssh               Install a WEB SSH server on the machines (port 1080)
+wrap                 Run this program in a container
+www                  Run a web server to access card HTML and PDF
 ```
 
 ### Summary of What `./workshopctl` Does For You
@@ -245,3 +262,32 @@ If you don't have `wkhtmltopdf` installed, you will get a warning that it is a m
 
   - Don't write to bash history in system() in postprep
   - compose, etc version inconsistent (int vs str)
+
+## Making sure Python3 is the default (Mac only)
+
+Check the `/usr/local/bin/python` symlink. It should be pointing to
+`/usr/local/Cellar/python/3`-something. If it isn't, follow these
+instructions.
+
+1) Verify that Python 3 is installed.
+
+```
+ls -la /usr/local/Cellar/Python
+```
+
+You should see one or more versions of Python 3. If you don't,
+install it with `brew install python`.
+
+2) Verify that `python` points to Python3.
+ 
+```
+ls -la /usr/local/bin/python
+```
+
+If this points to `/usr/local/Cellar/python@2`, then we'll need to change it.
+
+```
+rm /usr/local/bin/python
+ln -s /usr/local/Cellar/Python/xxxx /usr/local/bin/python
+# where xxxx is the most recent Python 3 version you saw above
+```

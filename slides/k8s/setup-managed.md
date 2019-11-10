@@ -18,7 +18,7 @@ with a cloud provider
 
 ---
 
-## EKS (the hard way)
+## EKS (the old way)
 
 - [Read the doc](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html)
 
@@ -36,7 +36,7 @@ with a cloud provider
 
 ---
 
-## EKS (the easy way)
+## EKS (the new way)
 
 - Install `eksctl`
 

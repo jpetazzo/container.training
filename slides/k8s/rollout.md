@@ -61,32 +61,6 @@
 
 ---
 
-## Building a new version of the `worker` service
-
-.warning[
-Only run these commands if you have built and pushed DockerCoins to a local registry.
-<br/>
-If you are using images from the Docker Hub (`dockercoins/worker:v0.1`), skip this.
-]
-
-.exercise[
-
-- Go to the `stacks` directory (`~/container.training/stacks`)
-
-- Edit `dockercoins/worker/worker.py`; update the first `sleep` line to sleep 1 second
-
-- Build a new tag and push it to the registry:
-  ```bash
-  #export REGISTRY=localhost:3xxxx
-  export TAG=v0.2
-  docker-compose -f dockercoins.yml build
-  docker-compose -f dockercoins.yml push
-  ```
-
-]
-
----
-
 ## Rolling out the new `worker` service
 
 .exercise[
@@ -105,7 +79,7 @@ If you are using images from the Docker Hub (`dockercoins/worker:v0.1`), skip th
 
 - Update `worker` either with `kubectl edit`, or by running:
   ```bash
-  kubectl set image deploy worker worker=$REGISTRY/worker:$TAG
+  kubectl set image deploy worker worker=dockercoins/worker:v0.2
   ```
 
 ]
@@ -146,8 +120,7 @@ That rollout should be pretty quick. What shows in the web UI?
 
 - Update `worker` by specifying a non-existent image:
   ```bash
-  export TAG=v0.3
-  kubectl set image deploy worker worker=$REGISTRY/worker:$TAG
+  kubectl set image deploy worker worker=dockercoins/worker:v0.3
   ```
 
 - Check what's going on:
@@ -216,26 +189,13 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 .exercise[
 
-- Check which port the dashboard is on:
-  ```bash
-  kubectl -n kube-system get svc socat
-  ```
+- Connect to the dashboard that we deployed earlier
+
+- Check that we have failures in Deployments, Pods, and Replica Sets
+
+- Can we see the reason for the failure?
 
 ]
-
-Note the `3xxxx` port.
-
-.exercise[
-
-- Connect to http://oneofournodes:3xxxx/
-
-<!-- ```open https://node1:3xxxx/``` -->
-
-]
-
---
-
-- We have failures in Deployments, Pods, and Replica Sets
 
 ---
 
@@ -285,7 +245,7 @@ spec:
     spec:
       containers:
       - name: worker
-        image: $REGISTRY/worker:v0.1
+        image: dockercoins/worker:v0.1
   strategy:
     rollingUpdate:
       maxUnavailable: 0
@@ -316,7 +276,7 @@ class: extra-details
         spec:
           containers:
           - name: worker
-            image: $REGISTRY/worker:v0.1
+            image: dockercoins/worker:v0.1
       strategy:
         rollingUpdate:
           maxUnavailable: 0

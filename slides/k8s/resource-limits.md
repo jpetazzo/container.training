@@ -515,3 +515,24 @@ services.nodeports               0     0
   (with `kubectl describe resourcequota ...`)
 
 - Rinse and repeat regularly
+
+---
+
+## Additional resources
+
+- [A Practical Guide to Setting Kubernetes Requests and Limits](http://blog.kubecost.com/blog/requests-and-limits/)
+
+  - explains what requests and limits are
+
+  - provides guidelines to set requests and limits
+
+  - gives PromQL expressions to compute good values
+    <br/>(our app needs to be running for a while)
+
+- [Kube Resource Report](https://github.com/hjacobs/kube-resource-report/)
+
+  - generates web reports on resource usage
+
+  - [static demo](https://hjacobs.github.io/kube-resource-report/sample-report/output/index.html)
+    |
+    [live demo](https://kube-resource-report.demo.j-serv.de/applications.html)

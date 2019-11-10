@@ -32,13 +32,16 @@ subjects:
   name: fluentd
   namespace: default
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: fluentd
   labels:
     app: fluentd
 spec:
+  selector:
+    matchLabels:
+      app: fluentd
   template:
     metadata:
       labels:
@@ -86,7 +89,7 @@ spec:
         hostPath:
           path: /var/lib/docker/containers
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -128,7 +131,7 @@ spec:
     app: elasticsearch
   type: ClusterIP
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:

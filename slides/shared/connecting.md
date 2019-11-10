@@ -4,7 +4,12 @@ class: in-person
 
 .exercise[
 
-- Log into the first VM (`node1`) with your SSH client
+- Log into the first VM (`node1`) with your SSH client:
+  ```bash
+  ssh `user`@`A.B.C.D`
+  ```
+
+  (Replace `user` and `A.B.C.D` with the user and IP address provided to you)
 
 <!--
 ```bash
@@ -18,16 +23,13 @@ done
 ```
 -->
 
-- Check that you can SSH (without password) to `node2`:
-  ```bash
-  ssh node2
-  ```
-- Type `exit` or `^D` to come back to `node1`
-
-<!-- ```bash exit``` -->
-
 ]
 
+You should see a prompt looking like this:
+```
+[A.B.C.D] (...) user@node1 ~
+$
+```
 If anything goes wrong — ask for help!
 
 ---
@@ -49,6 +51,20 @@ If anything goes wrong — ask for help!
     ([instructions](https://@@GITREPO@@/tree/master/prepare-vms))
 
   Bigger setup effort; ideal for group training
+
+---
+
+## For a consistent Kubernetes experience ...
+
+- If you are using your own Kubernetes cluster, you can use [shpod](https://github.com/jpetazzo/shpod)
+
+- `shpod` provides a shell running in a pod on your own cluster
+
+- It comes with many tools pre-installed (helm, stern...)
+
+- These tools are used in many exercises in these slides
+
+- `shpod` also gives you completion and a fancy prompt
 
 ---
 

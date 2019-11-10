@@ -127,11 +127,11 @@ _cmd_kubebins() {
     set -e
     cd /usr/local/bin
     if ! [ -x etcd ]; then
-        curl -L https://github.com/etcd-io/etcd/releases/download/v3.3.10/etcd-v3.3.10-linux-amd64.tar.gz \
+        curl -L https://github.com/etcd-io/etcd/releases/download/v3.3.15/etcd-v3.3.15-linux-amd64.tar.gz \
         | sudo tar --strip-components=1 --wildcards -zx '*/etcd' '*/etcdctl'
     fi
     if ! [ -x hyperkube ]; then
-        curl -L https://dl.k8s.io/v1.14.1/kubernetes-server-linux-amd64.tar.gz \
+        curl -L https://dl.k8s.io/v1.16.2/kubernetes-server-linux-amd64.tar.gz \
         | sudo tar --strip-components=3 -zx kubernetes/server/bin/hyperkube
     fi
     if ! [ -x kubelet ]; then
@@ -143,7 +143,7 @@ _cmd_kubebins() {
     sudo mkdir -p /opt/cni/bin
     cd /opt/cni/bin
     if ! [ -x bridge ]; then
-        curl -L https://github.com/containernetworking/plugins/releases/download/v0.7.5/cni-plugins-amd64-v0.7.5.tgz \
+        curl -L https://github.com/containernetworking/plugins/releases/download/v0.7.6/cni-plugins-amd64-v0.7.6.tgz \
         | sudo tar -zx
     fi
     "
@@ -157,10 +157,10 @@ _cmd_kube() {
     # Optional version, e.g. 1.13.5
     KUBEVERSION=$2
     if [ "$KUBEVERSION" ]; then
-        EXTRA_KUBELET="=$KUBEVERSION-00"
+        EXTRA_APTGET="=$KUBEVERSION-00"
         EXTRA_KUBEADM="--kubernetes-version=v$KUBEVERSION"
     else
-        EXTRA_KUBELET=""
+        EXTRA_APTGET=""
         EXTRA_KUBEADM=""
     fi
 
@@ -172,7 +172,7 @@ _cmd_kube() {
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
     pssh --timeout 200 "
     sudo apt-get update -q &&
-    sudo apt-get install -qy kubelet$EXTRA_KUBELET kubeadm kubectl &&
+    sudo apt-get install -qy kubelet$EXTRA_APTGET kubeadm$EXTRA_APTGET kubectl$EXTRA_APTGET &&
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl"
 
     # Initialize kube master
@@ -386,6 +386,20 @@ _cmd_pull_images() {
     pull_tag
 }
 
+_cmd remap_nodeports "Remap NodePort range to 10000-10999"
+_cmd_remap_nodeports() {
+    TAG=$1
+    need_tag
+
+    FIND_LINE="    - --service-cluster-ip-range=10.96.0.0\/12"
+    ADD_LINE="    - --service-node-port-range=10000-10999"
+    MANIFEST_FILE=/etc/kubernetes/manifests/kube-apiserver.yaml
+    pssh "
+    if i_am_first_node && ! grep -q '$ADD_LINE' $MANIFEST_FILE; then
+        sudo sed -i 's/\($FIND_LINE\)\$/\1\n$ADD_LINE/' $MANIFEST_FILE
+    fi"
+}
+
 _cmd quotas "Check our infrastructure quotas (max instances)"
 _cmd_quotas() {
     need_infra $1
@@ -582,7 +596,7 @@ _cmd_www() {
         echo "http://$IPADDR:8000/$F"
     done
     info "Press Ctrl-C to stop server."
-    python -m http.server
+    python3 -m http.server
 }
 
 greet() {

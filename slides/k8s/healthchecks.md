@@ -42,9 +42,11 @@
 
   - internal corruption (causing all requests to error)
 
-- If the liveness probe fails *N* consecutive times, the container is killed
+- Anything where our incident response would be "just restart/reboot it"
 
-- *N* is the `failureThreshold` (3 by default)
+.warning[**Do not** use liveness probes for problems that can't be fixed by a restart]
+
+- Otherwise we just restart our pods for no reason, creating useless load
 
 ---
 
@@ -52,7 +54,7 @@
 
 - Indicates if the container is ready to serve traffic
 
-- If a container becomes "unready" (let's say busy!) it might be ready again soon
+- If a container becomes "unready" it might be ready again soon
 
 - If the readiness probe fails:
 
@@ -66,19 +68,79 @@
 
 ## When to use a readiness probe
 
-- To indicate temporary failures
+- To indicate failure due to an external cause
 
-  - the application can only service *N* parallel connections
+  - database is down or unreachable
 
-  - the runtime is busy doing garbage collection or initial data load
+  - mandatory auth or other backend service unavailable
 
-- The container is marked as "not ready" after `failureThreshold` failed attempts
+- To indicate temporary failure or unavailability
 
-  (3 by default)
+  - application can only service *N* parallel connections
 
-- It is marked again as "ready" after `successThreshold` successful attempts
+  - runtime is busy doing garbage collection or initial data load
 
-  (1 by default)
+- For processes that take a long time to start
+
+  (more on that later)
+
+---
+
+## Dependencies
+
+- If a web server depends on a database to function, and the database is down:
+
+  - the web server's liveness probe should succeed
+
+  - the web server's readiness probe should fail
+
+- Same thing for any hard dependency (without which the container can't work)
+
+.warning[**Do not** fail liveness probes for problems that are external to the container]
+
+---
+
+## Timing and thresholds
+
+- Probes are executed at intervals of `periodSeconds` (default: 10)
+
+- The timeout for a probe is set with `timeoutSeconds` (default: 1)
+
+.warning[If a probe takes longer than that, it is considered as a FAIL]
+
+- A probe is considered successful after `successThreshold` successes (default: 1)
+
+- A probe is considered failing after `failureThreshold` failures (default: 3)
+
+- A probe can have an `initialDelaySeconds` parameter (default: 0)
+
+- Kubernetes will wait that amount of time before running the probe for the first time
+
+  (this is important to avoid killing services that take a long time to start)
+
+---
+
+class: extra-details
+
+## Startup probe
+
+- Kubernetes 1.16 introduces a third type of probe: `startupProbe`
+
+  (it is in `alpha` in Kubernetes 1.16)
+
+- It can be used to indicate "container not ready *yet*"
+
+  - process is still starting
+
+  - loading external data, priming caches
+
+- Before Kubernetes 1.16, we had to use the `initialDelaySeconds` parameter
+
+  (available for both liveness and readiness probes)
+
+- `initialDelaySeconds` is a rigid delay (always wait X before running probes)
+
+- `startupProbe` works better when a container start time can vary a lot
 
 ---
 
@@ -112,9 +174,11 @@
 
   (instead of serving errors or timeouts)
 
-- Overloaded backends get removed from load balancer rotation
+- Unavailable backends get removed from load balancer rotation
 
   (thus improving response times across the board)
+
+- If a probe is not defined, it's as if there was an "always successful" probe
 
 ---
 
@@ -165,14 +229,56 @@ If the Redis process becomes unresponsive, it will be killed.
 
 ---
 
-## Details about liveness and readiness probes
+## Questions to ask before adding healthchecks
 
-- Probes are executed at intervals of `periodSeconds` (default: 10)
+- Do we want liveness, readiness, both?
 
-- The timeout for a probe is set with `timeoutSeconds` (default: 1)
+  (sometimes, we can use the same check, but with different failure thresholds)
 
-- A probe is considered successful after `successThreshold` successes (default: 1)
+- Do we have existing HTTP endpoints that we can use?
 
-- A probe is considered failing after `failureThreshold` failures (default: 3)
+- Do we need to add new endpoints, or perhaps use something else?
 
-- If a probe is not defined, it's as if there was an "always successful" probe
+- Are our healthchecks likely to use resources and/or slow down the app?
+
+- Do they depend on additional services?
+
+  (this can be particularly tricky, see next slide)
+
+---
+
+## Healthchecks and dependencies
+
+- Liveness checks should not be influenced by the state of external services
+
+- All checks should reply quickly (by default, less than 1 second)
+
+- Otherwise, they are considered to fail
+
+- This might require to check the health of dependencies asynchronously
+
+  (e.g. if a database or API might be healthy but still take more than
+  1 second to reply, we should check the status asynchronously and report
+  a cached status)
+
+---
+
+## Healthchecks for workers
+
+(In that context, worker = process that doesn't accept connections)
+
+- Readiness isn't useful
+
+  (because workers aren't backends for a service)
+
+- Liveness may help us restart a broken worker, but how can we check it?
+
+- Embedding an HTTP server is a (potentially expensive) option
+
+- Using a "lease" file can be relatively easy:
+
+  - touch a file during each iteration of the main loop
+
+  - check the timestamp of that file from an exec probe
+
+- Writing logs (and checking them from the probe) also works

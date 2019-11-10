@@ -73,7 +73,28 @@ set expandtab
 set number
 set shiftwidth=2
 set softtabstop=2
+set nowrap
 SQRL""")
+
+# Custom .tmux.conf
+system(
+    """sudo -u docker tee /home/docker/.tmux.conf <<SQRL
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Allow using mouse to switch panes
+set -g mouse on
+
+# Make scrolling with wheels work
+
+bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
+bind -n WheelDownPane select-pane -t= \; send-keys -M
+
+SQRL"""
+)
+
 
 # add docker user to sudoers and allow password authentication
 system("""sudo tee /etc/sudoers.d/docker <<SQRL
@@ -85,6 +106,7 @@ system("sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /e
 system("sudo service ssh restart")
 system("sudo apt-get -q update")
 system("sudo apt-get -qy install git jq")
+system("sudo apt-get -qy install emacs-nox joe")
 
 #######################
 ### DOCKER INSTALLS ###

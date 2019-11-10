@@ -481,13 +481,13 @@ docker run alpine echo hello world
 
 .exercise[
 
-- Create the file `kubeconfig.kubelet` with `kubectl`:
+- Create the file `~/.kube/config` with `kubectl`:
   ```bash
-    kubectl --kubeconfig kubeconfig.kubelet config \
+    kubectl config \
             set-cluster localhost --server http://localhost:8080
-    kubectl --kubeconfig kubeconfig.kubelet config \
+    kubectl config \
             set-context localhost --cluster localhost
-    kubectl --kubeconfig kubeconfig.kubelet config \
+    kubectl config \
             use-context localhost
   ```
 
@@ -495,19 +495,7 @@ docker run alpine echo hello world
 
 ---
 
-## All Kubernetes clients can use `kubeconfig`
-
-- The `kubeconfig.kubelet` file has the same format as e.g. `~/.kubeconfig`
-
-- All Kubernetes clients can use a similar file
-
-- The `kubectl config` commands can be used to manipulate these files
-
-- This highlights that kubelet is a "normal" client of the API server
-
----
-
-## Our `kubeconfig.kubelet` file
+## Our `~/.kube/config` file
 
 The file that we generated looks like the one below.
 
@@ -533,9 +521,9 @@ clusters:
 
 .exercise[
 
-- Start kubelet with that `kubeconfig.kubelet` file:
+- Start kubelet with that kubeconfig file:
   ```bash
-  kubelet --kubeconfig kubeconfig.kubelet
+  kubelet --kubeconfig ~/.kube/config
   ```
 
 ]

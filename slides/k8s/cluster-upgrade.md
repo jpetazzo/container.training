@@ -10,6 +10,8 @@
 
 - Components can be upgraded one at a time without problems
 
+<!-- ##VERSION## -->
+
 ---
 
 ## Checking what we're running
@@ -166,7 +168,7 @@
 
 - Upgrade kubelet:
   ```bash
-  apt install kubelet=1.14.2-00
+  sudo apt install kubelet=1.15.3-00
   ```
 
 ]
@@ -226,7 +228,7 @@
   sudo vim /etc/kubernetes/manifests/kube-apiserver.yaml
   ```
 
-- Look for the `image:` line, and update it to e.g. `v1.14.0`
+- Look for the `image:` line, and update it to e.g. `v1.15.0`
 
 ]
 
@@ -260,14 +262,52 @@
   sudo kubeadm upgrade plan
   ```
 
-  (Note: kubeadm is confused by our manual upgrade of the API server.
-  <br/>It thinks the cluster is running 1.14.0!)
+]
 
-<!-- ##VERSION## -->
+Note 1: kubeadm thinks that our cluster is running 1.15.0.
+<br/>It is confused by our manual upgrade of the API server!
+
+Note 2: kubeadm itself is still version 1.14.6.
+<br/>It doesn't know how to upgrade do 1.15.X.
+
+---
+
+## Upgrading kubeadm
+
+- First things first: we need to upgrade kubeadm
+
+.exercise[
+
+- Upgrade kubeadm:
+  ```
+  sudo apt install kubeadm
+  ```
+
+- Check what kubeadm tells us:
+  ```
+  sudo kubeadm upgrade plan
+  ```
+
+]
+
+Note: kubeadm still thinks that our cluster is running 1.15.0.
+<br/>But at least it knows about version 1.15.X now.
+
+---
+
+## Upgrading the cluster with kubeadm
+
+- Ideally, we should revert our `image:` change
+
+  (so that kubeadm executes the right migration steps)
+
+- Or we can try the upgrade anyway
+
+.exercise[
 
 - Perform the upgrade:
   ```bash
-  sudo kubeadm upgrade apply v1.14.2
+  sudo kubeadm upgrade apply v1.15.3
   ```
 
 ]
@@ -287,8 +327,8 @@
 - Download the configuration on each node, and upgrade kubelet:
   ```bash
     for N in 1 2 3; do
-      ssh test$N sudo kubeadm upgrade node config --kubelet-version v1.14.2
-      ssh test$N sudo apt install kubelet=1.14.2-00
+      ssh test$N sudo kubeadm upgrade node config --kubelet-version v1.15.3
+      ssh test$N sudo apt install kubelet=1.15.3-00
     done
   ```
 ]
@@ -297,7 +337,7 @@
 
 ## Checking what we've done
 
-- All our nodes should now be updated to version 1.14.2
+- All our nodes should now be updated to version 1.15.3
 
 .exercise[
 
@@ -307,3 +347,19 @@
   ```
 
 ]
+
+---
+
+class: extra-details
+
+## Skipping versions
+
+- This example worked because we went from 1.14 to 1.15
+
+- If you are upgrading from e.g. 1.13, you will generally have to go through 1.14 first
+
+- This means upgrading kubeadm to 1.14.X, then using it to upgrade the cluster
+
+- Then upgrading kubeadm to 1.15.X, etc.
+
+- **Make sure to read the release notes before upgrading!**
