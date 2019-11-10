@@ -1,13 +1,15 @@
 title: |
-  Introduction
-  to Containers
+  Docker
+  &
+  Infinity
 
-chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+chat: ""
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: https://intro-2019-11.container.training
 
 #slidenumberprefix: "#SomeHashTag &mdash; "
 
