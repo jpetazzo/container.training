@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-with-init
+spec:
+  volumes:
+  - name: www
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - name: www
+      mountPath: /usr/share/nginx/html/
+  initContainers:
+  - name: git
+    image: alpine
+    command: [ "sh", "-c", "apk add --no-cache git && git clone https://github.com/octocat/Spoon-Knife /www" ]
+    volumeMounts:
+    - name: www
+      mountPath: /www/
