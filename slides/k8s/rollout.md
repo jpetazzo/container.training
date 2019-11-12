@@ -14,7 +14,27 @@
 
 ## Rolling updates
 
-- With rolling updates, when a resource is updated, it happens progressively
+- With rolling updates, when a Deployment is updated, it happens progressively
+
+- The Deployment controls multiple Replica Sets
+
+- Each Replica Set is a group of identical Pods
+
+  (with the same image, arguments, parameters ...)
+
+- During the rolling update, we have at least two Replica Sets:
+
+  - the "new" set (corresponding to the "target" version)
+
+  - at least one "old" set
+
+- We can have multiple "old" sets
+
+  (if we start another update before the first one is done)
+
+---
+
+## Update strategy
 
 - Two parameters determine the pace of the rollout: `maxUnavailable` and `maxSurge`
 
@@ -220,6 +240,137 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
   kubectl rollout undo deploy worker
   kubectl rollout status deploy worker
   ```
+
+]
+
+---
+
+## Rolling back to an older version
+
+- We reverted to `v0.2`
+
+- But this version still has a performance problem
+
+- How can we get back to the previous version?
+
+---
+
+## Multiple "undos"
+
+- What happens if we try `kubectl rollout undo` again?
+
+.exercise[
+
+- Try it:
+  ```bash
+  kubectl rollout undo deployment worker
+  ```
+
+- Check the web UI, the list of pods ...
+
+]
+
+🤔 That didn't work.
+
+---
+
+## Multiple "undos" don't work
+
+- If we see successive versions as a stack:
+
+  - `kubectl rollout undo` doesn't "pop" the last element from the stack
+
+  - it copies the N-1th element to the top
+
+- Multiple "undos" just swap back and forth between the last two versions!
+
+.exercise[
+
+- Go back to v0.2 again:
+  ```bash
+  kubectl rollout undo deployment worker
+  ```
+
+]
+
+---
+
+## In this specific scenario
+
+- Our version numbers are easy to guess
+
+- What if we had used git hashes?
+
+- What if we had changed other parameters in the Pod spec?
+
+---
+
+## Listing versions
+
+- We can list successive versions of a Deployment with `kubectl rollout history`
+
+.exercise[
+
+- Look at our successive versions:
+  ```bash
+  kubectl rollout history deployment worker
+  ```
+
+]
+
+We don't see *all* revisions.
+
+We might see something like 1, 4, 5.
+
+(Depending on how many "undos" we did before.)
+
+---
+
+## Explaining deployment revisions
+
+- These revisions correspond to our Replica Sets
+
+- This information is stored in the Replica Set annotations
+
+.exercise[
+
+- Check the annotations for our replica sets:
+  ```bash
+  kubectl describe replicasets -l app=worker | grep -A3
+  ```
+
+]
+
+---
+
+class: extra-details
+
+## What about the missing revisions?
+
+- The missing revisions are stored in another annotation:
+
+  `deployment.kubernetes.io/revision-history`
+
+- These are not shown in `kubectl rollout history`
+
+- We could easily reconstruct the full list with a script
+
+  (if we wanted to!)
+
+---
+
+## Rolling back to an older version
+
+- `kubectl rollout undo` can work with a revision number
+
+.exercise[
+
+- Roll back to the "known good" deployment version:
+  ```bash
+  kubectl rollout undo deployment worker --to-revision=1
+  ```
+
+- Check the web UI or the list of pods
 
 ]
 

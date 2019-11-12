@@ -9,7 +9,7 @@ spec:
       name: haproxy
   containers:
   - name: haproxy
-    image: haproxy
+    image: haproxy:1
     volumeMounts:
     - name: config
       mountPath: /usr/local/etc/haproxy/

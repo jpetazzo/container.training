@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: nginx-with-volume
+  name: nginx-with-git
 spec:
   volumes:
   - name: www
