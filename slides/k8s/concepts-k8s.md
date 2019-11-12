@@ -191,19 +191,27 @@ No!
 
 - By default, Kubernetes uses the Docker Engine to run containers
 
-- Or leverage other pluggable runtimes through the *Container Runtime Interface*
+- We can leverage other pluggable runtimes through the *Container Runtime Interface*
 
 - <del>We could also use `rkt` ("Rocket") from CoreOS</del> (deprecated)
 
-- [containerd](https://github.com/containerd/containerd/blob/master/README.md):
-maintained by Docker, IBM, and community
+---
 
-- Used by Docker Engine, microK8s, k3s, GKE, and standalone. Has `ctr` CLI
+class: extra-details
+
+## Some runtimes available through CRI
+
+- [containerd](https://github.com/containerd/containerd/blob/master/README.md)
+
+  - maintained by Docker, IBM, and community
+  - used by Docker Engine, microk8s, k3s, GKE; also standalone
+  - comes with its own CLI, `ctr`
 
 - [CRI-O](https://github.com/cri-o/cri-o/blob/master/README.md):
-maintained by Red Hat, SUSE, and community. Based on containerd
 
-- Used by OpenShift and Kubic, version matched to Kubernetes
+  - maintained by Red Hat, SUSE, and community
+  - used by OpenShift and Kubic
+  - designed specifically as a minimal runtime for Kubernetes
 
 - [And more](https://kubernetes.io/docs/setup/production-environment/container-runtimes/)
 
