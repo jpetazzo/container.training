@@ -44,21 +44,37 @@
 
 ## Other things that Kubernetes can do for us
 
-- Basic autoscaling
+- Autoscaling
 
-- Blue/green deployment, canary deployment
+  (straightforward on CPU; more complex on other metrics)
 
-- Long running services, but also batch (one-off) jobs
+- Ressource management and scheduling
 
-- Overcommit our cluster and *evict* low-priority jobs
+  (reserve CPU/RAM for containers; placement constraints)
 
-- Run services with *stateful* data (databases etc.)
+- Advanced rollout patterns
 
-- Fine-grained access control defining *what* can be done by *whom* on *which* resources
+  (blue/green deployment, canary deployment)
 
-- Integrating third party services (*service catalog*)
+---
 
-- Automating complex tasks (*operators*)
+## More things that Kubernetes can do for us
+
+- Batch jobs
+
+  (one-off; parallel; also cron-style periodic execution)
+
+- Fine-grained access control
+
+  (defining *what* can be done by *whom* on *which* resources)
+
+- Stateful services
+
+  (databases, message queues, etc.)
+
+- Automating complex tasks with *operators*
+
+  (e.g. database replication, failover, etc.)
 
 ---
 
@@ -191,11 +207,29 @@ No!
 
 - By default, Kubernetes uses the Docker Engine to run containers
 
-- We could also use `rkt` ("Rocket") from CoreOS
+- We can leverage other pluggable runtimes through the *Container Runtime Interface*
 
-- Or leverage other pluggable runtimes through the *Container Runtime Interface*
+- <del>We could also use `rkt` ("Rocket") from CoreOS</del> (deprecated)
 
-  (like CRI-O, or containerd)
+---
+
+class: extra-details
+
+## Some runtimes available through CRI
+
+- [containerd](https://github.com/containerd/containerd/blob/master/README.md)
+
+  - maintained by Docker, IBM, and community
+  - used by Docker Engine, microk8s, k3s, GKE; also standalone
+  - comes with its own CLI, `ctr`
+
+- [CRI-O](https://github.com/cri-o/cri-o/blob/master/README.md):
+
+  - maintained by Red Hat, SUSE, and community
+  - used by OpenShift and Kubic
+  - designed specifically as a minimal runtime for Kubernetes
+
+- [And more](https://kubernetes.io/docs/setup/production-environment/container-runtimes/)
 
 ---
 
