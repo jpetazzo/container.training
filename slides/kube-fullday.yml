@@ -89,3 +89,7 @@ chapters:
   - k8s/whatsnext.md
   - k8s/links.md
   - shared/thankyou.md
+  - |
+    class: pic
+
+    ![Enix High Five](https://2019-hi5.netlify.com/hi5.png)

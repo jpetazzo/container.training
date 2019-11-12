@@ -1,7 +1,5 @@
 ## Intros
 
-- This slide should be customized by the tutorial instructor(s).
-
 - Hello! I'm Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
 
 - The workshop will run from 9:00 to 17:00
