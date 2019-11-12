@@ -44,21 +44,37 @@
 
 ## Other things that Kubernetes can do for us
 
-- Basic autoscaling
+- Autoscaling
 
-- Blue/green deployment, canary deployment
+  (straightforward on CPU; more complex on other metrics)
 
-- Long running services, but also batch (one-off) jobs
+- Ressource management and scheduling
 
-- Overcommit our cluster and *evict* low-priority jobs
+  (reserve CPU/RAM for containers; placement constraints)
 
-- Run services with *stateful* data (databases etc.)
+- Advanced rollout patterns
 
-- Fine-grained access control defining *what* can be done by *whom* on *which* resources
+  (blue/green deployment, canary deployment)
 
-- Integrating third party services (*service catalog*)
+---
 
-- Automating complex tasks (*operators*)
+## More things that Kubernetes can do for us
+
+- Batch jobs
+
+  (one-off; parallel; also cron-style periodic execution)
+
+- Fine-grained access control
+
+  (defining *what* can be done by *whom* on *which* resources)
+
+- Stateful services
+
+  (databases, message queues, etc.)
+
+- Automating complex tasks with *operators*
+
+  (e.g. database replication, failover, etc.)
 
 ---
 
