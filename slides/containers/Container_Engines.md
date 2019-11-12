@@ -104,22 +104,6 @@ like Windows, macOS, Solaris, FreeBSD ...
 
 ---
 
-## rkt
-
-* Compares to `runc`.
-
-* No daemon or API.
-
-* Strong emphasis on security (through privilege separation).
-
-* Networking has to be set up separately (e.g. through CNI plugins).
-
-* Partial image management (pull, but no push).
-
-  (Image build is handled by separate tools.)
-
----
-
 ## CRI-O
 
 * Designed to be used with Kubernetes as a simple, basic runtime.
