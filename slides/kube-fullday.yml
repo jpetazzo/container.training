@@ -1,6 +1,5 @@
 title: |
-  Deploying and Scaling Microservices
-  with Kubernetes
+  Kubernetes
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
@@ -8,7 +7,7 @@ chat: "In person!"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://vmware-2019-11.container.training/
 
 #slidenumberprefix: "#SomeHashTag &mdash; "
 
@@ -29,7 +28,7 @@ chapters:
   - shared/sampleapp.md
   #- shared/composescale.md
   #- shared/hastyconclusions.md
-  - shared/composedown.md
+  #- shared/composedown.md
   - k8s/concepts-k8s.md
   - k8s/kubectlget.md
 -
@@ -39,14 +38,18 @@ chapters:
   - k8s/declarative.md
   - k8s/deploymentslideshow.md
   - k8s/kubenet.md
+  - |
+    # (NSX)
   - k8s/kubectlexpose.md
   - k8s/shippingimages.md
   #- k8s/buildshiprun-selfhosted.md
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
--
   - k8s/yamldeploy.md
   - k8s/setup-k8s.md
+  - |
+    # (PKS)
+-
   #- k8s/dashboard.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
@@ -62,7 +65,7 @@ chapters:
   #- k8s/record.md
 -
   - k8s/namespaces.md
-  - k8s/ingress.md
+  #- k8s/ingress.md
   #- k8s/kustomize.md
   #- k8s/helm.md
   #- k8s/create-chart.md
