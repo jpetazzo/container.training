@@ -299,6 +299,48 @@ class: pic
 
 ---
 
+## Scaling
+
+- How would we scale the pod shown on the previous slide?
+
+- **Do** create additional pods
+
+  - each pod can be on a different node
+
+  - each pod will have its own IP address
+
+- **Do not** add more NGINX containers in the pod
+
+  - all the NGINX containers would be on the same node
+
+  - they would all have the same IP address
+    <br/>(resulting in `Address alreading in use` errors)
+
+---
+
+## Together or separate
+
+- Should we put e.g. a web application server and a cache together?
+  <br/>
+  ("cache" being something like e.g. Memcached or Redis)
+
+- Putting them **in the same pod** means:
+
+  - they have to be scaled together
+
+  - they can communicate very efficiently over `localhost`
+
+- Putting them **in different pods** means:
+
+  - they can be scaled separately
+
+  - they must communicate over remote IP addresses
+    <br/>(incurring more latency, lower performance)
+
+- Both scenarios can make sense, depending on our goals
+
+---
+
 ## Credits
 
 - The first diagram is courtesy of Lucas Käldström, in [this presentation](https://speakerdeck.com/luxas/kubeadm-cluster-creation-internals-from-self-hosting-to-upgradability-and-ha)
