@@ -520,3 +520,17 @@ $ curl -k https://10.96.0.1
 - The Kubernetes API is reachable from within the cluster
 
   (many apps integrating with Kubernetes will use this)
+
+---
+
+## DNS integration
+
+- Each service also gets a DNS record
+
+- The Kubernetes DNS resolver is available *from within pods*
+
+  (and sometimes, from within nodes, depending on configuration)
+
+- Code running in pods can connect to services using their name
+
+  (e.g. https://kubernetes/...)
