@@ -60,6 +60,22 @@ Misattributed to Benjamin Franklin
 
 ---
 
+## Navigating slides
+
+- Use arrows to move to next/previous slide
+
+  (up, down, left, right, page up, page down)
+
+- Type a slide number + ENTER to go to that slide
+
+- The slide number is also visible in the URL bar
+
+  (e.g. .../#123 for slide 123)
+
+- Slides will remain online so you can review them later if needed
+
+---
+
 class: in-person
 
 ## Where are we going to run our containers?
