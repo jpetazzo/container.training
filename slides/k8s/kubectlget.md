@@ -71,7 +71,7 @@
 
 - Show the capacity of all our nodes as a stream of JSON objects:
   ```bash
-    kubectl get nodes -o json | 
+    kubectl get nodes -o json |
             jq ".items[] | {name:.metadata.name} + .status.capacity"
   ```
 
@@ -179,53 +179,6 @@ class: extra-details
 ]
 
 (We should notice a bunch of control plane pods.)
-
----
-
-## Services
-
-- A *service* is a stable endpoint to connect to "something"
-
-  (In the initial proposal, they were called "portals")
-
-.exercise[
-
-- List the services on our cluster with one of these commands:
-  ```bash
-  kubectl get services
-  kubectl get svc
-  ```
-
-]
-
---
-
-There is already one service on our cluster: the Kubernetes API itself.
-
----
-
-## ClusterIP services
-
-- A `ClusterIP` service is internal, available from the cluster only
-
-- This is useful for introspection from within containers
-
-.exercise[
-
-- Try to connect to the API:
-  ```bash
-  curl -k https://`10.96.0.1`
-  ```
-  
-  - `-k` is used to skip certificate verification
-
-  - Make sure to replace 10.96.0.1 with the CLUSTER-IP shown by `kubectl get svc`
-
-]
-
---
-
-The error that we see is expected: the Kubernetes API requires authentication.
 
 ---
 
@@ -467,3 +420,103 @@ class: extra-details
 
 [KEP-0009]: https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/0009-node-heartbeat.md
 [node controller documentation]: https://kubernetes.io/docs/concepts/architecture/nodes/#node-controller
+
+---
+
+## Services
+
+- A *service* is a stable endpoint to connect to "something"
+
+  (In the initial proposal, they were called "portals")
+
+.exercise[
+
+- List the services on our cluster with one of these commands:
+  ```bash
+  kubectl get services
+  kubectl get svc
+  ```
+
+]
+
+--
+
+There is already one service on our cluster: the Kubernetes API itself.
+
+---
+
+## ClusterIP services
+
+- A `ClusterIP` service is internal, available from the cluster only
+
+- This is useful for introspection from within containers
+
+.exercise[
+
+- Try to connect to the API:
+  ```bash
+  curl -k https://`10.96.0.1`
+  ```
+
+  - `-k` is used to skip certificate verification
+
+  - Make sure to replace 10.96.0.1 with the CLUSTER-IP shown by `kubectl get svc`
+
+]
+
+The command above should either time out, or show an authentication error. Why?
+
+---
+
+## Time out
+
+- Connections to ClusterIP services only work *from within the cluster*
+
+- If we are outside the cluster, the `curl` command will probably time out
+
+  (Because the IP address, e.g. 10.96.0.1, isn't routed properly outside the cluster)
+
+- This is the case with most "real" Kubernetes clusters
+
+- To try the connection from within the cluster, we can use [shpod](https://github.com/jpetazzo/shpod)
+
+---
+
+## Authentication error
+
+This is what we should see when connecting from within the cluster:
+```json
+$ curl -k https://10.96.0.1
+{
+  "kind": "Status",
+  "apiVersion": "v1",
+  "metadata": {
+
+  },
+  "status": "Failure",
+  "message": "forbidden: User \"system:anonymous\" cannot get path \"/\"",
+  "reason": "Forbidden",
+  "details": {
+
+  },
+  "code": 403
+}
+```
+
+---
+
+## Explanations
+
+- We can see `kind`, `apiVersion`, `metadata`
+
+- These are typical of a Kubernetes API reply
+
+- Because we *are* talking to the Kubernetes API
+
+- The Kubernetes API tells us "Forbidden"
+
+  (because it requires authentication)
+
+- The Kubernetes API is reachable from within the cluster
+
+  (many apps integrating with Kubernetes will use this)
