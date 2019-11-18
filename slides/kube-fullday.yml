@@ -1,5 +1,7 @@
 title: |
-  Kubernetes
+  Kubernetes Meetup
+  @
+  VMware
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
@@ -45,16 +47,34 @@ chapters:
   #- k8s/buildshiprun-selfhosted.md
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
+-
   - k8s/yamldeploy.md
   - k8s/setup-k8s.md
   - |
     # (PKS)
--
   #- k8s/dashboard.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
-  - shared/hastyconclusions.md
-  - k8s/daemonset.md
+  - |
+    ## Scaling `rng`
+
+    - Let's scale the `rng` service just like we scaled `worker`
+
+    .exercise[
+
+    - Scale `rng`:
+      ```bash
+      kubectl scale deploy rng --replicas=2
+      ```
+
+    ]
+
+    The web UI graph should go past 10 hashes/second.
+
+  - |
+    # (VROPS)
+  #- shared/hastyconclusions.md
+  #- k8s/daemonset.md
   #- k8s/dryrun.md
   #- k8s/kubectlproxy.md
   #- k8s/localkubeconfig.md
@@ -63,8 +83,8 @@ chapters:
   #- k8s/healthchecks.md
   #- k8s/healthchecks-more.md
   #- k8s/record.md
--
   - k8s/namespaces.md
+-
   #- k8s/ingress.md
   #- k8s/kustomize.md
   #- k8s/helm.md
