@@ -20,6 +20,50 @@
 
 ---
 
+class: extra-details
+
+## `kubectl` is the new SSH
+
+- We often start managing servers with SSH
+
+  (installing packages, troubleshooting ...)
+
+- At scale, it becomes tedious, repetitive, error-prone
+
+- Instead, we use config management, central logging, etc.
+
+- In many cases, we still need SSH:
+
+  - as the underlying access method (e.g. Ansible)
+
+  - to debug tricky scenarios
+
+  - to inspect and poke at things
+
+---
+
+class: extra-details
+
+## The parallel with `kubectl`
+
+- We often start managing Kubernetes clusters with `kubectl`
+
+  (deploying applications, troubleshooting ...)
+
+- At scale (with many applications or clusters), it becomes tedious, repetitive, error-prone
+
+- Instead, we use automated pipelines, observability tooling, etc.
+
+- In many cases, we still need `kubectl`:
+
+  - to debug tricky scenarios
+
+  - to inspect and poke at things
+
+- The Kubernetes API is always the underlying access method
+
+---
+
 ## `kubectl get`
 
 - Let's look at our `Node` resources with `kubectl get`!
