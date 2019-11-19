@@ -1,5 +1,4 @@
 # SOURCE: https://install.portworx.com/?kbver=1.15.2&b=true&s=/dev/loop4&c=px-workshop&stork=true&lh=true&st=k8s&mc=false
-# SOURCE: https://install.portworx.com/?kbver=1.15.2&b=true&s=/dev/loop4&c=px-workshop&stork=true&lh=true&st=k8s&mc=false
 ---
 kind: Service
 apiVersion: v1
@@ -751,3 +750,16 @@ spec:
       volumes:
       - name: config
         emptyDir: {}
+---
+# That one is an extra.
+# Create a default Storage Class to simplify Portworx setup.
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  name: portworx-replicated
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: kubernetes.io/portworx-volume
+parameters:
+ repl: "2"
+ priority_io: "high"
