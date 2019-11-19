@@ -1,12 +1,12 @@
 ## Intros
 
+## FIXME
+
 - This slide should be customized by the tutorial instructor(s).
 
-- Hello! We are:
+- Hello! We are/I am:
 
-   - .emoji[👩🏻‍🏫] Ann O'Nymous ([@...](https://twitter.com/...), Megacorp Inc)
-
-   - .emoji[👨🏾‍🎓] Stu Dent ([@...](https://twitter.com/...), University of Wakanda)
+   - .emoji[👨] Julien (Enix)
 
  <!-- .dummy[
 

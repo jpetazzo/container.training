@@ -7,7 +7,7 @@ chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://intro-2019-12-container.training/
 
 #slidenumberprefix: "#SomeHashTag &mdash; "
 
@@ -27,48 +27,50 @@ chapters:
   - containers/Installing_Docker.md
   - containers/First_Containers.md
   - containers/Background_Containers.md
-  - containers/Start_And_Attach.md
+ - containers/Initial_Images.md
 -
-  - containers/Initial_Images.md
   - containers/Building_Images_Interactively.md
   - containers/Building_Images_With_Dockerfiles.md
   - containers/Cmd_And_Entrypoint.md
--
   - containers/Copying_Files_During_Build.md
   - containers/Exercise_Dockerfile_Basic.md
+-
+  - containers/Dockerfile_Tips.md
   - containers/Multi_Stage_Builds.md
   - containers/Publishing_To_Docker_Hub.md
-  - containers/Dockerfile_Tips.md
   - containers/Exercise_Dockerfile_Advanced.md
 -
   - containers/Naming_And_Inspecting.md
   - containers/Labels.md
+  - containers/Start_And_Attach.md
   - containers/Getting_Inside.md
   - containers/Resource_Limits.md
--
+- # Day 2
   - containers/Container_Networking_Basics.md
   - containers/Network_Drivers.md
   - containers/Container_Network_Model.md
   #- containers/Connecting_Containers_With_Links.md
-  - containers/Ambassadors.md
 -
   - containers/Local_Development_Workflow.md
-  - containers/Windows_Containers.md
+  #- containers/Windows_Containers.md
   - containers/Working_With_Volumes.md
   - containers/Compose_For_Dev_Stacks.md
   - containers/Exercise_Composefile.md
 -
-  - containers/Docker_Machine.md
+#  - containers/Docker_Machine.md
+  - containers/Ambassadors.md
   - containers/Advanced_Dockerfiles.md
   - containers/Application_Configuration.md
   - containers/Logging.md
--
-  - containers/Namespaces_Cgroups.md
-  - containers/Copy_On_Write.md
-  #- containers/Containers_From_Scratch.md
 -
   - containers/Container_Engines.md
   #- containers/Ecosystem.md
   - containers/Orchestration_Overview.md
   - shared/thankyou.md
   - containers/links.md
+-
+  - |
+    # Appendix
+  - containers/Namespaces_Cgroups.md
+  - containers/Copy_On_Write.md
+  #- containers/Containers_From_Scratch.md
