@@ -102,26 +102,41 @@ class: extra-details
 
 ---
 
-## Docker Desktop for Mac and Docker Desktop for Windows
+## Docker Desktop
 
-* Special Docker Editions that integrate well with their respective host OS
+* Special Docker edition available for Mac and Windows
 
-* Provide user-friendly GUI to edit Docker configuration and settings
+* Integrates well with the host OS:
 
-* Leverage the host OS virtualization subsystem (e.g. the [Hypervisor API](https://developer.apple.com/documentation/hypervisor) on macOS)
+  * installed like normal user applications on the host
 
-* Installed like normal user applications on the host
+  * provides user-friendly GUI to edit Docker configuration and settings
 
-* Under the hood, they both run a tiny VM (transparent to our daily use)
+* Only support running one Docker VM at a time ...
 
-* Access network resources like normal applications
-  <br/>(and therefore, play better with enterprise VPNs and firewalls)
-
-* Support filesystem sharing through volumes (we'll talk about this later)
-
-* They only support running one Docker VM at a time ...
-  <br/>
   ... but we can use `docker-machine`, the Docker Toolbox, VirtualBox, etc. to get a cluster.
+
+---
+
+class: extra-details
+
+## Docker Desktop internals
+
+* Leverages the host OS virtualization subsystem
+
+  (e.g. the [Hypervisor API](https://developer.apple.com/documentation/hypervisor) on macOS)
+
+* Under the hood, runs a tiny VM
+
+  (transparent to our daily use)
+
+* Accesses network resources like normal applications
+
+  (and therefore, plays better with enterprise VPNs and firewalls)
+
+* Supports filesystem sharing through volumes
+
+  (we'll talk about this later)
 
 ---
 
