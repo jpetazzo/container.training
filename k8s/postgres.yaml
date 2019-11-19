@@ -12,7 +12,14 @@ spec:
       labels:
         app: postgres
     spec:
-      schedulerName: stork
+      #schedulerName: stork
+      initContainers:
+      - name: rmdir
+        image: alpine
+        volumeMounts:
+        - mountPath: /vol
+          name: postgres
+        command: ["sh", "-c", "if [ -d /vol/lost+found ]; then rmdir /vol/lost+found; fi"]
       containers:
       - name: postgres
         image: postgres:11

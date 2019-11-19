@@ -362,6 +362,16 @@ _cmd_opensg() {
     infra_opensg
 }
 
+_cmd portworx "Prepare the nodes for Portworx deployment"
+_cmd_portworx() {
+    TAG=$1
+    need_tag
+
+    pssh "
+    sudo truncate --size 10G /portworx.blk &&
+    sudo losetup /dev/loop4 /portworx.blk"
+}
+
 _cmd disableaddrchecks "Disable source/destination IP address checks"
 _cmd_disableaddrchecks() {
     TAG=$1
