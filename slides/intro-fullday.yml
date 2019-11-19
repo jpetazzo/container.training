@@ -27,7 +27,7 @@ chapters:
   - containers/Installing_Docker.md
   - containers/First_Containers.md
   - containers/Background_Containers.md
- - containers/Initial_Images.md
+  - containers/Initial_Images.md
 -
   - containers/Building_Images_Interactively.md
   - containers/Building_Images_With_Dockerfiles.md
