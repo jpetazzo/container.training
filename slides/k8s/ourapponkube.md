@@ -131,7 +131,7 @@ We should now see the `worker`, well, working happily.
 
 - Create a `NodePort` service for the Web UI:
   ```bash
-  kubectl expose deploy/webui --type=NodePort --port=80
+  kubectl expose deploy/webui --type=`NodePort` --port=80
   ```
 
 - Check the port that was allocated:
@@ -140,6 +140,8 @@ We should now see the `worker`, well, working happily.
   ```
 
 ]
+
+.warning[On PKS, replace `NodePort` with `LoadBalancer`.]
 
 ---
 
@@ -153,7 +155,13 @@ We should now see the `worker`, well, working happily.
 
 <!-- ```open http://node1:3xxxx/``` -->
 
+- On PKS, you will have to use the EXTERNAL-IP shown on the `webui` line
+
+  (and you can connect to port 80, yay!)
+
 ]
+
+
 
 --
 

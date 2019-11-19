@@ -36,6 +36,7 @@ chapters:
 -
   - k8s/kubectlrun.md
   - k8s/logs-cli.md
+  - vmware/vrli.md
   - shared/declarative.md
   - k8s/declarative.md
   - k8s/deploymentslideshow.md
@@ -48,7 +49,6 @@ chapters:
   - k8s/ourapponkube.md
 -
   - k8s/yamldeploy.md
-  - vmware/vrli.md
   - k8s/setup-k8s.md
   - vmware/pks.md
   #- k8s/dashboard.md
@@ -100,7 +100,7 @@ chapters:
   #- k8s/prometheus.md
   #- k8s/statefulsets.md
   #- k8s/local-persistent-volumes.md
-  #- k8s/portworx.md
+  - k8s/portworx.md
   #- k8s/extending-api.md
   #- k8s/operators.md
   #- k8s/operators-design.md
@@ -108,7 +108,6 @@ chapters:
   #- k8s/owners-and-dependents.md
   #- k8s/gitworkflows.md
   - vmware/vsan.md
--
   - k8s/whatsnext.md
   - k8s/links.md
   - shared/thankyou.md

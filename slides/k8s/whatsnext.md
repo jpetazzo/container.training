@@ -20,10 +20,9 @@ And *then* it is time to look at orchestration!
 
 ---
 
-
 ## Options for our first production cluster
 
-- Get a managed cluster from a major cloud provider (AKS, EKS, GKE...)
+- Use a managed cluster (AKS, EKS, GKE, PKS...)
 
   (price: $, difficulty: medium)
 
@@ -207,59 +206,157 @@ And *then* it is time to look at orchestration!
 
 ---
 
-## Managing stack deployments
+## Congratulations!
 
-- The best deployment tool will vary, depending on:
+- We learned a lot about Kubernetes, its internals, its advanced concepts
 
-  - the size and complexity of your stack(s)
-  - how often you change it (i.e. add/remove components)
-  - the size and skills of your team
+--
 
-- A few examples:
+- That was just the easy part
 
-  - shell scripts invoking `kubectl`
-  - YAML resources descriptions committed to a repo
-  - [Helm](https://github.com/kubernetes/helm) (~package manager)
-  - [Spinnaker](https://www.spinnaker.io/) (Netflix' CD platform)
-  - [Brigade](https://brigade.sh/) (event-driven scripting; no YAML)
+- The hard challenges will revolve around *culture* and *people*
+
+--
+
+- ... What does that mean?
 
 ---
 
-## Cluster federation
+## Running an app involves many steps
 
---
+- Write the app
 
-![Star Trek Federation](images/startrek-federation.jpg)
+- Tests, QA ...
 
---
+- Ship *something* (more on that later)
 
-Sorry Star Trek fans, this is not the federation you're looking for!
+- Provision resources (e.g. VMs, clusters)
 
---
+- Deploy the *something* on the resources
 
-(If I add "Your cluster is in another federation" I might get a 3rd fandom wincing!)
+- Manage, maintain, monitor the resources
+
+- Manage, maintain, monitor the app
+
+- And much more
 
 ---
 
-## Cluster federation
+## Who does what?
 
-- Kubernetes master operation relies on etcd
+- The old "devs vs ops" division has changed
 
-- etcd uses the [Raft](https://raft.github.io/) protocol
+- In some organizations, "ops" are now called "SRE" or "platform" teams
 
-- Raft recommends low latency between nodes
+  (and they have very different sets of skills)
 
-- What if our cluster spreads to multiple regions?
+- Do you know which team is responsible for each item on the list on the previous page?
 
---
+- Acknowledge that a lot of tasks are outsourced
 
-- Break it down in local clusters
+  (e.g. if we add "buy/rack/provision machines" in that list)
 
-- Regroup them in a *cluster federation*
+---
 
-- Synchronize resources across clusters
+## What do we ship?
 
-- Discover resources across clusters
+- Some organizations embrace "you build it, you run it"
+
+- When "build" and "run" are owned by different teams, where's the line?
+
+- What does the "build" team ship to the "run" team?
+
+- Let's see a few options, and what they imply
+
+---
+
+## Shipping code
+
+- Team "build" ships code
+
+  (hopefully in a repository, identified by a commit hash)
+
+- Team "run" containerizes that code
+
+✔️ no extra work for developers
+
+❌ very little advantage of using containers
+
+---
+
+## Shipping container images
+
+- Team "build" ships container images
+
+  (hopefully built automatically from a source repository)
+
+- Team "run" uses theses images to create e.g. Kubernetes resources
+
+✔️ universal artefact (support all languages uniformly)
+
+✔️ easy to start a single component (good for monoliths)
+
+❌ complex applications will require a lot of extra work
+
+❌ adding/removing components in the stack also requires extra work
+
+❌ complex applications will run very differently between dev and prod
+
+---
+
+## Shipping Compose files
+
+(Or another kind of dev-centric manifest)
+
+- Team "build" ships a manifest that works on a single node
+
+  (as well as images, or ways to build them)
+
+- Team "run" adapts that manifest to work on a cluster
+
+✔️ all teams can start the stack in a reliable, deterministic manner
+
+❌ adding/removing components still requires *some* work (but less than before)
+
+❌ there will be *some* differences between dev and prod
+
+---
+
+## Shipping Kubernetes manifests
+
+- Team "build" ships ready-to-run manifests
+
+  (YAML, Helm charts, Kustomize ...)
+
+- Team "run" adjusts some parameters and monitors the application
+
+✔️ parity between dev and prod environments
+
+✔️ "run" team can focus on SLAs, SLOs, and overall quality
+
+❌ requires *a lot* of extra work (and new skills) from the "build" team
+
+❌ Kubernetes is not a very convenient development platform (at least, not yet)
+
+---
+
+## What's the right answer?
+
+- It depends on our teams
+
+  - existing skills (do they know how to do it?)
+
+  - availability (do they have the time to do it?)
+
+  - potential skills (can they learn to do it?)
+
+- It depends on our culture
+
+  - owning "run" often implies being on call
+
+  - do we reward on-call duty without encouraging hero syndrome?
+
+  - do we give people resources (time, money) to learn?
 
 ---
 
