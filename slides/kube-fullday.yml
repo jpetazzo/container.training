@@ -40,18 +40,17 @@ chapters:
   - k8s/declarative.md
   - k8s/deploymentslideshow.md
   - k8s/kubenet.md
-  - |
-    # (NSX)
   - k8s/kubectlexpose.md
+  - vmware/nsxt.md
   - k8s/shippingimages.md
   #- k8s/buildshiprun-selfhosted.md
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
 -
   - k8s/yamldeploy.md
+  - vmware/vrli.md
   - k8s/setup-k8s.md
-  - |
-    # (PKS)
+  - vmware/pks.md
   #- k8s/dashboard.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
@@ -71,8 +70,7 @@ chapters:
 
     The web UI graph should go past 10 hashes/second.
 
-  - |
-    # (VROPS)
+  - vmware/vrops.md
   #- shared/hastyconclusions.md
   #- k8s/daemonset.md
   #- k8s/dryrun.md
@@ -109,6 +107,7 @@ chapters:
   #- k8s/staticpods.md
   #- k8s/owners-and-dependents.md
   #- k8s/gitworkflows.md
+  - vmware/vsan.md
 -
   - k8s/whatsnext.md
   - k8s/links.md
