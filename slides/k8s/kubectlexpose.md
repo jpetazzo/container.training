@@ -57,7 +57,7 @@
 
 - A port number is allocated for the service
 
-  (by default, in the 30000-32768 range)
+  (by default, in the 30000-32767 range)
 
 - That port is made available *on all our nodes* and anybody can connect to it
 
