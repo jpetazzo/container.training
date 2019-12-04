@@ -311,5 +311,3 @@ virtually "free."
   (Instead of using multiple Dockerfiles, which could go out of sync)
 
 * Sometimes, we want to inspect a specific intermediary build stage.
-
-* Or, we want to describe multiple images using a single Dockerfile.

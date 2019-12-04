@@ -1,12 +1,7 @@
 ## Intros
 
-## FIXME
 
-- This slide should be customized by the tutorial instructor(s).
-
-- Hello! We are/I am:
-
-   - .emoji[👨] Julien (Enix)
+- I am: .emoji[👨] Julien (Zempashi on GitHub) (Enix SAS)
 
  <!-- .dummy[
 
@@ -22,9 +17,9 @@
 
 ] -->
 
-- The workshop will run from ...
+- The workshop will run from 9:00 to 17:00
 
-- There will be a lunch break at ...
+- There will be a lunch break around 12:30
 
   (And coffee breaks!)
 
