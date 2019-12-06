@@ -54,7 +54,7 @@ class: pic
 name: {anchor}
 class: title
 
-{title}
+ {title}
 
 .nav[
 [Previous section](#{previouslink})
