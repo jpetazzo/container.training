@@ -68,6 +68,7 @@ chapters:
   #- containers/Containers_From_Scratch.md
 -
   - containers/Container_Engines.md
+  - k8s/Pods_anatomy.md
   #- containers/Ecosystem.md
   - containers/Orchestration_Overview.md
   - shared/thankyou.md
