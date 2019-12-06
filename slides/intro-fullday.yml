@@ -65,6 +65,7 @@ chapters:
   - containers/Logging.md
 -
   - containers/Container_Engines.md
+  - k8s/Pods_anatomy.md
   #- containers/Ecosystem.md
   - containers/Orchestration_Overview.md
   - shared/thankyou.md
