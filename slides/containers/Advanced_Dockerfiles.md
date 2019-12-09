@@ -27,7 +27,9 @@ In this section, we will see more Dockerfile commands.
 * When there are no changes in the instructions and files making a layer,
   the builder re-uses the cached layer, without executing the instruction for that layer.
 
-* The `FROM` instruction MUST be the first non-comment instruction.
+* The `FROM` instruction ~~MUST~~ be the first non-comment instruction.
+
+ (Addendum: `ARG` can now be placed before a `FROM`)
 
 * Lines starting with `#` are treated as comments.
 
