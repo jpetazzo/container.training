@@ -66,6 +66,7 @@ chapters:
   #- k8s/kustomize.md
   #- k8s/helm.md
   #- k8s/create-chart.md
+  #- k8s/create-more-charts.md
   #- k8s/netpol.md
   #- k8s/authn-authz.md
   #- k8s/csr-api.md
