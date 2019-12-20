@@ -1,5 +1,14 @@
 #!/usr/bin/env python2
 # coding: utf-8
+
+FLAGS=dict(
+  cz=u"🇨🇿",
+  de=u"🇩🇪",
+  fr=u"🇫🇷",
+  uk=u"🇬🇧",
+  us=u"🇺🇸",
+)
+
 TEMPLATE="""<html>
 <head>
   <title>{{ title }}</title>
@@ -34,7 +43,7 @@ TEMPLATE="""<html>
 
         {% for item in coming_soon %}
           <tr>
-            <td>{{ item.title }}</td>
+            <td>{{ item.flag }} {{ item.title }}</td>
             <td>{% if item.slides %}<a class="slides" href="{{ item.slides }}" />{% endif %}</td>
             <td>{% if item.attend %}<a class="attend" href="{{ item.attend }}" />
             {% else %}
@@ -160,6 +169,7 @@ for item in items:
             item["prettydate"] = date_begin.strftime("%B %d{}, %Y").format(suffix)
         item["begin"] = date_begin
         item["end"] = date_end
+    item["flag"] = FLAGS.get(item.get("country"),"")
 
 today = datetime.date.today()
 coming_soon = [i for i in items if i.get("date") and i["end"] >= today]
