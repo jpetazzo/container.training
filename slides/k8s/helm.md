@@ -22,8 +22,6 @@
 
 - `helm` is a CLI tool
 
-- `tiller` is its companion server-side component
-
 - A "chart" is an archive containing templatized YAML bundles
 
 - Charts are versioned
