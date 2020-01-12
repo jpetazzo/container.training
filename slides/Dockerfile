@@ -1,7 +1,4 @@
-FROM alpine
-RUN apk update
-RUN apk add entr
-RUN apk add py-pip
-RUN apk add git
+FROM alpine:3.11
+RUN apk add --no-cache entr py3-pip git zip
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
