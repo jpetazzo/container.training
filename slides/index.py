@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # coding: utf-8
 
 FLAGS=dict(
@@ -132,13 +132,13 @@ TEMPLATE="""<html>
     </table>
   </div>
 </body>
-</html>""".decode("utf-8")
+</html>"""
 
 import datetime
 import jinja2
 import yaml
 
-items = yaml.load(open("index.yaml"))
+items = yaml.safe_load(open("index.yaml"))
 
 # Items with a date correspond to scheduled sessions.
 # Items without a date correspond to self-paced content.
@@ -187,10 +187,10 @@ with open("index.html", "w") as f:
     	past_workshops=past_workshops,
     	self_paced=self_paced,
     	recorded_workshops=recorded_workshops
-    	).encode("utf-8"))
+    	))
 
 with open("past.html", "w") as f:
 	f.write(template.render(
 		title="Container Training",
 		all_past_workshops=past_workshops
-		).encode("utf-8"))
+		))
