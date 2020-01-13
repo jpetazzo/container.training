@@ -27,4 +27,6 @@ compose_version: 1.24.1
 machine_version: 0.15.0
 
 # Password used to connect with the "docker user"
-docker_user_password: training
+docker_user_password: Unicaen
+
+url: https://intro-2019-12.container.training/

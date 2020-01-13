@@ -264,6 +264,18 @@ EOF"
     sep "Done"
 }
 
+_cmd minikube "Install kind to optionnaly transform a docker machine in a small kube cluster"
+_cmd_minikube() {
+    TAG=$1
+    need_tag
+
+    pssh --timeout 200 "
+    sudo curl -L https://github.com/kubernetes/minikube/releases/download/v1.6.2/minikube-linux-amd64 -o /usr/local/bin/minikube
+    sudo chmod +x /usr/local/bin/minikube
+    sudo minikube config set vm-driver none
+    "
+}
+
 _cmd kubereset "Wipe out Kubernetes configuration on all nodes"
 _cmd_kubereset() {
     TAG=$1

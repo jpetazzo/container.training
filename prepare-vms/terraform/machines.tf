@@ -1,5 +1,5 @@
 resource "openstack_compute_instance_v2" "machine" {
-  count           = "${var.count}" 
+  count           = "${var.count}"
   name            = "${format("%s-%04d", "${var.prefix}", count.index+1)}"
   image_name      = "Ubuntu 16.04.5 (Xenial Xerus)"
   flavor_name     = "${var.flavor}"

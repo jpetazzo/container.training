@@ -7,6 +7,8 @@ services:
         working_dir: /root/prepare-vms
         volumes:
             - $HOME/.aws/:/root/.aws/
+            - $HOME/.ssh/:/root/.ssh/
+            - $HOME/.config/openstack:/root/.config/openstack
             - $SSH_AUTH_SOCK:$SSH_AUTH_SOCK
             - $PWD/:/root/prepare-vms/
         environment:
@@ -16,4 +18,4 @@ services:
             AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
             AWS_INSTANCE_TYPE: ${AWS_INSTANCE_TYPE}
             USER: ${USER}
-        entrypoint: /root/prepare-vms/workshopctl
+#        entrypoint: /root/prepare-vms/workshopctl
