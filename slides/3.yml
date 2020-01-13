@@ -18,13 +18,13 @@ chapters:
 -
     # Bien démarrer en local (minikube, kind)
   # - k8s/kube-coin-intro.md
-   - k8s/softwar-dev-banalities.md
+   - k8s/software-dev-banalities.md
    - k8s/on-desktop.md
-   - k8s/testing.md
+   - k8s/namespaces.md
    - k8s/accessinternal.md
   #- k8s/localkubeconfig.md
   #- k8s/kubectlproxy.md
-   - k8s/namespaces.md
+   - k8s/testing.md
 
 -
   - k8s/configuration.md
@@ -33,6 +33,11 @@ chapters:
   - k8s/helm.md
   - k8s/create-chart.md
 
+-
+  # - k8s/shippingimages.md  # some overlap
+  - k8s/registries.md
+  - k8s/stop-manual.md
+  - k8s/ci-cd.md
 # -
   #- k8s/volumes.md
   #- k8s/create-more-charts.md
