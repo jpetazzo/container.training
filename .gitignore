@@ -8,6 +8,7 @@ slides/*.yml.html
 slides/autopilot/state.yaml
 slides/index.html
 slides/past.html
+slides/slides.zip
 node_modules
 
 ### macOS ###
