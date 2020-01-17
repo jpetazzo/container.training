@@ -242,7 +242,7 @@ EOF"
     # Install helm
     pssh "
     if [ ! -x /usr/local/bin/helm ]; then
-        curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | sudo bash &&
+        curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get-helm-3 | sudo bash &&
         helm completion bash | sudo tee /etc/bash_completion.d/helm
     fi"
 
@@ -533,14 +533,8 @@ _cmd_helmprom() {
     need_tag
     pssh "
     if i_am_first_node; then
-        kubectl -n kube-system get serviceaccount helm ||
-            kubectl -n kube-system create serviceaccount helm
-        sudo -u docker -H helm init --service-account helm
-        kubectl get clusterrolebinding helm-can-do-everything ||
-            kubectl create clusterrolebinding helm-can-do-everything \
-                --clusterrole=cluster-admin \
-                --serviceaccount=kube-system:helm
-        sudo -u docker -H helm upgrade --install prometheus stable/prometheus \
+        sudo -u docker -H helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+        sudo -u docker -H helm install prometheus stable/prometheus \
             --namespace kube-system \
             --set server.service.type=NodePort \
             --set server.service.nodePort=30090 \
