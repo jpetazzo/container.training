@@ -66,3 +66,25 @@ class: extra-details
 - At any given time, 3 *minor* releases are maintained
 
   (in other words, a given *minor* release is maintained about 9 months)
+
+---
+
+## Kubernetes version compatibility
+
+*Should my version of `kubectl` match exactly my cluster version?*
+
+- `kubectl` can be up to one minor version older or newer than the cluster
+
+  (if cluster version is 1.15.X, `kubectl` can be 1.14.Y, 1.15.Y, or 1.16.Y)
+
+- Things *might* work with larger version differences
+
+   (but they will probably fail randomly, so be careful)
+
+- This is an example of an error indicating version compability issues:
+  ```
+  error: SchemaError(io.k8s.api.autoscaling.v2beta1.ExternalMetricStatus):
+  invalid object doesn't have additional properties
+  ```
+
+- Check [the documentation](https://kubernetes.io/docs/setup/release/version-skew-policy/#kubectl) for the whole story about compatibility
