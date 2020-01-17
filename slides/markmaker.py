@@ -89,6 +89,15 @@ def flatten(titles):
 def generatefromyaml(manifest, filename):
     manifest = yaml.safe_load(manifest)
 
+    if "zip" not in manifest:
+        if manifest["slides"].endswith('/'):
+            manifest["zip"] = manifest["slides"] + "slides.zip"
+        else:
+            manifest["zip"] = manifest["slides"] + "/slides.zip"
+
+    if "html" not in manifest:
+        manifest["html"] = filename + ".html"
+
     markdown, titles = processchapter(manifest["chapters"], filename)
     logging.debug("Found {} titles.".format(len(titles)))
     toc = gentoc(titles)
@@ -117,6 +126,8 @@ def generatefromyaml(manifest, filename):
     html = html.replace("@@CHAT@@", manifest["chat"])
     html = html.replace("@@GITREPO@@", manifest["gitrepo"])
     html = html.replace("@@SLIDES@@", manifest["slides"])
+    html = html.replace("@@ZIP@@", manifest["zip"])
+    html = html.replace("@@HTML@@", manifest["html"])
     html = html.replace("@@TITLE@@", manifest["title"].replace("\n", " "))
     html = html.replace("@@SLIDENUMBERPREFIX@@", manifest.get("slidenumberprefix", ""))
     return html
