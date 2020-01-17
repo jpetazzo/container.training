@@ -524,3 +524,164 @@ spec:
 - This should eventually stabilize
 
   (remember that ingresses are currently `apiVersion: networking.k8s.io/v1beta1`)
+
+---
+
+## A special feature in action
+
+- We're going to see how to implement *canary releases* with Traefik
+
+- This feature is available on multiple ingress controllers
+
+- ... But it is configured very differently on each of them
+
+---
+
+## Canary releases
+
+- A *canary release* (or canary launch or canary deployment) is a release that will process only a small fraction of the workload
+
+- Example 1: a canary release is deployed for a microservice
+
+  - 1% of all requests (sampled randomly) are sent to the canary
+  - the remaining 99% are sent to the normal release
+
+- Example 2: a canary release is deployed for a web app
+
+  - 1% of users see the canary release
+  - the remaining 99% are sent to the normal release
+
+- We're going to implement example 1 (per-request routing)
+
+---
+
+## Canary releases with Traefik
+
+- We need to deploy the canary and expose it with a separate service
+
+- Then, in the Ingress resource, we need:
+
+  - multiple `paths` entries (one for each service, canary and normal)
+
+  - an extra annotation indicating the weight of each service
+
+- If we want, we can send requests to more than 2 services
+
+- Let's send requests to our 3 cheesy services!
+
+.exercise[
+
+- Create the resource shown on the next slide
+
+]
+
+---
+
+## The Ingress resource
+
+.small[
+```yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: cheeseplate
+  annotations:
+    traefik.ingress.kubernetes.io/service-weights: |
+      cheddar: 50%
+      wensleydale: 25%
+      stilton: 25%
+spec:
+  rules:
+  - host: cheeseplate.`A.B.C.D`.nip.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: cheddar
+          servicePort: 80
+      - path: /
+        backend:
+          serviceName: wensledale
+          servicePort: 80
+      - path: /
+        backend:
+          serviceName: stilton
+          servicePort: 80
+```
+]
+
+---
+
+## Testing the canary
+
+- Let's check the percentage of requests going to each service
+
+.exercise[
+
+- Continuously send HTTP requests to the new ingress:
+  ```bash
+    while sleep 0.1; do
+      curl -s http://cheeseplate.A.B.C.D.nip.io/
+    done
+  ```
+
+]
+
+We should see a 50/25/25 request mix.
+
+---
+
+class: extra-details
+
+## Load balancing fairness
+
+Note: if we use odd request ratios, the load balancing algorithm might appear to be broken on a small scale (when sending a small number of requests), but on a large scale (with many requests) it will be fair.
+
+For instance, with a 11%/89% ratio, we can see 79 requests going to the 89%-weighted service, and then requests alternating between the two services; then 79 requests again, etc. 
+
+---
+
+class: extra-details
+
+## Other ingress controllers
+
+*Just to illustrate how different things are ...*
+
+- With the NGINX ingress controller:
+
+  - define two ingress ressources
+    <br/>
+    (specifying rules with the same host+path)
+
+  - add `nginx.ingress.kubernetes.io/canary` annotations on each
+
+
+- With Linkerd2:
+
+  - define two services
+
+  - define an extra service for the weighted aggregate of the two
+
+  - define a TrafficSplit (this is a CRD introduced by the SMI spec)
+
+---
+
+class: extra-details
+
+## We need more than that
+
+What we saw is just one of the multiple building blocks that we need to achieve a canary release.
+
+We also need:
+
+- metrics (latency, performance ...) for our releases
+
+- automation to alter canary weights
+
+  (increase canary weight if metrics look good; decrease otherwise)
+
+- a mechanism to manage the lifecycle of the canary releases
+
+  (create them, promote them, delete them ...)
+
+For inspiration, check [flagger by Weave](https://github.com/weaveworks/flagger).
