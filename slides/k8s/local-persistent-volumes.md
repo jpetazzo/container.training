@@ -56,28 +56,6 @@
 
 ---
 
-## Work in a separate namespace
-
-- To avoid conflicts with existing resources, let's create and use a new namespace
-
-.exercise[
-
-- Create a new namespace:
-  ```bash
-  kubectl create namespace orange
-  ```
-
-- Switch to that namespace:
-  ```bash
-  kns orange
-  ```
-
-]
-
-.warning[Make sure to call that namespace `orange`: it is hardcoded in the YAML files.]
-
----
-
 ## Deploying Consul
 
 - We will use a slightly different YAML file
@@ -88,7 +66,9 @@
 
   - the corresponding `volumeMounts` in the Pod spec
 
-  - the namespace `orange` used for discovery of Pods
+  - the label `consul` has been changed to `persistentconsul`
+    <br/>
+    (to avoid conflicts with the other Stateful Set)
 
 .exercise[
 
@@ -117,7 +97,7 @@
   kubectl get pv
   ```
 
-- The Pod `consul-0` is not scheduled yet:
+- The Pod `persistentconsul-0` is not scheduled yet:
   ```bash
   kubectl get pods -o wide
   ```
@@ -132,9 +112,9 @@
 
 - In a Stateful Set, the Pods are started one by one
 
-- `consul-1` won't be created until `consul-0` is running
+- `persistentconsul-1` won't be created until `persistentconsul-0` is running
 
-- `consul-0` has a dependency on an unbound Persistent Volume Claim
+- `persistentconsul-0` has a dependency on an unbound Persistent Volume Claim
 
 - The scheduler won't schedule the Pod until the PVC is bound
 
@@ -172,7 +152,7 @@
 
 - Once a PVC is bound, its pod can start normally
 
-- Once the pod `consul-0` has started, `consul-1` can be created, etc.
+- Once the pod `persistentconsul-0` has started, `persistentconsul-1` can be created, etc.
 
 - Eventually, our Consul cluster is up, and backend by "persistent" volumes
 
@@ -180,7 +160,7 @@
 
 - Check that our Consul clusters has 3 members indeed:
   ```bash
-  kubectl exec consul-0 consul members
+  kubectl exec persistentconsul-0 consul members
   ```
 
 ]

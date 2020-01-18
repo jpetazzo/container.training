@@ -1,51 +1,54 @@
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
-  name: consul
+  name: persistentconsul
 rules:
-  - apiGroups: [ "" ]
-    resources: [ pods ]
-    verbs:     [ get, list ]
+  - apiGroups: [""]
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
-  name: consul
+  name: persistentconsul
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: consul
+  kind: ClusterRole
+  name: persistentconsul
 subjects:
   - kind: ServiceAccount
-    name: consul
-    namespace: orange
+    name: persistentconsul
+    namespace: default
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: consul
+  name: persistentconsul
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: consul
+  name: persistentconsul
 spec:
   ports:
   - port: 8500
     name: http
   selector:
-    app: consul
+    app: persistentconsul
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: consul
+  name: persistentconsul
 spec:
-  serviceName: consul
+  serviceName: persistentconsul
   replicas: 3
   selector:
     matchLabels:
-      app: consul
+      app: persistentconsul
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -58,9 +61,9 @@ spec:
   template:
     metadata:
       labels:
-        app: consul
+        app: persistentconsul
     spec:
-      serviceAccountName: consul
+      serviceAccountName: persistentconsul
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -69,19 +72,19 @@ spec:
                   - key: app
                     operator: In
                     values:
-                      - consul
+                      - persistentconsul
               topologyKey: kubernetes.io/hostname
       terminationGracePeriodSeconds: 10
       containers:
         - name: consul
-          image: "consul:1.5"
+          image: "consul:1.6"
           volumeMounts:
             - name: data
               mountPath: /consul/data
           args:
             - "agent"
             - "-bootstrap-expect=3"
-            - "-retry-join=provider=k8s namespace=orange label_selector=\"app=consul\""
+            - "-retry-join=provider=k8s label_selector=\"app=persistentconsul\""
             - "-client=0.0.0.0"
             - "-data-dir=/consul/data"
             - "-server"
