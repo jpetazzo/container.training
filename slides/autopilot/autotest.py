@@ -26,6 +26,7 @@ IPADDR = None
 class State(object):
 
     def __init__(self):
+        self.clipboard = ""
         self.interactive = True
         self.verify_status = False
         self.simulate_type = True
@@ -38,6 +39,7 @@ class State(object):
 
     def load(self):
         data = yaml.load(open("state.yaml"))
+        self.clipboard = str(data["clipboard"])
         self.interactive = bool(data["interactive"])
         self.verify_status = bool(data["verify_status"])
         self.simulate_type = bool(data["simulate_type"])
@@ -51,6 +53,7 @@ class State(object):
     def save(self):
         with open("state.yaml", "w") as f:
             yaml.dump(dict(
+                clipboard=self.clipboard,
                 interactive=self.interactive,
                 verify_status=self.verify_status,
                 simulate_type=self.simulate_type,
@@ -85,9 +88,11 @@ class Snippet(object):
         # On single-line snippets, the data follows the method immediately
         if '\n' in content:
             self.method, self.data = content.split('\n', 1)
-        else:
+            self.data = self.data.strip()
+        elif ' ' in content:
             self.method, self.data = content.split(' ', 1)
-        self.data = self.data.strip()
+        else:
+            self.method, self.data = content, None
         self.next = None
 
     def __str__(self):
@@ -186,7 +191,7 @@ def wait_for_prompt():
         if last_line == "$":
             # This is a perfect opportunity to grab the node's IP address
             global IPADDR
-            IPADDR = re.findall("^\[(.*)\]", output, re.MULTILINE)[-1]
+            IPADDR = re.findall("\[(.*)\]", output, re.MULTILINE)[-1]
             return
         # When we are in an alpine container, the prompt will be "/ #"
         if last_line == "/ #":
@@ -264,19 +269,31 @@ for slide in re.split("\n---?\n", content):
     slides.append(Slide(slide))
 
 
+# Send a single key.
+# Useful for special keys, e.g. tmux interprets these strings:
+# ^C (and all other sequences starting with a caret)
+# Space
+# ... and many others (check tmux manpage for details).
+def send_key(data):
+    subprocess.check_call(["tmux", "send-keys", data])
+
+
+# Send multiple keys.
+# If keystroke simulation is off, all keys are sent at once.
+# If keystroke simulation is on, keys are sent one by one, with a delay between them.
 def send_keys(data):
-    if state.simulate_type and data[0] != '^':
+    if not state.simulate_type:
+        subprocess.check_call(["tmux", "send-keys", data])
+    else:
         for key in data:
             if key == ";":
                 key = "\\;"
             if key == "\n":
                 if interruptible_sleep(1): return
-            subprocess.check_call(["tmux", "send-keys", key])
+            send_key(key)
             if interruptible_sleep(0.15*random.random()): return
             if key == "\n":
                 if interruptible_sleep(1): return
-    else:
-        subprocess.check_call(["tmux", "send-keys", data])
 
 
 def capture_pane():
@@ -323,7 +340,10 @@ def check_bounds():
 while True:
     state.save()
     slide = slides[state.slide]
-    snippet = slide.snippets[state.snippet-1] if state.snippet else None
+    if state.snippet and state.snippet <= len(slide.snippets):
+        snippet = slide.snippets[state.snippet-1]
+    else:
+        snippet = None
     click.clear()
     print("[Slide {}/{}] [Snippet {}/{}] [simulate_type:{}] [verify_status:{}] "
           "[switch_desktop:{}] [sync_slides:{}] [open_links:{}] [run_hidden:{}]"
@@ -398,7 +418,9 @@ while True:
             continue
         method, data = snippet.method, snippet.data
         logging.info("Running with method {}: {}".format(method, data))
-        if method == "keys":
+        if method == "key":
+            send_key(data)
+        elif method == "keys":
             send_keys(data)
         elif method == "bash" or (method == "hide" and state.run_hidden):
             # Make sure that we're ready
@@ -421,7 +443,7 @@ while True:
                 wait_for_prompt()
                 # Verify return code
                 check_exit_status()
-        elif method == "copypaste":
+        elif method == "copy":
             screen = capture_pane()
             matches = re.findall(data, screen, flags=re.DOTALL)
             if len(matches) == 0:
@@ -430,8 +452,12 @@ while True:
             match = matches[-1]
             # Remove line breaks (like a screen copy paste would do)
             match = match.replace('\n', '')
-            send_keys(match + '\n')
-            # FIXME: we should factor out the "bash" method
+            logging.info("Copied {} to clipboard.".format(match))
+            state.clipboard = match
+        elif method == "paste":
+            logging.info("Pasting {} from clipboard.".format(state.clipboard))
+            send_keys(state.clipboard)
+        elif method == "check":
             wait_for_prompt()
             check_exit_status()
         elif method == "open":
@@ -445,6 +471,8 @@ while True:
                 if state.interactive:
                     print("Press any key to continue to next step...")
                     click.getchar()
+        elif method == "tmux":
+            subprocess.check_call(["tmux"] + data.split())
         else:
             logging.warning("Unknown method {}: {!r}".format(method, data))
         move_forward()

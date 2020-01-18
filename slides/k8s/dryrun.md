@@ -162,6 +162,8 @@ Instead, it has the fields expected in a DaemonSet.
   kubectl diff -f web.yaml
   ```
 
+<!-- ```wait status:``` -->
+
 ]
 
 Note: we don't need to specify `--validate=false` here.

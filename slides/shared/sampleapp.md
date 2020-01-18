@@ -343,7 +343,7 @@ class: extra-details
 - Stop the application by hitting `^C`
 
 <!--
-```keys ^C```
+```key ^C```
 -->
 
 ]

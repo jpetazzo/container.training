@@ -174,7 +174,7 @@ spec:
 
 <!--
 ```longwait registry:5000/rng-kaniko:latest:```
-```keys ^C```
+```key ^C```
 -->
 
 ]

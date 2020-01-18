@@ -109,7 +109,7 @@ spec:
 
 <!--
 ```longwait latest: digest: sha256:```
-```keys ^C```
+```key ^C```
 -->
 
 ]

@@ -108,7 +108,7 @@ kubectl wait deploy/worker --for condition=available
 
 <!--
 ```wait units of work done, updating hash counter```
-```keys ^C```
+```key ^C```
 -->
 
 ]

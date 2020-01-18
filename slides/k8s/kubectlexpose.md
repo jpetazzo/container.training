@@ -124,7 +124,10 @@ kubectl create service externalname k8s --external-name kubernetes.io
   kubectl get pods -w
   ```
 
-<!-- ```keys ^C``` -->
+<!--
+```wait NAME```
+```tmux split-pane -h```
+-->
 
 - Create a deployment for this very lightweight HTTP server:
   ```bash
@@ -191,6 +194,8 @@ kubectl create service externalname k8s --external-name kubernetes.io
 
 <!--
 ```hide kubectl wait deploy httpenv --for condition=available```
+```key ^D```
+```key ^C```
 -->
 
 - Send a few requests:

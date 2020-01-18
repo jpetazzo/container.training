@@ -197,7 +197,7 @@ If you want to use an external key/value store, add one of the following:
 
 <!--
 ```longwait PX node status reports portworx service is healthy```
-```keys ^C```
+```key ^C```
 -->
 
 ]
@@ -374,7 +374,7 @@ spec:
 autopilot prompt detection expects $ or # at the beginning of the line.
 ```wait postgres@postgres```
 ```keys PS1="\u@\h:\w\n\$ "```
-```keys ^J```
+```key ^J```
 -->
 
 - Check that default databases have been created correctly:
@@ -428,7 +428,7 @@ autopilot prompt detection expects $ or # at the beginning of the line.
   psql demo -c "select count(*) from pgbench_accounts"
   ```
 
-<!-- ```keys ^D``` -->
+<!-- ```key ^D``` -->
 
 ]
 
@@ -491,7 +491,7 @@ By "disrupt" we mean: "disconnect it from the network".
 
 - Logout to go back on `node1`
 
-<!-- ```keys ^D``` -->
+<!-- ```key ^D``` -->
 
 - Watch the events unfolding with `kubectl get events -w` and `kubectl get pods -w`
 
@@ -519,7 +519,7 @@ By "disrupt" we mean: "disconnect it from the network".
 <!--
 ```wait postgres@postgres```
 ```keys PS1="\u@\h:\w\n\$ "```
-```keys ^J```
+```key ^J```
 -->
 
 - Check the number of rows in the `pgbench_accounts` table:
@@ -527,7 +527,7 @@ By "disrupt" we mean: "disconnect it from the network".
   psql demo -c "select count(*) from pgbench_accounts"
   ```
 
-<!-- ```keys ^D``` -->
+<!-- ```key ^D``` -->
 
 ]
 

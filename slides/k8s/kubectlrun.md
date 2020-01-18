@@ -154,6 +154,11 @@ pod/pingpong-7c8bbcd9bc-6c9qz   1/1       Running   0          10m
 
 - Leave that command running, so that we can keep an eye on these logs
 
+<!--
+```wait seq=3```
+```tmux split-pane -h```
+-->
+
 ]
 
 ---
@@ -206,10 +211,20 @@ We could! But the *deployment* would notice it right away, and scale back to the
 
 - Interrupt `kubectl logs` (with Ctrl-C)
 
+<!--
+```tmux last-pane```
+```key ^C```
+-->
+
 - Restart it:
   ```bash
   kubectl logs deploy/pingpong --tail 1 --follow
   ```
+
+<!--
+```wait using pod/pingpong-```
+```tmux last-pane```
+-->
 
 ]
 
@@ -235,10 +250,30 @@ Let's leave `kubectl logs` running while we keep exploring.
   watch kubectl get pods
   ```
 
+<!--
+```wait Every 2.0s```
+```tmux split-pane -v```
+-->
+
 - Destroy the pod currently shown by `kubectl logs`:
   ```
   kubectl delete pod pingpong-xxxxxxxxxx-yyyyy
   ```
+
+<!--
+```tmux select-pane -t 0```
+```copy pingpong-[^-]*-.....```
+```tmux last-pane```
+```keys kubectl delete pod ```
+```paste```
+```key ^J```
+```check```
+```key ^D```
+```tmux select-pane -t 1```
+```key ^C```
+```key ^D```
+-->
+
 ]
 
 ---
@@ -307,7 +342,7 @@ Let's leave `kubectl logs` running while we keep exploring.
 
 - Create the Cron Job:
   ```bash
-  kubectl run --schedule="*/3 * * * *" --restart=OnFailure --image=alpine sleep 10
+  kubectl run every3mins --schedule="*/3 * * * *" --restart=OnFailure --image=alpine sleep 10
   ```
 
 - Check the resource that was created:
@@ -418,7 +453,7 @@ Let's leave `kubectl logs` running while we keep exploring.
 
 <!--
 ```wait seq=```
-```keys ^C```
+```key ^C```
 -->
 
 ]
@@ -446,6 +481,8 @@ class: extra-details
   ```bash
   kubectl logs -l run=pingpong --tail 1 -f
   ```
+
+<!-- ```wait error:``` -->
 
 ]
 

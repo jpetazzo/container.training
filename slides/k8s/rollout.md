@@ -94,7 +94,7 @@
 
 <!--
 ```wait NAME```
-```keys ^C```
+```key ^C```
 -->
 
 - Update `worker` either with `kubectl edit`, or by running:
@@ -150,7 +150,7 @@ That rollout should be pretty quick. What shows in the web UI?
 
 <!--
 ```wait Waiting for deployment```
-```keys ^C```
+```key ^C```
 -->
 
 ]
@@ -229,11 +229,7 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 .exercise[
 
-<!--
-```keys
-^C
-```
--->
+<!-- ```key ^C``` -->
 
 - Cancel the deployment and wait for the dust to settle:
   ```bash
@@ -336,7 +332,7 @@ We might see something like 1, 4, 5.
 
 - Check the annotations for our replica sets:
   ```bash
-  kubectl describe replicasets -l app=worker | grep -A3
+  kubectl describe replicasets -l app=worker | grep -A3 ^Annotations
   ```
 
 ]

@@ -97,6 +97,8 @@
   ship init https://github.com/jpetazzo/kubercoins
   ```
 
+<!-- ```wait Open browser``` -->
+
 ]
 
 ---
@@ -188,6 +190,11 @@
   ```bash
   kubectl logs deploy/worker --tail=10 --follow --namespace=kustomcoins
   ```
+
+<!--
+```wait units of work done``` 
+```key ^C```
+-->
 
 ]
 
