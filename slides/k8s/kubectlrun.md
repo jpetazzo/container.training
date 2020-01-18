@@ -342,7 +342,8 @@ Let's leave `kubectl logs` running while we keep exploring.
 
 - Create the Cron Job:
   ```bash
-  kubectl run every3mins --schedule="*/3 * * * *" --restart=OnFailure --image=alpine sleep 10
+  kubectl run every3mins --schedule="*/3 * * * *" --restart=OnFailure \
+      --image=alpine sleep 10
   ```
 
 - Check the resource that was created:
