@@ -541,15 +541,34 @@ spec:
 
 - A *canary release* (or canary launch or canary deployment) is a release that will process only a small fraction of the workload
 
-- Example 1: a canary release is deployed for a microservice
+- After deploying the canary, we compare its metrics to the normal release
+
+- If the metrics look good, the canary will progressively receive more traffic
+
+  (until it gets 100% and becomes the new normal release)
+
+- If the metrics aren't good, the canary is automatically removed
+
+- When we deploy a bad release, only a tiny fraction of traffic is affected
+
+---
+
+## Various ways to implement canary
+
+- Example 1: canary for a microservice
 
   - 1% of all requests (sampled randomly) are sent to the canary
   - the remaining 99% are sent to the normal release
 
-- Example 2: a canary release is deployed for a web app
+- Example 2: canary for a web app
 
-  - 1% of users see the canary release
+  - 1% of users are sent to the canary web site
   - the remaining 99% are sent to the normal release
+
+- Example 3: canary for shipping physical goods
+
+  - 1% of orders are shipped with the canary process
+  - the reamining 99% are shipped with the normal process
 
 - We're going to implement example 1 (per-request routing)
 
