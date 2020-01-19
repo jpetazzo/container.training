@@ -604,13 +604,11 @@ After the Kibana UI loads, we need to click around a bit
 
 - Look at the ElasticSearch resource definition
 
-  (`~/container.training/k8s/elasticsearch-cluster.yaml`)
+  (`~/container.training/k8s/eck-elasticsearch.yaml`)
 
-- What should happen if we flip the `use-tls` flag? Twice?
+- What should happen if we flip the TLS flag? Twice?
 
-- What should happen if we remove / re-add the kibana or cerebro sections?
-
-- What should happen if we change the number of nodes?
+- What should happen if we add another group of nodes?
 
 - What if we want different images or parameters for the different nodes?
 
