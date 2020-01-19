@@ -1,0 +1,69 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: cerebro
+  name: cerebro
+spec:
+  selector:
+    matchLabels:
+      app: cerebro
+  template:
+    metadata:
+      labels:
+        app: cerebro
+    spec:
+      volumes:
+      - name: conf
+        configMap:
+          name: cerebro
+      containers:
+      - image: lmenezes/cerebro
+        name: cerebro
+        volumeMounts:
+        - name: conf
+          mountPath: /conf
+        args:
+        - -Dconfig.file=/conf/application.conf
+        env:
+        - name: ELASTICSEARCH_PASSWORD
+          valueFrom:       
+            secretKeyRef:      
+              name: demo-es-elastic-user
+              key: elastic
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cerebro
+  name: cerebro
+spec:
+  ports:
+  - port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app: cerebro
+  type: NodePort
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cerebro
+data:
+  application.conf: |
+    secret = "ki:s:[[@=Ag?QI`W2jMwkY:eqvrJ]JqoJyi2axj3ZvOv^/KavOT4ViJSv?6YY4[N"
+
+    hosts = [
+      {
+        host = "http://demo-es-http.eck-demo.svc.cluster.local:9200"
+        name = "demo"
+        auth = {
+          username = "elastic"
+          password = ${?ELASTICSEARCH_PASSWORD}
+        }
+      }
+    ]
