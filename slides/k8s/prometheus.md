@@ -204,32 +204,46 @@ We need to:
 
 ## Step 1: install Helm
 
-- If we already installed Helm earlier, these commands won't break anything
+- If we already installed Helm earlier, this command won't break anything
 
-.exercice[
+.exercise[
 
-- Install Tiller (Helm's server-side component) on our cluster:
+- Install the Helm CLI:
   ```bash
-  helm init
-  ```
-
-- Give Tiller permission to deploy things on our cluster:
-  ```bash
-  kubectl create clusterrolebinding add-on-cluster-admin \
-      --clusterrole=cluster-admin --serviceaccount=kube-system:default
+  curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get-helm-3 \
+  | bash
   ```
 
 ]
 
 ---
 
-## Step 2: install Prometheus
+## Step 2: add the `stable` repo
 
-- Skip this if we already installed Prometheus earlier
+- This will add the repository containing the chart for Prometheus
 
-  (in doubt, check with `helm list`)
+- This command is idempotent
 
-.exercice[
+  (it won't break anything if the repository was already added)
+
+.exercise[
+
+- Add the repository:
+  ```bash
+  helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+  ```
+
+]
+
+---
+
+## Step 3: install Prometheus
+
+- The following command, just like the previous ones, is idempotent
+
+  (it won't error out if Prometheus is already installed)
+
+.exercise[
 
 - Install Prometheus on our cluster:
   ```bash
