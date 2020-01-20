@@ -323,6 +323,15 @@ _cmd_listall() {
     done
 }
 
+_cmd maketag "Generate a quasi-unique tag for a group of instances"
+_cmd_maketag() {
+    if [ -z $USER ]; then
+        export USER=anonymous
+    fi
+    MS=$(($(date +%N)/1000000))
+    date +%Y-%m-%d-%H-%M-$MS-$USER
+}
+
 _cmd ping "Ping VMs in a given tag, to check that they have network access"
 _cmd_ping() {
     TAG=$1
@@ -465,7 +474,7 @@ _cmd_start() {
     need_infra $INFRA
 
     if [ -z "$TAG" ]; then
-        TAG=$(make_tag)
+        TAG=$(_cmd_maketag)
     fi
     mkdir -p tags/$TAG
     ln -s ../../$INFRA tags/$TAG/infra.sh
@@ -525,6 +534,16 @@ _cmd_test() {
     TAG=$1
     need_tag
     test_tag
+}
+
+_cmd tmux "Log into the first node and start a tmux server"
+_cmd_tmux() {
+    TAG=$1
+    need_tag
+    IP=$(head -1 tags/$TAG/ips.txt)
+    info "Opening ssh+tmux with $IP"
+    rm -f /tmp/tmux-$UID/default
+    ssh -t -L /tmp/tmux-$UID/default:/tmp/tmux-1001/default docker@$IP tmux new-session -As 0
 }
 
 _cmd helmprom "Install Helm and Prometheus"
@@ -720,11 +739,4 @@ sync_keys() {
     else
         info "Using existing key $AWS_KEY_NAME."
     fi
-}
-
-make_tag() {
-    if [ -z $USER ]; then
-        export USER=anonymous
-    fi
-    date +%Y-%m-%d-%H-%M-$USER
 }
