@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: fluentd
+  namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
@@ -36,6 +37,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: fluentd
+  namespace: default
   labels:
     app: fluentd
 spec:
@@ -95,6 +97,7 @@ metadata:
   labels:
     app: elasticsearch
   name: elasticsearch
+  namespace: default
 spec:
   selector:
     matchLabels:
@@ -122,6 +125,7 @@ metadata:
   labels:
     app: elasticsearch
   name: elasticsearch
+  namespace: default
 spec:
   ports:
   - port: 9200
@@ -137,6 +141,7 @@ metadata:
   labels:
     app: kibana
   name: kibana
+  namespace: default
 spec:
   selector:
     matchLabels:
@@ -160,6 +165,7 @@ metadata:
   labels:
     app: kibana
   name: kibana
+  namespace: default
 spec:
   ports:
   - port: 5601

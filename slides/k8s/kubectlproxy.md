@@ -101,7 +101,7 @@ If we wanted to talk to the API, we would need to:
 
 <!--
 ```wait /version```
-```keys ^J```
+```key ^J```
 -->
 
 - Terminate the proxy:

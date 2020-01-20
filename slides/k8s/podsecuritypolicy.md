@@ -220,6 +220,8 @@
   sudo vim /etc/kubernetes/manifests/kube-apiserver.yaml
   ```
 
+<!-- ```wait apiVersion``` -->
+
 ]
 
 ---
@@ -239,6 +241,16 @@
   It should read: `--enable-admission-plugins=NodeRestriction,PodSecurityPolicy`
 
 - Save, quit
+
+<!--
+```keys /--enable-admission-plugins=```
+```key ^J```
+```key $```
+```keys a,PodSecurityPolicy```
+```key Escape```
+```keys :wq```
+```key ^J```
+-->
 
 ]
 
@@ -270,6 +282,8 @@
   ```bash
   kubectl run testpsp1 --image=nginx --restart=Never
   ```
+
+<!-- ```wait forbidden: no providers available``` -->
 
 - Try to create a Deployment:
   ```bash
@@ -498,3 +512,22 @@ class: extra-details
   - bind `psp:restricted` to the group `system:authenticated`
 
   - bind `psp:privileged` to the ServiceAccount `kube-system:default`
+
+---
+
+## Fixing the cluster
+
+- Let's disable the PSP admission plugin
+
+.exercise[
+
+- Edit the Kubernetes API server static pod manifest
+
+- Remove the PSP admission plugin
+
+- This can be done with this one-liner:
+  ```bash
+  sudo sed -i s/,PodSecurityPolicy// /etc/kubernetes/manifests/kube-apiserver.yaml
+  ```
+
+]

@@ -158,7 +158,7 @@ class: elk-manual
   ```
 
   <!-- ```wait "message" => "ok"``` -->
-  <!-- ```keys ^C``` -->
+  <!-- ```key ^C``` -->
 
 ]
 
@@ -266,7 +266,7 @@ The test message should show up in the logstash container logs.
   ```
 
   <!-- ```wait Detected task failure``` -->
-  <!-- ```keys ^C``` -->
+  <!-- ```key ^C``` -->
 
 ]
 

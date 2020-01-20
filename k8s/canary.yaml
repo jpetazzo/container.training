@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: whatever
+  annotations:
+    traefik.ingress.kubernetes.io/service-weights: |
+      whatever: 90%
+      whatever-new: 10%
+spec:
+  rules:
+  - host: whatever.A.B.C.D.nip.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: whatever
+          servicePort: 80
+      - path: /
+        backend:
+          serviceName: whatever-new
+          servicePort: 80

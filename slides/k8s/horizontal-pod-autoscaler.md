@@ -105,18 +105,35 @@
 
 - Monitor pod CPU usage:
   ```bash
-  watch kubectl top pods
+  watch kubectl top pods -l app=busyhttp
   ```
+
+<!--
+```wait NAME```
+```tmux split-pane -v```
+```bash CLUSTERIP=$(kubectl get svc busyhttp -o jsonpath={.spec.clusterIP})```
+-->
 
 - Monitor service latency:
   ```bash
-  httping http://`ClusterIP`/
+  httping http://`$CLUSTERIP`/
   ```
+
+<!--
+```wait connected to```
+```tmux split-pane -v```
+-->
 
 - Monitor cluster events:
   ```bash
   kubectl get events -w
   ```
+
+<!--
+```wait Normal```
+```tmux split-pane -v```
+```bash CLUSTERIP=$(kubectl get svc busyhttp -o jsonpath={.spec.clusterIP})```
+-->
 
 ]
 
@@ -130,8 +147,14 @@
 
 - Send a lot of requests to the service, with a concurrency level of 3:
   ```bash
-  ab -c 3 -n 100000 http://`ClusterIP`/
+  ab -c 3 -n 100000 http://`$CLUSTERIP`/
   ```
+
+<!--
+```wait be patient```
+```tmux split-pane -v```
+```tmux selectl even-vertical```
+-->
 
 ]
 
@@ -193,6 +216,20 @@ This can also be set with `--cpu-percent=`.
   kubectl edit deployment busyhttp
   ```
 
+<!--
+```wait Please edit```
+```keys /resources```
+```key ^J```
+```keys $xxxo  requests:```
+```key ^J```
+```key Space```
+```key Space```
+```keys cpu: "1"```
+```key Escape```
+```keys :wq```
+```key ^J```
+-->
+
 - In the `containers` list, add the following block:
   ```yaml
     resources:
@@ -243,3 +280,29 @@ This can also be set with `--cpu-percent=`.
 - The metrics provided by metrics server are standard; everything else is custom
 
 - For more details, see [this great blog post](https://medium.com/uptime-99/kubernetes-hpa-autoscaling-with-custom-and-external-metrics-da7f41ff7846) or [this talk](https://www.youtube.com/watch?v=gSiGFH4ZnS8)
+
+---
+
+## Cleanup
+
+- Since `busyhttp` uses CPU cycles, let's stop it before moving on
+
+.exercise[
+
+- Delete the `busyhttp` Deployment:
+  ```bash
+  kubectl delete deployment busyhttp
+  ```
+
+<!--
+```key ^D```
+```key ^C```
+```key ^D```
+```key ^C```
+```key ^D```
+```key ^C```
+```key ^D```
+```key ^C```
+-->
+
+]

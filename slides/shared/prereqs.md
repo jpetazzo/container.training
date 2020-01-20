@@ -72,6 +72,12 @@ Misattributed to Benjamin Franklin
 
 - Slides will remain online so you can review them later if needed
 
+- You can download the slides using that URL:
+
+  @@ZIP@@
+
+  (then open the file `@@HTML@@`)
+
 ---
 
 class: in-person

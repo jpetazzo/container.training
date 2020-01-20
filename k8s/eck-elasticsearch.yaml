@@ -1,0 +1,19 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: demo
+  namespace: eck-demo
+spec:
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  nodeSets:
+  - name: default
+    count: 1
+    config:
+      node.data: true
+      node.ingest: true
+      node.master: true
+      node.store.allow_mmap: false
+  version: 7.5.1

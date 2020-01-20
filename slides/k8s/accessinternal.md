@@ -118,9 +118,9 @@ installed and set up `kubectl` to communicate with your cluster.
 <!--
 ```wait Connected to localhost```
 ```keys INFO server```
-```keys ^J```
+```key ^J```
 ```keys QUIT```
-```keys ^J```
+```key ^J```
 -->
 
 - Terminate the port forwarder:

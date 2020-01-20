@@ -110,19 +110,21 @@
 ```bash vim rng.yml```
 ```wait kind: Deployment```
 ```keys /Deployment```
-```keys ^J```
+```key ^J```
 ```keys cwDaemonSet```
-```keys ^[``` ]
+```key ^[``` ]
 ```keys :wq```
-```keys ^J```
+```key ^J```
 -->
 
 - Save, quit
 
 - Try to create our new resource:
-  ```
+  ```bash
   kubectl apply -f rng.yml
   ```
+
+<!-- ```wait error:``` -->
 
 ]
 
@@ -501,11 +503,11 @@ be any interruption.*
 <!--
 ```wait Please edit the object below```
 ```keys /app: rng```
-```keys ^J```
+```key ^J```
 ```keys noenabled: yes```
-```keys ^[``` ]
+```key ^[``` ]
 ```keys :wq```
-```keys ^J```
+```key ^J```
 -->
 
 ]
@@ -538,19 +540,18 @@ be any interruption.*
 
 .exercise[
 
-- Update the service to add `enabled: "yes"` to its selector:
-  ```bash
-  kubectl edit service rng
-  ```
+- Update the YAML manifest of the service
+
+- Add `enabled: "yes"` to its selector
 
 <!--
 ```wait Please edit the object below```
-```keys /app: rng```
-```keys ^J```
-```keys noenabled: "yes"```
-```keys ^[``` ]
+```keys /yes```
+```key ^J```
+```keys cw"yes"```
+```key ^[``` ]
 ```keys :wq```
-```keys ^J```
+```key ^J```
 -->
 
 ]
@@ -589,15 +590,24 @@ If we did everything correctly, the web UI shouldn't show any change.
   ```bash
   POD=$(kubectl get pod -l app=rng,pod-template-hash -o name)
   kubectl logs --tail 1 --follow $POD
-
   ```
   (We should see a steady stream of HTTP logs)
+
+<!--
+```wait HTTP/1.1```
+```tmux split-pane -v```
+-->
 
 - In another window, remove the label from the pod:
   ```bash
   kubectl label pod -l app=rng,pod-template-hash enabled-
   ```
   (The stream of HTTP logs should stop immediately)
+
+<!--
+```key ^D```
+```key ^C```
+-->
 
 ]
 

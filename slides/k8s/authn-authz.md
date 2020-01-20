@@ -547,7 +547,7 @@ It's important to note a couple of details in these flags...
 
 - Exit the container with `exit` or `^D`
 
-<!-- ```keys ^D``` -->
+<!-- ```key ^D``` -->
 
 ]
 

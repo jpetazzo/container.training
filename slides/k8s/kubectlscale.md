@@ -12,9 +12,9 @@
 
 <!--
 ```wait RESTARTS```
-```keys ^C```
+```key ^C```
 ```wait AVAILABLE```
-```keys ^C```
+```key ^C```
 -->
 
 - Now, create more `worker` replicas:

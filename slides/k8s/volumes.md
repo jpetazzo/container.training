@@ -110,6 +110,8 @@ It runs a single NGINX container.
   kubectl create -f ~/container.training/k8s/nginx-1-without-volume.yaml
   ```
 
+<!-- ```bash kubectl wait pod/nginx-without-volume --for condition=ready ``` -->
+
 - Get its IP address:
   ```bash
   IPADDR=$(kubectl get pod nginx-without-volume -o jsonpath={.status.podIP})
@@ -174,6 +176,8 @@ spec:
   ```bash
   kubectl create -f ~/container.training/k8s/nginx-2-with-volume.yaml
   ```
+
+<!-- ```bash kubectl wait pod/nginx-with-volume --for condition=ready ``` -->
 
 - Get its IP address:
   ```bash
@@ -269,6 +273,11 @@ spec:
   kubectl get pods -o wide --watch
   ```
 
+<!--
+```wait NAME```
+```tmux split-pane -v```
+-->
+
 ]
 
 ---
@@ -282,10 +291,17 @@ spec:
   kubectl create -f ~/container.training/k8s/nginx-3-with-git.yaml
   ```
 
+<!--
+```bash kubectl wait pod/nginx-with-git --for condition=initialized```
+```bash IP=$(kubectl get pod nginx-with-git -o jsonpath={.status.podIP})```
+-->
+
 - As soon as we see its IP address, access it:
   ```bash
   curl $IP
   ```
+
+<!-- ```bash /bin/sleep 5``` -->
 
 - A few seconds later, the state of the pod will change; access it again:
   ```bash
@@ -399,9 +415,18 @@ spec:
 
 ## Trying the init container
 
+.exercise[
+
 - Repeat the same operation as earlier
 
   (try to send HTTP requests as soon as the pod comes up)
+
+<!--
+```key ^D```
+```key ^C```
+-->
+
+]
 
 - This time, instead of "403 Forbidden" we get a "connection refused"
 

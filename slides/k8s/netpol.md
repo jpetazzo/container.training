@@ -120,6 +120,12 @@ This is our game plan:
   kubectl create deployment testweb --image=nginx
   ```
 
+<!--
+```bash
+kubectl wait deployment testweb --for condition=available
+```
+-->
+
 - Find out the IP address of the pod with one of these two commands:
   ```bash
   kubectl get pods -o wide -l app=testweb
@@ -153,6 +159,11 @@ The `curl` command should show us the "Welcome to nginx!" page.
   ```bash
   curl $IP
   ```
+
+<!--
+```wait curl```
+```key ^C```
+-->
 
 ]
 

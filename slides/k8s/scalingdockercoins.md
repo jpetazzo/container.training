@@ -19,17 +19,14 @@
 
 .exercise[
 
-- Open two new terminals to check what's going on with pods and deployments:
+- Open a new terminal to keep an eye on our pods:
   ```bash
   kubectl get pods -w
-  kubectl get deployments -w
   ```
 
 <!--
 ```wait RESTARTS```
-```keys ^C```
-```wait AVAILABLE```
-```keys ^C```
+```tmux split-pane -h```
 -->
 
 - Now, create more `worker` replicas:
@@ -72,6 +69,11 @@ The graph in the web UI should go up again.
   ```bash
   kubectl scale deployment worker --replicas=10
   ```
+
+<!--
+```key ^D```
+```key ^C```
+-->
 
 ]
 

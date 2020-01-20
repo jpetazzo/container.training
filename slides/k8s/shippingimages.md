@@ -105,6 +105,11 @@
   docker run ctr.run/github.com/jpetazzo/container.training/dockercoins/hasher
   ```
 
+<!--
+```longwait Sinatra```
+```key ^C```
+-->
+
 ]
 
 There might be a long pause before the first layer is pulled,
