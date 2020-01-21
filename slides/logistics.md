@@ -6,9 +6,9 @@
 
    - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Ardan Labs LLC)
 
-- The workshop will run from ...
+- The workshop will run from 9:15 to 16:30
 
-- There will be a lunch break at ...
+- There will be a lunch break around noon
 
   (And coffee breaks!)
 
