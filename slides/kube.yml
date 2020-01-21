@@ -22,7 +22,7 @@ chapters:
 - k8s/intro.md
 - shared/about-slides.md
 - shared/toc.md
-- # REVIEW
+- # DAY 1
   - shared/prereqs.md
   - shared/webssh.md
   - shared/connecting.md
@@ -30,7 +30,7 @@ chapters:
   - shared/composedown.md
   - k8s/concepts-k8s.md
   - k8s/kubectlget.md
-- # REVIEW
+-
   - k8s/kubectlrun.md
   - k8s/logs-cli.md
   - shared/declarative.md
@@ -38,7 +38,7 @@ chapters:
   - k8s/deploymentslideshow.md
   - k8s/kubenet.md
   - k8s/kubectlexpose.md
-- # MEDIUM
+-
   - k8s/shippingimages.md
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
@@ -47,64 +47,64 @@ chapters:
   - shared/hastyconclusions.md
   - k8s/daemonset.md
   #- k8s/dryrun.md
-- # MUST
+- # CH4 / DAY 2 (ish)
   - k8s/rollout.md
   - k8s/healthchecks.md
   - k8s/healthchecks-more.md
   - k8s/record.md
-- # MUST
+- # CH5
   - k8s/namespaces.md
   - k8s/ingress.md
   - k8s/localkubeconfig.md
   - k8s/accessinternal.md
-- # MUST
+- # CH6
+  - k8s/logs-centralized.md
+  - k8s/prometheus.md
+- # CH7
   - k8s/volumes.md
   #- k8s/build-with-docker.md
   #- k8s/build-with-kaniko.md
   - k8s/configuration.md
-- # MUST
-  - k8s/logs-centralized.md
-  - k8s/prometheus.md
-- # MUST
+- # CH8 / DAY 3
+  - k8s/extending-api.md
+  - k8s/operators.md
+  - k8s/operators-design.md
+- # CH9
+  #- k8s/prereqs-admin.md
+  #- k8s/architecture.md
+  #- k8s/deploymentslideshow.md
+  - k8s/dmuc.md
+- # CH10
   - k8s/resource-limits.md
   - k8s/metrics-server.md
   - k8s/cluster-sizing.md
   - k8s/horizontal-pod-autoscaler.md
-- # MUST
+- # CH11
   - k8s/statefulsets.md
   - k8s/local-persistent-volumes.md
   - k8s/portworx.md
-- # MUST
-  #- k8s/prereqs-admin.md
-  - k8s/architecture.md
-  - k8s/deploymentslideshow.md
-  - k8s/dmuc.md
-- # MUST
-  - k8s/extending-api.md
-  - k8s/operators.md
-  - k8s/operators-design.md
-  - k8s/owners-and-dependents.md
+  #- k8s/owners-and-dependents.md
   #- k8s/gitworkflows.md
-- # NICE TO HAVE
+- # CH12 / EXTRA CONTENT
   - |
     # (Extra content: security)
   - k8s/netpol.md
   - k8s/authn-authz.md
   - k8s/control-plane-auth.md
-- # NICE TO HAVE
+- # CH13 / NICE TO HAVE
   - |
     # (Extra content: templatization & packaging)
   - k8s/kustomize.md
   - k8s/helm.md
   - k8s/create-chart.md
   - k8s/create-more-charts.md
-- # MEH
+- # CH14 / MEH
   - |
     # (Extra content: user management)
   - k8s/csr-api.md
   - k8s/openid-connect.md
   - k8s/podsecuritypolicy.md
--
+- # CH15 / END
   - k8s/lastwords-admin.md
   - k8s/links.md
   - shared/thankyou.md
