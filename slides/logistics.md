@@ -1,30 +1,10 @@
 ## Intros
 
-- This slide should be customized by the tutorial instructor(s).
+- Hello! I'm Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
 
-- Hello! We are:
+- The training will run from 9am to 5pm
 
-   - .emoji[👩🏻‍🏫] Ann O'Nymous ([@...](https://twitter.com/...), Megacorp Inc)
-
-   - .emoji[👨🏾‍🎓] Stu Dent ([@...](https://twitter.com/...), University of Wakanda)
-
- <!-- .dummy[
-
-   - .emoji[👷🏻‍♀️] AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
-
-   - .emoji[🚁] Alexandre ([@alexbuisine](https://twitter.com/alexbuisine), Enix SAS)
-
-   - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
-
-   - .emoji[⛵] Jérémy ([@jeremygarrouste](twitter.com/jeremygarrouste), Inpiwee)
-
-   - .emoji[🎧] Romain ([@rdegez](https://twitter.com/rdegez), Enix SAS)
-
-] -->
-
-- The workshop will run from ...
-
-- There will be a lunch break at ...
+- There will be a lunch break at 12:30pm
 
   (And coffee breaks!)
 
@@ -32,4 +12,3 @@
 
 - *Especially when you see full screen container pictures!*
 
-- Live feedback, questions, help: @@CHAT@@
