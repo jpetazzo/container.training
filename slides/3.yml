@@ -22,42 +22,54 @@ chapters:
    - k8s/on-desktop.md
    - k8s/namespaces.md
    - k8s/accessinternal.md
-  #- k8s/localkubeconfig.md
-  #- k8s/kubectlproxy.md
+   - k8s/localkubeconfig.md
+   - k8s/kubectlproxy.md
    - k8s/testing.md
 
 -
   - k8s/configuration.md
   - k8s/sealed-secrets.md
+  #- k8s/volumes.md
   - k8s/kustomize.md
   - k8s/helm.md
   - k8s/create-chart.md
+  #- k8s/create-more-charts.md
+
 
 -
   # - k8s/shippingimages.md  # some overlap
   - k8s/registries.md
   - k8s/stop-manual.md
   - k8s/ci-cd.md
-# -
-  #- k8s/volumes.md
-  #- k8s/create-more-charts.md
+  - k8s/exercise-ci-build.md
+  - k8s/kaniko.md
+  - k8s/exercise-ci-kaniko.md
+
 -
-  - |
-    # (Automatiser)
-  - |
-    # Fabrication d'image
-  - |
-    # Skaffold
-  - |
-    # Registries
-  - |
-    # Gitlab, CI
-  - |
-    # ROllout avancé, blue green, canary
--
-  - |
-    # Monitoring applicatif
-  - |
-    # Prometheus Grafana
-  - |
-    # Telemetry
+  - k8s/monitoring-intro.md
+  #- k8s/prometheus-intro.md
+  - k8s/prometheus-endpoint.md
+
+
+    #-
+    #  - k8s/rollout.md
+    #  - k8s/blue-green.md
+
+    #- |
+    #  # (Automatiser)
+    #- |
+    #  # Fabrication d'image
+    #- |
+    #  # Skaffold
+    #- |
+    #  # Registries
+    #- |
+    #  # Gitlab, CI
+    #- |
+    #  # ROllout avancé, blue green, canary
+    #- |
+    #  # Monitoring applicatif
+    #- |
+    #  # Prometheus Grafana
+    #- |
+    #  # Telemetry
