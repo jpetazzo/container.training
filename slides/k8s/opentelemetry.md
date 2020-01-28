@@ -1,6 +1,6 @@
 # OpenTelemetry
 
-*Opentelemetry* is a "tracing" framework. It's a fusion of two other frameworks:
+*OpenTelemetry* is a "tracing" framework. It's a fusion of two other frameworks:
 *opentracing* and *opencensus*.
 
 The goal is to have deep integration with software languages and application framework to

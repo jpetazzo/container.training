@@ -49,7 +49,9 @@ chapters:
   - k8s/monitoring-intro.md
   #- k8s/prometheus-intro.md
   - k8s/prometheus-endpoint.md
+  - k8s/exercise-prometheus.md
   - k8s/opentelemetry.md
+  - k8s/exercise-opentelemetry.md
 
 
     #-
