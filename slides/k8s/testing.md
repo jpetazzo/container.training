@@ -1,6 +1,6 @@
 # Testing
 
-There multiple levels of testing. At this point we will focus on
+There are multiple levels of testing. At this point we will focus on
 
 *unit-testing*, ([Just Say No to More End-to-End Tests](https://testing.googleblog.com/2015/04/just-say-no-to-more-end-to-end-tests.html))
 

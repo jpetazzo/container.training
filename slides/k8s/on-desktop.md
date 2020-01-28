@@ -1,80 +1,102 @@
 # Development Workflow
 
-In this section we will see how to get started with local development workflow,
+In this section we will see how to set up a local development workflow.
 
-We will list multiple options, yet not all tools are mandatory.
+We will list multiple options.
 
-It's up to the developer to find what's best suit him/her.
+Keep in mind that we don't have to use *all* these tools!
 
----
-## What does it mean to develop on kubernetes ?
-
-The generic workflow is:
-
-- (1) Change code or Dockerfile in one repository
-
-- (2) Build the docker image with a new tag
-
-- (3) Push the docker image to a registry
-
-- (4) Edit the yamls/templates corresponding to the deployment of the docker image
-
-- (5) Apply the yamls/templates
-
-- (6) Check if you're satisfied, if no repeat from 1 (or 4 if image is ok)
-
-- (7) Commit and push
+It's up to the developer to find what best suits them.
 
 ---
+
+## What does it mean to develop on Kubernetes ?
+
+In theory, the generic workflow is:
+
+1. Make changes to our code or edit a Dockerfile
+
+2. Build a new Docker image with a new tag
+
+3. Push that Docker image to a registry
+
+4. Update the YAML or templates referencing that Docker image
+   <br/>(e.g. of the corresponding Deployment, StatefulSet, Job ...)
+
+5. Apply the YAML or templates
+
+6. Are we satisfied with the result?
+   <br/>No → go back to step 1 (or step 4 if the image is OK)
+   <br/>Yes → commit and push our changes to source control
+
+---
+
 ## A few quirks
 
-Looking more precisely to the workflow, it's quite complicated
+In practice, there are some details that make this workflow more complex.
 
-- Need to have docker container registry that the cluster can access.
+- We need a Docker container registry to store our images
+  <br/>
+  (for Open Source projects, a free Docker Hub account works fine)
 
-    (If you work a opensource project then a free account on DockerHub could just work)
+- We need to set image tags properly, hopefully automatically
 
-- Need scripting new tag creation
+- If we decide to use a fixed tag (like `:latest`) instead:
 
-- or use `imagePullPolicy=Always` to force image pull, then kill the appropriate pods
+  - we need to specify `imagePullPolicy=Always` to force image pull
 
-- Require high broadband bandwidth and lot of time to push lot of images
+  - we need to trigger a rollout when we want to deploy a new image
+    <br/>(with `kubectl rollout restart` or by killing the running pods)
 
-- Requires a registry's clean-up phase to avoid messy situations of left-over tags
+- We need a fast internet connection to push the images
+
+- We need to regularly clean up the registry to avoid accumulating old images
 
 ---
-## Benefits with developping locally
 
-Some of those problem could be solved using a local one-node cluster:
+## When developing locally
 
-- Using the node itself to build the image avoid pushing over network
+- If we work with a local cluster, pushes and pulls are much faster
 
-- No need of a registry
+- Even better, with a one-node cluster, most of these problems disappear
 
-  or use a local-registry inside the cluster to avoid requiring broadband access
+- If we build and run the images on the same node, ...
 
-- Can use bind mounts to make code change directly available in containers
+  - we don't need to push images
+
+  - we don't need a fast internet connection
+
+  - we don't need a registry
+
+  - we can use bind mounts to edit code locally and make changes available immediately in running containers
+
+- This means that it is much simpler to deploy to local development environment (like Minikube, Docker Desktop ...) than to a "real" cluster
 
 ---
 
 ## Minikube
 
-- start a VM with the hypervisor of your choice: virtualbox, kvm, hyperv, ...
+- Start a VM with the hypervisor of your choice: VirtualBox, kvm, Hyper-V ...
 
-- well supported by the kubernetes community
+- Well supported by the Kubernetes community
 
-- lot of addons
+- Lot of addons
 
-- easy cleanup: delete the VM ! (`minikube delete`)
+- Easy cleanup: delete the VM with `minikube delete`
 
-- Bind mounts depends on the underlying hypervisor, and may require additionnal setup
+- Bind mounts depend on the underlying hypervisor
+
+  (they may require additionnal setup)
 
 ---
-## Docker-for-Mac/Windows
 
-- start a VM with the appropriate hypervisor (even better !)
+## Docker Desktop
 
-- bind mount works out of the box
+- Available for Mac and Windows
+
+- Start a VM with the appropriate hypervisor (even better!)
+
+- Bind mounts work out of the box
 
 ```yaml
 volumes:
@@ -83,51 +105,67 @@ volumes:
     path: /C/Users/Enix/my_code_repository
 ```
 
-- ingress and other addons need to be installed manualy
+- Ingress and other addons need to be installed manually
 
 ---
+
 ## Kind
 
-- Use docker-in-docker to run kubernetes
+- Kubernetes-in-Docker
 
-- It's actually more "containerd-in-docker" than real "d-in-d"
+- Uses Docker-in-Docker to run Kubernetes
 
-   So building "Dockerfile" is not a option
+- Technically, it's more like Containerd-in-Docker
 
-- Able to simulate multiple nodes
+- We don't get a real Docker Engine (and cannot build Dockerfiles)
 
-→ Kind is quite handy to test kubernetes deployments on Public CI (Travis/Circle)
-   where only docker is available
+- Single-node by default, but multi-node clusters are possible
 
-- Extra configuration for bind mount
+- Very convenient to test Kubernetes deployments when only Docker is available
+
+  (e.g. on public CI services like Travis, Circle, GitHub Actions ...)
+
+- Bind mounts require extra configuration
 
 - Extra configuration for a couple of addons, totally custom for other
 
-- Warning brtfs user: that doesn't work 😢
+- Doesn't work with BTRFS (sorry BTRFS users😢)
 
 ---
+
 ## microk8s
 
-- snap(container like) distribution of kubernetes
+- Distribution of Kubernetes using Snap
 
-- work on: Ubuntu and derivative, or Ubuntu VM
+  (Snap is a container-like method to install software)
 
-- big list of addons easy to install
+- Available on Ubuntu and derivatives
 
-- bind mount work natively, need extra setup if you use a VM
+- Bind mounts work natively (but require extra setup if we run in a VM)
+
+- Big list of addons; easy to install
 
 ---
+
 ## Proper tooling
 
-We ran our neat one-node-cluster. What do we do now ?
+The simple workflow seems to be:
 
-- find the remote docker endpoint and export the DOCKER_HOST variable
+- set up a one-node cluster with one of the methods mentioned previously,
 
-- follow the previous 7-steps workflow
+- find the remote Docker endpoint,
 
-Can we do better ?
+- configure the `DOCKER_HOST` variable to use that endpoint,
+
+- follow the previous 7-step workflow.
+
+Can we do better?
+
 ---
+
 ## Skaffold
 
 
 Note: Draft and Forge are softwares with some functional overlap
+
+<!-- FIXME Draft semble à l'abandon. Il y a aussi Tilt Garden ... -->

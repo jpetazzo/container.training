@@ -4,12 +4,12 @@ From years, decades, (centuries !), software development has followed the same p
 
 - Development
 
-- Test
+- Testing
 
-- Package
+- Packaging
 
-- Ship
+- Shipping
 
-- Deploy
+- Deployment
 
-We will see how this map to kubernetes world
+We will see how this map to Kubernetes world.
