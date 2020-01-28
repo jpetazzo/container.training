@@ -1,3 +1,10 @@
+# Prometheus
+
+Prometheus is monitoring system with small storage io footprint. It's quite ubiquitous
+
+in the kubernetes world. This section is not a description
+
+
 ## Prometheus endpoint
 
 The goal here is to expose an HTTP endoint for prometheus. Sample response:
@@ -53,3 +60,27 @@ Links (do you see a pattern ?):
 
 - Try to not expose monitoring channel more than needed. Often localhost is enough
     (sidecars run in the same network namespace as other containers)
+
+---
+## Ok! and then change prometheus conf ?
+
+- Well, not really. It achievable this way, but...
+
+- Prometheus has good service discovery paired with kubernetes.
+
+- Depending on how we installed prometheus, we just need:
+
+    - pods annotations:
+
+       ```
+        annotations:
+          prometheus.io/port: 9090
+          prometheus.io/path: /metrics
+       ```
+
+    - *service monitor* custom resource object
+.small[
+        https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitor
+]
+
+*Note: More on prometheus next day*
