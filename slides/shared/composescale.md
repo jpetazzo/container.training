@@ -40,7 +40,7 @@ class: extra-details
 
 <!--
 ```wait units of work done```
-```keys ^C```
+```key ^C```
 -->
 
 ]
@@ -75,7 +75,7 @@ Tip: use `^S` and `^Q` to pause/resume log output.
 ```bash top```
 
 ```wait Tasks```
-```keys ^C```
+```key ^C```
 -->
 
 - run `vmstat 1` to see I/O usage (si/so/bi/bo)
@@ -85,7 +85,7 @@ Tip: use `^S` and `^Q` to pause/resume log output.
 ```bash vmstat 1```
 
 ```wait memory```
-```keys ^C```
+```key ^C```
 -->
 
 ]

@@ -100,3 +100,25 @@ class: extra-details
 * In "Build rules" block near page bottom, put `/www` in "Build Context" column (or whichever directory the Dockerfile is in).
 * Click "Save and Build" to build the repository immediately (without waiting for a git push).
 * Subsequent builds will happen automatically, thanks to GitHub hooks.
+
+---
+
+## Building on the fly
+
+- Some services can build images on the fly from a repository
+
+- Example: [ctr.run](https://ctr.run/)
+
+.exercise[
+
+- Use ctr.run to automatically build a container image and run it:
+  ```bash
+  docker run ctr.run/github.com/undefinedlabs/hello-world
+  ```
+
+]
+
+There might be a long pause before the first layer is pulled,
+because the API behind `docker pull` doesn't allow to stream build logs, and there is no feedback during the build.
+
+It is possible to view the build logs by setting up an account on [ctr.run](https://ctr.run/).

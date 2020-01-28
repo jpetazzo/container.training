@@ -14,6 +14,7 @@ once)
       ./appendcheck.py $YAML.html
     done
   fi
+  zip -qr slides.zip . && echo "Created slides.zip archive."
   ;;
 
 forever)

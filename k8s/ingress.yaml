@@ -1,13 +1,13 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: kibana
+  name: whatever
 spec:
   rules:
-  - host: kibana.185.145.251.54.nip.io
+  - host: whatever.A.B.C.D.nip.io
     http:
       paths:
       - path: /
         backend:
-          serviceName: kibana
-          servicePort: 5601
+          serviceName: whatever
+          servicePort: 1234

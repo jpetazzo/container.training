@@ -84,14 +84,14 @@ Exactly what we need!
 
 .exercise[
 
-- View the logs for all the rng containers:
+- View the logs for all the pingpong containers:
   ```bash
-  stern rng
+  stern pingpong
   ```
 
 <!--
-```wait HTTP/1.1```
-```keys ^C```
+```wait seq=```
+```key ^C```
 -->
 
 ]
@@ -117,7 +117,7 @@ Exactly what we need!
 
 <!--
 ```wait weave-npc```
-```keys ^C```
+```key ^C```
 -->
 
 ]
@@ -138,14 +138,14 @@ Exactly what we need!
 
 .exercise[
 
-- View the logs for all the things started with `kubectl create deployment`:
+- View the logs for all the things started with `kubectl run`:
   ```bash
-  stern -l app
+  stern -l run
   ```
 
 <!--
-```wait units of work```
-```keys ^C```
+```wait seq=```
+```key ^C```
 -->
 
 ]

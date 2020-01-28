@@ -89,3 +89,30 @@
 - When picking a registry, pay attention to its build system
 
   (when it has one)
+
+---
+
+## Building on the fly
+
+- Some services can build images on the fly from a repository
+
+- Example: [ctr.run](https://ctr.run/)
+
+.exercise[
+
+- Use ctr.run to automatically build a container image and run it:
+  ```bash
+  docker run ctr.run/github.com/jpetazzo/container.training/dockercoins/hasher
+  ```
+
+<!--
+```longwait Sinatra```
+```key ^C```
+-->
+
+]
+
+There might be a long pause before the first layer is pulled,
+because the API behind `docker pull` doesn't allow to stream build logs, and there is no feedback during the build.
+
+It is possible to view the build logs by setting up an account on [ctr.run](https://ctr.run/).

@@ -193,7 +193,12 @@
 
 - Best practice: set a memory limit, and pass it to the runtime
 
-  (see [this blog post](https://very-serio.us/2017/12/05/running-jvms-in-kubernetes/) for a detailed example)
+- Note: recent versions of the JVM can do this automatically
+
+  (see [JDK-8146115](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8146115))
+  and
+  [this blog post](https://very-serio.us/2017/12/05/running-jvms-in-kubernetes/)
+  for detailed examples)
 
 ---
 

@@ -427,7 +427,7 @@ nodes and encryption of gossip traffic) were removed for simplicity.
 
 <!--
 ```wait Synced node info```
-```keys ^C```
+```key ^C```
 -->
 
 - Check the health of the cluster:

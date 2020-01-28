@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # transforms a YAML manifest into a HTML workshop file
 
 import glob
@@ -20,12 +20,19 @@ def anchor(title):
     return "toc-" + title
 
 
-def interstitials_generator():
-    images = [url.strip() for url in open("interstitials.txt") if url.strip()]
-    while True:
-        for image in images:
-            yield image
-interstitials = interstitials_generator()
+class Interstitials(object):
+
+    def __init__(self):
+        self.index = 0
+        self.images = [url.strip() for url in open("interstitials.txt") if url.strip()]
+
+    def next(self):
+        index = self.index % len(self.images)
+        index += 1
+        return self.images[index]
+
+
+interstitials = Interstitials()
 
 
 def insertslide(markdown, title):
@@ -54,7 +61,7 @@ class: pic
 name: {anchor}
 class: title
 
-{title}
+ {title}
 
 .nav[
 [Previous section](#{previouslink})
@@ -81,6 +88,15 @@ def flatten(titles):
 
 def generatefromyaml(manifest, filename):
     manifest = yaml.safe_load(manifest)
+
+    if "zip" not in manifest:
+        if manifest["slides"].endswith('/'):
+            manifest["zip"] = manifest["slides"] + "slides.zip"
+        else:
+            manifest["zip"] = manifest["slides"] + "/slides.zip"
+
+    if "html" not in manifest:
+        manifest["html"] = filename + ".html"
 
     markdown, titles = processchapter(manifest["chapters"], filename)
     logging.debug("Found {} titles.".format(len(titles)))
@@ -110,6 +126,8 @@ def generatefromyaml(manifest, filename):
     html = html.replace("@@CHAT@@", manifest["chat"])
     html = html.replace("@@GITREPO@@", manifest["gitrepo"])
     html = html.replace("@@SLIDES@@", manifest["slides"])
+    html = html.replace("@@ZIP@@", manifest["zip"])
+    html = html.replace("@@HTML@@", manifest["html"])
     html = html.replace("@@TITLE@@", manifest["title"].replace("\n", " "))
     html = html.replace("@@SLIDENUMBERPREFIX@@", manifest.get("slidenumberprefix", ""))
     return html
@@ -154,8 +172,6 @@ def gentoc(tree, path=()):
 # Returns: (epxandedmarkdown,[list of titles])
 # The list of titles can be nested.
 def processchapter(chapter, filename):
-    if isinstance(chapter, unicode):
-        return processchapter(chapter.encode("utf-8"), filename)
     if isinstance(chapter, str):
         if "\n" in chapter:
             titles = re.findall("^# (.*)", chapter, re.MULTILINE)
@@ -179,14 +195,14 @@ try:
     if "REPOSITORY_URL" in os.environ:
         repo = os.environ["REPOSITORY_URL"]
     else:
-        repo = subprocess.check_output(["git", "config", "remote.origin.url"])
+        repo = subprocess.check_output(["git", "config", "remote.origin.url"]).decode("ascii")
     repo = repo.strip().replace("git@github.com:", "https://github.com/")
     if "BRANCH" in os.environ:
         branch = os.environ["BRANCH"]
     else:
-        branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"])
+        branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]).decode("ascii")
         branch = branch.strip()
-    base = subprocess.check_output(["git", "rev-parse", "--show-prefix"])
+    base = subprocess.check_output(["git", "rev-parse", "--show-prefix"]).decode("ascii")
     base = base.strip().strip("/")
     urltemplate = ("{repo}/tree/{branch}/{base}/{filename}"
         .format(repo=repo, branch=branch, base=base, filename="{}"))
@@ -194,12 +210,12 @@ except:
     logging.exception("Could not generate repository URL; generating local URLs instead.")
     urltemplate = "file://{pwd}/{filename}".format(pwd=os.environ["PWD"], filename="{}")
 try:
-    commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"])
+    commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii")
 except:
     logging.exception("Could not figure out HEAD commit.")
     commit = "??????"
 try:
-    dirtyfiles = subprocess.check_output(["git", "status", "--porcelain"])
+    dirtyfiles = subprocess.check_output(["git", "status", "--porcelain"]).decode("ascii")
 except:
     logging.exception("Could not figure out repository cleanliness.")
     dirtyfiles = "?? git status --porcelain failed"

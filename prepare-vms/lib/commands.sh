@@ -242,7 +242,7 @@ EOF"
     # Install helm
     pssh "
     if [ ! -x /usr/local/bin/helm ]; then
-        curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | sudo bash &&
+        curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get-helm-3 | sudo bash &&
         helm completion bash | sudo tee /etc/bash_completion.d/helm
     fi"
 
@@ -323,6 +323,15 @@ _cmd_listall() {
     done
 }
 
+_cmd maketag "Generate a quasi-unique tag for a group of instances"
+_cmd_maketag() {
+    if [ -z $USER ]; then
+        export USER=anonymous
+    fi
+    MS=$(($(date +%N)/1000000))
+    date +%Y-%m-%d-%H-%M-$MS-$USER
+}
+
 _cmd ping "Ping VMs in a given tag, to check that they have network access"
 _cmd_ping() {
     TAG=$1
@@ -360,6 +369,16 @@ _cmd opensg "Open the default security group to ALL ingress traffic"
 _cmd_opensg() {
     need_infra $1
     infra_opensg
+}
+
+_cmd portworx "Prepare the nodes for Portworx deployment"
+_cmd_portworx() {
+    TAG=$1
+    need_tag
+
+    pssh "
+    sudo truncate --size 10G /portworx.blk &&
+    sudo losetup /dev/loop4 /portworx.blk"
 }
 
 _cmd disableaddrchecks "Disable source/destination IP address checks"
@@ -455,7 +474,7 @@ _cmd_start() {
     need_infra $INFRA
 
     if [ -z "$TAG" ]; then
-        TAG=$(make_tag)
+        TAG=$(_cmd_maketag)
     fi
     mkdir -p tags/$TAG
     ln -s ../../$INFRA tags/$TAG/infra.sh
@@ -517,20 +536,24 @@ _cmd_test() {
     test_tag
 }
 
+_cmd tmux "Log into the first node and start a tmux server"
+_cmd_tmux() {
+    TAG=$1
+    need_tag
+    IP=$(head -1 tags/$TAG/ips.txt)
+    info "Opening ssh+tmux with $IP"
+    rm -f /tmp/tmux-$UID/default
+    ssh -t -L /tmp/tmux-$UID/default:/tmp/tmux-1001/default docker@$IP tmux new-session -As 0
+}
+
 _cmd helmprom "Install Helm and Prometheus"
 _cmd_helmprom() {
     TAG=$1
     need_tag
     pssh "
     if i_am_first_node; then
-        kubectl -n kube-system get serviceaccount helm ||
-            kubectl -n kube-system create serviceaccount helm
-        sudo -u docker -H helm init --service-account helm
-        kubectl get clusterrolebinding helm-can-do-everything ||
-            kubectl create clusterrolebinding helm-can-do-everything \
-                --clusterrole=cluster-admin \
-                --serviceaccount=kube-system:helm
-        sudo -u docker -H helm upgrade --install prometheus stable/prometheus \
+        sudo -u docker -H helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+        sudo -u docker -H helm install prometheus stable/prometheus \
             --namespace kube-system \
             --set server.service.type=NodePort \
             --set server.service.nodePort=30090 \
@@ -716,11 +739,4 @@ sync_keys() {
     else
         info "Using existing key $AWS_KEY_NAME."
     fi
-}
-
-make_tag() {
-    if [ -z $USER ]; then
-        export USER=anonymous
-    fi
-    date +%Y-%m-%d-%H-%M-$USER
 }

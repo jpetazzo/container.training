@@ -1,0 +1,17 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: demo
+spec:
+  version: 7.5.1
+  count: 1
+  elasticsearchRef:
+    name: demo
+    namespace: eck-demo
+  http:
+    service:
+      spec:
+        type: NodePort
+    tls:
+      selfSignedCertificate:
+        disabled: true

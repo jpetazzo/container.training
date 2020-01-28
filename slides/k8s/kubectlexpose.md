@@ -14,42 +14,80 @@
 
   `ClusterIP`, `NodePort`, `LoadBalancer`, `ExternalName`
 
----
-
-## Basic service types
-
-- `ClusterIP` (default type)
-
-  - a virtual IP address is allocated for the service (in an internal, private range)
-  - this IP address is reachable only from within the cluster (nodes and pods)
-  - our code can connect to the service using the original port number
-
-- `NodePort`
-
-  - a port is allocated for the service (by default, in the 30000-32768 range)
-  - that port is made available *on all our nodes* and anybody can connect to it
-  - our code must be changed to connect to that new port number
-
-These service types are always available.
-
-Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables` rules.
+- HTTP services can also use `Ingress` resources (more on that later)
 
 ---
 
-## More service types
+## `ClusterIP`
 
-- `LoadBalancer`
+- It's the default service type
 
-  - an external load balancer is allocated for the service
-  - the load balancer is configured accordingly
-    <br/>(e.g.: a `NodePort` service is created, and the load balancer sends traffic to that port)
-  - available only when the underlying infrastructure provides some "load balancer as a service"
-    <br/>(e.g. AWS, Azure, GCE, OpenStack...)
+- A virtual IP address is allocated for the service
 
-- `ExternalName`
+  (in an internal, private range; e.g. 10.96.0.0/12)
 
-  - the DNS entry managed by CoreDNS will just be a `CNAME` to a provided record
-  - no port, no IP address, no nothing else is allocated
+- This IP address is reachable only from within the cluster (nodes and pods)
+
+- Our code can connect to the service using the original port number
+
+- Perfect for internal communication, within the cluster
+
+---
+
+## `LoadBalancer`
+
+- An external load balancer is allocated for the service
+
+  (typically a cloud load balancer, e.g. ELB on AWS, GLB on GCE ...)
+
+- This is available only when the underlying infrastructure provides some kind of
+  "load balancer as a service"
+
+- Each service of that type will typically cost a little bit of money
+
+  (e.g. a few cents per hour on AWS or GCE)
+
+- Ideally, traffic would flow directly from the load balancer to the pods
+
+- In practice, it will often flow through a `NodePort` first
+
+---
+
+## `NodePort`
+
+- A port number is allocated for the service
+
+  (by default, in the 30000-32767 range)
+
+- That port is made available *on all our nodes* and anybody can connect to it
+
+  (we can connect to any node on that port to reach the service)
+
+- Our code needs to be changed to connect to that new port number
+
+- Under the hood: `kube-proxy` sets up a bunch of `iptables` rules on our nodes
+
+- Sometimes, it's the only available option for external traffic
+
+  (e.g. most clusters deployed with kubeadm or on-premises)
+
+---
+
+class: extra-details
+
+## `ExternalName`
+
+- No load balancer (internal or external) is created
+
+- Only a DNS entry gets added to the DNS managed by Kubernetes
+
+- That DNS entry will just be a `CNAME` to a provided record
+
+Example:
+```bash
+kubectl create service externalname k8s --external-name kubernetes.io
+```
+*Creates a CNAME `k8s` pointing to `kubernetes.io`*
 
 ---
 
@@ -86,7 +124,10 @@ Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables`
   kubectl get pods -w
   ```
 
-<!-- ```keys ^C``` -->
+<!--
+```wait NAME```
+```tmux split-pane -h```
+-->
 
 - Create a deployment for this very lightweight HTTP server:
   ```bash
@@ -153,6 +194,8 @@ Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables`
 
 <!--
 ```hide kubectl wait deploy httpenv --for condition=available```
+```key ^D```
+```key ^C```
 -->
 
 - Send a few requests:
@@ -279,18 +322,28 @@ error: the server doesn't have a resource type "endpoint"
 
 ---
 
-## Exposing services to the outside world
+class: extra-details
 
-- The default type (ClusterIP) only works for internal traffic
+## `ExternalIP`
 
-- If we want to accept external traffic, we can use one of these:
+- When creating a servivce, we can also specify an `ExternalIP`
 
-  - NodePort (expose a service on a TCP port between 30000-32768)
+  (this is not a type, but an extra attribute to the service)
 
-  - LoadBalancer (provision a cloud load balancer for our service)
+- It will make the service availableon this IP address
 
-  - ExternalIP (use one node's external IP address)
+  (if the IP address belongs to a node of the cluster)
 
-  - Ingress (a special mechanism for HTTP services)
+---
 
-*We'll see NodePorts and Ingresses more in detail later.*
+## `Ingress`
+
+- Ingresses are another type (kind) of resource
+
+- They are specifically for HTTP services
+
+  (not TCP or UDP)
+
+- They can also handle TLS certificates, URL rewriting ...
+
+- They require an *Ingress Controller* to function

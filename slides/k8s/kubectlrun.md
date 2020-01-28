@@ -20,10 +20,9 @@
 
 .exercise[
 
-- Let's ping `1.1.1.1`, Cloudflare's 
-  [public DNS resolver](https://blog.cloudflare.com/announcing-1111/):
+- Let's ping the address of `localhost`, the loopback interface:
   ```bash
-  kubectl run pingpong --image alpine ping 1.1.1.1
+  kubectl run pingpong --image alpine ping 127.0.0.1
   ```
 
 <!-- ```hide kubectl wait deploy/pingpong --for condition=available``` -->
@@ -155,6 +154,11 @@ pod/pingpong-7c8bbcd9bc-6c9qz   1/1       Running   0          10m
 
 - Leave that command running, so that we can keep an eye on these logs
 
+<!--
+```wait seq=3```
+```tmux split-pane -h```
+-->
+
 ]
 
 ---
@@ -207,10 +211,20 @@ We could! But the *deployment* would notice it right away, and scale back to the
 
 - Interrupt `kubectl logs` (with Ctrl-C)
 
+<!--
+```tmux last-pane```
+```key ^C```
+-->
+
 - Restart it:
   ```bash
   kubectl logs deploy/pingpong --tail 1 --follow
   ```
+
+<!--
+```wait using pod/pingpong-```
+```tmux last-pane```
+-->
 
 ]
 
@@ -236,10 +250,30 @@ Let's leave `kubectl logs` running while we keep exploring.
   watch kubectl get pods
   ```
 
+<!--
+```wait Every 2.0s```
+```tmux split-pane -v```
+-->
+
 - Destroy the pod currently shown by `kubectl logs`:
   ```
   kubectl delete pod pingpong-xxxxxxxxxx-yyyyy
   ```
+
+<!--
+```tmux select-pane -t 0```
+```copy pingpong-[^-]*-.....```
+```tmux last-pane```
+```keys kubectl delete pod ```
+```paste```
+```key ^J```
+```check```
+```key ^D```
+```tmux select-pane -t 1```
+```key ^C```
+```key ^D```
+-->
+
 ]
 
 ---
@@ -308,7 +342,8 @@ Let's leave `kubectl logs` running while we keep exploring.
 
 - Create the Cron Job:
   ```bash
-  kubectl run --schedule="*/3 * * * *" --restart=OnFailure --image=alpine sleep 10
+  kubectl run every3mins --schedule="*/3 * * * *" --restart=OnFailure \
+      --image=alpine sleep 10
   ```
 
 - Check the resource that was created:
@@ -367,12 +402,12 @@ Let's leave `kubectl logs` running while we keep exploring.
 
 ## Various ways of creating resources
 
-- `kubectl run` 
+- `kubectl run`
 
   - easy way to get started
   - versatile
 
-- `kubectl create <resource>` 
+- `kubectl create <resource>`
 
   - explicit, but lacks some features
   - can't create a CronJob before Kubernetes 1.14
@@ -419,7 +454,7 @@ Let's leave `kubectl logs` running while we keep exploring.
 
 <!--
 ```wait seq=```
-```keys ^C```
+```key ^C```
 -->
 
 ]
@@ -447,6 +482,8 @@ class: extra-details
   ```bash
   kubectl logs -l run=pingpong --tail 1 -f
   ```
+
+<!-- ```wait error:``` -->
 
 ]
 
@@ -516,15 +553,36 @@ class: extra-details
 
 ---
 
-## Aren't we flooding 1.1.1.1?
+class: extra-details
 
-- If you're wondering this, good question!
+## Party tricks involving IP addresses
 
-- Don't worry, though:
+- It is possible to specify an IP address with less than 4 bytes
 
-  *APNIC's research group held the IP addresses 1.1.1.1 and 1.0.0.1. While the addresses were valid, so many people had entered them into various random systems that they were continuously overwhelmed by a flood of garbage traffic. APNIC wanted to study this garbage traffic but any time they'd tried to announce the IPs, the flood would overwhelm any conventional network.*
+  (example: `127.1`)
 
-  (Source: https://blog.cloudflare.com/announcing-1111/)
+- Zeroes are then inserted in the middle
 
-- It's very unlikely that our concerted pings manage to produce
-  even a modest blip at Cloudflare's NOC!
+- As a result, `127.1` expands to `127.0.0.1`
+
+- So we can `ping 127.1` to ping `localhost`!
+
+(See [this blog post](https://ma.ttias.be/theres-more-than-one-way-to-write-an-ip-address/
+) for more details.)
+
+---
+
+class: extra-details
+
+## More party tricks with IP addresses
+
+- We can also ping `1.1`
+
+- `1.1` will expand to `1.0.0.1`
+
+- This is one of the addresses of Cloudflare's
+  [public DNS resolver](https://blog.cloudflare.com/announcing-1111/)
+
+- This is a quick way to check connectivity
+
+  (if we can reach 1.1, we probably have internet access)

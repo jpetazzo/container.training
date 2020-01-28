@@ -31,11 +31,11 @@ chapters:
   - k8s/sealed-secrets.md
   #- k8s/volumes.md
   - k8s/kustomize.md
-  - k8s/helm.md
-  - k8s/create-chart.md
-  #- k8s/create-more-charts.md
-
-
+  - k8s/helm-intro.md
+  - k8s/helm-chart-format.md
+  - k8s/helm-create-basic-chart.md
+  - k8s/helm-create-better-chart.md
+  - k8s/helm-secrets.md
 -
   # - k8s/shippingimages.md  # some overlap
   - k8s/registries.md

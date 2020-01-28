@@ -44,21 +44,37 @@
 
 ## Other things that Kubernetes can do for us
 
-- Basic autoscaling
+- Autoscaling
 
-- Blue/green deployment, canary deployment
+  (straightforward on CPU; more complex on other metrics)
 
-- Long running services, but also batch (one-off) jobs
+- Ressource management and scheduling
 
-- Overcommit our cluster and *evict* low-priority jobs
+  (reserve CPU/RAM for containers; placement constraints)
 
-- Run services with *stateful* data (databases etc.)
+- Advanced rollout patterns
 
-- Fine-grained access control defining *what* can be done by *whom* on *which* resources
+  (blue/green deployment, canary deployment)
 
-- Integrating third party services (*service catalog*)
+---
 
-- Automating complex tasks (*operators*)
+## More things that Kubernetes can do for us
+
+- Batch jobs
+
+  (one-off; parallel; also cron-style periodic execution)
+
+- Fine-grained access control
+
+  (defining *what* can be done by *whom* on *which* resources)
+
+- Stateful services
+
+  (databases, message queues, etc.)
+
+- Automating complex tasks with *operators*
+
+  (e.g. database replication, failover, etc.)
 
 ---
 
@@ -183,6 +199,30 @@ class: extra-details
 
 class: extra-details
 
+## How many nodes should a cluster have?
+
+- There is no particular constraint
+
+  (no need to have an odd number of nodes for quorum)
+
+- A cluster can have zero node
+
+  (but then it won't be able to start any pods)
+
+- For testing and development, having a single node is fine
+
+- For production, make sure that you have extra capacity
+
+  (so that your workload still fits if you lose a node or a group of nodes)
+
+- Kubernetes is tested with [up to 5000 nodes](https://kubernetes.io/docs/setup/best-practices/cluster-large/)
+
+  (however, running a cluster of that size requires a lot of tuning)
+
+---
+
+class: extra-details
+
 ## Do we need to run Docker at all?
 
 No!
@@ -191,11 +231,29 @@ No!
 
 - By default, Kubernetes uses the Docker Engine to run containers
 
-- We could also use `rkt` ("Rocket") from CoreOS
+- We can leverage other pluggable runtimes through the *Container Runtime Interface*
 
-- Or leverage other pluggable runtimes through the *Container Runtime Interface*
+- <del>We could also use `rkt` ("Rocket") from CoreOS</del> (deprecated)
 
-  (like CRI-O, or containerd)
+---
+
+class: extra-details
+
+## Some runtimes available through CRI
+
+- [containerd](https://github.com/containerd/containerd/blob/master/README.md)
+
+  - maintained by Docker, IBM, and community
+  - used by Docker Engine, microk8s, k3s, GKE; also standalone
+  - comes with its own CLI, `ctr`
+
+- [CRI-O](https://github.com/cri-o/cri-o/blob/master/README.md):
+
+  - maintained by Red Hat, SUSE, and community
+  - used by OpenShift and Kubic
+  - designed specifically as a minimal runtime for Kubernetes
+
+- [And more](https://kubernetes.io/docs/setup/production-environment/container-runtimes/)
 
 ---
 
@@ -262,6 +320,48 @@ class: extra-details
 class: pic
 
 ![Node, pod, container](images/k8s-arch3-thanks-weave.png)
+
+---
+
+## Scaling
+
+- How would we scale the pod shown on the previous slide?
+
+- **Do** create additional pods
+
+  - each pod can be on a different node
+
+  - each pod will have its own IP address
+
+- **Do not** add more NGINX containers in the pod
+
+  - all the NGINX containers would be on the same node
+
+  - they would all have the same IP address
+    <br/>(resulting in `Address alreading in use` errors)
+
+---
+
+## Together or separate
+
+- Should we put e.g. a web application server and a cache together?
+  <br/>
+  ("cache" being something like e.g. Memcached or Redis)
+
+- Putting them **in the same pod** means:
+
+  - they have to be scaled together
+
+  - they can communicate very efficiently over `localhost`
+
+- Putting them **in different pods** means:
+
+  - they can be scaled separately
+
+  - they must communicate over remote IP addresses
+    <br/>(incurring more latency, lower performance)
+
+- Both scenarios can make sense, depending on our goals
 
 ---
 

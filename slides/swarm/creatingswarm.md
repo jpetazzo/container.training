@@ -267,7 +267,7 @@ class: extra-details
 
 - Switch back to `node1` (with `exit`, `Ctrl-D` ...)
 
-<!-- ```keys ^D``` -->
+<!-- ```key ^D``` -->
 
 - View the cluster from `node1`, which is a manager:
   ```bash

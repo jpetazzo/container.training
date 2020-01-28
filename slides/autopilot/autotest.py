@@ -26,9 +26,10 @@ IPADDR = None
 class State(object):
 
     def __init__(self):
+        self.clipboard = ""
         self.interactive = True
-        self.verify_status = False
-        self.simulate_type = True
+        self.verify_status = True
+        self.simulate_type = False
         self.switch_desktop = False
         self.sync_slides = False
         self.open_links = False
@@ -38,6 +39,7 @@ class State(object):
 
     def load(self):
         data = yaml.load(open("state.yaml"))
+        self.clipboard = str(data["clipboard"])
         self.interactive = bool(data["interactive"])
         self.verify_status = bool(data["verify_status"])
         self.simulate_type = bool(data["simulate_type"])
@@ -51,6 +53,7 @@ class State(object):
     def save(self):
         with open("state.yaml", "w") as f:
             yaml.dump(dict(
+                clipboard=self.clipboard,
                 interactive=self.interactive,
                 verify_status=self.verify_status,
                 simulate_type=self.simulate_type,
@@ -65,6 +68,8 @@ class State(object):
 
 state = State()
 
+
+outfile = open("autopilot.log", "w")
 
 def hrule():
     return "="*int(subprocess.check_output(["tput", "cols"]))
@@ -85,9 +90,11 @@ class Snippet(object):
         # On single-line snippets, the data follows the method immediately
         if '\n' in content:
             self.method, self.data = content.split('\n', 1)
-        else:
+            self.data = self.data.strip()
+        elif ' ' in content:
             self.method, self.data = content.split(' ', 1)
-        self.data = self.data.strip()
+        else:
+            self.method, self.data = content, None
         self.next = None
 
     def __str__(self):
@@ -186,7 +193,7 @@ def wait_for_prompt():
         if last_line == "$":
             # This is a perfect opportunity to grab the node's IP address
             global IPADDR
-            IPADDR = re.findall("^\[(.*)\]", output, re.MULTILINE)[-1]
+            IPADDR = re.findall("\[(.*)\]", output, re.MULTILINE)[-1]
             return
         # When we are in an alpine container, the prompt will be "/ #"
         if last_line == "/ #":
@@ -235,6 +242,8 @@ tmux
 
 rm -f /tmp/tmux-{uid}/default && ssh -t -L /tmp/tmux-{uid}/default:/tmp/tmux-1001/default docker@{ipaddr} tmux new-session -As 0
 
+(Or use workshopctl tmux)
+
 3. If you cannot control a remote tmux:
 
 tmux new-session ssh docker@{ipaddr}
@@ -259,24 +268,9 @@ for slide in re.split("\n---?\n", content):
         slide_classes = slide_classes[0].split(",")
         slide_classes = [c.strip() for c in slide_classes]
     if excluded_classes & set(slide_classes):
-        logging.info("Skipping excluded slide.")
+        logging.debug("Skipping excluded slide.")
         continue
     slides.append(Slide(slide))
-
-
-def send_keys(data):
-    if state.simulate_type and data[0] != '^':
-        for key in data:
-            if key == ";":
-                key = "\\;"
-            if key == "\n":
-                if interruptible_sleep(1): return
-            subprocess.check_call(["tmux", "send-keys", key])
-            if interruptible_sleep(0.15*random.random()): return
-            if key == "\n":
-                if interruptible_sleep(1): return
-    else:
-        subprocess.check_call(["tmux", "send-keys", data])
 
 
 def capture_pane():
@@ -288,7 +282,7 @@ setup_tmux_and_ssh()
 
 try:
     state.load()
-    logging.info("Successfully loaded state from file.")
+    logging.debug("Successfully loaded state from file.")
     # Let's override the starting state, so that when an error occurs,
     # we can restart the auto-tester and then single-step or debug.
     # (Instead of running again through the same issue immediately.)
@@ -296,6 +290,7 @@ try:
 except Exception as e:
     logging.exception("Could not load state from file.")
     logging.warning("Using default values.")
+
 
 def move_forward():
     state.snippet += 1
@@ -320,10 +315,147 @@ def check_bounds():
         state.slide = len(slides)-1
 
 
+##########################################################
+# All functions starting with action_ correspond to the
+# code to be executed when seeing ```foo``` blocks in the
+# input. ```foo``` would call action_foo(state, snippet).
+##########################################################
+
+
+def send_keys(keys):
+    subprocess.check_call(["tmux", "send-keys", keys])
+
+# Send a single key.
+# Useful for special keys, e.g. tmux interprets these strings:
+# ^C (and all other sequences starting with a caret)
+# Space
+# ... and many others (check tmux manpage for details).
+def action_key(state, snippet):
+    send_keys(snippet.data)
+
+
+# Send multiple keys.
+# If keystroke simulation is off, all keys are sent at once.
+# If keystroke simulation is on, keys are sent one by one, with a delay between them.
+def action_keys(state, snippet, keys=None):
+    if keys is None:
+        keys = snippet.data
+    if not state.simulate_type:
+        send_keys(keys)
+    else:
+        for key in keys:
+            if key == ";":
+                key = "\\;"
+            if key == "\n":
+                if interruptible_sleep(1): return
+            send_keys(key)
+            if interruptible_sleep(0.15*random.random()): return
+            if key == "\n":
+                if interruptible_sleep(1): return
+
+
+def action_hide(state, snippet):
+    if state.run_hidden:
+        action_bash(state, snippet)
+
+
+def action_bash(state, snippet):
+    data = snippet.data
+    # Make sure that we're ready
+    wait_for_prompt()
+    # Strip leading spaces
+    data = re.sub("\n +", "\n", data)
+    # Remove backticks (they are used to highlight sections)
+    data = data.replace('`', '')
+    # Add "RETURN" at the end of the command :)
+    data += "\n"
+    # Send command
+    action_keys(state, snippet, data)
+    # Force a short sleep to avoid race condition
+    time.sleep(0.5)
+    if snippet.next and snippet.next.method == "wait":
+        wait_for_string(snippet.next.data)
+    elif snippet.next and snippet.next.method == "longwait":
+        wait_for_string(snippet.next.data, 10*TIMEOUT)
+    else:
+        wait_for_prompt()
+        # Verify return code
+        check_exit_status()
+
+
+def action_copy(state, snippet):
+    screen = capture_pane()
+    matches = re.findall(snippet.data, screen, flags=re.DOTALL)
+    if len(matches) == 0:
+        raise Exception("Could not find regex {} in output.".format(snippet.data))
+    # Arbitrarily get the most recent match
+    match = matches[-1]
+    # Remove line breaks (like a screen copy paste would do)
+    match = match.replace('\n', '')
+    logging.debug("Copied {} to clipboard.".format(match))
+    state.clipboard = match
+
+
+def action_paste(state, snippet):
+    logging.debug("Pasting {} from clipboard.".format(state.clipboard))
+    action_keys(state, snippet, state.clipboard)
+
+
+def action_check(state, snippet):
+    wait_for_prompt()
+    check_exit_status()
+
+
+def action_open(state, snippet):
+    # Cheap way to get node1's IP address
+    screen = capture_pane()
+    url = snippet.data.replace("/node1", "/{}".format(IPADDR))
+    # This should probably be adapted to run on different OS
+    if state.open_links:
+        subprocess.check_output(["xdg-open", url])
+        focus_browser()
+        if state.interactive:
+            print("Press any key to continue to next step...")
+            click.getchar()
+
+
+def action_tmux(state, snippet):
+    subprocess.check_call(["tmux"] + snippet.data.split())
+
+
+def action_unknown(state, snippet):
+    logging.warning("Unknown method {}: {!r}".format(snippet.method, snippet.data))
+
+
+def run_snippet(state, snippet):
+    logging.info("Running with method {}: {}".format(snippet.method, snippet.data))
+    try:
+        action = globals()["action_"+snippet.method]
+    except KeyError:
+        action = action_unknown
+    try:
+        action(state, snippet)
+        result = "OK"
+    except:
+        result = "ERR"
+        logging.exception("While running method {} with {!r}".format(snippet.method, snippet.data))
+        # Try to recover
+        try:
+            wait_for_prompt()
+        except:
+            subprocess.check_call(["tmux", "new-window"])
+            wait_for_prompt()
+    outfile.write("{} SLIDE={} METHOD={} DATA={!r}\n".format(result, state.slide, snippet.method, snippet.data))
+    outfile.flush()
+
+
 while True:
     state.save()
     slide = slides[state.slide]
-    snippet = slide.snippets[state.snippet-1] if state.snippet else None
+    if state.snippet and state.snippet <= len(slide.snippets):
+        snippet = slide.snippets[state.snippet-1]
+    else:
+        snippet = None
     click.clear()
     print("[Slide {}/{}] [Snippet {}/{}] [simulate_type:{}] [verify_status:{}] "
           "[switch_desktop:{}] [sync_slides:{}] [open_links:{}] [run_hidden:{}]"
@@ -385,7 +517,10 @@ while True:
         # continue until next timeout
         state.interactive = False
     elif command in ("y", "\r", " "):
-        if not snippet:
+        if snippet:
+            run_snippet(state, snippet)
+            move_forward()
+        else:
             # Advance to next snippet
             # Advance until a slide that has snippets
             while not slides[state.slide].snippets:
@@ -395,59 +530,5 @@ while True:
                     break
             # And then advance to the snippet
             move_forward()
-            continue
-        method, data = snippet.method, snippet.data
-        logging.info("Running with method {}: {}".format(method, data))
-        if method == "keys":
-            send_keys(data)
-        elif method == "bash" or (method == "hide" and state.run_hidden):
-            # Make sure that we're ready
-            wait_for_prompt()
-            # Strip leading spaces
-            data = re.sub("\n +", "\n", data)
-            # Remove backticks (they are used to highlight sections)
-            data = data.replace('`', '')
-            # Add "RETURN" at the end of the command :)
-            data += "\n"
-            # Send command
-            send_keys(data)
-            # Force a short sleep to avoid race condition
-            time.sleep(0.5)
-            if snippet.next and snippet.next.method == "wait":
-                wait_for_string(snippet.next.data)
-            elif snippet.next and snippet.next.method == "longwait":
-                wait_for_string(snippet.next.data, 10*TIMEOUT)
-            else:
-                wait_for_prompt()
-                # Verify return code
-                check_exit_status()
-        elif method == "copypaste":
-            screen = capture_pane()
-            matches = re.findall(data, screen, flags=re.DOTALL)
-            if len(matches) == 0:
-                raise Exception("Could not find regex {} in output.".format(data))
-            # Arbitrarily get the most recent match
-            match = matches[-1]
-            # Remove line breaks (like a screen copy paste would do)
-            match = match.replace('\n', '')
-            send_keys(match + '\n')
-            # FIXME: we should factor out the "bash" method
-            wait_for_prompt()
-            check_exit_status()
-        elif method == "open":
-            # Cheap way to get node1's IP address
-            screen = capture_pane()
-            url = data.replace("/node1", "/{}".format(IPADDR))
-            # This should probably be adapted to run on different OS
-            if state.open_links:
-                subprocess.check_output(["xdg-open", url])
-                focus_browser()
-                if state.interactive:
-                    print("Press any key to continue to next step...")
-                    click.getchar()
-        else:
-            logging.warning("Unknown method {}: {!r}".format(method, data))
-        move_forward()
-
     else:
         logging.warning("Unknown command {}.".format(command))

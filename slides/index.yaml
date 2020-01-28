@@ -1,3 +1,66 @@
+- date: 2020-03-06
+  country: uk
+  city: London
+  event: QCON
+  speaker: jpetazzo
+  title: Kubernetes Intensive Course
+  attend: https://qconlondon.com/london2020/workshop/kubernetes-intro
+  #slides: https://qconuk2019.container.training/
+
+- date: 2020-03-05
+  country: uk
+  city: London
+  event: QCON
+  speaker: jpetazzo
+  title: Docker Intensive Course
+  attend: https://qconlondon.com/london2020/workshop/docker-intensive-course
+  #slides: https://qconuk2019.container.training/
+
+- date: 2020-02-03
+  country: fr
+  city: Paris
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Fondamentaux Conteneurs et Docker (in French)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/
+
+- date: 2020-02-04
+  country: fr
+  city: Paris
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Fondamentaux Orchestration et Kubernetes (in French)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/
+
+- date: 2020-02-05
+  country: fr
+  city: Paris
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Kubernetes et Méthodologies DevOps (in French)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/
+
+- date: 2020-02-06
+  country: fr
+  city: Paris
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Kubernetes Avancé (in French)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/
+
+- date: 2020-02-07
+  country: fr
+  city: Paris
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Opérer Kubernetes (in French)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/
+
 - date: [2019-11-04, 2019-11-05]
   country: de
   city: Berlin

@@ -197,7 +197,7 @@ If you want to use an external key/value store, add one of the following:
 
 <!--
 ```longwait PX node status reports portworx service is healthy```
-```keys ^C```
+```key ^C```
 -->
 
 ]
@@ -240,6 +240,25 @@ If you want to use an external key/value store, add one of the following:
 
 ---
 
+## Check our default Storage Class
+
+- The YAML manifest applied earlier should define a default storage class
+
+.exercise[
+
+- Check that we have a default storage class:
+  ```bash
+  kubectl get storageclass
+  ```
+
+]
+
+There should be a storage class showing as `portworx-replicated (default)`.
+
+---
+
+class: extra-details
+
 ## Our default Storage Class
 
 This is our Storage Class (in `k8s/storage-class.yaml`):
@@ -262,28 +281,6 @@ parameters:
 - It tells Portworx to "keep 2 replicas of these volumes"
 
 - It marks the Storage Class as being the default one
-
----
-
-## Creating our Storage Class
-
-- Let's apply that YAML file!
-
-.exercise[
-
-- Create the Storage Class:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/storage-class.yaml
-  ```
-
-- Check that it is now available:
-  ```bash
-  kubectl get sc
-  ```
-
-]
-
-It should show as `portworx-replicated (default)`.
 
 ---
 
@@ -326,7 +323,7 @@ spec:
       schedulerName: stork
       containers:
       - name: postgres
-        image: postgres:10.5
+        image: postgres:11
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: postgres
@@ -377,7 +374,7 @@ spec:
 autopilot prompt detection expects $ or # at the beginning of the line.
 ```wait postgres@postgres```
 ```keys PS1="\u@\h:\w\n\$ "```
-```keys ^J```
+```key ^J```
 -->
 
 - Check that default databases have been created correctly:
@@ -431,7 +428,7 @@ autopilot prompt detection expects $ or # at the beginning of the line.
   psql demo -c "select count(*) from pgbench_accounts"
   ```
 
-<!-- ```keys ^D``` -->
+<!-- ```key ^D``` -->
 
 ]
 
@@ -494,7 +491,7 @@ By "disrupt" we mean: "disconnect it from the network".
 
 - Logout to go back on `node1`
 
-<!-- ```keys ^D``` -->
+<!-- ```key ^D``` -->
 
 - Watch the events unfolding with `kubectl get events -w` and `kubectl get pods -w`
 
@@ -522,7 +519,7 @@ By "disrupt" we mean: "disconnect it from the network".
 <!--
 ```wait postgres@postgres```
 ```keys PS1="\u@\h:\w\n\$ "```
-```keys ^J```
+```key ^J```
 -->
 
 - Check the number of rows in the `pgbench_accounts` table:
@@ -530,7 +527,7 @@ By "disrupt" we mean: "disconnect it from the network".
   psql demo -c "select count(*) from pgbench_accounts"
   ```
 
-<!-- ```keys ^D``` -->
+<!-- ```key ^D``` -->
 
 ]
 
