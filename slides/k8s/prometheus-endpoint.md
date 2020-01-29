@@ -1,13 +1,19 @@
 # Prometheus
 
-Prometheus is monitoring system with small storage io footprint. It's quite ubiquitous
+Prometheus is a monitoring system with small storage I/O footprint
 
-in the kubernetes world. This section is not a description
+It's quite ubiquitous in the kubernetes world.
 
+This section is not a description of prometheus.
 
+*Note: More on prometheus next day*
+
+---
 ## Prometheus endpoint
 
-The goal here is to expose an HTTP endoint for prometheus. Sample response:
+- Prometheus "pull" metrics from different HTTP endpoint
+
+- The goal for the developper is to expose an HTTP endoint for prometheus. Sample response:
 
 .small[
 ```
@@ -20,7 +26,6 @@ The goal here is to expose an HTTP endoint for prometheus. Sample response:
  metric_without_timestamp_and_labels 12.47
 ```
 ]
-
 
 To achieve this multiple strategies could be used:
 
@@ -45,7 +50,6 @@ Links (do you see a pattern ?):
   - https://github.com/prometheus/client_python
   - https://github.com/prometheus/client_ruby
   - https://github.com/prometheus/client_golang
-
 
 ---
 ## Add sidecar Exporter
