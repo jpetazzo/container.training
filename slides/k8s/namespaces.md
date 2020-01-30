@@ -102,8 +102,6 @@
 
 ]
 
-- Some tools like Helm will create namespaces automatically when needed
-
 ---
 
 ## Using namespaces

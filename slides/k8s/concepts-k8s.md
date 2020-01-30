@@ -10,6 +10,29 @@
 
 ---
 
+## What can we do with Kubernetes?
+
+- Let's imagine that we have a 3-tier e-commerce app:
+
+  - web frontend
+
+  - API backend
+
+  - database (that we will keep out of Kubernetes for now)
+
+- We have built images for our frontend and backend components
+
+  (e.g. with Dockerfiles and `docker build`)
+
+- We are running them successfully with a local environment
+
+  (e.g. with Docker Compose)
+
+- Let's see how we would deploy our app on Kubernetes!
+
+---
+
+
 ## Basic things we can ask Kubernetes to do
 
 --
