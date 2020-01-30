@@ -1,81 +1,99 @@
 # Registries
 
-There is lot of options to ship you container image to a registry
+- There are lots of options to ship our container images to a registry
 
-Those can be group in different categories:
+- We can group them depending on some characteristics:
 
-- hosted / selfhosted
+- SaaS or self-hosted
 
-- with / without build system
+- with or without a build system
 
 ---
+
 ## Docker registry
 
-- [open-source](https://github.com/docker/distribution) and self-hosted
+- Self-hosted and [open source](https://github.com/docker/distribution)
 
-- Simple docker-based registry
+- Runs in a single Docker container
 
-- Support multiple storage backend
+- Supports multiple storage backends
 
-- Only support basic-authentification
+- Supports basic authentication out of the box
+
+- [Other authentication schemes](https://docs.docker.com/registry/deploying/#more-advanced-authentication) through proxy or delegation
 
 - No build system
 
-```shell
-docker run -d -p 5000:5000 --name registry registry:2
-```
-or the dedicated plugin in minikube, microk8s, ...
+- To run it with the Docker engine:
+
+  ```shell
+  docker run -d -p 5000:5000 --name registry registry:2
+  ```
+
+- Or use the dedicated plugin in minikube, microk8s, etc.
 
 ---
+
 ## Harbor
 
-- [open-source](https://github.com/goharbor/harbor) and self-hosted
+- Self-hostend and [open source](https://github.com/goharbor/harbor)
 
-- full-featured registry docker/helm registry
+- Supports both Docker images and Helm charts
 
-- advanced authentification mechanism
+- Advanced authentification mechanism
 
-- multi-site synchronisation
+- Multi-site synchronisation
 
-- vulnerability scanning
+- Vulnerability scanning
 
-- No build-system
+- No build system
 
-```shell
-helm repo add harbor https://helm.goharbor.io
-helm install my-release harbor/harbor
-```
+- To run it with Helm:
+  ```shell
+  helm repo add harbor https://helm.goharbor.io
+  helm install my-release harbor/harbor
+  ```
 
 ---
+
 ## Gitlab
 
-- Some part [open-source](https://gitlab.com/gitlab-org/gitlab-foss/) and self-hosted
+- Available both as a SaaS product and self-hosted
 
-- Or hosted: gitlab.com (free for opensource project, payed subscription otherwise)
+- SaaS product is free for open source projects; paid subscription otherwise
 
-- CI integrated (so in a way: build-system integrated)
+- Some parts are [open source](https://gitlab.com/gitlab-org/gitlab-foss/)
 
-```shell
-helm repo add gitlab https://charts.gitlab.io/
-helm install gitlab gitlab/gitlab
-```
+- Integrated CI
 
----
-## Docker HUB
+- No build system (but a custom build system can be hooked to the CI)
 
-- hosted: [hub.docker.com](https://hub.docker.com)
-
-- free for public image, payed subscription for private ones.
-
-- build-system included
+- To run it with Helm:
+  ```shell
+  helm repo add gitlab https://charts.gitlab.io/
+  helm install gitlab gitlab/gitlab
+  ```
 
 ---
+
+## Docker Hub
+
+- SaaS product: [hub.docker.com](https://hub.docker.com)
+
+- Free for public image; paid subscription for private ones
+
+- Build system included
+
+---
+
 ## Quay
 
-- hosted (quay.io)[https://quay.io]
+- Available both as a SaaS product (Quay) and self-hosted ([quay.io](https://quay.io))
 
-- free for public repository, payed subscription otherwise
+- SaaS product is free for public repositories; paid subscription otherwise
 
-- acquired by Redhat from CoreOS, opensourced recently (so self-hosted to ?)
+- Some components of Quay and quay.io are open source
 
-- build-system included
+  (see [Project Quay](https://www.projectquay.io/) and the [announcement](https://www.redhat.com/en/blog/red-hat-introduces-open-source-project-quay-container-registry))
+
+- Build system included

@@ -114,15 +114,15 @@ volumes:
 - Kubernetes-in-Docker
 
 - Uses Docker-in-Docker to run Kubernetes
-
-- Technically, it's more like Containerd-in-Docker
+  <br/>
+  (technically, it's more like Containerd-in-Docker)
 
 - We don't get a real Docker Engine (and cannot build Dockerfiles)
 
 - Single-node by default, but multi-node clusters are possible
 
 - Very convenient to test Kubernetes deployments when only Docker is available
-
+  <br/>
   (e.g. on public CI services like Travis, Circle, GitHub Actions ...)
 
 - Bind mounts require extra configuration
