@@ -314,7 +314,7 @@ class: extra-details
 
 - List all the resources created by this release:
   ```bash
-  kuectl get all --selector=release=java4ever
+  kubectl get all --selector=release=java4ever
   ```
 
 ]
