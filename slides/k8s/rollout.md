@@ -79,7 +79,8 @@
 
 - Rolling updates can be monitored with the `kubectl rollout` subcommand
 
----
+<!--
+/---
 
 ## Rolling out the new `worker` service
 
@@ -108,7 +109,7 @@
 
 That rollout should be pretty quick. What shows in the web UI?
 
----
+/---
 
 ## Give it some time
 
@@ -130,7 +131,7 @@ That rollout should be pretty quick. What shows in the web UI?
 
   (The grace period is 30 seconds, but [can be changed](https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods) if needed)
 
----
+/---
 
 ## Rolling out something invalid
 
@@ -148,10 +149,10 @@ That rollout should be pretty quick. What shows in the web UI?
   kubectl rollout status deploy worker
   ```
 
-<!--
+/<!--
 ```wait Waiting for deployment```
 ```key ^C```
--->
+/-->
 
 ]
 
@@ -161,7 +162,7 @@ Our rollout is stuck. However, the app is not dead.
 
 (After a minute, it will stabilize to be 20-25% slower.)
 
----
+/---
 
 ## What's going on with our rollout?
 
@@ -181,7 +182,7 @@ Our rollout is stuck. However, the app is not dead.
   <br/>
   but the total number of pods being rolled out is allowed to be 25+25=50%
 
----
+/---
 
 class: extra-details
 
@@ -201,7 +202,7 @@ class: extra-details
 
 - Our rollout is stuck at this point!
 
----
+/---
 
 ## Checking the dashboard during the bad rollout
 
@@ -217,7 +218,7 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 ]
 
----
+/---
 
 ## Recovering from a bad rollout
 
@@ -239,7 +240,7 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 ]
 
----
+/---
 
 ## Rolling back to an older version
 
@@ -249,7 +250,7 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 - How can we get back to the previous version?
 
----
+/---
 
 ## Multiple "undos"
 
@@ -268,7 +269,7 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 🤔 That didn't work.
 
----
+/---
 
 ## Multiple "undos" don't work
 
@@ -289,7 +290,7 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 ]
 
----
+/---
 
 ## In this specific scenario
 
@@ -299,7 +300,7 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 - What if we had changed other parameters in the Pod spec?
 
----
+/---
 
 ## Listing versions
 
@@ -320,7 +321,7 @@ We might see something like 1, 4, 5.
 
 (Depending on how many "undos" we did before.)
 
----
+/---
 
 ## Explaining deployment revisions
 
@@ -337,7 +338,7 @@ We might see something like 1, 4, 5.
 
 ]
 
----
+/---
 
 class: extra-details
 
@@ -353,7 +354,7 @@ class: extra-details
 
   (if we wanted to!)
 
----
+/---
 
 ## Rolling back to an older version
 
@@ -370,7 +371,7 @@ class: extra-details
 
 ]
 
----
+/---
 
 class: extra-details
 
@@ -401,7 +402,7 @@ spec:
 ```
 ]
 
----
+/---
 
 class: extra-details
 
@@ -437,3 +438,5 @@ class: extra-details
   ] 
 
 ]
+
+-->

@@ -44,9 +44,11 @@ chapters:
   - k8s/exercise-ci-build.md
   - k8s/kaniko.md
   - k8s/exercise-ci-kaniko.md
+  - k8s/rollout.md
+  - k8s/advanced-rollout.md
+  - k8s/devs-and-ops-joined-topics.md
 
 -
-  - k8s/monitoring-intro.md
   #- k8s/prometheus-intro.md
   - k8s/prometheus-endpoint.md
   - k8s/exercise-prometheus.md
@@ -54,6 +56,8 @@ chapters:
   - k8s/exercise-opentelemetry.md
 
 
+-
+  - k8s/kubernetes-security.md
     #-
     #  - k8s/rollout.md
     #  - k8s/blue-green.md

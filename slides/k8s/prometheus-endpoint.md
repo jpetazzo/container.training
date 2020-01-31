@@ -1,10 +1,12 @@
 # Prometheus
 
-Prometheus is monitoring system with small storage io footprint.
+Prometheus is a monitoring system with a small storage I/O footprint.
 
 It's quite ubiquitous in the Kubernetes world.
 
-This section is not a description
+This section is not an in-depth description of Prometheus.
+
+*Note: More on Prometheus next day!*
 
 <!--
 FIXME maybe just use prometheus.md and add this file after it?
@@ -15,9 +17,9 @@ This way there is not need to write a Prom intro.
 
 ## Prometheus exporter
 
-We want to provide a Prometheus exporter.
+- Prometheus *scrapes* (pulls) metrics from *exporters*
 
-A Prometheus exporter is an HTTP endpoint serving a response like this one:
+- A Prometheus exporter is an HTTP endpoint serving a response like this one:
 
 ```
  # HELP http_requests_total The total number of HTTP requests.
@@ -28,6 +30,8 @@ A Prometheus exporter is an HTTP endpoint serving a response like this one:
  # Minimalistic line:
  metric_without_timestamp_and_labels 12.47
 ```
+
+- Our goal, as a developer, will be to expose such an endpoint to Prometheus
 
 ---
 
