@@ -1,5 +1,5 @@
-## Exercise - build in kubernetes
+## Exercise - building with Kubernetes
 
-Go to https://github.com/enix/kubecoin
+- Let's go to https://github.com/enix/kubecoin
 
-and follow the instructions to complete the exercise #1
+- Our goal is to follow the instructions and complete exercise #1

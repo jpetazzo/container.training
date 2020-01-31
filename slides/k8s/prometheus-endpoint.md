@@ -1,21 +1,26 @@
 # Prometheus
 
-Prometheus is a monitoring system with small storage I/O footprint
+Prometheus is a monitoring system with a small storage I/O footprint.
 
-It's quite ubiquitous in the kubernetes world.
+It's quite ubiquitous in the Kubernetes world.
 
-This section is not a description of prometheus.
+This section is not an in-depth description of Prometheus.
 
-*Note: More on prometheus next day*
+*Note: More on Prometheus next day!*
+
+<!--
+FIXME maybe just use prometheus.md and add this file after it?
+This way there is not need to write a Prom intro.
+-->
 
 ---
-## Prometheus endpoint
 
-- Prometheus "pull" metrics from different HTTP endpoint
+## Prometheus exporter
 
-- The goal for the developper is to expose an HTTP endoint for prometheus. Sample response:
+- Prometheus *scrapes* (pulls) metrics from *exporters*
 
-.small[
+- A Prometheus exporter is an HTTP endpoint serving a response like this one:
+
 ```
  # HELP http_requests_total The total number of HTTP requests.
  # TYPE http_requests_total counter
@@ -25,66 +30,121 @@ This section is not a description of prometheus.
  # Minimalistic line:
  metric_without_timestamp_and_labels 12.47
 ```
-]
 
-To achieve this multiple strategies could be used:
-
-- developping in the application itself (especialy if it's already an httpserver)
-
-- using building blocks that may already expose such endpoint (puma, uwsgi)
-
-- Add sidecar exporter that leverage an already existing monitoring channel (ex: JMX)
+- Our goal, as a developer, will be to expose such an endpoint to Prometheus
 
 ---
-## Developing prometheus endpoint
 
-- Using prometheus client libraries is often the easier
+## Implementing a Prometheus exporter
 
-- Offer multiple ways of integrations:
+Multiple strategies can be used:
 
-    - from: I run already a web server, just add a monitoring route
+- Implement the exporter in the application itself
 
-    - to: please run a full web server in a thread.
+  (especially if it's already an  HTTP server)
 
-Links (do you see a pattern ?):
+- Use building blocks that may already expose such an endpoint
+
+  (puma, uwsgi)
+
+- Add a sidecar exporter that leverages and adapts an existing monitoring channel
+
+  (e.g. JMX for Java applications)
+
+---
+
+## Implementing a Prometheus exporter
+
+- The Prometheus client libraries are often the easiest solution
+
+- They offer multiple ways of integration, including:
+
+  - "I'm already running a web server, just add a monitoring route"
+
+  - "I don't have a web server (or I want another one), please run one in a thread"
+
+- Client libraries for various languages:
+
   - https://github.com/prometheus/client_python
+
   - https://github.com/prometheus/client_ruby
+
   - https://github.com/prometheus/client_golang
 
----
-## Add sidecar Exporter
-
-- There is plenty of already existing "exporter":
-
-  - https://prometheus.io/docs/instrumenting/exporters/
-
-- Those are "translators" from one monitoring channel to another
-
-- Writing your own is not complicated (using previous client libraries)
-
-- Try to not expose monitoring channel more than needed. Often localhost is enough
-    (sidecars run in the same network namespace as other containers)
+  (Can you see the pattern?)
 
 ---
-## Ok! and then change prometheus conf ?
 
-- Well, not really. It achievable this way, but...
+## Adding a sidecar exporter
 
-- Prometheus has good service discovery paired with kubernetes.
+- There are many exporters available already:
 
-- Depending on how we installed prometheus, we just need:
+  https://prometheus.io/docs/instrumenting/exporters/
 
-    - pods annotations:
+- These are "translators" from one monitoring channel to another
 
-       ```
-        annotations:
-          prometheus.io/port: 9090
-          prometheus.io/path: /metrics
-       ```
+- Writing your own is not complicated
 
-    - *service monitor* custom resource object
-.small[
-        https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitor
-]
+  (using the client libraries mentioned previously)
 
-*Note: More on prometheus next day*
+- Avoid exposing the internal monitoring channel more than enough
+
+  (the app and its sidecars run in the same network namespace,
+  <br/>so they can communicate over `localhost`)
+
+---
+
+## Configuring the Prometheus server
+
+- We need to tell the Prometheus server to *scrape* our exporter
+
+- Prometheus has a very flexible "service discovery" mechanism
+
+  (to discover and enumerate the targets that it should scrape)
+
+- Depending on how we installed Prometheus, various methods might be available
+
+---
+
+## Configuring Prometheus, option 1
+
+- Edit `prometheus.conf`
+
+- Always possible
+
+  (we should always have a Prometheus configuration file somewhere!)
+
+- Dangerous and error-prone
+
+  (if we get it wrong, it is very easy to break Prometheus)
+
+- Hard to maintain
+
+  (the file will grow over time, and might accumulate obsolete information)
+
+---
+
+## Configuring Prometheus, option 2
+
+- Add *annotations* to the pods or services to monitor
+
+- We can do that if Prometheus is installed with the official Helm chart
+
+- Prometheus will detect these annotations and automatically start scraping
+
+- Example:
+  ```yaml
+    annotations:
+      prometheus.io/port: 9090
+      prometheus.io/path: /metrics
+  ```
+
+---
+
+## Configuring Prometheus, option 3
+
+- Create a ServiceMonitor custom resource
+
+- We can do that if we are using the CoreOS Prometheus operator
+
+- See the [Prometheus operator documentation](https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitor) for more details
