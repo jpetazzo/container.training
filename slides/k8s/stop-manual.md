@@ -1,17 +1,17 @@
 # Automation && CI/CD
 
-We already achieved:
+What we've done so far:
 
-- Find a way to Develop our application
+- development of our application
 
-- Test it manualy, and explore the way to write automated test for it
+- manual testing, and exploration of automated testing strategies
 
-- Package it the way we wanted it
+- packaging in a container image
 
-- Ship the image to a registry
+- shipping that image to a registry
 
-We now have to:
+What still need to be done:
 
-- Deploy it
+- deployment of our application
 
-And so each time is made a change on the repository. Can we automate this a little bit ?
+- automation of the whole build / ship / run cycle

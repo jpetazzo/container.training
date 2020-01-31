@@ -1,14 +1,24 @@
 # Testing
 
-There multiple levels of testing. At this point we will focus on
+There are multiple levels of testing:
 
-*unit-testing*, ([Just Say No to More End-to-End Tests](https://testing.googleblog.com/2015/04/just-say-no-to-more-end-to-end-tests.html))
+- unit testing (many small tests that run in isolation),
 
-where system interaction are ideally *mocked* everywhere (no real database, no real backend).
+- integration testing (bigger tests involving multiple components),
 
-Sadly this is easier said that to be done...
+- functional or end-to-end testing (even bigger tests involving the whole app).
+
+In this section, we will focus on *unit testing*, where each test case
+should (ideally) be completely isolated from other components and system
+interaction: no real database, no real backend, *mocks* everywhere.
+
+(For a good discussion on the merits of unit testing, we can read
+[Just Say No to More End-to-End Tests](https://testing.googleblog.com/2015/04/just-say-no-to-more-end-to-end-tests.html).)
+
+Unfortunately, this ideal scenario is easier said than done ...
 
 ---
+
 ## Multi-stage build
 
 ```dockerfile
@@ -26,12 +36,14 @@ RUN <build code>
 CMD, EXPOSE ...
 ```
 
-- If code don't change, test don't run, leveraging the docker cache
+- This leverages the Docker cache: it the code doesn't change, the tests don't need to run
 
-- Could use `docker build --network` to make database or backend available during build
+- If the tests require a database or other backend, we can use `docker build --network`
 
-- But no artifact(image) generated if build fails
+- If the tests fail, the build fails; and no image is generated
+
 ---
+
 ## Docker Compose
 
 ```yaml
@@ -56,12 +68,15 @@ docker-compose build && docker-compose run project pytest -v
 ```
 
 ---
+
 ## Skaffold/Container-structure-test
 
 - The `test` field of the `skaffold.yaml` instructs skaffold to run test against your image.
 
 - It uses the [container-structure-test](https://github.com/GoogleContainerTools/container-structure-test)
 
-- It allows to run custom command
+- It allows to run custom commands
 
-- Sadly nothing to run other docker image to make a database or a backend reachable
+- Unfortunately, nothing to run other Docker images
+
+  (to start a database or a backend that we need to run tests)
