@@ -91,3 +91,52 @@
 because the resources that we created lack the necessary annotation.
 We can safely ignore them.)
 
+---
+
+## Deleting resources
+
+- We can also use a YAML file to *delete* resources
+
+- `kubectl delete -f ...` will delete all the resources mentioned in a YAML file
+
+  (useful to clean up everything that was created by `kubectl apply -f ...`)
+
+- The definitions of the resources don't matter
+
+  (just their `kind`, `apiVersion`, and `name`)
+
+---
+
+## Pruning¹ resources
+
+- We can also tell `kubectl` to remove old resources
+
+- This is done with `kubectl apply -f ... --prune`
+
+- It will remove resources that don't exist in the YAML file(s)
+
+- But only if they were created with `kubectl apply` in the first place
+
+  (technically, if they have an annotation `kubectl.kubernetes.io/last-applied-configuration`)
+
+.footnote[¹If English is not your first language: *to prune* means to remove dead or overgrown branches in a tree, to help it to grow.]
+
+---
+
+## YAML as source of truth
+
+- Imagine the following workflow:
+
+  - do not use `kubectl run`, `kubectl create deployment`, `kubectl expose` ...
+
+  - define everything with YAML
+
+  - `kubectl apply -f ... --prune --all` that YAML
+
+  - keep that YAML under version control
+
+  - enforce all changes to go through that YAML (e.g. with pull requests)
+
+- Our version control system now has a full history of what we deploy
+
+- Compares to "Infrastructure-as-Code", but for app deployments
