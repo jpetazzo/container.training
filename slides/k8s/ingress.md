@@ -120,19 +120,13 @@
 
 - We want our ingress load balancer to be available on port 80
 
-- We could do that with a `LoadBalancer` service
+- The best way to do that would be with a `LoadBalancer` service
 
   ... but it requires support from the underlying infrastructure
 
-- We could use pods specifying `hostPort: 80` 
+- Instead, we are going to use the `hostNetwork` mode on the Traefik pods
 
-  ... but with most CNI plugins, this [doesn't work or requires additional setup](https://github.com/kubernetes/kubernetes/issues/23920)
-
-- We could use a `NodePort` service
-
-  ... but that requires [changing the `--service-node-port-range` flag in the API server](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/)
-
-- Last resort: the `hostNetwork` mode
+- Let's see what this `hostNetwork` mode is about ...
 
 ---
 
@@ -167,6 +161,26 @@
   - most network policies work at the IP address level
 
   - filtering that pod = filtering traffic from the node
+
+---
+
+class: extra-details
+
+## Other techniques to expose port 80
+
+- We could use pods specifying `hostPort: 80` 
+
+  ... but with most CNI plugins, this [doesn't work or requires additional setup](https://github.com/kubernetes/kubernetes/issues/23920)
+
+- We could use a `NodePort` service
+
+  ... but that requires [changing the `--service-node-port-range` flag in the API server](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/)
+
+- We could create a service with an external IP
+
+  ... this would work, but would require a few extra steps
+
+  (figuring out the IP address and adding it to the service)
 
 ---
 

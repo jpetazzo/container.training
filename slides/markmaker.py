@@ -28,7 +28,7 @@ class Interstitials(object):
 
     def next(self):
         index = self.index % len(self.images)
-        index += 1
+        self.index += 1
         return self.images[index]
 
 
