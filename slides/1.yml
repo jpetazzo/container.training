@@ -1,19 +1,23 @@
 title: |
-  Day 1
-  Docker & Containers
+  Jour 1
+  Fondamentaux
+  Conteneurs & Docker
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+chat: "[Gitter](https://gitter.im/enix/formation-highfive-202002)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://2020-02-enix.container.training/
 
 exclude:
 - self-paced
 
 chapters:
 - shared/title.md
+- logistics.md
+- containers/intro.md
+- shared/about-slides.md
 - shared/toc.md
 -
   - containers/Docker_Overview.md
@@ -60,5 +64,6 @@ chapters:
   #- containers/Container_Engines.md
   #- containers/Ecosystem.md
   #- containers/Orchestration_Overview.md
-  #- shared/thankyou.md
-  #- containers/links.md
+-
+  - shared/thankyou.md
+  - containers/links.md

@@ -1,19 +1,22 @@
 title: |
-  Day 3
-  Developing Cloud Native Apps
+  Jour 3
+  Méthodologies DevOps
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+chat: "[Gitter](https://gitter.im/enix/formation-highfive-202002)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://2020-02-enix.container.training/
 
 exclude:
 - self-paced
 
 chapters:
 - shared/title.md
+- logistics.md
+#- k8s/intro.md
+- shared/about-slides.md
 - shared/toc.md
 -
     # Bien démarrer en local (minikube, kind)
@@ -80,3 +83,5 @@ chapters:
     #  # Prometheus Grafana
     #- |
     #  # Telemetry
+-
+  - shared/thankyou.md

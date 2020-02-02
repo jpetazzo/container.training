@@ -1,19 +1,22 @@
 title: |
-  Day 5
-  Kubernetes Operations
+  Jour 5
+  Opérer Kubernetes
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+chat: "[Gitter](https://gitter.im/enix/formation-highfive-202002)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://2020-02-enix.container.training/
 
 exclude:
 - self-paced
 
 chapters:
 - shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
 - shared/toc.md
 -
   - k8s/prereqs-admin.md
@@ -35,3 +38,5 @@ chapters:
   - k8s/csr-api.md
   - k8s/openid-connect.md
   - k8s/podsecuritypolicy.md
+-
+  - shared/thankyou.md
