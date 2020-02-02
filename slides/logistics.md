@@ -4,7 +4,7 @@
 
    - .emoji[🐳] Jérôme Petazzoni ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
 
-   - .emoji[] Julien Girardin (Enix SAS)
+   - .emoji[☸️] Julien Girardin ([Zempashi](https://github.com/zempashi), Enix SAS)
 
 - The training will run from 9am to 5:30pm
 
