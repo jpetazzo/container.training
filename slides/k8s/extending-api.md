@@ -8,6 +8,8 @@ We are going to cover:
 
 - Admission Webhooks
 
+- The Aggregation Layer
+
 ---
 
 ## Revisiting the API server
@@ -46,6 +48,90 @@ We are going to cover:
 
 ---
 
+## A very simple CRD
+
+The YAML below describes a very simple CRD representing different kinds of coffee:
+
+```yaml
+apiVersion: apiextensions.k8s.io/v1alpha1
+kind: CustomResourceDefinition
+metadata:
+  name: coffees.container.training
+spec:
+  group: container.training
+  version: v1alpha1
+  scope: Namespaced
+  names:
+    plural: coffees
+    singular: coffee
+    kind: Coffee
+    shortNames:
+    - cof
+```
+
+---
+
+## Creating a CRD
+
+- Let's create the Custom Resource Definition for our Coffee resource
+
+.exercise[
+
+- Load the CRD:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/coffee-1.yaml
+  ```
+
+- Confirm that it shows up:
+  ```bash
+  kubectl get crds
+  ```
+
+]
+
+---
+
+## Creating custom resources
+
+The YAML below defines a resource using the CRD that we just created:
+
+```yaml
+kind: Coffee
+apiVersion: container.training/v1alpha1
+metadata:
+  name: arabica
+spec:
+  taste: strong
+```
+
+.exercise[
+
+- Create a few types of coffee beans:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/coffees.yaml
+  ```
+
+]
+
+---
+
+## Viewing custom resources
+
+- By default, `kubectl get` only shows name and age of custom resources
+
+.exercise[
+
+- View the coffee beans that we just created:
+  ```bash
+  kubectl get coffees
+  ```
+
+]
+
+- We can improve that, but it's outside the scope of this section!
+
+---
+
 ## What can we do with CRDs?
 
 There are many possibilities!
@@ -81,7 +167,7 @@ There are many possibilities!
 
 - Generally, when creating a CRD, we also want to run a *controller*
 
-  (otherwise nothing will happen when we create resources of that type) 
+  (otherwise nothing will happen when we create resources of that type)
 
 - The controller will typically *watch* our custom resources
 
@@ -92,6 +178,22 @@ Examples:
 [YAML to install the gitkube CRD](https://storage.googleapis.com/gitkube/gitkube-setup-stable.yaml),
 [YAML to install a redis operator CRD](https://github.com/amaizfinance/redis-operator/blob/master/deploy/crds/k8s_v1alpha1_redis_crd.yaml)
 *
+
+---
+
+## (Ab)using the API server
+
+- If we need to store something "safely" (as in: in etcd), we can use CRDs
+
+- This gives us primitives to read/write/list objects (and optionally validate them)
+
+- The Kubernetes API server can run on its own
+
+  (without the scheduler, controller manager, and kubelets)
+
+- By loading CRDs, we can have it manage totally different objects
+
+  (unrelated to containers, clusters, etc.)
 
 ---
 
@@ -109,7 +211,7 @@ Examples:
   - ClusterServiceClass
   - ClusterServicePlan
   - ServiceInstance
-  - ServiceBinding 
+  - ServiceBinding
 
 - It uses the Open service broker API
 
@@ -117,17 +219,13 @@ Examples:
 
 ## Admission controllers
 
-- When a Pod is created, it is associated with a ServiceAccount
+- Admission controllers are another way to extend the Kubernetes API
 
-  (even if we did not specify one explicitly)
+- Instead of creating new types, admission controllers can transform or vet API requests
 
-- That ServiceAccount was added on the fly by an *admission controller*
+- The diagram on the next slide shows the path of an API request
 
-  (specifically, a *mutating admission controller*)
-
-- Admission controllers sit on the API request path
-
-  (see the cool diagram on next slide, courtesy of Banzai Cloud)
+  (courtesy of Banzai Cloud)
 
 ---
 
@@ -137,7 +235,7 @@ class: pic
 
 ---
 
-## Admission controllers
+## Types of admission controllers
 
 - *Validating* admission controllers can accept/reject the API call
 
@@ -151,7 +249,27 @@ class: pic
 
   (see [documentation](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#what-does-each-admission-controller-do) for a list)
 
-- But we can also define our own!
+- We can also dynamically define and register our own
+
+---
+
+class: extra-details
+
+## Some built-in admission controllers
+
+- ServiceAccount:
+
+  automatically adds a ServiceAccount to Pods that don't explicitly specify one
+
+- LimitRanger:
+
+  applies resource constraints specified by LimitRange objects when Pods are created
+
+- NamespaceAutoProvision:
+
+  automatically creates namespaces when an object is created in a non-existent namespace
+
+*Note: #1 and #2 are enabled by default; #3 is not.*
 
 ---
 
@@ -191,19 +309,25 @@ class: pic
 
 ---
 
-## (Ab)using the API server
+## The aggregation layer
 
-- If we need to store something "safely" (as in: in etcd), we can use CRDs
+- We can delegate entire parts of the Kubernetes API to external servers
 
-- This gives us primitives to read/write/list objects (and optionally validate them)
+- This is done by creating APIService resources
 
-- The Kubernetes API server can run on its own
+  (check them with `kubectl get apiservices`!)
 
-  (without the scheduler, controller manager, and kubelets)
+- The APIService resource maps a type (kind) and version to an external service
 
-- By loading CRDs, we can have it manage totally different objects
+- All requests concerning that type are sent (proxied) to the external service
 
-  (unrelated to containers, clusters, etc.)
+- This allows to have resources like CRDs, but that aren't stored in etcd
+
+- Example: `metrics-server`
+
+  (storing live metrics in etcd would be extremely inefficient)
+
+- Requires significantly more work than CRDs!
 
 ---
 
@@ -218,3 +342,5 @@ class: pic
 - [Built-in Admission Controllers](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/)
 
 - [Dynamic Admission Controllers](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)
+
+- [Aggregation Layer](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/)

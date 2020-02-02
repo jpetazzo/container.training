@@ -1,0 +1,29 @@
+---
+kind: Coffee
+apiVersion: container.training/v1alpha1
+metadata:
+  name: arabica
+spec:
+  taste: strong
+---
+kind: Coffee
+apiVersion: container.training/v1alpha1
+metadata:
+  name: robusta
+spec:
+  taste: stronger
+---
+kind: Coffee
+apiVersion: container.training/v1alpha1
+metadata:
+  name: liberica
+spec:
+  taste: smoky
+---
+kind: Coffee
+apiVersion: container.training/v1alpha1
+metadata:
+  name: excelsa
+spec:
+  taste: fruity
+
