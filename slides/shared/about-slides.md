@@ -1,21 +1,48 @@
-## About these slides
+## Accessing these slides now
 
-- All the content is available in a public GitHub repository:
+- We recommend that you open these slides in your browser:
+
+  @@SLIDES@@
+
+- Use arrows to move to next/previous slide
+
+  (up, down, left, right, page up, page down)
+
+- Type a slide number + ENTER to go to that slide
+
+- The slide number is also visible in the URL bar
+
+  (e.g. .../#123 for slide 123)
+
+---
+
+## Accessing these slides later
+
+- Slides will remain online so you can review them later if needed
+
+  (let's say we'll keep them online at least 1 year, how about that?)
+
+- You can download the slides using that URL:
+
+  @@ZIP@@
+
+  (then open the file `@@HTML@@`)
+
+- You will to find new versions of these slides on:
+
+  https://container.training/
+
+---
+
+## These slides are open source
+
+- You are welcome to use, re-use, share these slides
+
+- These slides are written in markdown
+
+- The sources of these slides are available in a public GitHub repository:
 
   https://@@GITREPO@@
-
-- You can get updated "builds" of the slides there:
-
-  http://container.training/
-
-<!--
-.exercise[
-```open https://@@GITREPO@@```
-```open http://container.training/```
-]
--->
-
---
 
 - Typos? Mistakes? Questions? Feel free to hover over the bottom of the slide ...
 
@@ -46,3 +73,19 @@ class: extra-details
   - you want only the most essential information
 
 - You can review these slides another time if you want, they'll be waiting for you ☺
+
+---
+
+class: in-person, chat-room
+
+## Chat room
+
+- We've set up a chat room that we will monitor during the workshop
+
+- Don't hesitate to use it to ask questions, or get help, or share feedback
+
+- The chat room will also be available after the workshop
+
+- Join the chat room: @@CHAT@@
+
+- Say hi in the chat room!
