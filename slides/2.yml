@@ -32,10 +32,11 @@ chapters:
   - k8s/deploymentslideshow.md
   - k8s/kubenet.md
   - k8s/kubectlexpose.md
+-
   - k8s/shippingimages.md
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
--
+  - k8s/yamldeploy.md
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
   - k8s/daemonset.md
@@ -44,6 +45,6 @@ chapters:
   #- k8s/dryrun.md
   - k8s/healthchecks.md
   #- k8s/healthchecks-more.md
-  - k8s/record.md
-  - k8s/dashboard.md
+  #- k8s/record.md
+  #- k8s/dashboard.md
   - k8s/ingress.md
