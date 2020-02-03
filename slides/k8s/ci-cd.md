@@ -4,9 +4,9 @@
 
 - Self-hosted CI for kubernetes
 
-- Testing in namespace, feature branch
-
-<!-- FIXME explain what the line above means? -->
+- create a namespace per commit and apply manifests in the namespace
+  </br>
+  "A deploy per feature-branch"
 
 .small[
 ```shell
@@ -27,15 +27,12 @@ helm install gitlab gitlab/gitlab
 ```
 
 ---
-## Tekton / knative
 
-- knative is serverless project from google
+## ArgoCD / flux
 
-- Tekton leverages knative to run pipelines
+- Watch a git repository and apply changes to kubernetes
 
----
-
-## ArgoCD
+- provide UI to see changes, rollback
 
 .small[
 ```shell
@@ -43,7 +40,12 @@ kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manif
 ```
 ]
 
-<!-- 
-FIXME I think we should add some details about these projects,
-otherwise it feels like an enumeration
--->
+---
+
+## Tekton / knative
+
+- knative is serverless project from google
+
+- Tekton leverages knative to run pipelines
+
+- not really user friendly today, but stay tune for wrappers/products
