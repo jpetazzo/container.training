@@ -39,6 +39,7 @@ chapters:
   - k8s/helm-create-basic-chart.md
   - k8s/helm-create-better-chart.md
   - k8s/helm-secrets.md
+
 -
   # - k8s/shippingimages.md  # some overlap
   - k8s/registries.md
@@ -52,14 +53,10 @@ chapters:
   - k8s/devs-and-ops-joined-topics.md
 
 -
-  #- k8s/prometheus-intro.md
   - k8s/prometheus-endpoint.md
   - k8s/exercise-prometheus.md
   - k8s/opentelemetry.md
   - k8s/exercise-opentelemetry.md
-
-
--
   - k8s/kubernetes-security.md
     #-
     #  - k8s/rollout.md

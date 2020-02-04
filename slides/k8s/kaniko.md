@@ -13,7 +13,9 @@
 ---
 ## Kaniko
 
-*kaniko doesn't depend on a Docker daemon and executes each command
+- https://github.com/GoogleContainerTools/kaniko
+
+- *kaniko doesn't depend on a Docker daemon and executes each command
 within a Dockerfile completely in userspace*
 
 - Kaniko is only a build system, there is no runtime like docker does
@@ -21,3 +23,12 @@ within a Dockerfile completely in userspace*
 - generates OCI compatible image, so could be run on Docker or other CRI
 
 - use a different cache system than Docker
+
+---
+## Rootless docker and rootless buildkit
+
+- This is experimental
+
+- Have a lot of requirement of kernel param, options to set
+
+- But it exists

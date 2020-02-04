@@ -163,9 +163,17 @@ Can we do better?
 
 ---
 
-## Skaffold
+## Helpers
 
+- Skaffold (https://skaffold.dev/):
+    - build with docker, kaniko, google builder
+    - install with pure yaml manifests, kustomize, helm
 
-Note: Draft and Forge are softwares with some functional overlap
+- Tilt (https://tilt.dev/)
+    - Titfile is programmatic format (python ?)
+    - Primitive for building with docker
+    - Primitive for deploying with pure yaml manifestsn kustomize, helm
 
-<!-- FIXME Draft semble à l'abandon. Il y a aussi Tilt Garden ... -->
+- Garden (https://garden.io/)
+
+- Forge (https://forge.sh/)
