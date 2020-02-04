@@ -2,7 +2,7 @@
 
 - We can connect to our pods using their IP address
 
-- Then we need to figure out a lot of thigns:
+- Then we need to figure out a lot of things:
 
   - how do we look up the IP address of the pod(s)?
 
