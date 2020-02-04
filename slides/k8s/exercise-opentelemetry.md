@@ -1,4 +1,4 @@
-## Exercice - monitor with prometheus
+## Exercice - monitor with opentelemetry
 
 Complete exercise #5, (again code at: https://github.com/enix/kubecoin )
 

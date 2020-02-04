@@ -170,9 +170,9 @@ Can we do better?
     - install with pure yaml manifests, kustomize, helm
 
 - Tilt (https://tilt.dev/)
-    - Titfile is programmatic format (python ?)
+    - Tiltfile is programmatic format (python ?)
     - Primitive for building with docker
-    - Primitive for deploying with pure yaml manifestsn kustomize, helm
+    - Primitive for deploying with pure yaml manifests, kustomize, helm
 
 - Garden (https://garden.io/)
 
