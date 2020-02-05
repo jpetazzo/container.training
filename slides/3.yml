@@ -16,10 +16,12 @@ exclude:
 chapters:
 - shared/title.md
 - logistics.md
-#- k8s/intro.md
+- k8s/intro.md
 - shared/about-slides.md
 - shared/toc.md
 -
+  - shared/prereqs.md
+  - shared/connecting.md
   # Bien démarrer en local (minikube, kind)
   - shared/sampleapp.md
   - k8s/software-dev-banalities.md
@@ -56,9 +58,6 @@ chapters:
   - k8s/opentelemetry.md
   - k8s/exercise-opentelemetry.md
   - k8s/kubernetes-security.md
-    #-
-    #  - k8s/rollout.md
-    #  - k8s/blue-green.md
 
     #- |
     #  # (Automatiser)
