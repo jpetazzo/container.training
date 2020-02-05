@@ -298,14 +298,14 @@ spec:
 
 - As soon as we see its IP address, access it:
   ```bash
-  curl $IP
+  curl `$IP`
   ```
 
 <!-- ```bash /bin/sleep 5``` -->
 
 - A few seconds later, the state of the pod will change; access it again:
   ```bash
-  curl $IP
+  curl `$IP`
   ```
 
 ]
