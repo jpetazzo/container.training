@@ -29,9 +29,9 @@ on multiple clusters, etc
 ---
 ## Blue/Green deployment
 
-- focus on all stack
+- focus on entire stack
 
-    - deploy en new stack
+    - deploy a new stack
     - check the new stack work as espected
     - put traffic on new stack, rollback if any goes wrong
     - garbage collect the previous infra structure
