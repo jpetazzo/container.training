@@ -19,11 +19,6 @@ chapters:
 - shared/about-slides.md
 - shared/toc.md
 -
-  - k8s/resource-limits.md
-  - k8s/metrics-server.md
-  - k8s/cluster-sizing.md
-  - k8s/horizontal-pod-autoscaler.md
--
   - k8s/netpol.md
   - k8s/authn-authz.md
 -
@@ -31,8 +26,13 @@ chapters:
   - k8s/local-persistent-volumes.md
   - k8s/portworx.md
 -
-  - k8s/logs-centralized.md
+  - k8s/resource-limits.md
+  - k8s/metrics-server.md
+  - k8s/cluster-sizing.md
+  - k8s/horizontal-pod-autoscaler.md
+-
   - k8s/prometheus.md
+  - k8s/logs-centralized.md
   - k8s/extending-api.md
   - k8s/operators.md
   #- k8s/operators-design.md
