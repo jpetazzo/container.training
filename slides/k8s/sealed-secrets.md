@@ -18,7 +18,7 @@
 
 - server side controller will re-create original secret, when the ciphered one are added to the cluster
 
-- it "safe" to add those secret to your source tree
+- it makes it "safe" to add those secret to your source tree
 
 - since version 0.9 key rotation are enable by default, so remember to backup private keys regularly.
   </br> (or you won't be able to decrypt all you keys, in a case of *disaster recovery*)
@@ -38,7 +38,7 @@
 
 - Install controller
   ```bash
-  helm install -n kube-system stable/sealed-secrets sealed-secrets-controller
+  helm install -n kube-system sealed-secrets-controller stable/sealed-secrets
   ```
 
 - Create a secret you don't want to leak

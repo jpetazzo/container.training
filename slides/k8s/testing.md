@@ -36,7 +36,7 @@ RUN <build code>
 CMD, EXPOSE ...
 ```
 
-- This leverages the Docker cache: it the code doesn't change, the tests don't need to run
+- This leverages the Docker cache: if the code doesn't change, the tests don't need to run
 
 - If the tests require a database or other backend, we can use `docker build --network`
 
