@@ -11,37 +11,37 @@ slides: http://2020-02-enix.container.training/
 
 exclude:
 - self-paced
+- hide-exercise
 
 chapters:
 - shared/title.md
 - logistics.md
-#- k8s/intro.md
+- k8s/intro.md
 - shared/about-slides.md
 - shared/toc.md
 -
-    # Bien démarrer en local (minikube, kind)
-  # - k8s/kube-coin-intro.md
-   - k8s/software-dev-banalities.md
-   - k8s/on-desktop.md
-   - k8s/namespaces.md
-   - k8s/accessinternal.md
-   - k8s/localkubeconfig.md
-   - k8s/kubectlproxy.md
-   - k8s/testing.md
+  - shared/prereqs.md
+  - shared/connecting.md
+  # Bien démarrer en local (minikube, kind)
+  - shared/sampleapp.md
+  - k8s/software-dev-banalities.md
+  - k8s/on-desktop.md
+  - k8s/volumes.md
+  - k8s/namespaces.md
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
+  - k8s/testing.md
 
 -
   - k8s/configuration.md
   - k8s/sealed-secrets.md
-  #- k8s/volumes.md
   - k8s/kustomize.md
   - k8s/helm-intro.md
   - k8s/helm-chart-format.md
-  - k8s/helm-create-basic-chart.md
-  - k8s/helm-create-better-chart.md
   - k8s/helm-secrets.md
 
 -
-  # - k8s/shippingimages.md  # some overlap
+  - k8s/shippingimages.md
   - k8s/registries.md
   - k8s/stop-manual.md
   - k8s/ci-cd.md
@@ -58,9 +58,6 @@ chapters:
   - k8s/opentelemetry.md
   - k8s/exercise-opentelemetry.md
   - k8s/kubernetes-security.md
-    #-
-    #  - k8s/rollout.md
-    #  - k8s/blue-green.md
 
     #- |
     #  # (Automatiser)

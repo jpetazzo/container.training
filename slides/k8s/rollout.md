@@ -79,8 +79,8 @@
 
 - Rolling updates can be monitored with the `kubectl rollout` subcommand
 
-<!--
-/---
+---
+class: hide-exercise
 
 ## Rolling out the new `worker` service
 
@@ -109,7 +109,8 @@
 
 That rollout should be pretty quick. What shows in the web UI?
 
-/---
+---
+class: hide-exercise
 
 ## Give it some time
 
@@ -131,7 +132,8 @@ That rollout should be pretty quick. What shows in the web UI?
 
   (The grace period is 30 seconds, but [can be changed](https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods) if needed)
 
-/---
+---
+class: hide-exercise
 
 ## Rolling out something invalid
 
@@ -162,7 +164,8 @@ Our rollout is stuck. However, the app is not dead.
 
 (After a minute, it will stabilize to be 20-25% slower.)
 
-/---
+---
+class: hide-exercise
 
 ## What's going on with our rollout?
 
@@ -182,7 +185,7 @@ Our rollout is stuck. However, the app is not dead.
   <br/>
   but the total number of pods being rolled out is allowed to be 25+25=50%
 
-/---
+---
 
 class: extra-details
 
@@ -202,7 +205,8 @@ class: extra-details
 
 - Our rollout is stuck at this point!
 
-/---
+---
+class: hide-exercise
 
 ## Checking the dashboard during the bad rollout
 
@@ -218,7 +222,8 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 ]
 
-/---
+---
+class: hide-exercise
 
 ## Recovering from a bad rollout
 
@@ -240,7 +245,8 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 ]
 
-/---
+---
+class: hide-exercise
 
 ## Rolling back to an older version
 
@@ -250,7 +256,8 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 - How can we get back to the previous version?
 
-/---
+---
+class: hide-exercise
 
 ## Multiple "undos"
 
@@ -269,7 +276,8 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 🤔 That didn't work.
 
-/---
+---
+class: hide-exercise
 
 ## Multiple "undos" don't work
 
@@ -290,7 +298,9 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 ]
 
-/---
+---
+
+class: hide-exercise
 
 ## In this specific scenario
 
@@ -300,7 +310,9 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 - What if we had changed other parameters in the Pod spec?
 
-/---
+---
+
+class: hide-exercise
 
 ## Listing versions
 
@@ -321,7 +333,8 @@ We might see something like 1, 4, 5.
 
 (Depending on how many "undos" we did before.)
 
-/---
+---
+class: hide-exercise
 
 ## Explaining deployment revisions
 
@@ -338,9 +351,10 @@ We might see something like 1, 4, 5.
 
 ]
 
-/---
+---
 
 class: extra-details
+class: hide-exercise
 
 ## What about the missing revisions?
 
@@ -354,7 +368,8 @@ class: extra-details
 
   (if we wanted to!)
 
-/---
+---
+class: hide-exercise
 
 ## Rolling back to an older version
 
@@ -371,9 +386,10 @@ class: extra-details
 
 ]
 
-/---
+---
 
 class: extra-details
+class: hide-exercise
 
 ## Changing rollout parameters
 
@@ -381,7 +397,7 @@ class: extra-details
 
   - revert to `v0.1`
   - be conservative on availability (always have desired number of available workers)
-  - go slow on rollout speed (update only one pod at a time) 
+  - go slow on rollout speed (update only one pod at a time)
   - give some time to our workers to "warm up" before starting more
 
 The corresponding changes can be expressed in the following YAML snippet:
@@ -402,9 +418,10 @@ spec:
 ```
 ]
 
-/---
+---
 
 class: extra-details
+class: hide-exercise
 
 ## Applying changes through a YAML patch
 
@@ -435,8 +452,6 @@ class: extra-details
   kubectl get deploy -o json worker |
           jq "{name:.metadata.name} + .spec.strategy.rollingUpdate"
   ```
-  ] 
+  ]
 
 ]
-
--->
