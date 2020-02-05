@@ -6,11 +6,11 @@
 
    - .emoji[☸️] Julien Girardin ([Zempashi](https://github.com/zempashi), Enix SAS)
 
-- The training will run from 9am to 5:30pm
+- The training will run from 9am to 5:30pm (with lunch and coffee breaks)
 
-- There will be a lunch break
+- For lunch, we'll invite you at [Chameleon, 70 Rue René Boulanger](https://goo.gl/maps/h2XjmJN5weDSUios8)
 
-  (and coffee breaks!)
+  (please let us know if you'll eat on your own)
 
 - Feel free to interrupt for questions at any time
 
