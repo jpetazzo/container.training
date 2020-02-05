@@ -339,12 +339,29 @@ Note: we could have used `--namespace=default` for the same result.
 
 - `kube-ps1` makes it easy to track these, by showing them in our shell prompt
 
-- It's a simple shell script available from https://github.com/jonmosco/kube-ps1
+- It is installed on our training clusters, and when using [shpod](https://github.com/jpetazzo/shpod)
 
-- On our clusters, `kube-ps1` is installed and included in `PS1`:
+- It gives us a prompt looking like this one:
   ```
   [123.45.67.89] `(kubernetes-admin@kubernetes:default)` docker@node1 ~
   ```
   (The highlighted part is `context:namespace`, managed by `kube-ps1`)
 
 - Highly recommended if you work across multiple contexts or namespaces!
+
+---
+
+## Installing `kube-ps1`
+
+- It's a simple shell script available from https://github.com/jonmosco/kube-ps1
+
+- It needs to be [installed in our profile/rc files](https://github.com/jonmosco/kube-ps1#installing)
+
+  (instructions differ depending on platform, shell, etc.)
+
+- Once installed, it defines aliases called `kube_ps1`, `kubeon`, `kubeoff`
+
+  (to selectively enable/disable it when needed)
+
+- Pro-tip: install it on your machine during the next break!
+
