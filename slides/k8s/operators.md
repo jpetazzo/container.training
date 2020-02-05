@@ -530,7 +530,7 @@ After the Kibana UI loads, we need to click around a bit
 
 - Lookup the NodePort number and connect to it:
   ```bash
-  kuebctl get services
+  kubectl get services
   ```
 
 ]

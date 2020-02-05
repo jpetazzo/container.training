@@ -65,7 +65,7 @@ Where does that come from?
 
 - Look for ConfigMaps and Secrets:
   ```bash
-  kuebectl get configmaps,secrets
+  kubectl get configmaps,secrets
   ```
 
 ]
