@@ -151,7 +151,7 @@ There are many possibilities!
 
 - Replacing built-in types with CRDs
 
-  (see [this lightning talk by Tim Hockin](https://www.youtube.com/watch?v=ji0FWzFwNhA&index=2&list=PLj6h78yzYM2PZf9eA7bhWnIh_mK1vyOfU))
+  (see [this lightning talk by Tim Hockin](https://www.youtube.com/watch?v=ji0FWzFwNhA))
 
 ---
 
