@@ -28,7 +28,7 @@ The reference plugins are available [here].
 
 Look in each plugin's directory for its documentation.
 
-[here]: https://github.com/containernetworking/plugins/tree/master/plugins
+[here]: https://github.com/containernetworking/plugins
 
 ---
 
