@@ -154,7 +154,7 @@ class: extra-details
 
 - "Running Kubernetes without nodes"
 
-- Systems like [Virtual Kubelet](https://virtual-kubelet.io/) or Kiyot can run pods using on-demand resources
+- Systems like [Virtual Kubelet](https://virtual-kubelet.io/) or [Kiyot](https://static.elotl.co/docs/latest/kiyot/kiyot.html) can run pods using on-demand resources
 
   - Virtual Kubelet can leverage e.g. ACI or Fargate to run pods
 
