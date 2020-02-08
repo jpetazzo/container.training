@@ -20,7 +20,7 @@ The control plane can run:
 
 - in containers, on the same nodes that run other application workloads
 
-  (example: Minikube; 1 node runs everything)
+  (example: [Minikube](https://github.com/kubernetes/minikube); 1 node runs everything, [kind](https://kind.sigs.k8s.io/))
 
 - on a dedicated node
 
@@ -28,7 +28,7 @@ The control plane can run:
 
 - on a dedicated set of nodes
 
-  (example: Kubernetes The Hard Way; kops)
+  (example: [Kubernetes The Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way); [kops](https://github.com/kubernetes/kops))
 
 - outside of the cluster
 
