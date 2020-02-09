@@ -113,9 +113,12 @@ _cmd_disabledocker() {
     TAG=$1
     need_tag
 
-    pssh "sudo systemctl disable docker.service"
-    pssh "sudo systemctl disable docker.socket"
-    pssh "sudo systemctl stop docker"
+    pssh "
+    sudo systemctl disable docker.service
+    sudo systemctl disable docker.socket
+    sudo systemctl stop docker
+    sudo killall containerd
+    "
 }
 
 _cmd kubebins "Install Kubernetes and CNI binaries but don't start anything"
@@ -127,18 +130,15 @@ _cmd_kubebins() {
     set -e
     cd /usr/local/bin
     if ! [ -x etcd ]; then
-        curl -L https://github.com/etcd-io/etcd/releases/download/v3.3.15/etcd-v3.3.15-linux-amd64.tar.gz \
+        ##VERSION##
+        curl -L https://github.com/etcd-io/etcd/releases/download/v3.4.3/etcd-v3.4.3-linux-amd64.tar.gz \
         | sudo tar --strip-components=1 --wildcards -zx '*/etcd' '*/etcdctl'
     fi
     if ! [ -x hyperkube ]; then
-        curl -L https://dl.k8s.io/v1.16.2/kubernetes-server-linux-amd64.tar.gz \
-        | sudo tar --strip-components=3 -zx kubernetes/server/bin/hyperkube
-    fi
-    if ! [ -x kubelet ]; then
-        for BINARY in kubectl kube-apiserver kube-scheduler kube-controller-manager kubelet kube-proxy;
-        do
-            sudo ln -s hyperkube \$BINARY
-        done
+        ##VERSION##
+        curl -L https://dl.k8s.io/v1.17.2/kubernetes-server-linux-amd64.tar.gz \
+        | sudo tar --strip-components=3 -zx \
+          kubernetes/server/bin/kube{ctl,let,-proxy,-apiserver,-scheduler,-controller-manager}
     fi
     sudo mkdir -p /opt/cni/bin
     cd /opt/cni/bin
@@ -249,6 +249,7 @@ EOF"
     # Install ship
     pssh "
     if [ ! -x /usr/local/bin/ship ]; then
+        ##VERSION##
         curl -L https://github.com/replicatedhq/ship/releases/download/v0.40.0/ship_0.40.0_linux_amd64.tar.gz |
              sudo tar -C /usr/local/bin -zx ship
     fi"
@@ -256,7 +257,7 @@ EOF"
     # Install the AWS IAM authenticator
     pssh "
     if [ ! -x /usr/local/bin/aws-iam-authenticator ]; then
-	##VERSION##
+	    ##VERSION##
         sudo curl -o /usr/local/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator
 	sudo chmod +x /usr/local/bin/aws-iam-authenticator
     fi"

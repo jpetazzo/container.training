@@ -12,7 +12,6 @@ metadata:
   name: kube-router-cfg
   namespace: kube-system
   labels:
-    tier: node
     k8s-app: kube-router
 data:
   cni-conf.json: |
@@ -32,20 +31,21 @@ data:
        ]
     }
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
     k8s-app: kube-router
-    tier: node
   name: kube-router
   namespace: kube-system
 spec:
+  selector:
+    matchLabels:
+      k8s-app: kube-router
   template:
     metadata:
       labels:
         k8s-app: kube-router
-        tier: node
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
