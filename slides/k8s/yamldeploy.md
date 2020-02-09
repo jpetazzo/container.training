@@ -140,3 +140,27 @@ We can safely ignore them.)
 - Our version control system now has a full history of what we deploy
 
 - Compares to "Infrastructure-as-Code", but for app deployments
+
+---
+
+class: extra-details
+
+## Specifying the namespace
+
+- When creating resources from YAML manifests, the namespace is optional
+
+- If we specify a namespace:
+
+  - resources are created in the specified namespace
+
+  - this is typical for things deployed only once per cluster
+
+  - example: system components, cluster add-ons ...
+
+- If we don't specify a namespace:
+
+  - resources are created in the current namespace
+
+  - this is typical for things that may be deployed multiple times
+
+  - example: applications (production, staging, feature branches ...)
