@@ -22,24 +22,30 @@ chapters:
 - k8s/intro.md
 - shared/about-slides.md
 - shared/toc.md
-- - k8s/prereqs-admin.md
+-
+  - k8s/prereqs-admin.md
   - k8s/architecture.md
+  - k8s/deploymentslideshow.md
   - k8s/dmuc.md
-- - k8s/multinode.md
+-
+  - k8s/multinode.md
   - k8s/cni.md
+  - k8s/interco.md
+-
   - k8s/apilb.md
-  - k8s/control-plane-auth.md
-- - k8s/setup-managed.md
-  - k8s/setup-selfhosted.md
+  #- k8s/setup-managed.md
+  #- k8s/setup-selfhosted.md
   - k8s/cluster-upgrade.md
-  - k8s/staticpods.md
   - k8s/cluster-backup.md
-  - k8s/cloud-controller-manager.md
-  - k8s/bootstrap.md  
-- - k8s/resource-limits.md
-  - k8s/metrics-server.md
-  - k8s/cluster-sizing.md
-  - k8s/horizontal-pod-autoscaler.md
-- - k8s/lastwords-admin.md
+  - k8s/staticpods.md
+-
+  #- k8s/cloud-controller-manager.md
+  #- k8s/bootstrap.md  
+  - k8s/control-plane-auth.md
+  - k8s/podsecuritypolicy.md
+  - k8s/csr-api.md
+  - k8s/openid-connect.md
+-
+  #- k8s/lastwords-admin.md
   - k8s/links.md
   - shared/thankyou.md
