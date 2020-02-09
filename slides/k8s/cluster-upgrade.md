@@ -81,7 +81,7 @@
 
 ## What version are we running anyway?
 
-- When I say, "I'm running Kubernetes 1.16", is that the version of:
+- When I say, "I'm running Kubernetes 1.15", is that the version of:
 
   - kubectl
 
@@ -254,7 +254,7 @@ and kubectl, which can be one MINOR ahead or behind API server.]
   sudo vim /etc/kubernetes/manifests/kube-apiserver.yaml
   ```
 
-- Look for the `image:` line, and update it to e.g. `v1.17.0`
+- Look for the `image:` line, and update it to e.g. `v1.16.0`
 
 ]
 
@@ -308,11 +308,11 @@ and kubectl, which can be one MINOR ahead or behind API server.]
 
 ]
 
-Note 1: kubeadm thinks that our cluster is running 1.17.0.
+Note 1: kubeadm thinks that our cluster is running 1.16.0.
 <br/>It is confused by our manual upgrade of the API server!
 
-Note 2: kubeadm itself is still version 1.16.6.
-<br/>It doesn't know how to upgrade do 1.17.X.
+Note 2: kubeadm itself is still version 1.15.9.
+<br/>It doesn't know how to upgrade do 1.16.X.
 
 ---
 
@@ -334,8 +334,39 @@ Note 2: kubeadm itself is still version 1.16.6.
 
 ]
 
-Note: kubeadm still thinks that our cluster is running 1.17.0.
-<br/>But at least it knows about version 1.17.X now.
+Problem: kubeadm doesn't know know how to handle
+upgrades from version 1.15.
+
+This is because we installed version 1.17 (or even later).
+
+We need to install kubeadm version 1.16.X.
+
+---
+
+## Downgrading kubeadm
+
+- We need to go back to version 1.16.X (e.g. 1.16.6)
+
+.exercise[
+
+- View available versions for package `kubeadm`:
+  ```bash
+  apt show kubeadm -a | grep ^Version | grep 1.16
+  ```
+
+- Downgrade kubeadm:
+  ```
+  sudo apt install kubeadm=1.16.6-00
+  ```
+
+- Check what kubeadm tells us:
+  ```
+  sudo kubeadm upgrade plan
+  ```
+
+]
+
+kubeadm should now agree to upgrade to 1.16.6.
 
 ---
 
@@ -351,7 +382,7 @@ Note: kubeadm still thinks that our cluster is running 1.17.0.
 
 - Perform the upgrade:
   ```bash
-  sudo kubeadm upgrade apply v1.17.2
+  sudo kubeadm upgrade apply v1.16.6
   ```
 
 ]
@@ -375,7 +406,7 @@ Note: kubeadm still thinks that our cluster is running 1.17.0.
 
 - Upgrade kubelet:
   ```bash
-  sudo apt install kubelet=1.17.2-00
+  sudo apt install kubelet=1.16.6-00
   ```
 
 ]
@@ -423,7 +454,7 @@ Note: kubeadm still thinks that our cluster is running 1.17.0.
 
 ## Upgrading kubelet the right way
 
-- The command that we need to run was shown by kubeadm
+- We need to upgrade kubeadm, upgrade kubelet config, then upgrade kubelet
 
   (after upgrading the control plane)
 
@@ -432,8 +463,10 @@ Note: kubeadm still thinks that our cluster is running 1.17.0.
 - Download the configuration on each node, and upgrade kubelet:
   ```bash
     for N in 1 2 3; do
-      ssh test$N sudo kubeadm upgrade node config --kubelet-version v1.17.2
-      ssh test$N sudo apt install kubelet=1.17.2-00
+      ssh test$N "
+        sudo apt install kubeadm=1.16.6-00 &&
+        sudo kubeadm upgrade node &&
+        sudo apt install kubelet=1.16.6-00"
     done
   ```
 ]
@@ -442,7 +475,7 @@ Note: kubeadm still thinks that our cluster is running 1.17.0.
 
 ## Checking what we've done
 
-- All our nodes should now be updated to version 1.17.2
+- All our nodes should now be updated to version 1.16.6
 
 .exercise[
 
@@ -459,7 +492,7 @@ class: extra-details
 
 ## Skipping versions
 
-- This example worked because we went from 1.16 to 1.17
+- This example worked because we went from 1.15 to 1.16
 
 - If you are upgrading from e.g. 1.14, you will have to go through 1.15 first
 
