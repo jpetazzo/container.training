@@ -1,6 +1,7 @@
 title: |
-  Deploying and Scaling Microservices
-  with Kubernetes
+  Kubernetes
+  @
+  VMware
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
@@ -8,12 +9,13 @@ chat: "In person!"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: https://2020-02-vmware.container.training/
 
-#slidenumberprefix: "#SomeHashTag &mdash; "
+slidenumberprefix: "@jpetazzo &mdash; "
 
 exclude:
 - self-paced
+- chat-room
 
 chapters:
 - shared/title.md
@@ -35,11 +37,13 @@ chapters:
 -
   - k8s/kubectlrun.md
   - k8s/logs-cli.md
+  - vmware/vrli.md
   - shared/declarative.md
   - k8s/declarative.md
   - k8s/deploymentslideshow.md
   - k8s/kubenet.md
   - k8s/kubectlexpose.md
+  - vmware/nsxt.md
   - k8s/shippingimages.md
   #- k8s/buildshiprun-selfhosted.md
   - k8s/buildshiprun-dockerhub.md
@@ -47,22 +51,40 @@ chapters:
 -
   - k8s/yamldeploy.md
   - k8s/setup-k8s.md
+  - vmware/pks.md
   #- k8s/dashboard.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
-  - shared/hastyconclusions.md
-  - k8s/daemonset.md
+  - |
+    ## Scaling `rng`
+
+    - Let's scale the `rng` service just like we scaled `worker`
+
+    .exercise[
+
+    - Scale `rng`:
+      ```bash
+      kubectl scale deploy rng --replicas=2
+      ```
+
+    ]
+
+    The web UI graph should go past 10 hashes/second.
+
+  - vmware/vrops.md
+  #- shared/hastyconclusions.md
+  #- k8s/daemonset.md
   #- k8s/dryrun.md
   #- k8s/localkubeconfig.md
   #- k8s/accessinternal.md
   #- k8s/kubectlproxy.md
   - k8s/rollout.md
-  #- k8s/healthchecks.md
+  - k8s/healthchecks.md
   #- k8s/healthchecks-more.md
   #- k8s/record.md
 -
   - k8s/namespaces.md
-  - k8s/ingress.md
+  #- k8s/ingress.md
   #- k8s/kustomize.md
   #- k8s/helm-intro.md
   #- k8s/helm-chart-format.md
