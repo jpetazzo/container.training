@@ -144,158 +144,23 @@ spec:
 
 ---
 
-## Persistent Volume Claims
+## Individual volumes
 
-- To abstract the different types of storage, a pod can use a special volume type
+- The Pods of a Stateful set can have individual volumes
 
-- This type is a *Persistent Volume Claim*
+  (i.e. in a Stateful set with 3 replicas, there will be 3 volumes)
 
-- A Persistent Volume Claim (PVC) is a resource type
+- These volumes can be either:
 
-  (visible with `kubectl get persistentvolumeclaims` or `kubectl get pvc`)
+  - allocated from a pool of pre-existing volumes (disks, partitions ...)
 
-- A PVC is not a volume; it is a *request for a volume*
+  - created dynamically using a storage system
 
----
+- This introduces a bunch of new Kubernetes resource types:
 
-## Persistent Volume Claims in practice
+  Persistent Volumes, Persistent Volume Claims, Storage Classes
 
-- Using a Persistent Volume Claim is a two-step process:
-
-  - creating the claim
-
-  - using the claim in a pod (as if it were any other kind of volume)
-
-- A PVC starts by being Unbound (without an associated volume)
-
-- Once it is associated with a Persistent Volume, it becomes Bound
-
-- A Pod referring an unbound PVC will not start
-
-  (but as soon as the PVC is bound, the Pod can start)
-
----
-
-## Binding PV and PVC
-
-- A Kubernetes controller continuously watches PV and PVC objects
-
-- When it notices an unbound PVC, it tries to find a satisfactory PV
-
-  ("satisfactory" in terms of size and other characteristics; see next slide)
-
-- If no PV fits the PVC, a PV can be created dynamically
-
-  (this requires to configure a *dynamic provisioner*, more on that later)
-
-- Otherwise, the PVC remains unbound indefinitely
-
-  (until we manually create a PV or setup dynamic provisioning)
-
----
-
-## What's in a Persistent Volume Claim?
-
-- At the very least, the claim should indicate:
-
-  - the size of the volume (e.g. "5 GiB")
-
-  - the access mode (e.g. "read-write by a single pod")
-
-- Optionally, it can also specify a Storage Class
-
-- The Storage Class indicates:
-
-  - which storage system to use (e.g. Portworx, EBS...)
-
-  - extra parameters for that storage system
-
-    e.g.: "replicate the data 3 times, and use SSD media"
-
----
-
-## What's a Storage Class?
-
-- A Storage Class is yet another Kubernetes API resource
-
-  (visible with e.g. `kubectl get storageclass` or `kubectl get sc`)
-
-- It indicates which *provisioner* to use
-
-  (which controller will create the actual volume)
-
-- And arbitrary parameters for that provisioner
-
-  (replication levels, type of disk ... anything relevant!)
-
-- Storage Classes are required if we want to use [dynamic provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
-
-  (but we can also create volumes manually, and ignore Storage Classes)
-
----
-
-## Defining a Persistent Volume Claim
-
-Here is a minimal PVC:
-
-```yaml
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-   name: my-claim
-spec:
-   accessModes:
-     - ReadWriteOnce
-   resources:
-     requests:
-       storage: 1Gi
-```
-
----
-
-## Using a Persistent Volume Claim
-
-Here is a Pod definition like the ones shown earlier, but using a PVC:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-using-a-claim
-spec:
-  containers:
-  - image: ...
-    name: container-using-a-claim
-    volumeMounts:
-    - mountPath: /my-vol
-      name: my-volume
-  volumes:
-  - name: my-volume
-    persistentVolumeClaim:
-      claimName: my-claim
-```
-
----
-
-## Persistent Volume Claims and Stateful sets
-
-- The pods in a stateful set can define a `volumeClaimTemplate`
-
-- A `volumeClaimTemplate` will dynamically create one Persistent Volume Claim per pod
-
-- Each pod will therefore have its own volume
-
-- These volumes are numbered (like the pods)
-
-- When updating the stateful set (e.g. image upgrade), each pod keeps its volume
-
-- When pods get rescheduled (e.g. node failure), they keep their volume
-
-  (this requires a storage system that is not node-local)
-
-- These volumes are not automatically deleted
-
-  (when the stateful set is scaled down or deleted)
+  (and also `volumeClaimTemplates`, that appear within Stateful Set manifests!)
 
 ---
 
@@ -441,11 +306,9 @@ nodes and encryption of gossip traffic) were removed for simplicity.
 
 ## Caveats
 
-- We haven't used a `volumeClaimTemplate` here
+- We aren't using actual persistence yet
 
-- That's because we don't have a storage provider yet
-
-  (except if you're running this on your own and your cluster has one)
+  (no `volumeClaimTemplate`, Persistent Volume, etc.)
 
 - What happens if we lose a pod?
 
@@ -474,3 +337,266 @@ nodes and encryption of gossip traffic) were removed for simplicity.
   - we lose all the data (ouch)
 
 - If we run Consul without persistent storage, backups are a good idea!
+
+---
+
+# Persistent Volumes Claims
+
+- Our Pods can use a special volume type: a *Persistent Volume Claim*
+
+- A Persistent Volume Claim (PVC) is also a Kubernetes resource
+
+  (visible with `kubectl get persistentvolumeclaims` or `kubectl get pvc`)
+
+- A PVC is not a volume; it is a *request for a volume*
+
+- It should indicate at least:
+
+  - the size of the volume (e.g. "5 GiB")
+
+  - the access mode (e.g. "read-write by a single pod")
+
+---
+
+## What's in a PVC?
+
+- A PVC contains at least:
+
+  - a list of *access modes* (ReadWriteOnce, ReadOnlyMany, ReadWriteMany)
+
+  - a size (interpreted as the minimal storage space needed)
+
+- It can also contain optional elements:
+
+  - a selector (to restrict which actual volumes it can use)
+
+  - a *storage class* (used by dynamic provisioning, more on that later)
+
+---
+
+## What does a PVC look like?
+
+Here is a manifest for a basic PVC:
+
+```yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+   name: my-claim
+spec:
+   accessModes:
+     - ReadWriteOnce
+   resources:
+     requests:
+       storage: 1Gi
+```
+
+---
+
+## Using a Persistent Volume Claim
+
+Here is a Pod definition like the ones shown earlier, but using a PVC:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-using-a-claim
+spec:
+  containers:
+  - image: ...
+    name: container-using-a-claim
+    volumeMounts:
+    - mountPath: /my-vol
+      name: my-volume
+  volumes:
+  - name: my-volume
+    persistentVolumeClaim:
+      claimName: my-claim
+```
+
+---
+
+## Creating and using Persistent Volume Claims
+
+- PVCs can be created manually and used explicitly
+
+  (as shown on the previous slides)
+
+- They can also be created and used through Stateful Sets
+
+  (this will be shown later)
+
+---
+
+## Lifecycle of Persistent Volume Claims
+
+- When a PVC is created, it starts existing in "Unbound" state
+
+  (without an associated volume)
+
+- A Pod referencing an unbound PVC will not start
+
+  (the scheduler will wait until the PVC is bound to place it)
+
+- A special controller continuously monitors PVCs to associate them with PVs
+
+- If no PV is available, one must be created:
+
+  - manually (by operator intervention)
+
+  - using a *dynamic provisioner* (more on that later)
+
+---
+
+class: extra-details
+
+## Which PV gets associated to a PVC?
+
+- The PV must satisfy the PVC constraints
+
+  (access mode, size, optional selector, optional storage class)
+
+- The PVs with the closest access mode are picked
+
+- Then the PVs with the closest size
+
+- It is possible to specify a `claimRef` when creating a PV
+
+  (this will associate it to the specified PVC, but only if the PV satisfies all the requirements of the PVC; otherwise another PV might end up being picked)
+
+- For all the details about the PersistentVolumeClaimBinder, check [this doc](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/persistent-storage.md#matching-and-binding)
+
+---
+
+## Persistent Volume Claims and Stateful sets
+
+- A Stateful set can define one (or more) `volumeClaimTemplate`
+
+- Each `volumeClaimTemplate` will create one Persistent Volume Claim per pod
+
+- Each pod will therefore have its own individual volume
+
+- These volumes are numbered (like the pods)
+
+- Example:
+
+  - a Stateful set is named `db`
+  - it is scaled to replicas
+  - it has a `volumeClaimTemplate` named `data`
+  - then it will create pods `db-0`, `db-1`, `db-2`
+  - these pods will have volumes named `data-db-0`, `data-db-1`, `data-db-2`
+
+---
+
+## Persistent Volume Claims are sticky
+
+- When updating the stateful set (e.g. image upgrade), each pod keeps its volume
+
+- When pods get rescheduled (e.g. node failure), they keep their volume
+
+  (this requires a storage system that is not node-local)
+
+- These volumes are not automatically deleted
+
+  (when the stateful set is scaled down or deleted)
+
+- If a stateful set is scaled back up later, the pods get their data back
+
+---
+
+## Dynamic provisioners
+
+- A *dynamic provisioner* monitors unbound PVCs
+
+- It can create volumes (and the corresponding PV) on the fly
+
+- This requires the PVCs to have a *storage class*
+
+  (annotation `volume.beta.kubernetes.io/storage-provisioner`)
+
+- A dynamic provisioner only acts on PVCs with the right storage class
+
+  (it ignores the other ones)
+
+- Just like `LoadBalancer` services, dynamic provisioners are optional
+
+  (i.e. our cluster may or may not have one pre-installed)
+
+---
+
+## What's a Storage Class?
+
+- A Storage Class is yet another Kubernetes API resource
+
+  (visible with e.g. `kubectl get storageclass` or `kubectl get sc`)
+
+- It indicates which *provisioner* to use
+
+  (which controller will create the actual volume)
+
+- And arbitrary parameters for that provisioner
+
+  (replication levels, type of disk ... anything relevant!)
+
+- Storage Classes are required if we want to use [dynamic provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
+
+  (but we can also create volumes manually, and ignore Storage Classes)
+
+---
+
+## The default storage class
+
+- At most one storage class can be marked as the default class
+
+  (by annotating it with `storageclass.kubernetes.io/is-default-class=true`)
+
+- When a PVC is created, it will be annotated with the default storage class
+
+  (unless it specifies an explicit storage class)
+
+- This only happens at PVC creation
+
+  (existing PVCs are not updated when we mark a class as the default one)
+
+---
+
+## Dynamic provisioning setup
+
+This is how we can achieve fully automated provisioning of persistent storage.
+
+1. Configure a storage system.
+
+   (It needs to have an API, or be capable of automated provisioning of volumes.)
+
+2. Install a dynamic provisioner for this storage system.
+
+   (This is some specific controller code.)
+
+3. Create a Storage Class for this system.
+
+   (It has to match what the dynamic provisioner is expecting.)
+
+4. Annotate the Storage Class to be the default one.
+
+---
+
+## Dynamic provisioning usage
+
+After setting up the system (previous slide), all we need to do is:
+
+*Create a Stateful Set that makes use of a `volumeClaimTemplate`.*
+
+This will trigger the following actions.
+
+1. The Stateful Set creates PVCs according to the `volumeClaimTemplate`.
+
+2. The Stateful Set creates Pods using these PVCs.
+
+3. The PVCs are automatically annotated with our Storage Class.
+
+4. The dynamic provisioner provisions volumes and creates the corresponding PVs.
+
+5. The PersistentVolumeClaimBinder associates the PVs and the PVCs together.
+
+6. PVCs are now bound, the Pods can start.
