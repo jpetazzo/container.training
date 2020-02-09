@@ -61,9 +61,9 @@ chapters:
   - k8s/record.md
 -
   - k8s/namespaces.md
-  - k8s/kubectlproxy.md
   - k8s/localkubeconfig.md
   - k8s/accessinternal.md
+  - k8s/kubectlproxy.md
 -
   - k8s/ingress.md
   - k8s/kustomize.md

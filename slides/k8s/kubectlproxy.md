@@ -115,6 +115,22 @@ The output is a list of available API routes.
 
 ---
 
+## OpenAPI (fka Swagger)
+
+- The Kubernetes API serves an OpenAPI Specification
+
+  (OpenAPI was formerly known as Swagger)
+
+- OpenAPI has many advantages
+
+  (generate client library code, generate test code ...)
+
+- For us, this means we can explore the API with [Swagger UI](https://swagger.io/tools/swagger-ui/)
+
+  (for instance with the [Swagger UI add-on for Firefox](https://addons.mozilla.org/en-US/firefox/addon/swagger-ui-ff/))
+
+---
+
 ## `kubectl proxy` is intended for local use
 
 - By default, the proxy listens on port 8001
@@ -135,6 +151,8 @@ The output is a list of available API routes.
 
 ---
 
+class: extra-details
+
 ## Running `kubectl proxy` on a remote machine
 
 - If we wanted to connect to the proxy from another machine, we would need to:
@@ -151,6 +169,8 @@ The output is a list of available API routes.
 .warning[Do not do this on a real cluster: it opens full unauthenticated access!]
 
 ---
+
+class: extra-details
 
 ## Security considerations
 
