@@ -117,3 +117,41 @@ chapters:
   - k8s/whatsnext.md
   - k8s/links.md
   - shared/thankyou.md
+-
+  - |
+    # (Extra)
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
+  - k8s/kubectlproxy.md
+  - k8s/ingress.md
+-
+  - |
+    # (Extra)
+  - k8s/kustomize.md
+  - k8s/helm-intro.md
+  - k8s/helm-chart-format.md
+  - k8s/helm-create-basic-chart.md
+  - k8s/helm-create-better-chart.md
+  - k8s/helm-secrets.md
+-
+  - |
+    # (Extra)
+  - k8s/netpol.md
+  - k8s/authn-authz.md
+  - k8s/csr-api.md
+  - k8s/openid-connect.md
+  - k8s/podsecuritypolicy.md
+-
+  - |
+    # (Extra)
+  - k8s/logs-centralized.md
+  - k8s/prometheus.md
+  - k8s/statefulsets.md
+  - k8s/local-persistent-volumes.md
+  - k8s/portworx.md
+-
+  - |
+    # (Extra)
+  - k8s/extending-api.md
+  - k8s/operators.md
+  - k8s/operators-design.md
