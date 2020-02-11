@@ -25,7 +25,7 @@
 - You'll need the following software installed on your local laptop:
 
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
-* [helm](https://helm.sh/docs/using_helm/#installing-helm)
+* [helm 3](https://helm.sh/docs/using_helm/#installing-helm)
 
 - Bonus tools
 
