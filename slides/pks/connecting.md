@@ -4,7 +4,7 @@ class: in-person
 
 .exercise[
 
-- Log into https://workshop.paulczar.wtf with your provided credentials
+- Log into https://gangway.workshop.paulczar.wtf with your provided credentials (sorry about the [self-signed cert](https://gist.githubusercontent.com/paulczar/6e3f48a03e544627952aaa399a29a4af/raw/9e530371d8929ab573a205238dd0f2c718edc64c/ca.cert))
 
 - Follow the instructions on the auth portal to set up a `kubeconfig` file.
 

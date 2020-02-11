@@ -6,7 +6,7 @@
 
 - You can get updated "builds" of the slides there:
 
-  http://container.training/
+  @@SLIDES@@
 
 <!--
 .exercise[
