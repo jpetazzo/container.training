@@ -64,3 +64,19 @@ If it shows our nodes and their CPU and memory load, we're good!
 ]
 
 - We can also use selectors (`-l app=...`)
+
+---
+
+## Other tools
+
+- kube-capacity is a great CLI tool to view resources
+
+  (https://github.com/robscott/kube-capacity)
+
+- It can show resource and limits, and compare them with usage
+
+- It can show utilization per node, or per pod
+
+- kube-resource-report can generate HTML reports
+
+  (https://github.com/hjacobs/kube-resource-report)
