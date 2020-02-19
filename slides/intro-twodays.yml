@@ -1,0 +1,75 @@
+title: |
+  Introduction
+  to Containers
+
+chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: http://container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+chapters:
+- shared/title.md
+- logistics.md
+- containers/intro.md
+- shared/about-slides.md
+- shared/toc.md
+- # DAY 1
+  - containers/Docker_Overview.md
+  #- containers/Docker_History.md
+  - containers/Training_Environment.md
+  - containers/First_Containers.md
+  - containers/Background_Containers.md
+  - containers/Initial_Images.md
+-
+  - containers/Building_Images_Interactively.md
+  - containers/Building_Images_With_Dockerfiles.md
+  - containers/Cmd_And_Entrypoint.md
+  - containers/Copying_Files_During_Build.md
+  - containers/Exercise_Dockerfile_Basic.md
+-
+  - containers/Dockerfile_Tips.md
+  - containers/Multi_Stage_Builds.md
+  - containers/Publishing_To_Docker_Hub.md
+  - containers/Exercise_Dockerfile_Advanced.md
+-
+  - containers/Naming_And_Inspecting.md
+  - containers/Labels.md
+  - containers/Start_And_Attach.md
+  - containers/Getting_Inside.md
+  - containers/Resource_Limits.md
+- # DAY 2
+  - containers/Container_Networking_Basics.md
+  - containers/Network_Drivers.md
+  - containers/Container_Network_Model.md
+-
+  - containers/Local_Development_Workflow.md
+  - containers/Working_With_Volumes.md
+  - containers/Compose_For_Dev_Stacks.md
+  - containers/Exercise_Composefile.md
+-
+  - containers/Installing_Docker.md
+  - containers/Container_Engines.md
+  - containers/Init_Systems.md
+  - containers/Advanced_Dockerfiles.md
+-
+  - containers/Application_Configuration.md
+  - containers/Logging.md
+  - containers/Orchestration_Overview.md
+-
+  - shared/thankyou.md
+  - containers/links.md
+#-
+  #- containers/Docker_Machine.md
+  #- containers/Ambassadors.md
+  #- containers/Namespaces_Cgroups.md
+  #- containers/Copy_On_Write.md
+  #- containers/Containers_From_Scratch.md
+  #- containers/Pods_Anatomy.md
+  #- containers/Ecosystem.md
