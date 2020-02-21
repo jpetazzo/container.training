@@ -57,8 +57,6 @@ chapters:
   - shared/connecting.md
   #- k8s/versions-k8s.md
   - shared/sampleapp.md
-  #- shared/composescale.md
-  #- shared/hastyconclusions.md
   - shared/composedown.md
   - k8s/concepts-k8s.md
   - k8s/kubectlget.md
@@ -70,31 +68,31 @@ chapters:
   - k8s/deploymentslideshow.md
   - k8s/kubenet.md
   - k8s/kubectlexpose.md
+-
   - k8s/shippingimages.md
-  #- k8s/buildshiprun-selfhosted.md
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
--
   - k8s/yamldeploy.md
   #- k8s/setup-k8s.md
-  - k8s/dashboard.md
+  #- k8s/dashboard.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
-  - k8s/daemonset.md
-  - k8s/dryrun.md
 -
+  - k8s/daemonset.md
+  #- k8s/dryrun.md
+  - k8s/namespaces.md
   - k8s/localkubeconfig.md
   - k8s/accessinternal.md
   #- k8s/kubectlproxy.md
+- # DAY 3
   - k8s/rollout.md
   - k8s/healthchecks.md
   #- k8s/healthchecks-more.md
-  - k8s/record.md
-- # DAY 3
-  - k8s/namespaces.md
+  #- k8s/record.md
   - k8s/ingress.md
-  - k8s/kustomize.md
+-
+  #- k8s/kustomize.md
   - k8s/helm-intro.md
   - k8s/helm-chart-format.md
   - k8s/helm-create-basic-chart.md
@@ -103,43 +101,43 @@ chapters:
 -
   - k8s/netpol.md
   - k8s/authn-authz.md
-  #- k8s/csr-api.md
-  #- k8s/openid-connect.md
-  #- k8s/podsecuritypolicy.md
+-
+  - k8s/logs-centralized.md
+  - k8s/prometheus.md
 -
   - k8s/volumes.md
   #- k8s/build-with-docker.md
   #- k8s/build-with-kaniko.md
   - k8s/configuration.md
-  - k8s/logs-centralized.md
-  - k8s/prometheus.md
 -
   - k8s/statefulsets.md
   - k8s/local-persistent-volumes.md
   - k8s/portworx.md
-  #- k8s/extending-api.md
-  #- k8s/operators.md
-  #- k8s/operators-design.md
-  #- k8s/staticpods.md
-  #- k8s/owners-and-dependents.md
-  #- k8s/gitworkflows.md
 -
   - k8s/whatsnext.md
   - k8s/links.md
   - shared/thankyou.md
-
-
-
-
-  #- containers/Docker_Machine.md
-  #- containers/Advanced_Dockerfiles.md
-  #- containers/Init_Systems.md
-  #- containers/Application_Configuration.md
-  #- containers/Logging.md
-  #- containers/Namespaces_Cgroups.md
-  #- containers/Copy_On_Write.md
-  #- containers/Containers_From_Scratch.md
-  #- containers/Container_Engines.md
-  #- containers/Pods_Anatomy.md
-  #- containers/Ecosystem.md
-  #- containers/Orchestration_Overview.md
+-
+  - "# (Extra: containers) \n"
+  - containers/Docker_Machine.md
+  - containers/Advanced_Dockerfiles.md
+  - containers/Init_Systems.md
+  - containers/Application_Configuration.md
+  - containers/Logging.md
+-
+  - "# (Extra: containers internals) \n"
+  - containers/Namespaces_Cgroups.md
+  - containers/Copy_On_Write.md
+  - containers/Containers_From_Scratch.md
+  - containers/Container_Engines.md
+  - containers/Pods_Anatomy.md
+-
+  - "# (Extra: Kubernetes operators) \n"
+  - k8s/extending-api.md
+  - k8s/operators.md
+  - k8s/operators-design.md
+-
+  - "# (Extra: Kubernetes security) \n"
+  - k8s/csr-api.md
+  - k8s/openid-connect.md
+  - k8s/podsecuritypolicy.md
