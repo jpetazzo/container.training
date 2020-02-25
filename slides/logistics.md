@@ -1,8 +1,6 @@
 ## Intros
 
-- Hello! We are:
-
-   - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Ardan Labs LLC)
+- Hello!
 
 - The workshop will run from 9am to 5pm
 
