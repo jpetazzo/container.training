@@ -97,5 +97,6 @@ chapters:
   #- k8s/gitworkflows.md
 -
   - k8s/whatsnext.md
+  - k8s/lastwords.md
   - k8s/links.md
   - shared/thankyou.md
