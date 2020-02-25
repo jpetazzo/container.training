@@ -128,6 +128,7 @@ chapters:
   - containers/Init_Systems.md
   - containers/Application_Configuration.md
   - containers/Logging.md
+  - containers/Windows_Containers.md
 -
   - "# (Extra: containers internals) \n"
   - containers/Namespaces_Cgroups.md
