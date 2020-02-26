@@ -209,19 +209,37 @@ And *then* it is time to look at orchestration!
 
 ## Managing stack deployments
 
-- The best deployment tool will vary, depending on:
+- Applications are made of many resources
 
-  - the size and complexity of your stack(s)
-  - how often you change it (i.e. add/remove components)
-  - the size and skills of your team
+  (Deployments, Services, and much more)
 
-- A few examples:
+- We need to automate the creation / update / management of these resources
 
-  - shell scripts invoking `kubectl`
-  - YAML resources descriptions committed to a repo
-  - [Helm](https://github.com/kubernetes/helm) (~package manager)
-  - [Spinnaker](https://www.spinnaker.io/) (Netflix' CD platform)
-  - [Brigade](https://brigade.sh/) (event-driven scripting; no YAML)
+- There is no "absolute best" tool or method; it depends on:
+
+  - the size and complexity of our stack(s)
+  - how often we change it (i.e. add/remove components)
+  - the size and skills of our team
+
+---
+
+## A few tools to manage stacks
+
+- Shell scripts invoking `kubectl`
+
+- YAML resource manifests committed to a repo
+
+- [Kustomize](https://github.com/kubernetes-sigs/kustomize)
+  (YAML manifests + patches applied on top)
+
+- [Helm](https://github.com/kubernetes/helm)
+  (YAML manifests + templating engine)
+
+- [Spinnaker](https://www.spinnaker.io/)
+  (Netflix' CD platform)
+
+- [Brigade](https://brigade.sh/)
+  (event-driven scripting; no YAML)
 
 ---
 
@@ -260,17 +278,3 @@ Sorry Star Trek fans, this is not the federation you're looking for!
 - Synchronize resources across clusters
 
 - Discover resources across clusters
-
----
-
-## Developer experience
-
-*We've put this last, but it's pretty important!*
-
-- How do you on-board a new developer?
-
-- What do they need to install to get a dev stack?
-
-- How does a code change make it from dev to prod?
-
-- How does someone add a component to a stack?
