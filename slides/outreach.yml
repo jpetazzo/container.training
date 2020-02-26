@@ -138,6 +138,12 @@ chapters:
   - containers/Container_Engines.md
   - containers/Pods_Anatomy.md
 -
+  - "# (Extra: capacity planning) \n"
+  - k8s/resource-limits.md
+  - k8s/metrics-server.md
+  - k8s/cluster-sizing.md
+  - k8s/horizontal-pod-autoscaler.md
+-
   - "# (Extra: Kubernetes operators) \n"
   - k8s/extending-api.md
   - k8s/operators.md
