@@ -53,7 +53,7 @@ chapters:
   - containers/Exercise_Dockerfile_Advanced.md
 - # DAY 2
   - shared/prereqs.md
-  #- shared/webssh.md
+  - shared/webssh.md
   - shared/connecting.md
   #- k8s/versions-k8s.md
   - shared/sampleapp.md
