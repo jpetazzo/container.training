@@ -71,7 +71,7 @@
 
   (straightforward on CPU; more complex on other metrics)
 
-- Ressource management and scheduling
+- Resource management and scheduling
 
   (reserve CPU/RAM for containers; placement constraints)
 
