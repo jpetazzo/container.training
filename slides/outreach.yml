@@ -87,24 +87,19 @@ chapters:
   - k8s/localkubeconfig.md
   - k8s/accessinternal.md
   #- k8s/kubectlproxy.md
+  - k8s/ingress.md
 - # DAY 3
+  - k8s/dashboard.md
   - k8s/rollout.md
   - k8s/healthchecks.md
   #- k8s/healthchecks-more.md
   #- k8s/record.md
-  - k8s/ingress.md
+  - k8s/resource-limits.md
+  - k8s/metrics-server.md
+  - k8s/cluster-sizing.md
+  #- k8s/horizontal-pod-autoscaler.md
 -
-  #- k8s/kustomize.md
-  - k8s/helm-intro.md
-  - k8s/helm-chart-format.md
-  - k8s/helm-create-basic-chart.md
-  - k8s/exercise-helm.md
-  - k8s/helm-create-better-chart.md
-  - k8s/helm-secrets.md
--
-  - k8s/netpol.md
   - k8s/authn-authz.md
--
   - k8s/logs-centralized.md
   - k8s/prometheus.md
 -
@@ -138,11 +133,14 @@ chapters:
   - containers/Container_Engines.md
   - containers/Pods_Anatomy.md
 -
-  - "# (Extra: capacity planning) \n"
-  - k8s/resource-limits.md
-  - k8s/metrics-server.md
-  - k8s/cluster-sizing.md
-  - k8s/horizontal-pod-autoscaler.md
+  - "# (Extra: Helm) \n"
+  #- k8s/kustomize.md
+  - k8s/helm-intro.md
+  - k8s/helm-chart-format.md
+  - k8s/helm-create-basic-chart.md
+  - k8s/exercise-helm.md
+  - k8s/helm-create-better-chart.md
+  - k8s/helm-secrets.md
 -
   - "# (Extra: Kubernetes operators) \n"
   - k8s/extending-api.md
@@ -153,3 +151,4 @@ chapters:
   - k8s/csr-api.md
   - k8s/openid-connect.md
   - k8s/podsecuritypolicy.md
+  - k8s/netpol.md
