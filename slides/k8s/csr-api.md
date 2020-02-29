@@ -153,7 +153,7 @@ For a user named `jean.doe`, we will have:
 
 - Create the ServiceAccount, ClusterRole, ClusterRoleBinding for `jean.doe`:
   ```bash
-  kubectl apply -f ~/container.training/k8s/users:jean.doe.yaml
+  kubectl apply -f ~/container.training/k8s/users-jean.doe.yaml
   ```
 
 ]
