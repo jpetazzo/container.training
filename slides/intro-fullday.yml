@@ -1,15 +1,17 @@
 title: |
-  Introduction
-  to Containers
+  Docker
+  Intensive
+  Course
 
-chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+chat: ""
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: https://2020-03-qcon.container.training/
 
-#slidenumberprefix: "#SomeHashTag &mdash; "
+slidenumberprefix: "@jpetazzo &mdash; "
 
 exclude:
 - self-paced
@@ -41,8 +43,8 @@ chapters:
 -
   - containers/Container_Networking_Basics.md
   #- containers/Network_Drivers.md
-  #- containers/Container_Network_Model.md
   - containers/Local_Development_Workflow.md
+  - containers/Container_Network_Model.md
   - containers/Compose_For_Dev_Stacks.md
   - containers/Exercise_Composefile.md
 -

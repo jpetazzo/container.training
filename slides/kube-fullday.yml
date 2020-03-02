@@ -1,19 +1,21 @@
 title: |
-  Deploying and Scaling Microservices
-  with Kubernetes
+  Kubernetes
+  Intensive
+  Course
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
-chat: "In person!"
+chat: ""
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: https://2020-03-qcon.container.training/
 
-#slidenumberprefix: "#SomeHashTag &mdash; "
+slidenumberprefix: "@jpetazzo &mdash; "
 
 exclude:
 - self-paced
+- chat-room
 
 chapters:
 - shared/title.md
@@ -23,7 +25,7 @@ chapters:
 - shared/toc.md
 -
   - shared/prereqs.md
-  #- shared/webssh.md
+  - shared/webssh.md
   - shared/connecting.md
   #- k8s/versions-k8s.md
   - shared/sampleapp.md
