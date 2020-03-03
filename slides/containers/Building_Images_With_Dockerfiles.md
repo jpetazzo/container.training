@@ -222,21 +222,63 @@ f9e8f1642759  About an hour ago  /bin/sh -c apt-get install fi  1.627 MB
 
 ---
 
-## Introducing JSON syntax
+class: extra-details
 
-Most Dockerfile arguments can be passed in two forms:
+## Why `sh -c`?
 
-* plain string:
+* On UNIX, to start a new program, we need two system calls:
+
+  - `fork()`, to create a new child process;
+
+  - `execve()`, to replace the new child process with the program to run.
+
+* Conceptually, `execve()` works like this:
+
+  `execve(program, [list, of, arguments])`
+
+* When we run a command, e.g. `ls -l /tmp`, something needs to parse the command.
+
+  (i.e. split the program and its arguments into a list.)
+
+* The shell is usually doing that.
+
+  (It also takes care of expanding environment variables and special things like `~`.)
+
+---
+
+class: extra-details
+
+## Why `sh -c`?
+
+* When we do `RUN ls -l /tmp`, the Docker builder needs to parse the command.
+
+* Instead of implementing its own parser, it outsources the job to the shell.
+
+* That's why we see `sh -c ls -l /tmp` in that case.
+
+* But we can also do the parsing jobs ourselves.
+
+* This means passing `RUN` a list of arguments.
+
+* This is called the *exec syntax*.
+
+---
+
+## Shell syntax vs exec syntax
+
+Dockerfile commands that execute something can have two forms:
+
+* plain string, or *shell syntax*:
   <br/>`RUN apt-get install figlet`
 
-* JSON list:
+* JSON list, or *exec syntax*:
   <br/>`RUN ["apt-get", "install", "figlet"]`
 
 We are going to change our Dockerfile to see how it affects the resulting image.
 
 ---
 
-## Using JSON syntax in our Dockerfile
+## Using exec syntax in our Dockerfile
 
 Let's change our Dockerfile as follows!
 
@@ -254,7 +296,7 @@ $ docker build -t figlet .
 
 ---
 
-## JSON syntax vs string syntax
+## History with exec syntax
 
 Compare the new history:
 
@@ -269,24 +311,55 @@ IMAGE         CREATED            CREATED BY                     SIZE
 <missing>     4 days ago         /bin/sh -c #(nop) ADD file:b   187.8 MB
 ```
 
-* JSON syntax specifies an *exact* command to execute.
+* Exec syntax specifies an *exact* command to execute.
 
-* String syntax specifies a command to be wrapped within `/bin/sh -c "..."`.
+* Shell syntax specifies a command to be wrapped within `/bin/sh -c "..."`.
 
 ---
 
-## When to use JSON syntax and string syntax
+## When to use exec syntax and shell syntax
 
-* String syntax:
+* shell syntax:
 
   * is easier to write
   * interpolates environment variables and other shell expressions
   * creates an extra process (`/bin/sh -c ...`) to parse the string
   * requires `/bin/sh` to exist in the container
 
-* JSON syntax:
+* exec syntax:
 
   * is harder to write (and read!)
   * passes all arguments without extra processing
   * doesn't create an extra process
   * doesn't require `/bin/sh` to exist in the container
+
+---
+
+## Pro-tip: the `exec` shell built-in
+
+POSIX shells have a built-in command named `exec`.
+
+`exec` should be followed by a program and its arguments.
+
+From a user perspective:
+
+- it looks like the shell exits right away after the command execution,
+
+- in fact, the shell exits just *before* command execution;
+
+- or rather, the shell gets *replaced* by the command.
+
+---
+
+## Example using `exec`
+
+```dockerfile
+CMD exec figlet -f script hello
+```
+
+In this example, `sh -c` will still be used, but
+`figlet` will be PID 1 in the container.
+
+The shell gets replaced by `figlet` when `figlet` starts execution.
+
+This allows to run processes as PID 1 without using JSON.
