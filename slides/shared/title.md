@@ -11,6 +11,9 @@ class: title, in-person
 @@TITLE@@<br/></br>
 
 .footnote[
+**Slides[:](https://www.youtube.com/watch?v=h16zyxiwDLY) @@SLIDES@@**
+]
+
 <!--
 WiFi: **Something**<br/>
 Password: **Something**
@@ -21,5 +24,3 @@ Password: **Something**
 *Don't stream videos or download big files during the workshop*<br/>
 *Thank you!*
 -->
-**Slides[:](https://www.youtube.com/watch?v=h16zyxiwDLY) @@SLIDES@@**
-]
