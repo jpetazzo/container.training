@@ -11,12 +11,13 @@ class: title, in-person
 @@TITLE@@<br/></br>
 
 .footnote[
+WiFi: **QConLondon2020**<br/>
+Password: **software**
+
 **Slides[:](https://www.youtube.com/watch?v=h16zyxiwDLY) @@SLIDES@@**
 ]
 
 <!--
-WiFi: **Something**<br/>
-Password: **Something**
 
 **Be kind to the WiFi!**<br/>
 *Use the 5G network.*
