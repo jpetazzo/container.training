@@ -15,6 +15,7 @@ slidenumberprefix: "@jpetazzo &mdash; "
 
 exclude:
 - self-paced
+- chat-room
 
 chapters:
 - shared/title.md
