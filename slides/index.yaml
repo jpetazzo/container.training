@@ -5,7 +5,7 @@
   speaker: jpetazzo
   title: Kubernetes Intensive Course
   attend: https://qconlondon.com/london2020/workshop/kubernetes-intro
-  #slides: https://qconuk2019.container.training/
+  slides: https://2020-03-qcon.container.training/
 
 - date: 2020-03-05
   country: uk
@@ -14,7 +14,7 @@
   speaker: jpetazzo
   title: Docker Intensive Course
   attend: https://qconlondon.com/london2020/workshop/docker-intensive-course
-  #slides: https://qconuk2019.container.training/
+  slides: https://2020-03-qcon.container.training/
 
 - date: 2020-02-03
   country: fr
@@ -24,6 +24,7 @@
   title: Fondamentaux Conteneurs et Docker (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/
+  slides: https://2020-02-enix.container.training/
 
 - date: 2020-02-04
   country: fr
@@ -33,6 +34,7 @@
   title: Fondamentaux Orchestration et Kubernetes (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/
+  slides: https://2020-02-enix.container.training/
 
 - date: 2020-02-05
   country: fr
@@ -42,6 +44,7 @@
   title: Kubernetes et Méthodologies DevOps (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/
+  slides: https://2020-02-enix.container.training/
 
 - date: 2020-02-06
   country: fr
@@ -51,6 +54,7 @@
   title: Kubernetes Avancé (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/
+  slides: https://2020-02-enix.container.training/
 
 - date: 2020-02-07
   country: fr
@@ -60,6 +64,7 @@
   title: Opérer Kubernetes (in French)
   lang: fr
   attend: https://enix.io/fr/services/formation/
+  slides: https://2020-02-enix.container.training/
 
 - date: [2019-11-04, 2019-11-05]
   country: de
