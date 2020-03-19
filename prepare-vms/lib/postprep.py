@@ -65,6 +65,15 @@ system("""sudo -u docker tee -a /home/docker/.bashrc <<SQRL
 export PS1='\e[1m\e[31m[{}] \e[32m(\\$(docker-prompt)) \e[34m\u@\h\e[35m \w\e[0m\n$ '
 SQRL""".format(ipv4))
 
+# Bigger history, in a different file, and saved before executing each command
+system("""sudo -u docker tee -a /home/docker/.bashrc <<SQRL
+export HISTSIZE=9999
+export HISTFILESIZE=9999
+shopt -s histappend
+trap 'history -a' DEBUG
+export HISTFILE=~/.history
+SQRL""")
+
 # Custom .vimrc
 system("""sudo -u docker tee /home/docker/.vimrc <<SQRL
 syntax on

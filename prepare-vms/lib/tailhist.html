@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>bash history</title>
+    <style>
+      #log {
+        font: bold 24px courier;
+      }
+
+      #log div:last-child {
+        background: yellow;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="log"></div>
+
+    <script>
+      var ws = new WebSocket('ws://' + (location.host ? location.host : "localhost:8080") + "/");
+      var log = document.getElementById('log');
+      var echo = function(text) {
+        var line = document.createElement('div');
+        line.textContent = text;
+        log.appendChild(line);
+        line.scrollIntoView();
+      }
+      ws.onopen = function() {
+        document.body.style.backgroundColor = '#cfc';
+      };
+      ws.onclose = function() {
+        document.body.style.backgroundColor = '#fcc';
+        echo("Disconnected from server. Try to reload this page?");
+      };
+      ws.onmessage = function(event) {
+        echo(event.data);
+      };
+    </script>
+
+  </body>
+</html>
+

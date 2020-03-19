@@ -366,6 +366,34 @@ EOF
     sudo systemctl start pinger"
 }
 
+_cmd tailhist "Install history viewer on port 1088"
+_cmd_tailhist () {
+    TAG=$1
+    need_tag
+
+    pssh "
+    wget https://github.com/joewalnes/websocketd/releases/download/v0.3.0/websocketd-0.3.0_amd64.deb
+    sudo dpkg -i websocketd-0.3.0_amd64.deb
+    sudo mkdir -p /tmp/tailhist
+    sudo tee /root/tailhist.service <<EOF
+[Unit]
+Description=tailhist
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+WorkingDirectory=/tmp/tailhist
+ExecStart=/usr/bin/websocketd --port=1088 --staticdir=. sh -c \"tail -n +1 -f /home/docker/.history || echo 'Could not read history file. Perhaps you need to \\\"chmod +r .history\\\"?'\"
+User=nobody
+Group=nogroup
+Restart=always
+EOF
+    sudo systemctl enable /root/tailhist.service
+    sudo systemctl start tailhist"
+    pssh -I sudo tee /tmp/tailhist/index.html <lib/tailhist.html
+}
+
 _cmd opensg "Open the default security group to ALL ingress traffic"
 _cmd_opensg() {
     need_infra $1
