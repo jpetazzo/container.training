@@ -42,13 +42,15 @@ print("Generated ips.html")
 
 try:
     import pdfkit
+    paper_size = context["paper_size"]
+    margin = {"A4": "0.5cm", "Letter": "0.2in"}[paper_size]
     with open("ips.html") as f:
         pdfkit.from_file(f, "ips.pdf", options={
-            "page-size": context["paper_size"],
-            "margin-top": context["paper_margin"],
-            "margin-bottom": context["paper_margin"],
-            "margin-left": context["paper_margin"],
-            "margin-right": context["paper_margin"],
+            "page-size": paper_size,
+            "margin-top": margin,
+            "margin-bottom": margin,
+            "margin-left": margin,
+            "margin-right": margin,
             })
     print("Generated ips.pdf")
 except ImportError:

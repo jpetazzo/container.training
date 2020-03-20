@@ -12,13 +12,6 @@ cards_template: cards.html
 # Use "Letter" in the US, and "A4" everywhere else
 paper_size: Letter
 
-# Feel free to reduce this if your printer can handle it
-paper_margin: 0.2in
-
-# Note: paper_size and paper_margin only apply to PDF generated with pdfkit.
-# If you print (or generate a PDF) using ips.html, they will be ignored.
-# (The equivalent parameters must be set from the browser's print dialog.)
-
 # This can be "test" or "stable"
 engine_version: test
 
