@@ -18,8 +18,14 @@
     | default("kube") -%}
 {%- set clusternumber = clusternumber
     | default(None) -%}
+{%- if qrcode == True -%}
+    {%- set qrcode = "https://container.training/q" -%}
+{%- elif qrcode -%}
+    {%- set qrcode = qrcode -%}
+{%- endif -%}
 
-{%- set image_src = {
+{# You can also set img_bottom_src instead. #}
+{%- set img_logo_src = {
 	"docker": "https://s3-us-west-2.amazonaws.com/www.breadware.com/integrations/docker.png",
 	"swarm": "https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png",
 	"kube": "https://avatars1.githubusercontent.com/u/13629408",
@@ -85,7 +91,8 @@
 {%- endif -%}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-<head><style>
+<head>
+<style>
 @import url('https://fonts.googleapis.com/css?family=Slabo+27px');
 
 body, table {
@@ -137,23 +144,22 @@ div.back p {
     margin: 0.5em 1em 0 1em;
 }
 
-img {
+img.logo {
     height: 4em;
     float: right;
     margin-right: -0.2em;
+ }
+
+img.bottom {
+    height: 4em;
+    display: block;
+    margin: 0.5em auto;
 }
 
-/*
-img.enix {
-    height: 4.0em;
-    margin-top: 0.4em;
+.qrcode img {
+    width: 40%;
+    margin: 1em;
 }
-
-img.kube {
-    height: 4.2em;
-    margin-top: 1.7em;
-}
-*/
 
 .logpass {
     font-family: monospace;
@@ -166,14 +172,29 @@ img.kube {
     display: block;
     height: 8px;
 }
-</style></head>
-<body>
+</style>
+<script type="text/javascript" src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script type="text/javascript">
+function qrcodes() {
+	[].forEach.call(
+		document.getElementsByClassName("qrcode"),
+		(e, index) => {
+			new QRCode(e, {
+				text: "{{ qrcode }}",
+				correctLevel: QRCode.CorrectLevel.L
+			});
+		}
+	);
+};
+</script>
+</head>
+<body onload="qrcodes()">
 {% for cluster in clusters %}
     <div>
         <p>{{ intro }}</p>
         <p>
-            {% if image_src %}
-            <img src="{{ image_src }}" />
+            {% if img_logo_src %}
+            <img class="logo" src="{{ img_logo_src }}" />
             {% endif %}
             <table>
             	{% if clusternumber != None %}
@@ -204,6 +225,9 @@ img.kube {
         	{{ slides_are_at }}
             <center>{{ url }}</center>
             {% endif %}
+            {% if img_bottom_src %}
+            <img class="bottom" src="{{ img_bottom_src }}" />
+            {% endif %}
         </p>
     </div>
     {% if loop.index%pagesize==0 or loop.last %}
@@ -217,10 +241,15 @@ img.kube {
 				during QCON London (March 2019).</p>
 				<p>If you liked that workshop,
 				I can train your team or organization
-				on Docker, container, and Kubernetes,
+				on Docker, containers, and Kubernetes,
 				with curriculums of 1 to 5 days.
 				</p>
+	            {% if qrcode %}
+	            <p>Interested? Scan that QR code to contact me!</p>
+				<span class="qrcode"></span>
+                {% else %}
 				<p>Interested? Contact me at:</p>
+				{% endif %}
 				<p>jerome.petazzoni@gmail.com</p>
 				<p>Thank you!</p>
 		        </div>
