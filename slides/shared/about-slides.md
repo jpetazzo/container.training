@@ -73,19 +73,3 @@ class: extra-details
   - you want only the most essential information
 
 - You can review these slides another time if you want, they'll be waiting for you ☺
-
----
-
-class: in-person, chat-room
-
-## Chat room
-
-- We've set up a chat room that we will monitor during the workshop
-
-- Don't hesitate to use it to ask questions, or get help, or share feedback
-
-- The chat room will also be available after the workshop
-
-- Join the chat room: @@CHAT@@
-
-- Say hi in the chat room!

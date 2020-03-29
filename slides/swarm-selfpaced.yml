@@ -19,6 +19,8 @@ chapters:
 #- shared/logistics.md
 - swarm/intro.md
 - shared/about-slides.md
+#- shared/chat-room-im.md
+#- shared/chat-room-zoom.md
 - shared/toc.md
 - - shared/prereqs.md
   - shared/connecting.md

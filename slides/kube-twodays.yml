@@ -20,6 +20,8 @@ chapters:
 - logistics.md
 - k8s/intro.md
 - shared/about-slides.md
+- shared/chat-room-im.md
+#- shared/chat-room-zoom.md
 - shared/toc.md
 -
   - shared/prereqs.md
