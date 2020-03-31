@@ -13,7 +13,7 @@
    viewBox="0 0 1600 900"
    version="1.1"
    id="svg696"
-   sodipodi:docname="how-k8s-works-12.svg"
+   sodipodi:docname="15.svg"
    inkscape:version="0.92.4 5da689c313, 2019-01-14"
    enable-background="new">
   <metadata
@@ -42,12 +42,12 @@
      id="namedview698"
      showgrid="false"
      inkscape:zoom="0.64"
-     inkscape:cx="796.38378"
+     inkscape:cx="521.38378"
      inkscape:cy="596.50212"
      inkscape:window-x="0"
-     inkscape:window-y="18"
+     inkscape:window-y="1098"
      inkscape:window-maximized="0"
-     inkscape:current-layer="g4153"
+     inkscape:current-layer="g3409"
      units="px"
      inkscape:snap-object-midpoints="true" />
   <title
@@ -621,6 +621,56 @@
        id="g4153"
        inkscape:label="processes">
       <rect
+         transform="matrix(0.81282896,0,0,0.58385092,716.88649,392.00625)"
+         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.78697062;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter-1)"
+         id="rect10198"
+         width="231.99153"
+         height="125.52966"
+         x="427.27246"
+         y="-4.9364014"
+         ry="5.617908"
+         inkscape:label="kubelet bottom" />
+      <rect
+         ry="5.617908"
+         y="-4.9364014"
+         x="427.27246"
+         height="125.52966"
+         width="231.99153"
+         id="rect4564"
+         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.78697062;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter-1)"
+         transform="matrix(0.81282896,0,0,0.58385092,716.88649,-7.993753)"
+         inkscape:label="kubelet top" />
+      <rect
+         transform="matrix(0.83465672,0,0,0.83465672,99.00177,101.15864)"
+         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.78697062;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter-1)"
+         id="rect4518"
+         width="231.99153"
+         height="125.52966"
+         x="427.27246"
+         y="-4.9364014"
+         ry="5.617908"
+         inkscape:label="etcd" />
+      <rect
+         transform="matrix(0.83465672,0,0,0.83465672,-4.99823,87.15864)"
+         ry="5.617908"
+         y="475.73566"
+         x="427.94846"
+         height="125.52966"
+         width="231.99153"
+         id="rect4512"
+         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.78697062;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter-1)"
+         inkscape:label="scheduler" />
+      <rect
+         transform="matrix(0.83465672,0,0,0.83465672,205.00177,235.15864)"
+         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.78697062;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter-1)"
+         id="rect4506"
+         width="231.99153"
+         height="125.52966"
+         x="426.37198"
+         y="298.2099"
+         ry="5.617908"
+         inkscape:label="controller manager" />
+      <rect
          transform="matrix(0.83465672,0,0,0.83465672,99.00177,181.15864)"
          ry="5.617908"
          y="135.0636"
@@ -641,16 +691,6 @@
            x="552.05261"
            id="tspan4502"
            sodipodi:role="line">API server</tspan></text>
-      <rect
-         transform="matrix(0.83465672,0,0,0.83465672,205.00177,235.15864)"
-         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.78697062;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter-1)"
-         id="rect4506"
-         width="231.99153"
-         height="125.52966"
-         x="426.37198"
-         y="298.2099"
-         ry="5.617908"
-         inkscape:label="controller manager" />
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32.6586647px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.83465672"
@@ -667,16 +707,6 @@
            sodipodi:role="line"
            x="656.36871"
            y="567.06641">manager</tspan></text>
-      <rect
-         transform="matrix(0.83465672,0,0,0.83465672,-4.99823,87.15864)"
-         ry="5.617908"
-         y="475.73566"
-         x="427.94846"
-         height="125.52966"
-         width="231.99153"
-         id="rect4512"
-         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.78697062;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter-1)"
-         inkscape:label="scheduler" />
       <text
          id="text4516"
          y="548.66296"
@@ -688,16 +718,6 @@
            x="447.62476"
            id="tspan4514"
            sodipodi:role="line">scheduler</tspan></text>
-      <rect
-         transform="matrix(0.83465672,0,0,0.83465672,99.00177,101.15864)"
-         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.78697062;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter-1)"
-         id="rect4518"
-         width="231.99153"
-         height="125.52966"
-         x="427.27246"
-         y="-4.9364014"
-         ry="5.617908"
-         inkscape:label="etcd" />
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32.6586647px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.83465672"
@@ -709,16 +729,6 @@
            id="tspan4520"
            x="552.46265"
            y="161.46683">etcd</tspan></text>
-      <rect
-         transform="matrix(0.81282896,0,0,0.58385092,716.88649,392.00625)"
-         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.78697062;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter-1)"
-         id="rect10198"
-         width="231.99153"
-         height="125.52966"
-         x="427.27246"
-         y="-4.9364014"
-         ry="5.617908"
-         inkscape:label="kubelet bottom" />
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:29.62977028px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.8128289"
@@ -730,16 +740,6 @@
            id="tspan10200"
            x="1158.6787"
            y="437.68268">kubelet</tspan></text>
-      <rect
-         ry="5.617908"
-         y="-4.9364014"
-         x="427.27246"
-         height="125.52966"
-         width="231.99153"
-         id="rect4564"
-         style="display:inline;opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.78697062;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter-1)"
-         transform="matrix(0.81282896,0,0,0.58385092,716.88649,-7.993753)"
-         inkscape:label="kubelet top" />
       <text
          id="text4568"
          y="37.682663"
@@ -1130,79 +1130,7 @@
              id="tspan15592"
              x="351.05563"
              y="125.23392"
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:19.62533379px;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.49064583">PENDING</tspan></text>
-      </g>
-      <g
-         inkscape:label="pod 2"
-         id="g1233"
-         style="display:inline">
-        <rect
-           y="139.72913"
-           x="287.1362"
-           height="36.022667"
-           width="174.12718"
-           id="rect15580"
-           style="display:inline;opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:8.37233353;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:3;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter15564)" />
-        <text
-           id="text15584"
-           y="166.5461"
-           x="292.32904"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:27.96796608px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.69919914"
-           xml:space="preserve"><tspan
-             style="stroke-width:0.69919914"
-             y="166.5461"
-             x="292.32904"
-             id="tspan15582"
-             sodipodi:role="line">Pod</tspan></text>
-        <text
-           id="text15598"
-           y="165.23392"
-           x="351.05563"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:19.62533379px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.49064583"
-           xml:space="preserve"
-           inkscape:label="pod 2 status"><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:19.62533379px;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.49064583"
-             y="165.23392"
-             x="351.05563"
-             id="tspan15596"
-             sodipodi:role="line">PENDING</tspan></text>
-      </g>
-      <g
-         inkscape:label="pod 3"
-         id="g1226"
-         style="display:inline">
-        <rect
-           style="display:inline;opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:8.37233353;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:3;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter15564)"
-           id="rect15586"
-           width="174.12718"
-           height="36.022667"
-           x="287.1362"
-           y="179.72913"
-           inkscape:label="rectangle" />
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:27.96796608px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.69919914"
-           x="292.32904"
-           y="206.5461"
-           id="text15590"
-           inkscape:label="label"><tspan
-             sodipodi:role="line"
-             id="tspan15588"
-             x="292.32904"
-             y="206.5461"
-             style="stroke-width:0.69919914">Pod</tspan></text>
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:19.62533379px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.49064583"
-           x="351.05563"
-           y="205.23392"
-           id="text15602"
-           inkscape:label="status"><tspan
-             sodipodi:role="line"
-             id="tspan15600"
-             x="351.05563"
-             y="205.23392"
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:19.62533379px;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.49064583">PENDING</tspan></text>
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:19.62533379px;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.49064583">→ node 1</tspan></text>
       </g>
     </g>
   </g>
