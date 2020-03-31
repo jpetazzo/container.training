@@ -570,7 +570,7 @@ After the Kibana UI loads, we need to click around a bit
 
 ## Deploying our apps with operators
 
-- It is very simple to deploy with `kubectl run` / `kubectl expose`
+- It is very simple to deploy with `kubectl create deployment` / `kubectl expose`
 
 - We can unlock more features by writing YAML and using `kubectl apply`
 
