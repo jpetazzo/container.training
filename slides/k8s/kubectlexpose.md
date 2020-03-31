@@ -151,9 +151,9 @@
 
 ## Creating a deployment for our HTTP server
 
-- We *could* do `kubectl run httpenv --image=jpetazzo/httpenv` ...
+- We will create a deployment with `kubectl create deployment`
 
-- But since `kubectl run` is being deprecated, let's see how to use `kubectl create` instead
+- Then we will scale it with `kubectl scale`
 
 .exercise[
 
