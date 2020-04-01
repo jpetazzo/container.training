@@ -1,4 +1,18 @@
-# Pre-requirements
+# Kubernetes
+
+- We learned about Docker, containers, images, layers
+
+- We wrote Dockerfiles and Compose files
+
+- We know how to set up a development environment
+
+- How do we move to production?
+
+- Let's investigate Kubernetes now!
+
+---
+
+## Pre-requirements
 
 - Be comfortable with the UNIX command line
 

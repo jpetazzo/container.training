@@ -66,7 +66,7 @@ chapters:
   #- containers/Ecosystem.md
   #- containers/Orchestration_Overview.md
 - # DAY 3
-  #- shared/prereqs.md
+  - shared/prereqs.md
   #- shared/webssh.md
   - shared/connecting.md
   - k8s/versions-k8s.md

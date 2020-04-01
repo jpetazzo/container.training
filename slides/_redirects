@@ -15,3 +15,5 @@
 
 # Shortlink for the QRCode
 /q /qrcode.html 200
+
+/chat https://gitter.im/jpetazzo/training-20200401-online
