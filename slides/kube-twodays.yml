@@ -35,7 +35,10 @@ chapters:
   - k8s/concepts-k8s.md
   - k8s/kubectlget.md
 -
-  - k8s/kubectlrun.md
+  - k8s/kubectl-run.md
+  - k8s/batch-jobs.md
+  - k8s/labels-annotations.md
+  - k8s/kubectl-logs.md
   - k8s/logs-cli.md
   - shared/declarative.md
   - k8s/declarative.md

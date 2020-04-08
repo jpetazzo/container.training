@@ -384,11 +384,11 @@ class: extra-details
   kubectl logs deploy/pingpong --tail 1 --follow
   ```
 
-- Leave that command running, so that we can keep an eye on these logs
+- Stop it with Ctrl-C
 
 <!--
 ```wait seq=3```
-```tmux split-pane -h```
+```keys ^C```
 -->
 
 ]
@@ -411,61 +411,54 @@ class: extra-details
   kubectl scale deployment pingpong --replicas 3
   ```
 
+- Check that we now have multiple pods:
+  ```bash
+  kubectl get pods
+  ```
+
 ]
-
-Note: what if we tried to scale `replicaset.apps/pingpong-xxxxxxxxxx`?
-
-We could! But the *deployment* would notice it right away, and scale back to the initial level.
 
 ---
 
-## Log streaming
+class: extra-details
 
-- Let's look again at the output of `kubectl logs`
+## Scaling a Replica Set
 
-  (the one we started before scaling up)
+- What if we scale the Replica Set instead of the Deployment?
 
-- `kubectl logs` shows us one line per second
+- The Deployment would notice it right away and scale back to the initial level
 
-- We could expect 3 lines per second
+- The Replica Set makes sure that we have the right numbers of Pods
 
-  (since we should now have 3 pods running `ping`)
+- The Deployment makes sure that the Replica Set has the right size
 
-- Let's try to figure out what's happening!
+  (conceptually, it delegates the management of the Pods to the Replica Set)
+
+- This might seem weird (why this extra layer?) but will soon make sense
+
+  (when we will look at how rolling updates work!)
 
 ---
 
 ## Streaming logs of multiple pods
 
-- What happens if we restart `kubectl logs`?
+- What happens if we try `kubectl logs` now that we have multiple pods?
 
 .exercise[
 
-- Interrupt `kubectl logs` (with Ctrl-C)
-
-<!--
-```tmux last-pane```
-```key ^C```
--->
-
-- Restart it:
   ```bash
-  kubectl logs deploy/pingpong --tail 1 --follow
+  kubectl logs deploy/pingpong --tail 3
   ```
-
-<!--
-```wait using pod/pingpong-```
-```tmux last-pane```
--->
 
 ]
 
-`kubectl logs` will warn us that multiple pods were found, and that it's showing us only one of them.
+`kubectl logs` will warn us that multiple pods were found.
 
-Let's leave `kubectl logs` running while we keep exploring.
+It is showing us only one of them.
+
+We'll see later how to address that shortcoming.
 
 ---
-
 
 ## Resilience
 
@@ -523,366 +516,3 @@ Let's leave `kubectl logs` running while we keep exploring.
 - Until 30 seconds later, when the grace period expires
 
 - The pod is then killed, and `kubectl logs` exits
-
----
-
-## Viewing logs of multiple pods
-
-- When we specify a deployment name, only one single pod's logs are shown
-
-- We can view the logs of multiple pods by specifying a *selector*
-
-- A selector is a logic expression using *labels*
-
-- If we check the pods created by the deployment, they all have the label `app=pingpong`
-
-  (this is just a default label that gets added when using `kubectl create deployment`)
-
-.exercise[
-
-- View the last line of log from all pods with the `app=pingpong` label:
-  ```bash
-  kubectl logs -l app=pingpong --tail 1
-  ```
-
-]
-
----
-
-### Streaming logs of multiple pods
-
-- Can we stream the logs of all our `pingpong` pods?
-
-.exercise[
-
-- Combine `-l` and `-f` flags:
-  ```bash
-  kubectl logs -l app=pingpong --tail 1 -f
-  ```
-
-<!--
-```wait seq=```
-```key ^C```
--->
-
-]
-
-*Note: combining `-l` and `-f` is only possible since Kubernetes 1.14!*
-
-*Let's try to understand why ...*
-
----
-
-class: extra-details
-
-### Streaming logs of many pods
-
-- Let's see what happens if we try to stream the logs for more than 5 pods
-
-.exercise[
-
-- Scale up our deployment:
-  ```bash
-  kubectl scale deployment pingpong --replicas=8
-  ```
-
-- Stream the logs:
-  ```bash
-  kubectl logs -l app=pingpong --tail 1 -f
-  ```
-
-<!-- ```wait error:``` -->
-
-]
-
-We see a message like the following one:
-```
-error: you are attempting to follow 8 log streams,
-but maximum allowed concurency is 5,
-use --max-log-requests to increase the limit
-```
-
----
-
-class: extra-details
-
-## Why can't we stream the logs of many pods?
-
-- `kubectl` opens one connection to the API server per pod
-
-- For each pod, the API server opens one extra connection to the corresponding kubelet
-
-- If there are 1000 pods in our deployment, that's 1000 inbound + 1000 outbound connections on the API server
-
-- This could easily put a lot of stress on the API server
-
-- Prior Kubernetes 1.14, it was decided to *not* allow multiple connections
-
-- From Kubernetes 1.14, it is allowed, but limited to 5 connections
-
-  (this can be changed with `--max-log-requests`)
-
-- For more details about the rationale, see
-  [PR #67573](https://github.com/kubernetes/kubernetes/pull/67573)
-
----
-
-## Shortcomings of `kubectl logs`
-
-- We don't see which pod sent which log line
-
-- If pods are restarted / replaced, the log stream stops
-
-- If new pods are added, we don't see their logs
-
-- To stream the logs of multiple pods, we need to write a selector
-
-- There are external tools to address these shortcomings
-
-  (e.g.: [Stern](https://github.com/wercker/stern))
-
----
-
-class: extra-details
-
-## `kubectl logs -l ... --tail N`
-
-- If we run this with Kubernetes 1.12, the last command shows multiple lines
-
-- This is a regression when `--tail` is used together with `-l`/`--selector`
-
-- It always shows the last 10 lines of output for each container
-
-  (instead of the number of lines specified on the command line)
-
-- The problem was fixed in Kubernetes 1.13
-
-*See [#70554](https://github.com/kubernetes/kubernetes/issues/70554) for details.*
-
----
-
-class: extra-details
-
-## Party tricks involving IP addresses
-
-- It is possible to specify an IP address with less than 4 bytes
-
-  (example: `127.1`)
-
-- Zeroes are then inserted in the middle
-
-- As a result, `127.1` expands to `127.0.0.1`
-
-- So we can `ping 127.1` to ping `localhost`!
-
-(See [this blog post](https://ma.ttias.be/theres-more-than-one-way-to-write-an-ip-address/
-) for more details.)
-
----
-
-class: extra-details
-
-## More party tricks with IP addresses
-
-- We can also ping `1.1`
-
-- `1.1` will expand to `1.0.0.1`
-
-- This is one of the addresses of Cloudflare's
-  [public DNS resolver](https://blog.cloudflare.com/announcing-1111/)
-
-- This is a quick way to check connectivity
-
-  (if we can reach 1.1, we probably have internet access)
-
----
-
-## Creating other kinds of resources
-
-- Deployments are great for stateless web apps
-
-  (as well as workers that keep running forever)
-
-- Jobs are great for "long" background work
-
-  ("long" being at least minutes our hours)
-
-- CronJobs are great to schedule Jobs at regular intervals
-
-  (just like the classic UNIX `cron` daemon with its `crontab` files)
-
-- Pods are great for one-off execution that we don't care about
-
-  (because they don't get automatically restarted if something goes wrong)
-
----
-
-## Creating a Job
-
-- A Job will create a Pod
-
-- If the Pod fails, the Job will create another one
-
-- The Job will keep trying until:
-
-  - either a Pod succeeds,
-
-  - or we hit the *backoff limit* of the Job (default=6)
-
-.exercise[
-
-- Create a Job that has a 50% chance of success:
-  ```bash
-    kubectl create job flipcoin --image=alpine -- sh -c 'exit $(($RANDOM%2))' 
-  ```
-
-]
-
----
-
-## Our Job in action
-
-- Our Job will create a Pod named `flipcoin-xxxxx`
-
-- If the Pod succeeds, the Job stops
-
-- If the Pod fails, the Job creates another Pod
-
-.exercise[
-
-- Check the status of the Pod(s) created by the Job:
-  ```bash
-  kubectl get pods --selector=job-name=flipcoin
-  ```
-
-]
-
----
-
-class: extra-details
-
-## More advanced jobs
-
-- We can specify a number of "completions" (default=1)
-
-- This indicates how many times the Job must be executed
-
-- We can specify the "parallelism" (default=1)
-
-- This indicates how many Pods should be running in parallel
-
-- These options cannot be specified with `kubectl create job`
-
-  (we have to write our own YAML manifest to use them)
-
----
-
-## Scheduling periodic background work
-
-- A Cron Job is a Job that will be executed at specific intervals
-
-  (the name comes from the traditional cronjobs executed by the UNIX crond)
-
-- It requires a *schedule*, represented as five space-separated fields:
-
-  - minute [0,59]
-  - hour [0,23]
-  - day of the month [1,31]
-  - month of the year [1,12]
-  - day of the week ([0,6] with 0=Sunday)
-
-- `*` means "all valid values"; `/N` means "every N"
-
-- Example: `*/3 * * * *` means "every three minutes"
-
----
-
-## Creating a Cron Job
-
-- Let's create a simple job to be executed every three minutes
-
-- Careful: make sure that the job terminates!
-
-  (The Cron Job will not hold if a previous job is still running)
-
-.exercise[
-
-- Create the Cron Job:
-  ```bash
-    kubectl create cronjob every3mins --schedule="*/3 * * * *" \
-            --image=alpine -- sleep 10
-  ```
-
-- Check the resource that was created:
-  ```bash
-  kubectl get cronjobs
-  ```
-
-]
-
----
-
-## Cron Jobs in action
-
-- At the specified schedule, the Cron Job will create a Job
-
-- The Job will create a Pod
-
-- The Job will make sure that the Pod completes
-
-  (re-creating another one if it fails, for instance if its node fails)
-
-.exercise[
-
-- Check the Jobs that are created:
-  ```bash
-  kubectl get jobs
-  ```
-
-]
-
-(It will take a few minutes before the first job is scheduled.)
-
----
-
-class: extra-details
-
-## What about `kubectl run` before v1.18?
-
-- Creating a Deployment:
-
-  `kubectl run`
-
-- Creating a Pod:
-
-  `kubectl run --restart=Never`
-
-- Creating a Job:
-
-  `kubectl run --restart=OnFailure`
-
-- Creating a Cron Job:
-
-  `kubectl run --restart=OnFailure --schedule=...`
-
-*Avoid using these forms, as they are deprecated since Kubernetes 1.18!*
-
----
-
-## Beyond `kubectl create`
-
-- As hinted earlier, `kubectl create` doesn't always expose all options
-
-  - can't express parallelism or completions of Jobs
-
-  - can't express Pods with multiple containers
-
-  - can't express healthchecks, resource limits
-
-  - etc.
-
-- `kubectl create` and `kubectl run` are *helpers* that generate YAML manifests
-
-- If we write these manifests ourselves, we can use all features and options
-
-- We'll see later how to do that!
