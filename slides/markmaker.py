@@ -136,7 +136,6 @@ def generatefromyaml(manifest, filename):
 # Maps a section title (the string just after "^# ") to its position
 # in the table of content (as a (module,part,subpart,...) tuple).
 title2path = {}
-path2title = {}
 all_titles = []
 
 # "tree" is a list of titles, potentially nested.
@@ -144,23 +143,33 @@ def gentoc(tree, path=()):
     if not tree:
         return ""
     if isinstance(tree, str):
+        logging.debug("Path {} Title {}".format(path, tree))
         title = tree
         title2path[title] = path
-        path2title[path] = title
         all_titles.append(title)
-        logging.debug("Path {} Title {}".format(path, title))
         return "- [{}](#{})".format(title, anchor(title))
     if isinstance(tree, list):
+        # If there is only one sub-element, give it index zero.
+        # Otherwise, elements will have indices 1-to-N.
+        offset = 0 if len(tree) == 1 else 1
+        logging.debug(
+            "Path {} Tree [...({} sub-elements)]"
+            .format(path, len(tree)))
         if len(path) == 0:
-            return "\n---\n".join(gentoc(subtree, path+(i+1,)) for (i,subtree) in enumerate(tree))
+            return "\n---\n".join(gentoc(subtree, path+(i+offset,)) for (i,subtree) in enumerate(tree))
         elif len(path) == 1:
-            moduleslide = "name: toc-module-{n}\n\n## Module {n}\n\n".format(n=path[0])
+            # If there is only one module, don't show "Module 1" but just "TOC"
+            if path[0] == 0:
+                label = "Table of contents"
+            else:
+                label = "Module {}".format(path[0])
+            moduleslide = "name: toc-module-{n}\n\n## {label}\n\n".format(n=path[0], label=label)
             for (i,subtree) in enumerate(tree):
-                moduleslide += gentoc(subtree, path+(i+1,)) + "\n\n"
+                moduleslide += gentoc(subtree, path+(i+offset,)) + "\n\n"
             moduleslide += ".debug[(auto-generated TOC)]"
             return moduleslide
         else:
-            return "\n\n".join(gentoc(subtree, path+(i+1,)) for (i,subtree) in enumerate(tree))
+            return "\n\n".join(gentoc(subtree, path+(i+offset,)) for (i,subtree) in enumerate(tree))
 
 
 # Arguments:
