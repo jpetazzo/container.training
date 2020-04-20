@@ -15,7 +15,7 @@ slides: http://container.training/
 exclude:
 - in-person
 
-chapters:
+content:
 - shared/title.md
 #- logistics.md
 - k8s/intro.md

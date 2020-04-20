@@ -16,7 +16,7 @@ exclude:
 - self-paced
 - static-pods-exercise
 
-chapters:
+content:
 - shared/title.md
 - logistics.md
 - k8s/intro.md
