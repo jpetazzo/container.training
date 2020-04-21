@@ -758,7 +758,8 @@ sync_keys() {
             --public-key-material "$(ssh-add -L \
                 | grep -i RSA \
                 | head -n1 \
-                | cut -d " " -f 1-2)" &>/dev/null
+                | cut -d " " -f 1-2 \
+                | base64)" &>/dev/null
 
         if ! aws ec2 describe-key-pairs --key-name "$AWS_KEY_NAME" &>/dev/null; then
             die "Somehow, importing the key didn't work. Make sure that 'ssh-add -l | grep RSA | head -n1' returns an RSA key?"
