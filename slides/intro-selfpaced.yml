@@ -14,7 +14,7 @@ slides: http://container.training/
 exclude:
 - in-person
 
-chapters:
+content:
 - shared/title.md
 # - shared/logistics.md
 - containers/intro.md

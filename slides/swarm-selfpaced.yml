@@ -14,7 +14,7 @@ exclude:
 - in-person
 - btp-auto
 
-chapters:
+content:
 - shared/title.md
 #- shared/logistics.md
 - swarm/intro.md

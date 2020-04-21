@@ -19,7 +19,7 @@ exclude:
 - elk-manual
 - prom-manual
 
-chapters:
+content:
 - shared/title.md
 - logistics.md
 - swarm/intro.md
