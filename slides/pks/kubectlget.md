@@ -172,8 +172,7 @@ class: extra-details
 
 - Look at the information available for `node1` with one of the following commands:
   ```bash
-  kubectl describe node/node1
-  kubectl describe node node1
+  kubectl describe \`k get node -o name | head -1`
   ```
 
 ]
@@ -215,7 +214,7 @@ There should be no services. This is because you're not running anything yet. Bu
 - List the services on our cluster with one of these commands:
   ```bash
   kubectl get services --all-namespaces
-  kubectl get svc --all-namespaces
+  kubectl get svc -A
   ```
 
 ]
@@ -232,22 +231,7 @@ There's a bunch of services already running that are used in the operations of t
 
 - This is useful for introspection from within containers
 
-.exercise[
-
-- Try to connect to the API:
-  ```bash
-  curl -k https://`10.100.200.1`
-  ```
-  
-  - `-k` is used to skip certificate verification
-
-  - Make sure to replace 10.100.200.1 with the CLUSTER-IP for the `kubernetes` service shown by `kubectl get svc`
-
-]
-
---
-
-The Cluster IP is only accessible from inside the cluster. We'll explore other ways to expose a service later.
+*The Cluster IP is only accessible from inside the cluster. We'll explore other ways to expose a service later.*
 
 ---
 
@@ -293,11 +277,11 @@ The Cluster IP is only accessible from inside the cluster. We'll explore other w
 
 --
 
-*You know what ... This `kube-system` thing looks suspicious.*
+*You know what ... This `kube-system` thing looks interesting.*
 
 *In fact, I'm pretty sure it showed up earlier, when we did:*
 
-`kubectl describe node node1`
+`kubectl describe node`
 
 ---
 

@@ -27,8 +27,7 @@ chapters:
   #- shared/composescale.md
   #- shared/hastyconclusions.md
   #- shared/composedown.md
-  - pks/concepts-k8s.md
-  - pks/kubectlget.md
+
 -
   - k8s/kubectlrun.md
   - k8s/logs-cli.md

@@ -2,8 +2,8 @@
 
 - Hello! We are:
 
-   - .emoji[👨🏾‍🎓] Paul Czarkowski ([@pczarkowski](https://twitter.com/pczarkowski), Pivotal Software)
-   - .emoji[👨🏾‍🎓] Tyler Britten ([@tybritten](https://twitter.com/tybritten), Pivotal Software)
+   - .emoji[👨🏾‍🎓] Paul Czarkowski ([@pczarkowski](https://twitter.com/pczarkowski), VMware)
+   - .emoji[👨🏾‍🎓] Tyler Britten ([@tybritten](https://twitter.com/tybritten), VMWare)
 
 
 - Feel free to interrupt for questions at any time

@@ -2,7 +2,7 @@
 
 Octant is an open source tool from VMWare which is designed to be a Kubernetes workload visualization tool that runs locally and uses your Kubeconfig to connect to the Kubernetes cluster.
 
-Octant only ever performs list and read style requests and does not create/modify/delete resources. This makes it a much safer tool to use than the Kubernetes Dashboard.
+Since Octant runs locally on your machine and only uses your kube credentials its [in theory at least] more secure than the kubernetes dashboard.
 
 .exercise[
 
@@ -10,5 +10,8 @@ Octant only ever performs list and read style requests and does not create/modif
   ```bash
   octant
   ```
-
 ]
+
+--
+
+*We can use Octant through the workshop to see our resources running in Kubernetes. If you don't have it already installed, you can ignore it.*

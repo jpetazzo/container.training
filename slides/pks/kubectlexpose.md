@@ -53,6 +53,44 @@ Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables`
 
 ---
 
+class: extra-details
+
+## If we don't need a clusterIP load balancer
+
+- Sometimes, we want to access our scaled services directly:
+
+  - if we want to save a tiny little bit of latency (typically less than 1ms)
+
+  - if we need to connect over arbitrary ports (instead of a few fixed ones)
+
+  - if we need to communicate over another protocol than UDP or TCP
+
+  - if we want to decide how to balance the requests client-side
+
+  - ...
+
+- In that case, we can use a "headless service"
+
+---
+
+class: extra-details
+
+## Headless services
+
+- A headless service is obtained by setting the `clusterIP` field to `None`
+
+  (Either with `--cluster-ip=None`, or by providing a custom YAML)
+
+- As a result, the service doesn't have a virtual IP address
+
+- Since there is no virtual IP address, there is no load balancer either
+
+- CoreDNS will return the pods' IP addresses as multiple `A` records
+
+- This gives us an easy way to discover all the replicas for a deployment
+
+---
+
 ## Running containers with open ports
 
 - Since `ping` doesn't have anything to connect to, we'll have to run something else
@@ -93,9 +131,9 @@ Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables`
   kubectl create deployment httpenv --image=jpetazzo/httpenv
   ```
 
-- Scale it to 3 replicas:
+- Scale it to 10 replicas:
   ```bash
-  kubectl scale deployment httpenv --replicas=3
+  kubectl scale deployment httpenv --replicas=10
   ```
 
 ]
@@ -115,10 +153,19 @@ Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables`
 
 - Look up which IP address was allocated:
   ```bash
-  kubectl get service
+  kubectl get service httpenv
   ```
 
 ]
+
+--
+
+The cluster IP is a private IP, you can't access it.
+
+```
+NAME      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+httpenv   ClusterIP   10.100.200.147   <none>        8888/TCP   3m
+```
 
 ---
 
@@ -142,36 +189,17 @@ Under the hood: `kube-proxy` is using a userland proxy and a bunch of `iptables`
 
 ## Testing our service
 
-- We will now send a few HTTP requests to our pods
+- Our service is listening to a private **ClusterIP**.
 
-.exercise[
+- If we want to access it we need to expose it as a **NodePort** or a **LoadBalancer**
 
-- Let's obtain the IP address that was allocated for our service, *programmatically:*
-  ```bash
-  IP=$(kubectl get svc httpenv -o go-template --template '{{ .spec.clusterIP }}')
-  ```
-
-- Send a few requests:
-  ```bash
-  curl http://$IP:8888/
-  ```
-
-- Too much output? Filter it with `jq`:
-  ```bash
-  curl -s http://$IP:8888/ | jq .HOSTNAME
-  ```
-
-]
-
---
-
-Oh right, that doesn't work, its a `cluster-ip`. We need another way to access it.
+- Or you can cheat and forward a port using `kubectl port-forward`
 
 ---
 
 ## port forwarding
 
-- You can forward a local port from your machine into a pod
+- Forwards a local port from your machine into a pod
 
 .exercise[
 
@@ -193,44 +221,6 @@ Oh right, that doesn't work, its a `cluster-ip`. We need another way to access i
 --
 
 The response was the same from each request. This is because `kubectl port-forward` forwards to a specific pod, not to the cluster-ip.
-
----
-
-class: extra-details
-
-## If we don't need a clusterIP load balancer
-
-- Sometimes, we want to access our scaled services directly:
-
-  - if we want to save a tiny little bit of latency (typically less than 1ms)
-
-  - if we need to connect over arbitrary ports (instead of a few fixed ones)
-
-  - if we need to communicate over another protocol than UDP or TCP
-
-  - if we want to decide how to balance the requests client-side
-
-  - ...
-
-- In that case, we can use a "headless service"
-
----
-
-class: extra-details
-
-## Headless services
-
-- A headless service is obtained by setting the `clusterIP` field to `None`
-
-  (Either with `--cluster-ip=None`, or by providing a custom YAML)
-
-- As a result, the service doesn't have a virtual IP address
-
-- Since there is no virtual IP address, there is no load balancer either
-
-- CoreDNS will return the pods' IP addresses as multiple `A` records
-
-- This gives us an easy way to discover all the replicas for a deployment
 
 ---
 
@@ -324,11 +314,78 @@ error: the server doesn't have a resource type "endpoint"
 
 .exercise[
 
-- Set the service to be of type `Loadbalancer`:
+- Take a copy of the httpenv service:
   ```bash
-  kubectl patch svc httpenv -p '{"spec": {"type": "LoadBalancer"}}'
+  kubectl get svc httpenv -o yaml > /tmp/httpenv.yaml
   ```
 
+- Edit `/tmp/httpenv.yaml` and set the service to be of type `Loadbalancer`, and update the ports:
+
+```yaml
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8888
+  type: LoadBalancer
+
+```
+
+]
+
+--
+
+this is what a kubernetes manifest looks like!
+
+---
+
+## Service Manifest
+
+.exercise[
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: httpenv
+  name: httpenv
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8888
+    name: http
+  selector:
+    app: httpenv
+  type: LoadBalancer
+```
+
+]
+
+---
+
+## kubectl apply
+
+.exercise[
+
+  - Apply your changes:
+  ```bash
+  kubectl delete svc httpenv
+  kubectl apply -f /tmp/httpenv.yaml
+  ```
+
+]
+
+--
+
+Why did we delete the svc? Running a `kubectl apply` on a imperatively created resource can cause problems.
+
+---
+
+## yay loadbalancing
+
+.exercise[
 - Check for the IP of the loadbalancer:
   ```bash
   kubectl get svc httpenv
@@ -338,26 +395,4 @@ error: the server doesn't have a resource type "endpoint"
   ```bash
   curl <external-ip>:8888
   ```
-]
-
---
-
-The `kubectl patch` command lets you patch a kubernetes resource to make minor changes like the above modification of the service type.
-
----
-
-## Cleanup
-
-.exercise[
-
-- Delete the service
-  ```bash
-  kubectl delete svc httpenv
-  ```
-
-- Delete the deployment
-  ```bash
-  kubectl delete deployment httpenv
-  ```
-
 ]

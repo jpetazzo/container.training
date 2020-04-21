@@ -4,24 +4,46 @@ class: in-person
 
 .exercise[
 
-- Log into https://gangway.workshop.paulczar.wtf with your provided credentials (sorry about the [self-signed cert](https://gist.githubusercontent.com/paulczar/6e3f48a03e544627952aaa399a29a4af/raw/9e530371d8929ab573a205238dd0f2c718edc64c/ca.cert))
+- Log into https://gangway.workshop.paulczar.wtf with your provided credentials.
 
 - Follow the instructions on the auth portal to set up a `kubeconfig` file.
 
-- Check that you can connect to the cluster with `kubectl get nodes`:
+- Check that you can connect to the cluster with `kubectl cluster-info`:
 
 ```bash
-$ kubectl get nodes
-NAME                                      STATUS   ROLES    AGE   VERSION
-vm-0f2b473c-5ae6-4af3-4e80-f0a068b03abe   Ready    <none>   23h   v1.14.5
-vm-25cfc8d6-88c0-45f6-4305-05e859af7f2c   Ready    <none>   23h   v1.14.5
-...
-...
+$ kubectl cluster-info
+Kubernetes master is running at https://k8s.cluster1.demo.paulczar.wtf:8443
+CoreDNS is running at https://k8s.cluster1.demo.paulczar.wtf:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 ```
 ]
 
 If anything goes wrong — ask for help!
 
+---
+
+## Role Based Authorization Control
+
+You are restricted to a subset of Kubernetes resources in your own namespace. Just like in a real world enterprise cluster.
+
+
+.exercise[
+
+1\. Can you create pods?
+
+```
+$ kubectl auth can-i create pods
+```
+
+2\. Can you delete namespaces?
+
+```
+$ kubectl auth can-i delete namespaces
+```
+]
+--
+
+1. You can create pods in your own namespace.
+2. You cannot delete namespaces.
 ---
 
 ## Doing or re-doing the workshop on your own?

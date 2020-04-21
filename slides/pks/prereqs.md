@@ -85,11 +85,10 @@ class: in-person
 
 - A large Pivotal Container Service (PKS) cluster deployed to Google Cloud.
 
-- It remain up for the duration of the workshop
+- It will remain up for the duration of the workshop (and maybe a few days beyond)
 
-- You should have a little card with login+password+URL
+- You should have a credentials to log into the cluster.
 
-- Logging into this URL will give you a downloadable kubeconfig file.
 
 ---
 
