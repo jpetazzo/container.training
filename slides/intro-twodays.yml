@@ -14,7 +14,7 @@ slides: http://container.training/
 exclude:
 - self-paced
 
-chapters:
+content:
 - shared/title.md
 - logistics.md
 - containers/intro.md
