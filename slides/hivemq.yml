@@ -92,9 +92,9 @@ content:
   #- k8s/dryrun.md
   #- k8s/exercise-yaml.md
   - k8s/rollout.md
-  - k8s/healthchecks.md
 - # DAY 3
   #- k8s/dashboard.md
+  - k8s/healthchecks.md
   #- k8s/healthchecks-more.md
   #- k8s/record.md
   - k8s/namespaces.md
