@@ -1,4 +1,4 @@
-# What's next?
+# Last words
 
 - Congratulations!
 
@@ -186,6 +186,20 @@ are a few tools that can help us.*
 - Which vendor/distribution to pick?
 
 - Which versions/features to enable?
+
+---
+
+## Developer experience
+
+- How do we on-board a new developer?
+
+- What do they need to install to get a dev stack?
+
+- How does a code change make it from dev to prod?
+
+- How does someone add a component to a stack?
+
+*These questions are good "sanity checks" to validate our strategy!*
 
 ---
 

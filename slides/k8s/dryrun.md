@@ -172,7 +172,7 @@ Note: we don't need to specify `--validate=false` here.
 
 ## Advantage of YAML
 
-- Using YAML (instead of `kubectl run`/`create`/etc.) allows to be *declarative*
+- Using YAML (instead of `kubectl create <kind>`) allows to be *declarative*
 
 - The YAML describes the desired state of our cluster and applications
 
@@ -194,7 +194,7 @@ Note: we don't need to specify `--validate=false` here.
 
 ## YAML in practice
 
-- Get started with `kubectl run`/`create`/`expose`/etc.
+- Get started with `kubectl create deployment` and `kubectl expose`
 
 - Dump the YAML with `kubectl get -o yaml`
 

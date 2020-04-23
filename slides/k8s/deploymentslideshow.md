@@ -5,63 +5,63 @@ They say, "a picture is worth one thousand words."
 The following 19 slides show what really happens when we run:
 
 ```bash
-kubectl run web --image=nginx --replicas=3
+kubectl create deployment web --image=nginx
 ```
 
 ---
 class: pic
-![](images/kubectl-run-slideshow/01.svg)
+![](images/kubectl-create-deployment-slideshow/01.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/02.svg)
+![](images/kubectl-create-deployment-slideshow/02.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/03.svg)
+![](images/kubectl-create-deployment-slideshow/03.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/04.svg)
+![](images/kubectl-create-deployment-slideshow/04.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/05.svg)
+![](images/kubectl-create-deployment-slideshow/05.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/06.svg)
+![](images/kubectl-create-deployment-slideshow/06.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/07.svg)
+![](images/kubectl-create-deployment-slideshow/07.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/08.svg)
+![](images/kubectl-create-deployment-slideshow/08.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/09.svg)
+![](images/kubectl-create-deployment-slideshow/09.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/10.svg)
+![](images/kubectl-create-deployment-slideshow/10.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/11.svg)
+![](images/kubectl-create-deployment-slideshow/11.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/12.svg)
+![](images/kubectl-create-deployment-slideshow/12.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/13.svg)
+![](images/kubectl-create-deployment-slideshow/13.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/14.svg)
+![](images/kubectl-create-deployment-slideshow/14.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/15.svg)
+![](images/kubectl-create-deployment-slideshow/15.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/16.svg)
+![](images/kubectl-create-deployment-slideshow/16.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/17.svg)
+![](images/kubectl-create-deployment-slideshow/17.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/18.svg)
+![](images/kubectl-create-deployment-slideshow/18.svg)
 ---
 class: pic
-![](images/kubectl-run-slideshow/19.svg)
+![](images/kubectl-create-deployment-slideshow/19.svg)

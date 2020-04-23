@@ -42,7 +42,7 @@ def insertslide(markdown, title):
 
     before = markdown[:slide_position]
 
-    toclink = "toc-chapter-{}".format(title2path[title][0])
+    toclink = "toc-module-{}".format(title2path[title][0])
     _titles_ = [""] + all_titles + [""]
     currentindex = _titles_.index(title)
     previouslink = anchor(_titles_[currentindex-1])
@@ -54,7 +54,7 @@ def insertslide(markdown, title):
 
 class: pic
 
-.interstitial[![Image separating from the next chapter]({interstitial})]
+.interstitial[![Image separating from the next module]({interstitial})]
 
 ---
 
@@ -98,7 +98,7 @@ def generatefromyaml(manifest, filename):
     if "html" not in manifest:
         manifest["html"] = filename + ".html"
 
-    markdown, titles = processchapter(manifest["chapters"], filename)
+    markdown, titles = processcontent(manifest["content"], filename)
     logging.debug("Found {} titles.".format(len(titles)))
     toc = gentoc(titles)
     markdown = markdown.replace("@@TOC@@", toc)
@@ -134,9 +134,8 @@ def generatefromyaml(manifest, filename):
 
 
 # Maps a section title (the string just after "^# ") to its position
-# in the table of content (as a (chapter,part,subpart,...) tuple).
+# in the table of content (as a (module,part,subpart,...) tuple).
 title2path = {}
-path2title = {}
 all_titles = []
 
 # "tree" is a list of titles, potentially nested.
@@ -144,50 +143,60 @@ def gentoc(tree, path=()):
     if not tree:
         return ""
     if isinstance(tree, str):
+        logging.debug("Path {} Title {}".format(path, tree))
         title = tree
         title2path[title] = path
-        path2title[path] = title
         all_titles.append(title)
-        logging.debug("Path {} Title {}".format(path, title))
         return "- [{}](#{})".format(title, anchor(title))
     if isinstance(tree, list):
+        # If there is only one sub-element, give it index zero.
+        # Otherwise, elements will have indices 1-to-N.
+        offset = 0 if len(tree) == 1 else 1
+        logging.debug(
+            "Path {} Tree [...({} sub-elements)]"
+            .format(path, len(tree)))
         if len(path) == 0:
-            return "\n---\n".join(gentoc(subtree, path+(i+1,)) for (i,subtree) in enumerate(tree))
+            return "\n---\n".join(gentoc(subtree, path+(i+offset,)) for (i,subtree) in enumerate(tree))
         elif len(path) == 1:
-            chapterslide = "name: toc-chapter-{n}\n\n## Chapter {n}\n\n".format(n=path[0])
+            # If there is only one module, don't show "Module 1" but just "TOC"
+            if path[0] == 0:
+                label = "Table of contents"
+            else:
+                label = "Module {}".format(path[0])
+            moduleslide = "name: toc-module-{n}\n\n## {label}\n\n".format(n=path[0], label=label)
             for (i,subtree) in enumerate(tree):
-                chapterslide += gentoc(subtree, path+(i+1,)) + "\n\n"
-            chapterslide += ".debug[(auto-generated TOC)]"
-            return chapterslide
+                moduleslide += gentoc(subtree, path+(i+offset,)) + "\n\n"
+            moduleslide += ".debug[(auto-generated TOC)]"
+            return moduleslide
         else:
-            return "\n\n".join(gentoc(subtree, path+(i+1,)) for (i,subtree) in enumerate(tree))
+            return "\n\n".join(gentoc(subtree, path+(i+offset,)) for (i,subtree) in enumerate(tree))
 
 
 # Arguments:
-# - `chapter` is a string; if it has multiple lines, it will be used as
+# - `content` is a string; if it has multiple lines, it will be used as
 #   a markdown fragment; otherwise it will be considered as a file name
 #   to be recursively loaded and parsed
 # - `filename` is the name of the file that we're currently processing
 #   (to generate inline comments to facilitate edition)
 # Returns: (epxandedmarkdown,[list of titles])
 # The list of titles can be nested.
-def processchapter(chapter, filename):
-    if isinstance(chapter, str):
-        if "\n" in chapter:
-            titles = re.findall("^# (.*)", chapter, re.MULTILINE)
+def processcontent(content, filename):
+    if isinstance(content, str):
+        if "\n" in content:
+            titles = re.findall("^# (.*)", content, re.MULTILINE)
             slidefooter = ".debug[{}]".format(makelink(filename))
-            chapter = chapter.replace("\n---\n", "\n{}\n---\n".format(slidefooter))
-            chapter += "\n" + slidefooter
-            return (chapter, titles)
-        if os.path.isfile(chapter):
-            return processchapter(open(chapter).read(), chapter)
-    if isinstance(chapter, list):
-        chapters = [processchapter(c, filename) for c in chapter]
-        markdown = "\n---\n".join(c[0] for c in chapters)
-        titles = [t for (m,t) in chapters if t]
+            content = content.replace("\n---\n", "\n{}\n---\n".format(slidefooter))
+            content += "\n" + slidefooter
+            return (content, titles)
+        if os.path.isfile(content):
+            return processcontent(open(content).read(), content)
+    if isinstance(content, list):
+        subparts = [processcontent(c, filename) for c in content]
+        markdown = "\n---\n".join(c[0] for c in subparts)
+        titles = [t for (m,t) in subparts if t]
         return (markdown, titles)
-    logging.warning("Invalid chapter: {}".format(chapter))
-    return "```\nInvalid chapter: {}\n```\n".format(chapter), []
+    logging.warning("Invalid content: {}".format(content))
+    return "```\nInvalid content: {}\n```\n".format(content), []
 
 # Try to figure out the URL of the repo on GitHub.
 # This is used to generate "edit me on GitHub"-style links.

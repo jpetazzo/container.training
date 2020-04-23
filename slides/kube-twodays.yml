@@ -15,11 +15,13 @@ slides: http://container.training/
 exclude:
 - self-paced
 
-chapters:
+content:
 - shared/title.md
 - logistics.md
 - k8s/intro.md
 - shared/about-slides.md
+- shared/chat-room-im.md
+#- shared/chat-room-zoom.md
 - shared/toc.md
 -
   - shared/prereqs.md
@@ -33,7 +35,10 @@ chapters:
   - k8s/concepts-k8s.md
   - k8s/kubectlget.md
 -
-  - k8s/kubectlrun.md
+  - k8s/kubectl-run.md
+  - k8s/batch-jobs.md
+  - k8s/labels-annotations.md
+  - k8s/kubectl-logs.md
   - k8s/logs-cli.md
   - shared/declarative.md
   - k8s/declarative.md
@@ -44,6 +49,7 @@ chapters:
   #- k8s/buildshiprun-selfhosted.md
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
+  #- k8s/exercise-wordsmith.md
 -
   - k8s/yamldeploy.md
   #- k8s/setup-k8s.md
@@ -53,6 +59,7 @@ chapters:
   - shared/hastyconclusions.md
   - k8s/daemonset.md
   - k8s/dryrun.md
+  #- k8s/exercise-yaml.md
 -
   - k8s/localkubeconfig.md
   - k8s/accessinternal.md
@@ -70,6 +77,7 @@ chapters:
   - k8s/helm-create-basic-chart.md
   - k8s/helm-create-better-chart.md
   - k8s/helm-secrets.md
+  #- k8s/exercise-helm.md
 -
   - k8s/netpol.md
   - k8s/authn-authz.md
@@ -78,6 +86,7 @@ chapters:
   #- k8s/podsecuritypolicy.md
 -
   - k8s/volumes.md
+  #- k8s/exercise-configmap.md
   #- k8s/build-with-docker.md
   #- k8s/build-with-kaniko.md
   - k8s/configuration.md
@@ -95,5 +104,6 @@ chapters:
   #- k8s/gitworkflows.md
 -
   - k8s/whatsnext.md
+  - k8s/lastwords.md
   - k8s/links.md
   - shared/thankyou.md

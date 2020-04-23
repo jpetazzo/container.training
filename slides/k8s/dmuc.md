@@ -6,7 +6,7 @@
 
 - Our goal is to build a minimal cluster allowing us to:
 
-  - create a Deployment (with `kubectl run` or `kubectl create deployment`)
+  - create a Deployment (with `kubectl create deployment`)
   - expose it with a Service
   - connect to that service
 

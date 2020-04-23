@@ -18,8 +18,14 @@
     | default("kube") -%}
 {%- set clusternumber = clusternumber
     | default(None) -%}
+{%- if qrcode == True -%}
+    {%- set qrcode = "https://container.training/q" -%}
+{%- elif qrcode -%}
+    {%- set qrcode = qrcode -%}
+{%- endif -%}
 
-{%- set image_src = {
+{# You can also set img_bottom_src instead. #}
+{%- set img_logo_src = {
 	"docker": "https://s3-us-west-2.amazonaws.com/www.breadware.com/integrations/docker.png",
 	"swarm": "https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png",
 	"kube": "https://avatars1.githubusercontent.com/u/13629408",
@@ -85,8 +91,32 @@
 {%- endif -%}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-<head><style>
+<head>
+<style>
 @import url('https://fonts.googleapis.com/css?family=Slabo+27px');
+
+{% if paper_size == "A4" %}
+@page {
+    size: A4; /* Change from the default size of A4 */
+    margin: 0.5cm; /* Set margin on each page */
+}
+body {
+    /* this is A4 minus 0.5cm margins */
+	width: 20cm;
+	height: 28.7cm;
+}
+{% elif paper_size == "Letter" %}
+@page {
+	size: Letter;
+	margin: 0.2in;
+}
+body {
+	/* this is Letter minus 0.2in margins */
+	width: 8.6in;
+	heigth: 10.6in;
+}
+{% endif %}
+
 
 body, table {
     margin: 0;
@@ -108,52 +138,44 @@ div {
     float: left;
     border: 1px dotted black;
     {% if backside %}
-    height: 31%;
+    height: 33%;
     {% endif %}
-    padding-top: 1%;
-    padding-bottom: 1%;
     /* columns * (width+left+right) < 100% */
     /*
-    width: 21.5%;
-    padding-left: 1.5%;
-    padding-right: 1.5%;
+    width: 24.8%;
     */
     /**/
-    width: 30%;
-    padding-left: 1.5%;
-    padding-right: 1.5%;
+    width: 33%;
     /**/    
 }
 
 p {
-    margin: 0.4em 0 0.4em 0;
+    margin: 0.8em;
 }
 
 div.back {
-	border: 1px dotted white;
+	border: 1px dotted grey;
 }
 
-div.back p {
-    margin: 0.5em 1em 0 1em;
+span.scale {
+	white-space: nowrap;
 }
 
-img {
-    height: 4em;
+img.logo {
+    height: 4.5em;
     float: right;
-    margin-right: -0.2em;
+ }
+
+img.bottom {
+    height: 2.5em;
+    display: block;
+    margin: 0.5em auto;
 }
 
-/*
-img.enix {
-    height: 4.0em;
-    margin-top: 0.4em;
+.qrcode img {
+    width: 40%;
+    margin: 1em;
 }
-
-img.kube {
-    height: 4.2em;
-    margin-top: 1.7em;
-}
-*/
 
 .logpass {
     font-family: monospace;
@@ -164,16 +186,43 @@ img.kube {
     page-break-after: always;
     clear: both;
     display: block;
-    height: 8px;
+    height: 0;
 }
-</style></head>
-<body>
+</style>
+<script type="text/javascript" src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script type="text/javascript">
+function qrcodes() {
+	[].forEach.call(
+		document.getElementsByClassName("qrcode"),
+		(e, index) => {
+			new QRCode(e, {
+				text: "{{ qrcode }}",
+				correctLevel: QRCode.CorrectLevel.L
+			});
+		}
+	);
+}
+
+function scale() {
+	[].forEach.call(
+		document.getElementsByClassName("scale"),
+		(e, index) => {
+			var text_width = e.getBoundingClientRect().width;
+			var box_width = e.parentElement.getBoundingClientRect().width;
+			var percent = 100 * box_width / text_width + "%";
+			e.style.fontSize = percent;
+		}
+	);
+}
+</script>
+</head>
+<body onload="qrcodes(); scale();">
 {% for cluster in clusters %}
     <div>
         <p>{{ intro }}</p>
         <p>
-            {% if image_src %}
-            <img src="{{ image_src }}" />
+            {% if img_logo_src %}
+            <img class="logo" src="{{ img_logo_src }}" />
             {% endif %}
             <table>
             	{% if clusternumber != None %}
@@ -202,7 +251,12 @@ img.kube {
         <p>
             {% if url %}
         	{{ slides_are_at }}
-            <center>{{ url }}</center>
+            <p>
+                <span class="scale">{{ url }}</span>
+            </p>
+            {% endif %}
+            {% if img_bottom_src %}
+            <img class="bottom" src="{{ img_bottom_src }}" />
             {% endif %}
         </p>
     </div>
@@ -211,18 +265,21 @@ img.kube {
         {% if backside %}
 			{% for x in range(pagesize) %}
 		        <div class="back">
-		        <br/>
-				<p>You got this at the workshop
+				<p>Thanks for attending
 				"Getting Started With Kubernetes and Container Orchestration"
-				during QCON London (March 2019).</p>
+				during CONFERENCE in Month YYYY!</p>
 				<p>If you liked that workshop,
-				I can train your team or organization
-				on Docker, container, and Kubernetes,
-				with curriculums of 1 to 5 days.
+				I can train your team, in person or
+				online, with custom courses of
+				any length and any level.
 				</p>
-				<p>Interested? Contact me at:</p>
+	            {% if qrcode %}
+	            <p>If you're interested, please scan that QR code to contact me:</p>
+				<span class="qrcode"></span>
+                {% else %}
+				<p>If you're interested, you can contact me at:</p>
+				{% endif %}
 				<p>jerome.petazzoni@gmail.com</p>
-				<p>Thank you!</p>
 		        </div>
 			{% endfor %}
 		<span class="pagebreak"></span>

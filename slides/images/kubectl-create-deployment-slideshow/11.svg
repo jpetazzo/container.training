@@ -13,7 +13,7 @@
    viewBox="0 0 1600 900"
    version="1.1"
    id="svg696"
-   sodipodi:docname="how-k8s-works-11.svg"
+   sodipodi:docname="11.svg"
    inkscape:version="0.92.4 5da689c313, 2019-01-14"
    enable-background="new">
   <metadata
@@ -42,10 +42,10 @@
      id="namedview698"
      showgrid="false"
      inkscape:zoom="0.64"
-     inkscape:cx="796.38378"
+     inkscape:cx="521.38378"
      inkscape:cy="596.50212"
      inkscape:window-x="0"
-     inkscape:window-y="18"
+     inkscape:window-y="1098"
      inkscape:window-maximized="0"
      inkscape:current-layer="g3409"
      units="px"
@@ -1130,78 +1130,6 @@
              id="tspan15592"
              x="351.05563"
              y="125.23392"
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:19.62533379px;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.49064583">PENDING</tspan></text>
-      </g>
-      <g
-         inkscape:label="pod 2"
-         id="g1233"
-         style="display:inline">
-        <rect
-           y="139.72913"
-           x="287.1362"
-           height="36.022667"
-           width="174.12718"
-           id="rect15580"
-           style="display:inline;opacity:1;fill:#ffaaaa;fill-opacity:1;stroke:none;stroke-width:8.37233353;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:3;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter15564)" />
-        <text
-           id="text15584"
-           y="166.5461"
-           x="292.32904"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:27.96796608px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.69919914"
-           xml:space="preserve"><tspan
-             style="stroke-width:0.69919914"
-             y="166.5461"
-             x="292.32904"
-             id="tspan15582"
-             sodipodi:role="line">Pod</tspan></text>
-        <text
-           id="text15598"
-           y="165.23392"
-           x="351.05563"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:19.62533379px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.49064583"
-           xml:space="preserve"
-           inkscape:label="pod 2 status"><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:19.62533379px;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.49064583"
-             y="165.23392"
-             x="351.05563"
-             id="tspan15596"
-             sodipodi:role="line">PENDING</tspan></text>
-      </g>
-      <g
-         inkscape:label="pod 3"
-         id="g1226"
-         style="display:inline">
-        <rect
-           style="display:inline;opacity:1;fill:#ffaaaa;fill-opacity:1;stroke:none;stroke-width:8.37233353;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:3;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter15564)"
-           id="rect15586"
-           width="174.12718"
-           height="36.022667"
-           x="287.1362"
-           y="179.72913"
-           inkscape:label="rectangle" />
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:27.96796608px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.69919914"
-           x="292.32904"
-           y="206.5461"
-           id="text15590"
-           inkscape:label="label"><tspan
-             sodipodi:role="line"
-             id="tspan15588"
-             x="292.32904"
-             y="206.5461"
-             style="stroke-width:0.69919914">Pod</tspan></text>
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:19.62533379px;line-height:1.25;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.49064583"
-           x="351.05563"
-           y="205.23392"
-           id="text15602"
-           inkscape:label="status"><tspan
-             sodipodi:role="line"
-             id="tspan15600"
-             x="351.05563"
-             y="205.23392"
              style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:19.62533379px;font-family:'Droid Serif';-inkscape-font-specification:'Droid Serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.49064583">PENDING</tspan></text>
       </g>
     </g>

@@ -14,11 +14,13 @@ slides: http://container.training/
 exclude:
 - self-paced
 
-chapters:
+content:
 - shared/title.md
 - logistics.md
 - containers/intro.md
 - shared/about-slides.md
+- shared/chat-room-im.md
+#- shared/chat-room-zoom.md
 - shared/toc.md
 -
   #- containers/Docker_Overview.md
