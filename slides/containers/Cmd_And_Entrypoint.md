@@ -272,3 +272,7 @@ $ docker run -it --entrypoint bash myfiglet
 root@6027e44e2955:/# 
 ```
 
+???
+
+:EN:- CMD and ENTRYPOINT
+:FR:- CMD et ENTRYPOINT

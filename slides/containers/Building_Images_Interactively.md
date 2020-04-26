@@ -167,3 +167,8 @@ Automated process = good.
 
 In the next chapter, we will learn how to automate the build
 process by writing a `Dockerfile`.
+
+???
+
+:EN:- Building our first images interactively
+:FR:- Fabriquer nos premières images à la main

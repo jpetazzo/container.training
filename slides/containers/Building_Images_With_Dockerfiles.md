@@ -363,3 +363,10 @@ In this example, `sh -c` will still be used, but
 The shell gets replaced by `figlet` when `figlet` starts execution.
 
 This allows to run processes as PID 1 without using JSON.
+
+???
+
+:EN:- Towards automated, reproducible builds
+:EN:- Writing our first Dockerfile
+:FR:- Rendre le processus automatique et reproductible
+:FR:- Écrire son premier Dockerfile

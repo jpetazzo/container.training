@@ -175,3 +175,10 @@ class: extra-details
 * This will cause some CLI and TUI programs to redraw the screen.
 
 * But not all of them.
+
+???
+
+:EN:- Restarting old containers
+:EN:- Detaching and reattaching to container
+:FR:- Redémarrer des anciens conteneurs
+:FR:- Se détacher et rattacher à des conteneurs

@@ -431,3 +431,8 @@ services:
 - It's OK (and even encouraged) to start simple and evolve as needed.
 
 - Feel free to review this chapter later (after writing a few Dockerfiles) for inspiration!
+
+???
+
+:EN:- Dockerfile tips, tricks, and best practices
+:FR:- Bonnes pratiques pour la construction des images
