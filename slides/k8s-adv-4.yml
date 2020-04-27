@@ -1,0 +1,35 @@
+title: |
+  Intensive Kubernetes
+  Advanced Concepts
+
+  Application Configuration
+  and Stateful Applications
+
+chat: "[Gitter](https://gitter.im/jpetazzo/training-20200427-online)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2020-04-ardan.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+chapters:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+#- shared/chat-room-im.md
+#- shared/chat-room-zoom.md
+- shared/toc.md
+#- shared/prereqs.md
+#- shared/webssh.md
+-
+  - k8s/volumes.md
+  - k8s/configuration.md
+  - k8s/statefulsets.md
+  - k8s/local-persistent-volumes.md
+  - k8s/portworx.md
+  - shared/thankyou.md

@@ -1,0 +1,36 @@
+title: |
+  Intensive Kubernetes
+  Advanced Concepts
+
+  Security Focus
+
+chat: "[Gitter](https://gitter.im/jpetazzo/training-20200427-online)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2020-04-ardan.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+chapters:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+#- shared/chat-room-im.md
+#- shared/chat-room-zoom.md
+- shared/toc.md
+#- shared/prereqs.md
+#- shared/webssh.md
+- shared/connecting.md
+-
+  - k8s/netpol.md
+  - k8s/authn-authz.md
+  - k8s/podsecuritypolicy.md
+  - k8s/openid-connect.md
+  - k8s/csr-api.md
+  #- k8s/control-plane-auth.md
+  - shared/thankyou.md

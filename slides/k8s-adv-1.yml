@@ -1,0 +1,39 @@
+title: |
+  Intensive Kubernetes
+  Advanced Concepts
+
+  Packaging Applications
+  with Kustomize and Helm
+
+chat: "[Gitter](https://gitter.im/jpetazzo/training-20200427-online)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2020-04-ardan.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+chapters:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+#- shared/chat-room-im.md
+#- shared/chat-room-zoom.md
+- shared/toc.md
+#- shared/prereqs.md
+#- shared/webssh.md
+- shared/connecting.md
+-
+  - k8s/kubercoins.md
+  - k8s/kustomize.md
+  - k8s/helm-intro.md
+  - k8s/helm-chart-format.md
+  - k8s/helm-create-basic-chart.md
+  - k8s/helm-create-better-chart.md
+  - k8s/helm-secrets.md
+  #- k8s/exercise-helm.md
+  - shared/thankyou.md

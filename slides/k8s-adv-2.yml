@@ -1,0 +1,38 @@
+title: |
+  Intensive Kubernetes
+  Advanced Concepts
+
+  Capacity Management
+  and Kubernetes Operators 
+
+chat: "[Gitter](https://gitter.im/jpetazzo/training-20200427-online)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2020-04-ardan.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+chapters:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+#- shared/chat-room-im.md
+#- shared/chat-room-zoom.md
+- shared/toc.md
+#- shared/prereqs.md
+#- shared/webssh.md
+- shared/connecting.md
+-
+  - k8s/resource-limits.md
+  - k8s/metrics-server.md
+  - k8s/cluster-sizing.md
+  - k8s/horizontal-pod-autoscaler.md
+  - k8s/extending-api.md
+  - k8s/operators.md
+  #- k8s/operators-design.md
+  - shared/thankyou.md
