@@ -26,3 +26,8 @@
 - When we want to change some resource, we update the *spec*
 
 - Kubernetes will then *converge* that resource
+
+???
+
+:EN:- Declarative vs imperative models
+:FR:- Modèles déclaratifs et impératifs

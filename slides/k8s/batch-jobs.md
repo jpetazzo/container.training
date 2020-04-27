@@ -187,3 +187,8 @@ class: extra-details
 - If we write these manifests ourselves, we can use all features and options
 
 - We'll see later how to do that!
+
+???
+
+:EN:- Running batch and cron jobs
+:FR:- Tâches périodiques *(cron)* et traitement par lots *(batch)*

@@ -92,3 +92,8 @@
 - For a longer list, check the Kubernetes documentation:
   <br/>
   it has a great guide to [pick the right solution](https://kubernetes.io/docs/setup/#production-environment) to set up Kubernetes.
+
+???
+
+:EN:- Overview of the kubeadm installer
+:FR:- Survol de kubeadm

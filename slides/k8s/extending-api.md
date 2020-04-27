@@ -344,3 +344,14 @@ class: extra-details
 - [Dynamic Admission Controllers](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)
 
 - [Aggregation Layer](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/)
+
+???
+
+:EN:- Extending the Kubernetes API
+:EN:- Custom Resource Definitions (CRDs)
+:EN:- The aggregation layer
+:EN:- Admission control and webhooks
+
+:FR:- Comment étendre l'API Kubernetes
+:FR:- Les CRDs *(Custom Resource Definitions)*
+:FR:- Extension via *aggregation layer*, *admission control*, *webhooks*

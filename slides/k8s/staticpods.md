@@ -239,3 +239,8 @@ The `-node1` suffix was added automatically by kubelet.
 If we delete the pod (with `kubectl delete`), it will be recreated immediately.
 
 To delete the pod, we need to delete (or move) the manifest file.
+
+???
+
+:EN:- Static pods
+:FR:- Les *static pods*

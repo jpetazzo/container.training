@@ -600,3 +600,10 @@ This will trigger the following actions.
 5. The PersistentVolumeClaimBinder associates the PVs and the PVCs together.
 
 6. PVCs are now bound, the Pods can start.
+
+???
+
+:EN:- Deploying stateful applications
+:EN:- Use-case: running Consul with a Stateful Set
+:FR:- Déployer des applications persistante
+:FR:- Example: lancer Consul avec un Sateful Set

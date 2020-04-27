@@ -365,3 +365,7 @@ Note: we could have used `--namespace=default` for the same result.
 
 - Pro-tip: install it on your machine during the next break!
 
+???
+
+:EN:- Organizing resources with Namespaces
+:FR:- Organiser les ressources avec des *namespaces*

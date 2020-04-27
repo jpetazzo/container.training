@@ -246,3 +246,8 @@
   (when we can't or won't dedicate a whole disk to a volume)
 
 - It's possible to mix both (using distinct Storage Classes)
+
+???
+
+:EN:- Local persistent volumes
+:FR:- Volumes locaux persistents

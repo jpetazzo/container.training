@@ -424,3 +424,8 @@ To be usable in real environments, we would need to add:
   - we get strong security *and* convenience
 
 - Systems like Vault also have certificate issuance mechanisms
+
+???
+
+:EN:- Generating user certificates with the CSR API
+:FR:- Génération de certificats utilisateur avec la CSR API

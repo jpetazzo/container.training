@@ -574,3 +574,8 @@ done
 - This could be useful for embedded platforms with very limited resources
 
   (or lab environments for learning purposes)
+
+???
+
+:EN:- Configuring CNI plugins
+:FR:- Configurer des plugins CNI

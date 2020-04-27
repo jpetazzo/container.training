@@ -438,3 +438,13 @@ class: extra-details
 - They can also handle TLS certificates, URL rewriting ...
 
 - They require an *Ingress Controller* to function
+
+???
+
+:EN:- Service discovery and load balancing
+:EN:- Accessing pods through services
+:EN:- Service types: ClusterIP, NodePort, LoadBalancer
+
+:FR:- Exposer un service
+:FR:- Différents types de services : ClusterIP, NodePort, LoadBalancer
+:FR:- Utiliser CoreDNS pour la *service discovery*

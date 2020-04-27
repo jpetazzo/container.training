@@ -417,3 +417,13 @@ All unspecified values will take the default values defined in the chart.
   ```
 
 ]
+
+???
+
+:EN:- Helm concepts
+:EN:- Installing software with Helm
+
+:FR:- Fonctionnement général de Helm
+:FR:- Installer des composants via Helm
+
+:FR:- Comment

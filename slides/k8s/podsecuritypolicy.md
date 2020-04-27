@@ -531,3 +531,8 @@ class: extra-details
   ```
 
 ]
+
+???
+
+:EN:- Pod Security Policies
+:FR:- Les *Pod Security Policies*

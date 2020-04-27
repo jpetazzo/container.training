@@ -237,3 +237,8 @@ We see the components mentioned above: `Chart.yaml`, `templates/`, `values.yaml`
 - This can be use for database migrations, backups, notifications, smoke tests ...
 
 - Hooks named `test` are executed only when running `helm test RELEASE-NAME`
+
+???
+
+:EN:- Helm charts format
+:FR:- Le format des *Helm charts*

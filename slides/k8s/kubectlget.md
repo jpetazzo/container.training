@@ -578,3 +578,8 @@ $ curl -k https://10.96.0.1
 - Code running in pods can connect to services using their name
 
   (e.g. https://kubernetes/...)
+
+???
+
+:EN:- Getting started with kubectl
+:FR:- Se familiariser avec kubectl

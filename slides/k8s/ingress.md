@@ -718,3 +718,8 @@ We also need:
   (create them, promote them, delete them ...)
 
 For inspiration, check [flagger by Weave](https://github.com/weaveworks/flagger).
+
+???
+
+:EN:- The Ingress resource
+:FR:- La ressource *ingress*

@@ -263,3 +263,8 @@ spec:
     #name: web-xyz1234567-pqr89
 EOF
 ```
+
+???
+
+:EN:- Control plane authentication
+:FR:- Sécurisation du plan de contrôle

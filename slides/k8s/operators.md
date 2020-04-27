@@ -615,3 +615,11 @@ After the Kibana UI loads, we need to click around a bit
 *Operators can be very powerful.
 <br/>
 But we need to know exactly the scenarios that they can handle.*
+
+???
+
+:EN:- Kubernetes operators
+:EN:- Deploying ElasticSearch with ECK
+
+:FR:- Les opérateurs
+:FR:- Déployer ElasticSearch avec ECK
