@@ -676,3 +676,13 @@ class: extra-details
 - Both are available as standalone programs, or as plugins for `kubectl`
 
   (`kubectl` plugins can be installed and managed with `krew`)
+
+???
+
+:EN:- Authentication and authorization in Kubernetes
+:EN:- Role-Based Access Control (RBAC)
+:EN:- Restricting permissions with Service Accounts
+
+:FR:- Identification et droits d'accès dans Kubernetes
+:FR:- Le modèle RBAC *(Role-Based Access Control)*
+:FR:- Restreindre les permissions grâce aux *Service Accounts*

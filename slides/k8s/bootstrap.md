@@ -257,3 +257,8 @@ This is the TLS bootstrap mechanism, step by step.
   - [kubeadm token](https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-token/) command
 
   - [kubeadm join](https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/) command (has details about [the join workflow](https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/#join-workflow))
+
+???
+
+:EN:- Leveraging TLS bootstrap to join nodes
+:FR:- Ajout de nœuds grâce au *TLS bootstrap*

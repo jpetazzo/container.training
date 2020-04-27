@@ -11,10 +11,10 @@ class State(object):
         self.section_title = None
         self.section_start = 0
         self.section_slides = 0
-        self.chapters = {}
+        self.modules = {}
         self.sections = {}
     def show(self):
-        if self.section_title.startswith("chapter-"):
+        if self.section_title.startswith("module-"):
             return
         print("{0.section_title}\t{0.section_start}\t{0.section_slides}".format(self))
         self.sections[self.section_title] = self.section_slides
@@ -38,10 +38,10 @@ for line in open(sys.argv[1]):
     if line == "--":
         state.current_slide += 1
     toc_links = re.findall("\(#toc-(.*)\)", line)
-    if toc_links and state.section_title.startswith("chapter-"):
-        if state.section_title not in state.chapters:
-            state.chapters[state.section_title] = []
-        state.chapters[state.section_title].append(toc_links[0])
+    if toc_links and state.section_title.startswith("module-"):
+        if state.section_title not in state.modules:
+            state.modules[state.section_title] = []
+        state.modules[state.section_title].append(toc_links[0])
     # This is really hackish
     if line.startswith("class:"):
         for klass in EXCLUDED:
@@ -51,7 +51,7 @@ for line in open(sys.argv[1]):
 
 state.show()
 
-for chapter in sorted(state.chapters, key=lambda f: int(f.split("-")[1])):
-    chapter_size = sum(state.sections[s] for s in state.chapters[chapter])
-    print("{}\t{}\t{}".format("total size for", chapter, chapter_size))
+for module in sorted(state.modules, key=lambda f: int(f.split("-")[1])):
+    module_size = sum(state.sections[s] for s in state.modules[module])
+    print("{}\t{}\t{}".format("total size for", module, module_size))
 

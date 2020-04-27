@@ -7,6 +7,7 @@ FLAGS=dict(
   fr=u"🇫🇷",
   uk=u"🇬🇧",
   us=u"🇺🇸",
+  www=u"🌐",
 )
 
 TEMPLATE="""<html>
@@ -19,7 +20,7 @@ TEMPLATE="""<html>
   <div class="main">
     <table>
       <tr><td class="header" colspan="3">{{ title }}</td></tr>
-      <tr><td class="details" colspan="3">Note: while some workshops are delivered in French, slides are always in English.</td></tr>
+      <tr><td class="details" colspan="3">Note: while some workshops are delivered in other languages, slides are always in English.</td></tr>
 
       <tr><td class="title" colspan="3">Free video of our latest workshop</td></tr>
 
@@ -35,7 +36,7 @@ TEMPLATE="""<html>
         <td class="details">If you're interested, we can deliver that workshop (or longer courses) to your team or organization.</td>
       </tr>
       <tr>
-        <td class="details">Contact <a href="mailto:jerome.petazzoni@gmail.com">Jérôme Petazzoni</a> to make that happen!</a></td>
+        <td class="details">Contact <a href="mailto:jerome.petazzoni@gmail.com">Jérôme Petazzoni</a> to make that happen!</td>
       </tr>
 
       {% if coming_soon %}

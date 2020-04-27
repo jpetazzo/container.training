@@ -98,3 +98,8 @@ Success!
   * Place it in a different directory, with the `WORKDIR` instruction.
 
   * Even better, use the `gcc` official image.
+
+???
+
+:EN:- The build cache
+:FR:- Tirer parti du cache afin d'optimiser la vitesse de *build*

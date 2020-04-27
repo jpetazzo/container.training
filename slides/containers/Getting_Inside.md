@@ -226,3 +226,8 @@ docker export <container_id> | tar tv
 ```
 
 This will give a detailed listing of the content of the container.
+
+???
+
+:EN:- Troubleshooting and getting inside a container
+:FR:- Inspecter un conteneur en détail, en *live* ou *post-mortem*

@@ -391,3 +391,10 @@ We've learned how to:
 
 * Use a simple local development workflow.
 
+???
+
+:EN:Developing with containers
+:EN:- “Containerize” a development environment
+
+:FR:Développer au jour le jour
+:FR:- « Containeriser » son environnement de développement

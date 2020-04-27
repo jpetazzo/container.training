@@ -165,3 +165,11 @@ class: extra-details
 - Security advantage (stronger isolation between pods)
 
 Check [this blog post](http://jpetazzo.github.io/2019/02/13/running-kubernetes-without-nodes-with-kiyot/) for more details.
+
+???
+
+:EN:- Capacity planning
+:EN:- Cluster sizing and scaling
+
+:FR:- Dimensionnement des clusters
+:FR:- Comportement en cas de famine

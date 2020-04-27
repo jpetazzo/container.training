@@ -377,3 +377,8 @@ class: extra-details
 - It should now say "Signature Verified"
 
 ]
+
+???
+
+:EN:- Authenticating with OIDC
+:FR:- S'identifier avec OIDC

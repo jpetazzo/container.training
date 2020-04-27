@@ -88,3 +88,8 @@ class: extra-details
   ```
 
 - Check [the documentation](https://kubernetes.io/docs/setup/release/version-skew-policy/#kubectl) for the whole story about compatibility
+
+???
+
+:EN:- Kubernetes versioning and compatibility
+:FR:- Les versions de Kubernetes et leur compatibilité

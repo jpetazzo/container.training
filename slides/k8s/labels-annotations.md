@@ -195,3 +195,8 @@ class: extra-details
 - Maximum length isn't defined
 
   (dozens of kilobytes is fine, hundreds maybe not so much)
+
+???
+
+:EN:- Labels and annotations
+:FR:- *Labels* et annotations

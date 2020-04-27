@@ -467,3 +467,11 @@ spec:
 - A volume survives across container restarts
 
 - A volume is destroyed (or, for remote storage, detached) when the pod is destroyed
+
+???
+
+:EN:- Sharing data between containers with volumes
+:EN:- When and how to use Init Containers
+
+:FR:- Partager des données grâce aux volumes
+:FR:- Quand et comment utilise un *Init Container*

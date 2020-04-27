@@ -242,3 +242,8 @@ https://@@GITREPO@@/blob/8279a3bce9398f7c1a53bdd95187c53eda4e6435/dockercoins/wo
 
 A drawing area should show up, and after a few seconds, a blue
 graph will appear.
+
+???
+
+:EN:- Running a sample app
+:FR:- Lancer une application de démo

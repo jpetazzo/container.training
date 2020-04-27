@@ -80,3 +80,8 @@ $ docker ps --filter label=owner=alice
   (To determine internal cross-billing, or who to page in case of outage.)
 
 * etc.
+
+???
+
+:EN:- Using labels to identify containers
+:FR:- Étiqueter ses conteneurs avec des méta-données

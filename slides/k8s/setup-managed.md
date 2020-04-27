@@ -250,6 +250,11 @@ with a cloud provider
 
 - OVH
 
-- Scaleway (private beta)
+- Scaleway
 
 - ...
+
+???
+
+:EN:- Installing a managed cluster
+:FR:- Installer un cluster infogéré

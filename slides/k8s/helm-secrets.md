@@ -232,3 +232,8 @@ The chart is in a structured format, but it's entirely captured in this JSON.
   (including the full source of the chart, and the values used)
 
 - This allows arbitrary rollbacks, as well as tweaking values even without having access to the source of the chart (or the chart repo) used for deployment
+
+???
+
+:EN:- Deep dive into Helm internals
+:FR:- Fonctionnement interne de Helm

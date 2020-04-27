@@ -577,3 +577,8 @@ We can look at the definition, but it's fairly complex ...
 - We can change the number of workers with `replicaCount`
 
 - And much more!
+
+???
+
+:EN:- Creating better Helm charts
+:FR:- Création de *Helm charts* avancés

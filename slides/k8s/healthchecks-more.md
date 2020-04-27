@@ -333,3 +333,8 @@ class: extra-details
   (and have gcr.io/pause take care of the reaping)
 
 - Discussion of this in [Video - 10 Ways to Shoot Yourself in the Foot with Kubernetes, #9 Will Surprise You](https://www.youtube.com/watch?v=QKI-JRs2RIE)
+
+???
+
+:EN:- Adding healthchecks to an app
+:FR:- Ajouter des *healthchecks* à une application

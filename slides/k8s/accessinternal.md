@@ -129,3 +129,8 @@ installed and set up `kubectl` to communicate with your cluster.
   ```
 
 ]
+
+???
+
+:EN:- Securely accessing internal services
+:FR:- Accès sécurisé aux services internes

@@ -375,3 +375,13 @@ We've learned how to:
 * Understand Docker image namespacing.
 * Search and download images.
 
+???
+
+:EN:Building images
+:EN:- Containers, images, and layers
+:EN:- Image addresses and tags
+:EN:- Finding and transferring images
+
+:FR:Construire des images
+:FR:- La différence entre un conteneur et une image
+:FR:- La notion de *layer* partagé entre images

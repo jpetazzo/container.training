@@ -313,3 +313,11 @@ virtually "free."
 * Sometimes, we want to inspect a specific intermediary build stage.
 
 * Or, we want to describe multiple images using a single Dockerfile.
+
+???
+
+:EN:Optimizing our images and their build process
+:EN:- Leveraging multi-stage builds
+
+:FR:Optimiser les images et leur construction
+:FR:- Utilisation d'un *multi-stage build*

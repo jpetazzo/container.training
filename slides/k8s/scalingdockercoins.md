@@ -200,3 +200,8 @@ Now we can access the IP addresses of our services through `$HASHER` and `$RNG`.
 - `rng` is not (it should take about 700 milliseconds if there are 10 workers)
 
 - Something is wrong with `rng`, but ... what?
+
+???
+
+:EN:- Scaling up our demo app
+:FR:- *Scale up* de l'application de démo

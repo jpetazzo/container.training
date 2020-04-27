@@ -280,3 +280,8 @@ CONTAINER ID  IMAGE           ...  CREATED      STATUS
 5c1dfd4d81f1  jpetazzo/clock  ...  40 min. ago  Exited (0) 40 min. ago
 b13c164401fb  ubuntu          ...  55 min. ago  Exited (130) 53 min. ago
 ```
+
+???
+
+:EN:- Foreground and background containers
+:FR:- Exécution interactive ou en arrière-plan

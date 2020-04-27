@@ -237,3 +237,8 @@
 - Gitkube can also deploy Helm charts
 
   (instead of raw YAML files)
+
+???
+
+:EN:- GitOps
+:FR:- GitOps

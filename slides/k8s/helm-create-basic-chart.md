@@ -218,3 +218,8 @@ have details about recommended annotations and labels.
   ```
 
 ]
+
+???
+
+:EN:- Creating basic Helm charts
+:FR:- Création de *Helm charts* basiques

@@ -532,3 +532,8 @@ Sometimes it works, sometimes it doesn't. Why?
 - We want to automate all these steps
 
 - We want something that works on all networks
+
+???
+
+:EN:- Connecting nodes ands pods
+:FR:- Interconnecter les nœuds et les pods

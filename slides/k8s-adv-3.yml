@@ -15,7 +15,7 @@ slides: https://2020-04-ardan.container.training/
 exclude:
 - self-paced
 
-chapters:
+content:
 - shared/title.md
 - logistics.md
 - k8s/intro.md
