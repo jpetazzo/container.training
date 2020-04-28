@@ -551,9 +551,9 @@ spec:
 ???
 
 :EN:- Managing application configuration
-:EN:- The downward API
-:EN:- Config Maps and Secrets
+:EN:- Exposing configuration with the downward API
+:EN:- Exposing configuration with Config Maps and Secrets
 
 :FR:- Gérer la configuration des applications
-:FR:- La *downward API*
-:FR:- Utiliser les *Config Maps* et *Secrets*
+:FR:- Configuration au travers de la *downward API*
+:FR:- Configuration via les *Config Maps* et *Secrets*

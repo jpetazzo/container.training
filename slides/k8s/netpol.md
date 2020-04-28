@@ -449,5 +449,5 @@ troubleshoot easily, without having to poke holes in our firewall.
 
 ???
 
-:EN:- Network isolation with Network Policies
-:FR:- Protection réseau avec les *network policies*
+:EN:- Isolating workloads with Network Policies
+:FR:- Isolation réseau avec les *network policies*

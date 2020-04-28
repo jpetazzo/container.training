@@ -603,7 +603,10 @@ This will trigger the following actions.
 
 ???
 
-:EN:- Deploying stateful applications
-:EN:- Use-case: running Consul with a Stateful Set
-:FR:- Déployer des applications persistante
-:FR:- Example: lancer Consul avec un Sateful Set
+:EN:- Deploying apps with Stateful Sets
+:EN:- Example: deploying a Consul cluster
+:EN:- Understanding Persistent Volume Claims and Storage Classes
+:FR:- Déployer une application avec un *Stateful Set*
+:FR:- Example : lancer un cluster Consul
+:FR:- Comprendre les *Persistent Volume Claims* et *Storage Classes*
+

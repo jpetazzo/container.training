@@ -249,5 +249,7 @@
 
 ???
 
-:EN:- Local persistent volumes
-:FR:- Volumes locaux persistents
+:EN:- Static vs dynamic volume provisioning
+:EN:- Example: local persistent volume provisioner
+:FR:- Création statique ou dynamique de volumes
+:FR:- Exemple : création de volumes locaux

@@ -221,5 +221,5 @@ have details about recommended annotations and labels.
 
 ???
 
-:EN:- Creating basic Helm charts
-:FR:- Création de *Helm charts* basiques
+:EN:- Writing a basic Helm chart for the whole app
+:FR:- Écriture d'un *chart* Helm simplifié

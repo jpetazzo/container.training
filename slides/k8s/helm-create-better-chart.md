@@ -580,5 +580,5 @@ We can look at the definition, but it's fairly complex ...
 
 ???
 
-:EN:- Creating better Helm charts
-:FR:- Création de *Helm charts* avancés
+:EN:- Writing better Helm charts for app components
+:FR:- Écriture de *charts* composant par composant

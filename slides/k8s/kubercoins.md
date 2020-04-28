@@ -245,5 +245,6 @@ graph will appear.
 
 ???
 
-:EN:- Running a sample app
-:FR:- Lancer une application de démo
+:EN:- Deploying a sample app with YAML manifests
+:FR:- Lancer une application de démo avec du YAML
+

@@ -534,5 +534,5 @@ class: extra-details
 
 ???
 
-:EN:- Pod Security Policies
-:FR:- Les *Pod Security Policies*
+:EN:- Preventing privilege escalation with Pod Security Policies
+:FR:- Limiter les droits des conteneurs avec les *Pod Security Policies*

@@ -681,7 +681,8 @@ were inspired by [Portworx examples on Katacoda](https://katacoda.com/portworx/s
 
 ???
 
-:EN:- Highly available persistent volumes
-:EN:- Use-case: deploying Postgres with high availability
+:EN:- Using highly available persistent volumes
+:EN:- Example: highly available Postgres
 
-:FR:- Cas d'usage : déployer un serveur SQL haute disponibilité
+:FR:- Utilisation de volumes à haute disponibilité
+:FR:- Exemple : déployer un serveur PostgreSQL haute dispo
