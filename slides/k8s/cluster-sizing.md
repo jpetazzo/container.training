@@ -168,8 +168,9 @@ Check [this blog post](http://jpetazzo.github.io/2019/02/13/running-kubernetes-w
 
 ???
 
-:EN:- Capacity planning
+:EN:- What happens when the cluster is at, or over, capacity
 :EN:- Cluster sizing and scaling
 
-:FR:- Dimensionnement des clusters
-:FR:- Comportement en cas de famine
+:FR:- Ce qui se passe quand il n'y a plus assez de ressources
+:FR:- Dimensionner et redimensionner ses clusters
+

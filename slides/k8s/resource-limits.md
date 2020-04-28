@@ -539,12 +539,12 @@ services.nodeports               0     0
 
 ???
 
-:EN:- Allocate and limit container resources
-:EN:- Define default resource limits
-:EN:- Enforce resource quotas
+:EN:- Setting compute resource limits
+:EN:- Defining default policies for resource usage
+:EN:- Managing cluster allocation and quotas
 :EN:- Resource management in practice
 
 :FR:- Allouer et limiter les ressources des conteneurs
-:FR:- Définition de ressources par défaut
-:FR:- Quotas de ressources
+:FR:- Définir des ressources par défaut
+:FR:- Gérer les quotas de ressources au niveau du cluster
 :FR:- Conseils pratiques
