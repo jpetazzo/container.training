@@ -1,13 +1,12 @@
 title: |
-  Introduction
-  to Containers
+  Docker
+  au quart de tour
 
-chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: https://2020-05-enix.container.training/
 
 #slidenumberprefix: "#SomeHashTag &mdash; "
 
@@ -43,8 +42,8 @@ content:
 -
   - containers/Container_Networking_Basics.md
   #- containers/Network_Drivers.md
-  #- containers/Container_Network_Model.md
   - containers/Local_Development_Workflow.md
+  - containers/Container_Network_Model.md
   - containers/Compose_For_Dev_Stacks.md
   - containers/Exercise_Composefile.md
 -
@@ -64,6 +63,5 @@ content:
   #- containers/Pods_Anatomy.md
   #- containers/Ecosystem.md
   #- containers/Orchestration_Overview.md
--
   - shared/thankyou.md
   - containers/links.md

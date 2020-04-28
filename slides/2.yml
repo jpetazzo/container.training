@@ -1,14 +1,12 @@
 title: |
-  Deploying and Scaling Microservices
-  with Kubernetes
+  Kubernetes
+  au quart de tour
 
-#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
-chat: "In person!"
+chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: https://2020-05-enix.container.training/
 
 #slidenumberprefix: "#SomeHashTag &mdash; "
 
@@ -34,15 +32,12 @@ content:
   - shared/composedown.md
   - k8s/concepts-k8s.md
   - k8s/kubectlget.md
--
   - k8s/kubectl-run.md
+-
   - k8s/batch-jobs.md
   - k8s/labels-annotations.md
   - k8s/kubectl-logs.md
   - k8s/logs-cli.md
-  - shared/declarative.md
-  - k8s/declarative.md
-  - k8s/deploymentslideshow.md
   - k8s/kubenet.md
   - k8s/kubectlexpose.md
   - k8s/shippingimages.md
@@ -51,24 +46,28 @@ content:
   - k8s/ourapponkube.md
   #- k8s/exercise-wordsmith.md
 -
+  - shared/declarative.md
+  - k8s/declarative.md
+  - k8s/deploymentslideshow.md
   - k8s/yamldeploy.md
   - k8s/setup-k8s.md
-  #- k8s/dashboard.md
+  - k8s/localkubeconfig.md
+  - k8s/namespaces.md
+  - k8s/accessinternal.md
+  - k8s/kubectlproxy.md
+-
+  - k8s/dashboard.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
   - k8s/daemonset.md
-  #- k8s/dryrun.md
-  #- k8s/exercise-yaml.md
-  #- k8s/localkubeconfig.md
-  #- k8s/accessinternal.md
-  #- k8s/kubectlproxy.md
-  - k8s/rollout.md
-  #- k8s/healthchecks.md
-  #- k8s/healthchecks-more.md
-  #- k8s/record.md
+  #- k8s/exercise-yaml.md FIXME
 -
-  - k8s/namespaces.md
+  #- k8s/dryrun.md
+  - k8s/rollout.md
+  - k8s/healthchecks.md
+  - k8s/healthchecks-more.md
+  - k8s/record.md
   - k8s/ingress.md
   #- k8s/kustomize.md
   #- k8s/helm-intro.md
@@ -84,6 +83,7 @@ content:
   #- k8s/csr-api.md
   #- k8s/openid-connect.md
   #- k8s/podsecuritypolicy.md
+-
   - k8s/volumes.md
   #- k8s/exercise-configmap.md
   #- k8s/build-with-docker.md
@@ -100,7 +100,6 @@ content:
   #- k8s/staticpods.md
   #- k8s/owners-and-dependents.md
   #- k8s/gitworkflows.md
--
   - k8s/whatsnext.md
   - k8s/lastwords.md
   - k8s/links.md

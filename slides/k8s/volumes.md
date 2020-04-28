@@ -474,4 +474,4 @@ spec:
 :EN:- When and how to use Init Containers
 
 :FR:- Partager des données grâce aux volumes
-:FR:- Quand et comment utilise un *Init Container*
+:FR:- Quand et comment utiliser un *Init Container*
