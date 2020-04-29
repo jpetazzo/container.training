@@ -88,6 +88,7 @@
 - Clone the Flux repository:
   ```bash
   git clone https://github.com/fluxcd/flux
+  cd flux
   ```
 
 - Edit `deploy/flux-deployment.yaml`
