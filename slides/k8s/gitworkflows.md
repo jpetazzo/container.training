@@ -77,7 +77,7 @@
 
 - Create a new branch in your fork; e.g. `prod`
 
-  (e.g. by adding a line in the README through the GitHub web UI)
+  (e.g. with "branch" dropdown through the GitHub web UI)
 
 - This is the branch that we are going to use for deployment
 
