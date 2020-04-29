@@ -36,6 +36,9 @@ content:
   - k8s/setup-selfhosted.md
   - k8s/staticpods.md
   - k8s/cluster-upgrade.md
--
   - k8s/cluster-backup.md
-  - k8s/cloud-controller-manager.md
+  #- k8s/cloud-controller-manager.md
+-
+  - k8s/podsecuritypolicy.md
+  - k8s/csr-api.md
+  - k8s/openid-connect.md
