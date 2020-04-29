@@ -431,6 +431,55 @@ We should see connections served by Google, and others served by IBM.
 
 ---
 
+## Updating configmaps
+
+.exercise[
+
+- Edit haproxy configuration:
+  ```bash
+  sed -i "s/ibm.fr/ovh.fr/g" haproxy.cfg
+  ```
+
+- Update configmap with `kubectl replace`:
+  ```bash
+  kubectl create configmap haproxy --from-file=haproxy.cfg -o yaml --dry-run | kubectl replace -f -
+  ```
+
+- Wait propagation and reload haproxy:
+  ```bash
+  kubectl exec haproxy -- sh -c "kill -s USR2 1"
+  ```
+
+]
+
+Haproxy doesn't watch its configuration file for change.  
+Others do and will be updated simultaneously.
+
+---
+
+## Testing updated load balancer
+
+- The load balancer will send:
+
+  - half of the connections to Google
+
+  - the other half to OVH
+
+.exercise[
+
+- Access the load balancer a few times:
+  ```bash
+  curl $IP
+  curl $IP
+  curl $IP
+  ```
+
+]
+
+OVH is returning an error 520 "Website not authorized on CDN".
+
+---
+
 ## Exposing configmaps with the downward API
 
 - We are going to run a Docker registry on a custom port
