@@ -131,7 +131,7 @@
 
 - Display that key:
   ```bash
-  kubectl logs deployment/flux | grep identity
+  kubectl -n flux logs deployment/flux | grep identity.pub | cut -d '"' -f2
   ```
 
 - Then add that key to the repository, giving it **write** access
