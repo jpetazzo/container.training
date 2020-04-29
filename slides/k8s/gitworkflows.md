@@ -106,6 +106,25 @@
 
 ---
 
+## Setting up Flux with Helm
+
+- Add Flux helm repo:
+  ```bash
+  helm repo add fluxcd https://charts.fluxcd.io
+  ```
+
+- Install Flux:
+  ```bash
+  kubectl create namespace flux
+  helm upgrade --install flux \
+    --set git.url=git@github.com:your-git-username/kubercoins \
+    --set git.branch=prod \
+    --namespace flux \
+    fluxcd/flux
+  ```
+
+---
+
 ## Allowing Flux to access the repository
 
 - When it starts, Flux generates an SSH key
