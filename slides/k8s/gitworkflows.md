@@ -83,7 +83,7 @@
 
 ---
 
-## Setting up Flux
+## Setting up Flux with kustomize
 
 - Clone the Flux repository:
   ```bash
@@ -101,7 +101,7 @@
 
 - Apply all the YAML:
   ```bash
-  kubectl apply -f deploy/
+  kubectl apply -k deploy/
   ```
 
 ---
