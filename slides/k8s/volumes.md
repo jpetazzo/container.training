@@ -417,6 +417,11 @@ spec:
 
 .exercise[
 
+- Create the pod:
+  ```bash
+  kubectl create -f ~/container.training/k8s/nginx-4-with-init.yaml
+  ```
+
 - Repeat the same operation as earlier
 
   (try to send HTTP requests as soon as the pod comes up)
