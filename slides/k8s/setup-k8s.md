@@ -42,12 +42,22 @@
 
 ## Managed options
 
+- On AWS: [EKS](https://aws.amazon.com/eks/),
+  [eksctl](https://eksctl.io/)
+
 - On Azure: [AKS](https://azure.microsoft.com/services/kubernetes-service/)
+
+- On DigitalOcean: [DOK](https://www.digitalocean.com/products/kubernetes/)
 
 - On Google Cloud: [GKE](https://cloud.google.com/kubernetes-engine/)
 
-- On AWS: [EKS](https://aws.amazon.com/eks/),
-  [eksctl](https://eksctl.io/)
+- On Linode: [LKE](https://www.linode.com/products/kubernetes/)
+
+- On OVHcloud: [Managed Kubernetes Service](https://www.ovhcloud.com/en/public-cloud/kubernetes/)
+
+- On Scaleway: [Kapsule](https://www.scaleway.com/en/kubernetes-kapsule/)
+
+- and much more!
 
 ---
 
