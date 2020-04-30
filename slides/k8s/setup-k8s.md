@@ -32,11 +32,7 @@
 
 - Doesn't set up the overlay network
 
-- Doesn't set up multi-master (no high availability)
-
---
-
-  (At least ... not yet! Though it's [experimental in 1.12](https://kubernetes.io/docs/setup/independent/high-availability/).)
+- [Some extra steps](https://kubernetes.io/docs/setup/independent/high-availability/) to support HA control plane
 
 --
 
