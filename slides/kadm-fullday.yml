@@ -22,7 +22,8 @@ content:
 - k8s/intro.md
 - shared/about-slides.md
 - shared/chat-room-im.md
-#- shared/chat-room-zoom.md
+#- shared/chat-room-zoom-meeting.md
+#- shared/chat-room-zoom-webinar.md
 - shared/toc.md
 -
   - k8s/prereqs-admin.md
