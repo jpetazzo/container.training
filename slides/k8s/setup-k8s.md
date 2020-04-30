@@ -40,17 +40,18 @@
 
 ---
 
+## Managed options
+
+- On Azure: [AKS](https://azure.microsoft.com/services/kubernetes-service/)
+
+- On Google Cloud: [GKE](https://cloud.google.com/kubernetes-engine/)
+
+- On AWS: [EKS](https://aws.amazon.com/eks/),
+  [eksctl](https://eksctl.io/)
+
+---
+
 ## Other deployment options
-
-- [AKS](https://azure.microsoft.com/services/kubernetes-service/):
-  managed Kubernetes on Azure
-
-- [GKE](https://cloud.google.com/kubernetes-engine/):
-  managed Kubernetes on Google Cloud
-
-- [EKS](https://aws.amazon.com/eks/),
-  [eksctl](https://eksctl.io/):
-  managed Kubernetes on AWS
 
 - [kops](https://github.com/kubernetes/kops):
   customizable deployments on AWS, Digital Ocean, GCE (beta), vSphere (alpha)
