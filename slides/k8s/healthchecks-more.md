@@ -154,9 +154,9 @@ It will use the default success threshold (1 successful attempt = alive).
 
 .exercise[
 
-- Edit `rng-daemonset.yaml` and add the liveness probe
+- Edit `rng-deployment.yaml` and add the liveness probe
   ```bash
-  vim rng-daemonset.yaml
+  vim rng-deployment.yaml
   ```
 
 - Load the YAML for all the resources of DockerCoins:
