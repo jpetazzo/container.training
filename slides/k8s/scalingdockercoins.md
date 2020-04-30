@@ -158,28 +158,9 @@ class: extra-details
   ```
   httping ip.ad.dr.ess
   ```
+--
 
-- We will use `httping` on the ClusterIP addresses of our services
-
----
-
-## Obtaining ClusterIP addresses
-
-- We can simply check the output of `kubectl get services`
-
-- Or do it programmatically, as in the example below
-
-.exercise[
-
-- Retrieve the IP addresses:
-  ```bash
-  HASHER=$(kubectl get svc hasher -o go-template={{.spec.clusterIP}})
-  RNG=$(kubectl get svc rng -o go-template={{.spec.clusterIP}})
-  ```
-
-]
-
-Now we can access the IP addresses of our services through `$HASHER` and `$RNG`.
+We can use the `shpod` we started earlier to run `httping` on the ClusterIP addresses of our services. That way we don't need to expose them to the internet.
 
 ---
 
@@ -189,8 +170,8 @@ Now we can access the IP addresses of our services through `$HASHER` and `$RNG`.
 
 - Check the response times for both services:
   ```bash
-  httping -c 3 $HASHER
-  httping -c 3 $RNG
+  kubectl exec -ti shpod -- httping -c 3 hasher
+  kubectl exec -ti shpod -- httping -c 3 rng
   ```
 
 ]

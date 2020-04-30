@@ -1,72 +1,95 @@
 title: |
-  Config Management Camp - Kubernetes Workshop
+  Deploying and Scaling Microservices
+  with Kubernetes
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
 chat: "In person!"
 
-gitrepo: github.com/paulczar/container.training
+gitrepo: github.com/jpetazzo/container.training
 
-slides: https://k8s.camp/cfgcamp/
+slides: http://container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
 
 exclude:
 - self-paced
 
-chapters:
-- pks/title.md
-- pks/logistics.md
+content:
+- shared/title.md
+- logistics.md
 - k8s/intro.md
 - shared/about-slides.md
+- shared/chat-room-im.md
+#- shared/chat-room-zoom.md
 - shared/toc.md
 -
-  - pks/prereqs.md
+  - shared/prereqs.md
+  - namespaced/handson.md
   #- shared/webssh.md
-  - pks/connecting.md
-  # - k8s/versions-k8s.md
-  #- shared/sampleapp.md
+  - namespaced/connecting.md
+  #- k8s/versions-k8s.md
+  - namespaced/sampleapp.md
   #- shared/composescale.md
   #- shared/hastyconclusions.md
-  #- shared/composedown.md
+  - shared/composedown.md
+  - k8s/concepts-k8s.md
+  - k8s/kubectlget.md
 -
-  - k8s/kubectlrun.md
+  - k8s/kubectl-run.md
+  - k8s/batch-jobs.md
+  - k8s/labels-annotations.md
+  - k8s/kubectl-logs.md
   - k8s/logs-cli.md
   - shared/declarative.md
   - k8s/declarative.md
   - k8s/deploymentslideshow.md
   - k8s/kubenet.md
-  - pks/kubectlexpose.md
+  - k8s/kubectlexpose.md
   - k8s/shippingimages.md
   #- k8s/buildshiprun-selfhosted.md
   - k8s/buildshiprun-dockerhub.md
-  - pks/ourapponkube.md
-  #- k8s/kubectlproxy.md
-  #- k8s/localkubeconfig.md
-  #- k8s/accessinternal.md
+  - namespaced/ourapponkube.md
+  #- k8s/exercise-wordsmith.md
 -
-  - pks/setup-k8s.md
-  - pks/dashboard.md
-  - pks/octant.md
+  - k8s/yamldeploy.md
+  # - k8s/setup-k8s.md
+  #- k8s/dashboard.md
   #- k8s/kubectlscale.md
-  - pks/scalingdockercoins.md
+  - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
   - k8s/daemonset.md
+  #- k8s/dryrun.md
+  #- k8s/exercise-yaml.md
+  #- k8s/localkubeconfig.md
+  #- k8s/accessinternal.md
+  #- k8s/kubectlproxy.md
   - k8s/rollout.md
   #- k8s/healthchecks.md
   #- k8s/healthchecks-more.md
   #- k8s/record.md
 -
-  #- k8s/namespaces.md
-  - pks/ingress.md
-  - pks/cleanup-dockercoins.md
+  # TODO - Update namespaces section to explain, but not do excercises
+  # as user will not have permissions to create ns.
+  # - k8s/namespaces.md
+  # TODO - Update to show nginx or generic Ingress vs Traefik specific.
+  # - k8s/ingress.md
   #- k8s/kustomize.md
-  #- k8s/helm.md
+  #- k8s/helm-intro.md
+  #- k8s/helm-chart-format.md
+  #- k8s/helm-create-basic-chart.md
+  #- k8s/helm-create-better-chart.md
+  #- k8s/helm-secrets.md
+  #- k8s/exercise-helm.md
   #- k8s/create-chart.md
+  #- k8s/create-more-charts.md
   #- k8s/netpol.md
   #- k8s/authn-authz.md
   #- k8s/csr-api.md
   #- k8s/openid-connect.md
   #- k8s/podsecuritypolicy.md
   - k8s/volumes.md
+  #- k8s/exercise-configmap.md
   #- k8s/build-with-docker.md
   #- k8s/build-with-kaniko.md
   - k8s/configuration.md
@@ -81,9 +104,8 @@ chapters:
   #- k8s/staticpods.md
   #- k8s/owners-and-dependents.md
   #- k8s/gitworkflows.md
-  - pks/helm.md
-  - pks/helm-wordpress.md
 -
   - k8s/whatsnext.md
+  - k8s/lastwords.md
   - k8s/links.md
   - shared/thankyou.md

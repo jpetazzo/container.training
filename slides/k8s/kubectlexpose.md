@@ -221,6 +221,8 @@
 
 - We will now send a few HTTP requests to our pods
 
+- But first, we need to do it from *inside* the cluster. We'll explain why later.
+
 .exercise[
 
 - Let's obtain the IP address that was allocated for our service, *programmatically:*
@@ -234,23 +236,49 @@
 ```key ^C```
 -->
 
+- Run a Pod that we can connect to and run shell commands:
+  ```bash
+  kubectl run shpod --image=jpetazzo/shpod --restart=Never -- -c "sleep 2400"
+  ```
+]
+
+--
+
+This Pod will live for 2400 seconds (4 hours) before exiting. Which means we can re-use it throughout the workshop.
+
+---
+
+## Testing our service
+
+- *Now* we can send a few HTTP requests to our Pods
+
+.exercise[
+
 - Send a few requests:
   ```bash
-  curl http://$IP:8888/
+  kubectl exec shpod -- curl -s http://$IP:8888/
   ```
 
 - Too much output? Filter it with `jq`:
   ```bash
-  curl -s http://$IP:8888/ | jq .HOSTNAME
+  kubectl exec shpod -- curl -s http://$IP:8888/ | jq -r .HOSTNAME
+  ```
+
+- Loop it 5 times:
+  ```bash
+  for i in {1..5}; do
+    kubectl exec shpod -- curl -s http://$IP:8888/ | jq -r .HOSTNAME;
+  done
   ```
 
 ]
 
 --
 
-Try it a few times! Our requests are load balanced across multiple pods.
+Our requests are load balanced across multiple pods.
 
 ---
+
 
 class: extra-details
 
@@ -407,7 +435,7 @@ class: extra-details
 
 - This is the internal DNS server that can resolve service names
 
-- The default domain name for the service we created is `default.svc.cluster.local`
+- The default domain name for the service we created is `default.svc.cluster.local` (unless you deployed to a namespace other than default)
 
 .exercise[
 
@@ -418,10 +446,33 @@ class: extra-details
 
 - Resolve the cluster IP for the `httpenv` service:
   ```bash
-  host httpenv.default.svc.cluster.local $IP
+  kubectl exec shpod -- nslookup httpenv $IP
   ```
 
 ]
+
+---
+
+## Accessing services via DNS
+
+
+* When accessing `httpenv` from another Pod you can use DNS: `httpenv`, `httpenv.<namespace>` or `httpenv.<namespace>.svc.cluster.local`.
+
+.exercise[
+- curl the service from its name:
+  ```bash
+  kubectl exec shpod -- curl -s http://httpenv:8888/ | jq -r .HOSTNAME
+  ```
+
+- curl the service from its fqdn:
+  ```bash
+  NS=$(kubectl get svc httpenv -o go-template --template '{{ .metadata.namespace }}')
+
+  kubectl exec shpod -- curl -s http://httpenv.$NS.svc.cluster.local:8888/ | \
+      jq -r .HOSTNAME
+  ```
+]
+
 
 ---
 

@@ -44,7 +44,7 @@ So, what do we get?
 
 - We see one label:
   ```
-  Labels: app=clock
+  Labels: app=web
   ```
 
 - This is added by `kubectl create deployment`
@@ -71,7 +71,7 @@ So, what do we get?
 
 - Display its information:
   ```bash
-  kubectl describe pod clock-xxxxxxxxxx-yyyyy
+  kubectl describe pod web-xxxxxxxxxx-yyyyy
   ```
 
 ]
@@ -84,11 +84,11 @@ So, what do we get?
 
 - We see two labels:
   ```
-    Labels: app=clock
+    Labels: app=web
             pod-template-hash=xxxxxxxxxx
   ```
 
-- `app=clock` comes from `kubectl create deployment` too
+- `app=web` comes from `kubectl create deployment` too
 
 - `pod-template-hash` was assigned by the Replica Set
 
@@ -109,9 +109,9 @@ So, what do we get?
 
 .exercise[
 
-- List all the pods with at least `app=clock`:
+- List all the pods with at least `app=web`:
   ```bash
-  kubectl get pods --selector=app=clock
+  kubectl get pods --selector=app=web
   ```
 
 - List all the pods with a label `app`, regardless of its value:
@@ -129,14 +129,14 @@ So, what do we get?
 
 .exercise[
 
-- Set a label on the `clock` Deployment:
+- Set a label on the `web` Deployment:
   ```bash
-  kubectl label deployment clock color=blue
+  kubectl label deployment web color=blue
   ```
 
 - Check it out:
   ```bash
-  kubectl describe deployment clock
+  kubectl describe deployment web
   ```
 
 ]
@@ -155,7 +155,7 @@ class: extra-details
 
   We can also use negative selectors
 
-  Example: `--selector=app!=clock`
+  Example: `--selector=app!=web`
 
 - Selectors can be used with most `kubectl` commands
 
@@ -195,3 +195,17 @@ class: extra-details
 - Maximum length isn't defined
 
   (dozens of kilobytes is fine, hundreds maybe not so much)
+
+---
+
+## Cleanup web deployment
+
+- Time to clean up web and move on
+
+.exercise[
+
+  - delete the web deployment
+  ```bash
+  kubectl delete deployment web
+  ```
+]
