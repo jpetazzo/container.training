@@ -682,7 +682,7 @@ were inspired by [Portworx examples on Katacoda](https://katacoda.com/portworx/s
 ???
 
 :EN:- Using highly available persistent volumes
-:EN:- Example: highly available Postgres
+:EN:- Example: deploying a database that can withstand node outages
 
 :FR:- Utilisation de volumes à haute disponibilité
-:FR:- Exemple : déployer un serveur PostgreSQL haute dispo
+:FR:- Exemple : déployer une base de données survivant à la défaillance d'un nœud

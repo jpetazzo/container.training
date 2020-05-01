@@ -427,6 +427,3 @@ All unspecified values will take the default values defined in the chart.
 :FR:- Fonctionnement général de Helm
 :FR:- Installer des composants via Helm
 :FR:- Helm 2, Helm 3, et le *Helm Hub*
-
-
-:FR:- Comment
