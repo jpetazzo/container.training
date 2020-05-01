@@ -322,3 +322,11 @@ You can:
 Each copy will run in a different network, totally isolated from the other.
 
 This is ideal to debug regressions, do side-by-side comparisons, etc.
+
+???
+
+:EN:- Using compose to describe an environment
+:EN:- Connecting services together with a *Compose file*
+
+:FR:- Utiliser Compose pour décrire son environnement
+:FR:- Écrire un *Compose file* pour connecter les services entre eux

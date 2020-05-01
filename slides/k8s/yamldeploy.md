@@ -164,3 +164,8 @@ class: extra-details
   - this is typical for things that may be deployed multiple times
 
   - example: applications (production, staging, feature branches ...)
+
+???
+
+:EN:- Deploying with YAML manifests
+:FR:- Déployer avec des *manifests* YAML

@@ -165,3 +165,12 @@ class: extra-details
 - Security advantage (stronger isolation between pods)
 
 Check [this blog post](http://jpetazzo.github.io/2019/02/13/running-kubernetes-without-nodes-with-kiyot/) for more details.
+
+???
+
+:EN:- What happens when the cluster is at, or over, capacity
+:EN:- Cluster sizing and scaling
+
+:FR:- Ce qui se passe quand il n'y a plus assez de ressources
+:FR:- Dimensionner et redimensionner ses clusters
+

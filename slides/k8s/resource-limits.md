@@ -536,3 +536,15 @@ services.nodeports               0     0
   - [static demo](https://hjacobs.github.io/kube-resource-report/sample-report/output/index.html)
     |
     [live demo](https://kube-resource-report.demo.j-serv.de/applications.html)
+
+???
+
+:EN:- Setting compute resource limits
+:EN:- Defining default policies for resource usage
+:EN:- Managing cluster allocation and quotas
+:EN:- Resource management in practice
+
+:FR:- Allouer et limiter les ressources des conteneurs
+:FR:- Définir des ressources par défaut
+:FR:- Gérer les quotas de ressources au niveau du cluster
+:FR:- Conseils pratiques

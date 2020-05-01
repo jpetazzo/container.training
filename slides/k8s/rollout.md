@@ -437,3 +437,12 @@ class: extra-details
   ] 
 
 ]
+
+???
+
+:EN:- Rolling updates
+:EN:- Rolling back a bad deployment
+
+:FR:- Mettre à jour un déploiement
+:FR:- Concept de *rolling update* et *rollback*
+:FR:- Paramétrer la vitesse de déploiement

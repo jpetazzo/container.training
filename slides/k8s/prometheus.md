@@ -562,3 +562,8 @@ class: extra-details
   Don't panic if you don't know these tools!
 
   ...But make sure at least one person in your team is on it 💯
+
+???
+
+:EN:- Collecting metrics with Prometheus
+:FR:- Collecter des métriques avec Prometheus

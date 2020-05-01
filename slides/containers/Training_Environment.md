@@ -125,3 +125,11 @@ Server:
 ]
 
 If this doesn't work, raise your hand so that an instructor can assist you!
+
+???
+
+:EN:Container concepts
+:FR:Premier contact avec les conteneurs
+
+:EN:- What's a container engine?
+:FR:- Qu'est-ce qu'un *container engine* ?

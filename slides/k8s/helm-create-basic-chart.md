@@ -218,3 +218,8 @@ have details about recommended annotations and labels.
   ```
 
 ]
+
+???
+
+:EN:- Writing a basic Helm chart for the whole app
+:FR:- Écriture d'un *chart* Helm simplifié

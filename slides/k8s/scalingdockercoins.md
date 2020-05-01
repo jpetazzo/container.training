@@ -181,3 +181,8 @@ We can use the `shpod` we started earlier to run `httping` on the ClusterIP addr
 - `rng` is not (it should take about 700 milliseconds if there are 10 workers)
 
 - Something is wrong with `rng`, but ... what?
+
+???
+
+:EN:- Scaling up our demo app
+:FR:- *Scale up* de l'application de démo

@@ -531,3 +531,8 @@ class: extra-details
   ```
 
 ]
+
+???
+
+:EN:- Preventing privilege escalation with Pod Security Policies
+:FR:- Limiter les droits des conteneurs avec les *Pod Security Policies*

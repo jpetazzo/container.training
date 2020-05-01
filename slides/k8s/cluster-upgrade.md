@@ -501,3 +501,11 @@ class: extra-details
 - Then upgrading kubeadm to 1.16.X, etc.
 
 - **Make sure to read the release notes before upgrading!**
+
+???
+
+:EN:- Best practices for cluster upgrades
+:EN:- Example: upgrading a kubeadm cluster
+
+:FR:- Bonnes pratiques pour la mise à jour des clusters
+:FR:- Exemple : mettre à jour un cluster kubeadm

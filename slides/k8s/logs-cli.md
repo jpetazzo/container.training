@@ -163,3 +163,7 @@ Exactly what we need!
   kubectl delete deployment pingpong
   ```
 ]
+???
+
+:EN:- Viewing pod logs from the CLI
+:FR:- Consulter les logs des pods depuis la CLI

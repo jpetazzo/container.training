@@ -162,3 +162,8 @@ Yes, this may take a little while to update. *(Narrator: it was DNS.)*
 --
 
 *Alright, we're back to where we started, when we were running on a single node!*
+
+???
+
+:EN:- Running our demo app on Kubernetes
+:FR:- Faire tourner l'application de démo sur Kubernetes

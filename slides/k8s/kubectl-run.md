@@ -516,3 +516,8 @@ We'll see later how to address that shortcoming.
 - Until 30 seconds later, when the grace period expires
 
 - The pod is then killed, and `kubectl logs` exits
+
+???
+
+:EN:- Running pods and deployments
+:FR:- Créer un pod et un déploiement

@@ -116,3 +116,8 @@ There might be a long pause before the first layer is pulled,
 because the API behind `docker pull` doesn't allow to stream build logs, and there is no feedback during the build.
 
 It is possible to view the build logs by setting up an account on [ctr.run](https://ctr.run/).
+
+???
+
+:EN:- Shipping images to Kubernetes
+:FR:- Déployer des images sur notre cluster

@@ -193,3 +193,8 @@ class: extra-details
 ]
 
 We can now utilize the cluster exactly as if we're logged into a node, except that it's remote.
+
+???
+
+:EN:- Working with remote Kubernetes clusters
+:FR:- Travailler avec des *clusters* distants

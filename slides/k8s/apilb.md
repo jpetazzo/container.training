@@ -87,3 +87,8 @@
 - Tunnels are also fine
 
   (e.g. [k3s](https://k3s.io/) uses a tunnel to allow each node to contact the API server)
+
+???
+
+:EN:- Ensuring API server availability
+:FR:- Assurer la disponibilité du serveur API

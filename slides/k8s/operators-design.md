@@ -356,3 +356,8 @@ class: extra-details
   (this is used e.g. by the metrics server)
 
 - [This documentation page](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#choosing-a-method-for-adding-custom-resources) compares the features of CRDs and API aggregation
+
+???
+
+:EN:- Guidelines to design our own operators
+:FR:- Comment concevoir nos propres opérateurs
