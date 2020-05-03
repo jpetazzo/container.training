@@ -404,7 +404,7 @@ spec:
   initContainers:
   - name: git
     image: alpine
-    command: [ "sh", "-c", "apk add --no-cache git && git clone https://github.com/octocat/Spoon-Knife /www" ]
+    command: [ "sh", "-c", "apk add git && git clone https://github.com/octocat/Spoon-Knife /www" ]
     volumeMounts:
     - name: www
       mountPath: /www/
@@ -422,9 +422,7 @@ spec:
   kubectl create -f ~/container.training/k8s/nginx-4-with-init.yaml
   ```
 
-- Repeat the same operation as earlier
-
-  (try to send HTTP requests as soon as the pod comes up)
+- Try to send HTTP requests as soon as the pod comes up
 
 <!--
 ```key ^D```

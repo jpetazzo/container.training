@@ -14,7 +14,7 @@ spec:
   initContainers:
   - name: git
     image: alpine
-    command: [ "sh", "-c", "apk add --no-cache git && git clone https://github.com/octocat/Spoon-Knife /www" ]
+    command: [ "sh", "-c", "apk add git && sleep 5 && git clone https://github.com/octocat/Spoon-Knife /www" ]
     volumeMounts:
     - name: www
       mountPath: /www/
