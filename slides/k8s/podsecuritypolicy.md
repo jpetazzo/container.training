@@ -280,7 +280,7 @@
 
 - Try to create a Pod directly:
   ```bash
-  kubectl run testpsp1 --image=nginx
+  kubectl run testpsp1 --image=nginx --restart=Never
   ```
 
 <!-- ```wait forbidden: no providers available``` -->
@@ -345,7 +345,7 @@ We can get hints at what's happening by looking at the ReplicaSet and Events.
 
 - Check that we can now create a Pod directly:
   ```bash
-  kubectl run testpsp3 --image=nginx
+  kubectl run testpsp3 --image=nginx --restart=Never
   ```
 
 - Create a Deployment as well:
