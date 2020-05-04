@@ -4,7 +4,7 @@
 
    - .emoji[👷🏻‍♀️] AJ ([@s0ulshake], [EphemeraSearch])
 
-   - .emoji[🐳] Jérôme ([@jpetazzo], Enix SAS)
+   - .emoji[🐳] Jérôme ([@jpetazzo], Ardan Labs)
 
 - The training will run for 4 hours, with a 10 minutes break every hour
 
