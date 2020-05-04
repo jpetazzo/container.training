@@ -8,45 +8,164 @@
 
 - They are left untouched by Kustomize
 
-- Kustomize lets us define *overlays* that extend or change the resource files
+- Kustomize lets us define *kustomizations*
+
+- A *kustomization* is conceptually similar to a *layer*
+
+- Technically, a *kustomization* is a file named `kustomization.yaml`
+
+  (or a directory containing that files + additional files)
 
 ---
 
-## Differences with Helm
+## What's in a kustomization
 
-- Helm charts use placeholders `{{ like.this }}`
+- A kustomization can do any combination of the following:
 
-- Kustomize "bases" are standard Kubernetes YAML
+  - include other kustomizations
 
-- It is possible to use an existing set of YAML as a Kustomize base
+  - include Kubernetes resources defined in YAML files
 
-- As a result, writing a Helm chart is more work ...
+  - patch Kubernetes resources (change values)
 
-- ... But Helm charts are also more powerful; e.g. they can:
+  - add labels or annotations to all resources
 
-  - use flags to conditionally include resources or blocks
+  - specify ConfigMaps and Secrets from literal values or local files
 
-  - check if a given Kubernetes API group is supported
-
-  - [and much more](https://helm.sh/docs/chart_template_guide/)
+(... And a few more advanced features that we won't cover today!)
 
 ---
 
-## Kustomize concepts
+## A simple kustomization
 
-- Kustomize needs a `kustomization.yaml` file
+This features a Deployment, Service, and Ingress (in separate files),
+and a couple of patches (to change the number of replicas and the hostname
+used in the Ingress).
 
-- That file can be a *base* or a *variant*
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+patchesStrategicMerge:
+- scale-deployment.yaml
+- ingress-hostname.yaml
+resources:
+- deployment.yaml
+- service.yaml
+- ingress.yaml
+```
 
-- If it's a *base*:
+On the next slide, let's see a more complex example ...
 
-  - it lists YAML resource files to use
+---
 
-- If it's a *variant* (or *overlay*):
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+commonLabels:
+  add-this-to-all-my-resources: please
+patchesStrategicMerge:
+- prod-scaling.yaml
+- prod-healthchecks.yaml
+bases:
+- api/
+- frontend/
+- db/
+- github.com/example/app?ref=tag-or-branch
+resources:
+- ingress.yaml
+- permissions.yaml
+configMapGenerator:
+- name: appconfig
+  files:
+  - global.conf
+  - local.conf=prod.conf
+```
 
-  - it refers to (at least) one *base*
+---
 
-  - and some *patches*
+## Glossary
+
+- A *base* is a kustomization that is referred to by other kustomizations
+
+- An *overlay* is a kustomization that refers to other kustomizations
+
+- A kustomization can be both a base and an overlay at the same time
+
+  (a kustomization can refer to another, which can refer to a third)
+
+- A *patch* describes how to alter an existing resource
+
+  (e.g. to change the image in a Deployment; or scaling parameters; etc.)
+
+- A *variant* is the final outcome of applying bases + overlays
+
+(See the [kustomize glossary](https://github.com/kubernetes-sigs/kustomize/blob/master/docs/glossary.md) for more definitions!)
+
+---
+
+## What Kustomize *cannot* do
+
+- By design, there are a number of things that Kustomize won't do
+
+- For instance:
+
+  - using command-line arguments or environment variables to generate a variant
+
+  - overlays can only *add* resources, not *remove* them
+
+- See the full list of [eschewed features](https://github.com/kubernetes-sigs/kustomize/blob/master/docs/eschewedFeatures.md) for more details
+
+---
+
+## Kustomize workflows
+
+- The Kustomize documentation proposes two different workflows
+
+- *Bespoke configuration*
+
+   - base and overlays managed by the same team
+
+- *Off-the-shelf configuration* (OTS)
+
+  - base and overlays managed by different teams
+
+  - base is regularly updated by "upstream" (e.g. a vendor)
+
+  - our overlays and patches should (hopefully!) apply cleanly
+
+  - we may regularly update the base, or use a remote base
+
+---
+
+## Remote bases
+
+- Kustomize can fetch remote bases using Hashicorp go-getter library
+
+- Examples:
+
+  github.com/jpetazzo/kubercoins (remote git repository)
+
+  github.com/jpetazzo/kubercoins?ref=kustomize (specific tag or branch)
+
+  https://releases.hello.io/k/1.0.zip (remote archive)
+
+  https://releases.hello.io/k/1.0.zip//some-subdir (subdirectory in archive)
+
+- See [hashicorp/go-getter URL format docs](https://github.com/hashicorp/go-getter#url-format) for more examples
+
+---
+
+## Managing `kustomization.yaml`
+
+- There are many ways to manage `kustomization.yaml` files, including:
+
+  - web wizards like [Replicated Ship](https://www.replicated.com/ship/)
+
+  - the `kustomize` CLI
+
+  - opening the file with our favorite text editor
+
+- Let's see these in action!
 
 ---
 
@@ -200,7 +319,62 @@
 
 Note: it might take a minute or two for the worker to start.
 
+---
+
+## Working with the `kustomize` CLI
+
+- This is another way to get started
+
+- General workflow:
+
+  `kustomize create` to generate an empty `kustomization.yaml` file
+
+  `kustomize edit add resource` to add Kubernetes YAML files to it
+
+  `kustomize edit add patch` to add patches to said resources
+
+  `kustomize build | kubectl apply -f-` or `kubectl apply -k .`
+
+---
+
+## `kubectl apply -k`
+
+- Kustomize has been integrated in `kubectl`
+
+- The `kustomize` tool is still needed if we want to use `create`, `edit`, ...
+
+- Also, warning: `kubectl apply -k` is a slightly older version than `kustomize`!
+
+- In recent versions of `kustomize`, bases can be listed in `resources`
+
+  (and `kustomize edit add base` will add its arguments to `resources`)
+
+- `kubectl apply -k` requires bases to be listed in `bases`
+
+  (so after using `kustomize edit add base`, we need to fix `kustomization.yaml`)
+
+---
+
+## Differences with Helm
+
+- Helm charts use placeholders `{{ like.this }}`
+
+- Kustomize "bases" are standard Kubernetes YAML
+
+- It is possible to use an existing set of YAML as a Kustomize base
+
+- As a result, writing a Helm chart is more work ...
+
+- ... But Helm charts are also more powerful; e.g. they can:
+
+  - use flags to conditionally include resources or blocks
+
+  - check if a given Kubernetes API group is supported
+
+  - [and much more](https://helm.sh/docs/chart_template_guide/)
+
 ???
 
 :EN:- Packaging and running apps with Kustomize
 :FR:- *Packaging* d'applications avec Kustomize
+
