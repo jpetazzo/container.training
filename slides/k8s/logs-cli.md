@@ -45,7 +45,7 @@ Exactly what we need!
 
 ---
 
-## Installing Stern
+## Checking if Stern is installed
 
 - Run `stern` (without arguments) to check if it's installed:
 
@@ -57,7 +57,17 @@ Exactly what we need!
     stern pod-query [flags]
   ```
 
-- If it is not installed, the easiest method is to download a [binary release](https://github.com/wercker/stern/releases)
+- If it's missing, let's see how to install it
+
+---
+
+## Installing Stern
+
+- Stern is written in Go, and Go programs are usually shipped as a single binary
+
+- We just need to download that binary and put it in our `PATH`!
+
+- Binary releases are available [here](https://github.com/wercker/stern/releases) on GitHub
 
 - The following commands will install Stern on a Linux Intel 64 bit machine:
   ```bash
@@ -66,7 +76,7 @@ Exactly what we need!
   sudo chmod +x /usr/local/bin/stern
   ```
 
-- On OS X, just `brew install stern`
+- On macOS, we can also `brew install stern` or `port install stern`
 
 <!-- ##VERSION## -->
 
