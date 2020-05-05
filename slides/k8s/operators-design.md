@@ -1,3 +1,35 @@
+# Designing an operator
+
+- Once we understand CRDs and operators, it's tempting to use them everywhere
+
+- Yes, we can do (almost) everything with operators ...
+
+- ... But *should we?*
+
+- Very often, the answer is **“no!”**
+
+- Operators are powerful, but significantly more complex than other solutions
+
+---
+
+## When should we (not) use operators?
+
+- Operators are great if our app needs to react to cluster events
+
+  (nodes or pods going down, and requiring extensive reconfiguration)
+
+- Operators *might* be helpful to encapsulate complexity
+
+  (manipulate one single custom resource for an entire stack)
+
+- Operators are probably overkill if a Helm chart would suffice
+
+- That being said, if we really want to write an operator ...
+
+  Read on!
+
+---
+
 ## What does it take to write an operator?
 
 - Writing a quick-and-dirty operator, or a POC/MVP, is easy
