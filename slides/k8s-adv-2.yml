@@ -31,7 +31,8 @@ content:
   - k8s/metrics-server.md
   - k8s/cluster-sizing.md
   - k8s/horizontal-pod-autoscaler.md
+-
   - k8s/extending-api.md
   - k8s/operators.md
-  #- k8s/operators-design.md
+  - k8s/operators-design.md
   - shared/thankyou.md
