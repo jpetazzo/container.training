@@ -10,6 +10,23 @@ gitrepo: github.com/jpetazzo/container.training
 
 slides: http://container.training/
 
+hosts:
+  - name: "Ann O'Nymous"
+    emoji: "👩🏻‍🏫"
+    company: "Megacorp Inc"
+    twitter: "annonypotomus"
+  - name: "Stu Dent"
+    emoji: "👨🏾‍🎓"
+    company: "University of Wakanda"
+    twitter: "stufromwakanda"
+
+logistics: |-
+  - logistics:
+    - The workshop will run from 9:00am
+    - There will be a lunch break at 12:00pm
+    - Plus coffee breaks :)
+
+
 #slidenumberprefix: "#SomeHashTag &mdash; "
 
 exclude:
@@ -75,14 +92,14 @@ content:
   # TODO - Update to show nginx or generic Ingress vs Traefik specific.
   # - k8s/ingress.md
   #- k8s/kustomize.md
-  #- k8s/helm-intro.md
-  #- k8s/helm-chart-format.md
-  #- k8s/helm-create-basic-chart.md
-  #- k8s/helm-create-better-chart.md
-  #- k8s/helm-secrets.md
-  #- k8s/exercise-helm.md
-  #- k8s/create-chart.md
-  #- k8s/create-more-charts.md
+  # - k8s/helm-intro.md
+  # - k8s/helm-chart-format.md
+  # - k8s/helm-create-basic-chart.md
+  # - k8s/helm-create-better-chart.md
+  # - k8s/helm-secrets.md
+  # - k8s/exercise-helm.md
+  # - k8s/create-chart.md
+  # - k8s/create-more-charts.md
   #- k8s/netpol.md
   #- k8s/authn-authz.md
   #- k8s/csr-api.md
