@@ -145,3 +145,8 @@ class: extra-details
 - Some solutions can fill multiple roles
 
   (e.g. kube-router can be set up to provide the pod network and/or network policies and/or replace kube-proxy)
+
+???
+
+:EN:- The Kubernetes network model
+:FR:- Le modèle réseau de Kubernetes

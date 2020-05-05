@@ -142,3 +142,8 @@ The list includes the following providers:
   - [configuration](https://kubernetes.io/docs/concepts/cluster-administration/cloud-providers/) (mainly for OpenStack)
 
   - [deployment](https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/)
+
+???
+
+:EN:- The Cloud Controller Manager
+:FR:- Le *Cloud Controller Manager*

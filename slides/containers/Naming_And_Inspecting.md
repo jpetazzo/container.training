@@ -130,3 +130,12 @@ $ docker inspect --format '{{ json .Created }}' <containerID>
 
 * The optional `json` keyword asks for valid JSON output.
   <br/>(e.g. here it adds the surrounding double-quotes.)
+
+???
+
+:EN:Managing container lifecycle
+:EN:- Naming and inspecting containers
+
+:FR:Suivre ses conteneurs à la loupe
+:FR:- Obtenir des informations détaillées sur un conteneur
+:FR:- Associer un identifiant unique à un conteneur

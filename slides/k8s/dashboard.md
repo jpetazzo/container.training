@@ -172,3 +172,8 @@ The dashboard will then ask you which authentication you want to use.
 - It introduces new failure modes
 
   (for instance, if you try to apply YAML from a link that's no longer valid)
+
+???
+
+:EN:- The Kubernetes dashboard
+:FR:- Le *dashboard* Kubernetes

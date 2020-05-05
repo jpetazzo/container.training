@@ -306,3 +306,8 @@ This can also be set with `--cpu-percent=`.
 -->
 
 ]
+
+???
+
+:EN:- Auto-scaling resources
+:FR:- *Auto-scaling* (dimensionnement automatique) des ressources

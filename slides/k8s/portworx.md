@@ -678,3 +678,11 @@ were inspired by [Portworx examples on Katacoda](https://katacoda.com/portworx/s
 - [HA PostgreSQL on Kubernetes with Portworx](https://www.katacoda.com/portworx/scenarios/px-k8s-postgres-all-in-one)
 
   (with adaptations to use a Stateful Set and simplify PostgreSQL's setup)
+
+???
+
+:EN:- Using highly available persistent volumes
+:EN:- Example: deploying a database that can withstand node outages
+
+:FR:- Utilisation de volumes à haute disponibilité
+:FR:- Exemple : déployer une base de données survivant à la défaillance d'un nœud

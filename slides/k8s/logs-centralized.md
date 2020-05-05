@@ -145,3 +145,8 @@ But this is outside of the scope of this chapter.
 The YAML file that we used creates all the resources in the
 `default` namespace, for simplicity. In a real scenario, you will
 create the resources in the `kube-system` namespace or in a dedicated namespace.
+
+???
+
+:EN:- Centralizing logs
+:FR:- Centraliser les logs

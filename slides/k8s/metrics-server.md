@@ -80,3 +80,8 @@ If it shows our nodes and their CPU and memory load, we're good!
 - kube-resource-report can generate HTML reports
 
   (https://github.com/hjacobs/kube-resource-report)
+
+???
+
+:EN:- The *core metrics pipeline*
+:FR:- Le *core metrics pipeline*

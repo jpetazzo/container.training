@@ -32,11 +32,7 @@
 
 - Doesn't set up the overlay network
 
-- Doesn't set up multi-master (no high availability)
-
---
-
-  (At least ... not yet! Though it's [experimental in 1.12](https://kubernetes.io/docs/setup/independent/high-availability/).)
+- [Some extra steps](https://kubernetes.io/docs/setup/independent/high-availability/) to support HA control plane
 
 --
 
@@ -44,17 +40,28 @@
 
 ---
 
+## Managed options
+
+- On AWS: [EKS](https://aws.amazon.com/eks/),
+  [eksctl](https://eksctl.io/)
+
+- On Azure: [AKS](https://azure.microsoft.com/services/kubernetes-service/)
+
+- On DigitalOcean: [DOK](https://www.digitalocean.com/products/kubernetes/)
+
+- On Google Cloud: [GKE](https://cloud.google.com/kubernetes-engine/)
+
+- On Linode: [LKE](https://www.linode.com/products/kubernetes/)
+
+- On OVHcloud: [Managed Kubernetes Service](https://www.ovhcloud.com/en/public-cloud/kubernetes/)
+
+- On Scaleway: [Kapsule](https://www.scaleway.com/en/kubernetes-kapsule/)
+
+- and much more!
+
+---
+
 ## Other deployment options
-
-- [AKS](https://azure.microsoft.com/services/kubernetes-service/):
-  managed Kubernetes on Azure
-
-- [GKE](https://cloud.google.com/kubernetes-engine/):
-  managed Kubernetes on Google Cloud
-
-- [EKS](https://aws.amazon.com/eks/),
-  [eksctl](https://eksctl.io/):
-  managed Kubernetes on AWS
 
 - [kops](https://github.com/kubernetes/kops):
   customizable deployments on AWS, Digital Ocean, GCE (beta), vSphere (alpha)
@@ -92,3 +99,8 @@
 - For a longer list, check the Kubernetes documentation:
   <br/>
   it has a great guide to [pick the right solution](https://kubernetes.io/docs/setup/#production-environment) to set up Kubernetes.
+
+???
+
+:EN:- Overview of the kubeadm installer
+:FR:- Survol de kubeadm

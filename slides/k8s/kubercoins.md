@@ -31,23 +31,17 @@
 
 ---
 
-## Cloning some repos
+## Cloning the repository
 
-- We will need two repositories:
+- We will need to clone the training repository
 
-  - the first one has the "DockerCoins" demo app
+- It has the DockerCoins demo app ...
 
-  - the second one has these slides, some scripts, more manifests ...
+- ... as well as these slides, some scripts, more manifests
 
 .exercise[
 
-- Clone the kubercoins repository on `node1`:
-  ```bash
-  git clone https://github.com/jpetazzo/kubercoins
-  ```
-
-
-- Clone the container.training repository as well:
+- Clone the repository on `node1`:
   ```bash
   git clone https://@@GITREPO@@
   ```
@@ -62,9 +56,9 @@ Without further ado, let's start this application!
 
 .exercise[
 
-- Apply all the manifests from the kubercoins repository:
+- Apply the manifest for dockercoins:
   ```bash
-  kubectl apply -f kubercoins/
+  kubectl apply -f ~/container.training/k8s/dockercoins.yaml
   ```
 
 ]
@@ -242,3 +236,8 @@ https://@@GITREPO@@/blob/8279a3bce9398f7c1a53bdd95187c53eda4e6435/dockercoins/wo
 
 A drawing area should show up, and after a few seconds, a blue
 graph will appear.
+
+???
+
+:EN:- Deploying a sample app with YAML manifests
+:FR:- Lancer une application de démo avec du YAML

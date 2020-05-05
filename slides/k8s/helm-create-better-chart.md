@@ -577,3 +577,8 @@ We can look at the definition, but it's fairly complex ...
 - We can change the number of workers with `replicaCount`
 
 - And much more!
+
+???
+
+:EN:- Writing better Helm charts for app components
+:FR:- Écriture de *charts* composant par composant

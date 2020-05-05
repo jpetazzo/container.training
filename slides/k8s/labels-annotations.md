@@ -209,3 +209,6 @@ class: extra-details
   kubectl delete deployment web
   ```
 ]
+
+:EN:- Labels and annotations
+:FR:- *Labels* et annotations

@@ -180,3 +180,8 @@ class: extra-details
 ]
 
 As always, the [documentation](https://kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/) has useful extra information and pointers.
+
+???
+
+:EN:- Owners and dependents
+:FR:- Liens de parenté entre les ressources

@@ -600,3 +600,13 @@ This will trigger the following actions.
 5. The PersistentVolumeClaimBinder associates the PVs and the PVCs together.
 
 6. PVCs are now bound, the Pods can start.
+
+???
+
+:EN:- Deploying apps with Stateful Sets
+:EN:- Example: deploying a Consul cluster
+:EN:- Understanding Persistent Volume Claims and Storage Classes
+:FR:- Déployer une application avec un *Stateful Set*
+:FR:- Example : lancer un cluster Consul
+:FR:- Comprendre les *Persistent Volume Claims* et *Storage Classes*
+

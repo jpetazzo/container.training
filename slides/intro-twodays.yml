@@ -20,7 +20,8 @@ content:
 - containers/intro.md
 - shared/about-slides.md
 - shared/chat-room-im.md
-#- shared/chat-room-zoom.md
+#- shared/chat-room-zoom-meeting.md
+#- shared/chat-room-zoom-webinar.md
 - shared/toc.md
 - # DAY 1
   - containers/Docker_Overview.md

@@ -446,3 +446,8 @@ troubleshoot easily, without having to poke holes in our firewall.
   - a [very good talk about network policies](https://www.youtube.com/watch?list=PLj6h78yzYM2P-3-xqvmWaZbbI1sW-ulZb&v=3gGpMmYeEO8) at KubeCon North America 2017
 
   - a repository of [ready-to-use recipes](https://github.com/ahmetb/kubernetes-network-policy-recipes) for network policies
+
+???
+
+:EN:- Isolating workloads with Network Policies
+:FR:- Isolation réseau avec les *network policies*

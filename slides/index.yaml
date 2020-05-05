@@ -1,3 +1,36 @@
+- date: [2020-06-16, 2020-06-18]
+  country: www
+  city: streaming
+  event: Ardan Live
+  speaker: jpetazzo
+  title: Intensive Kubernetes Bootcamp
+  attend: https://www.eventbrite.com/e/livestream-intensive-kubernetes-bootcamp-tickets-103262336428
+
+- date: [2020-05-19, 2020-05-21]
+  country: www
+  city: streaming
+  event: Ardan Live
+  speaker: jpetazzo
+  title: Intensive Docker Bootcamp
+  attend: https://www.eventbrite.com/e/livestream-intensive-docker-bootcamp-tickets-103258886108
+
+- date: [2020-05-04, 2020-05-08]
+  country: www
+  city: streaming
+  event: Ardan Live
+  speaker: jpetazzo
+  title: Intensive Kubernetes - Advanced Concepts
+  attend: https://www.eventbrite.com/e/livestream-intensive-kubernetes-advanced-concepts-tickets-102358725704
+
+- date: [2020-03-30, 2020-04-02]
+  country: www
+  city: streaming
+  event: Ardan Live
+  speaker: jpetazzo
+  title: Intensive Docker and Kubernetes
+  attend: https://www.eventbrite.com/e/ardan-labs-live-worldwide-march-30-april-2-2020-tickets-100331129108#
+  slides: https://https://2020-03-ardan.container.training/
+
 - date: 2020-03-06
   country: uk
   city: London

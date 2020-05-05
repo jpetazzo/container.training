@@ -676,3 +676,17 @@ class: extra-details
 - Both are available as standalone programs, or as plugins for `kubectl`
 
   (`kubectl` plugins can be installed and managed with `krew`)
+
+???
+
+:EN:- Authentication and authorization in Kubernetes
+:EN:- Authentication with tokens and certificates
+:EN:- Aithorization with RBAC (Role-Based Access Control)
+:EN:- Restricting permissions with Service Accounts
+:EN:- Working with Roles, Cluster Roles, Role Bindings, etc.
+
+:FR:- Identification et droits d'accès dans Kubernetes
+:FR:- Mécanismes d'identification par jetons et certificats
+:FR:- Le modèle RBAC *(Role-Based Access Control)*
+:FR:- Restreindre les permissions grâce aux *Service Accounts*
+:FR:- Comprendre les *Roles*, *Cluster Roles*, *Role Bindings*, etc.

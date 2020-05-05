@@ -199,3 +199,8 @@
 ]
 
 Note: it might take a minute or two for the worker to start.
+
+???
+
+:EN:- Packaging and running apps with Kustomize
+:FR:- *Packaging* d'applications avec Kustomize

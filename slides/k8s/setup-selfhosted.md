@@ -108,3 +108,8 @@
     <br/>(do they need training?)
 
   - etc.
+
+???
+
+:EN:- Various ways to set up Kubernetes
+:FR:- Différentes méthodes pour installer Kubernetes

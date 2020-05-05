@@ -246,3 +246,10 @@
   (when we can't or won't dedicate a whole disk to a volume)
 
 - It's possible to mix both (using distinct Storage Classes)
+
+???
+
+:EN:- Static vs dynamic volume provisioning
+:EN:- Example: local persistent volume provisioner
+:FR:- Création statique ou dynamique de volumes
+:FR:- Exemple : création de volumes locaux

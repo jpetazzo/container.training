@@ -547,3 +547,13 @@ spec:
 - With RBAC, we can authorize a user to access configmaps, but not secrets
 
   (since they are two different kinds of resources)
+
+???
+
+:EN:- Managing application configuration
+:EN:- Exposing configuration with the downward API
+:EN:- Exposing configuration with Config Maps and Secrets
+
+:FR:- Gérer la configuration des applications
+:FR:- Configuration au travers de la *downward API*
+:FR:- Configuration via les *Config Maps* et *Secrets*

@@ -381,3 +381,8 @@ We demonstrated *update* and *watch* semantics.
   - if the pod has special constraints that can't be met
 
   - if the scheduler is not running (!)
+
+???
+
+:EN:- Kubernetes architecture review
+:FR:- Passage en revue de l'architecture de Kubernetes

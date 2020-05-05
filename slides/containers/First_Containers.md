@@ -290,3 +290,8 @@ bash: figlet: command not found
 * We have a clear definition of our environment, and can share it reliably with others.
 
 * Let's see in the next chapters how to bake a custom image with `figlet`!
+
+???
+
+:EN:- Running our first container
+:FR:- Lancer nos premiers conteneurs

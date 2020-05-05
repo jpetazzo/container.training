@@ -155,3 +155,8 @@ For critical services, we might want to precisely control the update process.
 - Even better if it's combined with DNS integration
 
   (to facilitate name → ClusterIP resolution)
+
+???
+
+:EN:- Interconnecting clusters
+:FR:- Interconnexion de clusters

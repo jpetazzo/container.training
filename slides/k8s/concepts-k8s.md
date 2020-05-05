@@ -401,3 +401,8 @@ class: pic
   - IP addresses are associated with *pods*, not with individual containers
 
 Both diagrams used with permission.
+
+???
+
+:EN:- Kubernetes concepts
+:FR:- Kubernetes en théorie

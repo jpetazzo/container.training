@@ -282,3 +282,8 @@ If the Redis process becomes unresponsive, it will be killed.
   - check the timestamp of that file from an exec probe
 
 - Writing logs (and checking them from the probe) also works
+
+???
+
+:EN:- Using healthchecks to improve availability
+:FR:- Utiliser des *healthchecks* pour améliorer la disponibilité

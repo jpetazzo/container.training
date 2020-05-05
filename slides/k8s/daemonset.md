@@ -688,3 +688,8 @@ class: extra-details
     (by setting their label accordingly)
 
 - This gives us building blocks for canary and blue/green deployments
+
+???
+
+:EN:- Scaling with Daemon Sets
+:FR:- Utilisation de Daemon Sets
