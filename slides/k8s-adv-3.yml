@@ -28,6 +28,7 @@ content:
 -
   - k8s/netpol.md
   - k8s/authn-authz.md
+  - k8s/staticpods.md
   - k8s/podsecuritypolicy.md
   - k8s/openid-connect.md
   - k8s/csr-api.md
