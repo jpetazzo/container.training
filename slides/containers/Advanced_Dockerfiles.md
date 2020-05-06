@@ -1,7 +1,7 @@
 
 class: title
 
-# Advanced Dockerfiles
+# Advanced Dockerfile Syntax
 
 ![construction](images/title-advanced-dockerfiles.jpg)
 
@@ -12,7 +12,10 @@ class: title
 We have seen simple Dockerfiles to illustrate how Docker build
 container images.
 
-In this section, we will see more Dockerfile commands.
+In this section, we will give a recap of the Dockerfile syntax,
+and introduce advanced Dockerfile commands that we might
+come across sometimes; or that we might want to use in some
+specific scenarios.
 
 ---
 
@@ -420,3 +423,8 @@ ONBUILD COPY . /src
 
 * You can't chain `ONBUILD` instructions with `ONBUILD`.
 * `ONBUILD` can't be used to trigger `FROM` instructions.
+
+???
+
+:EN:- Advanced Dockerfile syntax
+:FR:- Dockerfile niveau expert
