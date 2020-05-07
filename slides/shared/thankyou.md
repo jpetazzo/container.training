@@ -4,8 +4,13 @@ Thank you!
 
 ---
 
-class: title, in-person
+## Thank you!
 
-That's all, folks! <br/> Questions?
+- Please [fill the feedback form](https://enix-monkeys.typeform.com/to/vIVgEe) 😊
 
-![end](images/end.jpg)
+- And if you liked this workshop ...
+
+  Checkout our [High Five Online](https://enix.io/fr/services/formation/online/
+) training, coming soon!
+
+  .small[Stressez pas, nos formations sont en français 😅🥐🇫🇷]
