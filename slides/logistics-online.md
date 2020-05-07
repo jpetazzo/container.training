@@ -4,7 +4,7 @@
 
    - .emoji[🐳] Jérôme ([@jpetazzo], Enix SAS)
 
-   - .emoji[☸️] Smaïne ([@_smana_], Dailymotion, CNCF Paris)
+   - .emoji[☸️] Smaïne ([@\_smana\_], Dailymotion, CNCF Paris)
 
 - The workshop will run for 3 hours, with a 10 minutes break every hour
 
@@ -17,4 +17,4 @@
 [EphemeraSearch]: https://ephemerasearch.com/
 [@s0ulshake]: https://twitter.com/s0ulshake
 [@jpetazzo]: https://twitter.com/jpetazzo
-[@_smana_]: https://twitter.com/_smana_
+[@\_smana\_]: https://twitter.com/_smana_
