@@ -132,11 +132,33 @@ For a user named `jean.doe`, we will have:
 
 - ServiceAccount `jean.doe` in Namespace `users`
 
-- CertificateSigningRequest `users:jean.doe`
+- CertificateSigningRequest `user=jean.doe`
 
-- ClusterRole `users:jean.doe` giving read/write access to that CSR
+- ClusterRole `user=jean.doe` giving read/write access to that CSR
 
-- ClusterRoleBinding `users:jean.doe` binding ClusterRole and ServiceAccount
+- ClusterRoleBinding `user=jean.doe` binding ClusterRole and ServiceAccount
+
+---
+
+class: extra-details
+
+## About resource name constraints
+
+- Most Kubernetes identifiers and names are fairly restricted
+
+- They generally are DNS-1123 *labels* or *subdomains* (from [RFC 1123](https://tools.ietf.org/html/rfc1123))
+
+- A label is lowercase letters, numbers, dashes; can't start or finish with a dash
+
+- A subdomain is one or multiple labels separated by dots
+
+- Some resources have more relaxed constraints, and can be "path segment names"
+
+  (uppercase are allowed, as well as some characters like `#:?!,_`)
+
+- This includes RBAC objects (like Roles, RoleBindings...) and CSRs
+
+- See the [Identifiers and Names](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/architecture/identifiers.md) design document and the [Object Names and IDs](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#path-segment-names) documentation page for more details
 
 ---
 
@@ -153,7 +175,7 @@ For a user named `jean.doe`, we will have:
 
 - Create the ServiceAccount, ClusterRole, ClusterRoleBinding for `jean.doe`:
   ```bash
-  kubectl apply -f ~/container.training/k8s/users:jean.doe.yaml
+  kubectl apply -f ~/container.training/k8s/user=jean.doe.yaml
   ```
 
 ]
@@ -195,7 +217,13 @@ For a user named `jean.doe`, we will have:
 
 - Add a new context using that identity:
   ```bash
-  kubectl config set-context jean.doe --user=token:jean.doe --cluster=kubernetes
+  kubectl config set-context jean.doe --user=token:jean.doe --cluster=`kubernetes`
+  ```
+  (Make sure to adapt the cluster name if yours is different!)
+
+- Use that context:
+  ```bash
+  kubectl config use-context jean.doe
   ```
 
 ]
@@ -216,7 +244,7 @@ For a user named `jean.doe`, we will have:
 
 - Try to access "our" CertificateSigningRequest:
   ```bash
-  kubectl get csr users:jean.doe
+  kubectl get csr user=jean.doe
   ```
   (This should tell us "NotFound")
 
@@ -273,7 +301,7 @@ The command above generates:
     apiVersion: certificates.k8s.io/v1beta1
     kind: CertificateSigningRequest
     metadata:
-      name: users:jean.doe
+      name: user=jean.doe
     spec:
       request: $(base64 -w0 < csr.pem)
       usages:
@@ -324,12 +352,12 @@ The command above generates:
 
 - Inspect the CSR:
   ```bash
-  kubectl describe csr users:jean.doe
+  kubectl describe csr user=jean.doe
   ```
 
 - Approve it:
   ```bash
-  kubectl certificate approve users:jean.doe
+  kubectl certificate approve user=jean.doe
   ```
 
 ]
@@ -347,7 +375,7 @@ The command above generates:
 
 - Retrieve the updated CSR object and extract the certificate:
   ```bash
-  kubectl get csr users:jean.doe \
+  kubectl get csr user=jean.doe \
           -o jsonpath={.status.certificate} \
           | base64 -d > cert.pem
   ```

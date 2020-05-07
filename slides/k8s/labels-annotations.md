@@ -26,12 +26,12 @@
 
 - Create a Deployment:
   ```bash
-  kubectl create deployment web --image=nginx
+  kubectl create deployment clock --image=jpetazzo/clock
   ```
 
 - Look at its annotations and labels:
   ```bash
-  kubectl describe deployment web
+  kubectl describe deployment clock
   ```
 
 ]

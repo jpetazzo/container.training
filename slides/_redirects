@@ -1,7 +1,7 @@
 # Uncomment and/or edit one of the the following lines if necessary.
-#/ /kube-halfday.yml.html 200
-#/ /kube-fullday.yml.html 200
-#/ /kube-twodays.yml.html 200
+#/ /kube-halfday.yml.html 200!
+#/ /kube-fullday.yml.html 200!
+#/ /kube-twodays.yml.html 200!
 / /helm.yml.html 200!
 
 # And this allows to do "git clone https://container.training".
@@ -16,3 +16,4 @@
 /q /qrcode.html 200
 /next https://www.eventbrite.com/e/intensive-kubernetes-advanced-concepts-live-stream-tickets-102358725704
 
+/chat https://gitter.im/jpetazzo/workshop-20200507-online
