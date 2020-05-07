@@ -76,8 +76,6 @@ class: in-person
 
 - They'll remain up for the duration of the workshop
 
-- You should have a little card with login+password+IP addresses
-
 - You can automatically SSH from one VM to another
 
 - The nodes have aliases: `node1`, `node2`, etc.
