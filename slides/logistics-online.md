@@ -2,13 +2,11 @@
 
 - Hello! We are:
 
-   - .emoji[👷🏻‍♀️] AJ ([@s0ulshake], [EphemeraSearch])
-
    - .emoji[🐳] Jérôme ([@jpetazzo], Enix SAS)
 
-- The training will run for 4 hours, with a 10 minutes break every hour
+   - .emoji[☸️] Smaïne ([@_smana_], Dailymotion, CNCF Paris)
 
-  (the middle break will be a bit longer)
+- The workshop will run for 3 hours, with a 10 minutes break every hour
 
 - Feel free to ask questions at any time
 
@@ -19,3 +17,4 @@
 [EphemeraSearch]: https://ephemerasearch.com/
 [@s0ulshake]: https://twitter.com/s0ulshake
 [@jpetazzo]: https://twitter.com/jpetazzo
+[@_smana_]: https://twitter.com/_smana_
