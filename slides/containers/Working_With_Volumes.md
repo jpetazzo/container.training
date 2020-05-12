@@ -170,7 +170,7 @@ Let's start a web server using the two previous volumes.
 ```bash
 $ docker run -d -p 1234:8080 \
          -v logs:/usr/local/tomcat/logs \
-         -v webapps:/usr/local/tomcat/webapps \
+         -v webapps:/usr/local/tomcat/webapps.dist \
          tomcat
 ```
 
