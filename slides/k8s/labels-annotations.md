@@ -190,7 +190,7 @@ class: extra-details
 
 - Label *values* are up to 63 characters, with the same restrictions
 
-- Annotations *values* can have arbitrary characeters (yes, even binary)
+- Annotations *values* can have arbitrary characters (yes, even binary)
 
 - Maximum length isn't defined
 
