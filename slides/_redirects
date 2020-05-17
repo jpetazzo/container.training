@@ -13,5 +13,7 @@
 
 # Shortlink for the QRCode
 /q /qrcode.html 200
-/next https://www.eventbrite.com/e/intensive-kubernetes-advanced-concepts-live-stream-tickets-102358725704
 
+# Shortlinks for next training in English and French
+/next https://www.eventbrite.com/e/livestream-intensive-kubernetes-bootcamp-tickets-103262336428
+/hi5 https://enix.io/fr/services/formation/online/
