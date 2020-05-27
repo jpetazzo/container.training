@@ -255,10 +255,12 @@ EOF"
     fi"
 
     # Install ship
+    # Note: 0.51.3 is the last version that doesn't display GIN-debug messages
+    # (don't want to get folks confused by that!)
     pssh "
     if [ ! -x /usr/local/bin/ship ]; then
         ##VERSION##
-        curl -L https://github.com/replicatedhq/ship/releases/download/v0.40.0/ship_0.40.0_linux_amd64.tar.gz |
+        curl -L https://github.com/replicatedhq/ship/releases/download/v0.51.3/ship_0.51.3_linux_amd64.tar.gz |
              sudo tar -C /usr/local/bin -zx ship
     fi"
 
