@@ -1,6 +1,74 @@
 # Authentication and authorization
 
-*And first, a little refresher!*
+- In this section, we will:
+
+  - define authentication and authorization
+
+  - explain how they are implemented in Kubernetes
+
+  - talk about tokens, certificates, service accounts, RBAC ...
+
+- But first: why do we need all this?
+
+---
+
+## The need for fine-grained security
+
+- The Kubernetes API should only be available for identified users
+
+  - we don't want "guest access" (except in very rare scenarios)
+
+  - we don't want strangers to use our compute resources, delete our apps ...
+
+  - our keys and passwords should not be exposed to the public
+
+- Users will often have different access rights
+
+  - cluster admin (similar to UNIX "root") can do everything
+
+  - developer might access specific resources, or a specific namespace
+
+  - supervision might have read only access to *most* resources
+
+---
+
+## Example: custom HTTP load balancer
+
+- Let's imagine that we have a custom HTTP load balancer for multiple apps
+
+- Each app has its own *Deployment* resource
+
+- By default, the apps are "sleeping" and scaled to zero
+
+- When a request comes in, the corresponding app gets woken up
+
+- After some inactivity, the app is scaled down again
+
+- This HTTP load balancer needs API access (to scale up/down)
+
+- What if *a wild vulnerability appears*?
+
+---
+
+## Consequences of vulnerability
+
+- If the HTTP load balancer has the same API access as we do:
+
+  *full cluster compromise (easy data leak, cryptojacking...)*
+
+- If the HTTP load balancer has `update` permissions on the Deployments:
+
+  *defacement (easy), MITM / impersonation (medium to hard)*
+
+- If the HTTP load balancer only has permission to `scale` the Deployments:
+
+  *denial-of-service*
+
+- All these outcomes are bad, but some are worse than others
+
+---
+
+## Definitions
 
 - Authentication = verifying the identity of a person
 
@@ -147,7 +215,7 @@ class: extra-details
 
   (if their key is compromised, or they leave the organization)
 
-- Option 1: re-create a new CA and re-issue everyone's certificates 
+- Option 1: re-create a new CA and re-issue everyone's certificates
   <br/>
   → Maybe OK if we only have a few users; no way otherwise
 
@@ -631,7 +699,7 @@ class: extra-details
 
 - Let's look for these in existing ClusterRoleBindings:
   ```bash
-  kubectl get clusterrolebindings -o yaml | 
+  kubectl get clusterrolebindings -o yaml |
     grep -e kubernetes-admin -e system:masters
   ```
 
