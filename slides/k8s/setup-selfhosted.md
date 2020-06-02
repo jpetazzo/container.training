@@ -1,5 +1,15 @@
 # Kubernetes distributions and installers
 
+- Sometimes, we need to run Kubernetes ourselves
+
+  (as opposed to "use a managed offering")
+
+- Beware: it takes *a lot of work* to set up and maintain Kubernetes
+
+- It might be necessary if you have specific security or compliance requirements
+
+  (e.g. national security for states that don't have a suitable domestic cloud)
+
 - There are [countless](https://kubernetes.io/docs/setup/pick-right-solution/) distributions available
 
 - We can't review them all
@@ -78,13 +88,15 @@
 
 ## And many more ...
 
-- Docker Enterprise Edition
-
 - [AKS Engine](https://github.com/Azure/aks-engine)
+
+- Docker Enterprise Edition
 
 - Pivotal Container Service (PKS)
 
-- Tectonic by CoreOS
+- Tectonic by CoreOS (now being integrated into Red Hat OpenShift)
+
+- VMware Tanzu Kubernetes Grid (TKG)
 
 - etc.
 
