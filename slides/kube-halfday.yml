@@ -40,7 +40,10 @@ content:
   - k8s/declarative.md
   - k8s/kubenet.md
   - k8s/kubectlget.md
-  - k8s/setup-k8s.md
+  - k8s/setup-overview.md
+  #- k8s/setup-devel.md
+  #- k8s/setup-managed.md
+  #- k8s/setup-selfhosted.md
 - - k8s/kubectl-run.md
   #- k8s/batch-jobs.md
   #- k8s/labels-annotations.md

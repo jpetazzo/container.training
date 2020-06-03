@@ -18,7 +18,7 @@
 
 ---
 
-## kops
+## [kops](https://github.com/kubernetes/kops)
 
 - Deploys Kubernetes using cloud infrastructure
 
@@ -42,7 +42,7 @@
 
 ---
 
-## Kubespray
+## [kubespray](https://github.com/kubernetes-incubator/kubespray)
 
 - Based on Ansible
 
@@ -92,13 +92,17 @@
 
 - Docker Enterprise Edition
 
+- [Lokomotive](https://github.com/kinvolk/lokomotive), leveraging Terraform and [Flatcar Linux](https://www.flatcar-linux.org/)
+
 - Pivotal Container Service (PKS)
+
+- [Tarmak](https://github.com/jetstack/tarmak), leveraging Puppet and Terraform
 
 - Tectonic by CoreOS (now being integrated into Red Hat OpenShift)
 
-- VMware Tanzu Kubernetes Grid (TKG)
+- [Typhoon](https://typhoon.psdn.io/), leveraging Terraform
 
-- etc.
+- VMware Tanzu Kubernetes Grid (TKG)
 
 ---
 
@@ -123,5 +127,5 @@
 
 ???
 
-:EN:- Various ways to set up Kubernetes
-:FR:- Différentes méthodes pour installer Kubernetes
+:EN:- Kubernetes distributions and installers
+:FR:- L'offre Kubernetes "on premises"

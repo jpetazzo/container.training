@@ -54,7 +54,10 @@ content:
   #- k8s/exercise-wordsmith.md
   - k8s/yamldeploy.md
 -
-  - k8s/setup-k8s.md
+  - k8s/setup-overview.md
+  - k8s/setup-devel.md
+  - k8s/setup-managed.md
+  - k8s/setup-selfhosted.md
   - k8s/dashboard.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md

@@ -1,4 +1,4 @@
-# Installing a managed cluster
+# Deploying a managed cluster
 
 *"The easiest way to install Kubernetes is to get someone
 else to do it for you."
@@ -317,21 +317,31 @@ with a cloud provider
         default-pool-config.node-type=DEV1-M default-pool-config.size=3 
   ```
 
-- Get cluster ID:
+- After less than 5 minutes, cluster state will be `ready`
+
+  (check cluster status with e.g. `scw k8s cluster list` on a wide terminal
+)
+
+- Add connection information to your `.kube/config` file:
+  ```bash
+  scw k8s kubeconfig install `CLUSTERID`
+  ```
+
+  (the cluster ID is shown by `scw k8s cluster list`)
+
+---
+
+class: extra-details
+
+## Scaleway (automation)
+
+- If you want to obtain the cluster ID programmatically, this will do it:
+
   ```bash
   scw k8s cluster list
   # or
   CLUSTERID=$(scw k8s cluster list -o json | \
         jq -r '.[] | select(.name="my-kapsule-cluster") | .id')
-  ```
-
-- Check cluster status with e.g. `scw k8s cluster list` on a wide terminal
-
-- After less than 5 minutes, status should be `ready`
-
-- Add connection information to your `.kube/config` file:
-  ```bash
-  scw k8s kubeconfig install $CLUSTERID
   ```
 
 ---
@@ -376,7 +386,9 @@ https://www.scaleway.com/en/pricing/)
 
 - [IBM Cloud](https://console.bluemix.net/docs/containers/cs_cli_install.html#cs_cli_install)
 
-- OVH
+- [Linode Kubernetes Engine (LKE)](https://www.linode.com/products/kubernetes/)
+
+- OVHcloud [Managed Kubernetes Service](https://www.ovhcloud.com/en/public-cloud/kubernetes/)
 
 - ...
 

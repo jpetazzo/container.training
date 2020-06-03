@@ -36,6 +36,8 @@ content:
   - k8s/interco.md
 -
   - k8s/apilb.md
+  #- k8s/setup-overview.md
+  #- k8s/setup-devel.md
   #- k8s/setup-managed.md
   #- k8s/setup-selfhosted.md
   - k8s/cluster-upgrade.md
