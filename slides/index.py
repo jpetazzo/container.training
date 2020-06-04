@@ -141,13 +141,26 @@ import yaml
 
 items = yaml.safe_load(open("index.yaml"))
 
+
+def prettyparse(date):
+    months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ]
+    month = months[date.month-1]
+    suffix = {
+            1: "st", 2: "nd", 3: "rd",
+            21: "st", 22: "nd", 23: "rd",
+            31: "st"}.get(date.day, "th")
+    return date.year, month, "{}{}".format(date.day, suffix)
+
+
 # Items with a date correspond to scheduled sessions.
 # Items without a date correspond to self-paced content.
 # The date should be specified as a string (e.g. 2018-11-26).
 # It can also be a list of two elements (e.g. [2018-11-26, 2018-11-28]).
 # The latter indicates an event spanning multiple dates.
-# The first date will be used in the generated page, but the event
-# will be considered "current" (and therefore, shown in the list of
+# The event will be considered "current" (shown in the list of
 # upcoming events) until the second date.
 
 for item in items:
@@ -157,19 +170,23 @@ for item in items:
             date_begin, date_end = date
         else:
             date_begin, date_end = date, date
-        suffix = {
-                1: "st", 2: "nd", 3: "rd",
-                21: "st", 22: "nd", 23: "rd",
-                31: "st"}.get(date_begin.day, "th")
-        # %e is a non-standard extension (it displays the day, but without a
-        # leading zero). If strftime fails with ValueError, try to fall back
-        # on %d (which displays the day but with a leading zero when needed).
-        try:
-            item["prettydate"] = date_begin.strftime("%B %e{}, %Y").format(suffix)
-        except ValueError:
-            item["prettydate"] = date_begin.strftime("%B %d{}, %Y").format(suffix)
+        y1, m1, d1 = prettyparse(date_begin)
+        y2, m2, d2 = prettyparse(date_end)
+        if (y1, m1, d1) == (y2, m2, d2):
+            # Single day event
+            pretty_date = "{} {}, {}".format(m1, d1, y1)
+        elif (y1, m1) == (y2, m2):
+            # Multi-day event within a single month
+            pretty_date = "{} {}-{}, {}".format(m1, d1, d2, y1)
+        elif y1 == y2:
+            # Multi-day event spanning more than a month
+            pretty_date = "{} {}-{} {}, {}".format(m1, d1, m2, d2, y1)
+        else:
+            # Event spanning the turn of the year (REALLY???)
+            pretty_date = "{} {}, {}-{} {}, {}".format(m1, d1, y1, m2, d2, y2)
         item["begin"] = date_begin
         item["end"] = date_end
+        item["prettydate"] = pretty_date
     item["flag"] = FLAGS.get(item.get("country"),"")
 
 today = datetime.date.today()
