@@ -22,7 +22,7 @@ TEMPLATE="""<html>
       <tr><td class="header" colspan="3">{{ title }}</td></tr>
       <tr><td class="details" colspan="3">Note: while some workshops are delivered in other languages, slides are always in English.</td></tr>
 
-      <tr><td class="title" colspan="3">Free video of our latest workshop</td></tr>
+      <tr><td class="title" colspan="3">Free Kubernetes intro course</td></tr>
 
       <tr>
       	<td>Getting Started With Kubernetes and Container Orchestration</td>
@@ -40,7 +40,7 @@ TEMPLATE="""<html>
       </tr>
 
       {% if coming_soon %}
-        <tr><td class="title" colspan="3">Coming soon near you</td></tr>
+        <tr><td class="title" colspan="3">Coming soon</td></tr>
 
         {% for item in coming_soon %}
           <tr>
