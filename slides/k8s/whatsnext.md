@@ -136,25 +136,6 @@ And *then* it is time to look at orchestration!
 
 ---
 
-## HTTP traffic handling
-
-- *Services* are layer 4 constructs
-
-- HTTP is a layer 7 protocol
-
-- It is handled by *ingresses* (a different resource kind)
-
-- *Ingresses* allow:
-
-  - virtual host routing
-  - session stickiness
-  - URI mapping
-  - and much more!
-
-- [This section](kube-selfpaced.yml.html#toc-exposing-http-services-with-ingress-resources) shows how to expose multiple HTTP apps using [Træfik](https://docs.traefik.io/user-guide/kubernetes/)
-
----
-
 ## Logging
 
 - Logging is delegated to the container engine
@@ -186,24 +167,6 @@ And *then* it is time to look at orchestration!
 - [Heapster](https://github.com/kubernetes/heapster) was a popular add-on
 
   (but is being [deprecated](https://github.com/kubernetes/heapster/blob/master/docs/deprecation.md) starting with Kubernetes 1.11)
-
----
-
-## Managing the configuration of our applications
-
-- Two constructs are particularly useful: secrets and config maps
-
-- They allow to expose arbitrary information to our containers
-
-- **Avoid** storing configuration in container images
-
-  (There are some exceptions to that rule, but it's generally a Bad Idea)
-
-- **Never** store sensitive information in container images
-
-  (It's the container equivalent of the password on a post-it note on your screen)
-
-- [This section](kube-selfpaced.yml.html#toc-managing-configuration) shows how to manage app config with config maps (among others)
 
 ---
 
@@ -240,41 +203,3 @@ And *then* it is time to look at orchestration!
 
 - [Brigade](https://brigade.sh/)
   (event-driven scripting; no YAML)
-
----
-
-## Cluster federation
-
---
-
-![Star Trek Federation](images/startrek-federation.jpg)
-
---
-
-Sorry Star Trek fans, this is not the federation you're looking for!
-
---
-
-(If I add "Your cluster is in another federation" I might get a 3rd fandom wincing!)
-
----
-
-## Cluster federation
-
-- Kubernetes master operation relies on etcd
-
-- etcd uses the [Raft](https://raft.github.io/) protocol
-
-- Raft recommends low latency between nodes
-
-- What if our cluster spreads to multiple regions?
-
---
-
-- Break it down in local clusters
-
-- Regroup them in a *cluster federation*
-
-- Synchronize resources across clusters
-
-- Discover resources across clusters
