@@ -62,7 +62,7 @@ content:
   #- k8s/healthchecks-more.md
   - k8s/setup-overview.md
   - k8s/setup-devel.md
-  #- k8s/setup-managed.md
+  - k8s/setup-managed.md
   #- k8s/setup-selfhosted.md
 -
   - k8s/namespaces.md
@@ -81,3 +81,12 @@ content:
   - k8s/lastwords.md
   - k8s/links.md
   - shared/thankyou.md
+-
+  - |
+    # (Extra material)
+  - k8s/helm-intro.md
+  - k8s/helm-chart-format.md
+  - k8s/helm-create-basic-chart.md
+  - k8s/helm-create-better-chart.md
+  - k8s/helm-secrets.md
+
