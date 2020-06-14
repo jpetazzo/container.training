@@ -1,5 +1,15 @@
 # Kubernetes distributions and installers
 
+- Sometimes, we need to run Kubernetes ourselves
+
+  (as opposed to "use a managed offering")
+
+- Beware: it takes *a lot of work* to set up and maintain Kubernetes
+
+- It might be necessary if you have specific security or compliance requirements
+
+  (e.g. national security for states that don't have a suitable domestic cloud)
+
 - There are [countless](https://kubernetes.io/docs/setup/pick-right-solution/) distributions available
 
 - We can't review them all
@@ -8,7 +18,7 @@
 
 ---
 
-## kops
+## [kops](https://github.com/kubernetes/kops)
 
 - Deploys Kubernetes using cloud infrastructure
 
@@ -32,7 +42,7 @@
 
 ---
 
-## Kubespray
+## [kubespray](https://github.com/kubernetes-incubator/kubespray)
 
 - Based on Ansible
 
@@ -78,15 +88,21 @@
 
 ## And many more ...
 
+- [AKS Engine](https://github.com/Azure/aks-engine)
+
 - Docker Enterprise Edition
 
-- [AKS Engine](https://github.com/Azure/aks-engine)
+- [Lokomotive](https://github.com/kinvolk/lokomotive), leveraging Terraform and [Flatcar Linux](https://www.flatcar-linux.org/)
 
 - Pivotal Container Service (PKS)
 
-- Tectonic by CoreOS
+- [Tarmak](https://github.com/jetstack/tarmak), leveraging Puppet and Terraform
 
-- etc.
+- Tectonic by CoreOS (now being integrated into Red Hat OpenShift)
+
+- [Typhoon](https://typhoon.psdn.io/), leveraging Terraform
+
+- VMware Tanzu Kubernetes Grid (TKG)
 
 ---
 
@@ -111,5 +127,5 @@
 
 ???
 
-:EN:- Various ways to set up Kubernetes
-:FR:- Différentes méthodes pour installer Kubernetes
+:EN:- Kubernetes distributions and installers
+:FR:- L'offre Kubernetes "on premises"

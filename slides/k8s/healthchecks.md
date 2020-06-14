@@ -286,4 +286,4 @@ If the Redis process becomes unresponsive, it will be killed.
 ???
 
 :EN:- Using healthchecks to improve availability
-:FR:- Utiliser des *healthchecks* pour amémliorer la disponibilité
+:FR:- Utiliser des *healthchecks* pour améliorer la disponibilité

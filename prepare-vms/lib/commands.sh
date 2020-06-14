@@ -246,11 +246,21 @@ EOF"
         helm completion bash | sudo tee /etc/bash_completion.d/helm
     fi"
 
+    # Install kustomize
+    pssh "
+    if [ ! -x /usr/local/bin/kustomize ]; then
+        curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v3.5.4/kustomize_v3.5.1_linux_amd64.tar.gz |
+            sudo tar -C /usr/local/bin -zx kustomize
+        echo complete -C /usr/local/bin/kustomize kustomize | sudo tee /etc/bash_completion.d/kustomize
+    fi"
+
     # Install ship
+    # Note: 0.51.3 is the last version that doesn't display GIN-debug messages
+    # (don't want to get folks confused by that!)
     pssh "
     if [ ! -x /usr/local/bin/ship ]; then
         ##VERSION##
-        curl -L https://github.com/replicatedhq/ship/releases/download/v0.40.0/ship_0.40.0_linux_amd64.tar.gz |
+        curl -L https://github.com/replicatedhq/ship/releases/download/v0.51.3/ship_0.51.3_linux_amd64.tar.gz |
              sudo tar -C /usr/local/bin -zx ship
     fi"
 
@@ -329,7 +339,7 @@ _cmd_maketag() {
     if [ -z $USER ]; then
         export USER=anonymous
     fi
-    MS=$(($(date +%N)/1000000))
+    MS=$(($(date +%N | tr -d 0)/1000000))
     date +%Y-%m-%d-%H-%M-$MS-$USER
 }
 
@@ -483,6 +493,7 @@ _cmd_start() {
         --settings) SETTINGS=$2; shift 2;;
         --count) COUNT=$2; shift 2;;
         --tag) TAG=$2; shift 2;;
+        --students) STUDENTS=$2; shift 2;;
         *) die "Unrecognized parameter: $1."
         esac
     done
@@ -494,8 +505,14 @@ _cmd_start() {
         die "Please add --settings flag to specify which settings file to use."
     fi
     if [ -z "$COUNT" ]; then
-        COUNT=$(awk '/^clustersize:/ {print $2}' $SETTINGS)
-        warning "No --count option was specified. Using value from settings file ($COUNT)."
+        CLUSTERSIZE=$(awk '/^clustersize:/ {print $2}' $SETTINGS)
+        if [ -z "$STUDENTS" ]; then
+            warning "Neither --count nor --students was specified."
+            warning "According to the settings file, the cluster size is $CLUSTERSIZE."
+            warning "Deploying one cluster of $CLUSTERSIZE nodes."
+            STUDENTS=1
+        fi
+        COUNT=$(($STUDENTS*$CLUSTERSIZE))
     fi
 
     # Check that the specified settings and infrastructure are valid.
@@ -513,11 +530,41 @@ _cmd_start() {
     infra_start $COUNT
     sep
     info "Successfully created $COUNT instances with tag $TAG"
-    sep
     echo created > tags/$TAG/status
 
-    info "To deploy Docker on these instances, you can run:"
-    info "$0 deploy $TAG"
+    # If the settings.yaml file has a "steps" field,
+    # automatically execute all the actions listed in that field.
+    # If an action fails, retry it up to 10 times.
+    python -c 'if True: # hack to deal with indentation
+        import sys, yaml
+        settings = yaml.safe_load(sys.stdin)
+        print ("\n".join(settings.get("steps", [])))
+        ' < tags/$TAG/settings.yaml \
+    | while read step; do
+        if [ -z "$step" ]; then
+            break
+        fi
+        sep
+        info "Automatically executing step '$step'."
+        TRY=1
+        MAXTRY=10
+        while ! $0 $step $TAG ; do
+            TRY=$(($TRY+1))
+            if [ $TRY -gt $MAXTRY ]; then
+                error "This step ($step) failed after $MAXTRY attempts."
+                info "You can troubleshoot the situation manually, or terminate these instances with:"
+                info "$0 stop $TAG"
+                die "Giving up."
+            else
+                sep
+                info "Step '$step' failed. Let's wait 10 seconds and try again."
+                info "(Attempt $TRY out of $MAXTRY.)"
+                sleep 10
+            fi
+        done
+    done
+    sep
+    info "Deployment successful."
     info "To terminate these instances, you can run:"
     info "$0 stop $TAG"
 }

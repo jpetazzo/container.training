@@ -89,6 +89,11 @@ def flatten(titles):
 def generatefromyaml(manifest, filename):
     manifest = yaml.safe_load(manifest)
 
+    for k in manifest:
+        override = os.environ.get("OVERRIDE_"+k)
+        if override:
+            manifest[k] = override
+
     if "zip" not in manifest:
         if manifest["slides"].endswith('/'):
             manifest["zip"] = manifest["slides"] + "slides.zip"

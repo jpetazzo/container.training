@@ -1,5 +1,4 @@
 title: |
-  Module 2
   Fondamentaux Kubernetes
 
 chat: "[Gitter](https://gitter.im/jpetazzo/formation-highfive-202006)"
@@ -19,7 +18,8 @@ content:
 - k8s/intro.md
 - shared/about-slides.md
 - shared/chat-room-im.md
-#- shared/chat-room-zoom.md
+#- shared/chat-room-zoom-meeting.md
+#- shared/chat-room-zoom-webinar.md
 - shared/toc.md
 -
   - shared/prereqs.md
@@ -34,10 +34,9 @@ content:
   - k8s/kubectlget.md
   - k8s/kubectl-run.md
 -
-  - k8s/batch-jobs.md
-  - k8s/labels-annotations.md
-  - k8s/kubectl-logs.md
-  - k8s/logs-cli.md
+  - shared/declarative.md
+  - k8s/declarative.md
+  - k8s/deploymentslideshow.md
   - k8s/kubenet.md
   - k8s/kubectlexpose.md
   - k8s/shippingimages.md
@@ -46,43 +45,32 @@ content:
   - k8s/ourapponkube.md
   #- k8s/exercise-wordsmith.md
 -
-  - shared/declarative.md
-  - k8s/declarative.md
-  - k8s/deploymentslideshow.md
+  - k8s/batch-jobs.md
+  - k8s/labels-annotations.md
+  - k8s/kubectl-logs.md
+  - k8s/logs-cli.md
   - k8s/yamldeploy.md
-  - k8s/setup-k8s.md
-  - k8s/localkubeconfig.md
-  - k8s/namespaces.md
-  - k8s/accessinternal.md
-  - k8s/kubectlproxy.md
--
-  - k8s/dashboard.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
   - k8s/daemonset.md
-  #- k8s/exercise-yaml.md FIXME
 -
   #- k8s/dryrun.md
   - k8s/rollout.md
-  - k8s/healthchecks.md
-  - k8s/healthchecks-more.md
   - k8s/record.md
+  - k8s/healthchecks.md
+  #- k8s/healthchecks-more.md
+  - k8s/setup-overview.md
+  - k8s/setup-devel.md
+  - k8s/setup-managed.md
+  #- k8s/setup-selfhosted.md
+-
+  - k8s/namespaces.md
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
+  - k8s/kubectlproxy.md
+  - k8s/dashboard.md
   - k8s/ingress.md
-  #- k8s/kustomize.md
-  #- k8s/helm-intro.md
-  #- k8s/helm-chart-format.md
-  #- k8s/helm-create-basic-chart.md
-  #- k8s/helm-create-better-chart.md
-  #- k8s/helm-secrets.md
-  #- k8s/exercise-helm.md
-  #- k8s/create-chart.md
-  #- k8s/create-more-charts.md
-  #- k8s/netpol.md
-  #- k8s/authn-authz.md
-  #- k8s/csr-api.md
-  #- k8s/openid-connect.md
-  #- k8s/podsecuritypolicy.md
 -
   - k8s/volumes.md
   #- k8s/exercise-configmap.md
@@ -100,7 +88,7 @@ content:
   #- k8s/staticpods.md
   #- k8s/owners-and-dependents.md
   #- k8s/gitworkflows.md
-  - k8s/whatsnext.md
-  - k8s/lastwords.md
-  - k8s/links.md
+  #- k8s/whatsnext.md
+  #- k8s/lastwords.md
   - shared/thankyou.md
+  - k8s/links.md

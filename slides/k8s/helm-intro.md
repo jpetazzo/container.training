@@ -18,6 +18,25 @@
 
 ---
 
+## CNCF graduation status
+
+- On April 30th 2020, Helm was the 10th project to *graduate* within the CNCF
+
+  .emoji[🎉]
+
+  (alongside Containerd, Prometheus, and Kubernetes itself)
+
+- This is an acknowledgement by the CNCF for projects that
+
+  *demonstrate thriving adoption, an open governance process,
+  <br/>
+  and a strong commitment to community, sustainability, and inclusivity.*
+
+- See [CNCF announcement](https://www.cncf.io/announcement/2020/04/30/cloud-native-computing-foundation-announces-helm-graduation/)
+  and [Helm announcement](https://helm.sh/blog/celebrating-helms-cncf-graduation/)
+
+---
+
 ## Helm concepts
 
 - `helm` is a CLI tool
@@ -427,6 +446,3 @@ All unspecified values will take the default values defined in the chart.
 :FR:- Fonctionnement général de Helm
 :FR:- Installer des composants via Helm
 :FR:- Helm 2, Helm 3, et le *Helm Hub*
-
-
-:FR:- Comment

@@ -287,7 +287,7 @@
 
 - Try to create a Deployment:
   ```bash
-  kubectl run testpsp2 --image=nginx
+  kubectl create deployment testpsp2 --image=nginx
   ```
 
 - Look at existing resources:
@@ -350,7 +350,7 @@ We can get hints at what's happening by looking at the ReplicaSet and Events.
 
 - Create a Deployment as well:
   ```bash
-  kubectl run testpsp4 --image=nginx
+  kubectl create deployment testpsp4 --image=nginx
   ```
 
 - Confirm that the Deployment is *not* creating any Pods:

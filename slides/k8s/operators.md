@@ -93,11 +93,11 @@ Examples:
 
 - Representing and managing external resources
 
-  (Example: [AWS Service Operator](https://operatorhub.io/operator/alpha/aws-service-operator.v0.0.1))
+  (Example: [AWS S3 Operator](https://operatorhub.io/operator/awss3-operator-registry))
 
 - Managing complex cluster add-ons
 
-  (Example: [Istio operator](https://operatorhub.io/operator/beta/istio-operator.0.1.6))
+  (Example: [Istio operator](https://operatorhub.io/operator/istio))
 
 - Deploying and managing our applications' lifecycles
 

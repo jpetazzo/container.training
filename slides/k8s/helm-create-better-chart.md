@@ -121,7 +121,7 @@ This creates a basic chart in the directory `helmcoins`.
   helm install COMPONENT-NAME CHART-DIRECTORY
   ```
 
-- We can also use the following command, which is idempotent:
+- We can also use the following command, which is *idempotent*:
   ```bash
   helm upgrade COMPONENT-NAME CHART-DIRECTORY --install
   ```
@@ -136,6 +136,28 @@ This creates a basic chart in the directory `helmcoins`.
   ```
 
 ]
+
+---
+
+class: extra-details
+
+## "Idempotent"
+
+- Idempotent = that can be applied multiple times without changing the result
+
+  (the word is commonly used in maths and computer science)
+
+- In this context, this means:
+
+  - if the action (installing the chart) wasn't done, do it
+
+  - if the action was already done, don't do anything
+
+- Ideally, when such an action fails, it can be retried safely
+
+  (as opposed to, e.g., installing a new release each time we run it)
+
+- Other example: `kubectl -f some-file.yaml`
 
 ---
 

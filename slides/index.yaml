@@ -1,18 +1,63 @@
-- date: [2020-06-16, 2020-06-18]
-  country: www
-  city: streaming
-  event: Ardan Live
-  speaker: jpetazzo
-  title: Intensive Kubernetes Bootcamp
-  attend: https://www.eventbrite.com/e/livestream-intensive-kubernetes-bootcamp-tickets-103262336428
-
-- date: [2020-05-19, 2020-05-21]
+- date: [2020-07-07, 2020-07-09]
   country: www
   city: streaming
   event: Ardan Live
   speaker: jpetazzo
   title: Intensive Docker Bootcamp
   attend: https://www.eventbrite.com/e/livestream-intensive-docker-bootcamp-tickets-103258886108
+
+- date: [2020-06-15, 2020-06-16]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Docker intensif (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+
+- date: [2020-06-17, 2020-06-19]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Fondamentaux Kubernetes (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+
+- date: 2020-06-22
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Packaging pour Kubernetes (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+
+- date: [2020-06-23, 2020-06-24]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Kubernetes avancé (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+
+- date: [2020-06-25, 2020-06-26]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Opérer Kubernetes (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+
+- date: [2020-06-09, 2020-06-11]
+  country: www
+  city: streaming
+  event: Ardan Live
+  speaker: jpetazzo
+  title: Intensive Kubernetes Bootcamp
+  attend: https://www.eventbrite.com/e/livestream-intensive-kubernetes-bootcamp-tickets-103262336428
 
 - date: [2020-05-04, 2020-05-08]
   country: www
@@ -29,7 +74,7 @@
   speaker: jpetazzo
   title: Intensive Docker and Kubernetes
   attend: https://www.eventbrite.com/e/ardan-labs-live-worldwide-march-30-april-2-2020-tickets-100331129108#
-  slides: https://https://2020-03-ardan.container.training/
+  slides: https://2020-03-ardan.container.training/
 
 - date: 2020-03-06
   country: uk

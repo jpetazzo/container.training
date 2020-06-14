@@ -74,29 +74,78 @@
 
 ---
 
-## Portworx requirements
+## Installing Portworx
 
-- Kubernetes cluster ✔️
+- Portworx installation is relatively simple
 
-- Optional key/value store (etcd or Consul) ❌
+- ... But we made it *even simpler!*
 
-- At least one available block device ❌
+- We are going to use a YAML manifest that will take care of everything
 
----
+- Warning: this manifest is customized for a very specific setup
 
-## The key-value store
+  (like the VMs that we provide during workshops and training sessions)
 
-- In the current version of Portworx (1.4) it is recommended to use etcd or Consul
+- It will probably *not work* If you are using a different setup
 
-- But Portworx also has beta support for an embedded key/value store
-
-- For simplicity, we are going to use the latter option
-
-  (but if we have deployed Consul or etcd, we can use that, too)
+  (like Docker Desktop, k3s, MicroK8S, Minikube ...)
 
 ---
 
-## One available block device
+## The simplified Portworx installer
+
+- The Portworx installation will take a few minutes
+
+- Let's start it, then we'll explain what happens behind the scenes
+
+.exercise[
+
+- Install Portworx:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/portworx.yaml
+  ```
+
+]
+
+<!-- ##VERSION ## -->
+
+*Note: this was tested with Kubernetes 1.18. Newer versions may or may not work.*
+
+---
+
+class: extra-details
+
+## What's in this YAML manifest?
+
+- Portworx installation itself, pre-configured for our setup
+
+- A default *Storage Class* using Portworx
+
+- A *Daemon Set* to create loop devices on each node of the cluster
+
+---
+
+class: extra-details
+
+## Portworx installation
+
+- The official way to install Portworx is to use [PX-Central](https://central.portworx.com/)
+
+  (this requires a free account)
+
+- PX-Central will ask us a few questions about our cluster
+
+  (Kubernetes version, on-prem/cloud deployment, etc.)
+
+- Using our answers, it will generate a YAML manifest that we can use
+
+---
+
+class: extra-details
+
+## Portworx storage configuration
+
+- Portworx needs at least one *block device*
 
 - Block device = disk or partition on a disk
 
@@ -112,71 +161,41 @@
 
 ---
 
+class: extra-details
+
 ## Setting up a loop device
 
-- We are going to create a 10 GB (empty) file on each node
+- Our `portworx.yaml` manifest includes a *Daemon Set* that will:
 
-- Then make a loop device from it, to be used by Portworx
+  - create a 10 GB (empty) file on each node
 
-.exercise[
+  - load the `loop` module (if it's not already loaded)
 
-- Create a 10 GB file on each node:
-  ```bash
-  for N in $(seq 1 4); do ssh node$N sudo truncate --size 10G /portworx.blk; done
-  ```
-  (If SSH asks to confirm host keys, enter `yes` each time.)
+  - associate a loop device with the 10 GB file
 
-- Associate the file to a loop device on each node:
-  ```bash
-  for N in $(seq 1 4); do ssh node$N sudo losetup /dev/loop4 /portworx.blk; done
-  ```
-
-]
-
----
-
-## Installing Portworx
-
-- To install Portworx, we need to go to https://install.portworx.com/
-
-- This website will ask us a bunch of questions about our cluster
-
-- Then, it will generate a YAML file that we should apply to our cluster
-
---
-
-- Or, we can just apply that YAML file directly (it's in `k8s/portworx.yaml`)
-
-.exercise[
-
-- Install Portworx:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/portworx.yaml
-  ```
-
-]
+- After these steps, we have a block device that Portworx can use
 
 ---
 
 class: extra-details
 
-## Generating a custom YAML file
+## Implementation details
 
-If you want to generate a YAML file tailored to your own needs, the easiest
-way is to use https://install.portworx.com/.
+- The file is `/portworx.blk`
 
-FYI, this is how we obtained the YAML file used earlier:
-```
-KBVER=$(kubectl version -o json | jq -r .serverVersion.gitVersion)
-BLKDEV=/dev/loop4
-curl https://install.portworx.com/1.4/?kbver=$KBVER&b=true&s=$BLKDEV&c=px-workshop&stork=true&lh=true
-```
-If you want to use an external key/value store, add one of the following:
-```
-&k=etcd://`XXX`:2379
-&k=consul://`XXX`:8500
-```
-... where `XXX` is the name or address of your etcd or Consul server.
+  (it is a [sparse file](https://en.wikipedia.org/wiki/Sparse_file) created with `truncate`)
+
+- The loop device is `/dev/loop4`
+
+- This can be verified by running `sudo losetup`
+
+- The *Daemon Set* uses a privileged *Init Container*
+
+- We can check the logs of that container with:
+  ```bash
+    kubectl logs --selector=app=setup-loop4-for-portworx \
+            -c setup-loop4-for-portworx
+  ```
 
 ---
 
@@ -276,11 +295,9 @@ parameters:
  priority_io: "high"
 ```
 
-- It says "use Portworx to create volumes"
+- It says "use Portworx to create volumes and keep 2 replicas of these volumes"
 
-- It tells Portworx to "keep 2 replicas of these volumes"
-
-- It marks the Storage Class as being the default one
+- The annotation makes this Storage Class the default one
 
 ---
 
@@ -323,7 +340,10 @@ spec:
       schedulerName: stork
       containers:
       - name: postgres
-        image: postgres:11
+        image: postgres:12
+        env:
+        - name: POSTGRES_HOST_AUTH_METHOD
+          value: trust
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: postgres
@@ -401,14 +421,14 @@ autopilot prompt detection expects $ or # at the beginning of the line.
 
 - Populate it with `pgbench`:
   ```bash
-  pgbench -i -s 10 demo
+  pgbench -i demo
   ```
 
 ]
 
 - The `-i` flag means "create tables"
 
-- The `-s 10` flag means "create 10 x 100,000 rows"
+- If you want more data in the test tables, add e.g. `-s 10` (to get 10x more rows)
 
 ---
 
@@ -428,11 +448,55 @@ autopilot prompt detection expects $ or # at the beginning of the line.
   psql demo -c "select count(*) from pgbench_accounts"
   ```
 
-<!-- ```key ^D``` -->
+- Check that `pgbench_history` is currently empty:
+  ```bash
+  psql demo -c "select count(*) from pgbench_history"
+  ```
 
 ]
 
-(We should see a count of 1,000,000 rows.)
+---
+
+## Testing the load generator
+
+- Let's use `pgbench` to generate a few transactions
+
+.exercise[
+
+- Run `pgbench` for 10 seconds, reporting progress every second:
+  ```bash
+  pgbench -P 1 -T 10 demo
+  ```
+
+- Check the size of the history table now:
+  ```bash
+  psql demo -c "select count(*) from pgbench_history"
+  ```
+
+]
+
+Note: on small cloud instances, a typical speed is about 100 transactions/second.
+
+---
+
+## Generating transactions
+
+- Now let's use `pgbench` to generate more transactions
+
+- While it's running, we will disrupt the database server
+
+.exercise[
+
+- Run `pgbench` for 10 minutes, reporting progress every second:
+  ```bash
+  pgbench -P 1 -T 600 demo
+  ```
+
+- You can use a longer time period if you need more time to run the next steps
+
+<!-- ```tmux split-pane -h``` -->
+
+]
 
 ---
 
@@ -522,14 +586,17 @@ By "disrupt" we mean: "disconnect it from the network".
 ```key ^J```
 -->
 
-- Check the number of rows in the `pgbench_accounts` table:
+- Check how many transactions are now in the `pgbench_history` table:
   ```bash
-  psql demo -c "select count(*) from pgbench_accounts"
+  psql demo -c "select count(*) from pgbench_history"
   ```
 
 <!-- ```key ^D``` -->
 
 ]
+
+If the 10-second test that we ran earlier gave e.g. 80 transactions per second,
+and we failed the node after 30 seconds, we should have about 2400 row in that table.
 
 ---
 
@@ -598,7 +665,7 @@ class: extra-details
 
 - If we need to see what's going on with Portworx:
   ```
-  PXPOD=$(kubectl -n kube-system get pod -l name=portworx -o json | 
+  PXPOD=$(kubectl -n kube-system get pod -l name=portworx -o json |
   	      jq -r .items[0].metadata.name)
   kubectl -n kube-system exec $PXPOD -- /opt/pwx/bin/pxctl status
   ```

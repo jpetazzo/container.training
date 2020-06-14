@@ -1,5 +1,4 @@
 title: |
-  Module 1
   Docker Intensif
 
 chat: "[Gitter](https://gitter.im/jpetazzo/formation-highfive-202006)"
@@ -19,7 +18,8 @@ content:
 - containers/intro.md
 - shared/about-slides.md
 - shared/chat-room-im.md
-#- shared/chat-room-zoom.md
+#- shared/chat-room-zoom-meeting.md
+#- shared/chat-room-zoom-webinar.md
 - shared/toc.md
 -
   #- containers/Docker_Overview.md
