@@ -1,12 +1,12 @@
 title: |
-  Docker
-  au quart de tour
+  Module 1
+  Docker Intensif
 
-chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+chat: "[Gitter](https://gitter.im/jpetazzo/formation-highfive-202006)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: https://2020-05-enix.container.training/
+slides: https://2020-06-enix.container.training/
 
 #slidenumberprefix: "#SomeHashTag &mdash; "
 
