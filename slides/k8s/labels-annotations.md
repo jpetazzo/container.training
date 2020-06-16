@@ -143,6 +143,30 @@ So, what do we get?
 
 ---
 
+## Other ways to view labels
+
+- `kubectl get` gives us a couple of useful flags to check labels
+
+- `kubectl get --show-labels` shows all labels
+
+- `kubectl get -L xyz` shows the value of label `xyz`
+
+.exercise[
+
+- List all the labels that we have on pods:
+  ```bash
+  kubectl get pods --show-labels
+  ```
+
+- List the value of label `app` on these pods:
+  ```bash
+  kubectl get pods -L app
+  ```
+
+]
+
+---
+
 class: extra-details
 
 ## More on selectors
