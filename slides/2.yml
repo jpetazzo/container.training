@@ -54,9 +54,7 @@ content:
   - shared/hastyconclusions.md
   - k8s/daemonset.md
 -
-  #- k8s/dryrun.md
   - k8s/rollout.md
-  #- k8s/record.md
   - k8s/healthchecks.md
   #- k8s/healthchecks-more.md
   - k8s/setup-overview.md
@@ -92,3 +90,8 @@ content:
   #- k8s/lastwords.md
   - shared/thankyou.md
   - k8s/links.md
+-
+  - |
+    # (Bonus)
+  - k8s/record.md
+  - k8s/dryrun.md
