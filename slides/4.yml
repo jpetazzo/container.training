@@ -29,7 +29,6 @@ content:
 -
   - k8s/extending-api.md
   - k8s/operators.md
-  #- k8s/operators-design.md
 -
   - k8s/resource-limits.md
   - k8s/metrics-server.md
@@ -41,3 +40,8 @@ content:
   - k8s/local-persistent-volumes.md
   - k8s/portworx.md
   - shared/thankyou.md
+-
+  - |
+    # (Bonus material)
+  - k8s/podsecuritypolicy.md
+  - k8s/operators-design.md
