@@ -249,7 +249,8 @@ EOF"
     # Install kustomize
     pssh "
     if [ ! -x /usr/local/bin/kustomize ]; then
-        curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v3.5.4/kustomize_v3.5.1_linux_amd64.tar.gz |
+        ##VERSION##
+        curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v3.6.1/kustomize_v3.6.1_linux_amd64.tar.gz |
             sudo tar -C /usr/local/bin -zx kustomize
         echo complete -C /usr/local/bin/kustomize kustomize | sudo tee /etc/bash_completion.d/kustomize
     fi"
