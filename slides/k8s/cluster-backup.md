@@ -217,14 +217,15 @@ docker run --rm --net host -v $PWD:/vol \
 
 ## How can we remember all these flags?
 
-- Look at the static pod manifest for etcd
+- Older versions of kubeadm did add a healthcheck probe with all these flags
 
-  (in `/etc/kubernetes/manifests`)
+- That healthcheck probe was calling `etcdctl` with all the right flags 
 
-- The healthcheck probe is calling `etcdctl` with all the right flags 
-  😉👍✌️
+- With recent versions of kubeadm, we're on our own!
 
 - Exercise: write the YAML for a batch job to perform the backup
+
+  (how will you access the key and certificate required to connect?)
 
 ---
 
