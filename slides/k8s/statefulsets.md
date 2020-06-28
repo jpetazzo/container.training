@@ -117,9 +117,9 @@ spec:
       name: my-nfs-volume
   volumes:
   - name: my-nfs-volume
-      nfs:
-        server: 192.168.0.55
-        path: "/exports/assets"
+    nfs:
+      server: 192.168.0.55
+      path: "/exports/assets"
 ```
 
 ---
