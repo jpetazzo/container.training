@@ -17,14 +17,16 @@ spec:
     storage: true
     schema:
       openAPIV3Schema:
+        type: object
+        required: [ spec ]
         properties:
           spec:
-            required:
-            - taste
+            type: object
             properties:
               taste:
                 description: Subjective taste of that kind of coffee bean
                 type: string
+            required: [ taste ]
     additionalPrinterColumns:
     - jsonPath: .spec.taste
       description: Subjective taste of that kind of coffee bean

@@ -9,9 +9,9 @@ spec:
 kind: Coffee
 apiVersion: container.training/v1alpha1
 metadata:
-  name: robusta
+  name: excelsa
 spec:
-  taste: stronger
+  taste: fruity
 ---
 kind: Coffee
 apiVersion: container.training/v1alpha1
@@ -23,7 +23,12 @@ spec:
 kind: Coffee
 apiVersion: container.training/v1alpha1
 metadata:
-  name: excelsa
+  name: robusta
 spec:
-  taste: fruity
-
+  taste: stronger
+  bitterness: high
+---
+kind: Coffee
+apiVersion: container.training/v1alpha1
+metadata:
+  name: java
