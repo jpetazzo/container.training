@@ -52,7 +52,7 @@ data:
         - add_kubernetes_metadata:
             in_cluster: true
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: filebeat
@@ -60,6 +60,9 @@ metadata:
   labels:
     k8s-app: filebeat
 spec:
+  selector:
+    matchLabels:
+      k8s-app: filebeat
   template:
     metadata:
       labels:
