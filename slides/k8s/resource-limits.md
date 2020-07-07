@@ -104,9 +104,9 @@ Each pod is assigned a QoS class (visible in `status.qosClass`).
 
 - When a node is overloaded, BestEffort pods are killed first
 
-- Then, Burstable pods that exceed their limits
+- Then, Burstable pods that exceed their requests
 
-- Burstable and Guaranteed pods below their limits are never killed
+- Burstable and Guaranteed pods below their requests are never killed
 
   (except if their node fails)
 
