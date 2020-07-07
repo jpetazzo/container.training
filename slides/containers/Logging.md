@@ -1,4 +1,4 @@
-# Logging
+# Logging (extra material)
 
 In this chapter, we will explain the different ways to send logs from containers.
 
