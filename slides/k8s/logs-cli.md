@@ -76,7 +76,7 @@ Exactly what we need!
   sudo chmod +x /usr/local/bin/stern
   ```
 
-- On macOS, we can also `brew install stern` or `port install stern`
+- On macOS, we can also `brew install stern` or `sudo port install stern`
 
 <!-- ##VERSION## -->
 
