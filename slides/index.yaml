@@ -43,6 +43,14 @@
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
 
+- date: [2020-09-28, 2020-10-01]
+  country: www
+  city: streaming
+  event: Skills Matter
+  speaker: jpetazzo
+  title: Advanced Kubernetes Concepts
+  attend: https://skillsmatter.com/courses/700-advanced-kubernetes-concepts-workshop-jerome-petazzoni
+
 - date: [2020-07-07, 2020-07-09]
   country: www
   city: streaming
