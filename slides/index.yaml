@@ -1,3 +1,48 @@
+- date: [2020-10-05, 2020-10-06]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Docker intensif (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+
+- date: [2020-10-07, 2020-10-09]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Fondamentaux Kubernetes (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+
+- date: 2020-10-12
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Packaging pour Kubernetes (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+
+- date: [2020-10-13, 2020-10-14]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Kubernetes avancé (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+
+- date: [2020-10-19, 2020-10-20]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Opérer Kubernetes (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+
 - date: [2020-07-07, 2020-07-09]
   country: www
   city: streaming
