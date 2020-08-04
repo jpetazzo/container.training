@@ -51,6 +51,22 @@
   title: Advanced Kubernetes Concepts
   attend: https://skillsmatter.com/courses/700-advanced-kubernetes-concepts-workshop-jerome-petazzoni
 
+- date: [2020-08-29, 2020-08-30]
+  country: www
+  city: streaming
+  event: fwdays
+  speaker: jpetazzo
+  title: Intensive Docker Online Workshop
+  attend: https://fwdays.com/en/event/intensive-docker-workshop
+
+- date: [2020-09-12, 2020-09-13]
+  country: www
+  city: streaming
+  event: fwdays
+  speaker: jpetazzo
+  title: Kubernetes Intensive Online Workshop
+  attend: https://fwdays.com/en/event/kubernetes-intensive-workshop
+
 - date: [2020-07-07, 2020-07-09]
   country: www
   city: streaming
