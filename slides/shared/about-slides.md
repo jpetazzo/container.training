@@ -28,7 +28,7 @@
 
   (then open the file `@@HTML@@`)
 
-- You will to find new versions of these slides on:
+- You will find new versions of these slides on:
 
   https://container.training/
 

@@ -749,7 +749,7 @@ class: extra-details
 
 :EN:- Authentication and authorization in Kubernetes
 :EN:- Authentication with tokens and certificates
-:EN:- Aithorization with RBAC (Role-Based Access Control)
+:EN:- Authorization with RBAC (Role-Based Access Control)
 :EN:- Restricting permissions with Service Accounts
 :EN:- Working with Roles, Cluster Roles, Role Bindings, etc.
 
