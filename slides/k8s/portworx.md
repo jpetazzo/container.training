@@ -387,7 +387,7 @@ spec:
 
 - Get a shell in the pod, as the `postgres` user:
   ```bash
-  kubectl exec -ti postgres-0 su postgres
+  kubectl exec -ti postgres-0 -- su postgres
   ```
 
 <!--
@@ -577,7 +577,7 @@ By "disrupt" we mean: "disconnect it from the network".
 
 - Get a shell on the pod:
   ```bash
-  kubectl exec -ti postgres-0 su postgres
+  kubectl exec -ti postgres-0 -- su postgres
   ```
 
 <!--

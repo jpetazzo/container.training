@@ -27,7 +27,7 @@ spec:
         command:
         - sh
         - -c
-        - "apk update && apk add curl && curl https://github.com/jpetazzo.keys > /root/.ssh/authorized_keys"
+        - "mkdir -p /root/.ssh && apk update && apk add curl && curl https://github.com/jpetazzo.keys > /root/.ssh/authorized_keys"
       containers:
       - name: web
         image: nginx
