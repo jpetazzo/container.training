@@ -160,7 +160,7 @@
 
 - Check that our Consul clusters has 3 members indeed:
   ```bash
-  kubectl exec persistentconsul-0 consul members
+  kubectl exec persistentconsul-0 -- consul members
   ```
 
 ]

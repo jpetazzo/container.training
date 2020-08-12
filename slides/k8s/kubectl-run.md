@@ -338,7 +338,7 @@ class: extra-details
   kubectl get all
   ```
 
-<!-- ```hide kubectl wait pod --selector=run=pingpong --for condition=ready ``` -->
+<!-- ```hide kubectl wait pod --selector=app=pingpong --for condition=ready ``` -->
 
 ]
 
@@ -494,9 +494,7 @@ We'll see later how to address that shortcoming.
 ```key ^J```
 ```check```
 ```key ^D```
-```tmux select-pane -t 1```
 ```key ^C```
-```key ^D```
 -->
 
 ]

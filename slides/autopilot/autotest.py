@@ -233,7 +233,7 @@ def setup_tmux_and_ssh():
         ipaddr = "$IPADDR"
         uid = os.getuid()
 
-        raise Exception("""
+        raise Exception(r"""
 1. If you're running this directly from a node:
 
 tmux
@@ -247,6 +247,16 @@ rm -f /tmp/tmux-{uid}/default && ssh -t -L /tmp/tmux-{uid}/default:/tmp/tmux-100
 3. If you cannot control a remote tmux:
 
 tmux new-session ssh docker@{ipaddr}
+
+4. If you are running this locally with a remote cluster, make sure your prompt has the expected format:
+
+tmux
+IPADDR=$(
+  kubectl get nodes -o json |
+  jq -r '.items[0].status.addresses[] | select(.type=="ExternalIP") | .address'
+  )
+export PS1="\n[{ipaddr}] \u@\h:\w\n\$ "
+
 """.format(uid=uid, ipaddr=ipaddr))
     else:
         logging.info("Found tmux session. Trying to acquire shell prompt.")

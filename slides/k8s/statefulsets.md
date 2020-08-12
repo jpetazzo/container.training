@@ -297,7 +297,7 @@ nodes and encryption of gossip traffic) were removed for simplicity.
 
 - Check the health of the cluster:
   ```bash
-  kubectl exec consul-0 consul members
+  kubectl exec consul-0 -- consul members
   ```
 
 ]
