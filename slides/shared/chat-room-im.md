@@ -1,10 +1,10 @@
 ## Chat room
 
-- We've set up a chat room that we will monitor during the workshop
+- A chat room has been set up for the duration of the training
 
 - Don't hesitate to use it to ask questions, or get help, or share feedback
 
-- The chat room will also be available after the workshop
+  (we'll keep an eye on it during the training!)
 
 - Join the chat room: @@CHAT@@
 

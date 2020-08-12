@@ -5,7 +5,7 @@ title: |
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
-chat: "In person!"
+chat: "`#kubernetes-training-august-17-21` on Slack"
 
 gitrepo: github.com/jpetazzo/container.training
 
@@ -36,8 +36,8 @@ content:
   - shared/composedown.md
   - k8s/concepts-k8s.md
   - k8s/kubectlget.md
-  - k8s/kubectl-run.md
 -
+  - k8s/kubectl-run.md
   - shared/declarative.md
   - k8s/declarative.md
   - k8s/deploymentslideshow.md
@@ -52,7 +52,6 @@ content:
   - k8s/labels-annotations.md
   - k8s/kubectl-logs.md
   - k8s/logs-cli.md
-  - k8s/batch-jobs.md
   - k8s/yamldeploy.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
@@ -65,10 +64,8 @@ content:
   #- k8s/healthchecks-more.md
   - k8s/setup-overview.md
   - k8s/setup-devel.md
-  - |
-    # (Extra content)
-  - k8s/setup-managed.md
-  - k8s/setup-selfhosted.md
+  #- k8s/setup-managed.md
+  #- k8s/setup-selfhosted.md
 - # DAY 3
   - k8s/namespaces.md
   - k8s/localkubeconfig.md
@@ -87,27 +84,18 @@ content:
 - # DAY 4
   - k8s/netpol.md
   - k8s/authn-authz.md
+  #- k8s/podsecuritypolicy.md
+  #- k8s/csr-api.md
+  #- k8s/openid-connect.md
 -
-  - k8s/podsecuritypolicy.md
-  - k8s/csr-api.md
-  - k8s/openid-connect.md
-- # DAY 5
-  - k8s/kustomize.md
-  - k8s/helm-intro.md
-  - k8s/helm-chart-format.md
-  - k8s/helm-create-basic-chart.md
--
-  - k8s/helm-create-better-chart.md
-  - k8s/helm-secrets.md
-  #- k8s/exercise-helm.md
-- # DAY 6
   - k8s/resource-limits.md
   - k8s/metrics-server.md
   - k8s/cluster-sizing.md
   - k8s/horizontal-pod-autoscaler.md
   #- k8s/logs-centralized.md
   #- k8s/prometheus.md
--
+- # DAY 5
+  - k8s/batch-jobs.md
   - k8s/statefulsets.md
   - k8s/local-persistent-volumes.md
   - k8s/portworx.md
@@ -121,3 +109,12 @@ content:
   - k8s/lastwords.md
   - k8s/links.md
   - shared/thankyou.md
+#- # PACKAGING
+#  - k8s/kustomize.md
+#  - k8s/helm-intro.md
+#  - k8s/helm-chart-format.md
+#  - k8s/helm-create-basic-chart.md
+#-
+#  - k8s/helm-create-better-chart.md
+#  - k8s/helm-secrets.md
+#  #- k8s/exercise-helm.md
