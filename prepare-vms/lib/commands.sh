@@ -65,6 +65,14 @@ _cmd_deploy() {
         sleep 1
     done"
 
+    # Special case for scaleway since it doesn't come with sudo
+    if [ "$INFRACLASS" = "scaleway" ]; then
+        pssh -l root "
+    grep DEBIAN_FRONTEND /etc/environment || echo DEBIAN_FRONTEND=noninteractive >> /etc/environment
+    grep cloud-init /etc/sudoers && rm /etc/sudoers
+    apt-get update && apt-get install sudo -y"
+    fi
+
     # Copy settings and install Python YAML parser
     pssh -I tee /tmp/settings.yaml <tags/$TAG/settings.yaml
     pssh "
