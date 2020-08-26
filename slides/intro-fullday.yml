@@ -3,8 +3,8 @@ title: |
   Docker
   Workshop
 
-chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+chat: "[Gitter](https://gitter.im/jpetazzo/workshop-20200829-online)"
 
 gitrepo: github.com/jpetazzo/container.training
 
