@@ -1,15 +1,23 @@
 title: |
-  Introduction
-  to Containers
+  Intensive
+  Docker
+  Workshop
 
 chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: http://2020-08-fwdays.container.training/
 
-#slidenumberprefix: "#SomeHashTag &mdash; "
+slidenumberprefix:
+  <a href="https://fwdays.com/">fwdays</a>
+  &mdash;
+  <a href="https://container.training/">container.training</a>
+  &mdash;
+  <a href="https://twitter.com/jpetazzo">@jpetazzo</a>
+  &mdash;
+  &nbsp;
 
 exclude:
 - self-paced
