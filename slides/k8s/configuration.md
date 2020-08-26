@@ -210,6 +210,8 @@
 
   (through files that get created in the container filesystem)
 
+- That second link also includes a list of all the fields that can be used with the downward API
+
 ---
 
 ## Environment variables, pros and cons
