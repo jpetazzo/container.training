@@ -2,7 +2,7 @@
 
 - Hello! I'm Jérôme Petazzoni ([@jpetazzo](https://twitter.com/jpetazzo))
 
-- The training will run the whole week from 9:30am to 1:30pm
+- The training will run the whole week from 8am to noon (Pacific time)
 
 - There will be a short break (\~5 min) every hour
 
