@@ -29,6 +29,8 @@ class: title
 a tutorial, training or workshop, where each student is given an
 individual Docker VM.*
 
+- Go to https://2020-08-fwdays.container.training/vms to get your VM!
+
 - The VM is created just before the training.
 
 - It will stay up during the whole training.
