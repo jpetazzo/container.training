@@ -322,6 +322,22 @@ _cmd_ids() {
     aws_get_instance_ids_by_client_token $TAG
 }
 
+_cmd ips "Show the IP addresses for a given tag"
+_cmd_ips() {
+    TAG=$1
+    need_tag $TAG
+
+    SETTINGS=tags/$TAG/settings.yaml
+    CLUSTERSIZE=$(awk '/^clustersize:/ {print $2}' $SETTINGS)
+    while true; do
+        for I in $(seq $CLUSTERSIZE); do
+            read ip || return 0
+            printf "%s\t" "$ip"
+        done
+        printf "\n"
+    done < tags/$TAG/ips.txt
+}
+
 _cmd list "List available groups for a given infrastructure"
 _cmd_list() {
     need_infra $1
