@@ -65,6 +65,14 @@ _cmd_deploy() {
         sleep 1
     done"
 
+    # Special case for scaleway since it doesn't come with sudo
+    if [ "$INFRACLASS" = "scaleway" ]; then
+        pssh -l root "
+    grep DEBIAN_FRONTEND /etc/environment || echo DEBIAN_FRONTEND=noninteractive >> /etc/environment
+    grep cloud-init /etc/sudoers && rm /etc/sudoers
+    apt-get update && apt-get install sudo -y"
+    fi
+
     # Copy settings and install Python YAML parser
     pssh -I tee /tmp/settings.yaml <tags/$TAG/settings.yaml
     pssh "
@@ -131,19 +139,19 @@ _cmd_kubebins() {
     cd /usr/local/bin
     if ! [ -x etcd ]; then
         ##VERSION##
-        curl -L https://github.com/etcd-io/etcd/releases/download/v3.4.3/etcd-v3.4.3-linux-amd64.tar.gz \
+        curl -L https://github.com/etcd-io/etcd/releases/download/v3.4.9/etcd-v3.4.9-linux-amd64.tar.gz \
         | sudo tar --strip-components=1 --wildcards -zx '*/etcd' '*/etcdctl'
     fi
     if ! [ -x hyperkube ]; then
         ##VERSION##
-        curl -L https://dl.k8s.io/v1.17.2/kubernetes-server-linux-amd64.tar.gz \
+        curl -L https://dl.k8s.io/v1.18.8/kubernetes-server-linux-amd64.tar.gz \
         | sudo tar --strip-components=3 -zx \
           kubernetes/server/bin/kube{ctl,let,-proxy,-apiserver,-scheduler,-controller-manager}
     fi
     sudo mkdir -p /opt/cni/bin
     cd /opt/cni/bin
     if ! [ -x bridge ]; then
-        curl -L https://github.com/containernetworking/plugins/releases/download/v0.7.6/cni-plugins-amd64-v0.7.6.tgz \
+        curl -L https://github.com/containernetworking/plugins/releases/download/v0.8.6/cni-plugins-linux-amd64-v0.8.6.tgz \
         | sudo tar -zx
     fi
     "
@@ -312,6 +320,22 @@ _cmd_ids() {
     # Just in case we managed to create instances but weren't able to tag them
     info "Looking up by token:"
     aws_get_instance_ids_by_client_token $TAG
+}
+
+_cmd ips "Show the IP addresses for a given tag"
+_cmd_ips() {
+    TAG=$1
+    need_tag $TAG
+
+    SETTINGS=tags/$TAG/settings.yaml
+    CLUSTERSIZE=$(awk '/^clustersize:/ {print $2}' $SETTINGS)
+    while true; do
+        for I in $(seq $CLUSTERSIZE); do
+            read ip || return 0
+            printf "%s\t" "$ip"
+        done
+        printf "\n"
+    done < tags/$TAG/ips.txt
 }
 
 _cmd list "List available groups for a given infrastructure"
