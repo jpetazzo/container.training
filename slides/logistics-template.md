@@ -4,7 +4,7 @@
 
   - Jérôme Petazzoni ([@jpetazzo](https://twitter.com/jpetazzo))
 
-  - AJ Bowen ([@s0ulshake](twitter.com/s0ulshake), [EphemeraSearch](https://ephemerasearch.com/))
+  - AJ Bowen ([@s0ulshake](https://twitter.com/s0ulshake), [EphemeraSearch](https://ephemerasearch.com/))
 
 - The training will run the whole week from 8am to noon (Pacific time)
 
