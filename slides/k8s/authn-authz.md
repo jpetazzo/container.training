@@ -118,7 +118,7 @@
 
 - [HTTP basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication)
 
-  (carrying user and password in an HTTP header)
+  (carrying user and password in an HTTP header; [deprecated since Kubernetes 1.19](https://github.com/kubernetes/kubernetes/pull/89069))
 
 - Authentication proxy
 

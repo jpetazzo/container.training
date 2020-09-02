@@ -52,7 +52,7 @@
 
 <!-- ##VERSION## -->
 
-- Unfortunately, as of Kubernetes 1.17, the CLI cannot create daemon sets
+- Unfortunately, as of Kubernetes 1.19, the CLI cannot create daemon sets
 
 --
 
