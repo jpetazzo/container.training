@@ -536,6 +536,8 @@ spec:
 
 ---
 
+class: extra-details
+
 ## Differences between configmaps and secrets
  
 - Secrets are base64-encoded when shown with `kubectl get secrets -o yaml`
@@ -549,6 +551,29 @@ spec:
 - With RBAC, we can authorize a user to access configmaps, but not secrets
 
   (since they are two different kinds of resources)
+
+---
+
+class: extra-details
+
+## Immutable ConfigMaps and Secrets
+
+- Since Kubernetes 1.19, it is possible to mark a ConfigMap or Secret as *immutable*
+
+  ```bash
+  kubectl patch configmap xyz --patch='{"immutable": true}'
+  ```
+
+- This brings performance improvements when using lots of ConfigMaps and Secrets
+
+  (lots = tens of thousands)
+
+- Once a ConfigMap or Secret has been marked as immutable:
+
+  - its content cannot be changed anymore
+  - the `immutable` field can't be changed back either
+  - the only way to change it is to delete and re-create it
+  - Pods using it will have to be re-created as well
 
 ???
 
