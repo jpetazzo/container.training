@@ -149,6 +149,28 @@
 
 ---
 
+class: extra-details
+
+## Supporting other CPU architectures
+
+- The `jpetazzo/httpenv` image is currently only available for `x86_64`
+
+  (the "classic" Intel 64 bits architecture found on most PCs and Macs)
+
+- That image won't work on other architectures
+
+  (e.g. Raspberry Pi or other ARM-based machines)
+
+- Note that Docker supports [multi-arch](https://www.docker.com/blog/multi-arch-build-and-images-the-simple-way/) images
+
+  (so *technically* we could make it work across multiple architectures)
+
+- If you want to build `httpenv` for your own platform, here is the source:
+
+  https://github.com/jpetazzo/httpenv
+
+---
+
 ## Creating a deployment for our HTTP server
 
 - We will create a deployment with `kubectl create deployment`
