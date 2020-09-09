@@ -18,7 +18,13 @@ pssh() {
     echo "[parallel-ssh] $@"
     export PSSH=$(which pssh || which parallel-ssh)
 
-    $PSSH -h $HOSTFILE -l ubuntu \
+    if [ "$INFRACLASS" = hetzner ]; then
+        LOGIN=root
+    else
+        LOGIN=ubuntu
+    fi
+
+    $PSSH -h $HOSTFILE -l $LOGIN \
         --par 100 \
         -O LogLevel=ERROR \
         -O UserKnownHostsFile=/dev/null \

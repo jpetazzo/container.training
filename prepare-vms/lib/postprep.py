@@ -37,7 +37,7 @@ def system(cmd):
         td = str(t2-t1)[:5]
         f.write(bold("[{}] in {}s\n".format(retcode, td)))
         STEP += 1
-    with open("/home/ubuntu/.bash_history", "a") as f:
+    with open(os.environ["HOME"] + "/.bash_history", "a") as f:
         f.write("{}\n".format(cmd))
     if retcode != 0:
         msg = "The following command failed with exit code {}:\n".format(retcode)
