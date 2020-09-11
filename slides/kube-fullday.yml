@@ -1,16 +1,22 @@
 title: |
-  Deploying and Scaling Microservices
-  with Kubernetes
+  Kubernetes
+  Intensive
+  Workshop
 
-#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
-chat: "In person!"
+chat: "[Gitter](https://gitter.im/jpetazzo/workshop-20200912-online)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: https://2020-09-fwdays.container.training/
 
-#slidenumberprefix: "#SomeHashTag &mdash; "
+slidenumberprefix:
+  <a href="https://fwdays.com/">fwdays</a>
+  &mdash;
+  <a href="https://container.training/">container.training</a>
+  &mdash;
+  <a href="https://twitter.com/jpetazzo">@jpetazzo</a>
+  &mdash;
+  &nbsp;
 
 exclude:
 - self-paced
@@ -53,8 +59,6 @@ content:
   #- k8s/exercise-wordsmith.md
 -
   - k8s/yamldeploy.md
-  - k8s/setup-overview.md
-  #- k8s/setup-devel.md
   #- k8s/setup-managed.md
   #- k8s/setup-selfhosted.md
   #- k8s/dashboard.md
@@ -104,7 +108,8 @@ content:
   #- k8s/staticpods.md
   #- k8s/owners-and-dependents.md
   #- k8s/gitworkflows.md
--
+  - k8s/setup-overview.md
+  - k8s/setup-devel.md
   - k8s/whatsnext.md
   - k8s/lastwords.md
   - k8s/links.md

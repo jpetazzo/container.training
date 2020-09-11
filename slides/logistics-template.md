@@ -1,32 +1,16 @@
 ## Intros
 
-- This slide should be customized by the tutorial instructor(s).
-
 - Hello! We are:
 
-   - .emoji[👩🏻‍🏫] Ann O'Nymous ([@...](https://twitter.com/...), Megacorp Inc)
-
-   - .emoji[👨🏾‍🎓] Stu Dent ([@...](https://twitter.com/...), University of Wakanda)
-
- <!-- .dummy[
-
-   - .emoji[👷🏻‍♀️] AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
-
-   - .emoji[🚁] Alexandre ([@alexbuisine](https://twitter.com/alexbuisine), Enix SAS)
+   - .emoji[👷🏻‍♀️] AJ ([@s0ulshake](https://twitter.com/s0ulshake), [EphemeraSearch](https://ephemerasearch.com/))
 
    - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
 
-   - .emoji[⛵] Jérémy ([@jeremygarrouste](twitter.com/jeremygarrouste), Inpiwee)
+- The workshop will run from 10:00 to 15:00 (EEST timezone, GMT+3)
 
-   - .emoji[🎧] Romain ([@rdegez](https://twitter.com/rdegez), Enix SAS)
+- We will have short breaks at 11:10 and 13:50 (approximately!)
 
-] -->
-
-- The workshop will run from ...
-
-- There will be a lunch break at ...
-
-  (And coffee breaks!)
+- And a longer lunch break at 12:20 (about 30 minutes)
 
 - Feel free to interrupt for questions at any time
 
