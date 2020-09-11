@@ -58,7 +58,7 @@
 
 ## Deploying Consul
 
-- We will use a slightly different YAML file
+- Let's use a new manifest for our Consul cluster
 
 - The only differences between that file and the previous one are:
 
@@ -66,15 +66,11 @@
 
   - the corresponding `volumeMounts` in the Pod spec
 
-  - the label `consul` has been changed to `persistentconsul`
-    <br/>
-    (to avoid conflicts with the other Stateful Set)
-
 .exercise[
 
 - Apply the persistent Consul YAML file:
   ```bash
-  kubectl apply -f ~/container.training/k8s/persistent-consul.yaml
+  kubectl apply -f ~/container.training/k8s/consul-3.yaml
   ```
 
 ]
@@ -97,7 +93,7 @@
   kubectl get pv
   ```
 
-- The Pod `persistentconsul-0` is not scheduled yet:
+- The Pod `consul-0` is not scheduled yet:
   ```bash
   kubectl get pods -o wide
   ```
@@ -112,9 +108,9 @@
 
 - In a Stateful Set, the Pods are started one by one
 
-- `persistentconsul-1` won't be created until `persistentconsul-0` is running
+- `consul-1` won't be created until `consul-0` is running
 
-- `persistentconsul-0` has a dependency on an unbound Persistent Volume Claim
+- `consul-0` has a dependency on an unbound Persistent Volume Claim
 
 - The scheduler won't schedule the Pod until the PVC is bound
 
@@ -152,7 +148,7 @@
 
 - Once a PVC is bound, its pod can start normally
 
-- Once the pod `persistentconsul-0` has started, `persistentconsul-1` can be created, etc.
+- Once the pod `consul-0` has started, `consul-1` can be created, etc.
 
 - Eventually, our Consul cluster is up, and backend by "persistent" volumes
 
@@ -160,7 +156,7 @@
 
 - Check that our Consul clusters has 3 members indeed:
   ```bash
-  kubectl exec persistentconsul-0 -- consul members
+  kubectl exec consul-0 -- consul members
   ```
 
 ]

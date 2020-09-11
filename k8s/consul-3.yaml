@@ -1,5 +1,7 @@
+# Even better Consul cluster.
+# That one uses a volumeClaimTemplate to achieve true persistence.
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
   name: consul
 rules:
@@ -11,17 +13,16 @@ rules:
       - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: RoleBinding
 metadata:
   name: consul
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
+  kind: Role
   name: consul
 subjects:
   - kind: ServiceAccount
     name: consul
-    namespace: default
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -49,6 +50,15 @@ spec:
   selector:
     matchLabels:
       app: consul
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
   template:
     metadata:
       labels:
@@ -63,16 +73,24 @@ spec:
                   - key: app
                     operator: In
                     values:
-                      - consul
+                      - persistentconsul
               topologyKey: kubernetes.io/hostname
       terminationGracePeriodSeconds: 10
       containers:
         - name: consul
-          image: "consul:1.6"
+          image: "consul:1.8"
+          volumeMounts:
+            - name: data
+              mountPath: /consul/data
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           args:
             - "agent"
             - "-bootstrap-expect=3"
-            - "-retry-join=provider=k8s label_selector=\"app=consul\""
+            - "-retry-join=provider=k8s label_selector=\"app=consul\" namespace=\"$(NAMESPACE)\""
             - "-client=0.0.0.0"
             - "-data-dir=/consul/data"
             - "-server"
