@@ -41,9 +41,8 @@ content:
   - shared/composedown.md
   - k8s/concepts-k8s.md
   - k8s/kubectlget.md
--
   - k8s/kubectl-run.md
-  - k8s/batch-jobs.md
+-
   - k8s/labels-annotations.md
   - k8s/kubectl-logs.md
   - k8s/logs-cli.md
@@ -72,7 +71,6 @@ content:
   #- k8s/accessinternal.md
   #- k8s/kubectlproxy.md
   - k8s/rollout.md
-  #- k8s/healthchecks.md
   #- k8s/healthchecks-more.md
   #- k8s/record.md
 -
@@ -87,8 +85,6 @@ content:
   #- k8s/exercise-helm.md
   #- k8s/create-chart.md
   #- k8s/create-more-charts.md
-  #- k8s/netpol.md
-  #- k8s/authn-authz.md
   #- k8s/csr-api.md
   #- k8s/openid-connect.md
   #- k8s/podsecuritypolicy.md
@@ -99,9 +95,6 @@ content:
   - k8s/configuration.md
   #- k8s/logs-centralized.md
   #- k8s/prometheus.md
-  #- k8s/statefulsets.md
-  #- k8s/local-persistent-volumes.md
-  #- k8s/portworx.md
   #- k8s/extending-api.md
   #- k8s/operators.md
   #- k8s/operators-design.md
@@ -110,7 +103,20 @@ content:
   #- k8s/gitworkflows.md
   - k8s/setup-overview.md
   - k8s/setup-devel.md
-  - k8s/whatsnext.md
-  - k8s/lastwords.md
+  #- k8s/whatsnext.md
+  #- k8s/lastwords.md
   - k8s/links.md
   - shared/thankyou.md
+-
+  - |
+    # (Extra content)
+  - k8s/healthchecks.md
+  - k8s/batch-jobs.md
+  - k8s/netpol.md
+  - k8s/authn-authz.md
+-
+  - |
+    # (More extra content)
+  - k8s/statefulsets.md
+  - k8s/local-persistent-volumes.md
+  - k8s/portworx.md
