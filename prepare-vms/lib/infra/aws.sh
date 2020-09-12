@@ -1,9 +1,13 @@
+if ! command -v aws >/dev/null; then
+    warn "AWS CLI (aws) not found."
+fi
+
 infra_list() {
     aws_display_tags
 }
 
 infra_quotas() {
-    greet
+    aws_greet
 
     max_instances=$(aws ec2 describe-account-attributes \
         --attribute-names max-instances \
@@ -21,10 +25,10 @@ infra_start() {
     COUNT=$1
 
     # Print our AWS username, to ease the pain of credential-juggling
-    greet
+    aws_greet
 
     # Upload our SSH keys to AWS if needed, to be added to each VM's authorized_keys
-    key_name=$(sync_keys)
+    key_name=$(aws_sync_keys)
 
     AMI=$(aws_get_ami)    # Retrieve the AWS image ID
     if [ -z "$AMI" ]; then
@@ -61,7 +65,7 @@ infra_start() {
     aws_tag_instances $TAG $TAG
 
     # Wait until EC2 API tells us that the instances are running
-    wait_until_tag_is_running $TAG $COUNT
+    aws_wait_until_tag_is_running $TAG $COUNT
 
     aws_get_instance_ips_by_tag $TAG > tags/$TAG/ips.txt
 }
@@ -98,7 +102,7 @@ infra_disableaddrchecks() {
     done
 }
 
-wait_until_tag_is_running() {
+aws_wait_until_tag_is_running() {
     max_retry=100
     i=0
     done_count=0
@@ -213,4 +217,33 @@ aws_tag_instances() {
 aws_get_ami() {
     ##VERSION##
     find_ubuntu_ami -r $AWS_DEFAULT_REGION -a amd64 -v 18.04 -t hvm:ebs -N -q
+}
+
+aws_greet() {
+    IAMUSER=$(aws iam get-user --query 'User.UserName')
+    info "Hello! You seem to be UNIX user $USER, and IAM user $IAMUSER."
+}
+
+aws_sync_keys() {
+    # make sure ssh-add -l contains "RSA"
+    ssh-add -l | grep -q RSA \
+        || die "The output of \`ssh-add -l\` doesn't contain 'RSA'. Start the agent, add your keys?"
+
+    AWS_KEY_NAME=$(make_key_name)
+    info "Syncing keys... "
+    if ! aws ec2 describe-key-pairs --key-name "$AWS_KEY_NAME" &>/dev/null; then
+        aws ec2 import-key-pair --key-name $AWS_KEY_NAME \
+            --public-key-material "$(ssh-add -L \
+                | grep -i RSA \
+                | head -n1 \
+                | cut -d " " -f 1-2)" &>/dev/null
+
+        if ! aws ec2 describe-key-pairs --key-name "$AWS_KEY_NAME" &>/dev/null; then
+            die "Somehow, importing the key didn't work. Make sure that 'ssh-add -l | grep RSA | head -n1' returns an RSA key?"
+        else
+            info "Imported new key $AWS_KEY_NAME."
+        fi
+    else
+        info "Using existing key $AWS_KEY_NAME."
+    fi
 }

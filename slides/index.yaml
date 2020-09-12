@@ -58,6 +58,7 @@
   speaker: jpetazzo
   title: Intensive Docker Online Workshop
   attend: https://fwdays.com/en/event/intensive-docker-workshop
+  slides: https://2020-08-fwdays.container.training/
 
 - date: [2020-09-12, 2020-09-13]
   country: www
@@ -66,6 +67,7 @@
   speaker: jpetazzo
   title: Kubernetes Intensive Online Workshop
   attend: https://fwdays.com/en/event/kubernetes-intensive-workshop
+  slides: https://2020-09-fwdays.container.training/
 
 - date: [2020-07-07, 2020-07-09]
   country: www

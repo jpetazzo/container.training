@@ -218,7 +218,9 @@ consul agent -data-dir=/consul/data -client=0.0.0.0 -server -ui \
 
 - Replace X.X.X.X and Y.Y.Y.Y with the addresses of other nodes
 
-- The same command-line can be used on all nodes (convenient!)
+- A node can add its own address (it will work fine)
+
+- ... Which means that we can use the same command-line on all nodes (convenient!)
 
 ---
 
@@ -258,19 +260,13 @@ consul agent -data-dir=/consul/data -client=0.0.0.0 -server -ui \
 
 ## Putting it all together
 
-- The file `k8s/consul.yaml` defines the required resources
+- The file `k8s/consul-1.yaml` defines the required resources
 
-  (service account, cluster role, cluster role binding, service, stateful set)
+  (service account, role, role binding, service, stateful set)
 
-- It has a few extra touches:
+- Inspired by this [excellent tutorial](https://github.com/kelseyhightower/consul-on-kubernetes) by Kelsey Hightower
 
-  - a `podAntiAffinity` prevents two pods from running on the same node
-
-  - a `preStop` hook makes the pod leave the cluster when shutdown gracefully
-
-This was inspired by this [excellent tutorial](https://github.com/kelseyhightower/consul-on-kubernetes) by Kelsey Hightower.
-Some features from the original tutorial (TLS authentication between
-nodes and encryption of gossip traffic) were removed for simplicity.
+  (many features from the original tutorial were removed for simplicity)
 
 ---
 
@@ -282,7 +278,7 @@ nodes and encryption of gossip traffic) were removed for simplicity.
 
 - Create the stateful set and associated service:
   ```bash
-  kubectl apply -f ~/container.training/k8s/consul.yaml
+  kubectl apply -f ~/container.training/k8s/consul-1.yaml
   ```
 
 - Check the logs as the pods come up one after another:
@@ -305,6 +301,88 @@ nodes and encryption of gossip traffic) were removed for simplicity.
 ---
 
 ## Caveats
+
+- The scheduler may place two Consul pods on the same node
+
+  - if that node fails, we lose two Consul pods at the same time
+  - this will cause the cluster to fail
+
+- Scaling down the cluster will cause it to fail
+
+  - when a Consul member leaves the cluster, it needs to inform the others
+  - otherwise, the last remaining node doesn't have quorum and stops functioning
+
+- This Consul cluster doesn't use real persistence yet
+
+  - data is stored in the containers' ephemeral filesystem
+  - if a pod fails, its replacement starts from a blank slate
+
+---
+
+## Improving pod placement
+
+- We need to tell the scheduler:
+
+  *do not put two of these pods on the same node!*
+
+- This is done with an `affinity` section like the following one:
+  ```yaml
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - consul
+            topologyKey: kubernetes.io/hostname
+  ```
+
+---
+
+## Using a lifecycle hook
+
+- When a Consul member leaves the cluster, it needs to execute:
+  ```bash
+  consul leave
+  ```
+
+- This is done with a `lifecycle` section like the following one:
+  ```yaml
+    lifecycle:
+      preStop:
+        exec:
+          command:
+          - /bin/sh
+          - -c
+          - consul leave
+  ```
+
+---
+
+## Running a better Consul cluster
+
+- Let's try to add the scheduling constraint and lifecycle hook
+
+- We can do that in the same namespace or another one (as we like)
+
+- If we do that in the same namespace, we will see a rolling update
+
+  (pods will be replaced one by one)
+
+.exercise[
+
+- Deploy a better Consul cluster:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/consul-2.yaml
+  ```
+
+]
+
+---
+
+## Still no persistence, though
 
 - We aren't using actual persistence yet
 

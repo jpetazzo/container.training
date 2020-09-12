@@ -485,6 +485,8 @@ spec:
 
 ---
 
+class: extra-details
+
 ## Using multiple ingress controllers
 
 - You can have multiple ingress controllers active simultaneously
@@ -495,11 +497,13 @@ spec:
 
   (e.g. one for internal, another for external traffic)
 
-- The `kubernetes.io/ingress.class` annotation can be used to tell which one to use
+- To indicate which ingress controller should be used by a given Ingress resouce:
 
-- It's OK if multiple ingress controllers configure the same resource
+  - before Kubernetes 1.18, use the `kubernetes.io/ingress.class` annotation
 
-  (it just means that the service will be accessible through multiple paths)
+  - since Kubernetes 1.18, use the `ingressClassName` field
+    <br/>
+    (which should refer to an existing `IngressClass` resource)
 
 ---
 
@@ -535,9 +539,9 @@ spec:
 
   - [ingress.kubernetes.io/rewrite-target: /](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/rewrite)
 
-- This should eventually stabilize
+- The Ingress spec stabilized in Kubernetes 1.19 ...
 
-  (remember that ingresses are currently `apiVersion: networking.k8s.io/v1beta1`)
+  ... without specifying these features! 😭
 
 ---
 

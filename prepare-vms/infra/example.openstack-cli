@@ -1,0 +1,24 @@
+INFRACLASS=openstack-cli
+
+# Copy that file to e.g. openstack or ovh, then customize it.
+# Some Openstack providers (like OVHcloud) will let you download
+# a file containing credentials. That's what you need to use.
+# The file below contains some example values.
+export OS_AUTH_URL=https://auth.cloud.ovh.net/v3/
+export OS_IDENTITY_API_VERSION=3
+export OS_USER_DOMAIN_NAME=${OS_USER_DOMAIN_NAME:-"Default"}
+export OS_PROJECT_DOMAIN_NAME=${OS_PROJECT_DOMAIN_NAME:-"Default"}
+export OS_TENANT_ID=abcd1234
+export OS_TENANT_NAME="0123456"
+export OS_USERNAME="user-xyz123"
+export OS_PASSWORD=AbCd1234
+export OS_REGION_NAME="GRA7"
+
+# And then some values to indicate server type, image, etc.
+# You can see available flavors with `openstack flavor list`
+export OS_FLAVOR=s1-4
+# You can see available images with `openstack image list`
+export OS_IMAGE=896c5f54-51dc-44f0-8c22-ce99ba7164df
+# You can create a key with `openstack keypair create --public-key ~/.ssh/id_rsa.pub containertraining`
+export OS_KEY=containertraining
+

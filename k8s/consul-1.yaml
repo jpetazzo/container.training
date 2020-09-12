@@ -1,0 +1,77 @@
+# Basic Consul cluster using Cloud Auto-Join.
+# Caveats:
+# - no actual persistence
+# - scaling down to 1 will break the cluster
+# - pods may be colocated
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: consul
+rules:
+  - apiGroups: [""]
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: consul
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: consul
+subjects:
+  - kind: ServiceAccount
+    name: consul
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: consul
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: consul
+spec:
+  ports:
+  - port: 8500
+    name: http
+  selector:
+    app: consul
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: consul
+spec:
+  serviceName: consul
+  replicas: 3
+  selector:
+    matchLabels:
+      app: consul
+  template:
+    metadata:
+      labels:
+        app: consul
+    spec:
+      serviceAccountName: consul
+      containers:
+        - name: consul
+          image: "consul:1.8"
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          args:
+            - "agent"
+            - "-bootstrap-expect=3"
+            - "-retry-join=provider=k8s label_selector=\"app=consul\" namespace=\"$(NAMESPACE)\""
+            - "-client=0.0.0.0"
+            - "-data-dir=/consul/data"
+            - "-server"
+            - "-ui"

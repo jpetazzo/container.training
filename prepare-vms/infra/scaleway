@@ -1,5 +1,1 @@
 INFRACLASS=scaleway
-if ! [ -f ~/.config/scw/config.yaml ]; then
-  warn "~/.config/scw/config.yaml not found."
-  warn "Make sure that the scaleway CLI is installed and configured."
-fi

@@ -1,7 +1,7 @@
 resource "openstack_compute_instance_v2" "machine" {
   count           = "${var.count}" 
   name            = "${format("%s-%04d", "${var.prefix}", count.index+1)}"
-  image_name      = "Ubuntu 16.04.5 (Xenial Xerus)"
+  image_name      = "Ubuntu 18.04.4 20200324"
   flavor_name     = "${var.flavor}"
   security_groups = ["${openstack_networking_secgroup_v2.full_access.name}"]
   key_pair        = "${openstack_compute_keypair_v2.ssh_deploy_key.name}"

@@ -176,11 +176,7 @@ class: extra-details
 
   - can't express parallelism or completions of Jobs
 
-  - can't express Pods with multiple containers
-
   - can't express healthchecks, resource limits
-
-  - etc.
 
 - `kubectl create` and `kubectl run` are *helpers* that generate YAML manifests
 
