@@ -5,6 +5,13 @@ if ! [ -f ~/.config/hcloud/cli.toml ]; then
   warn "~/.config/hcloud/cli.toml not found."
 fi
 
+infra_list() {
+    [ "$(hcloud server list -o json)" = "null" ] && return
+
+    hcloud server list -o json |
+        jq -r '.[] | [.id, .name , .status, .server_type.name] | @tsv'
+}
+
 infra_start() {
     COUNT=$1
 

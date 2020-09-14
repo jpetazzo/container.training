@@ -1,3 +1,8 @@
+infra_list() {
+    openstack server list -f json |
+        jq -r '.[] | [.ID, .Name , .Status, .Flavor] | @tsv'
+}
+
 infra_start() {
     COUNT=$1
 
@@ -44,5 +49,5 @@ oscli_get_instances_json() {
 oscli_get_ips_by_tag() {
     TAG=$1
     oscli_get_instances_json $TAG |
-    	jq -r .[].Networks | cut -d= -f2 | cut -d, -f1 | grep . || true
+    	jq -r .[].Networks | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' || true
 }

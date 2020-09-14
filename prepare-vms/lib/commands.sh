@@ -338,10 +338,22 @@ _cmd_ips() {
     done < tags/$TAG/ips.txt
 }
 
-_cmd list "List available groups for a given infrastructure"
+_cmd list "List all VMs on a given infrastructure (or all infras if no arg given)"
 _cmd_list() {
-    need_infra $1
-    infra_list
+    case "$1" in
+    "")
+        for INFRA in infra/*; do
+            $0 list $INFRA
+        done
+        ;;
+    */example.*)
+        ;;
+    *)
+        need_infra $1
+        sep "Listing instances for $1"
+        infra_list
+        ;;
+    esac
 }
 
 _cmd listall "List VMs running on all configured infrastructures"

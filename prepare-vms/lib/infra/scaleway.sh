@@ -5,6 +5,11 @@ if ! [ -f ~/.config/scw/config.yaml ]; then
   warn "~/.config/scw/config.yaml not found."
 fi
 
+infra_list() {
+    scw instance server list -o json |
+        jq -r '.[] | [.id, .name, .state, .commercial_type] | @tsv'
+}
+
 infra_start() {
     COUNT=$1
 

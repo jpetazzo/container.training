@@ -3,7 +3,8 @@ if ! command -v aws >/dev/null; then
 fi
 
 infra_list() {
-    aws_display_tags
+    aws ec2 describe-instances --output json |
+        jq -r '.Reservations[].Instances[] | [.InstanceId, .ClientToken, .State.Name, .InstanceType ] | @tsv'
 }
 
 infra_quotas() {
