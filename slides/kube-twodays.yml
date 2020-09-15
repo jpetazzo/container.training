@@ -75,6 +75,7 @@ content:
 -
   - k8s/namespaces.md
   - k8s/ingress.md
+  #- k8s/ingress-tls.md
   - k8s/kustomize.md
   - k8s/helm-intro.md
   - k8s/helm-chart-format.md
