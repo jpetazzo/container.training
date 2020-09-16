@@ -1,15 +1,18 @@
-infra_list() {
-    die "unimplemented"
-}
+if ! command -v scw >/dev/null; then
+  warn "Scaleway CLI (scw) not found."
+fi
+if ! [ -f ~/.config/scw/config.yaml ]; then
+  warn "~/.config/scw/config.yaml not found."
+fi
 
-infra_quotas() {
-    die "unimplemented"
+infra_list() {
+    scw instance server list -o json |
+        jq -r '.[] | [.id, .name, .state, .commercial_type] | @tsv'
 }
 
 infra_start() {
     COUNT=$1
 
-    AWS_KEY_NAME=$(make_key_name)
     SCW_INSTANCE_TYPE=${SCW_INSTANCE_TYPE-DEV1-M}
     SCW_ZONE=${SCW_ZONE-fr-par-1}
 
@@ -29,12 +32,12 @@ infra_start() {
 }
 
 infra_stop() {
-    for ID in $(scw_get_ids_by_tag $TAG); do
-        info "Scheduling deletion of instance $ID..."
-        scw instance server delete force-shutdown=true server-id=$ID &
-    done
-    info "Waiting for deletion to complete..."
-    wait
+    info "Counting instances..."
+    scw_get_ids_by_tag $TAG | wc -l
+    info "Deleting instances..."
+    scw_get_ids_by_tag $TAG | 
+        xargs -n1 -P10 -I@@ \
+        scw instance server delete force-shutdown=true server-id=@@
 }
 
 scw_get_ids_by_tag() {
@@ -45,12 +48,4 @@ scw_get_ids_by_tag() {
 scw_get_ips_by_tag() {
     TAG=$1
     scw instance server list name=$TAG -o json | jq -r .[].public_ip.address
-}
-
-infra_opensg() {
-    die "unimplemented"
-}
-
-infra_disableaddrchecks() {
-    die "unimplemented"
 }

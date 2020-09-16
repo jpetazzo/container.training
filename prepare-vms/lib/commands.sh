@@ -73,6 +73,19 @@ _cmd_deploy() {
     apt-get update && apt-get install sudo -y"
     fi
 
+    # FIXME
+    # Special case for hetzner since it doesn't have an ubuntu user
+    #if [ "$INFRACLASS" = "hetzner" ]; then
+    #    pssh -l root "
+    #[ -d /home/ubuntu ] ||
+    #    useradd ubuntu -m -s /bin/bash
+    #echo 'ubuntu ALL=(ALL:ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
+    #[ -d /home/ubuntu/.ssh ] ||
+    #    install --owner=ubuntu --mode=700 --directory /home/ubuntu/.ssh
+    #[ -f /home/ubuntu/.ssh/authorized_keys ] ||
+    #    install --owner=ubuntu --mode=600 /root/.ssh/authorized_keys --target-directory /home/ubuntu/.ssh"
+    #fi
+
     # Copy settings and install Python YAML parser
     pssh -I tee /tmp/settings.yaml <tags/$TAG/settings.yaml
     pssh "
@@ -187,7 +200,7 @@ _cmd_kube() {
     pssh --timeout 200 "
     if i_am_first_node && [ ! -f /etc/kubernetes/admin.conf ]; then
         kubeadm token generate > /tmp/token &&
-	sudo kubeadm init $EXTRA_KUBEADM --token \$(cat /tmp/token) --apiserver-cert-extra-sans \$(cat /tmp/ipv4)
+	sudo kubeadm init $EXTRA_KUBEADM --token \$(cat /tmp/token) --apiserver-cert-extra-sans \$(cat /tmp/ipv4) --ignore-preflight-errors=NumCPU
     fi"
 
     # Put kubeconfig in ubuntu's and docker's accounts
@@ -224,13 +237,13 @@ _cmd_kube() {
     # Install kubectx and kubens
     pssh "
     [ -d kubectx ] || git clone https://github.com/ahmetb/kubectx &&
-    sudo ln -sf /home/ubuntu/kubectx/kubectx /usr/local/bin/kctx &&
-    sudo ln -sf /home/ubuntu/kubectx/kubens /usr/local/bin/kns &&
-    sudo cp /home/ubuntu/kubectx/completion/*.bash /etc/bash_completion.d &&
+    sudo ln -sf \$HOME/kubectx/kubectx /usr/local/bin/kctx &&
+    sudo ln -sf \$HOME/kubectx/kubens /usr/local/bin/kns &&
+    sudo cp \$HOME/kubectx/completion/*.bash /etc/bash_completion.d &&
     [ -d kube-ps1 ] || git clone https://github.com/jonmosco/kube-ps1 &&
     sudo -u docker sed -i s/docker-prompt/kube_ps1/ /home/docker/.bashrc &&
     sudo -u docker tee -a /home/docker/.bashrc <<EOF
-. /home/ubuntu/kube-ps1/kube-ps1.sh
+. \$HOME/kube-ps1/kube-ps1.sh
 KUBE_PS1_PREFIX=""
 KUBE_PS1_SUFFIX=""
 KUBE_PS1_SYMBOL_ENABLE="false"
@@ -303,23 +316,10 @@ _cmd_kubetest() {
     set -e
     if i_am_first_node; then
       which kubectl
-      for NODE in \$(awk /[0-9]\$/\ {print\ \\\$2} /etc/hosts); do
+      for NODE in \$(grep [0-9]\$ /etc/hosts | grep -v ^127 | awk {print\ \\\$2}); do
         echo \$NODE ; kubectl get nodes | grep -w \$NODE | grep -w Ready
       done
     fi"
-}
-
-_cmd ids "(FIXME) List the instance IDs belonging to a given tag or token"
-_cmd_ids() {
-    TAG=$1
-    need_tag $TAG
-
-    info "Looking up by tag:"
-    aws_get_instance_ids_by_tag $TAG
-
-    # Just in case we managed to create instances but weren't able to tag them
-    info "Looking up by token:"
-    aws_get_instance_ids_by_client_token $TAG
 }
 
 _cmd ips "Show the IP addresses for a given tag"
@@ -338,10 +338,22 @@ _cmd_ips() {
     done < tags/$TAG/ips.txt
 }
 
-_cmd list "List available groups for a given infrastructure"
+_cmd list "List all VMs on a given infrastructure (or all infras if no arg given)"
 _cmd_list() {
-    need_infra $1
-    infra_list
+    case "$1" in
+    "")
+        for INFRA in infra/*; do
+            $0 list $INFRA
+        done
+        ;;
+    */example.*)
+        ;;
+    *)
+        need_infra $1
+        sep "Listing instances for $1"
+        infra_list
+        ;;
+    esac
 }
 
 _cmd listall "List VMs running on all configured infrastructures"
@@ -435,16 +447,6 @@ _cmd_opensg() {
     infra_opensg
 }
 
-_cmd portworx "Prepare the nodes for Portworx deployment"
-_cmd_portworx() {
-    TAG=$1
-    need_tag
-
-    pssh "
-    sudo truncate --size 10G /portworx.blk &&
-    sudo losetup /dev/loop4 /portworx.blk"
-}
-
 _cmd disableaddrchecks "Disable source/destination IP address checks"
 _cmd_disableaddrchecks() {
     TAG=$1
@@ -487,18 +489,6 @@ _cmd quotas "Check our infrastructure quotas (max instances)"
 _cmd_quotas() {
     need_infra $1
     infra_quotas
-}
-
-_cmd retag "(FIXME) Apply a new tag to a group of VMs"
-_cmd_retag() {
-    OLDTAG=$1
-    NEWTAG=$2
-    TAG=$OLDTAG
-    need_tag
-    if [[ -z "$NEWTAG" ]]; then
-        die "You must specify a new tag to apply."
-    fi
-    aws_tag_instances $OLDTAG $NEWTAG
 }
 
 _cmd ssh "Open an SSH session to the first node of a tag"
@@ -687,11 +677,12 @@ _cmd_webssh() {
     sudo apt-get update &&
     sudo apt-get install python-tornado python-paramiko -y"
     pssh "
-    [ -d webssh ] || git clone https://github.com/jpetazzo/webssh"
+    cd /opt
+    [ -d webssh ] || sudo git clone https://github.com/jpetazzo/webssh"
     pssh "
     for KEYFILE in /etc/ssh/*.pub; do
       read a b c < \$KEYFILE; echo localhost \$a \$b
-    done > webssh/known_hosts"
+    done | sudo tee /opt/webssh/known_hosts"
     pssh "cat >webssh.service <<EOF
 [Unit]
 Description=webssh
@@ -700,7 +691,7 @@ Description=webssh
 WantedBy=multi-user.target
 
 [Service]
-WorkingDirectory=/home/ubuntu/webssh
+WorkingDirectory=/opt/webssh
 ExecStart=/usr/bin/env python run.py --fbidhttp=false --port=1080 --policy=reject
 User=nobody
 Group=nogroup
@@ -721,11 +712,6 @@ _cmd_www() {
     done
     info "Press Ctrl-C to stop server."
     python3 -m http.server
-}
-
-greet() {
-    IAMUSER=$(aws iam get-user --query 'User.UserName')
-    info "Hello! You seem to be UNIX user $USER, and IAM user $IAMUSER."
 }
 
 pull_tag() {
@@ -816,28 +802,4 @@ test_vm() {
 make_key_name() {
     SHORT_FINGERPRINT=$(ssh-add -l | grep RSA | head -n1 | cut -d " " -f 2 | tr -d : | cut -c 1-8)
     echo "${SHORT_FINGERPRINT}-${USER}"
-}
-
-sync_keys() {
-    # make sure ssh-add -l contains "RSA"
-    ssh-add -l | grep -q RSA \
-        || die "The output of \`ssh-add -l\` doesn't contain 'RSA'. Start the agent, add your keys?"
-
-    AWS_KEY_NAME=$(make_key_name)
-    info "Syncing keys... "
-    if ! aws ec2 describe-key-pairs --key-name "$AWS_KEY_NAME" &>/dev/null; then
-        aws ec2 import-key-pair --key-name $AWS_KEY_NAME \
-            --public-key-material "$(ssh-add -L \
-                | grep -i RSA \
-                | head -n1 \
-                | cut -d " " -f 1-2)" &>/dev/null
-
-        if ! aws ec2 describe-key-pairs --key-name "$AWS_KEY_NAME" &>/dev/null; then
-            die "Somehow, importing the key didn't work. Make sure that 'ssh-add -l | grep RSA | head -n1' returns an RSA key?"
-        else
-            info "Imported new key $AWS_KEY_NAME."
-        fi
-    else
-        info "Using existing key $AWS_KEY_NAME."
-    fi
 }

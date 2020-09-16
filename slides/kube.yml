@@ -74,6 +74,7 @@ content:
   #- k8s/dryrun.md
   #- k8s/exercise-yaml.md
   - k8s/ingress.md
+  #- k8s/ingress-tls.md
 -
   - k8s/volumes.md
   #- k8s/exercise-configmap.md

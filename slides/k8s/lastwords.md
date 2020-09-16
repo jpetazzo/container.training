@@ -191,6 +191,8 @@ are a few tools that can help us.*
 
 ## Developer experience
 
+*These questions constitute a quick "smoke test" for our strategy:*
+
 - How do we on-board a new developer?
 
 - What do they need to install to get a dev stack?
@@ -198,8 +200,6 @@ are a few tools that can help us.*
 - How does a code change make it from dev to prod?
 
 - How does someone add a component to a stack?
-
-*These questions are good "sanity checks" to validate our strategy!*
 
 ---
 

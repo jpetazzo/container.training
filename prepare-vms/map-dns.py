@@ -29,6 +29,7 @@ apiurl = "https://dns.api.gandi.net/api/v5/domains"
 if len(sys.argv) == 2:
 	tag = sys.argv[1]
 	domains = open(domains_file).read().split()
+	domains = [ d for d in domains if not d.startswith('#') ]
 	ips = open(f"tags/{tag}/ips.txt").read().split()
 	settings_file = f"tags/{tag}/settings.yaml"
 	clustersize = yaml.safe_load(open(settings_file))["clustersize"]

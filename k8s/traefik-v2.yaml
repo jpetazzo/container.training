@@ -50,8 +50,10 @@ spec:
         - --api.insecure
         - --log.level=INFO
         - --metrics.prometheus
-        - --providers.kubernetescrd
         - --providers.kubernetesingress
+        - --entrypoints.http.Address=:80
+        - --entrypoints.https.Address=:443
+        - --entrypoints.https.http.tls.certResolver=default
 ---
 kind: Service
 apiVersion: v1

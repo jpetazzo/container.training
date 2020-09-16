@@ -1,4 +1,5 @@
-INFRACLASS=openstack
+INFRACLASS=openstack-tf
+
 # If you are using OpenStack, copy this file (e.g. to "openstack" or "enix")
 # and customize the variables below.
 export TF_VAR_user="jpetazzo"

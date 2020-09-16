@@ -15,7 +15,6 @@ for lib in lib/*.sh; do
 done
 
 DEPENDENCIES="
-    aws
     ssh
     curl
     jq
