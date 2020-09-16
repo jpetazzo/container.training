@@ -1,12 +1,15 @@
 ## Intros
 
-- Hello! We are:
+- Hello! I'm Jérôme Petazzoni ([@jpetazzo](https://twitter.com/jpetazzo))
 
-  - Jérôme Petazzoni ([@jpetazzo](https://twitter.com/jpetazzo))
-
+<!--
   - AJ Bowen ([@s0ulshake](https://twitter.com/s0ulshake), [EphemeraSearch](https://ephemerasearch.com/))
+-->
 
-- The training will run the whole week from 8am to noon (Pacific time)
+- The training will run:
+
+  - 9:30 to 13:30 (Wednesday, Thursday, Friday)
+  - 8:30 to 12:30 (Monday, Tuesday next week)
 
 - There will be a short break (\~5 min) every hour
 

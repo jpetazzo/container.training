@@ -5,11 +5,11 @@ title: |
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
-chat: "`#kubernetes-training-august-31-september-4` on Slack"
+chat: "`kubernetes-training-september-16-22`"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://2020-08-nr.container.training/
+slides: http://2020-09-nr.container.training/
 
 #slidenumberprefix: "#SomeHashTag &mdash; "
 
