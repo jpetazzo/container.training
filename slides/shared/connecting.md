@@ -34,6 +34,26 @@ If anything goes wrong — ask for help!
 
 ---
 
+class: in-person
+
+## `tailhist`
+
+- The shell history of the instructor is available online in real time
+
+- Note the IP address of the instructor's virtual machine (A.B.C.D)
+
+- Open http://A.B.C.D:1088 in your browser and you should see the history
+
+- The history is updated in real time
+
+  (using a WebSocket connection)
+
+- It should be green when the WebSocket is connected
+
+  (if it turns red, reloading the page should fix it)
+
+---
+
 ## Doing or re-doing the workshop on your own?
 
 - Use something like
