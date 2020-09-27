@@ -1,4 +1,4 @@
-# Designing an operator
+## Designing an operator
 
 - Once we understand CRDs and operators, it's tempting to use them everywhere
 
