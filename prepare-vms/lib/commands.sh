@@ -43,6 +43,16 @@ _cmd_cards() {
     info "$0 www"
 }
 
+_cmd clean "Remove information about stopped clusters"
+_cmd_clean() {
+	for TAG in tags/*; do
+		if grep -q ^stopped$ "$TAG/status"; then
+			info "Removing $TAG..."
+			rm -rf "$TAG"
+		fi
+	done	
+}
+
 _cmd deploy "Install Docker on a bunch of running VMs"
 _cmd_deploy() {
     TAG=$1
