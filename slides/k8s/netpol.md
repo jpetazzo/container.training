@@ -431,13 +431,13 @@ troubleshoot easily, without having to poke holes in our firewall.
 
 - As always, the [Kubernetes documentation](https://kubernetes.io/docs/concepts/services-networking/network-policies/) is a good starting point
 
-- The API documentation has a lot of detail about the format of various objects:
+- The API documentation has a lot of detail about the format of various objects: <!-- ##VERSION## -->
 
-  - [NetworkPolicy](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/#networkpolicy-v1-networking-k8s-io)
+  - [NetworkPolicy](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#networkpolicy-v1-networking-k8s-io)
 
-  - [NetworkPolicySpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/#networkpolicyspec-v1-networking-k8s-io)
+  - [NetworkPolicySpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#networkpolicyspec-v1-networking-k8s-io)
 
-  - [NetworkPolicyIngressRule](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/#networkpolicyingressrule-v1-networking-k8s-io)
+  - [NetworkPolicyIngressRule](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#networkpolicyingressrule-v1-networking-k8s-io)
 
   - etc.
 
