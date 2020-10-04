@@ -1,13 +1,11 @@
 title: |
-  Introduction
-  to Containers
+  Docker Intensif
 
-chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
-#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+chat: "[Gitter](https://gitter.im/jpetazzo/training-202010-online)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: http://container.training/
+slides: https://2020-10-enix.container.training/
 
 #slidenumberprefix: "#SomeHashTag &mdash; "
 
