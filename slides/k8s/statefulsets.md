@@ -30,7 +30,7 @@
 
 - They are stopped in reverse order (from *R-1* to 0)
 
-- Each pod know its identity (i.e. which number it is in the set)
+- Each pod knows its identity (i.e. which number it is in the set)
 
 - Each pod can discover the IP address of the others easily
 
