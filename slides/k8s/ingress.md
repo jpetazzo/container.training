@@ -638,7 +638,7 @@ spec:
           servicePort: 80
       - path: /
         backend:
-          serviceName: wensledale
+          serviceName: wensleydale
           servicePort: 80
       - path: /
         backend:
