@@ -307,7 +307,7 @@ Let's remove the `redis` container:
 $ docker rm -f redis
 ```
 
-* -f: Force the removal of a running container (uses SIGKILL)
+* `-f`: Force the removal of a running container (uses SIGKILL)
 
 And create one that doesn't block the `redis` name:
 
