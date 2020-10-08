@@ -119,7 +119,7 @@ Nano and LinuxKit VMs in Hyper-V!)
 
   - golang, mongo, python, redis, hello-world ... and more being added
 
-  - you should still use `--plaform` with multi-os images to be certain
+  - you should still use `--platform` with multi-os images to be certain
 
 - Windows Containers now support `localhost` accessible containers (July 2018)
 
