@@ -124,7 +124,7 @@ The resulting YAML doesn't represent a valid DaemonSet.
 
 - Try the same YAML file as earlier, with server-side dry run:
   ```bash
-  kubectl apply -f web.yaml --server-dry-run --validate=false -o yaml
+  kubectl apply -f web.yaml --dry-run=server --validate=false -o yaml
   ```
 
 ]
