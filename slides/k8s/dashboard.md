@@ -115,7 +115,7 @@ The dashboard will then ask you which authentication you want to use.
 
   - see [vision and goals](https://kube-web-view.readthedocs.io/en/latest/vision.html#vision) for details
 
-- [Kube Ops View](https://github.com/hjacobs/kube-ops-view)
+- [Kube Ops View](https://codeberg.org/hjacobs/kube-ops-view)
 
   - "provides a common operational picture for multiple Kubernetes clusters"
 
