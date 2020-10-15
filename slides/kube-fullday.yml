@@ -10,7 +10,7 @@ gitrepo: github.com/jpetazzo/container.training
 slides: https://2020-10-docberlin.container.training/
 
 slidenumberprefix:
-  <a href="https://container.training/">container.training</a>
+  Slides → <a href="https://2020-10-docberlin.container.training/">2020-10-docberlin.container.training</a>
   &mdash;
   <a href="https://twitter.com/jpetazzo">@jpetazzo</a>
   &mdash;

@@ -74,6 +74,8 @@ class: in-person
 
 - Each person gets a private cluster of cloud VMs (not shared with anybody else)
 
+- Get yours on https://2020-10-docberlin.container.training/vms
+
 - They'll remain up for the duration of the workshop
 
 - You should have a little card with login+password+IP addresses
