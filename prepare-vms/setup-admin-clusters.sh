@@ -35,6 +35,8 @@ TAG=$PREFIX-$SETTINGS
 retry 5 ./workshopctl deploy $TAG
 retry 5 ./workshopctl disabledocker $TAG
 retry 5 ./workshopctl kubebins $TAG
+retry 5 ./workshopctl webssh $TAG
+retry 5 ./workshopctl tailhist $TAG
 ./workshopctl cards $TAG
 
 SETTINGS=admin-kubenet
@@ -48,6 +50,8 @@ TAG=$PREFIX-$SETTINGS
 retry 5 ./workshopctl disableaddrchecks $TAG
 retry 5 ./workshopctl deploy $TAG
 retry 5 ./workshopctl kubebins $TAG
+retry 5 ./workshopctl webssh $TAG
+retry 5 ./workshopctl tailhist $TAG
 ./workshopctl cards $TAG
 
 SETTINGS=admin-kuberouter
@@ -61,6 +65,8 @@ TAG=$PREFIX-$SETTINGS
 retry 5 ./workshopctl disableaddrchecks $TAG
 retry 5 ./workshopctl deploy $TAG
 retry 5 ./workshopctl kubebins $TAG
+retry 5 ./workshopctl webssh $TAG
+retry 5 ./workshopctl tailhist $TAG
 ./workshopctl cards $TAG
 
 #INFRA=infra/aws-us-west-1
@@ -76,5 +82,7 @@ TAG=$PREFIX-$SETTINGS
 	--count $((3*$STUDENTS))
 
 retry 5 ./workshopctl deploy $TAG
-retry 5 ./workshopctl kube $TAG 1.15.9
+retry 5 ./workshopctl kube $TAG 1.17.13
+retry 5 ./workshopctl webssh $TAG
+retry 5 ./workshopctl tailhist $TAG
 ./workshopctl cards $TAG
