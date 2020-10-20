@@ -167,7 +167,7 @@ _cmd_kubebins() {
     fi
     if ! [ -x hyperkube ]; then
         ##VERSION##
-        curl -L https://dl.k8s.io/v1.18.8/kubernetes-server-linux-amd64.tar.gz \
+        curl -L https://dl.k8s.io/v1.18.10/kubernetes-server-linux-amd64.tar.gz \
         | sudo tar --strip-components=3 -zx \
           kubernetes/server/bin/kube{ctl,let,-proxy,-apiserver,-scheduler,-controller-manager}
     fi
@@ -204,7 +204,9 @@ _cmd_kube() {
     pssh --timeout 200 "
     sudo apt-get update -q &&
     sudo apt-get install -qy kubelet$EXTRA_APTGET kubeadm$EXTRA_APTGET kubectl$EXTRA_APTGET &&
-    kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl"
+    kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl
+    echo 'alias k=kubectl' > /etc/bash_completion.d/k
+    echo 'complete -F __start_kubectl k' >> /etc/bash_completion.d/k"
 
     # Initialize kube master
     pssh --timeout 200 "
