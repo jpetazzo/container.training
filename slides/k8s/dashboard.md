@@ -2,47 +2,65 @@
 
 - Kubernetes resources can also be viewed with a web dashboard
 
-- That dashboard is usually exposed over HTTPS
-
-  (this requires obtaining a proper TLS certificate)
-
 - Dashboard users need to authenticate
 
-- We are going to take a *dangerous* shortcut
+  (typically with a token)
+
+- The dashboard should be exposed over HTTPS
+
+  (to prevent interception of the aforementioned token)
+
+- Ideally, this requires obtaining a proper TLS certificate
+
+  (for instance, with Let's Encrypt)
 
 ---
 
-## The insecure method
+## Three ways to install the dashboard
 
-- We could (and should) use [Let's Encrypt](https://letsencrypt.org/) ...
+- Our `k8s` directory has no less than three manifests!
 
-- ... but we don't want to deal with TLS certificates
+- `dashboard-recommended.yaml`
 
-- We could (and should) learn how authentication and authorization work ...
+  (purely internal dashboard; user must be created manually)
 
-- ... but we will use a guest account with admin access instead
+- `dashboard-with-token.yaml`
 
-.footnote[.warning[Yes, this will open our cluster to all kinds of shenanigans. Don't do this at home.]]
+  (dashboard exposed with NodePort; creates an admin user for us)
+
+- `dashboard-insecure.yaml` aka *YOLO*
+
+  (dashboard exposed over HTTP; gives root access to anonymous users)
 
 ---
 
-## Running a very insecure dashboard
+## `dashboard-insecure.yaml`
 
-- We are going to deploy that dashboard with *one single command*
+- This will allow anyone to deploy anything on your cluster
 
-- This command will create all the necessary resources
+  (without any authentication whatsoever)
 
-  (the dashboard itself, the HTTP wrapper, the admin/guest account)
+- **Do not** use this, except maybe on a local cluster
 
-- All these resources are defined in a YAML file
+  (or a cluster that you will destroy a few minutes later)
 
-- All we have to do is load that YAML file with with `kubectl apply -f`
+- On "normal" clusters, use `dashboard-with-token.yaml` instead!
+
+---
+
+## What's in the manifest?
+
+- The dashboard itself
+
+- An HTTP/HTTPS unwrapper (using `socat`)
+
+- The guest/admin account
 
 .exercise[
 
 - Create all the dashboard resources, with the following command:
   ```bash
-  kubectl apply -f ~/container.training/k8s/insecure-dashboard.yaml
+  kubectl apply -f ~/container.training/k8s/dashboard-insecure.yaml
   ```
 
 ]
@@ -89,11 +107,26 @@ The dashboard will then ask you which authentication you want to use.
 
 --
 
-.warning[By the way, we just added a backdoor to our Kubernetes cluster!]
+.warning[Remember, we just added a backdoor to our Kubernetes cluster!]
 
 ---
 
-## Running the Kubernetes dashboard securely
+## Closing the backdoor
+
+- Seriously, don't leave that thing running!
+
+.exercise[
+
+- Remove what we just created:
+  ```bash
+    kubectl delete -f ~/container.training/k8s/dashboard-insecure.yaml
+  ```
+
+]
+
+---
+
+## The risks
 
 - The steps that we just showed you are *for educational purposes only!*
 
@@ -102,6 +135,99 @@ The dashboard will then ask you which authentication you want to use.
 - For an in-depth discussion about securing the dashboard,
   <br/>
   check [this excellent post on Heptio's blog](https://blog.heptio.com/on-securing-the-kubernetes-dashboard-16b09b1b7aca)
+
+---
+
+## `dashboard-with-token.yaml`
+
+- This is a less risky way to deploy the dashboard
+
+- It's not completely secure, either:
+
+  - we're using a self-signed certificate
+
+  - this is subject to eavesdropping attacks
+
+- Using `kubectl port-forward` or `kubectl proxy` is even better
+
+---
+
+## What's in the manifest?
+
+- The dashboard itself (but exposed with a `NodePort`)
+
+- A ServiceAccount with `cluster-admin` privileges
+
+  (named `kubernetes-dashboard:cluster-admin`)
+
+.exercise[
+
+- Create all the dashboard resources, with the following command:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/dashboard-with-token.yaml
+  ```
+
+]
+
+---
+
+## Obtaining the token
+
+- The manifest creates a ServiceAccount
+
+- Kubernetes will automatically generate a token for that ServiceAccount
+
+.exercise[
+
+- Display the token:
+  ```bash
+    kubectl --namespace=kubernetes-dashboard \
+      describe secret cluster-admin-token
+  ```
+
+]
+
+The token should start with `eyJ...` (it's a JSON Web Token).
+
+Note that the secret name will actually be `cluster-admin-token-xxxxx`.
+<br/>
+(But `kubectl` prefix matches are great!)
+
+---
+
+## Connecting to the dashboard
+
+.exercise[
+
+- Check which port the dashboard is on:
+  ```bash
+  kubectl get svc --namespace=kubernetes-dashboard
+  ```
+
+]
+
+You'll want the `3xxxx` port.
+
+
+.exercise[
+
+- Connect to http://oneofournodes:3xxxx/
+
+<!-- ```open http://node1:3xxxx/``` -->
+
+]
+
+The dashboard will then ask you which authentication you want to use.
+
+---
+
+## Dashboard authentication
+
+- Select "token" authentication
+
+- Copy paste the token (starting with `eyJ...`) obtained earlier
+
+- We're logged in!
 
 ---
 
