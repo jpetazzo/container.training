@@ -102,6 +102,7 @@ content:
   - k8s/local-persistent-volumes.md
   - k8s/portworx.md
   #- k8s/extending-api.md
+  #- k8s/admission.md
   #- k8s/operators.md
   #- k8s/operators-design.md
   #- k8s/staticpods.md

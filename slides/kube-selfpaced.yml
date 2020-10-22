@@ -111,6 +111,7 @@ content:
   - k8s/horizontal-pod-autoscaler.md
 -
   - k8s/extending-api.md
+  - k8s/admission.md
   - k8s/operators.md
   - k8s/operators-design.md
   - k8s/owners-and-dependents.md

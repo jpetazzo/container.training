@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+
+  ngrok-echo:
+    build: ngrok
+    command: ngrok http --log=stdout localhost:3000
+    ports:
+    - 3000
+
+  echo:
+    network_mode: service:ngrok-echo
+    image: node
+    command: npx http-echo-server
+
+  ngrok-flask:
+    build: ngrok
+    command: ngrok http --log=stdout localhost:5000
+    ports:
+    - 5000
+
+  flask:
+    network_mode: service:ngrok-flask
+    build: flask
+    volumes:
+    - ./flask:/src
+    working_dir: /src
+    environment:
+      FLASK_APP: webhook.py
+      FLASK_ENV: development
+    command: flask run --host=0.0.0.0
+
