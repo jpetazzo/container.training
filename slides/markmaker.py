@@ -94,6 +94,10 @@ def generatefromyaml(manifest, filename):
         if override:
             manifest[k] = override
 
+    for k in ["chat", "gitrepo", "slides", "title"]:
+        if k not in manifest:
+            manifest[k] = ""
+
     if "zip" not in manifest:
         if manifest["slides"].endswith('/'):
             manifest["zip"] = manifest["slides"] + "slides.zip"
