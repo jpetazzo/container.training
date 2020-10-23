@@ -204,9 +204,9 @@ _cmd_kube() {
     pssh --timeout 200 "
     sudo apt-get update -q &&
     sudo apt-get install -qy kubelet$EXTRA_APTGET kubeadm$EXTRA_APTGET kubectl$EXTRA_APTGET &&
-    kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl
-    echo 'alias k=kubectl' > /etc/bash_completion.d/k
-    echo 'complete -F __start_kubectl k' >> /etc/bash_completion.d/k"
+    kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl &&
+    echo 'alias k=kubectl' | sudo tee /etc/bash_completion.d/k &&
+    echo 'complete -F __start_kubectl k' | sudo tee -a /etc/bash_completion.d/k"
 
     # Initialize kube master
     pssh --timeout 200 "
@@ -304,6 +304,16 @@ EOF"
 	    ##VERSION##
         sudo curl -o /usr/local/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator
 	sudo chmod +x /usr/local/bin/aws-iam-authenticator
+    fi"
+
+    # Install the krew package manager
+    pssh "
+    if [ ! -d /home/docker/.krew ]; then
+        cd /tmp &&
+        curl -fsSL https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz |
+        tar -zxf- &&
+        sudo -u docker -H ./krew-linux_amd64 install krew &&
+        echo export PATH=\"/home/docker/.krew/bin:\$PATH\" | sudo -u docker tee -a /home/docker/.bashrc
     fi"
 
     sep "Done"
