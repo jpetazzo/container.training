@@ -518,6 +518,26 @@ services.nodeports               0     0
 
 ---
 
+## Viewing a namespace limits and quotas
+
+- `kubectl describe namespace` will display resource limits and quotas
+
+.exercise[
+
+- Try it out:
+  ```bash
+  kubectl describe namespace default
+  ```
+
+- View limits and quotas for *all* namespaces:
+  ```bash
+  kubectl describe namespace
+  ```
+
+]
+
+---
+
 ## Additional resources
 
 - [A Practical Guide to Setting Kubernetes Requests and Limits](http://blog.kubecost.com/blog/requests-and-limits/)
