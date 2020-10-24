@@ -316,6 +316,19 @@ EOF"
         echo export PATH=\"/home/docker/.krew/bin:\$PATH\" | sudo -u docker tee -a /home/docker/.bashrc
     fi"
 
+    # Install k9s and popeye
+    pssh "
+    if [ ! -x /usr/local/bin/k9s ]; then
+        FILENAME=k9s_\$(uname -s)_\$(uname -m).tar.gz &&
+        curl -sSL https://github.com/derailed/k9s/releases/latest/download/\$FILENAME |
+        sudo tar -zxvf- -C /usr/local/bin k9s
+    fi
+    if [ ! -x /usr/local/bin/popeye ]; then
+        FILENAME=popeye_\$(uname -s)_\$(uname -m).tar.gz &&
+        curl -sSL https://github.com/derailed/popeye/releases/latest/download/\$FILENAME |
+        sudo tar -zxvf- -C /usr/local/bin popeye
+    fi"
+
     sep "Done"
 }
 
@@ -602,6 +615,8 @@ _cmd_start() {
     done
     sep
     info "Deployment successful."
+    info "To log into the first machine of that batch, you can run:"
+    info "$0 ssh $TAG"
     info "To terminate these instances, you can run:"
     info "$0 stop $TAG"
 }
