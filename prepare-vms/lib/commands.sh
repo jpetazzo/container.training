@@ -518,6 +518,17 @@ _cmd_remap_nodeports() {
     if i_am_first_node && ! grep -q '$ADD_LINE' $MANIFEST_FILE; then
         sudo sed -i 's/\($FIND_LINE\)\$/\1\n$ADD_LINE/' $MANIFEST_FILE
     fi"
+
+    info "If you have manifests hard-coding nodePort values,"
+    info "you might want to patch them with a command like:"
+    info "
+
+if i_am_first_node; then
+    kubectl -n kube-system patch svc prometheus-server \\
+        -p 'spec: { ports: [ {port: 80, nodePort: 10101} ]}'
+fi
+
+    "
 }
 
 _cmd quotas "Check our infrastructure quotas (max instances)"
