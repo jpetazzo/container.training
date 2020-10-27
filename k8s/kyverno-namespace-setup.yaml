@@ -1,0 +1,63 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: setup-namespace
+spec:
+  rules:
+  - name: setup-limitrange
+    match:
+      resources: 
+        kinds:
+        - Namespace
+    generate: 
+      kind: LimitRange
+      name: default-limitrange
+      namespace: "{{request.object.metadata.name}}" 
+      data:
+        spec:
+          limits:
+          - type: Container
+            min:
+              cpu: 0.1
+              memory: 0.1
+            max:
+              cpu: 2
+              memory: 2Gi
+            default:
+              cpu: 0.25
+              memory: 500Mi
+            defaultRequest:
+              cpu: 0.25
+              memory: 250Mi
+  - name: setup-resourcequota
+    match:
+      resources: 
+        kinds:
+        - Namespace
+    generate: 
+      kind: ResourceQuota
+      name: default-resourcequota
+      namespace: "{{request.object.metadata.name}}" 
+      data:
+        spec:
+          hard:
+            requests.cpu: "10"
+            requests.memory: 10Gi
+            limits.cpu: "20"
+            limits.memory: 20Gi
+  - name: setup-networkpolicy
+    match:
+      resources: 
+        kinds:
+        - Namespace
+    generate: 
+      kind: NetworkPolicy
+      name: default-networkpolicy
+      namespace: "{{request.object.metadata.name}}" 
+      data:
+        spec:
+          podSelector: {}
+          ingress:
+          - from:
+            - podSelector: {}
+

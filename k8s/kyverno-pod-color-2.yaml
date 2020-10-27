@@ -1,0 +1,21 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: pod-color-policy-2
+spec:
+  validationFailureAction: enforce
+  background: false
+  rules:
+  - name: prevent-color-change
+    match:
+      resources:
+        kinds:
+        - Pod
+    validate:
+      message: "Once label color has been added, it cannot be changed."
+      deny:
+        conditions:
+        - key: "{{ request.oldObject.metadata.labels.color }}"
+          operator: NotEqual
+          value: "{{ request.object.metadata.labels.color }}"
+

@@ -114,6 +114,7 @@ content:
   - k8s/admission.md
   - k8s/operators.md
   - k8s/operators-design.md
+  - k8s/kyverno.md
   - k8s/owners-and-dependents.md
 -
   - k8s/dmuc.md

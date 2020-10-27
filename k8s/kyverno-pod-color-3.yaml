@@ -1,0 +1,25 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: pod-color-policy-3
+spec:
+  validationFailureAction: enforce
+  background: false
+  rules:
+  - name: prevent-color-removal
+    match:
+      resources:
+        kinds:
+        - Pod
+        selector:
+          matchExpressions:
+          - key: color
+            operator: DoesNotExist
+    validate:
+      message: "Once label color has been added, it cannot be removed."
+      deny:
+        conditions:
+        - key: "{{ request.oldObject.metadata.labels.color }}"
+          operator: NotIn
+          value: []
+

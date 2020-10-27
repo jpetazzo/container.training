@@ -1,0 +1,22 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: pod-color-policy-1
+spec:
+  validationFailureAction: enforce
+  rules:
+  - name: ensure-pod-color-is-valid
+    match:
+      resources:
+        kinds:
+        - Pod
+        selector:
+          matchExpressions:
+          - key: color
+            operator: Exists
+          - key: color
+            operator: NotIn
+            values: [ red, green, blue ]
+    validate:
+      message: "If it exists, the label color must be red, green, or blue."
+      deny: {}
