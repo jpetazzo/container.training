@@ -148,6 +148,28 @@ class: extra-details
 
 class: extra-details
 
+## Setting a time limit
+
+- It is possible to set a time limit (or deadline) for a job
+
+- This is done with the field `spec.activeDeadlineSeconds`
+
+  (by default, it is unlimited)
+
+- When the job is older than this time limit, all its pods are terminated
+
+- Note that there can also be a `spec.activeDeadlineSeconds` field in pods!
+
+- They can be set independently, and have different effects:
+
+  - the deadline of the job will stop the entire job
+
+  - the deadline of the pod will only stop an individual pod
+
+---
+
+class: extra-details
+
 ## What about `kubectl run` before v1.18?
 
 - Creating a Deployment:
