@@ -25,5 +25,6 @@ steps:
   - webssh
   - tailhist
   - kube
+  - kubetools
   - cards
   - kubetest

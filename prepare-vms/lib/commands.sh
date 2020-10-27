@@ -245,6 +245,12 @@ _cmd_kube() {
     if i_am_first_node; then
 	kubectl apply -f https://raw.githubusercontent.com/jpetazzo/container.training/master/k8s/metrics-server.yaml
     fi"
+}
+
+_cmd kubetools "Install a bunch of CLI tools for Kubernetes"
+_cmd_kubetools() {
+    TAG=$1
+    need_tag
 
     # Install kubectx and kubens
     pssh "
@@ -329,7 +335,25 @@ EOF"
         sudo tar -zxvf- -C /usr/local/bin popeye
     fi"
 
-    sep "Done"
+    # Install Tilt
+    pssh "
+    if [ ! -x /usr/local/bin/tilt ]; then
+        curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
+    fi"
+
+    # Install Skaffold
+    pssh "
+    if [ ! -x /usr/local/bin/skaffold ]; then
+        curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 &&
+        sudo install skaffold /usr/local/bin/
+    fi"
+
+    # Install Kompose
+    pssh "
+    if [ ! -x /usr/local/bin/kompose ]; then
+        curl -Lo kompose https://github.com/kubernetes/kompose/releases/latest/download/kompose-linux-amd64 &&
+        sudo install kompose /usr/local/bin
+    fi"
 }
 
 _cmd kubereset "Wipe out Kubernetes configuration on all nodes"
