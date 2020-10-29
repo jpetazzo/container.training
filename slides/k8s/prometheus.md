@@ -218,7 +218,7 @@ We need to:
 
 ---
 
-## Step 2: add the `stable` repo
+## Step 2: add the `prometheus-community` repo
 
 - This will add the repository containing the chart for Prometheus
 
@@ -230,7 +230,8 @@ We need to:
 
 - Add the repository:
   ```bash
-  helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+    helm repo add prometheus-community \
+         https://prometheus-community.github.io/helm-charts
   ```
 
 ]
@@ -247,7 +248,7 @@ We need to:
 
 - Install Prometheus on our cluster:
   ```bash
-    helm upgrade prometheus stable/prometheus \
+    helm upgrade prometheus prometheus-community/prometheus \
         --install \
         --namespace kube-system \
         --set server.service.type=NodePort \
@@ -266,17 +267,19 @@ class: extra-details
 
 ## Explaining all the Helm flags
 
-- `helm upgrade prometheus` → upgrade release "prometheus" to the latest version...
+- `helm upgrade prometheus` → upgrade the release named `prometheus` ...
+  <br/>
+  (a "release" is an instance of an app deployed with Helm)
 
-  (a "release" is a unique name given to an app deployed with Helm)
+- `prometheus-community/...` → of a chart located in the `prometheus-community` repo ...
 
-- `stable/prometheus` → ... of the chart `prometheus` in repo `stable`
+- `.../prometheus` → in that repo, get the chart named `prometheus` ...
 
-- `--install` → if the app doesn't exist, create it
+- `--install` → if the app doesn't exist, create it ...
 
-- `--namespace kube-system` → put it in that specific namespace
+- `--namespace kube-system` → put it in that specific namespace ...
 
-- And set the following *values* when rendering the chart's templates:
+- ... and set the following *values* when rendering the chart's templates:
 
   - `server.service.type=NodePort` → expose the Prometheus server with a NodePort
   - `server.service.nodePort=30090` → set the specific NodePort number to use

@@ -715,8 +715,8 @@ _cmd_helmprom() {
     need_tag
     pssh "
     if i_am_first_node; then
-        sudo -u docker -H helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-        sudo -u docker -H helm install prometheus stable/prometheus \
+        sudo -u docker -H helm helm repo add prometheus-community https://prometheus-community.github.io/helm-charts/
+        sudo -u docker -H helm install prometheus prometheus-community/prometheus \
             --namespace kube-system \
             --set server.service.type=NodePort \
             --set server.service.nodePort=30090 \
