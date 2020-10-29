@@ -431,15 +431,21 @@ class: extra-details
 
 ---
 
-## Complex selectors
+## Selectors with multiple labels
 
 - If a selector specifies multiple labels, they are understood as a logical *AND*
 
-  (In other words: the pods must match all the labels)
+  (in other words: the pods must match all the labels)
 
-- Kubernetes has support for advanced, set-based selectors
+- We cannot have a logical *OR*
 
-  (But these cannot be used with services, at least not yet!)
+  (e.g. `app=api AND (release=prod OR release=preprod)`)
+
+- We can, however, apply as many extra labels as we want to our pods:
+
+  - use selector `app=api AND prod-or-preprod=yes`
+
+  - add `prod-or-preprod=yes` to both sets of pods
 
 ---
 
@@ -688,6 +694,95 @@ class: extra-details
     (by setting their label accordingly)
 
 - This gives us building blocks for canary and blue/green deployments
+
+---
+
+class: extra-details
+
+## Advanced label selectors
+
+- As indicated earlier, service selectors are limited to a `AND`
+
+- But in many other places in the Kubernetes API, we can use complex selectors
+
+  (e.g. Deployment, ReplicaSet, DaemonSet, NetworkPolicy ...)
+
+- These allow extra operations; specifically:
+
+  - checking for presence (or absence) of a label
+
+  - checking if a label is (or is not) in a given set
+
+- Relevant documentation:
+
+  [Service spec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#servicespec-v1-core),
+  [LabelSelector spec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#labelselector-v1-meta),
+  [label selector doc](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors)
+
+---
+
+class: extra-details
+
+## Example of advanced selector
+
+```yaml
+  theSelector:
+    matchLabels:
+      app: portal
+      component: api
+    matchExpressions:
+    - key: release
+      operator: In
+      values: [ production, preproduction ]
+    - key: signed-off-by
+      operator: Exists
+```
+
+This selector matches pods that meet *all* the indicated conditions.
+
+`operator` can be `In`, `NotIn`, `Exists`, `DoesNotExist`.
+
+A `nil` selector matches *nothing*, a `{}` selector matches *everything*.
+<br/>
+(Because that means "match all pods that meet at least zero condition".)
+
+---
+
+class: extra-details
+
+## Services and Endpoints
+
+- Each Service has a corresponding Endpoints resource
+
+  (see `kubectl get endpoints` or `kubectl get ep`)
+
+- That Endpoints resource is used by various controllers
+
+  (e.g. `kube-proxy` when setting up `iptables` rules for ClusterIP services)
+
+- These Endpoints are populated (and updated) with the Service selector
+
+- We can update the Endpoints manually, but our changes will get overwritten
+
+- ... Except if the Service selector is empty!
+
+---
+
+class: extra-details
+
+## Empty Service selector
+
+- If a service selector is empty, Endpoints don't get updated automatically
+
+  (but we can still set them manually)
+
+- This lets us create Services pointing to arbitrary destinations
+
+  (potentially outside the cluster; or things that are not in pods)
+
+- Another use-case: the `kubernetes` service in the `default` namespace
+
+  (its Endpoints are maintained automatically by the API server)
 
 ???
 
