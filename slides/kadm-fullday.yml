@@ -48,6 +48,7 @@ content:
   #- k8s/bootstrap.md  
   - k8s/control-plane-auth.md
   - k8s/podsecuritypolicy.md
+  - k8s/user-cert.md
   - k8s/csr-api.md
   - k8s/openid-connect.md
 -

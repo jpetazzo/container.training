@@ -86,6 +86,7 @@ content:
   #- k8s/create-more-charts.md
   #- k8s/netpol.md
   #- k8s/authn-authz.md
+  #- k8s/user-cert.md
   #- k8s/csr-api.md
   #- k8s/openid-connect.md
   #- k8s/podsecuritypolicy.md
