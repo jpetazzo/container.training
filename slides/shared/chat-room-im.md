@@ -1,11 +1,11 @@
 ## Chat room
 
-- We've set up a chat room that we will monitor during the workshop
+- A Slack room has been set up for the duration of the training
 
-- Don't hesitate to use it to ask questions, or get help, or share feedback
+- We'll use it to ask questions, get help, share feedback ...
 
-- The chat room will also be available after the workshop
+  (let's keep an eye on it during the training!)
 
-- Join the chat room: @@CHAT@@
+- Reminder, the room is @@CHAT@@
 
 - Say hi in the chat room!
