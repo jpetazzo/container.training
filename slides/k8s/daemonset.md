@@ -447,6 +447,8 @@ class: extra-details
 
   - add `prod-or-preprod=yes` to both sets of pods
 
+- We will see later that in other places, we can use more advanced selectors
+
 ---
 
 ## The plan
