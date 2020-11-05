@@ -586,7 +586,7 @@ class: extra-details
 - Example 3: canary for shipping physical goods
 
   - 1% of orders are shipped with the canary process
-  - the reamining 99% are shipped with the normal process
+  - the remaining 99% are shipped with the normal process
 
 - We're going to implement example 1 (per-request routing)
 
