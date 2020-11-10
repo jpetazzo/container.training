@@ -190,6 +190,24 @@
 
 ---
 
+class: extra-details
+
+## How are these permissions set up?
+
+- A bunch of roles and bindings are defined as constants in the API server code:
+
+  [auth/authorizer/rbac/bootstrappolicy/policy.go](https://github.com/kubernetes/kubernetes/blob/release-1.19/plugin/pkg/auth/authorizer/rbac/bootstrappolicy/policy.go#L188)
+
+- They are created automatically when the API server starts:
+
+  [registry/rbac/rest/storage_rbac.go](https://github.com/kubernetes/kubernetes/blob/release-1.19/pkg/registry/rbac/rest/storage_rbac.go#L140)
+
+- We must use the correct Common Names (`CN`) for the control plane certificates
+
+  (since the bindings defined above refer to these common names)
+
+---
+
 ## Service account tokens
 
 - Each time we create a service account, the controller manager generates a token
