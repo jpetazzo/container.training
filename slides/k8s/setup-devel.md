@@ -24,8 +24,6 @@
 
 - Gives you one cluster with one node
 
-- Rather old version of Kubernetes
-
 - Very easy to use if you are already using Docker Desktop:
 
   go to Docker Desktop preferences and enable Kubernetes
@@ -54,25 +52,21 @@
 
 ## k3d in action
 
-- Get `k3d` beta 3 binary on https://github.com/rancher/k3d/releases
+- Install `k3d` (e.g. get the binary from https://github.com/rancher/k3d/releases)
 
 - Create a simple cluster:
   ```bash
-  k3d create cluster petitcluster --update-kubeconfig
-  ```
-
-- Use it:
-  ```bash
-  kubectl config use-context k3d-petitcluster
+  k3d cluster create petitcluster
   ```
 
 - Create a more complex cluster with a custom version:
   ```bash
-  k3d create cluster groscluster --update-kubeconfig \
-        --image rancher/k3s:v1.18.3-k3s1 --masters 3 --workers 5 --api-port 6444
-  ```
+  k3d cluster create groscluster \
+        --image rancher/k3s:v1.18.9-k3s1 --servers 3 --agents 5
 
-  (note: API port seems to be necessary when running multiple clusters)
+  (3 nodes for the control plane + 5 worker nodes)
+ 
+- Clusters are automatically added to `.kube/config` file
 
 ---
 
