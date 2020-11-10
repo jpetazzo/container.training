@@ -4,11 +4,15 @@ There are multiple ways to extend the Kubernetes API.
 
 We are going to cover:
 
+- Controllers
+
+- Dynamic Admission Webhooks
+
 - Custom Resource Definitions (CRDs)
 
-- Admission Webhooks
-
 - The Aggregation Layer
+
+But first, let's re(re)visit the API server ...
 
 ---
 
@@ -16,212 +20,117 @@ We are going to cover:
 
 - The Kubernetes API server is a central point of the control plane
 
-  (everything connects to it: controller manager, scheduler, kubelets)
+- Everything connects to the API server:
 
-- Almost everything in Kubernetes is materialized by a resource
+  - users (that's us, but also automation like CI/CD)
 
-- Resources have a type (or "kind")
+  - kubelets
 
-  (similar to strongly typed languages)
+  - network components (e.g. `kube-proxy`, pod network, NPC)
 
-- We can see existing types with `kubectl api-resources`
-
-- We can list resources of a given type with `kubectl get <type>`
+  - controllers; lots of controllers
 
 ---
 
-## Creating new types
+## Some controllers
 
-- We can create new types with Custom Resource Definitions (CRDs)
+- `kube-controller-manager` runs built-on controllers
 
-- CRDs are created dynamically
+  (watching Deployments, Nodes, ReplicaSets, and much more)
 
-  (without recompiling or restarting the API server)
+- `kube-scheduler` runs the scheduler
 
-- CRDs themselves are resources:
+  (it's conceptually not different from another controller)
 
-  - we can create a new type with `kubectl create` and some YAML
+- `cloud-controller-manager` takes care of "cloud stuff"
 
-  - we can see all our custom types with `kubectl get crds`
+  (e.g. provisioning load balancers, persistent volumes...)
 
-- After we create a CRD, the new type works just like built-in types
+- Some components mentioned above are also controllers
 
----
-
-## A very simple CRD
-
-The YAML below describes a very simple CRD representing different kinds of coffee:
-
-```yaml
-apiVersion: apiextensions.k8s.io/v1alpha1
-kind: CustomResourceDefinition
-metadata:
-  name: coffees.container.training
-spec:
-  group: container.training
-  version: v1alpha1
-  scope: Namespaced
-  names:
-    plural: coffees
-    singular: coffee
-    kind: Coffee
-    shortNames:
-    - cof
-```
+  (e.g. Network Policy Controller)
 
 ---
 
-## Creating a CRD
+## More controllers
 
-- Let's create the Custom Resource Definition for our Coffee resource
+- Cloud resources can also be managed by additional controllers
 
-.exercise[
+  (e.g. the [AWS Load Balancer Controller](https://github.com/kubernetes-sigs/aws-load-balancer-controller))
 
-- Load the CRD:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/coffee-1.yaml
-  ```
+- Leveraging Ingress resources requires an Ingress Controller
 
-- Confirm that it shows up:
-  ```bash
-  kubectl get crds
-  ```
+  (many options available here; we can even install multiple ones!)
 
-]
+- Many add-ons (including CRDs and operators) have controllers as well
+
+🤔 *What's even a controller ?!?*
 
 ---
 
-## Creating custom resources
+## What's a controller?
 
-The YAML below defines a resource using the CRD that we just created:
+According to the [documentation](https://kubernetes.io/docs/concepts/architecture/controller/):
 
-```yaml
-kind: Coffee
-apiVersion: container.training/v1alpha1
-metadata:
-  name: arabica
-spec:
-  taste: strong
-```
+*Controllers are **control loops** that<br/>
+**watch** the state of your cluster,<br/>
+then make or request changes where needed.*
 
-.exercise[
-
-- Create a few types of coffee beans:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/coffees.yaml
-  ```
-
-]
+*Each controller tries to move the current cluster state closer to the desired state.*
 
 ---
 
-## Viewing custom resources
+## What controllers do
 
-- By default, `kubectl get` only shows name and age of custom resources
+- Watch resources
 
-.exercise[
+- Make changes:
 
-- View the coffee beans that we just created:
-  ```bash
-  kubectl get coffees
-  ```
+  - purely at the API level (e.g. Deployment, ReplicaSet controllers)
 
-]
+  - and/or configure resources (e.g. `kube-proxy`)
 
-- We can improve that, but it's outside the scope of this section!
+  - and/or provision resources (e.g. load balancer controller)
 
 ---
 
-## What can we do with CRDs?
+## Extending Kubernetes with controllers
 
-There are many possibilities!
+- Random example:
 
-- *Operators* encapsulate complex sets of resources
+  - watch resources like Deployments, Services ...
 
-  (e.g.: a PostgreSQL replicated cluster; an etcd cluster...
-  <br/>
-  see [awesome operators](https://github.com/operator-framework/awesome-operators) and
-  [OperatorHub](https://operatorhub.io/) to find more)
+  - read annotations to configure monitoring
 
-- Custom use-cases like [gitkube](https://gitkube.sh/)
+- Technically, this is not extending the API
 
-  - creates a new custom type, `Remote`, exposing a git+ssh server
-
-  - deploy by pushing YAML or Helm charts to that remote
-
-- Replacing built-in types with CRDs
-
-  (see [this lightning talk by Tim Hockin](https://www.youtube.com/watch?v=ji0FWzFwNhA))
+  (but it can still be very useful!)
 
 ---
 
-## Little details
+## Other ways to extend Kubernetes
 
-- By default, CRDs are not *validated*
+- Prevent or alter API requests before resources are committed to storage:
 
-  (we can put anything we want in the `spec`)
+  *Admission Control*
 
-- When creating a CRD, we can pass an OpenAPI v3 schema (BETA!)
+- Create new resource types leveraging Kubernetes storage facilities:
 
-  (which will then be used to validate resources)
+  *Custom Resource Definitions*
 
-- Generally, when creating a CRD, we also want to run a *controller*
+- Create new resource types with different storage or different semantics:
 
-  (otherwise nothing will happen when we create resources of that type)
+  *Aggregation Layer*
 
-- The controller will typically *watch* our custom resources
+- Spoiler alert: often, we will combine multiple techniques
 
-  (and take action when they are created/updated)
-
-*
-Examples:
-[YAML to install the gitkube CRD](https://storage.googleapis.com/gitkube/gitkube-setup-stable.yaml),
-[YAML to install a redis operator CRD](https://github.com/amaizfinance/redis-operator/blob/master/deploy/crds/k8s_v1alpha1_redis_crd.yaml)
-*
-
----
-
-## (Ab)using the API server
-
-- If we need to store something "safely" (as in: in etcd), we can use CRDs
-
-- This gives us primitives to read/write/list objects (and optionally validate them)
-
-- The Kubernetes API server can run on its own
-
-  (without the scheduler, controller manager, and kubelets)
-
-- By loading CRDs, we can have it manage totally different objects
-
-  (unrelated to containers, clusters, etc.)
-
----
-
-## Service catalog
-
-- *Service catalog* is another extension mechanism
-
-- It's not extending the Kubernetes API strictly speaking
-
-  (but it still provides new features!)
-
-- It doesn't create new types; it uses:
-
-  - ClusterServiceBroker
-  - ClusterServiceClass
-  - ClusterServicePlan
-  - ServiceInstance
-  - ServiceBinding
-
-- It uses the Open service broker API
+  (and involve controllers as well!)
 
 ---
 
 ## Admission controllers
 
-- Admission controllers are another way to extend the Kubernetes API
-
-- Instead of creating new types, admission controllers can transform or vet API requests
+- Admission controllers can vet or transform API requests
 
 - The diagram on the next slide shows the path of an API request
 
@@ -273,9 +182,9 @@ class: extra-details
 
 ---
 
-## Admission Webhooks
+## Dynamic Admission Control
 
-- We can setup *admission webhooks* to extend the behavior of the API server
+- We can set up *admission webhooks* to extend the behavior of the API server
 
 - The API server will submit incoming API requests to these webhooks
 
@@ -307,6 +216,77 @@ class: extra-details
 
   (to avoid e.g. triggering webhooks when setting up webhooks)
 
+- The webhook server can be hosted in or out of the cluster
+
+---
+
+## Dynamic Admission Examples
+
+- Policy control
+
+  ([Kyverno](https://kyverno.io/),
+  [Open Policy Agent](https://www.openpolicyagent.org/docs/latest/))
+
+- Sidecar injection
+
+  (Used by some service meshes)
+
+- Type validation
+
+  (More on this later, in the CRD section)
+
+---
+
+## Kubernetes API types
+
+- Almost everything in Kubernetes is materialized by a resource
+
+- Resources have a type (or "kind")
+
+  (similar to strongly typed languages)
+
+- We can see existing types with `kubectl api-resources`
+
+- We can list resources of a given type with `kubectl get <type>`
+
+---
+
+## Creating new types
+
+- We can create new types with Custom Resource Definitions (CRDs)
+
+- CRDs are created dynamically
+
+  (without recompiling or restarting the API server)
+
+- CRDs themselves are resources:
+
+  - we can create a new type with `kubectl create` and some YAML
+
+  - we can see all our custom types with `kubectl get crds`
+
+- After we create a CRD, the new type works just like built-in types
+
+---
+
+## Examples
+
+- Representing composite resources
+
+  (e.g. clusters like databases, messages queues ...)
+
+- Representing external resources
+
+  (e.g. virtual machines, object store buckets, domain names ...)
+
+- Representing configuration for controllers and operators
+
+  (e.g. custom Ingress resources, certificate issuers, backups ...)
+
+- Alternate representations of other objects; services and service instances
+
+  (e.g. encrypted secret, git endpoints ...)
+
 ---
 
 ## The aggregation layer
@@ -325,9 +305,57 @@ class: extra-details
 
 - Example: `metrics-server`
 
-  (storing live metrics in etcd would be extremely inefficient)
+---
 
-- Requires significantly more work than CRDs!
+## Why?
+
+- Using a CRD for live metrics would be extremely inefficient
+
+  (etcd **is not** a metrics store; write performance is way too slow)
+
+- Instead, `metrics-server`:
+
+  - collects metrics from kubelets
+
+  - stores them in memory
+
+  - exposes them as PodMetrics and NodeMetrics (in API group metrics.k8s.io)
+
+  - is registered as an APIService
+
+---
+
+## Drawbacks
+
+- Requires a server
+
+- ... that implements a non-trivial API (aka the Kubernetes API semantics)
+
+- If we need REST semantics, CRDs are probably way simpler
+
+- *Sometimes* synchronizing external state with CRDs might do the trick
+
+  (unless we want the external state to be our single source of truth)
+
+---
+
+## Service catalog
+
+- *Service catalog* is another extension mechanism
+
+- It's not extending the Kubernetes API strictly speaking
+
+  (but it still provides new features!)
+
+- It doesn't create new types; it uses:
+
+  - ClusterServiceBroker
+  - ClusterServiceClass
+  - ClusterServicePlan
+  - ServiceInstance
+  - ServiceBinding
+
+- It uses the Open service broker API
 
 ---
 
@@ -348,10 +376,8 @@ class: extra-details
 ???
 
 :EN:- Extending the Kubernetes API
-:EN:- Custom Resource Definitions (CRDs)
 :EN:- The aggregation layer
 :EN:- Admission control and webhooks
 
 :FR:- Comment étendre l'API Kubernetes
-:FR:- Les CRDs *(Custom Resource Definitions)*
 :FR:- Extension via *aggregation layer*, *admission control*, *webhooks*

@@ -62,7 +62,9 @@ content:
   - k8s/horizontal-pod-autoscaler.md
 - - k8s/prometheus.md
   - k8s/extending-api.md
+  - k8s/crd.md
   - k8s/operators.md
+  - k8s/eck.md
   ###- k8s/operators-design.md
 # CONCLUSION
 - - k8s/lastwords.md

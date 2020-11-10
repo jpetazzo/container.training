@@ -113,11 +113,14 @@ content:
   - k8s/hpa-v2.md
 -
   - k8s/extending-api.md
+  - k8s/crd.md
   - k8s/admission.md
   - k8s/operators.md
   - k8s/operators-design.md
   - k8s/kyverno.md
+  - k8s/eck.md
   - k8s/owners-and-dependents.md
+  - k8s/events.md
 -
   - k8s/dmuc.md
   - k8s/multinode.md
