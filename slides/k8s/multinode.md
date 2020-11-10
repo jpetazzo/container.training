@@ -14,7 +14,7 @@
 
 - The Docker Engine is installed (and running) on these machines
 
-- The Kubernetes packages are installed, but nothing is running
+- The Kubernetes binaries are installed, but nothing is running
 
 - We will use `kubenet1` to run the control plane
 
