@@ -106,6 +106,7 @@ content:
   #- k8s/operators.md
   #- k8s/operators-design.md
   #- k8s/staticpods.md
+  #- k8s/finalizers.md
   #- k8s/owners-and-dependents.md
   #- k8s/gitworkflows.md
 -
