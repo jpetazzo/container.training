@@ -273,6 +273,26 @@ class: extra-details
 
 ---
 
+class: extra-details
+
+## Group-Version-Kind, or GVK
+
+- A particular type will be identified by the combination of:
+
+  - the API group it belongs to (core, `apps`, `metrics.k8s.io`, ...)
+
+  - the version of this API group (`v1`, `v1beta1`, ...)
+
+  - the "Kind" itself (Pod, Role, Job, ...)
+
+- "GVK" appears a lot in the API machinery code
+
+- Conversions are possible between different versions
+
+  (and even between API groups; e.g. when Deployments moved from `extensions` to `apps`)
+
+---
+
 ## Update
 
 - Let's update our namespace object
