@@ -1,0 +1,30 @@
+kind: Event
+apiVersion: v1
+metadata:
+  generateName: hello-
+  labels:
+    container.training/test: ""
+
+#eventTime: "2020-07-04T00:00:00.000000Z"
+#firstTimestamp: "2020-01-01T00:00:00.000000Z"
+#lastTimestamp: "2020-12-31T00:00:00.000000Z"
+#count: 42
+
+involvedObject:
+  kind: Node
+  apiVersion: v1
+  name: kind-control-plane
+  # Note: the uid should be the Node name (not the uid of the Node).
+  # This might be specific to global objects.
+  uid: kind-control-plane
+
+type: Warning
+reason: NodeOverheat
+message: "Node temperature exceeds critical threshold"
+action: Hello
+source:
+  component: thermal-probe
+  #host: node1
+#reportingComponent: ""
+#reportingInstance: ""
+

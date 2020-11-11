@@ -1,0 +1,36 @@
+kind: Event
+apiVersion: v1
+metadata:
+  # One convention is to use <objectname>.<timestamp>,
+  # where the timestamp is taken with a nanosecond
+  # precision and expressed in hexadecimal.
+  # Example: web-5dcb957ccc-fjvzc.164689730a36ec3d
+  name: hello.1234567890
+  # The label doesn't serve any purpose, except making
+  # it easier to identify or delete that specific event.
+  labels:
+    container.training/test: ""
+
+#eventTime: "2020-07-04T00:00:00.000000Z"
+#firstTimestamp: "2020-01-01T00:00:00.000000Z"
+#lastTimestamp: "2020-12-31T00:00:00.000000Z"
+#count: 42
+
+involvedObject:
+  ### These 5 lines should be updated to refer to an object.
+  ### Make sure to put the correct "uid", because it is what
+  ### "kubectl describe" is using to gather relevant events.
+  #apiVersion: v1
+  #kind: Pod
+  #name: magic-bean
+  #namespace: blue
+  #uid: 7f28fda8-6ef4-4580-8d87-b55721fcfc30
+
+type: Normal
+reason: BackupSuccessful
+message: "Object successfully dumped to gitops repository"
+source:
+  component: gitops-sync
+#reportingComponent: ""
+#reportingInstance: ""
+
