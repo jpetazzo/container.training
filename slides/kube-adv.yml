@@ -31,6 +31,7 @@ content:
 - #2
   - k8s/multinode.md
   - k8s/cni.md
+  - k8s/cni-internals.md
   - k8s/interco.md
 - #3
   - k8s/apilb.md
