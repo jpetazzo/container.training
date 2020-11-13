@@ -113,6 +113,7 @@ content:
   - k8s/hpa-v2.md
 -
   - k8s/extending-api.md
+  - k8s/apiserver-deepdive.md
   - k8s/crd.md
   - k8s/admission.md
   - k8s/operators.md
