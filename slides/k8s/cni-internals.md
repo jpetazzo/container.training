@@ -187,7 +187,7 @@ Save this script as `/opt/cni/bin/debug` and make it executable.
 
 ❓️ What is calling our plugins?
 
----
+???
 
 :EN:- Deep dive into CNI internals
 :FR:- La Container Network Interface (CNI) en détails
