@@ -375,9 +375,5 @@ class: extra-details
 
 ???
 
-:EN:- Extending the Kubernetes API
-:EN:- The aggregation layer
-:EN:- Admission control and webhooks
-
+:EN:- Overview of Kubernetes API extensions
 :FR:- Comment étendre l'API Kubernetes
-:FR:- Extension via *aggregation layer*, *admission control*, *webhooks*

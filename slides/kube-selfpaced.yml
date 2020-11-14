@@ -115,6 +115,7 @@ content:
   - k8s/extending-api.md
   - k8s/apiserver-deepdive.md
   - k8s/crd.md
+  - k8s/aggregation-layer.md
   - k8s/admission.md
   - k8s/operators.md
   - k8s/operators-design.md
