@@ -354,6 +354,12 @@ EOF"
         curl -Lo kompose https://github.com/kubernetes/kompose/releases/latest/download/kompose-linux-amd64 &&
         sudo install kompose /usr/local/bin
     fi"
+
+    pssh "
+    if [ ! -x /usr/local/bin/kubeseal ]; then
+        curl -Lo kubeseal https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.13.1/kubeseal-linux-amd64 &&
+        sudo install kubeseal /usr/local/bin
+    fi"
 }
 
 _cmd kubereset "Wipe out Kubernetes configuration on all nodes"
