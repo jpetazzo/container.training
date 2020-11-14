@@ -256,7 +256,7 @@ If you change that, you will also need to inform `kubeseal` later on.
 
 ---
 
-## Discussion
+## Discussion (the good)
 
 - The footprint of the operator is rather small:
 
@@ -266,6 +266,10 @@ If you change that, you will also need to inform `kubeseal` later on.
 
   - a few RBAC-related objects
 
+---
+
+## Discussion (the less good)
+
 - Events could be improved
 
   - `no key to decrypt secret` when there is a name/namespace mismatch
@@ -273,6 +277,14 @@ If you change that, you will also need to inform `kubeseal` later on.
   - no event indicating that a SealedSecret was successfully unsealed
 
 - Key rotation could be improved (how to find secrets corresponding to a key?)
+
+- If the sealing keys are lost, it's impossible to unseal the SealedSecrets
+
+  (e.g. cluster reinstall)
+
+- ... Which means that we need to back up the sealing keys
+
+- ... Which means that we need to be super careful with these backups!
 
 ---
 
