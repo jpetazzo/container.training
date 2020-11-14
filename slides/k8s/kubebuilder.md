@@ -331,6 +331,20 @@ Again - update, `make run`, test.
 
 ---
 
+class: extra-details
+
+## Spec vs Status (in depth)
+
+- The `/status` subresource is handled differently by the API server
+
+- Updates to `/status` don't alter the rest of the object
+
+- Conversely, updates to the object ignore changes in the status
+
+(See [the docs](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/#status-subresource) for the fine print.)
+
+---
+
 ## "Improving" our controller
 
 - We want to wait a few seconds before flipping the switch
