@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: whatever
+spec:
+  #tls:
+  #- secretName: whatever.A.B.C.D.nip.io
+  #  hosts:
+  #  - whatever.A.B.C.D.nip.io
+  rules:
+  - host: whatever.nip.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: whatever
+          servicePort: 1234
