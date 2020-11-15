@@ -108,6 +108,26 @@ The CA (or anyone else) never needs to know my private key.
 
 ---
 
+## Warning
+
+- The CSR API isn't really suited to issue user certificates
+
+- It is primarily intended to issue control plane certificates
+
+  (for instance, deal with kubelet certificates renewal)
+
+- The API was expanded a bit in Kubernetes 1.19 to encompass broader usage
+
+- There are still lots of gaps in the spec
+
+  (e.g. how to specify expiration in a standard way)
+
+- ... And no other implementation to this date
+
+  (but [cert-manager](https://cert-manager.io/docs/faq/#kubernetes-has-a-builtin-certificatesigningrequest-api-why-not-use-that) might eventually get there!)
+
+---
+
 ## General idea
 
 - We will create a Namespace named "users"
