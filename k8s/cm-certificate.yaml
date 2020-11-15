@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: xyz.A.B.C.D.nip.io
+spec:
+  secretName: xyz.A.B.C.D.nip.io
+  dnsNames:
+  - xyz.A.B.C.D.nip.io
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer

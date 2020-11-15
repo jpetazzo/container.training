@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    # Remember to update this if you use this manifest to obtain real certificates :)
+    email: hello@example.com
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # To use the production environment, use the following line instead:
+    #server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: issuer-letsencrypt-staging
+    solvers:
+    - http01:
+        ingress:
+          class: traefik
+
