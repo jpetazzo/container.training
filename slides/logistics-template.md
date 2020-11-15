@@ -1,35 +1,49 @@
-## Intros
+## Intros & disclaimers
 
-- This slide should be customized by the tutorial instructor(s).
+- Hello! I'm Jérôme Petazzoni ([@jpetazzo](https://twitter.com/jpetazzo))
 
-- Hello! We are:
+- I have ...
 
-   - .emoji[👩🏻‍🏫] Ann O'Nymous ([@...](https://twitter.com/...), Megacorp Inc)
+  - extensive experience running *containers* in production
+  - limited experience running *Kubernetes* in production
 
-   - .emoji[👨🏾‍🎓] Stu Dent ([@...](https://twitter.com/...), University of Wakanda)
+  - taught Docker and Kubernetes many times, to large audiences
+  - less frequently taught operators and API internals
 
- <!-- .dummy[
+  - written a lot of Python code during my career; but much less Go
 
-   - .emoji[👷🏻‍♀️] AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
+  - learned way more than I expected just by writing some chapters of this course (!)
 
-   - .emoji[🚁] Alexandre ([@alexbuisine](https://twitter.com/alexbuisine), Enix SAS)
+---
 
-   - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
+## Logistics
 
-   - .emoji[⛵] Jérémy ([@jeremygarrouste](twitter.com/jeremygarrouste), Inpiwee)
+- The training will from 9:30am to 1:30pm CET, Monday to Friday
 
-   - .emoji[🎧] Romain ([@rdegez](https://twitter.com/rdegez), Enix SAS)
-
-] -->
-
-- The workshop will run from ...
-
-- There will be a lunch break at ...
-
-  (And coffee breaks!)
+- There will be short breaks every hour, and a longer break in the middle
 
 - Feel free to interrupt for questions at any time
 
 - *Especially when you see full screen container pictures!*
 
+  (I will watch them in silence while I wait for your questions)
+
 - Live feedback, questions, help: @@CHAT@@
+
+---
+
+## Course structure
+
+Three axis:
+
+1. Fundamental concepts, "under the hood" components 
+
+   (think: data structures, algorithms, assembly language ...)
+
+2. Analyzing state-of-the-art implementations
+
+   (think: design patterns ...)
+
+3. High-level abstractions, highly effective frameworks
+
+   (think: Django, Ruby ...)
