@@ -56,8 +56,6 @@
 
 - Exceeding the memory limit will cause the container to be killed
 
-
-
 ---
 
 ## Limits vs requests
@@ -122,13 +120,17 @@ Each pod is assigned a QoS class (visible in `status.qosClass`).
 
 - The semantics of memory and swap limits on Linux cgroups are complex
 
-- In particular, it's not possible to disable swap for a cgroup
+- With cgroups v1, it's not possible to disable swap for a cgroup
 
   (the closest option is to [reduce "swappiness"](https://unix.stackexchange.com/questions/77939/turning-off-swapping-for-only-one-process-with-cgroups))
 
+- It is possible with cgroups v2 (see the [kernel docs](https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html) and the [fbatx docs](https://facebookmicrosites.github.io/cgroup2/docs/memory-controller.html#using-swap))
+
+- Cgroups v2 aren't widely deployed yet
+
 - The architects of Kubernetes wanted to ensure that Guaranteed pods never swap
 
-- The only solution was to disable swap entirely
+- The simplest solution was to disable swap entirely
 
 ---
 
