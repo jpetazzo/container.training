@@ -215,7 +215,7 @@
 
 - Apply a color label:
   ```bash
-  kubectl label test-color-0 color=purple
+  kubectl label pod test-color-0 color=purple
   ```
 
 ]
