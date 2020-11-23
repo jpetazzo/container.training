@@ -1,0 +1,110 @@
+title: |
+  Container,
+  Docker,
+  & Kubernetes
+
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2020-12-outreach.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- containers/intro.md
+- shared/about-slides.md
+- shared/chat-room-im.md
+#- shared/chat-room-zoom-meeting.md
+#- shared/chat-room-zoom-webinar.md
+- shared/toc.md
+- #1
+  #- containers/Docker_Overview.md
+  - containers/Training_Environment.md
+  - containers/First_Containers.md
+  - containers/Background_Containers.md
+  - containers/Initial_Images.md
+  - containers/Building_Images_Interactively.md
+- #2
+  - containers/Building_Images_With_Dockerfiles.md
+  - containers/Cmd_And_Entrypoint.md
+  - containers/Start_And_Attach.md
+  - containers/Getting_Inside.md
+  - containers/Copying_Files_During_Build.md
+  - containers/Exercise_Dockerfile_Basic.md
+- #3
+  - containers/Dockerfile_Tips.md
+  - containers/Multi_Stage_Builds.md
+  - containers/Exercise_Dockerfile_Advanced.md
+  - containers/Container_Networking_Basics.md
+  - containers/Network_Drivers.md
+  #- containers/Container_Network_Model.md
+- #4
+  - |
+    # Kubernetes
+  - shared/sampleapp.md
+  - shared/composedown.md
+  #- shared/connecting.md
+  #- shared/webssh.md
+  #- k8s/versions-k8s.md
+  #- shared/composescale.md
+  #- shared/hastyconclusions.md
+  - k8s/concepts-k8s.md
+  - k8s/kubectlget.md
+  - k8s/kubectl-run.md
+  #- k8s/batch-jobs.md
+- #5
+  - k8s/labels-annotations.md
+  - k8s/kubectl-logs.md
+  - k8s/logs-cli.md
+  - shared/declarative.md
+  - k8s/declarative.md
+  - k8s/deploymentslideshow.md
+  - k8s/kubenet.md
+  - k8s/kubectlexpose.md
+- #6
+  - k8s/shippingimages.md
+  #- k8s/buildshiprun-selfhosted.md
+  #- k8s/buildshiprun-dockerhub.md
+  - k8s/ourapponkube.md
+  #- k8s/exercise-wordsmith.md
+  - k8s/namespaces.md
+  - k8s/yamldeploy.md
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
+  - k8s/kubectlproxy.md
+  - k8s/dashboard.md
+- #7
+  - k8s/scalingdockercoins.md
+  - shared/hastyconclusions.md
+  - k8s/daemonset.md
+  #- k8s/dryrun.md
+  #- k8s/exercise-yaml.md
+  #- k8s/setup-overview.md
+  #- k8s/setup-devel.md
+  #- k8s/setup-managed.md
+  #- k8s/setup-selfhosted.md
+  #- k8s/kubectlscale.md
+  - k8s/rollout.md
+  - k8s/healthchecks.md
+  #- k8s/healthchecks-more.md
+  #- k8s/record.md
+- #8
+  - k8s/ingress.md
+  - k8s/authn-authz.md
+- #9
+  - k8s/volumes.md
+  - k8s/configuration.md
+  - k8s/statefulsets.md
+- #10
+  - k8s/resource-limits.md
+  - k8s/metrics-server.md
+  - k8s/cluster-sizing.md
+  - k8s/horizontal-pod-autoscaler.md
+  - shared/thankyou.md
