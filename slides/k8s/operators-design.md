@@ -222,9 +222,9 @@ class: extra-details
   |
   [Simple example](https://medium.com/faun/writing-your-first-kubernetes-operator-8f3df4453234)
 
-- Zalando Kubernetes Operator Pythonic Framework (KOPF)
+- Kubernetes Operator Pythonic Framework (KOPF)
 
-  [GitHub](https://github.com/zalando-incubator/kopf)
+  [GitHub](https://github.com/nolar/kopf)
   |
   [Docs](https://kopf.readthedocs.io/)
   |
@@ -239,6 +239,12 @@ class: extra-details
   [Docs](https://kudo.dev/)
   |
   [Zookeeper example](https://github.com/kudobuilder/frameworks/tree/master/repo/stable/zookeeper)
+
+- Kubebuilder (Go, very close to the Kubernetes API codebase)
+
+  [GitHub](https://github.com/kubernetes-sigs/kubebuilder)
+  |
+  [Book](https://book.kubebuilder.io/)
 
 ---
 

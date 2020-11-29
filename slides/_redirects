@@ -7,10 +7,10 @@
 # And this allows to do "git clone https://container.training".
 /info/refs service=git-upload-pack https://github.com/jpetazzo/container.training/info/refs?service=git-upload-pack
 
-#/dockermastery https://www.udemy.com/course/docker-mastery/?referralCode=1410924A733D33635CCB
-#/kubernetesmastery https://www.udemy.com/course/kubernetesmastery/?referralCode=7E09090AF9B79E6C283F
-/dockermastery https://www.udemy.com/course/docker-mastery/?couponCode=DOCKERALLDAY
-/kubernetesmastery https://www.udemy.com/course/kubernetesmastery/?couponCode=DOCKERALLDAY
+/dockermastery https://www.udemy.com/course/docker-mastery/?referralCode=1410924A733D33635CCB
+/kubernetesmastery https://www.udemy.com/course/kubernetesmastery/?referralCode=7E09090AF9B79E6C283F
+#/dockermastery https://www.udemy.com/course/docker-mastery/?couponCode=DOCKERALLDAY
+#/kubernetesmastery https://www.udemy.com/course/kubernetesmastery/?couponCode=DOCKERALLDAY
 
 # Shortlink for the QRCode
 /q /qrcode.html 200
