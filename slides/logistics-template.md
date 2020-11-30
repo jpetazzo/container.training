@@ -18,7 +18,7 @@
 
 ## Logistics
 
-- The training will from 9:30am to 1:30pm CET, Monday to Friday
+- The training will from 8am to noon PST, Monday to Friday
 
 - There will be short breaks every hour, and a longer break in the middle
 
@@ -47,3 +47,13 @@ Three axis:
 3. High-level abstractions, highly effective frameworks
 
    (think: Django, Ruby ...)
+
+---
+
+## The power of repetition ...
+
+- You will notice some repetition in the beginning of some chapters
+
+- This is to let you review some chapters in isolation, just in case
+
+- Also, supposedly, repetition yields better learning results? 🤷🏻
