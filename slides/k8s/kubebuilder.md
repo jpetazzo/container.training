@@ -92,9 +92,28 @@ Highly recommend!💯)
 
 ---
 
+class: extra-details
+
+## Local vs remote
+
+- Building Go code can be a little bit slow on our modest lab VMs
+
+- It will typically be *much* faster on a local machine
+
+- All the demos and labs in this section will run fine either way!
+
+---
+
+
 ## Preparation
 
+- Install Go
+
+  (on our VMs: `sudo snap install go --classic`)
+
 - Install kubebuilder
+
+  ([get a release](https://github.com/kubernetes-sigs/kubebuilder/releases/), untar, move the `kubebuilder` binary to the `$PATH`)
 
 - Initialize our workspace:
   ```bash

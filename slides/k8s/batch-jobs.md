@@ -10,7 +10,7 @@
 
 - Jobs are great for "long" background work
 
-  ("long" being at least minutes our hours)
+  ("long" being at least minutes or hours)
 
 - CronJobs are great to schedule Jobs at regular intervals
 

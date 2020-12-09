@@ -319,7 +319,7 @@ EOF"
         curl -fsSL https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz |
         tar -zxf- &&
         sudo -u docker -H ./krew-linux_amd64 install krew &&
-        echo export PATH=\"/home/docker/.krew/bin:\$PATH\" | sudo -u docker tee -a /home/docker/.bashrc
+        echo export PATH=/home/docker/.krew/bin:\\\$PATH | sudo -u docker tee -a /home/docker/.bashrc
     fi"
 
     # Install k9s and popeye

@@ -146,6 +146,22 @@
 
 ---
 
+class: extra-details
+
+## Kyverno versions
+
+- We're going to use version 1.2
+
+- Version 1.3.0-rc came out in November 2020
+
+- It introduces a few changes
+
+  (e.g. PolicyViolations are now PolicyReports)
+
+- Expect this to change in the near future!
+
+---
+
 ## Installing Kyverno
 
 - Kyverno can be installed with a (big) YAML manifest
@@ -157,7 +173,7 @@
 - Install Kyverno:
   ```bash
   kubectl apply -f https://raw.githubusercontent.com/kyverno/kyverno\
-  /master/definitions/release/install.yaml
+  /v1.2.1/definitions/release/install.yaml
   ```
 
 ]
@@ -592,6 +608,28 @@ Note: the `apiVersion` field appears to be optional.
   (Kyverno can't know ahead of time how it will be populated)
 
 - Policy validation is difficult
+
+---
+
+class: extra-details
+
+## Pods created by controllers
+
+- When e.g. a ReplicaSet or DaemonSet creates a pod, it "owns" it
+
+  (the ReplicaSet or DaemonSet is listed in the Pod's `.metadata.ownerReferences`)
+
+- Kyverno treats these Pods differently
+
+- If my understanding of the code is correct (big *if*):
+
+  - it skips validation for "owned" Pods
+
+  - instead, it validates their controllers
+
+  - this way, Kyverno can report errors on the controller instead of the pod
+
+- This can be a bit confusing when testing policies on such pods!
 
 ???
 
