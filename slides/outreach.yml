@@ -40,7 +40,6 @@ content:
   - containers/Exercise_Dockerfile_Basic.md
 - #3
   - containers/Container_Networking_Basics.md
-  #- containers/Network_Drivers.md
   - containers/Container_Network_Model.md
 - #4
   - |
@@ -80,7 +79,6 @@ content:
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
   - k8s/daemonset.md
-  #- k8s/dryrun.md
   #- k8s/exercise-yaml.md
   #- k8s/setup-overview.md
   #- k8s/setup-devel.md
@@ -90,7 +88,6 @@ content:
   - k8s/rollout.md
   - k8s/healthchecks.md
   #- k8s/healthchecks-more.md
-  #- k8s/record.md
 - #8
   - k8s/ingress.md
   - k8s/authn-authz.md
@@ -107,7 +104,12 @@ content:
   - k8s/statefulsets.md
 - # Extra
   - |
-    # (Extra content)
+    # (Extra Docker content)
+  - containers/Network_Drivers.md
   - containers/Dockerfile_Tips.md
   - containers/Multi_Stage_Builds.md
   - containers/Exercise_Dockerfile_Advanced.md
+- - |
+    # (Extra Kubernetes content)
+  - k8s/record.md
+  - k8s/dryrun.md
