@@ -76,7 +76,6 @@ content:
   - k8s/localkubeconfig.md
   - k8s/accessinternal.md
   - k8s/kubectlproxy.md
-  - k8s/dashboard.md
 - #7
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
@@ -95,6 +94,7 @@ content:
 - #8
   - k8s/ingress.md
   - k8s/authn-authz.md
+  - k8s/dashboard.md
 - #9
   - k8s/resource-limits.md
   - k8s/metrics-server.md
