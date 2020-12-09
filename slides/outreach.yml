@@ -39,12 +39,9 @@ content:
   - containers/Copying_Files_During_Build.md
   - containers/Exercise_Dockerfile_Basic.md
 - #3
-  - containers/Dockerfile_Tips.md
-  - containers/Multi_Stage_Builds.md
-  - containers/Exercise_Dockerfile_Advanced.md
   - containers/Container_Networking_Basics.md
-  - containers/Network_Drivers.md
-  #- containers/Container_Network_Model.md
+  #- containers/Network_Drivers.md
+  - containers/Container_Network_Model.md
 - #4
   - |
     # Kubernetes
@@ -99,12 +96,18 @@ content:
   - k8s/ingress.md
   - k8s/authn-authz.md
 - #9
-  - k8s/volumes.md
-  - k8s/configuration.md
-  - k8s/statefulsets.md
-- #10
   - k8s/resource-limits.md
   - k8s/metrics-server.md
   - k8s/cluster-sizing.md
   - k8s/horizontal-pod-autoscaler.md
   - shared/thankyou.md
+- #10
+  - k8s/volumes.md
+  - k8s/configuration.md
+  - k8s/statefulsets.md
+- # Extra
+  - |
+    # (Extra content)
+  - containers/Dockerfile_Tips.md
+  - containers/Multi_Stage_Builds.md
+  - containers/Exercise_Dockerfile_Advanced.md
