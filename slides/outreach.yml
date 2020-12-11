@@ -91,7 +91,7 @@ content:
 - #8
   - k8s/ingress.md
   - k8s/authn-authz.md
-  - k8s/dashboard.md
+  #- k8s/dashboard.md
 - #9
   - k8s/resource-limits.md
   - k8s/metrics-server.md

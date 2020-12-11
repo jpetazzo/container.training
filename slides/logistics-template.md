@@ -8,7 +8,7 @@
 
   - 17:00-21:00 (CET / European time)
 
-- There will be a short break every hour, and a longer break in the middle
+- There will be a short break every hour
 
 - Feel free to interrupt for questions at any time
 
