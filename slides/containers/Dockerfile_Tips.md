@@ -424,7 +424,7 @@ services:
 
 - In this chapter, we showed many ways to write Dockerfiles.
 
-- These Dockerfiles use sometimes diametrally opposed techniques.
+- These Dockerfiles use sometimes diametrically opposed techniques.
 
 - Yet, they were the "right" ones *for a specific situation.*
 
