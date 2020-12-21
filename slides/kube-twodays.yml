@@ -26,6 +26,7 @@ content:
 - shared/toc.md
 -
   - shared/prereqs.md
+  - shared/handson.md
   #- shared/webssh.md
   - shared/connecting.md
   #- k8s/versions-k8s.md

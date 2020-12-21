@@ -1,0 +1,57 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: __username__
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: rbac-user-namespace
+rules:
+- apiGroups: ["", "extensions", "apps", "batch", "autoscaling","networking.k8s.io"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: rbac-user-cluster
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["*"]
+  verbs: ["list"]
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["list","get"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["*"]
+  verbs: ["list"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: __username__
+  namespace: __username__
+subjects:
+- kind: User
+  name: __username__
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: rbac-user-namespace
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: __username__
+  namespace: __username__
+subjects:
+- kind: User
+  name: __username__
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: rbac-user-cluster
+  apiGroup: rbac.authorization.k8s.io

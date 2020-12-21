@@ -10,6 +10,23 @@ gitrepo: github.com/jpetazzo/container.training
 
 slides: http://container.training/
 
+hosts:
+  - name: "Ann O'Nymous"
+    emoji: "👩🏻‍🏫"
+    company: "Megacorp Inc"
+    twitter: "annonypotomus"
+  - name: "Stu Dent"
+    emoji: "👨🏾‍🎓"
+    company: "University of Wakanda"
+    twitter: "stufromwakanda"
+
+logistics: |-
+  - logistics:
+    - The workshop will run from 9:00am
+    - There will be a lunch break at 12:00pm
+    - Plus coffee breaks :)
+
+
 #slidenumberprefix: "#SomeHashTag &mdash; "
 
 exclude:
@@ -21,16 +38,15 @@ content:
 - k8s/intro.md
 - shared/about-slides.md
 - shared/chat-room-im.md
-#- shared/chat-room-zoom-meeting.md
-#- shared/chat-room-zoom-webinar.md
+#- shared/chat-room-zoom.md
 - shared/toc.md
 -
   - shared/prereqs.md
-  - shared/handson.md
+  - namespaced/handson.md
   #- shared/webssh.md
-  - shared/connecting.md
+  - namespaced/connecting.md
   #- k8s/versions-k8s.md
-  - shared/sampleapp.md
+  - namespaced/sampleapp.md
   #- shared/composescale.md
   #- shared/hastyconclusions.md
   - shared/composedown.md
@@ -50,14 +66,11 @@ content:
   - k8s/shippingimages.md
   #- k8s/buildshiprun-selfhosted.md
   - k8s/buildshiprun-dockerhub.md
-  - k8s/ourapponkube.md
+  - namespaced/ourapponkube.md
   #- k8s/exercise-wordsmith.md
 -
   - k8s/yamldeploy.md
-  - k8s/setup-overview.md
-  #- k8s/setup-devel.md
-  #- k8s/setup-managed.md
-  #- k8s/setup-selfhosted.md
+  # - k8s/setup-k8s.md
   #- k8s/dashboard.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
@@ -73,21 +86,22 @@ content:
   #- k8s/healthchecks-more.md
   #- k8s/record.md
 -
-  - k8s/namespaces.md
-  - k8s/ingress.md
-  #- k8s/ingress-tls.md
+  # TODO - Update namespaces section to explain, but not do excercises
+  # as user will not have permissions to create ns.
+  # - k8s/namespaces.md
+  # TODO - Update to show nginx or generic Ingress vs Traefik specific.
+  # - k8s/ingress.md
   #- k8s/kustomize.md
-  #- k8s/helm-intro.md
-  #- k8s/helm-chart-format.md
-  #- k8s/helm-create-basic-chart.md
-  #- k8s/helm-create-better-chart.md
-  #- k8s/helm-secrets.md
-  #- k8s/exercise-helm.md
-  #- k8s/create-chart.md
-  #- k8s/create-more-charts.md
+  # - k8s/helm-intro.md
+  # - k8s/helm-chart-format.md
+  # - k8s/helm-create-basic-chart.md
+  # - k8s/helm-create-better-chart.md
+  # - k8s/helm-secrets.md
+  # - k8s/exercise-helm.md
+  # - k8s/create-chart.md
+  # - k8s/create-more-charts.md
   #- k8s/netpol.md
   #- k8s/authn-authz.md
-  #- k8s/user-cert.md
   #- k8s/csr-api.md
   #- k8s/openid-connect.md
   #- k8s/podsecuritypolicy.md
@@ -102,12 +116,9 @@ content:
   #- k8s/local-persistent-volumes.md
   #- k8s/portworx.md
   #- k8s/extending-api.md
-  #- k8s/crd.md
-  #- k8s/admission.md
   #- k8s/operators.md
   #- k8s/operators-design.md
   #- k8s/staticpods.md
-  #- k8s/finalizers.md
   #- k8s/owners-and-dependents.md
   #- k8s/gitworkflows.md
 -

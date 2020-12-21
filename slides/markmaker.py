@@ -107,6 +107,11 @@ def generatefromyaml(manifest, filename):
     if "html" not in manifest:
         manifest["html"] = filename + ".html"
 
+    if "logistics" not in manifest:
+        logistics = "\n- The workshop will run from ...\n- There will be a lunch break at ...\n- Plus coffee breaks!"
+        logging.warning("logistics not found, using default - {}".format(logistics))
+        manifest["logistics"] = logistics
+
     markdown, titles = processcontent(manifest["content"], filename)
     logging.debug("Found {} titles.".format(len(titles)))
     toc = gentoc(titles)
@@ -120,6 +125,20 @@ def generatefromyaml(manifest, filename):
         logging.warning("'exclude' is empty.")
     exclude = ",".join('"{}"'.format(c) for c in exclude)
 
+    hosts = manifest.get("hosts", [])
+    logging.debug("hosts={!r}".format(hosts))
+    if not hosts:
+        logging.warning("'hosts' is empty. Using defaults.")
+        host_html = "<ul>\n<li>👩🏻‍🏫 Ann O'Nymous <a href=\"https://twitter.com/annonypotomus\">@annonypotomus</a>, Megacorp Inc\n<li>👨🏾‍🎓 Stu Dent <a href=\"https://twitter.com/stufromwakanda\">@stufromwakanda</a>, University of Wakanda\n</ul>"
+    else:
+        host_html = "<ul>\n"
+        for host in flatten(hosts):
+            logging.debug("host: {}".format(host["name"]))
+            # host_html += "<li>{}\n".format(host["name"])
+            host_html += "<li>{} {} <a href=\"https://twitter.com/{}\">@{}</a>, {}\n".format(host["emoji"],host["name"],host["twitter"],host["twitter"],host["company"])
+        host_html += "</ul>\n"
+    logging.debug("host_html: {}".format(host_html))
+
     # Insert build info. This is super hackish.
 
     markdown = markdown.replace(
@@ -132,6 +151,8 @@ def generatefromyaml(manifest, filename):
     html = open("workshop.html").read()
     html = html.replace("@@MARKDOWN@@", markdown)
     html = html.replace("@@EXCLUDE@@", exclude)
+    html = html.replace("@@HOSTS@@", host_html)
+    html = html.replace("@@LOGISTICS@@", manifest["logistics"])
     html = html.replace("@@CHAT@@", manifest["chat"])
     html = html.replace("@@GITREPO@@", manifest["gitrepo"])
     html = html.replace("@@SLIDES@@", manifest["slides"])
@@ -229,6 +250,8 @@ try:
     else:
         repo = subprocess.check_output(["git", "config", "remote.origin.url"]).decode("ascii")
     repo = repo.strip().replace("git@github.com:", "https://github.com/")
+    regex = re.compile('\.git$')
+    repo = regex.sub("", repo)
     if "BRANCH" in os.environ:
         branch = os.environ["BRANCH"]
     else:

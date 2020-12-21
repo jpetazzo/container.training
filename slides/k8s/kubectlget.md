@@ -214,10 +214,14 @@ class: extra-details
 
 .exercise[
 
-- Look at the information available for `node1` with one of the following commands:
+- Look at the information available for all nodes with one of the following commands:
   ```bash
-  kubectl describe node/node1
-  kubectl describe node node1
+  kubectl describe nodes
+  ```
+
+- Look at just the first node using a node name from the previous `kubectl get nodes` command:
+  ```
+  kubectl describe node <node1>
   ```
 
 ]
@@ -358,6 +362,8 @@ class: extra-details
 
 ## What about `kube-public`?
 
+> _Not all clusters have a `kube-public`, you can skip these steps if your cluster does not have this namespace._
+
 .exercise[
 
 - List the pods in the `kube-public` namespace:
@@ -376,6 +382,8 @@ Nothing!
 class: extra-details
 
 ## Exploring `kube-public`
+
+> _Not all clusters have a `kube-public`, you can skip these steps if your cluster does not have this namespace._
 
 - The only interesting object in `kube-public` is a ConfigMap named `cluster-info`
 
@@ -403,6 +411,8 @@ class: extra-details
 
 ## Accessing `cluster-info`
 
+> _Not all clusters have a `kube-public`, you can skip these steps if your cluster does not have this namespace._
+
 - Earlier, when trying to access the API server, we got a `Forbidden` message
 
 - But `cluster-info` is readable by everyone (even without authentication)
@@ -425,6 +435,8 @@ class: extra-details
 class: extra-details
 
 ## Retrieving `kubeconfig`
+
+> _Not all clusters have a `kube-public`, you can skip these steps if your cluster does not have this namespace._
 
 - We can easily extract the `kubeconfig` file from this ConfigMap
 
@@ -475,10 +487,10 @@ class: extra-details
 
 .exercise[
 
-- List the services on our cluster with one of these commands:
+- List the services in our default namespace with one of these commands:
   ```bash
-  kubectl get services
-  kubectl get svc
+  kubectl -n default get services
+  kubectl -n default get svc
   ```
 
 ]
