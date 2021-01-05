@@ -514,73 +514,12 @@ spec:
 
 ]
 
----
-
-## Passwords, tokens, sensitive information
-
-- For sensitive information, there is another special resource: *Secrets*
-
-- Secrets and Configmaps work almost the same way
-
-  (we'll expose the differences on the next slide)
-
-- The *intent* is different, though:
-
-  *"You should use secrets for things which are actually secret like API keys, 
-  credentials, etc., and use config map for not-secret configuration data."*
-
-  *"In the future there will likely be some differentiators for secrets like rotation or support for backing the secret API w/ HSMs, etc."*
-
-  (Source: [the author of both features](https://stackoverflow.com/a/36925553/580281
-))
-
----
-
-class: extra-details
-
-## Differences between configmaps and secrets
- 
-- Secrets are base64-encoded when shown with `kubectl get secrets -o yaml`
-
-  - keep in mind that this is just *encoding*, not *encryption*
-
-  - it is very easy to [automatically extract and decode secrets](https://medium.com/@mveritym/decoding-kubernetes-secrets-60deed7a96a3)
-
-- [Secrets can be encrypted at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/)
-
-- With RBAC, we can authorize a user to access configmaps, but not secrets
-
-  (since they are two different kinds of resources)
-
----
-
-class: extra-details
-
-## Immutable ConfigMaps and Secrets
-
-- Since Kubernetes 1.19, it is possible to mark a ConfigMap or Secret as *immutable*
-
-  ```bash
-  kubectl patch configmap xyz --patch='{"immutable": true}'
-  ```
-
-- This brings performance improvements when using lots of ConfigMaps and Secrets
-
-  (lots = tens of thousands)
-
-- Once a ConfigMap or Secret has been marked as immutable:
-
-  - its content cannot be changed anymore
-  - the `immutable` field can't be changed back either
-  - the only way to change it is to delete and re-create it
-  - Pods using it will have to be re-created as well
-
 ???
 
 :EN:- Managing application configuration
 :EN:- Exposing configuration with the downward API
-:EN:- Exposing configuration with Config Maps and Secrets
+:EN:- Exposing configuration with Config Maps
 
 :FR:- Gérer la configuration des applications
 :FR:- Configuration au travers de la *downward API*
-:FR:- Configuration via les *Config Maps* et *Secrets*
+:FR:- Configurer les applications avec des *Config Maps*

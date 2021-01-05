@@ -76,6 +76,7 @@ content:
 # EXTRA
 - - k8s/volumes.md
   - k8s/configuration.md
+  - k8s/secrets.md
   - k8s/statefulsets.md
   - k8s/local-persistent-volumes.md
   - k8s/portworx.md
