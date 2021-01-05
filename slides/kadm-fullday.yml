@@ -28,6 +28,7 @@ content:
 -
   - k8s/prereqs-admin.md
   - k8s/architecture.md
+  #- k8s/internal-apis.md
   - k8s/deploymentslideshow.md
   - k8s/dmuc.md
 -
