@@ -338,9 +338,9 @@ docker run --rm --net host -v $PWD:/vol \
 
   (e.g. [Portworx](https://docs.portworx.com/portworx-install-with-kubernetes/storage-operations/create-snapshots/) can [create snapshots through annotations](https://docs.portworx.com/portworx-install-with-kubernetes/storage-operations/create-snapshots/snaps-annotations/#taking-periodic-snapshots-on-a-running-pod))
 
-- Option 3: [snapshots through Kubernetes API](https://kubernetes.io/blog/2018/10/09/introducing-volume-snapshot-alpha-for-kubernetes/)
+- Option 3: [snapshots through Kubernetes API](https://kubernetes.io/docs/concepts/storage/volume-snapshots/)
 
-  (now in alpha for a few storage providers: GCE, OpenSDS, Ceph, Portworx)
+  (Generally available since Kuberentes 1.20 for a number of [CSI](https://kubernetes.io/blog/2019/01/15/container-storage-interface-ga/) volume plugins : GCE, OpenSDS, Ceph, Portworx, etc)
 
 ---
 
