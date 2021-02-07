@@ -60,6 +60,7 @@ content:
   - k8s/setup-selfhosted.md
   - k8s/dashboard.md
   - k8s/k9s.md
+  - k8s/tilt.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md

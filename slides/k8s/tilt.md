@@ -1,0 +1,302 @@
+# Tilt
+
+- What does a development workflow look like?
+
+  - make changes
+
+  - test / see these changes
+
+  - repeat!
+
+- What does it look like, with containers?
+
+  🤔
+
+---
+
+## Basic Docker workflow
+
+- Preparation
+
+  - write Dockerfiles
+
+- Iteration
+
+  - edit code
+  - `docker build`
+  - `docker run`
+  - test
+  - `docker stop`
+
+Straightforward when we have a single container.
+
+---
+
+## Docker workflow with volumes
+
+- Preparation
+
+  - write Dockerfiles
+  - `docker build` + `docker run`
+
+- Iteration
+
+  - edit code
+  - test
+
+Note: only works with interpreted languages.
+<br/>
+(Compiled languages require extra work.)
+
+---
+
+## Docker workflow with Compose
+
+- Preparation
+
+  - write Dockerfiles + Compose file
+  - `docker-compose up`
+
+- Iteration
+
+  - edit code
+  - test
+  - `docker-compose up` (as needed)
+
+Simplifies complex scenarios (multiple containers).
+<br/>
+Facilitates updating images.
+
+---
+
+## Basic Kubernetes workflow
+
+- Preparation
+
+  - write Dockerfiles
+  - write Kubernetes YAML
+  - set up container registry
+
+- Iteration
+
+  - edit code
+  - build images
+  - push images
+  - update Kubernetes resources
+
+Seems simple enough, right?
+
+---
+
+## Basic Kubernetes workflow
+
+- Preparation
+
+  - write Dockerfiles
+  - write Kubernetes YAML
+  - **set up container registry**
+
+- Iteration
+
+  - edit code
+  - build images
+  - **push images**
+  - update Kubernetes resources
+
+Ah, right ...
+
+---
+
+## We need a registry
+
+- Remember "build, ship, and run"
+
+- Registries are involved in the "ship" phase
+
+- With Docker, we were building and running on the same node
+
+- We didn't need a registry!
+
+- With Kubernetes, though ...
+
+---
+
+## Special case of single node clusters
+
+- If our Kubernetes has only one node ...
+
+- ... We can build directly on that node ...
+
+- ... We don't need to push images ...
+
+- ... We don't need to run a registry!
+
+- Examples: Docker Desktop, Minikube ...
+
+---
+
+## When we have more than one node
+
+- Which registry should we use?
+
+  (Docker Hub, Quay, cloud-based, self-hosted ...)
+
+- Should we use a single registry, or one per cluster or environment?
+
+- Which tags and credentials should we use?
+
+  (in particular when using a shared registry!)
+
+- How do we provision that registry and its users?
+
+- How do we adjust our Kubernetes YAML manifests?
+
+  (e.g. to inject image names and tags)
+
+---
+
+## More questions
+
+- The whole cycle (build+push+update) is expensive
+
+- If we have many services, how do we update only the ones we need?
+
+- Can we take shortcuts?
+
+  (e.g. synchronized files without going through a whole build+push+update cycle)
+
+---
+
+## Tilt
+
+- Tilt is a tool to address all these questions
+
+- There are other similar tools (e.g. Skaffold)
+
+- We arbitrarily decided to focus on that one
+
+---
+
+## Tilt in practice
+
+- The `dockercoins` directory in our repository has a `Tiltfile`
+
+- Go to that directory and try `tilt up`
+
+- Tilt should refuse to start, but it will explain why
+
+- Edit the `Tiltfile` accordingly and try again
+
+- Open the Tilt web UI
+
+  (if running Tilt on a remote machine, you will need `tilt up --host 0.0.0.0`)
+
+- Watch as the Dockercoins app is built, pushed, started
+
+---
+
+## What's in our Tiltfile?
+
+- Kubernetes manifests for a local registry
+
+- Kubernetes manifests for DockerCoins
+
+- Instructions indicating how to build DockerCoins' images
+
+- A tiny bit of sugar
+
+  (telling Tilt which registry to use)
+
+---
+
+
+## How does it work?
+
+- Tilt keeps track of dependencies between files and resources
+
+  (a bit like a `make` that would run continuously)
+
+- It automatically alters some resources
+
+  (for instance, it updates the images used in our Kubernetes manifests)
+
+- That's it!
+
+(And of course, it provides a great web UI, lots of libraries, etc.)
+
+---
+
+## What happens when we edit a file (1/2)
+
+- Let's change e.g. `worker/worker.py`
+
+- Thanks to this line,
+  ```python
+  docker_build('dockercoins/worker', 'worker')
+  ```
+  ... Tilt watches the `worker` directory and uses it to build `dockercoins/worker`
+
+- Thanks to this line,
+  ```python
+  default_registry('localhost:30555')
+  ```
+  ... Tilt actually renames `dockercoins/worker` to `localhost:30555/dockercoins_worker`
+
+- Tilt will tag the image with something like `tilt-xxxxxxxxxx`
+
+---
+
+## What happens when we edit a file (2/2)
+
+- Thanks to this line,
+  ```python
+  k8s_yaml('../k8s/dockercoins.yaml')
+  ```
+  ... Tilt is aware of our Kubernetes resources
+
+- The `worker` Deployment uses `dockercoins/worker`, so it must be updated
+
+- `dockercoins/worker` becomes `localhost:30555/dockercoins_worker:tilt-xxx`
+
+- The `worker` Deployment gets updated on the Kubernetes cluster
+
+- All these operations (and their log output) are visible in the Tilt UI
+
+---
+
+## Configuration file format
+
+- The Tiltfile is written in [Starlark](https://github.com/bazelbuild/starlark)
+
+  (essentially a subset of Python)
+
+- Tilt monitors the Tiltfile too
+
+  (so it reloads it immediately when we change it)
+
+---
+
+## Tilt "killer features"
+
+- Dependency engine
+
+  (build or run only what's necessary)
+
+- Ability to watch resources
+
+  (execute actions immediately, without explicitly running a command)
+
+- Rich library of function and helpers
+
+  (build container images, manipulate YAML manifests...)
+
+- Convenient UI (web; TUI also available)
+
+  (provides immediate feedback and logs)
+
+- Extensibility!
+
+???
+
+:EN:- Development workflow with Tilt
+:FR:- Développer avec Tilt
