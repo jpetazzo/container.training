@@ -128,6 +128,36 @@ class: extra-details
 
 ---
 
+class: pic
+
+![Overview of the three Kubernetes network layers](images/k8s-net-0-overview.svg)
+
+---
+
+class: pic
+
+![Pod-to-pod network](images/k8s-net-1-pod-to-pod.svg)
+
+---
+
+class: pic
+
+![Pod-to-service network](images/k8s-net-2-pod-to-svc.svg)
+
+---
+
+class: pic
+
+![Network policies](images/k8s-net-3-netpol.svg)
+
+---
+
+class: pic
+
+![View with all the layers again](images/k8s-net-4-overview.svg)
+
+---
+
 class: extra-details
 
 ## Even more moving parts
