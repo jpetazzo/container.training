@@ -20,11 +20,11 @@ content:
 - shared/chat-room-im.md
 #- shared/chat-room-zoom-meeting.md
 #- shared/chat-room-zoom-webinar.md
+- shared/prereqs.md
+#- shared/webssh.md
+- shared/connecting.md
 - shared/toc.md
 - # 1
-  - shared/prereqs.md
-  #- shared/webssh.md
-  - shared/connecting.md
   #- k8s/versions-k8s.md
   - shared/sampleapp.md
   #- shared/composescale.md
