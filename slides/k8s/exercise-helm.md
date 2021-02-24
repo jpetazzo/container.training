@@ -10,7 +10,7 @@ Level 2: make it so that the number of replicas can be set with `--set replicas=
 
 Level 3: change the colors of the lego bricks.
 
-(For level 3, fork the repository and use ctr.run to build images.)
+(For level 3, you'll have to build/push your own images.)
 
 See next slide if you need hints!
 
@@ -44,20 +44,12 @@ Also add `replicas: 5` to `values.yaml` to provide a default value.
 
 ## Changing the color
 
-- Fork the repository
+- Create an account on e.g. Docker Hub (e.g. `janedoe`)
 
-- Make sure that your fork has valid Dockerfiles
-
-  (or identify a branch that has valid Dockerfiles)
-
-- Use the following images:
-
-  ctr.run/yourgithubusername/wordsmith/db:branchname
-
-  (replace db with web and words for the other components)
+- Create an image repository (e.g. `janedoe/web`)
 
 - Change the images and/or CSS in `web/static`
 
-- Commit, push, trigger a rolling update
+- Build and push
 
-  (`imagePullPolicy` should be `Always`, which is the default)
+- Trigger a rolling update using the image you just pushed
