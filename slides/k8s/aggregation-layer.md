@@ -58,27 +58,24 @@
 
   *probably aggregation layer*
 
-
 ---
 
 ## How are resources organized?
 
 - Let's have a look at the Kubernetes API hierarchical structure
 
-- Useful: `.metadata.selfLink` contains the URI of a resource
+- We'll ask `kubectl` to show us the exacts requests that it's making
 
 .exercise[
 
-- Check the `apiVersion` and URI of a "core" resource, e.g. a Node:
+- Check the URI for a cluster-scope, "core" resource, e.g. a Node:
   ```bash
-  kubectl get nodes -o json | jq .items[0].apiVersion
-  kubectl get nodes -o json | jq .items[0].metadata.selfLink
+  kubectl -v6 get node node1
   ```
 
-- Get the `apiVersion` and URI for a "non-core" resource, e.g. a ClusterRole:
+- Check the URI for a cluster-scope, "non-core" resource, e.g. a ClusterRole:
   ```bash
-  kubectl get clusterrole view -o json | jq .apiVersion
-  kubectl get clusterrole view -o json | jq .metadata.selfLink
+  kubectl -v6 get clusterrole view
   ```
 
 ]
@@ -122,6 +119,17 @@
 class: extra-details
 
 ## Namespaced resources
+
+- What about namespaced resources?
+
+.exercise[
+
+- Check the URI for a namespaced, "core" resource, e.g. a Service:
+  ```bash
+  kubectl -v6 get service kubernetes --namespace default
+  ```
+
+]
 
 - Here are what namespaced resources URIs look like:
 
@@ -168,7 +176,7 @@ class: extra-details
     kubectl get pods --namespace=kube-system --selector=k8s-app=kube-proxy
     PODNAME=$(
       kubectl get pods --namespace=kube-system --selector=k8s-app=kube-proxy \
-              -o json | jq .items[0].metadata.name)
+              -o json | jq -r .items[0].metadata.name)
   ```
 
 - Execute a command in a pod, showing the API requests:

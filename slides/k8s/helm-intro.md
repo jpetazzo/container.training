@@ -244,7 +244,7 @@ fine for personal and development clusters.)
 
 - Add the `stable` repo:
   ```bash
-  helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+  helm repo add stable https://charts.helm.sh/stable
   ```
 
 ]
@@ -252,6 +252,22 @@ fine for personal and development clusters.)
 Adding a repo can take a few seconds (it downloads the list of charts from the repo).
 
 It's OK to add a repo that already exists (it will merely update it).
+
+---
+
+class: extra-details
+
+## Deprecation warning
+
+- That "stable" is being deprecated, in favor of a more decentralized approach
+
+  (each community / company / group / project hosting their own repository)
+
+- We're going to use it here for educational purposes
+
+- But if you're looking for production-grade charts, look elsewhere!
+
+  (namely, on the Helm Hub)
 
 ---
 

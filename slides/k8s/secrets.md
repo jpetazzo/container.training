@@ -68,6 +68,128 @@
 
   “Ah yes, this secret is a ...”
 
+---
+
+## Accessing private repositories
+
+- Let's see how to access an image on private registry!
+
+- These images are protected by a username + password
+
+  (on some registries, it's token + password, but it's the same thing)
+
+- To access a private image, we need to:
+
+  - create a secret
+
+  - reference that secret in a Pod template
+
+  - or reference that secret in a ServiceAccount used by a Pod
+
+---
+
+## In practice
+
+- Let's try to access an image on a private registry!
+
+  - image = docker-registry.enix.io/jpetazzo/private:latest
+  - user = reader
+  - password = VmQvqdtXFwXfyy4Jb5DR
+
+.exercise[
+
+- Create a Deployment using that image:
+  ```bash
+    kubectl create deployment priv \
+            --image=docker-registry.enix.io/jpetazzo/private
+  ```
+
+- Check that the Pod won't start:
+  ```bash
+  kubectl get pods --selector=app=priv
+  ```
+
+]
+
+---
+
+## Creating a secret
+
+- Let's create a secret with the information provided earlier
+
+.exercise[
+
+- Create the registry secret:
+  ```bash
+    kubectl create secret docker-registry enix \
+            --docker-server=docker-registry.enix.io \
+            --docker-username=reader \
+            --docker-password=VmQvqdtXFwXfyy4Jb5DR
+  ```
+
+]
+
+Why do we have to specify the registry address?
+
+If we use multiple sets of credentials for different registries, it prevents leaking the credentials of one registry to *another* registry.
+
+---
+
+## Using the secret
+
+- The first way to use a secret is to add it to `imagePullSecrets`
+
+  (in the `spec` section of a Pod template)
+
+.exercise[
+
+- Patch the `priv` Deployment that we created earlier:
+  ```bash
+    kubectl patch deploy priv --patch='
+    spec:
+      template:
+        spec:
+          imagePullSecrets:
+          - name: enix
+    '
+  ```
+
+]
+
+---
+
+## Checking the results
+
+.exercise[
+
+- Confirm that our Pod can now start correctly:
+  ```bash
+  kubectl get pods --selector=app=priv
+  ```
+
+]
+
+---
+
+## Another way to use the secret
+
+- We can add the secret to the ServiceAccount
+
+- This is convenient to automatically use credentials for *all* pods
+
+  (as long as they're using a specific ServiceAccount, of course)
+
+.exercise[
+
+- Add the secret to the ServiceAccount:
+  ```bash
+    kubectl patch serviceaccount default --patch='
+    imagePullSecrets:
+    - name: enix
+    '
+  ```
+
+]
 
 ---
 

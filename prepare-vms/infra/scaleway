@@ -1,1 +1,3 @@
 INFRACLASS=scaleway
+#SCW_INSTANCE_TYPE=DEV1-L
+#SCW_ZONE=fr-par-2
