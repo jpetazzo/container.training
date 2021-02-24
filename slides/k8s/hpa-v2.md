@@ -72,7 +72,7 @@
 
 - Deploy DockerCoins, and scale up the `worker` Deployment:
   ```bash
-  kubectl apply -f ~/container.training/k8/dockercoins.yaml
+  kubectl apply -f ~/container.training/k8s/dockercoins.yaml
   kubectl scale deployment worker --replicas=10
   ```
 
@@ -118,7 +118,7 @@
 
 - Deploy `httplat`:
   ```bash
-  kubectl create deployment httplat -- httplat http://rng/
+  kubectl create deployment httplat --image=jpetazzo/httplat -- httplat http://rng/
   ```
 
 - Expose it:
@@ -512,20 +512,20 @@ no custom metrics API (custom.metrics.k8s.io) registered
 Here is the rule that we need to add to the configuration:
 
 ```yaml
-- seriesQuery: |
-    httplat_latency_seconds_sum{kubernetes_namespace!="",kubernetes_name!=""}
-  resources:
-    overrides:
-      kubernetes_namespace:
-        resource: namespace
-      kubernetes_name:
-        resource: service
-  name:
-    matches: "httplat_latency_seconds_sum"
-    as: "httplat_latency_seconds"
-  metricsQuery: |
-    rate(httplat_latency_seconds_sum{<<.LabelMatchers>>}[2m])
-    /rate(httplat_latency_seconds_count{<<.LabelMatchers>>}[2m])
+    - seriesQuery: |
+        httplat_latency_seconds_sum{kubernetes_namespace!="",kubernetes_name!=""}
+      resources:
+        overrides:
+          kubernetes_namespace:
+            resource: namespace
+          kubernetes_name:
+            resource: service
+      name:
+        matches: "httplat_latency_seconds_sum"
+        as: "httplat_latency_seconds"
+      metricsQuery: |
+        rate(httplat_latency_seconds_sum{<<.LabelMatchers>>}[2m])
+        /rate(httplat_latency_seconds_count{<<.LabelMatchers>>}[2m])
 ```
 
 (I built it following the [walkthrough](https://github.com/DirectXMan12/k8s-prometheus-adapter/blob/master/docs/config-walkthrough.md
@@ -636,7 +636,7 @@ kubectl get --raw /apis/custom.metrics.k8s.io/v1beta1
 Check that our `httplat` metrics are available:
 ```bash
 kubectl get --raw /apis/custom.metrics.k8s.io/v1beta1\
-/namespaces/coins/services/httplat/httplat_latency_seconds
+/namespaces/customscaling/services/httplat/httplat_latency_seconds
 ```
 
 Also check the logs of the `prometheus-adapter` and the `kube-controller-manager`.
