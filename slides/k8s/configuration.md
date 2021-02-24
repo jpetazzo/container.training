@@ -60,21 +60,41 @@
 
 ## Command-line arguments
 
-- Pass options to `args` array in the container specification
+- Indicate what should run in the container
 
-- Example ([source](https://github.com/coreos/pods/blob/master/kubernetes.yaml#L29)): 
+- Pass `command` and/or `args` in the container options in a Pod's template
+
+- Both `command` and `args` are arrays
+
+- Example ([source](https://github.com/jpetazzo/container.training/blob/main/k8s/consul-1.yaml#L70)):
   ```yaml
-      args: 
-        - "--data-dir=/var/lib/etcd"
-        - "--advertise-client-urls=http://127.0.0.1:2379"
-        - "--listen-client-urls=http://127.0.0.1:2379"
-        - "--listen-peer-urls=http://127.0.0.1:2380"
-        - "--name=etcd"
+    args:
+    - "agent"
+    - "-bootstrap-expect=3"
+    - "-retry-join=provider=k8s label_selector=\"app=consul\" namespace=\"$(NS)\""
+    - "-client=0.0.0.0"
+    - "-data-dir=/consul/data"
+    - "-server"
+    - "-ui"
   ```
 
-- The options can be passed directly to the program that we run ...
+---
 
-  ... or to a wrapper script that will use them to e.g. generate a config file
+## `args` or `command`?
+
+- Use `command` to override the `ENTRYPOINT` defined in the image
+
+- Use `args` to keep the `ENTRYPOINT` defined in the image
+
+  (the parameters specified in `args` are added to the `ENTRYPOINT`)
+
+- In doubt, use `command`
+
+- It is also possible to use *both* `command` and `args`
+
+  (they will be strung together, just like `ENTRYPOINT` and `CMD`)
+
+- See the [docs](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#notes) to see how they interact together
 
 ---
 
