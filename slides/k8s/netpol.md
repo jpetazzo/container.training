@@ -427,25 +427,33 @@ troubleshoot easily, without having to poke holes in our firewall.
 
 ---
 
-## Further resources
+## Tools and resources
+
+- [Cilium Network Policy Editor](https://editor.cilium.io/)
+
+- [Tufin Network Policy Viewer](https://orca.tufin.io/netpol/)
+
+- Two resources by [Ahmet Alp Balkan](https://ahmet.im/):
+
+  - a [very good talk about network policies](https://www.youtube.com/watch?list=PLj6h78yzYM2P-3-xqvmWaZbbI1sW-ulZb&v=3gGpMmYeEO8) at KubeCon North America 2017
+
+  - a repository of [ready-to-use recipes](https://github.com/ahmetb/kubernetes-network-policy-recipes) for network policies
+
+---
+
+## Documentation
 
 - As always, the [Kubernetes documentation](https://kubernetes.io/docs/concepts/services-networking/network-policies/) is a good starting point
 
 - The API documentation has a lot of detail about the format of various objects: <!-- ##VERSION## -->
 
-  - [NetworkPolicy](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#networkpolicy-v1-networking-k8s-io)
+  - [NetworkPolicy](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#networkpolicy-v1-networking-k8s-io)
 
-  - [NetworkPolicySpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#networkpolicyspec-v1-networking-k8s-io)
+  - [NetworkPolicySpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#networkpolicyspec-v1-networking-k8s-io)
 
-  - [NetworkPolicyIngressRule](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#networkpolicyingressrule-v1-networking-k8s-io)
+  - [NetworkPolicyIngressRule](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#networkpolicyingressrule-v1-networking-k8s-io)
 
   - etc.
-
-- And two resources by [Ahmet Alp Balkan](https://ahmet.im/):
-
-  - a [very good talk about network policies](https://www.youtube.com/watch?list=PLj6h78yzYM2P-3-xqvmWaZbbI1sW-ulZb&v=3gGpMmYeEO8) at KubeCon North America 2017
-
-  - a repository of [ready-to-use recipes](https://github.com/ahmetb/kubernetes-network-policy-recipes) for network policies
 
 ???
 
