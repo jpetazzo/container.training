@@ -92,6 +92,29 @@
 
 ---
 
+## etcd authorization
+
+- etcd supports RBAC, but Kubernetes doesn't use it by default
+
+  (note: etcd RBAC is completely different from Kubernetes RBAC!)
+
+- By default, etcd access is "all or nothing"
+
+  (if you have a valid certificate, you get in)
+
+- Be very careful if you use the same root CA for etcd and other things
+
+  (if etcd trusts the root CA, then anyone with a valid cert gets full etcd access)
+
+- For more details, check the following resources:
+
+  - [etcd documentation on authentication](https://etcd.io/docs/current/op-guide/authentication/)
+
+  - [PKI The Wrong Way](https://www.youtube.com/watch?v=gcOLDEzsVHI) at KubeCon NA 2020
+
+---
+
+
 ## API server clients
 
 - The API server has a sophisticated authentication and authorization system
