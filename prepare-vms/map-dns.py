@@ -26,16 +26,16 @@ apiurl = "https://dns.api.gandi.net/api/v5/domains"
 apikey = yaml.safe_load(open(config_file))["apirest"]["key"]
 
 # Figure out if we're called for a bunch of domains, or just one.
-first_arg = sys.argv[1]
-if os.path.isfile(first_arg):
-  domains = open(first_arg).read().split()
+domain_or_domain_file = sys.argv[1]
+if os.path.isfile(domain_or_domain_file):
+  domains = open(domain_or_domain_file).read().split()
   domains = [ d for d in domains if not d.startswith('#') ]
   tag = sys.argv[2]
   ips = open(f"tags/{tag}/ips.txt").read().split()
   settings_file = f"tags/{tag}/settings.yaml"
   clustersize = yaml.safe_load(open(settings_file))["clustersize"]
 else:
-  domains = [first_arg]
+  domains = [domain_or_domain_file]
   ips = sys.argv[2:]
   clustersize = len(ips)
 
