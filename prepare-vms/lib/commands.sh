@@ -69,11 +69,14 @@ _cmd_deploy() {
     echo deploying > tags/$TAG/status
     sep "Deploying tag $TAG"
 
-    # Wait for cloudinit to be done
+    # If this VM image is using cloud-init,
+    # wait for cloud-init to be done
     pssh "
-    while [ ! -f /var/lib/cloud/instance/boot-finished ]; do
-        sleep 1
-    done"
+    if [ -d /var/lib/cloud ]; then
+        while [ ! -f /var/lib/cloud/instance/boot-finished ]; do
+            sleep 1
+        done
+    fi"
 
     # Special case for scaleway since it doesn't come with sudo
     if [ "$INFRACLASS" = "scaleway" ]; then
@@ -101,6 +104,12 @@ _cmd_deploy() {
     pssh "
     sudo apt-get update &&
     sudo apt-get install -y python-yaml"
+
+    # If there is no "python" binary, symlink to python3
+    #pssh "
+    #if ! which python; then
+    #    ln -s $(which python3) /usr/local/bin/python
+    #fi"
 
     # Copy postprep.py to the remote machines, and execute it, feeding it the list of IP addresses
     pssh -I tee /tmp/postprep.py <lib/postprep.py
@@ -208,7 +217,14 @@ _cmd_kube() {
     echo 'alias k=kubectl' | sudo tee /etc/bash_completion.d/k &&
     echo 'complete -F __start_kubectl k' | sudo tee -a /etc/bash_completion.d/k"
 
-    # Initialize kube master
+    # Disable swap
+    # (note that this won't survive across node reboots!)
+    if [ "$INFRACLASS" = "linode" ]; then
+        pssh "
+        sudo swapoff -a"
+    fi
+
+    # Initialize kube control plane
     pssh --timeout 200 "
     if i_am_first_node && [ ! -f /etc/kubernetes/admin.conf ]; then
         kubeadm token generate > /tmp/token &&
