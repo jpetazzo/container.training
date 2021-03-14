@@ -242,3 +242,5 @@ class: extra-details
 
 :EN:- Obtaining certificates with cert-manager
 :FR:- Obtenir des certificats avec cert-manager
+
+:T: Obtaining TLS certificates with cert-manager

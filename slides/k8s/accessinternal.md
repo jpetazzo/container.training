@@ -134,3 +134,17 @@ installed and set up `kubectl` to communicate with your cluster.
 
 :EN:- Securely accessing internal services
 :FR:- Accès sécurisé aux services internes
+
+:T: Accessing internal services from our local machine
+
+:Q: What's the advantage of "kubectl port-forward" compared to a NodePort?
+:A: It can forward arbitrary protocols
+:A: It doesn't require Kubernetes API credentials
+:A: It offers deterministic load balancing (instead of random)
+:A: ✔️It doesn't expose the service to the public
+
+:Q: What's the security concept behind "kubectl port-forward"?
+:A: ✔️We authenticate with the Kubernetes API, and it forwards connections on our behalf
+:A: It detects our source IP address, and only allows connections coming from it
+:A: It uses end-to-end mTLS (mutual TLS) to authenticate our connections
+:A: There is no security (as long as it's running, anyone can connect from anywhere)
