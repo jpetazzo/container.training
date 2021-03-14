@@ -462,3 +462,17 @@ All unspecified values will take the default values defined in the chart.
 :FR:- Fonctionnement général de Helm
 :FR:- Installer des composants via Helm
 :FR:- Helm 2, Helm 3, et le *Helm Hub*
+
+:T: Getting started with Helm and its concepts
+
+:Q: Which comparison is the most adequate?
+:A: Helm is a firewall, charts are access lists
+:A: ✔️Helm is a package manager, charts are packages
+:A: Helm is an artefact repository, charts are artefacts
+:A: Helm is a CI/CD platform, charts are CI/CD pipelines
+
+:Q: What's required to distribute a Helm chart?
+:A: A Helm commercial license
+:A: A Docker registry
+:A: An account on the Helm Hub
+:A: ✔️An HTTP server
