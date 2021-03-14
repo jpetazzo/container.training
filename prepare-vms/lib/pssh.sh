@@ -18,11 +18,11 @@ pssh() {
     echo "[parallel-ssh] $@"
     export PSSH=$(which pssh || which parallel-ssh)
 
-    if [ "$INFRACLASS" = hetzner ]; then
-        LOGIN=root
-    else
-        LOGIN=ubuntu
-    fi
+    case "$INFRACLASS" in
+        hetzner) LOGIN=root ;;
+        linode)  LOGIN=root ;;
+        *)       LOGIN=ubuntu ;;
+    esac
 
     $PSSH -h $HOSTFILE -l $LOGIN \
         --par 100 \
