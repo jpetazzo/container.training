@@ -1,35 +1,15 @@
 ## Intros
 
-- This slide should be customized by the tutorial instructor(s).
+- Hello! I'm Jérôme Petazzoni
 
-- Hello! We are:
+  ([@jpetazzo](https://twitter.com/jpetazzo) on Twitter)
 
-   - .emoji[👩🏻‍🏫] Ann O'Nymous ([@...](https://twitter.com/...), Megacorp Inc)
+- I worked at Docker from \~2011 to 2018
 
-   - .emoji[👨🏾‍🎓] Stu Dent ([@...](https://twitter.com/...), University of Wakanda)
+- I'm now doing consulting, training, etc. on Docker & Kubernetes
 
- <!-- .dummy[
+  (check out [container.training](https://container.trianing/)!)
 
-   - .emoji[👷🏻‍♀️] AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
+- I'll show you how to deploy a complete CI/CD pipeline on LKE!
 
-   - .emoji[🚁] Alexandre ([@alexbuisine](https://twitter.com/alexbuisine), Enix SAS)
-
-   - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
-
-   - .emoji[⛵] Jérémy ([@jeremygarrouste](twitter.com/jeremygarrouste), Inpiwee)
-
-   - .emoji[🎧] Romain ([@rdegez](https://twitter.com/rdegez), Enix SAS)
-
-] -->
-
-- The workshop will run from ...
-
-- There will be a lunch break at ...
-
-  (And coffee breaks!)
-
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
-
-- Live feedback, questions, help: @@CHAT@@
+  (Linode Kubernetes Engine 😎)
