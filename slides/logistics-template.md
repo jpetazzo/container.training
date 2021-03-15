@@ -1,10 +1,10 @@
 ## Intros
 
-- Hello! I'm Jérôme Petazzoni ([@jpetazzo](https://twitter.com/jpetazzo))
+- Hello! We are:
 
-<!--
-  - AJ Bowen ([@s0ulshake](https://twitter.com/s0ulshake), [EphemeraSearch](https://ephemerasearch.com/))
--->
+  - Jérôme Petazzoni ([@jpetazzo](https://twitter.com/jpetazzo)), on camera
+  
+  - AJ Bowen ([@s0ulshake](https://twitter.com/s0ulshake)), backstage
 
 - The training will run 8am-noon (Pacific time), Monday to Friday
 

@@ -10,3 +10,6 @@
 
 - Say hi in the chat room!
 
+Note: AJ might masquerade as Jérôme in Slack.
+
+It's 100% Jérôme's fault. *Booo!*
