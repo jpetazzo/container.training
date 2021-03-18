@@ -213,6 +213,7 @@ def processcontent(content, filename):
             return (content, titles)
         if os.path.isfile(content):
             return processcontent(open(content).read(), content)
+        logging.warning("Content spans only one line (it's probably a file name) but no file found: {}".format(content))
     if isinstance(content, list):
         subparts = [processcontent(c, filename) for c in content]
         markdown = "\n---\n".join(c[0] for c in subparts)
