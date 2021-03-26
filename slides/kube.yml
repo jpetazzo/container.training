@@ -2,9 +2,9 @@ title: |
   Kubernetes Training
   Flatiron Health
 
-#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+chat: "[#techops-k8s-training](https://flatiron.slack.com/archives/C01RQU6JJ07)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
-chat: "In person!"
+#chat: "In person!"
 
 gitrepo: github.com/jpetazzo/container.training
 
@@ -20,7 +20,7 @@ content:
 - logistics.md
 - k8s/intro.md
 - shared/about-slides.md
-- shared/chat-room-im.md
+- shared/chat-room-slack.md
 #- shared/chat-room-zoom-meeting.md
 #- shared/chat-room-zoom-webinar.md
 - shared/toc.md
@@ -55,7 +55,7 @@ content:
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
   - k8s/daemonset.md
-  - k8s/dryrun.md
+  - k8s/authoring-yaml.md
   #- k8s/exercise-yaml.md
 - #MODULE4
   - k8s/namespaces.md

@@ -40,6 +40,112 @@
 
 ---
 
+class: extra-details
+
+## CPU limits implementation details
+
+- A container with a CPU limit will be "rationed" by the kernel
+
+- Every `cfs_period_us`, it will receive a CPU quota, like an "allowance"
+
+  (that interval defaults to 100ms)
+
+- Once it has used its quota, it will be stalled until the next period
+
+- This can easily result in throttling for bursty workloads
+
+  (see details on next slide)
+
+---
+
+class: extra-details
+
+## A bursty example
+
+- Web service receives one request per minute
+
+- Each request takes 1 second of CPU
+
+- Average load: 0.16%
+
+- Let's say we set a CPU limit of 10%
+
+- This means CPU quotas of 10ms every 100ms
+
+- Obtaining the quota for 1 second of CPU will take 10 seconds
+
+- Observed latency will be 10 seconds (... actually 9.9s) instead of 1 second
+
+  (real-life scenarios will of course be less extreme, but they do happen!)
+
+---
+
+class: extra-details
+
+## Multi-core scheduling details
+
+- Each core gets a small share of the container's CPU quota
+
+  (this avoids locking and contention on the "global" quota for the container)
+
+- By default, the kernel distributes that quota to CPUs in 5ms increments
+
+  (tunable with `kernel.sched_cfs_bandwidth_slice_us`)
+
+- If a containerized process (or thread) uses up its local CPU quota:
+
+  *it gets more from the "global" container quota (if there's some left)*
+
+- If it "yields" (e.g. sleeps for I/O) before using its local CPU quota:
+
+  *the quota is **soon** returned to the "global" container quota, **minus** 1ms*
+
+---
+
+class: extra-details
+
+## Low quotas on machines with many cores
+
+- The local CPU quota is not immediately returned to the global quota
+
+  - this reduces locking and contention on the global quota
+
+  - but this can cause starvation when many threads/processes become runnable
+
+- That 1ms that "stays" on the local CPU quota is often useful
+
+  - if the thread/process becomes runnable, it can be scheduled immediately
+
+  - again, this reduces locking and contention on the global quota
+
+  - but if the thread/process doesn't become runnable, it is wasted!
+
+  - this can become a huge problem on machines with many cores
+
+---
+
+class: extra-details
+
+## CPU limits in a nutshell
+
+- Beware if you run small bursty workloads on machines with many cores!
+
+  ("highly-threaded, user-interactive, non-cpu bound applications")
+
+- Check the `nr_throttled` and `throttled_time` metrics in `cpu.stat`
+
+- Possible solutions/workarounds:
+
+  - be generous with the limits
+
+  - make sure your kernel has the [appropriate patch](https://lkml.org/lkml/2019/5/17/581)
+
+  - use [static CPU manager policy](https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/#static-policy)
+
+For more details, check [this blog post](https://erickhun.com/posts/kubernetes-faster-services-no-cpu-limits/) or these ones ([part 1](https://engineering.indeedblog.com/blog/2019/12/unthrottled-fixing-cpu-limits-in-the-cloud/), [part 2](https://engineering.indeedblog.com/blog/2019/12/cpu-throttling-regression-fix/)).
+
+---
+
 ## Exceeding memory limits
 
 - Memory needs to be swapped out before being reclaimed

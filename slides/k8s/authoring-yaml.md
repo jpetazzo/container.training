@@ -1,6 +1,6 @@
 # Authoring YAML
 
-- There are various ways to generate YAML with Kubernetes, e.g.:
+- We have already generated YAML implicitly, with e.g.:
 
   - `kubectl run`
 
@@ -32,23 +32,60 @@
 
 ---
 
-## We don't have to start from scratch
+## Various ways to write YAML
 
-- Create a resource (e.g. Deployment)
+- Completely from scratch with our favorite editor
 
-- Dump its YAML with `kubectl get -o yaml ...`
+  (yeah, right)
 
-- Edit the YAML
+- Dump an existing resource with `kubectl get -o yaml ...`
 
-- Use `kubectl apply -f ...` with the YAML file to:
+  (it is recommended to clean up the result)
 
-  - update the resource (if it's the same kind)
+- Ask `kubectl` to generate the YAML
 
-  - create a new resource (if it's a different kind)
+  (with a `kubectl create --dry-run -o yaml`)
 
-- Or: Use The Docs, Luke
+- Use The Docs, Luke
 
   (the documentation almost always has YAML examples)
+
+---
+
+## Generating YAML from scratch
+
+- Start with a namespace:
+  ```yaml
+    kind: Namespace
+    apiVersion: v1
+    metadata:
+      name: hello
+  ```
+
+- We can use `kubectl explain` to see resource definitions:
+  ```bash
+  kubectl explain -r pod.spec
+  ```
+
+- Not the easiest option!
+
+---
+
+## Dump the YAML for an existing resource
+
+- `kubectl get -o yaml` works!
+
+- A lot of fields in `metadata` are not necessary
+
+  (`managedFields`, `resourceVersion`, `uid`, `creationTimestamp` ...)
+
+- Most objects will have a `status` field that is not necessary
+
+- Default or empty values can also be removed for clarity
+
+- This can be done manually or with the `kubectl-neat` plugin
+
+  `kubectl get -o yaml ... | kubectl neat`
 
 ---
 
@@ -63,13 +100,17 @@
   kubectl create deployment web --image nginx --dry-run
   ```
 
+- Optionally clean it up with `kubectl neat`, too
+
 ]
 
-- We can clean up that YAML even more if we want
+Note: in recent versions of Kubernetes, we should use `--dry-run=client`
 
-  (for instance, we can remove the `creationTimestamp` and empty dicts)
+(Or `--dry-run=server`; more on that later!)
 
 ---
+
+class: extra-details
 
 ## Using `--dry-run` with `kubectl apply`
 
@@ -86,6 +127,8 @@
   - apply that YAML to see what would actually be created
 
 ---
+
+class: extra-details
 
 ## The limits of `kubectl apply --dry-run`
 
@@ -112,6 +155,8 @@ The resulting YAML doesn't represent a valid DaemonSet.
 
 ---
 
+class: extra-details
+
 ## Server-side dry run
 
 - Since Kubernetes 1.13, we can use [server-side dry run and diffs](https://kubernetes.io/blog/2019/01/14/apiserver-dry-run-and-kubectl-diff/)
@@ -135,6 +180,8 @@ Instead, it has the fields expected in a DaemonSet.
 
 ---
 
+class: extra-details
+
 ## Advantages of server-side dry run
 
 - The YAML is verified much more extensively
@@ -148,6 +195,8 @@ Instead, it has the fields expected in a DaemonSet.
 - Validating or mutating hooks that have side effects can also be an issue
 
 ---
+
+class: extra-details
 
 ## `kubectl diff`
 
@@ -209,3 +258,8 @@ Note: we don't need to specify `--validate=false` here.
   - check that it still works!
 
 - That YAML will be useful later when using e.g. Kustomize or Helm
+
+???
+
+:EN:- Techniques to write YAML manifests
+:FR:- Comment écrire des *manifests* YAML

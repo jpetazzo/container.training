@@ -321,9 +321,9 @@ class: extra-details
 
 - Try to apply a few color labels:
   ```bash
-  kubectl label test-color-2 color=purple
-  kubectl label test-color-2 color=red
-  kubectl label test-color-2 color=blue --overwrite
+  kubectl label pod test-color-2 color=purple
+  kubectl label pod test-color-2 color=red
+  kubectl label pod test-color-2 color=blue --overwrite
   ```
 
 ]
@@ -432,9 +432,9 @@ class: extra-details
 
 - Try to apply a few color labels:
   ```bash
-  kubectl label test-color-3 color=purple
-  kubectl label test-color-3 color=red
-  kubectl label test-color-3 color-
+  kubectl label pod test-color-3 color=purple
+  kubectl label pod test-color-3 color=red
+  kubectl label pod test-color-3 color-
   ```
 
 ]

@@ -63,6 +63,7 @@
   ```bash
   k3d cluster create groscluster \
         --image rancher/k3s:v1.18.9-k3s1 --servers 3 --agents 5
+  ```
 
   (3 nodes for the control plane + 5 worker nodes)
  

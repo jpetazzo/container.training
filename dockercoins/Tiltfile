@@ -1,0 +1,49 @@
+k8s_yaml(blob('''
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: registry
+  name: registry
+spec:
+  selector:
+    matchLabels:
+      app: registry
+  template:
+    metadata:
+      labels:
+        app: registry
+    spec:
+      containers:
+      - image: registry
+        name: registry
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: registry
+  name: registry
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+    nodePort: 30555
+  selector:
+    app: registry
+  type: NodePort
+'''))
+default_registry('localhost:30555')
+docker_build('dockercoins/hasher', 'hasher')
+docker_build('dockercoins/rng', 'rng')
+docker_build('dockercoins/webui', 'webui')
+docker_build('dockercoins/worker', 'worker')
+k8s_yaml('../k8s/dockercoins.yaml')
+
+# Uncomment the following line to let tilt run with the default kubeadm cluster-admin context.
+#allow_k8s_contexts('kubernetes-admin@kubernetes')
+
+# While we're here: if you're controlling a remote cluster, uncomment that line.
+# It will create a port forward so that you can access the remote registry.
+#k8s_resource(workload='registry', port_forwards='30555:5000')

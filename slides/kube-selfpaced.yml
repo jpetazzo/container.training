@@ -59,11 +59,13 @@ content:
   - k8s/setup-managed.md
   - k8s/setup-selfhosted.md
   - k8s/dashboard.md
+  - k8s/k9s.md
+  - k8s/tilt.md
   #- k8s/kubectlscale.md
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
   - k8s/daemonset.md
-  - k8s/dryrun.md
+  - k8s/authoring-yaml.md
   #- k8s/exercise-yaml.md
 -
   - k8s/rollout.md
@@ -86,6 +88,7 @@ content:
   - k8s/helm-create-better-chart.md
   - k8s/helm-secrets.md
   #- k8s/exercise-helm.md
+  - k8s/gitlab.md
 -
   - k8s/netpol.md
   - k8s/authn-authz.md
