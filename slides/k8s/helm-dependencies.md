@@ -1,30 +1,59 @@
-# Creating even better charts
+# Charts using other charts
 
-- We will going to use dependencies to write less code
+- Helm charts can have *dependencies* on other charts
 
-- reuse a community chart for redis
+- These dependencies will help us to share or reuse* components
 
-- We will see how it improve the developer life as well as the one of the user
+  (so that we write and maintain less manifests, less templates, less code!)
 
-- We will see that sometimes dependencies could also remove a lot of code
+- As an example, we will use a community chart for Redis
 
----
+- This will help people who write charts, and people who use them
 
-## Assertions about dockercoins
-
-- Every image is custom except the one of redis
-
-- It's is quite logic that deployment are custom except of the one of redis
-
-- So if redis is not custom can we use templates of someone else ?
-
-- Yes, through dependencies
+- ... And potentially remove a lot of code! ✌️
 
 ---
 
-## Add redis dependency
+## Redis in DockerCoins
 
-- In `Chart.yaml` fill the `dependencies` section:
+- In the DockerCoins demo app, we have 5 components:
+
+  - 2 internal webservices
+  - 1 worker
+  - 1 public web UI
+  - 1 Redis data store
+
+- Every component is running some custom code, except Redis
+
+- Every component is using a custom image, except Redis
+
+  (which is using the official `redis` image)
+
+- Could we use a standard chart for Redis?
+
+- Yes! Dependencies to the rescue!
+
+---
+
+## Adding our dependency
+
+- First, we will add the dependency to the `Chart.yaml` file
+
+- Then, we will ask Helm to download that dependency
+
+- We will also *lock* the dependency
+
+  (lock it to a specific version, to ensure reproducibility)
+
+---
+
+## Declaring the dependency
+
+- First, let's edit `Chart.yaml`
+
+.exercise[
+
+- In `Chart.yaml`, fill the `dependencies` section:
   ```yaml
     dependencies:
       - name: redis
@@ -32,104 +61,215 @@
         repository: https://charts.bitnami.com/bitnami
         condition: redis.enabled
   ```
-- `condition` will trigger at install or upgrade to template or not the dependency
 
-- Now, we can tell helm to fetch the dependency by running `helm dependency update`
+]
 
-  (abbv `helm dep up`)
+Where do that `repository` and `version` come from?
 
-- Another file has been created: `Chart.lock`. What should we do with this file ?
-
-  - Short answer: add it to the source tree.
----
-
-## Chart.lock
-
-- The real command to fetch dependency is `helm depedency build`
-
-  (abbv `helm dep build`)
-
-- It looks into the `Chart.lock` to fetch the exact version
-
-- So what's the matter with the version in `Chart.yaml`.
-
-  - This is indicative version for the `helm dep update` *dependency resolution* process
-  - You can specify loose version requirements
-    ```yaml
-      dependencies:
-        - name: redis
-          version: >=11 <12
-          repository: https://charts.bitnami.com/bitnami
-    ```
-- We don't need to `helm dep build` after `helm dep up` : it's included
+We're assuming here that we did our reserach,
+or that our resident Helm expert advised us to
+use Bitnami's Redis chart.
 
 ---
 
-## Dependency live matters ?
+## Conditions
 
-- Every dependency lives in the `charts/` dependency
+- The `condition` field gives us a way to enable/disable the dependency:
+  ```yaml
+  conditions: redis.enabled
+  ```
 
-- Downloaded dependencies will stay in compress binary format (`.tgz`)
+- Here, we can disable Redis with the Helm flag `--set redis.enabled=false`
 
-- Should we commit dependency ?
+  (or set that value in a `values.yaml` file)
 
-- Pro:
+- Of course, this is mostly useful for *optional* dependencies
+
+  (otherwise, the app ends up being broken since it'll miss a component)
+
+---
+
+## Lock & Load!
+
+- After adding the dependency, we ask Helm to pin an download it
+
+.exercise[
+
+- Ask Helm:
+  ```bash
+  helm dependency update
+  ```
+
+  (Or `helm dep up`)
+
+]
+
+- This wil create `Chart.lock` and fetch the dependency
+
+---
+
+## What's `Chart.lock`?
+
+- This is a common pattern with dependencies
+
+  (see also: `Gemfile.lock`, `package.json.lock`, and many others)
+
+- This lets us define loose dependencies in `Chart.yaml`
+
+  (e.g. "version 11.whatever, but below 12")
+
+- But have the exact version used in `Chart.lock`
+
+- This ensures reproducible deployments
+
+- `Chart.lock` can (should!) be added to our source tree
+
+- `Chart.lock` can (should!) regularly be updated
+
+---
+
+## Loose dependencies
+
+- Here is an example of loose version requirement:
+  ```yaml
+    dependencies:
+      - name: redis
+        version: ">=11 <12"
+        repository: https://charts.bitnami.com/bitnami
+  ```
+
+- This makes sure that we have the most recent version in the 11.x train
+
+- ... But without upgrading to version 12.x
+
+  (because it might be incompatible)
+
+---
+
+## `build` vs `update`
+
+- Helm actually offers two commands to manage dependencies:
+
+  `helm dependency build` = fetch dependencies listed in `Chart.lock`
+
+  `helm dependency update` = update `Chart.lock` (and run `build`)
+
+- When the dependency gets updated, we can/should:
+
+  - `helm dep up` (update `Chart.lock` and fetch new chart)
+
+  - test!
+
+  - if everything is fine, `git add Chart.lock` and commit
+
+---
+
+## Where are my dependencies?
+
+- Dependencies are downloaded to the `charts/` subdirectory
+
+- When they're downloaded, they stay in compressed format (`.tgz`)
+
+- Should we commit them to our code repository?
+
+- Pros:
 
   - more resilient to internet/mirror failures/decomissioning
 
 - Cons:
 
-  - Tracking binary files in source tree may require additionnal tools (like git-lfs) to be done correctly
+  - can add a lot of weight to the repo if charts are big or change often
+
+  - this can be solved by extra tools like git-lfs
 
 ---
 
 ## Dependency tuning
 
-- If we install our chart it will not work as the name of the redis service is not `redis`
+- DockerCoins expects the `redis` Service to be named `redis`
 
-- Debug:
+- Our Redis chart uses a different Service name by default
 
-  - Service name is `{{ template "redis.fullname" . }}-master`
+- Service name is `{{ template "redis.fullname" . }}-master`
 
-  - `redis.fullname` looks like
-    ```
-      {{- define "redis.fullname" -}}
-      {{- if .Values.fullnameOverride -}}
-      {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-      {{- else -}}
-      [...]
-      {{- end }}
-      {{- end }}
-    ```
+- `redis.fullname` looks like this:
+  ```
+    {{- define "redis.fullname" -}}
+    {{- if .Values.fullnameOverride -}}
+    {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+    {{- else -}}
+    [...]
+    {{- end }}
+    {{- end }}
+  ```
+
+- How do we fix this?
+
 ---
-## Passing variable
 
-- If we pass `fullnameOverride=redis`, we will make the template part to output `redis`
+## Setting dependency variables
 
-- We can pass variables from top-level to children, editing parent's `values.yaml`:
-   ```yaml
-     redis: # Name of the dependency
-       fullnameOverride: redis # Value passed to redis
-       cluster:                # Other values passed to redis
-         enabled: false
-   ```
-- We can even pass template `{{ include "template.name" }}`, but warning:
+- If we set `fullnameOverride` to `redis`:
 
-   - Need to be evaluated with the `tpl` function, on the child side
-   - Evaluated in the context of the child, with no access to parent variables
+  - the `{{ template ... }}` block will output `redis`
+
+  - the Service name will be `redis-master`
+
+- A parent chart can set values for its dependencies
+
+- For example, in the parent's `values.yaml`:
+
+  ```yaml
+    redis:                    # Name of the dependency
+      fullnameOverride: redis # Value passed to redis
+      cluster:                # Other values passed to redis
+        enabled: false
+  ```
 
 - User can also set variables with `--set=` or with `--values=`
 
 ---
-## Embedding dependency
 
-- To remove `-master`, we will need a bit more the values to pass.
+## Passing templates
 
-- We need to edit the chart templates.
+- We can even pass template `{{ include "template.name" }}`, but warning:
 
-- First of all we need to decompress the chart
+   - need to be evaluated with the `tpl` function, on the child side
 
-- Adjust `Chart.yaml` and reference to it
+   - evaluated in the context of the child, with no access to parent variables
+
+<!-- FIXME <jp> pas sûr d'avoir bien compris cette partie-là 😅 -->
+
+---
+
+## Getting rid of the `-master`
+
+- Even if we set that `fullnameOverride`, the Service name will be `redis-master`
+
+- To remove the `-master` suffix, we need to edit the chart itself
+
+- To edit the Redis chart, we need to *embed* it in our own chart
+
+- We need to:
+
+  - decompress the chart
+
+  - adjust `Chart.yaml` accordingly
+
+---
+
+## Embedding a dependency
+
+.exercise[
+
+- Decompress the chart:
+  ```yaml
+  cd charts
+  tar zxf redis-*.tgz
+  cd ..
+  ```
+
+- Edit `Chart.yaml` and update the `dependencies` section:
   ```yaml
     dependencies:
       - name: redis
@@ -138,27 +278,40 @@
 
 - Run `helm dep update`
 
-- We can edit the template and test installation !
+]
+
+---
+
+## Updating the dependency
+
+- Now we can edit the Service name
+
+  (it should be in `charts/redis/templates/redis-master-svc.yaml`)
+
+- Then try to deploy the whole chart!
+
 ---
 
 class: extra-details
 
-## Chart v1
+## Compatibility with Helm 2
 
-- Chart `apiVersion: v1` is the only version supported by helm v2
+- Chart `apiVersion: v1` is the only version supported by Helm 2
 
-- Chart v1 is also supported by helm v3
+- Chart v1 is also supported by Helm 3
 
-- To be used, if we're looking for compatibility
+- Use v1 if you want to be compatible with Helm 2
 
-- Instead of `Chart.yaml` it use a separated file `requirements.yaml`
+- Instead of `Chart.yaml`, dependencies are defined in `requirements.yaml`
 
-- We should commit the created `requirements.lock` instead of `Charts.lock`
+  (and we should commit `requirements.lock` instead of `Chart.lock`)
 
 ---
 
 ???
 
-:EN: - helm dependencies
-:FR: - dépendences helm
+:EN:- Depending on other charts
+:EN:- Charts within charts
 
+:FR:- Dépendances entre charts
+:FR:- Un chart peut en cacher un autre
