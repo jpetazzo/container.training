@@ -1,35 +1,23 @@
 ## Intros
 
-- This slide should be customized by the tutorial instructor(s).
+- Hello! I'm Jérôme Petazzoni ([@jpetazzo](https://twitter.com/jpetazzo))
 
-- Hello! We are:
+- The workshop will run from 9am to noon (Pacific time)
 
-   - 👩🏻‍🏫 Ann O'Nymous ([@...](https://twitter.com/...), Megacorp Inc)
+- There will be a short break around 10:30am
 
-   - 👨🏾‍🎓 Stu Dent ([@...](https://twitter.com/...), University of Wakanda)
+- I can't hear, read, or see you ... but I'm helped by folks who can!
 
- <!-- .dummy[
+- Make sure to join the Slack channel (@@CHAT@@)
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
+- Feel free to ask questions at any time there!
 
-   - 🚁 Alexandre ([@alexbuisine](https://twitter.com/alexbuisine), Enix SAS)
+- Your questions will be either answered, or relayed to me ✨
 
-   - 🐳 Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
+---
 
-   - ⛵ Jérémy ([@jeremygarrouste](twitter.com/jeremygarrouste), Inpiwee)
+## Let's help each other
 
-   - 🎧 Romain ([@rdegez](https://twitter.com/rdegez), Enix SAS)
+![A typical bell curve](images/bell-curve.jpg)
 
-] -->
-
-- The workshop will run from ...
-
-- There will be a lunch break at ...
-
-  (And coffee breaks!)
-
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
-
-- Live feedback, questions, help: @@CHAT@@
+- If someone asks a question and you know the answer, please chime in!

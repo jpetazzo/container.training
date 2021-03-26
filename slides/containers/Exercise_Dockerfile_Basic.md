@@ -10,9 +10,7 @@ Let's write Dockerfiles for an existing application!
 
 4. Build and test them individually
 
-<!--
 5. Test them together with the provided Compose file
--->
 
 ---
 
@@ -77,7 +75,7 @@ That's all we care about for now!
 
 Bonus question: make sure that each container stops correctly when hitting Ctrl-C.
 
-???
+---
 
 ## Test with a Compose file
 

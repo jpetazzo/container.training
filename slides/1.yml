@@ -1,0 +1,33 @@
+title: |
+  Container Foundations
+
+chat: "`#infra-summit-container-foundation`"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2021-04-summit.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- shared/about-slides.md
+- shared/toc.md
+- # DAY 1
+  - containers/Local_Environment.md
+  - containers/First_Containers.md
+  - containers/Background_Containers.md
+  - containers/Initial_Images.md
+  - containers/Building_Images_Interactively.md
+-
+  - containers/Building_Images_With_Dockerfiles.md
+  - containers/Cmd_And_Entrypoint.md
+  - containers/Copying_Files_During_Build.md
+  # FIXME update Compose section so that folks can test the app
+  - containers/Compose_For_Dev_Stacks.md
+  - containers/Exercise_Dockerfile_Basic.md
+  - shared/thankyou.md

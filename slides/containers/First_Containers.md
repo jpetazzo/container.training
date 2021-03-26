@@ -125,27 +125,23 @@ root@04c0bb0a6c07:/# dpkg -l | wc -l
 
 * `wc -l` counts them
 
-How many packages do we have on our host?
+This is a fairly minimal Ubuntu install.
+
+(We don't even have `ifconfig` or `ip`!)
 
 ---
 
 class: in-person
 
-## Counting packages on the host
+## If we were running Docker on Linux...
 
-Exit the container by logging out of the shell, like you would usually do.
+Specifically, on Ubuntu...
 
-(E.g. with `^D` or `exit`)
+We could compare with the number of packages on the host.
 
-```bash
-root@04c0bb0a6c07:/# exit
-```
+(For comparison: about 500 on a stock Ubuntu Cloud Image.)
 
-Now, try to:
-
-* run `dpkg -l | wc -l`. How many packages are installed?
-
-* run `figlet`. Does that work?
+We could see that installing `figlet` in the container *did not* install it on the host.
 
 ---
 

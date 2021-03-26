@@ -1,0 +1,53 @@
+title: |
+  Advanced Containers
+
+chat: "`#infra-summit-adv-containers`"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2021-04-summit.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- shared/about-slides.md
+- shared/toc.md
+- # DAY 2
+  - |
+    # Dockerfile Homework Review
+
+    Yesterday, we concluded the "Container Foundations" workshop with
+    a little homework assignment.
+
+    Let's look at it!
+
+    The repository is here:
+
+    https://github.com/jpetazzo/wordsmith
+
+    (You can find proposed solutions in various branches of this repository.)
+
+  - containers/Container_Networking_Basics.md
+  - containers/Local_Development_Workflow.md
+  - containers/Naming_And_Inspecting.md
+  #- containers/Labels.md
+  - containers/Getting_Inside.md
+-
+  - containers/Container_Network_Model.md
+  - containers/Network_Drivers.md
+  - containers/Multi_Stage_Builds.md
+  - containers/Dockerfile_Tips.md
+  - containers/Exercise_Dockerfile_Advanced.md
+  #- containers/Init_Systems.md
+  - shared/thankyou.md
+  #- containers/links.md
+-
+  - |
+    # (Extra Content)
+  - containers/Start_And_Attach.md
+  - one-more-thing.md
