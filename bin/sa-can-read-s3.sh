@@ -75,7 +75,7 @@ create_role() {
 }
 
 annotate_serviceaccount() {
-    kubectl annotate serviceaccounts default -n default "role-arn=arn:aws:iam::${ACCOUNT_ID}:role/${ROLE_NAME}"
+    kubectl annotate serviceaccounts default -n default "role-arn=arn:aws:iam::${ACCOUNT_ID}:role/${ROLE_NAME}" --overwrite
 }
 
 checkit() {
