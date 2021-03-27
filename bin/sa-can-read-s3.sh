@@ -25,7 +25,7 @@ emit_describe_cluster_policy() {
 create_describe_cluster_policy() {
     local role_name="can-describe-cluster"
     aws iam create-policy \
-        --policy-name "${role_name}" \
+        --policy-name can-describe-cluster \
         --description "Policy allowing to describe ${CLUSTER_NAME}" \
         --policy-document "$(emit_describe_cluster_policy)"
 
@@ -87,9 +87,9 @@ update_kubeconfig() {
 }
 
 teardown() {
+    # see also 'can-describe-cluster' policy, if created via create_describe_cluster_policy
     aws iam detach-role-policy --policy-arn "${S3_POLICY_ARN}" --role-name "${ROLE_NAME}"
     aws iam delete-role "${ROLE_NAME}"
-    aws iam delete-policy --policy-arn
 }
 
 create_and_populate_bucket() {
