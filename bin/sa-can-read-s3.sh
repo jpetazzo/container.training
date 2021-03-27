@@ -79,7 +79,8 @@ annotate_serviceaccount() {
 }
 
 checkit() {
-    kubectl run --image amazon/aws-cli --attach --restart=Never --rm --wait=true herro -- s3 cp s3://"${BUCKET_NAME}"/top-sekret.txt -
+    echo "Will try to read s3://"${BUCKET_NAME}"/top-sekret.txt"
+    kubectl run --image amazon/aws-cli --attach --restart=Never --rm --wait=true can-we-read-s3 -- s3 cp s3://"${BUCKET_NAME}"/top-sekret.txt -
 }
 
 update_kubeconfig() {
