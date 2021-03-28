@@ -120,11 +120,29 @@
 
 ---
 
+## Node groups
+
+- Virtually all provisioning models have a concept of "node group"
+
+- Node group = group of similar nodes in an ASG
+
+  - can span multiple AZ
+
+  - can have instances of different types¹
+
+- A cluster will need at least one node group
+
+.footnote[¹As I understand it, to specify fallbacks if one instance type is unavailable or out of capacity.]
+
+---
+
 # IAM → EKS authentication
 
 - Access EKS clusters using IAM users and roles
 
 - No special role, permission, or policy is needed in IAM
+
+  (but the `eks:DescribeCluster` permission can be useful, see later)
 
 - Users and roles need to be explicitly listed in the cluster
 
@@ -200,6 +218,17 @@ data:
 
 - Or manually with `aws eks update-kubeconfig`
 
+- Discovering the address of the API server requires one IAM permission
+
+  ```json
+    "Action": [
+        "eks:DescribeCluster"
+    ],
+    "Resource": "arn:aws:eks:<region>:<account>:cluster/<cluster-name>"
+  ```
+
+  (wildcards can be used when specifying the resource)
+
 ---
 
 class: extra-details
@@ -248,15 +277,85 @@ https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html
 
 - One-time setup task
 
-  ([create and associate an OIDC provider](https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html))
+  ([create an OIDC provider associated to our EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html))
 
-- Annotate service accounts to map them to a role
+- Create (or update) a role with an appropriate *trust policy*
+
+  (more on that later)
+
+- Annotate service accounts to map them to that role
 
   `eks.amazonaws.com/role-arn=arn:aws:iam::111122223333:role/some-iam-role`
 
 - Create (or re-create) pods using that ServiceAccount
 
 - The pods can now use that role!
+
+---
+
+## Trust policies
+
+- IAM roles have a *trust policy* (aka *assume role policy*)
+
+  (cf `aws iam create-role ... --assume-role-policy-document ...`)
+
+- That policy contains a *statement* list
+
+- This list indicates who/what is allowed to assume (use) the role
+
+- In the current scenario, that policy will contain something saying:
+
+  *ServiceAccount S on EKS cluster C is allowed to use this role*
+
+---
+
+## Trust policy for a single ServiceAccount
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::${AWS_ACCOUNT_ID}:oidc-provider/${OIDC_PROVIDER}"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "${OIDC_PROVIDER}:sub":
+            "system:serviceaccount:<namespace>:<service-account>"
+        }
+      }
+    }
+  ]
+}
+```
+
+---
+
+## Trust policy for multiple ServiceAccounts
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::${AWS_ACCOUNT_ID}:oidc-provider/${OIDC_PROVIDER}"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringLike": {
+            "${OIDC_PROVIDER}:sub": 
+              ["system:serviceaccount:container-training:*"]
+        }
+      }
+    }
+  ]
+}
+```
 
 ---
 
@@ -274,7 +373,7 @@ https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html
 
   - a few env vars
     <br/>
-    (`AWS_WEB_IDENTITY_TOKEN_FILE` and `AWS_ROLE_ARN`)
+    (including `AWS_WEB_IDENTITY_TOKEN_FILE` and `AWS_ROLE_ARN`)
 
 - AWS client libraries and tooling will work this that
 
@@ -528,18 +627,53 @@ class: extra-details
 
 ## Noteworthy annotations and docs
 
-- LoadBalancer Service with "IP targets" ([docs](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/service/nlb_ip_mode/))
+- `service.beta.kubernetes.io/aws-load-balancer-type: nlb-ip`
 
-  `service.beta.kubernetes.io/aws-load-balancer-type: nlb-ip`
+  - LoadBalancer Service with "IP targets" ([docs](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/service/nlb_ip_mode/))
+  - requires AWS Load Balancer Controller
 
-- Internal load balancer (for private VPC)
+- `service.beta.kubernetes.io/aws-load-balancer-internal: "true"`
 
-  `service.beta.kubernetes.io/aws-load-balancer-internal: "true"`
+  - internal load balancer (for private VPC)
 
-- Opt for NLB instead of CLB with in-tree controller
+- `service.beta.kubernetes.io/aws-load-balancer-type: nlb`
 
-  `service.beta.kubernetes.io/aws-load-balancer-type: nlb`
+  - opt for NLB instead of CLB with in-tree controller
 
+- `service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"`
+
+  - use HAProxy [PROXY protocol](https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt)
+
+---
+
+## TLS-related annotations
+
+- `service.beta.kubernetes.io/aws-load-balancer-ssl-cert`
+
+  - enable TLS and use that certificate
+  - example value: `arn:aws:acm:<region>:<account>:certificate/<cert-id>`
+
+- `service.beta.kubernetes.io/aws-load-balancer-ssl-ports`
+
+  - enable TLS *only* on the specified ports (when multiple ports are exposed)
+  - example value: `"443,8443"`
+
+- `service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy`
+
+  - specify ciphers and other TLS parameters to use (see [that list](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-policy-table.html))
+  - example value: `"ELBSecurityPolicy-TLS-1-2-2017-01"`
+
+---
+
+## To HTTP(S) or not to HTTP(S)
+
+- `service.beta.kubernetes.io/aws-load-balancer-backend-protocol`
+
+  - can be either `http`, `https`, `ssl`, or `tcp`
+
+  - if `https` or `ssl`: enable TLS to the backend
+
+  - if `http` or `https`: enable HTTP `x-forwarded-for` headers (with `http` or `https`)
 
 ???
 
