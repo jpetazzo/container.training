@@ -76,6 +76,7 @@ content:
 -
   - k8s/namespaces.md
   - k8s/localkubeconfig.md
+  #- k8s/access-eks-cluster.md
   - k8s/accessinternal.md
   - k8s/kubectlproxy.md
 -

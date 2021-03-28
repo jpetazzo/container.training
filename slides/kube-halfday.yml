@@ -56,6 +56,7 @@ content:
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
   #- k8s/localkubeconfig.md
+  #- k8s/access-eks-cluster.md
   #- k8s/accessinternal.md
   #- k8s/kubectlproxy.md
 - - k8s/dashboard.md
