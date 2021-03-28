@@ -20,6 +20,7 @@ content:
 - k8s/intro.md
 - shared/about-slides.md
 #- shared/chat-room-im.md
+#- shared/chat-room-slack.md
 #- shared/chat-room-zoom-meeting.md
 #- shared/chat-room-zoom-webinar.md
 - shared/toc.md
