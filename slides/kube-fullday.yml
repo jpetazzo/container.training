@@ -68,6 +68,7 @@ content:
   #- k8s/authoring-yaml.md
   #- k8s/exercise-yaml.md
   #- k8s/localkubeconfig.md
+  #- k8s/access-eks-cluster.md
   #- k8s/accessinternal.md
   #- k8s/kubectlproxy.md
   - k8s/rollout.md
