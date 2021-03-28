@@ -23,13 +23,13 @@ emit_describe_cluster_policy() {
 }
 
 create_describe_cluster_policy() {
-    local role_name="can-describe-cluster"
     aws iam create-policy \
-        --policy-name can-describe-cluster \
+        --policy-name ${DESCRIBE_CLUSTER_POLICY_NAME} \
         --description "Policy allowing to describe ${CLUSTER_NAME}" \
         --policy-document "$(emit_describe_cluster_policy)"
 
-    aws iam attach-user-policy --role-name "${role_name}" --policy-arn "${S3_POLICY_ARN}"
+    # to attach:
+    # aws iam attach-user-policy --user-name "${user_name}" --policy-arn "arn:aws:iam::${ACCOUNT_ID}:policy/${DESCRIBE_CLUSTER_POLICY_NAME}"
 }
 
 emit_service_account_role_trust_policy() {
@@ -91,6 +91,9 @@ teardown() {
     # see also 'can-describe-cluster' policy, if created via create_describe_cluster_policy
     aws iam detach-role-policy --policy-arn "${S3_POLICY_ARN}" --role-name "${ROLE_NAME}"
     aws iam delete-role "${ROLE_NAME}"
+    # for username in users; do ...
+    # aws iam detach-user-policy --policy-arn "arn:aws:iam::${ACCOUNT_ID}:policy/${DESCRIBE_CLUSTER_POLICY_NAME}" --user-name "${username}"
+    aws iam delete-policy --policy-arn "arn:aws:iam::${ACCOUNT_ID}:policy/${DESCRIBE_CLUSTER_POLICY_NAME}"
 }
 
 create_and_populate_bucket() {
@@ -107,6 +110,7 @@ create_and_populate_bucket() {
 ACCOUNT_ID="$(aws sts get-caller-identity | jq -r .Account)"
 S3_POLICY_ARN=arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
 CLUSTER_NAME=floral-mongoose-1616851817
+DESCRIBE_CLUSTER_POLICY_NAME=can-describe-cluster
 ROLE_NAME=service-account-role
 REGION=eu-north-1
 BUCKET_NAME=wooga-booga-pants
