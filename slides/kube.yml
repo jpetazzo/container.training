@@ -71,6 +71,7 @@ content:
   #- k8s/setup-selfhosted.md
   #- k8s/dashboard.md
   - k8s/localkubeconfig.md
+  - k8s/access-eks-cluster.md
   - k8s/accessinternal.md
   #- k8s/kubectlproxy.md
   - k8s/ingress.md
