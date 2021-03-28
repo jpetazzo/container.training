@@ -1,4 +1,12 @@
 #!/bin/sh
+# For each user listed in "users.txt", create an IAM user.
+# Also create AWS API access keys, and store them in "users.keys".
+# This is idempotent (you can run it multiple times, it will only
+# create the missing users). However, it will not remove users.
+# Note that you can remove users from "users.keys" (or even wipe
+# that file out entirely) and then this script will delete their
+# keys and generate new keys for them (and add the new keys to
+# "users.keys".)
 
 echo "Getting list of existing users ..."
 aws iam list-users --output json | jq -r .Users[].UserName > users.tmp
