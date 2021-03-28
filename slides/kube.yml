@@ -103,5 +103,5 @@ content:
   #- k8s/local-persistent-volumes.md
   #- k8s/portworx.md
   - k8s/lastwords.md
-  - k8s/links.md
+  #- k8s/links.md
   - shared/thankyou.md

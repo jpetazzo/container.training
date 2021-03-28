@@ -1,35 +1,33 @@
 ## Intros
 
-- This slide should be customized by the tutorial instructor(s).
+- Hello! I'm Jérôme Petazzoni ([@jpetazzo](https://twitter.com/jpetazzo))
 
-- Hello! We are:
+- The training will run ...
 
-   - .emoji[👩🏻‍🏫] Ann O'Nymous ([@...](https://twitter.com/...), Megacorp Inc)
+  - Monday, Wednesay, Friday: 10am-2pm EDT (Eastern)
 
-   - .emoji[👨🏾‍🎓] Stu Dent ([@...](https://twitter.com/...), University of Wakanda)
+  - Tuesday, Thursday: 1pm-5pm EDT (Eastern)
 
- <!-- .dummy[
+- We will have short breaks every hour
 
-   - .emoji[👷🏻‍♀️] AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
-
-   - .emoji[🚁] Alexandre ([@alexbuisine](https://twitter.com/alexbuisine), Enix SAS)
-
-   - .emoji[🐳] Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
-
-   - .emoji[⛵] Jérémy ([@jeremygarrouste](twitter.com/jeremygarrouste), Inpiwee)
-
-   - .emoji[🎧] Romain ([@rdegez](https://twitter.com/rdegez), Enix SAS)
-
-] -->
-
-- The workshop will run from ...
-
-- There will be a lunch break at ...
-
-  (And coffee breaks!)
+- We will have a longer lunch break (12pm-12:30pm) on Monday, Wednesday, Friday
 
 - Feel free to interrupt for questions at any time
 
 - *Especially when you see full screen container pictures!*
 
 - Live feedback, questions, help: @@CHAT@@
+
+---
+
+## Recording
+
+- This training is recorded! 🎥
+
+- After each day of training, the link to the recording will be shared on Slack
+
+  (approximately 1 hour after the end of each session)
+
+- Please note that the lab environments will only be available until Friday night
+
+  (more info about these lab environments in a few minutes!)
