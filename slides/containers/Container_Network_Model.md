@@ -742,3 +742,15 @@ class: extra-details
 * This may be used to access an internal package repository.
 
   (But try to use a multi-stage build instead, if possible!)
+
+???
+
+:EN:Container networking essentials
+:EN:- The Container Network Model
+:EN:- Container isolation
+:EN:- Service discovery
+
+:FR:Mettre ses conteneurs en réseau
+:FR:- Le "Container Network Model"
+:FR:- Isolation des conteneurs
+:FR:- *Service discovery*

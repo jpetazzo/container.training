@@ -82,3 +82,12 @@ Use cases:
 * Those containers can communicate over their `lo` interface.
   <br/>(i.e. one can bind to 127.0.0.1 and the others can connect to it.)
 
+???
+
+:EN:Advanced container networking
+:EN:- Transparent network access with the "host" driver
+:EN:- Sharing is caring with the "container" driver
+
+:FR:Paramétrage réseau avancé
+:FR:- Accès transparent au réseau avec le mode "host"
+:FR:- Partage de la pile réseau avece le mode "container"
