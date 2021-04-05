@@ -1,91 +1,151 @@
+## Helm and invalid values
+
+- A lot of Helm charts let us specify an image tag like this:
+  ```bash
+  helm install ... --set image.tag=v1.0
+  ```
+
+- What happens if we make a small mistake, like this:
+  ```bash
+  helm install ... --set imagetag=v1.0
+  ```
+
+- Or even, like this:
+  ```bash
+  helm install ... --set image=v1.0
+  ```
+
+🤔
+
 ---
-## Helm mistake
 
-- What if I put wrong values and deploy the helm chart ?
+## Making mistakes
 
-.exercice[
+- In the first case:
 
-  - Install a helm release with wrong values:
+  - we set `imagetag=v1.0` instead of `image.tag=v1.0`
 
-     `helm install broken-release --set=foo=bar --set=ImAgeTAg=toto`
-]
+  - Helm will ignore that value (if it's not used anywhere in templates)
 
-- What happened ?
+  - the chart is deployed with the default value instead
 
-    - The `broken-release` is installed 😨
+- In the second case:
 
-- Is-it really broken ?
+  - we set `image=v1.0` instead of `image.tag=v1.0`
 
-    - Not really: helm just ignored the values it doesn't know about 😓
+  - `image` will be a string instead of an object
 
-- Is there something we can do to avoid mistakes ?
+  - Helm will *probably* fail when trying to evaluate `image.tag`
 
+---
+
+## Preventing mistakes
+
+- To prevent the first mistake, we need to tell Helm:
+
+  *"let me know if any additional (unknonw) value was set!"*
+
+- To prevent the second mistake, we need to tell Helm:
+
+  *"`image` should be an object, and `image.tag` should be a string!"*
+
+- We can do this with *values schema validation*
 
 ---
 
 ## Helm values schema validation
 
-- With *values schema validation*, we can write a spec representing the possible
-  values accepted by the chart.
+- We can write a spec representing the possible values accepted by the chart
 
-- Moving away from the spec make helm bailing out the installation/upgrade
+- Helm will check the validity of the values before trying to install/upgrade
 
-- It uses [jsonschema](https://json-schema.org/) language which is a
+- If it finds problems, it will stop immediately
 
-    `"a vocabulary that allows you to annotate and validate JSON documents."`
+- The spec uses [JSON Schema](https://json-schema.org/):
 
-- But can be adapted like here to validate any markup language that consist in
-   `map|dict|associativearray` and `list|array|sequence|tuple` like *yaml*
+  *JSON Schema is a vocabulary that allows you to annotate and validate JSON documents.*
+
+- JSON Schema is designed for JSON, but can easily work with YAML too
+
+  (or any language with `map|dict|associativearray` and `list|array|sequence|tuple`)
 
 ---
-.exercise[
 
-- Let's create a `values.schema.json`:
-  ```json
-    {
-      "$schema": "http://json-schema.org/schema#",
+## In practice
+
+- We need to put the JSON Schema spec in a file called `values.schema.json`
+
+  (at the root of our chart; right next to `values.yaml` etc.)
+
+- The file is optional
+
+- We don't need to register or declare it in `Chart.yaml` or anywhere
+
+- Let's write a schema that will verify that ...
+
+  - `image.repository` is an official image (string without slashes or dots)
+
+  - `image.pullPolicy` can only be `Always`, `Never`, `IfNotPresent`
+
+---
+
+## `values.schema.json`
+
+```json
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "image": {
       "type": "object",
       "properties": {
-        "image": {
-          "type": "object",
-          "properties": {
-            "repository": {
-              "type": "string",
-              "pattern": "^[a-z0-9-_]+$"
-            },
-            "pullPolicy": {
-              "type": "string",
-              "pattern": "^(Always|Never|IfNotPresent)$"
-    } } } } }
-  ```
-]
+        "repository": {
+          "type": "string",
+          "pattern": "^[a-z0-9-_]+$"
+        },
+        "pullPolicy": {
+          "type": "string",
+          "pattern": "^(Always|Never|IfNotPresent)$"
+        }
+      } 
+    } 
+  } 
+}
+```
 
 ---
-## Testing Helm validation
 
-- Now we can test to install Wrong release:
+## Testing our schema
+
+- Let's try to install a couple releases with that schema!
 
 .exercise[
 
-- Run:
+- Try an invalid `pullPolicy`:
+  ```bash
+  helm install broken --set image.pullPolicy=ShallNotPass
+  ```
 
-   `helm install broken --set image=image.pullPolicy=ShallNotPass`
+- Try an invalid value:
+  ```bash
+  helm install should-break --set ImAgeTAg=toto
+  ```
 
-- Run:
-
-   `helm install should-break --set=foo=bar --set=ImAgeTAg=toto`
 ]
 
-- First fails, but second one still pass even if we put a `values.schema.json` !
+- The first one fails, but the second one still passes ...
 
-- Why ?
+- Why?
 
 ---
+
 ## Bailing out on unkown properties
 
-- We told helm more about valid properties but not what to do with non-existing ones
+- We told Helm what properties (values) were valid
 
-- We can fix that with `"additionalProperties": false`:
+- We didn't say what to do about additional (unknown) properties!
+
+- We can fix that with `"additionalProperties": false`
 
 .exercise[
 
@@ -94,15 +154,38 @@
     {
       "$schema": "http://json-schema.org/schema#",
       "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "image": {  [...]  }
-      },
-      "additionalProperties": false
-    }
+      ...
   ```
 
-- And test again: `helm install should-break --set=foo=bar --set=ImAgeTAg=toto`
 ]
+
 ---
 
+## Testing with unknown properties
 
+.exercise[
+
+- Try to pass an extra property:
+  ```bash
+  helm install should-break --set ImAgeTAg=toto
+  ```
+
+- Try to pass an extra nested property:
+  ```bash
+  helm install does-it-work --set image.hello=world
+  ```
+
+]
+
+The first command should break.
+
+The second will not.
+
+`"additionalProperties": false` needs to be specified at each level.
+
+???
+
+:EN:- Helm schema validation
+:FR:- Validation de schema Helm

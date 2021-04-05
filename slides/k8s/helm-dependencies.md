@@ -2,7 +2,7 @@
 
 - Helm charts can have *dependencies* on other charts
 
-- These dependencies will help us to share or reuse* components
+- These dependencies will help us to share or reuse components
 
   (so that we write and maintain less manifests, less templates, less code!)
 
@@ -230,6 +230,8 @@ use Bitnami's Redis chart.
 
 ---
 
+class: extra-details
+
 ## Passing templates
 
 - We can even pass template `{{ include "template.name" }}`, but warning:
@@ -238,7 +240,7 @@ use Bitnami's Redis chart.
 
    - evaluated in the context of the child, with no access to parent variables
 
-<!-- FIXME <jp> pas sûr d'avoir bien compris cette partie-là 😅 -->
+<!-- FIXME this probably deserves an example, but I can't imagine one right now 😅 -->
 
 ---
 
@@ -289,6 +291,27 @@ use Bitnami's Redis chart.
   (it should be in `charts/redis/templates/redis-master-svc.yaml`)
 
 - Then try to deploy the whole chart!
+
+---
+
+## Embedding a dependency multiple times
+
+- What if we need multiple copies of the same subchart?
+
+  (for instance, if we need two completely different Redis servers)
+
+- We can declare a dependency multiple times, and specify an `alias`:
+  ```yaml
+  dependencies:
+    - name: redis
+      version: '*'
+      alias: querycache
+    - name: redis
+      version: '*'
+      alias: celeryqueue
+  ```
+
+- `.Chart.Name` will be set to the `alias`
 
 ---
 
