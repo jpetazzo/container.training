@@ -220,6 +220,36 @@ class: extra-details
 
 ---
 
+class: pic
+![](images/control-planes/single-node-dev.svg)
+
+---
+
+class: pic
+![](images/control-planes/managed-kubernetes.svg)
+
+---
+
+class: pic
+![](images/control-planes/single-control-and-workers.svg)
+
+---
+
+class: pic
+![](images/control-planes/stacked-control-plane.svg)
+
+---
+
+class: pic
+![](images/control-planes/advanced-control-plane.svg)
+
+---
+
+class: pic
+![](images/control-planes/advanced-control-plane-split-events.svg)
+
+---
+
 class: extra-details
 
 ## How many nodes should a cluster have?
