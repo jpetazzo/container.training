@@ -241,6 +241,11 @@ class: pic
 ---
 
 class: pic
+![](images/control-planes/non-dedicated-stacked-nodes.svg)
+
+---
+
+class: pic
 ![](images/control-planes/advanced-control-plane.svg)
 
 ---
