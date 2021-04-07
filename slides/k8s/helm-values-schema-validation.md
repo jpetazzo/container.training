@@ -1,4 +1,4 @@
-## Helm and invalid values
+# Helm and invalid values
 
 - A lot of Helm charts let us specify an image tag like this:
   ```bash

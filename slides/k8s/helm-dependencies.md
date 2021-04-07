@@ -329,8 +329,6 @@ class: extra-details
 
   (and we should commit `requirements.lock` instead of `Chart.lock`)
 
----
-
 ???
 
 :EN:- Depending on other charts
