@@ -106,6 +106,7 @@ content:
   #- k8s/statefulsets.md
   #- k8s/local-persistent-volumes.md
   #- k8s/portworx.md
+  #- k8s/openebs.md
   #- k8s/extending-api.md
   #- k8s/crd.md
   #- k8s/admission.md

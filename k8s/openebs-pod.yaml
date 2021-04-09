@@ -13,7 +13,12 @@ spec:
     command:
        - sh
        - -c
-       - 'while true; do echo "`date` [`hostname`] Kubernetes is better with PVs." >> /mnt/storage/greet.txt; sleep $(($RANDOM % 5 + 20)); done'
+       - |
+         while true; do
+           echo "$(date) [$(hostname)] Kubernetes is better with PVs." >> /mnt/storage/greet.txt
+           sleep $(($RANDOM % 5 + 20))
+         done
     volumeMounts:
     - mountPath: /mnt/storage
       name: storage
+
