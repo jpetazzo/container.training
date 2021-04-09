@@ -598,7 +598,7 @@ _cmd_start() {
         case "$1" in
         --infra) INFRA=$2; shift 2;;
         --settings) SETTINGS=$2; shift 2;;
-        --count) COUNT=$2; shift 2;;
+        --count) die "Flag --count is deprecated; please use --students instead." ;;
         --tag) TAG=$2; shift 2;;
         --students) STUDENTS=$2; shift 2;;
         *) die "Unrecognized parameter: $1."
