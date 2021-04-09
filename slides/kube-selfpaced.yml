@@ -110,6 +110,7 @@ content:
   - k8s/statefulsets.md
   - k8s/local-persistent-volumes.md
   - k8s/portworx.md
+  - k8s/openebs.md
 -
   - k8s/logs-centralized.md
   - k8s/prometheus.md
