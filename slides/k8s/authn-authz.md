@@ -733,17 +733,19 @@ class: extra-details
 
 ## Figuring out who can do what
 
-- For auditing purposes, sometimes we want to know who can perform an action
+- For auditing purposes, sometimes we want to know who can perform which actions
 
-- There are a few tools to help us with that
+- There are a few tools to help us with that, available as `kubectl` plugins:
 
-  - [kubectl-who-can](https://github.com/aquasecurity/kubectl-who-can) by Aqua Security
+  - `kubectl who-can` / [kubectl-who-can](https://github.com/aquasecurity/kubectl-who-can) by Aqua Security
 
-  - [Review Access (aka Rakkess)](https://github.com/corneliusweig/rakkess)
+  - `kubectl access-matrix` / [Rakkess (Review Access)](https://github.com/corneliusweig/rakkess) by Cornelius Weig
 
-- Both are available as standalone programs, or as plugins for `kubectl`
+  - `kubectl rbac-lookup` / [RBAC Lookup](https://github.com/FairwindsOps/rbac-lookup) by FairwindsOps
 
-  (`kubectl` plugins can be installed and managed with `krew`)
+- `kubectl` plugins can be installed and managed with `krew`
+
+- They can also be installed and executed as standalone programs
 
 ???
 
