@@ -331,11 +331,8 @@ consul agent -data-dir=/consul/data -client=0.0.0.0 -server -ui \
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
-              matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                    - consul
+              matchLabels:
+                app: consul
             topologyKey: kubernetes.io/hostname
   ```
 
@@ -353,10 +350,7 @@ consul agent -data-dir=/consul/data -client=0.0.0.0 -server -ui \
     lifecycle:
       preStop:
         exec:
-          command:
-          - /bin/sh
-          - -c
-          - consul leave
+          command: [ "sh", "-c", "consul leave" ]
   ```
 
 ---

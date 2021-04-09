@@ -62,11 +62,8 @@ spec:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
-                matchExpressions:
-                  - key: app
-                    operator: In
-                    values:
-                      - consul
+                matchLabels:
+                  app: consul
               topologyKey: kubernetes.io/hostname
       terminationGracePeriodSeconds: 10
       containers:
@@ -88,7 +85,4 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command:
-                - /bin/sh
-                - -c
-                - consul leave
+                command: [ "sh", "-c", "consul leave" ]
