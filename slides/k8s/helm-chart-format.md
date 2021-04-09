@@ -40,7 +40,22 @@
 
   - a `Chart.yaml` file, containing metadata (name, version, description ...)
 
-- Let's look at a simple chart, `stable/tomcat`
+- Let's look at a simple chart for a basic demo app
+
+---
+
+## Adding the repo
+
+- If you haven't done it before, you need to add the repo for that chart
+
+.exercise[
+
+- Add the repo that holds the chart for the OWASP Juice Shop:
+  ```bash
+  helm repo add juice https://charts.securecodebox.io
+  ```
+
+]
 
 ---
 
@@ -50,17 +65,17 @@
 
 .exercise[
 
-- Download the tarball for `stable/tomcat`:
+- Download the tarball for `juice/juice-shop`:
   ```bash
-  helm pull stable/tomcat
+  helm pull juice/juice-shop
   ```
-  (This will create a file named `tomcat-X.Y.Z.tgz`.)
+  (This will create a file named `juice-shop-X.Y.Z.tgz`.)
 
-- Or, download + untar `stable/tomcat`:
+- Or, download + untar `juice/juice-shop`:
   ```bash
-  helm pull stable/tomcat --untar
+  helm pull juice/juice-shop --untar
   ```
-  (This will create a directory named `tomcat`.)
+  (This will create a directory named `juice-shop`.)
 
 ]
 
@@ -68,13 +83,13 @@
 
 ## Looking at the chart's content
 
-- Let's look at the files and directories in the `tomcat` chart
+- Let's look at the files and directories in the `juice-shop` chart
 
 .exercise[
 
 - Display the tree structure of the chart we just downloaded:
   ```bash
-  tree tomcat
+  tree juice-shop
   ```
 
 ]
@@ -93,12 +108,11 @@ We see the components mentioned above: `Chart.yaml`, `templates/`, `values.yaml`
 
   (using the standard Go template library)
 
-
 .exercise[
 
-- Look at the template file for the tomcat Service resource:
+- Look at the template file for the Service resource:
   ```bash
-  cat tomcat/templates/appsrv-svc.yaml
+  cat juice-shop/templates/service.yaml
   ```
 
 ]
@@ -190,7 +204,7 @@ We see the components mentioned above: `Chart.yaml`, `templates/`, `values.yaml`
 
 - At the top-level of the chart, it's a good idea to have a README
 
-- It will be viewable with e.g. `helm show readme stable/tomcat`
+- It will be viewable with e.g. `helm show readme juice/juice-shop`
 
 - In the `templates/` directory, we can also have a `NOTES.txt` file
 
