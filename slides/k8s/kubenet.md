@@ -52,7 +52,7 @@
 
 - There are literally dozens of implementations out there
 
-  (15 are listed in the Kubernetes documentation)
+  (https://github.com/containernetworking/cni/ lists more than 25 plugins)
 
 - Pods have level 3 (IP) connectivity, but *services* are level 4 (TCP or UDP)
 

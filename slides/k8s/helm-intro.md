@@ -229,71 +229,95 @@ fine for personal and development clusters.)
 
 ---
 
-## Managing repositories
-
-- Let's check what repositories we have, and add the `stable` repo
-
-  (the `stable` repo contains a set of official-ish charts)
-
-.exercise[
-
-- List our repos:
-  ```bash
-  helm repo list
-  ```
-
-- Add the `stable` repo:
-  ```bash
-  helm repo add stable https://charts.helm.sh/stable
-  ```
-
-]
-
-Adding a repo can take a few seconds (it downloads the list of charts from the repo).
-
-It's OK to add a repo that already exists (it will merely update it).
-
----
-
 class: extra-details
 
-## Deprecation warning
+## How to find charts, the old way
 
-- That "stable" is being deprecated, in favor of a more decentralized approach
+- Helm 2 came with one pre-configured repo, the "stable" repo
 
-  (each community / company / group / project hosting their own repository)
+  (located at https://charts.helm.sh/stable)
 
-- We're going to use it here for educational purposes
+- Helm 3 doesn't have any pre-configured repo
 
-- But if you're looking for production-grade charts, look elsewhere!
+- The "stable" repo mentioned above is now being deprecated
 
-  (namely, on the Helm Hub)
+- The new approach is to have fully decentralized repos
+
+- Repos can be indexed in the Artifact Hub
+
+  (which supersedes the Helm Hub)
 
 ---
 
-## Search available charts
+## How to find charts, the new way
 
-- We can search available charts with `helm search`
+- Go to the [Artifact Hub](https://artifacthub.io/packages/search?kind=0) (https://artifacthub.io)
 
-- We need to specify where to search (only our repos, or Helm Hub)
+- Or use `helm search hub ...` from the CLI
 
-- Let's search for all charts mentioning tomcat!
+- Let's try to find a Helm chart for something called "OWASP Juice Shop"!
+
+  (it is a famous demo app used in security challenges)
+
+---
+
+## Finding charts from the CLI
+
+- We can use `helm search hub <keyword>`
 
 .exercise[
 
-- Search for tomcat in the repo that we added earlier:
+- Look for the OWASP Juice Shop app:
   ```bash
-  helm search repo tomcat
+  helm search hub owasp juice
   ```
 
-- Search for tomcat on the Helm Hub:
+- Since the URLs are truncated, try with the YAML output:
   ```bash
-  helm search hub tomcat
+  helm search hub owasp juice -o yaml
   ```
 
 ]
 
-[Helm Hub](https://hub.helm.sh/) indexes many repos, using the [Monocular](https://github.com/helm/monocular) server.
+Then go to → https://artifacthub.io/packages/helm/seccurecodebox/juice-shop
+
+---
+
+## Finding charts on the web
+
+- We can also use the Artifact Hub search feature
+
+.exercise[
+
+- Go to https://artifacthub.io/
+
+- In the search box on top, enter "owasp juice"
+
+- Click on the "juice-shop" result (not "multi-juicer" or "juicy-ctf")
+
+]
+
+---
+
+## Installing the chart
+
+- Click on the "Install" button, it will show instructions
+
+.exercise[
+
+- First, add the repository for that chart:
+  ```bash
+  helm repo add juice https://charts.securecodebox.io
+  ```
+
+- Then, install the chart:
+  ```bash
+  helm install my-juice-shop juice/juice-shop
+  ```
+
+]
+
+Note: it is also possible to install directly a chart, with `--repo https://...`
 
 ---
 
@@ -301,20 +325,20 @@ class: extra-details
 
 - "Installing a chart" means creating a *release*
 
-- We need to name that release
+- In the previous exemple, the release was named "my-juice-shop"
 
-  (or use the `--generate-name` to get Helm to generate one for us)
+- We can also use `--generate-name` to ask Helm to generate a name for us
 
 .exercise[
-
-- Install the tomcat chart that we found earlier:
-  ```bash
-  helm install java4ever stable/tomcat
-  ```
 
 - List the releases:
   ```bash
   helm list
+  ```
+
+- Check that we have a `my-juice-shop-...` Pod up and running:
+  ```bash
+  kubectl get pods
   ```
 
 ]
@@ -329,13 +353,13 @@ class: extra-details
 
 - The `helm search` command only takes a search string argument
 
-  (e.g. `helm search tomcat`)
+  (e.g. `helm search juice-shop`)
 
 - With Helm 2, the name is optional:
 
-  `helm install stable/tomcat` will automatically generate a name
+  `helm install juice/juice-shop` will automatically generate a name
 
-  `helm install --name java4ever stable/tomcat` will specify a name
+  `helm install --name my-juice-shop juice/juice-shop` will specify a name
 
 ---
 
@@ -349,12 +373,12 @@ class: extra-details
 
 - List all the resources created by this release:
   ```bash
-  kubectl get all --selector=release=java4ever
+  kubectl get all --selector=app.kubernetes.io/instance=my-juice-shop
   ```
 
 ]
 
-Note: this `release` label wasn't added automatically by Helm.
+Note: this label wasn't added automatically by Helm.
 <br/>
 It is defined in that chart. In other words, not all charts will provide this label.
 
@@ -362,11 +386,11 @@ It is defined in that chart. In other words, not all charts will provide this la
 
 ## Configuring a release
 
-- By default, `stable/tomcat` creates a service of type `LoadBalancer`
+- By default, `juice/juice-shop` creates a service of type `ClusterIP`
 
 - We would like to change that to a `NodePort`
 
-- We could use `kubectl edit service java4ever-tomcat`, but ...
+- We could use `kubectl edit service my-juice-shop`, but ...
 
   ... our changes would get overwritten next time we update that chart!
 
@@ -386,14 +410,14 @@ It is defined in that chart. In other words, not all charts will provide this la
 
 .exercise[
 
-- Look at the README for tomcat:
+- Look at the README for the app:
   ```bash
-  helm show readme stable/tomcat
+  helm show readme juice/juice-shop
   ```
 
 - Look at the values and their defaults:
   ```bash
-  helm show values stable/tomcat
+  helm show values juice/juice-shop
   ```
 
 ]
@@ -410,18 +434,19 @@ The `readme` may or may not have (accurate) explanations for the values.
 
 - Values can be set when installing a chart, or when upgrading it
 
-- We are going to update `java4ever` to change the type of the service
+- We are going to update `my-juice-shop` to change the type of the service
 
 .exercise[
 
-- Update `java4ever`:
+- Update `my-juice-shop`:
   ```bash
-  helm upgrade java4ever stable/tomcat --set service.type=NodePort
+  helm upgrade my-juice-shop juice/my-juice-shop \
+       --set service.type=NodePort
   ```
 
 ]
 
-Note that we have to specify the chart that we use (`stable/tomcat`),
+Note that we have to specify the chart that we use (`juice/my-juice-shop`),
 even if we just want to update some values.
 
 We can set multiple values. If we want to set many values, we can use `-f`/`--values` and pass a YAML file with all the values.
@@ -430,25 +455,21 @@ All unspecified values will take the default values defined in the chart.
 
 ---
 
-## Connecting to tomcat
+## Connecting to the Juice Shop
 
-- Let's check the tomcat server that we just installed
-
-- Note: its readiness probe has a 60s delay
-
-  (so it will take 60s after the initial deployment before the service works)
+- Let's check the app that we just installed
 
 .exercise[
 
 - Check the node port allocated to the service:
   ```bash
-  kubectl get service java4ever-tomcat
-  PORT=$(kubectl get service java4ever-tomcat -o jsonpath={..nodePort})
+  kubectl get service my-juice-shop
+  PORT=$(kubectl get service my-juice-shop -o jsonpath={..nodePort})
   ```
 
-- Connect to it, checking the demo app on `/sample/`:
+- Connect to it:
   ```bash
-  curl localhost:$PORT/sample/
+  curl localhost:$PORT/
   ```
 
 ]
@@ -462,3 +483,17 @@ All unspecified values will take the default values defined in the chart.
 :FR:- Fonctionnement général de Helm
 :FR:- Installer des composants via Helm
 :FR:- Helm 2, Helm 3, et le *Helm Hub*
+
+:T: Getting started with Helm and its concepts
+
+:Q: Which comparison is the most adequate?
+:A: Helm is a firewall, charts are access lists
+:A: ✔️Helm is a package manager, charts are packages
+:A: Helm is an artefact repository, charts are artefacts
+:A: Helm is a CI/CD platform, charts are CI/CD pipelines
+
+:Q: What's required to distribute a Helm chart?
+:A: A Helm commercial license
+:A: A Docker registry
+:A: An account on the Helm Hub
+:A: ✔️An HTTP server

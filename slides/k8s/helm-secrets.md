@@ -12,22 +12,37 @@
 
 ---
 
+## Adding the repo
+
+- If you haven't done it before, you need to add the repo for that chart
+
+.exercise[
+
+- Add the repo that holds the chart for the OWASP Juice Shop:
+  ```bash
+  helm repo add juice https://charts.securecodebox.io
+  ```
+
+]
+
+---
+
 ## We need a release
 
 - We need to install something with Helm
 
-- Let's use the `stable/tomcat` chart as an example
+- Let's use the `juice/juice-shop` chart as an example
 
 .exercise[
 
-- Install a release called `tomcat` with the chart `stable/tomcat`:
+- Install a release called `orange` with the chart `juice/juice-shop`:
   ```bash
-  helm upgrade tomcat stable/tomcat --install
+  helm upgrade orange juice/juice-shop --install
   ```
 
 - Let's upgrade that release, and change a value:
   ```bash
-  helm upgrade tomcat stable/tomcat --set ingress.enabled=true
+  helm upgrade orange juice/juice-shop --set ingress.enabled=true
   ```
 
 ]
@@ -42,7 +57,7 @@
 
 - View the history for that release:
   ```bash
-  helm history tomcat
+  helm history orange
   ```
 
 ]
@@ -82,11 +97,11 @@ We should see a number of secrets with TYPE `helm.sh/release.v1`.
 
 .exercise[
 
-- Examine the secret corresponding to the second release of `tomcat`:
+- Examine the secret corresponding to the second release of `orange`:
   ```bash
-  kubectl describe secret sh.helm.release.v1.tomcat.v2
+  kubectl describe secret sh.helm.release.v1.orange.v2
   ```
-  (`v1` is the secret format; `v2` means revision 2 of the `tomcat` release)
+  (`v1` is the secret format; `v2` means revision 2 of the `orange` release)
 
 ]
 
@@ -102,7 +117,7 @@ There is a key named `release`.
 
 - Dump the secret:
   ```bash
-  kubectl get secret sh.helm.release.v1.tomcat.v2 \
+  kubectl get secret sh.helm.release.v1.orange.v2 \
       -o go-template='{{ .data.release }}'
   ```
 
@@ -120,7 +135,7 @@ Secrets are encoded in base64. We need to decode that!
 
 - Decode the secret:
   ```bash
-  kubectl get secret sh.helm.release.v1.tomcat.v2 \
+  kubectl get secret sh.helm.release.v1.orange.v2 \
       -o go-template='{{ .data.release | base64decode }}'
   ```
 
@@ -144,7 +159,7 @@ Let's try one more round of decoding!
 
 - Decode it twice:
   ```bash
-  kubectl get secret sh.helm.release.v1.tomcat.v2 \
+  kubectl get secret sh.helm.release.v1.orange.v2 \
       -o go-template='{{ .data.release | base64decode | base64decode }}'
   ```
 
@@ -164,7 +179,7 @@ Let's try one more round of decoding!
 
 - Pipe the decoded release through `file -`:
   ```bash
-  kubectl get secret sh.helm.release.v1.tomcat.v2 \
+  kubectl get secret sh.helm.release.v1.orange.v2 \
       -o go-template='{{ .data.release | base64decode | base64decode }}' \
       | file -
   ```
@@ -185,7 +200,7 @@ Gzipped data! It can be decoded with `gunzip -c`.
 
 - Rerun the previous command, but with `| gunzip -c > release-info` :
   ```bash
-  kubectl get secret sh.helm.release.v1.tomcat.v2 \
+  kubectl get secret sh.helm.release.v1.orange.v2 \
       -o go-template='{{ .data.release | base64decode | base64decode }}' \
       | gunzip -c > release-info
   ```
@@ -211,7 +226,7 @@ If we inspect that JSON (e.g. with `jq keys release-info`), we see:
 - `config` (contains the values that we've set)
 - `info` (date of deployment, status messages)
 - `manifest` (YAML generated from the templates)
-- `name` (name of the release, so `tomcat`)
+- `name` (name of the release, so `orange`)
 - `namespace` (namespace where we deployed the release)
 - `version` (revision number within that release; starts at 1)
 

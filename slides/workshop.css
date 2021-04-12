@@ -109,8 +109,17 @@ div.pic p {
 div.pic img {
   display: block;
   margin: auto;
+  /*
+  "pic" class slides should have a single, full screen picture.
+  We used to have these attributes below but they prevented
+  pictures from taking up the whole slide. Replacing them with
+  100%/100% seems to put the pictures full screen, but I've left
+  these old attributes here just in case.
   max-width: 1210px;
   max-height: 550px;
+  */
+  max-width: 100%;
+  max-height: 100%;
 }
 div.pic h1, div.pic h2, div.title h1, div.title h2 {
   text-align: center;

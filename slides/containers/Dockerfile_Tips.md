@@ -434,5 +434,12 @@ services:
 
 ???
 
+:EN:Optimizing images
 :EN:- Dockerfile tips, tricks, and best practices
-:FR:- Bonnes pratiques pour la construction des images
+:EN:- Reducing build time
+:EN:- Reducing image size
+
+:FR:Optimiser ses images
+:FR:- Bonnes pratiques, trucs et astuces
+:FR:- Réduire le temps de build
+:FR:- Réduire la taille des images

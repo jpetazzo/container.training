@@ -229,10 +229,5 @@ containers together without exposing their ports.
 
 ???
 
-:EN:Connecting containers
-:EN:- Container networking basics
-:EN:- Exposing a container
-
-:FR:Connecter les conteneurs
-:FR:- Description du modèle réseau des conteneurs
-:FR:- Exposer un conteneur
+:EN:- Exposing single containers
+:FR:- Exposer un conteneur isolé

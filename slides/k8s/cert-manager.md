@@ -223,6 +223,24 @@ spec:
 
 class: extra-details
 
+## Automatic TLS Ingress with annotations
+
+- It is also possible to annotate Ingress resources for cert-manager
+
+- If we annotate an Ingress resource with `cert-manager.io/cluster-issuer=xxx`:
+
+  - cert-manager will detect that annotation
+
+  - it will obtain a certificate using the specified ClusterIssuer (`xxx`)
+
+  - it will store the key and certificate in the specified Secret
+
+- Note: the Ingress still needs the `tls` section with `secretName` and `hosts`
+
+---
+
+class: extra-details
+
 ## Let's Encrypt and nip.io
 
 - Let's Encrypt has [rate limits](https://letsencrypt.org/docs/rate-limits/) per domain
@@ -242,3 +260,5 @@ class: extra-details
 
 :EN:- Obtaining certificates with cert-manager
 :FR:- Obtenir des certificats avec cert-manager
+
+:T: Obtaining TLS certificates with cert-manager
