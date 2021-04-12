@@ -50,6 +50,8 @@ content:
   - |
     # (Extra content)
   - k8s/helm-create-better-chart.md
+  - k8s/helm-dependencies.md
+  - k8s/helm-values-schema-validation.md
   - k8s/helm-secrets.md
 - #5
   - k8s/extending-api.md

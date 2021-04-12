@@ -84,6 +84,8 @@ content:
   #- k8s/helm-chart-format.md
   #- k8s/helm-create-basic-chart.md
   #- k8s/helm-create-better-chart.md
+  #- k8s/helm-dependencies.md
+  #- k8s/helm-values-schema-validation.md
   #- k8s/helm-secrets.md
   #- k8s/exercise-helm.md
   #- k8s/gitlab.md
