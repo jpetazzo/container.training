@@ -1,38 +1,10 @@
 # Accessing internal services
 
-- When we are logged in on a cluster node, we can access internal services
-
-  (by virtue of the Kubernetes network model: all nodes can reach all pods and services)
-
-- When we are accessing a remote cluster, things are different
-
-  (generally, our local machine won't have access to the cluster's internal subnet)
-
 - How can we temporarily access a service without exposing it to everyone?
-
---
 
 - `kubectl proxy`: gives us access to the API, which includes a proxy for HTTP resources
 
 - `kubectl port-forward`: allows forwarding of TCP ports to arbitrary pods, services, ...
-
----
-
-## Suspension of disbelief
-
-The exercises in this section assume that we have set up `kubectl` on our
-local machine in order to access a remote cluster.
-
-We will therefore show how to access services and pods of the remote cluster,
-from our local machine.
-
-You can also run these exercises directly on the cluster (if you haven't
-installed and set up `kubectl` locally).
-
-Running commands locally will be less useful
-(since you could access services and pods directly),
-but keep in mind that these commands will work anywhere as long as you have
-installed and set up `kubectl` to communicate with your cluster.
 
 ---
 
@@ -56,7 +28,7 @@ installed and set up `kubectl` to communicate with your cluster.
 
 ## `kubectl proxy` in practice
 
-- Let's access the `webui` service through `kubectl proxy`
+- Let's access the `web` service through `kubectl proxy`
 
 .exercise[
 
@@ -65,9 +37,9 @@ installed and set up `kubectl` to communicate with your cluster.
   kubectl proxy &
   ```
 
-- Access the `webui` service:
+- Access the `web` service:
   ```bash
-  curl localhost:8001/api/v1/namespaces/default/services/webui/proxy/index.html
+  curl localhost:8001/api/v1/namespaces/default/services/web/proxy/
   ```
 
 - Terminate the proxy:
@@ -99,21 +71,19 @@ installed and set up `kubectl` to communicate with your cluster.
 
 ## `kubectl port-forward` in practice
 
-- Let's access our remote Redis server
+- Let's access our remote NGINX server
 
 .exercise[
 
-- Forward connections from local port 10000 to remote port 6379:
+- Forward connections from local port 1234 to remote port 80:
   ```bash
-  kubectl port-forward svc/redis 10000:6379 &
+  kubectl port-forward svc/web 1234:80 &
   ```
 
-- Connect to the Redis server:
+- Connect to the NGINX server:
   ```bash
-  telnet localhost 10000
+  curl localhost:1234
   ```
-
-- Issue a few commands, e.g. `INFO server` then `QUIT`
 
 <!--
 ```wait Connected to localhost```

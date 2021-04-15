@@ -1,7 +1,8 @@
 title: |
   Cloud Native
   Continuous Deployment
-  with GitLab, Helm, and LKE
+  with GitLab, Helm, and
+  Linode Kubernetes Engine
 
 #chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
 #chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
@@ -32,10 +33,13 @@ content:
   - lke/kubernetes-review.md
   - k8s/deploymentslideshow.md
   - k8s/accessinternal.md
+  - lke/what-is-missing.md
 -
   - k8s/helm-intro.md
+  - lke/external-dns.md
   - lke/traefik.md
-  - k8s/prometheus.md
+  - lke/metrics-server.md
+  #- k8s/prometheus.md
   - lke/prometheus.md
   - k8s/cert-manager.md
   - k8s/gitlab.md

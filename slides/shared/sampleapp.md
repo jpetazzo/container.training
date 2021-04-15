@@ -1,8 +1,8 @@
 # Our sample application
 
-- We will clone the GitHub repository onto our `node1`
+- I'm going to run our demo app locally, with Docker
 
-- The repository also contains scripts and tools that we will use through the workshop
+  (you don't have to do that; do it if you like!)
 
 .exercise[
 
@@ -15,7 +15,7 @@ fi
 ```
 -->
 
-- Clone the repository on `node1`:
+- Clone the repository:
   ```bash
   git clone https://@@GITREPO@@
   ```
@@ -34,7 +34,7 @@ Let's start this before we look around, as downloading will take a little time..
 
 - Go to the `dockercoins` directory, in the cloned repo:
   ```bash
-  cd ~/container.training/dockercoins
+  cd container.training/dockercoins
   ```
 
 - Use Compose to build and run all containers:
