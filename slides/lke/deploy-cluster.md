@@ -90,7 +90,7 @@ do it for us.*
 
 - All the Kubernetes tools (`kubectl`, but also `helm` etc) use the same config file
 
-- That file is (by dfeault) `$HOME/.kube/config`
+- That file is (by default) `$HOME/.kube/config`
 
 - It can hold multiple cluster definitions (or *contexts*)
 
