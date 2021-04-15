@@ -18,7 +18,7 @@
 
 - ... But a CD pipeline is a complex system with interconnected parts!
 
-- GitLab is not exception to that rule
+- GitLab is no exception to that rule
 
 - Let's have a look at its components!
 
@@ -106,6 +106,8 @@ If you want to run this on your own...
   - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 
   - [helm](https://helm.sh/docs/intro/install/)
+
+- Patience, as many operations will require us to wait a few minutes!
 
 ---
 
