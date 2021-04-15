@@ -504,8 +504,7 @@ The `readme` may or may not have (accurate) explanations for the values.
 
 - Update `my-juice-shop`:
   ```bash
-  helm upgrade my-juice-shop juice/my-juice-shop \
-       --set service.type=NodePort
+  helm upgrade my-juice-shop juice/juice-shop --set service.type=NodePort
   ```
 
 ]

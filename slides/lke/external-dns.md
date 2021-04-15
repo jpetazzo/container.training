@@ -72,7 +72,7 @@
 
 - First, let's add the Bitnami repo:
   ```bash
-  kubectl repo add bitnami https://charts.bitnami.com/bitnami
+  helm repo add bitnami https://charts.bitnami.com/bitnami
   ```
 
 - Then, install ExternalDNS:
@@ -100,7 +100,7 @@
 
 - Check ExternalDNS logs:
   ```bash
-    kubectl logs --n external-dns -l app.kubernetes.io/name=external-dns
+    kubectl logs -n external-dns -l app.kubernetes.io/name=external-dns
   ```
 
 - It might take a few minutes for ExternalDNS to start, patience!

@@ -11,7 +11,7 @@
 
 - Then, install the chart:
   ```bash
-    helm upgrade --install treafik trafik/traefik \
+    helm upgrade --install traefik traefik/traefik \
         --create-namespace --namespace traefik \
         --set "ports.websecure.tls.enabled=true"
   ```
@@ -107,7 +107,7 @@
 
 - Let's update our Traefik install:
   ```bash
-    helm upgrade --install treafik trafik/traefik \
+    helm upgrade --install traefik traefik/traefik \
         --create-namespace --namespace traefik \
         --set "ports.websecure.tls.enabled=true" \
         --set "providers.kubernetesIngress.publishedService.enabled=true"

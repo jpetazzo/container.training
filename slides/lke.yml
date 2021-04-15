@@ -50,6 +50,7 @@ content:
   #- k8s/helm-values-schema-validation.md
   #- k8s/helm-secrets.md
   #- k8s/exercise-helm.md
+-
   - shared/thankyou.md
 
 

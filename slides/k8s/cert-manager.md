@@ -84,13 +84,15 @@
 
 ## Creating the ClusterIssuer
 
-- The manifest shown on the previous slide is in @@LINK[k8s/cm-clusterissuer.yaml]
+- Download the file @@LINK[k8s/cm-clusterissuer.yaml]
+
+  (or copy-paste from the previous slide)
 
 .exercise[
 
 - Create the ClusterIssuer:
   ```bash
-  kubectl apply -f ~/container.training/k8s/cm-clusterissuer.yaml
+  kubectl apply cm-clusterissuer.yaml
   ```
 
 ]
@@ -113,7 +115,9 @@
 
 ## Creating the Certificate
 
-- The manifest shown on the previous slide is in @@LINK[k8s/cm-certificate.yaml]
+- Download the file @@LINK[k8s/cm-certificate.yaml]
+
+  (or copy-paste from the previous slide)
 
 .exercise[
 
@@ -123,7 +127,7 @@
 
 - Create the Certificate:
   ```bash
-  kubectl apply -f ~/container.training/k8s/cm-certificate.yaml
+  kubectl apply -f cm-certificate.yaml
   ```
 
 ]
@@ -170,25 +174,14 @@
 
 ---
 
-## What's missing ?
+## And then...
 
---
-
-An Ingress Controller! 😅
-
-.exercise[
-
-- Install an Ingress Controller:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/traefik-v2.yaml
-  ```
-
-- Wait a little bit, and check that we now have a `kubernetes.io/tls` Secret:
+- A little bit later, we will have a `kubernetes.io/tls` Secret:
   ```bash
   kubectl get secrets
   ```
 
-]
+- Note that this might take a few minutes, because of the DNS integration!
 
 ---
 
@@ -231,25 +224,6 @@ class: extra-details
   - it will store the key and certificate in the specified Secret
 
 - Note: the Ingress still needs the `tls` section with `secretName` and `hosts`
-
----
-
-class: extra-details
-
-## Let's Encrypt and nip.io
-
-- Let's Encrypt has [rate limits](https://letsencrypt.org/docs/rate-limits/) per domain
-
-  (the limits only apply to the production environment, not staging)
-
-- There is a limit of 50 certificates per registered domain
-
-- If we try to use the production environment, we will probably hit the limit
-
-- It's fine to use the staging environment for these experiments
-
-  (our certs won't validate in a browser, but we can always check
-  the details of the cert to verify that it was issued by Let's Encrypt!)
 
 ???
 

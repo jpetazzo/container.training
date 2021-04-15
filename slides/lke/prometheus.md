@@ -26,7 +26,7 @@
 
   - a collection of Grafana dashboards (building them from scratch is tedious)
 
-- The Helm char `kube-prometheus-stack` combines all these elements
+- The Helm chart `kube-prometheus-stack` combines all these elements
 
 - ... So we're going to use it to deploy our metrics stack!
 
@@ -45,7 +45,9 @@
       --repo https://prometheus-community.github.io/helm-charts 
   ```
 
-- Check what was installed:
+- This will take a minute...
+
+- Then check what was installed:
   ```bash
   kubectl get all --namespace kube-prometheus-stack
   ```
@@ -81,8 +83,8 @@
 
 - Decode the Secret:
   ```bash
-    kubectl get secret kube-prometheus-stack-grafana -o json \
-            | jq '.data | map_values(@base64d)'
+    kubectl get secret --namespace kube-prometheus-stack \
+      kube-prometheus-stack-grafana -o json | jq '.data | map_values(@base64d)'
   ```
 
 - If you don't have the `jq` tool mentioned above, don't worry...

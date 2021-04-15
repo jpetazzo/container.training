@@ -164,154 +164,493 @@ class: extra-details
 
 ---
 
-## Ingress
-
-- We will assume that we have a domain name pointing to our cluster
-
-  (i.e. with a wildcard record pointing to at least one node of the cluster)
-
-- We will get traffic in the cluster by leveraging `ExternalIPs` services
-
-  (but it would be easy to use `LoadBalancer` services instead)
-
-- We will use Traefik as the ingress controller
-
-  (but any other one should work too)
-
-- We will use cert-manager to obtain certificates with Let's Encrypt
-
----
-
-## Other details
+## Install GitLab itself
 
 - We will deploy GitLab with its official Helm chart
 
 - It will still require a bunch of parameters and customization
 
-- We also need a Storage Class
-
-  (unless our cluster already has one, of course)
-
-- We suggest the [Rancher local path provisioner](https://github.com/rancher/local-path-provisioner)
+- Brace!
 
 ---
 
-## Setting everything up
+## Installing the GitLab chart
 
-1. `git clone https://github.com/jpetazzo/kubecoin`
+```bash
+helm repo add gitlab https://charts.gitlab.io/
+DOMAIN=`cloudnative.party`
+ISSUER=letsencrypt-production
+helm upgrade --install gitlab gitlab/gitlab \
+    --create-namespace --namespace gitlab \
+    --set global.hosts.domain=$DOMAIN \
+    --set certmanager.install=false \
+    --set nginx-ingress.enabled=false \
+    --set global.ingress.class=traefik \
+    --set global.ingress.provider=traefik \
+    --set global.ingress.configureCertmanager=false \
+    --set global.ingress.annotations."cert-manager\.io/cluster-issuer"=$ISSUER \
+    --set gitlab.webservice.ingress.tls.secretName=gitlab-gitlab-tls \
+    --set registry.ingress.tls.secretName=gitlab-registry-tls \
+    --set minio.ingress.tls.secretName=gitlab-minio-tls
+```
 
-2. `export EMAIL=xxx@example.com DOMAIN=awesome-kube-ci.io`
-
-   (we need a real email address and a domain pointing to the cluster!)
-
-3. `. setup-gitlab-on-k8s.rc`
-
-   (this doesn't do anything, but defines a number of helper functions)
-
-4. Execute each helper function, one after another
-
-   (try `do_[TAB]` to see these functions)
-
----
-
-## Local Storage
-
-`do_1_localstorage`
-
-Applies the YAML directly from Rancher's repository.
-
-Annotate the Storage Class so that it becomes the default one.
+😰 Can we talk about all these parameters?
 
 ---
 
-## Traefik
+## Breaking down all these parameters
 
-`do_2_traefik_with_externalips`
+- `certmanager.install=false`
 
-Install the official Traefik Helm chart.
+  do not install cert-manager, we already have it
 
-Instead of a `LoadBalancer` service, use a `ClusterIP` with `ExternalIPs`.
+- `nginx-ingress.enabled=false`
 
-Automatically infer the `ExternalIPs` from `kubectl get nodes`.
+  do not install the NGINX ingress controller, we already have Traefik
 
-Enable TLS.
+- `global.ingress.class=traefik`, `global.ingress.provider=traefik`
 
----
+  these merely enable creation of Ingress resources
 
-## cert-manager
+- `global.ingress.configureCertmanager=false`
 
-`do_3_certmanager`
-
-Install cert-manager using their official YAML.
-
-Easy-peasy.
+  do not create a cert-manager Issuer or ClusterIssuer, we have ours
 
 ---
 
-## Certificate issuers
+## More parameters
 
-`do_4_issuers`
+- `global.ingress.annotations."cert-manager\.io/cluster-issuer"=$ISSUER`
 
-Create a couple of `ClusterIssuer` resources for cert-manager.
+  this annotation tells cert-manager to automatically issue certs
 
-(One for the staging Let's Encrypt environment, one for production.)
+- `gitlab.webservice.ingress.tls.secretName=gitlab-gitlab-tls`,
+  <br/>
+  `registry.ingress.tls.secretName=gitlab-registry-tls`,
+  <br/>
+  `minio.ingress.tls.secretName=gitlab-minio-tls`
 
-Note: this requires to specify a valid `$EMAIL` address!
-
-Note: if this fails, wait a bit and try again (cert-manager needs to be up).
-
----
-
-## GitLab
-
-`do_5_gitlab`
-
-Deploy GitLab using their official Helm chart.
-
-We pass a lot of parameters to this chart:
-- the domain name to use
-- disable GitLab's own ingress and cert-manager
-- annotate the ingress resources so that cert-manager kicks in
-- bind the shell service (git over SSH) to port 222 to avoid conflict
-- use ExternalIPs for that shell service
-
-Note: on modest cloud instances, it can take 10 minutes for GitLab to come up.
-
-We can check the status with `kubectl get pods --namespace=gitlab`
+  these annotations enable TLS in the Ingress controller
 
 ---
 
-## Log into GitLab and configure it
+## Wait for GitLab to come up
 
-`do_6_showlogin`
+- Let's watch what's happening in the GitLab namespace:
+  ```bash
+  watch kubectl get all --namespace gitlab
+  ```
 
-This will get the GitLab root password (stored in a Secret).
+- We want to wait for all the Pods to be "Running" or "Completed"
 
-Then we need to:
-- log into GitLab
-- add our SSH key (top-right user menu → settings, then SSH keys on the left)
-- create a project (using the + menu next to the search bar on top)
-- go to project configuration (on the left, settings → CI/CD)
-- add a `KUBECONFIG` file variable with the content of our `.kube/config` file
-- go to settings → access tokens to create a read-only registry token
-- add variables `REGISTRY_USER` and `REGISTRY_PASSWORD` with that token
-- push our repo (`git remote add gitlab ...` then `git push gitlab ...`)
+- This will take a few minutes (10-15 minutes for me)
+
+- Don't worry if you see Pods crashing and restarting
+
+  (it happens when they are waiting on a dependency which isn't up yet)
 
 ---
 
-## Monitoring progress and troubleshooting
+## Things that could go wrong
 
-- Click on "CI/CD" in the left bar to view pipelines
+- Symptom: Pods remain "Pending" or "ContainerCreating" for a while
 
-- If you see a permission issue mentioning `system:serviceaccount:gitlab:...`:
+- Investigate these pods (with `kubectl describe pod ...`)
 
-  *make sure you did set `KUBECONFIG` correctly!*
+- Also look at events:
+  ```bash
+    kubectl get events \
+      --field-selector=type=Warning --sort-by=metadata.creationTimestamp
+  ```
 
-- GitLab will create namespaces named `gl-<user>-<project>`
+- Make sure your cluster is big enough
 
-- At the end of the deployment, the web UI will be available on some unique URL
+  (I use 3 `g6-standard-4` nodes)
 
-  (`http://<user>-<project>-<githash>-gitlab.<domain>`)
+---
+
+## Log into GitLab
+
+- First, let's check that we can connect to GitLab (with TLS):
+
+  `https://gitlab.$DOMAIN`
+
+- It's asking us for a login and password!
+
+- The login is `root`, and the password is stored in a Secret:
+  ```bash
+    kubectl get secrets --namespace=gitlab gitlab-gitlab-initial-root-password \
+      -o jsonpath={.data.password} | base64 -d
+  ```
+
+---
+
+## Configure GitLab
+
+- For simplicity, we're going to use that "root" user
+
+  (but later, you can create multiple users, teams, etc.)
+
+- First, let's add our SSH key
+
+  (top-right user menu → settings, then SSH keys on the left)
+
+- Then, create a project
+
+  (using the + menu next to the search bar on top)
+
+- Let's call it `kubecoin`
+
+  (you can change it, but you'll have to adjust Git paths later on)
+
+---
+
+## Try to push our repository
+
+- This is the repository that we're going to use:
+
+  https://github.com/jpetazzo/kubecoin
+
+- Let's clone that repository locally first:
+  ```bash
+  git clone https://github.com/jpetazzo/kubecoin
+  ```
+
+- Add our GitLab instance as a remote:
+  ```bash
+  git remote add gitlab git@gitlab.$DOMAIN:root/kubecoin.git
+  ```
+
+- Try to push:
+  ```bash
+  git push -u gitlab
+  ```
+
+---
+
+## Connection refused?
+
+- Normally, we get the following error:
+
+  `port 22: Connection refused`
+
+- Why? 🤔
+
+--
+
+- What does `gitlab.$DOMAIN` point to?
+
+--
+
+- Our Ingress Controller! (i.e. Traefik) 💡
+
+- Our Ingress Controller has nothing to do with port 22
+
+- So how do we solve this?
+
+---
+
+## Routing port 22
+
+- Whatever is on `gitlab.$DOMAIN` needs to have the following "routing":
+
+  - port 80 → GitLab web service
+
+  - port 443 → GitLab web service, with TLS
+
+  - port 22 → GitLab shell service
+
+- Currently, Traefik is managing `gitlab.$DOMAIN`
+
+- We are going to tell Traefik to:
+
+  - accept connections on port 22
+
+  - send them to GitLab
+
+---
+
+## TCP routing
+
+- The technique that we are going to use is specific to Traefik
+
+- Other Ingress Controllers may or may not have similar features
+
+- When they have similar features, they will be enabled very differently
+
+---
+
+## Telling Traefik to open port 22
+
+- Let's reconfigure Traefik:
+  ```bash
+    helm upgrade --install traefik traefik/traefik \
+        --create-namespace --namespace traefik \
+        --set "ports.websecure.tls.enabled=true" \
+        --set "providers.kubernetesIngress.publishedService.enabled=true" \
+        --set "ports.ssh.port=2222" \
+        --set "ports.ssh.exposedPort=22" \
+        --set "ports.ssh.expose=true" \
+        --set "ports.ssh.protocol=TCP"
+  ```
+
+- This creates a new "port" on Traefik, called "ssh", listening on port 22
+
+- Internally, Traefik listens on port 2222 (for permission reasons)
+
+- Note: Traefik docs also call these ports "entrypoints"
+
+  (these entrypoints are totally unrelated to the `ENTRYPOINT` in Dockerfiles)
+
+---
+
+## Knocking on port 22
+
+- What happens if we try to connect to that port 22 right now?
+  ```bash
+  curl gitlab.$DOMAIN:22
+  ```
+
+- We hit GitLab's web service!
+
+- We need to tell Traefik what to do with connections to that port 22
+
+- For that, we will create a "TCP route"
+
+---
+
+## Traefik TCP route
+
+The following custom resource tells Traefik to route the `ssh` port that we
+created earlier, to the `gitlab-gitlab-shell` service belonging to GitLab.
+
+```yaml
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: gitlab-shell
+  namespace: gitlab
+spec:
+  entryPoints:
+  - ssh
+  routes:
+  - match: HostSNI(\`*`)
+    services:
+    - name: gitlab-gitlab-shell
+      port: 22
+```
+
+The `HostSNI` wildcard is the magic option to define a "default route".
+
+---
+
+## Creating the TCP route
+
+Since our manifest has backticks, we must pay attention to quoting:
+
+```bash
+kubectl apply -f- << "EOF"
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: gitlab-shell
+  namespace: gitlab
+spec:
+  entryPoints:
+  - ssh
+  routes:
+  - match: HostSNI(\`*`)
+    services:
+    - name: gitlab-gitlab-shell
+      port: 22
+EOF
+```
+
+---
+
+## Knocking on port 22, again
+
+- Let's see what happens if we try port 22 now:
+  ```bash
+  curl gitlab.$DOMAIN:22
+  ```
+
+- This should tell us something like `Received HTTP/0.9 when not allowed`
+
+  (because we're no longer talking to an HTTP server, but to SSH!)
+
+- Try with SSH:
+  ```bash
+  ssh git@gitlab.$DOMAIN
+  ```
+
+- After accepting the key fingerprint, we should see `Welcome to GitLab, @root!`
+
+---
+
+## Pushing again
+
+- Now we can try to push our repository again:
+  ```bash
+  git push -u gitlab
+  ```
+
+- Reload the project page in GitLab
+
+- We should see our repository!
+
+---
+
+## CI/CD
+
+- Click on the CI/CD tab on the left
+ 
+  (the one with the shuttle / space rocket icon)
+
+- Our pipeline was detected...
+
+- But it failed 😕
+
+- Let's click on one of the failed jobs
+
+- This is a permission issue!
+
+---
+
+## Fixing permissions
+
+- GitLab needs to do a few of things in our cluster:
+
+  - create Pods to build our container images with BuildKit
+
+  - create Namespaces to deploy staging and production versions of our app
+
+  - create and update resources in these Namespaces
+
+- For the time being, we're going to grant broad permissions
+
+  (and we will revisit and discuss what to do later)
+
+---
+
+## Granting permissions
+
+- Let's give `cluster-admin` permissions to the GitLab ServiceAccount:
+  ```bash
+    kubectl create clusterrolebinding gitlab \
+        --clusterrole=cluster-admin --serviceaccount=gitlab:default
+  ```
+
+- Then retry the CI/CD pipeline
+
+- The build steps will now succeed; but the deploy steps will fail
+
+- We need to set the `REGISTRY_USER` and `REGISTRY_PASSWORD` variables
+
+- Let's explain what this is about!
+
+---
+
+## GitLab container registry access
+
+- A registry access token is created for the duration of the CI/CD pipeline
+
+  (it is exposed through the `$CI_JOB_TOKEN` environment variable)
+
+- This token gives access only to a specific repository in the registry
+
+- It is valid only during the execution of the CI/CD pipeline
+
+- We can (and we do!) use it to *push* images to the registry
+
+- We cannot use it to *pull* images when running in staging or production
+
+  (because Kubernetes might need to pull images *after* the token expires)
+
+- We need to create a separate read-only registry access token
+
+---
+
+## Creating the registry access token
+
+- Let's go to "Settings" (the cog wheel on the left) / "Access Tokens"
+
+- Create a token with `read_registry` permission
+
+- Save the token name and the token value
+
+- Then go to "Settings" / "CI/CD"
+
+- In the "Variables" section, add two variables:
+
+  - `REGISTRY_USER` → token name
+  - `REGISTRY_PASSWORD` → token value
+
+- Make sure that they are **not** protected!
+
+  (otherwise, they won't be available in non-default tags and branches)
+
+---
+
+## Trying again
+
+- Go back to the CI/CD pipeline view, and hit "Retry"
+
+- The deploy stage should now work correctly! 🎉
+
+---
+
+## Our CI/CD pipeline
+
+- Let's have a look at the [.gitlab-ci.yml](https://github.com/jpetazzo/kubecoin/blob/107dac5066087c52747e557babc97e57f42dd71d/.gitlab-ci.yml) file
+
+- We have multiple *stages*:
+
+  - lint (currently doesn't do much, it's mostly as an example)
+
+  - build (currently uses BuildKit)
+
+  - deploy
+
+- "Deploy" behaves differently in staging and production
+
+- Let's investigate that!
+
+---
+
+## Staging vs production
+
+- In our pipeline, "production" means "a tag or branch named `production`"
+
+  (see the `except:` and `only:` sections)
+
+- Everything else is "staging"
+
+- In "staging":
+
+  - we build and push images
+  - we create a staging Namespace and deploy a copy of the app there
+
+- In "production":
+
+  - we do not build anything
+  - we deploy (or update) a copy of the app in the production Namespace
+
+---
+
+## Namespace naming
+
+- GitLab will create Namespaces named `gl-<user>-<project>-<hash>`
+
+- At the end of the deployment, the web UI will be available at:
+
+  `http://<user>-<project>-<githash>-gitlab.<domain>`
+
+- The "production" Namespace will be `<user>-<project>`
+
+- And it will be available on its own domain as well:
+
+  `http://<project>-<githash>-gitlab.<domain>`
 
 ---
 
@@ -325,7 +664,7 @@ Then we need to:
 
 - It will do it *only* if that same git commit was pushed to staging first
 
-  (look in the pipeline configuration file to see how it's done!)
+  (because the "production" pipeline skips the build phase)
 
 ---
 
@@ -411,35 +750,15 @@ Then we need to:
 
 ---
 
-## Pros
+## Why not use GitLab's Kubernetes integration?
 
-- GitLab is an amazing, open source, all-in-one platform
+- "All-in-one" approach
 
-- Available as hosted, community, or enterprise editions
+  (deploys its own Ingress, cert-manager, Prometheus, and much more)
 
-- Rich ecosystem, very customizable
+- I wanted to show you something flexible and customizable instead
 
-- Can run on Kubernetes, or somewhere else
-
----
-
-## Cons
-
-- It can be difficult to use components separately
-
-  (e.g. use a different registry, or a different job runner)
-
-- More than one way to configure it
-
-  (it's not an opinionated platform)
-
-- Not "Kubernetes-native"
-
-  (for instance, jobs are not Kubernetes jobs)
-
-- Job latency could be improved
-
-*Note: most of these drawbacks are the flip side of the "pros" on the previous slide!*
+- But feel free to explore it now that we have shown the basics!
 
 ???
 
