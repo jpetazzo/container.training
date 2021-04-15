@@ -81,7 +81,7 @@ do it for us.*
 
 - Download the kubeconfig file:
   ```bash
-  linode-cli lke kueconfig-view `12345` --text --no-headers | base64 -d
+  linode-cli lke kubeconfig-view `12345` --text --no-headers | base64 -d
   ```
 
 ---
