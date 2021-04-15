@@ -58,24 +58,19 @@
 
 .exercise[
 
-- Create the namespace for cert-manager:
+- Let's install the cert-manager Helm chart with this one-liner:
   ```bash
-  kubectl create ns cert-manager
-  ```
-
-- Add the Jetstack repository:
-  ```bash
-  helm repo add jetstack https://charts.jetstack.io
-  ```
-
-- Install cert-manager:
-  ```bash
-    helm install cert-manager jetstack/cert-manager \
-         --namespace cert-manager \
-         --set installCRDs=true
+    helm install cert-manager cert-manager \
+        --repo https://charts.jetstack.io \
+        --create-namespace --namespace cert-manager \
+        --set installCRDs=true
   ```
 
 ]
+
+- If you prefer to install with a single YAML file, that's fine too!
+
+  (see [the documentation](https://cert-manager.io/docs/installation/kubernetes/#installing-with-regular-manifests) for instructions)
 
 ---
 
