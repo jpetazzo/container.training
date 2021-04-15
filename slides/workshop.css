@@ -29,7 +29,7 @@ code {
 code.remark-code {
   font-size: 100%;
 }
-.exercise ul li code.remark-code.hljs.bash {
+.x-exercise ul li code.remark-code.hljs.bash {
   padding: 0;
 }
 
@@ -177,7 +177,7 @@ div img {
   background-repeat: no-repeat;
   background-position: left;
 }
-.exercise {
+.x-exercise {
   background-color: #eee;
   background-image: url("images/keyboard.png");
   background-size: 1.4em;
@@ -185,7 +185,7 @@ div img {
   background-position: 0.2em 0.2em;
   border: 2px dotted black;
 }
-.exercise:before {
+.x-exercise:before {
   content: "Exercise";
   margin-left: 1.8em;
 }
