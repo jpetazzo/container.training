@@ -1,20 +1,84 @@
 # Managing stacks with Helm
 
-- We created our first resources with `kubectl run`, `kubectl expose` ...
+- Helm is a (kind of!) package manager for Kubernetes
 
-- We have also created resources by loading YAML files with `kubectl apply -f`
+- We can use it to:
 
-- For larger stacks, managing thousands of lines of YAML is unreasonable
+  - find existing packages (called "charts") created by other folks
 
-- These YAML bundles need to be customized with variable parameters
+  - install these packages, configuring them for our particular setup
 
-  (E.g.: number of replicas, image version to use ...)
+  - package our own things (for distribution or for internal use)
 
-- It would be nice to have an organized, versioned collection of bundles
+  - manage the lifecycle of these installs (rollback to previous version etc.)
 
-- It would be nice to be able to upgrade/rollback these bundles carefully
+- It's a "CNCF graduate project", indicating a certain level of maturity
 
-- [Helm](https://helm.sh/) is an open source project offering all these things!
+  (more on that later)
+
+---
+
+## From `kubectl run` to YAML
+
+- We can create resources with one-line commands
+
+  (`kubectl run`, `kubectl createa deployment`, `kubectl expose`...)
+
+- We can also create resources by loading YAML files
+
+  (with `kubectl apply -f`, `kubectl create -f`...)
+
+- There can be multiple resources in a single YAML files
+
+  (making them convenient to deploy entire stacks)
+
+- However, these YAML bundles often need to be customized
+
+  (e.g.: number of replicas, image version to use, features to enable...)
+
+---
+
+## Beyond YAML
+
+- Very often, after putting together our first `app.yaml`, we end up with:
+
+  - `app-prod.yaml`
+
+  - `app-staging.yaml`
+
+  - `app-dev.yaml`
+
+  - instructions indicating to users "please tweak this and that in the YAML"
+
+- That's where using something like
+  [CUE](https://github.com/cuelang/cue/blob/v0.3.2/doc/tutorial/kubernetes/README.md),
+  [Kustomize](https://kustomize.io/),
+  or [Helm](https://helm.sh/) can help!
+
+- Now we can do something like this:
+  ```bash
+  helm install app ... --set this.parameter=that.value
+  ```
+
+---
+
+## Other features of Helm
+
+- With Helm, we create "charts"
+
+- These charts can be used internally or distributed publicly
+
+- Public charts can be indexed through the [Artifact Hub](https://artifacthub.io/)
+
+- This gives us a way to find and install other folks' charts
+
+- Helm also gives us ways to manage the lifecycle of what we install:
+
+  - keep track of what we have installed
+
+  - upgrade versions, change parameters, roll back, uninstall
+
+- Furthermore, even if it's not "the" standard, it's definitely "a" standard!
 
 ---
 
