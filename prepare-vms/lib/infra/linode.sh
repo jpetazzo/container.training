@@ -1,8 +1,8 @@
 if ! command -v linode-cli >/dev/null; then
-  warn "Linode CLI (linode-cli) not found."
+  warning "Linode CLI (linode-cli) not found."
 fi
 if ! [ -f ~/.config/linode-cli ]; then
-  warn "~/.config/linode-cli not found."
+  warning "~/.config/linode-cli not found."
 fi
 
 # To view available regions: "linode-cli regions list"

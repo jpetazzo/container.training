@@ -1,8 +1,8 @@
 if ! command -v hcloud >/dev/null; then
-  warn "Hetzner CLI (hcloud) not found."
+  warning "Hetzner CLI (hcloud) not found."
 fi
 if ! [ -f ~/.config/hcloud/cli.toml ]; then
-  warn "~/.config/hcloud/cli.toml not found."
+  warning "~/.config/hcloud/cli.toml not found."
 fi
 
 infra_list() {

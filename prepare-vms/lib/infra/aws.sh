@@ -1,5 +1,5 @@
 if ! command -v aws >/dev/null; then
-    warn "AWS CLI (aws) not found."
+    warning "AWS CLI (aws) not found."
 fi
 
 infra_list() {

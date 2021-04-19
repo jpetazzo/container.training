@@ -1,8 +1,8 @@
 if ! command -v scw >/dev/null; then
-  warn "Scaleway CLI (scw) not found."
+  warning "Scaleway CLI (scw) not found."
 fi
 if ! [ -f ~/.config/scw/config.yaml ]; then
-  warn "~/.config/scw/config.yaml not found."
+  warning "~/.config/scw/config.yaml not found."
 fi
 
 SCW_INSTANCE_TYPE=${SCW_INSTANCE_TYPE-DEV1-M}
