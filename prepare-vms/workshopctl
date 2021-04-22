@@ -17,6 +17,7 @@ done
 DEPENDENCIES="
     ssh
     curl
+    fping
     jq
     pssh
     wkhtmltopdf
