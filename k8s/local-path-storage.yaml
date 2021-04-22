@@ -1,49 +1,50 @@
 # This is a local copy of:
 # https://github.com/rancher/local-path-provisioner/blob/master/deploy/local-path-storage.yaml
----
 apiVersion: v1
 kind: Namespace
 metadata:
   name: local-path-storage
+
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: local-path-provisioner-service-account
   namespace: local-path-storage
+
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: local-path-provisioner-role
-  namespace: local-path-storage
 rules:
-- apiGroups: [""]
-  resources: ["nodes", "persistentvolumeclaims"]
-  verbs: ["get", "list", "watch"]
-- apiGroups: [""]
-  resources: ["endpoints", "persistentvolumes", "pods"]
-  verbs: ["*"]
-- apiGroups: [""]
-  resources: ["events"]
-  verbs: ["create", "patch"]
-- apiGroups: ["storage.k8s.io"]
-  resources: ["storageclasses"]
-  verbs: ["get", "list", "watch"]
+  - apiGroups: [ "" ]
+    resources: [ "nodes", "persistentvolumeclaims", "configmaps" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "" ]
+    resources: [ "endpoints", "persistentvolumes", "pods" ]
+    verbs: [ "*" ]
+  - apiGroups: [ "" ]
+    resources: [ "events" ]
+    verbs: [ "create", "patch" ]
+  - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "storageclasses" ]
+    verbs: [ "get", "list", "watch" ]
+
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: local-path-provisioner-bind
-  namespace: local-path-storage
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: local-path-provisioner-role
 subjects:
-- kind: ServiceAccount
-  name: local-path-provisioner-service-account
-  namespace: local-path-storage
+  - kind: ServiceAccount
+    name: local-path-provisioner-service-account
+    namespace: local-path-storage
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -62,27 +63,28 @@ spec:
     spec:
       serviceAccountName: local-path-provisioner-service-account
       containers:
-      - name: local-path-provisioner
-        image: rancher/local-path-provisioner:v0.0.8
-        imagePullPolicy: Always
-        command:
-        - local-path-provisioner
-        - --debug
-        - start
-        - --config
-        - /etc/config/config.json
-        volumeMounts:
-        - name: config-volume
-          mountPath: /etc/config/
-        env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
+        - name: local-path-provisioner
+          image: rancher/local-path-provisioner:v0.0.19
+          imagePullPolicy: IfNotPresent
+          command:
+            - local-path-provisioner
+            - --debug
+            - start
+            - --config
+            - /etc/config/config.json
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config/
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
       volumes:
         - name: config-volume
           configMap:
             name: local-path-config
+
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -91,6 +93,7 @@ metadata:
 provisioner: rancher.io/local-path
 volumeBindingMode: WaitForFirstConsumer
 reclaimPolicy: Delete
+
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -99,12 +102,59 @@ metadata:
   namespace: local-path-storage
 data:
   config.json: |-
-        {
-                "nodePathMap":[
-                {
-                        "node":"DEFAULT_PATH_FOR_NON_LISTED_NODES",
-                        "paths":["/opt/local-path-provisioner"]
-                }
-                ]
-        }
+    {
+            "nodePathMap":[
+            {
+                    "node":"DEFAULT_PATH_FOR_NON_LISTED_NODES",
+                    "paths":["/opt/local-path-provisioner"]
+            }
+            ]
+    }
+  setup: |-
+    #!/bin/sh
+    while getopts "m:s:p:" opt
+    do
+        case $opt in
+            p)
+            absolutePath=$OPTARG
+            ;;
+            s)
+            sizeInBytes=$OPTARG
+            ;;
+            m)
+            volMode=$OPTARG
+            ;;
+        esac
+    done
+
+    mkdir -m 0777 -p ${absolutePath}
+  teardown: |-
+    #!/bin/sh
+    while getopts "m:s:p:" opt
+    do
+        case $opt in
+            p)
+            absolutePath=$OPTARG
+            ;;
+            s)
+            sizeInBytes=$OPTARG
+            ;;
+            m)
+            volMode=$OPTARG
+            ;;
+        esac
+    done
+
+    rm -rf ${absolutePath}
+  helperPod.yaml: |-
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: helper-pod
+    spec:
+      containers:
+      - name: helper-pod
+        image: busybox
+
+
 

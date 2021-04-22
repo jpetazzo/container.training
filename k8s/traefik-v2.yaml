@@ -55,28 +55,8 @@ spec:
         - --entrypoints.https.Address=:443
         - --entrypoints.https.http.tls.certResolver=default
 ---
-kind: Service
-apiVersion: v1
-metadata:
-  name: traefik-ingress-service
-  namespace: kube-system
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "8080"
-    prometheus.io/path: "/metrics"
-spec:
-  selector:
-    k8s-app: traefik-ingress-lb
-  ports:
-    - protocol: TCP
-      port: 80
-      name: web
-    - protocol: TCP
-      port: 8080
-      name: admin
----
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: traefik-ingress-controller
 rules:
@@ -109,7 +89,7 @@ rules:
       - watch
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: traefik-ingress-controller
 roleRef:
