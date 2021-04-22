@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whatever
+spec:
+  #tls:
+  #- secretName: whatever.A.B.C.D.nip.io
+  #  hosts:
+  #  - whatever.A.B.C.D.nip.io
+  rules:
+  - host: whatever.A.B.C.D.nip.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: whatever
+            port:
+              number: 1234
