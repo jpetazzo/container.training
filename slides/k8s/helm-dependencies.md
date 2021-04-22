@@ -134,7 +134,7 @@ use Bitnami's Redis chart.
   ```yaml
     dependencies:
       - name: redis
-        version: ">=11 <12"
+        version: ">=11, <12"
         repository: https://charts.bitnami.com/bitnami
   ```
 
