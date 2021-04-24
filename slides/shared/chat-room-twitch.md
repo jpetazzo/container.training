@@ -28,7 +28,7 @@
 
 - Some of our favorites:
 
-  .emoji[🤔✔️👍🏻👍🏼👍🏽👍🏾👍🏿⚠️🛑]
+  🤔✔️👍🏻👍🏼👍🏽👍🏾👍🏿⚠️🛑
 
 - During the session, we'll often ask audience participation questions
 

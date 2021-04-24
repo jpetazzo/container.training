@@ -86,7 +86,7 @@
 
 - On April 30th 2020, Helm was the 10th project to *graduate* within the CNCF
 
-  .emoji[🎉]
+  🎉
 
   (alongside Containerd, Prometheus, and Kubernetes itself)
 

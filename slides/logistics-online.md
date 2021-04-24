@@ -2,9 +2,9 @@
 
 - Hello! We are:
 
-   - .emoji[👷🏻‍♀️] AJ ([@s0ulshake], [EphemeraSearch])
+   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch])
 
-   - .emoji[🐳] Jérôme ([@jpetazzo], Enix SAS)
+   - 🐳 Jérôme ([@jpetazzo], Enix SAS)
 
 - The training will run for 4 hours, with a 10 minutes break every hour
 

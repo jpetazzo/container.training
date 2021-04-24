@@ -69,7 +69,7 @@ Without further ado, let's start this application!
 
 --
 
-- It is a DockerCoin miner! .emoji[💰🐳📦🚢]
+- It is a DockerCoin miner! 💰🐳📦🚢
 
 --
 

@@ -2,9 +2,9 @@
 
  - Hello! We are:
 
-   - .emoji[✨] Bridget ([@bridgetkromhout](https://twitter.com/bridgetkromhout))
+   - ✨ Bridget ([@bridgetkromhout](https://twitter.com/bridgetkromhout))
 
-   - .emoji[🌟] Joe ([@joelaha](https://twitter.com/joelaha))
+   - 🌟 Joe ([@joelaha](https://twitter.com/joelaha))
 
 - The workshop will run from 13:30-16:45
 

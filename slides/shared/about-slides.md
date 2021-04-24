@@ -46,7 +46,7 @@
 
 - Typos? Mistakes? Questions? Feel free to hover over the bottom of the slide ...
 
-.footnote[.emoji[👇] Try it! The source file will be shown and you can view it on GitHub and fork and edit it.]
+.footnote[👇 Try it! The source file will be shown and you can view it on GitHub and fork and edit it.]
 
 <!--
 .exercise[

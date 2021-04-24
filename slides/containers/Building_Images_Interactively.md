@@ -131,7 +131,7 @@ root@fcfb62f0bfde:/# figlet hello
 |_| |_|\___|_|_|\___/ 
 ```
 
-It works! .emoji[🎉]
+It works! 🎉
 
 ---
 

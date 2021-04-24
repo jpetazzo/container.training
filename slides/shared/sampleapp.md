@@ -58,7 +58,7 @@ and displays aggregated logs.
 
 --
 
-- It is a DockerCoin miner! .emoji[💰🐳📦🚢]
+- It is a DockerCoin miner! 💰🐳📦🚢
 
 --
 

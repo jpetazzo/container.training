@@ -196,7 +196,7 @@ root@91f3c974c9a1:/# figlet hello
 ```
 
 
-Yay! .emoji[🎉]
+Yay! 🎉
 
 ---
 
