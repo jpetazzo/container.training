@@ -747,6 +747,35 @@ _cmd_helmprom() {
     fi"
 }
 
+_cmd passwords "Set individual passwords for each cluster"
+_cmd_passwords() {
+    TAG=$1
+    need_tag
+    PASSWORDS_FILE="tags/$TAG/passwords"
+    if ! [ -f "$PASSWORDS_FILE" ]; then
+        error "File $PASSWORDS_FILE not found. Please create it first."
+        error "It should contain one password per line."
+        error "It should have as many lines as there are clusters."
+        die "Aborting."
+    fi
+    N_CLUSTERS=$($0 ips "$TAG" | wc -l)
+    N_PASSWORDS=$(wc -l < "$PASSWORDS_FILE")
+    if [ "$N_CLUSTERS" != "$N_PASSWORDS" ]; then
+        die "Found $N_CLUSTERS clusters and $N_PASSWORDS passwords. Aborting."
+    fi
+    $0 ips "$TAG" | paste "$PASSWORDS_FILE" - | while read password nodes; do
+        info "Setting password for $nodes..."
+        for node in $nodes; do
+            echo docker:$password | ssh \
+                -o LogLevel=ERROR \
+                -o UserKnownHostsFile=/dev/null \
+                -o StrictHostKeyChecking=no \
+                ubuntu@$node sudo chpasswd
+        done
+    done
+    info "Done."
+}
+
 # Sometimes, weave fails to come up on some nodes.
 # Symptom: the pods on a node are unreachable (they don't even ping).
 # Remedy: wipe out Weave state and delete weave pod on that node.
