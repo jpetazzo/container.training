@@ -1,38 +1,60 @@
 # Kustomize
 
-- Kustomize lets us transform YAML files representing Kubernetes resources
+- Kustomize lets us transform Kubernetes resources:
 
-- The original YAML files are valid resource files
+  *YAML + kustomize → new YAML*
 
-  (e.g. they can be loaded with `kubectl apply -f`)
+- Starting point = valid resource files
 
-- They are left untouched by Kustomize
+  (i.e. something that we could load with `kubectl apply -f`)
 
-- Kustomize lets us define *kustomizations*
+- Recipe = a *kustomization* file
 
-- A *kustomization* is conceptually similar to a *layer*
+  (describing how to transform the resources)
 
-- Technically, a *kustomization* is a file named `kustomization.yaml`
+- Result = new resource files
 
-  (or a directory containing that files + additional files)
+  (that we can load with `kubectl apply -f`)
 
 ---
 
-## What's in a kustomization
+## Pros and cons
 
-- A kustomization can do any combination of the following:
+- Relatively easy to get started
 
-  - include other kustomizations
+  (just get some existing YAML files)
 
-  - include Kubernetes resources defined in YAML files
+- Easy to leverage existing "upstream" YAML files
 
-  - patch Kubernetes resources (change values)
+  (or other *kustomizations*)
 
-  - add labels or annotations to all resources
+- Somewhat integrated with `kubectl`
 
-  - specify ConfigMaps and Secrets from literal values or local files
+  (but only "somewhat" because of version discrepancies)
 
-(... And a few more advanced features that we won't cover today!)
+- Less complex than e.g. Helm, but also less powerful
+
+- No central index like the Artifact Hub (but is there a need for it?)
+
+---
+
+## Kustomize in a nutshell
+
+- Get some valid YAML (our "resources")
+
+- Write a *kustomization* (technically, a file named `kustomization.yaml`)
+
+  - reference our resources
+
+  - reference other kustomizations
+
+  - add some *patches*
+
+  - ...
+
+- Use that kustomization either with `kustomize build` or `kubectl apply -k`
+
+- Write new kustomizations referencing the first one to handle minor differences
 
 ---
 
@@ -58,11 +80,17 @@ On the next slide, let's see a more complex example ...
 
 ---
 
+## A more complex Kustomization
+
+.small[
 ```yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+commonAnnotations:
+  mood: 😎
 commonLabels:
   add-this-to-all-my-resources: please
+namePrefix: prod-
 patchesStrategicMerge:
 - prod-scaling.yaml
 - prod-healthchecks.yaml
@@ -80,6 +108,7 @@ configMapGenerator:
   - global.conf
   - local.conf=prod.conf
 ```
+]
 
 ---
 
@@ -139,7 +168,7 @@ configMapGenerator:
 
 ## Remote bases
 
-- Kustomize can fetch remote bases using Hashicorp go-getter library
+- Kustomize can also use bases that are remote git repositories
 
 - Examples:
 
@@ -147,11 +176,31 @@ configMapGenerator:
 
   github.com/jpetazzo/kubercoins?ref=kustomize (specific tag or branch)
 
+- Note that this only works for kustomizations, not individual resources
+
+  (the specified repository or directory must contain a `kustomization.yaml` file)
+
+---
+
+class: extra-details
+
+## Hashicorp go-getter
+
+- Some versions of Kustomize support additional forms for remote resources
+
+- Examples:
+
   https://releases.hello.io/k/1.0.zip (remote archive)
 
   https://releases.hello.io/k/1.0.zip//some-subdir (subdirectory in archive)
 
-- See [hashicorp/go-getter URL format docs](https://github.com/hashicorp/go-getter#url-format) for more examples
+- This relies on [hashicorp/go-getter](https://github.com/hashicorp/go-getter#url-format)
+
+- ... But it prevents Kustomize inclusion in `kubectl`
+
+- Avoid them!
+
+- See [kustomize#3578](https://github.com/kubernetes-sigs/kustomize/issues/3578) for details
 
 ---
 
@@ -283,7 +332,7 @@ configMapGenerator:
   kubectl apply -f rendered.yaml --namespace=kustomcoins
   ```
 
-- Or, with Kubernetes 1.14, you can also do this:
+- Or, with Kubernetes 1.14, we can also do this:
   ```bash
   kubectl apply -k overlays/ship --namespace=kustomcoins
   ```
@@ -337,39 +386,163 @@ Note: it might take a minute or two for the worker to start.
 
 ---
 
-## `kubectl apply -k`
+## `kubectl` integration
 
-- Kustomize has been integrated in `kubectl`
+- Kustomize has been integrated in `kubectl` (since Kubernetes 1.14)
+
+  - `kubectl kustomize` can apply a kustomization
+
+  - commands that use `-f` can also use `-k` (`kubectl apply`/`delete`/...)
 
 - The `kustomize` tool is still needed if we want to use `create`, `edit`, ...
 
-- Also, warning: `kubectl apply -k` is a slightly older version than `kustomize`!
+- Kubernetes 1.14 to 1.20 uses Kustomize 2.0.3
 
-- In recent versions of `kustomize`, bases can be listed in `resources`
+- Kubernetes 1.21 jumps to Kustomize 4.1.2
 
-  (and `kustomize edit add base` will add its arguments to `resources`)
+- Future versions should track Kustomize updates more closely
 
-- `kubectl apply -k` requires bases to be listed in `bases`
+---
 
-  (so after using `kustomize edit add base`, we need to fix `kustomization.yaml`)
+class: extra-details
+
+## Differences between 2.0.3 and later
+
+- Kustomize 2.1 / 3.0 deprecates `bases` (they should be listed in `resources`)
+
+  (this means that "modern" `kustomize edit add resource` won't work with "old" `kubectl apply -k`)
+
+- Kustomize 2.1 introduces `replicas` and `envs`
+
+- Kustomize 3.1 introduces multipatches
+
+- Kustomize 3.2 introduce inline patches in `kustomization.yaml`
+
+- Kustomize 3.3 to 3.10 is mostly internal refactoring
+
+- Kustomize 4.0 drops go-getter again
+
+- Kustomize 4.1 allows patching kind and name
+
+---
+
+## Scaling
+
+Instead of using a patch, scaling can be done like this:
+
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+...
+replicas:
+- name: worker
+  count: 5
+```
+
+It will automatically work with Deployments, ReplicaSets, StatefulSets.
+
+(For other resource types, fall back to a patch.)
+
+---
+
+## Updating images
+
+Instead of using patches, images can be changed like this:
+
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+...
+images:
+- name: postgres
+  newName: harbor.enix.io/my-postgres
+- name: dockercoins/worker
+  newTag: v0.2
+- name: dockercoins/hasher
+  newName: registry.dockercoins.io/hasher
+  newTag: v0.2
+- name: alpine
+  digest: sha256:24a0c4b4a4c0eb97a1aabb8e29f18e917d05abfe1b7a7c07857230879ce7d3d3
+```
+
+---
+
+## Updating images, pros and cons
+
+- Very convenient when the same image appears multiple times
+
+- Very convenient to define tags (or pin to hashes) outside of the main YAML
+
+- Doesn't support wildcard or generic substitutions:
+
+  - cannot "replace `dockercoins/*` with `ghcr.io/dockercoins/*`"
+
+  - cannot "tag all `dockercoins/*` with `v0.2`"
+
+- Only patches "well-known" image fields (won't work with CRDs referencing images)
+
+- Helm can deal with these scenarios, for instance:
+  ```yaml
+  image: {{ .Values.registry }}/worker:{{ .Values.version }}
+  ```
+
+---
+
+## Advanced resource patching
+
+The example below shows how to:
+
+- patch multiple resources with a selector (new in Kustomize 3.1)
+- use an inline patch instead of a separate patch file (new in Kustomize 3.2)
+
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+...
+patches:
+- patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/image
+      value: alpine
+  target:
+    kind: Deployment
+    labelSelector: "app"
+```
+
+(This replaces all images of Deployments matching the `app` selector with `alpine`.)
+
+---
+
+## Advanced resource patching, pros and cons
+
+- Very convenient to patch an arbitrary number of resources
+
+- Very convenient to patch any kind of resource, including CRDs
+
+- Doesn't support "fine-grained" patching (e.g. image registry or tag)
+
+- Once again, Helm can do it:
+  ```yaml
+  image: {{ .Values.registry }}/worker:{{ .Values.version }}
+  ```
 
 ---
 
 ## Differences with Helm
 
-- Helm charts use placeholders `{{ like.this }}`
+- Helm charts generally require more upfront work
 
-- Kustomize "bases" are standard Kubernetes YAML
+  (while kustomize "bases" are standard Kubernetes YAML)
 
-- It is possible to use an existing set of YAML as a Kustomize base
+- ... But Helm charts are also more powerful; their templating language can:
 
-- As a result, writing a Helm chart is more work ...
+  - conditionally include/exclude resources or blocks within resources
 
-- ... But Helm charts are also more powerful; e.g. they can:
+  - generate values by concatenating, hashing, transforming parameters
 
-  - use flags to conditionally include resources or blocks
+  - generate values or resources by iteration (`{{ range ... }}`)
 
-  - check if a given Kubernetes API group is supported
+  - access the Kubernetes API during template evaluation
 
   - [and much more](https://helm.sh/docs/chart_template_guide/)
 
@@ -377,4 +550,3 @@ Note: it might take a minute or two for the worker to start.
 
 :EN:- Packaging and running apps with Kustomize
 :FR:- *Packaging* d'applications avec Kustomize
-
