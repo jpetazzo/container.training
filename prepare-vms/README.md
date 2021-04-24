@@ -4,7 +4,11 @@ These tools can help you to create VMs on:
 
 - Azure
 - EC2
+- Hetzner
+- Linode
 - OpenStack
+- OVHcloud
+- Scaleway
 
 ## Prerequisites
 
@@ -13,7 +17,8 @@ These tools can help you to create VMs on:
 - [Parallel SSH](https://code.google.com/archive/p/parallel-ssh/) (on a Mac: `brew install pssh`) 
 
 Depending on the infrastructure that you want to use, you also need to install
-the Azure CLI, the AWS CLI, or terraform (for OpenStack deployment).
+the CLI that is specific to that cloud. For OpenStack deployments, you will
+need Terraform.
 
 And if you want to generate printable cards:
 
@@ -90,6 +95,9 @@ You're all set!
 
 ## `./workshopctl` Usage
 
+If you run `./workshopctl` without arguments, it will show a list of
+available commands, looking like this:
+
 ```
 workshopctl - the orchestration workshop swiss army knife
 Commands:
@@ -98,32 +106,7 @@ cards                Generate ready-to-print cards for a group of VMs
 deploy               Install Docker on a bunch of running VMs
 disableaddrchecks    Disable source/destination IP address checks
 disabledocker        Stop Docker Engine and don't restart it automatically
-helmprom             Install Helm and Prometheus
-help                 Show available commands
-ids                  (FIXME) List the instance IDs belonging to a given tag or token
-kubebins             Install Kubernetes and CNI binaries but don't start anything
-kubereset            Wipe out Kubernetes configuration on all nodes
-kube                 Setup kubernetes clusters with kubeadm (must be run AFTER deploy)
-kubetest             Check that all nodes are reporting as Ready
-listall              List VMs running on all configured infrastructures
-list                 List available groups for a given infrastructure
-netfix               Disable GRO and run a pinger job on the VMs
-opensg               Open the default security group to ALL ingress traffic
-ping                 Ping VMs in a given tag, to check that they have network access
-pssh                 Run an arbitrary command on all nodes
-pull_images          Pre-pull a bunch of Docker images
-quotas               Check our infrastructure quotas (max instances)
-remap_nodeports      Remap NodePort range to 10000-10999
-retag                (FIXME) Apply a new tag to a group of VMs
-ssh                  Open an SSH session to the first node of a tag
-start                Start a group of VMs
-stop                 Stop (terminate, shutdown, kill, remove, destroy...) instances
-tags                 List groups of VMs known locally
-test                 Run tests (pre-flight checks) on a group of VMs
-weavetest            Check that weave seems properly setup
-webssh               Install a WEB SSH server on the machines (port 1080)
-wrap                 Run this program in a container
-www                  Run a web server to access card HTML and PDF
+...
 ```
 
 ### Summary of What `./workshopctl` Does For You
@@ -138,7 +121,8 @@ www                  Run a web server to access card HTML and PDF
 
 ### Example Steps to Launch a group of AWS Instances for a Workshop
 
-- Run `./workshopctl start --infra infra/aws-us-east-2 --settings/myworkshop.yaml --count 60` to create 60 EC2 instances
+- Run `./workshopctl start --infra infra/aws-us-east-2 --settings/myworkshop.yaml --students 50` to create 50 clusters
+  - The number of instances will be `students × clustersize`
   - Your local SSH key will be synced to instances under `ubuntu` user
   - AWS instances will be created and tagged based on date, and IP's stored in `prepare-vms/tags/`
 - Run `./workshopctl deploy TAG` to run `lib/postprep.py` via parallel-ssh
@@ -248,11 +232,18 @@ If you don't have `wkhtmltopdf` installed, you will get a warning that it is a m
 
 #### List tags
 
-    $ ./workshopctl list infra/some-infra-file
-
-    $ ./workshopctl listall
-
     $ ./workshopctl tags
+
+    $ ./workshopctl inventory infra/some-infra-file
+
+    $ ./workshopctl inventory
+
+Note: the `tags` command will show only the VMs that you have provisioned
+and deployed on the current machine (i.e. listed in the `tags` subdirectory).
+The `inventory` command will try to list all existing VMs (including the
+ones not listed in the `tags` directory, and including VMs provisioned
+through other mechanisms). It is not supported across all platforms,
+however.
 
 #### Stop and destroy VMs
 

@@ -419,8 +419,8 @@ _cmd_ips() {
     done < tags/$TAG/ips.txt
 }
 
-_cmd list "List all VMs on a given infrastructure (or all infras if no arg given)"
-_cmd_list() {
+_cmd inventory "List all VMs on a given infrastructure (or all infras if no arg given)"
+_cmd_inventory() {
     case "$1" in
     "")
         for INFRA in infra/*; do
@@ -435,21 +435,6 @@ _cmd_list() {
         infra_list
         ;;
     esac
-}
-
-_cmd listall "List VMs running on all configured infrastructures"
-_cmd_listall() {
-    for infra in infra/*; do
-        case $infra in
-        infra/example.*)
-            ;;
-        *)
-            info "Listing infrastructure $infra:"
-            need_infra $infra
-            infra_list
-            ;;
-        esac
-    done
 }
 
 _cmd maketag "Generate a quasi-unique tag for a group of instances"

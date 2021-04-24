@@ -66,7 +66,7 @@ need_infra() {
 
 need_tag() {
     if [ -z "$TAG" ]; then
-        die "Please specify a tag or token. To see available tags and tokens, run: $0 list"
+        die "Please specify a tag. To see available tags, run: $0 tags"
     fi
     if [ ! -d "tags/$TAG" ]; then
         die "Tag $TAG not found (directory tags/$TAG does not exist)."
