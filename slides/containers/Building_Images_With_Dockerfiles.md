@@ -89,6 +89,44 @@ To keep things simple for now: this is the directory where our Dockerfile is loc
 
 ## What happens when we build the image?
 
+It depends if we're using BuildKit or not!
+
+If there are lots of blue lines and the first line looks like this:
+```
+[+] Building 1.8s (4/6)
+```
+... then we're using BuildKit.
+
+If the output is mostly black-and-white and the first line looks like this:
+```
+Sending build context to Docker daemon  2.048kB
+```
+... then we're using the "classic" or "old-style" builder.
+
+---
+
+## To BuildKit or Not To BuildKit
+
+Classic builder:
+
+- copies the whole "build context" to the Docker Engine
+
+- linear (processes lines one after the other)
+
+- requires a full Docker Engine
+
+BuildKit:
+
+- only transfers parts of the "build context" when needed
+
+- will parallelize operations (when possible)
+
+- can run in non-privileged containers (e.g. on Kubernetes)
+
+---
+
+## With the classic builder
+
 The output of `docker build` looks like this:
 
 .small[
@@ -131,7 +169,7 @@ Sending build context to Docker daemon 2.048 kB
 
 * Be careful (or patient) if that directory is big and your link is slow.
 
-* You can speed up the process with a [`.dockerignore`](https://docs.docker.com/engine/reference/builder/#dockerignore-file) file 
+* You can speed up the process with a [`.dockerignore`](https://docs.docker.com/engine/reference/builder/#dockerignore-file) file
 
   * It tells docker to ignore specific files in the directory
 
@@ -161,6 +199,64 @@ Removing intermediate container e01b294dbffd
 
 ---
 
+## With BuildKit
+
+.small[
+```bash
+[+] Building 7.9s (7/7) FINISHED
+ => [internal] load build definition from Dockerfile                                                 0.0s
+ => => transferring dockerfile: 98B                                                                  0.0s
+ => [internal] load .dockerignore                                                                    0.0s
+ => => transferring context: 2B                                                                      0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:latest                                     1.2s
+ => [1/3] FROM docker.io/library/ubuntu@sha256:cf31af331f38d1d7158470e095b132acd126a7180a54f263d386  3.2s
+ => => resolve docker.io/library/ubuntu@sha256:cf31af331f38d1d7158470e095b132acd126a7180a54f263d386  0.0s
+ => => sha256:cf31af331f38d1d7158470e095b132acd126a7180a54f263d386da88eb681d93 1.20kB / 1.20kB       0.0s
+ => => sha256:1de4c5e2d8954bf5fa9855f8b4c9d3c3b97d1d380efe19f60f3e4107a66f5cae 943B / 943B           0.0s
+ => => sha256:6a98cbe39225dadebcaa04e21dbe5900ad604739b07a9fa351dd10a6ebad4c1b 3.31kB / 3.31kB       0.0s
+ => => sha256:80bc30679ac1fd798f3241208c14accd6a364cb8a6224d1127dfb1577d10554f 27.14MB / 27.14MB     2.3s
+ => => sha256:9bf18fab4cfbf479fa9f8409ad47e2702c63241304c2cdd4c33f2a1633c5f85e 850B / 850B           0.5s
+ => => sha256:5979309c983a2adeff352538937475cf961d49c34194fa2aab142effe19ed9c1 189B / 189B           0.4s
+ => => extracting sha256:80bc30679ac1fd798f3241208c14accd6a364cb8a6224d1127dfb1577d10554f            0.7s
+ => => extracting sha256:9bf18fab4cfbf479fa9f8409ad47e2702c63241304c2cdd4c33f2a1633c5f85e            0.0s
+ => => extracting sha256:5979309c983a2adeff352538937475cf961d49c34194fa2aab142effe19ed9c1            0.0s
+ => [2/3] RUN apt-get update                                                                         2.5s
+ => [3/3] RUN apt-get install figlet                                                                 0.9s
+ => exporting to image                                                                               0.1s
+ => => exporting layers                                                                              0.1s
+ => => writing image sha256:3b8aee7b444ab775975dfba691a72d8ac24af2756e0a024e056e3858d5a23f7c         0.0s
+ => => naming to docker.io/library/figlet                                                            0.0s
+ ```
+ ]
+
+---
+
+## Understanding BuildKit output
+
+- BuildKit transfers the Dockerfile and the *build context*
+
+  (these are the first two `[internal]` stages)
+
+- Then it executes the steps defined in the Dockerfile
+
+  (`[1/3]`, `[2/3]`, `[3/3]`)
+
+- Finally, it exports the result of the build
+
+  (image definition + collection of layers)
+
+---
+
+class: extra-details
+
+## BuildKit plain output
+
+- When running BuildKit in e.g. a CI pipeline, its output will be different
+
+- We can see the same output format by using `--progress=plain`
+
+---
+
 ## The caching system
 
 If you run the same build again, it will be instantaneous. Why?
@@ -171,10 +267,10 @@ If you run the same build again, it will be instantaneous. Why?
 
 * Docker uses the exact strings defined in your Dockerfile, so:
 
-  * `RUN apt-get install figlet cowsay ` 
+  * `RUN apt-get install figlet cowsay`
     <br/> is different from
     <br/> `RUN apt-get install cowsay figlet`
-  
+
   * `RUN apt-get update` is not re-executed when the mirrors are updated
 
 You can force a rebuild with `docker build --no-cache ...`.

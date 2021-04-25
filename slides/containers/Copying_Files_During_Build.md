@@ -88,16 +88,43 @@ Success!
 
 ## Details
 
-* You can `COPY` whole directories recursively.
+* We can `COPY` whole directories recursively
 
-* Older Dockerfiles also have the `ADD` instruction.
-  <br/>It is similar but can automatically extract archives.
+* It is possible to do e.g. `COPY . .`
+
+  (but it might require some extra precautions to avoid copying too much)
+ 
+* In older Dockerfiles, you might see the `ADD` command; consider it deprecated
+
+  (it is similar to `COPY` but can automatically extract archives)
 
 * If we really wanted to compile C code in a container, we would:
 
-  * Place it in a different directory, with the `WORKDIR` instruction.
+  * place it in a different directory, with the `WORKDIR` instruction
 
-  * Even better, use the `gcc` official image.
+  * even better, use the `gcc` official image
+
+---
+
+class: extra-details
+
+## `.dockerignore`
+
+- We can create a file named `.dockerignore`
+
+  (at the top-level of the build context)
+
+- It can contain file names and globs to ignore
+
+- They won't be sent to the builder
+
+  (and won't end up in the resulting image)
+
+- See the [documentation] for the little details
+
+  (exceptions can be made with `!`, multiple directory levels with `**`...)
+
+[documentation]: https://docs.docker.com/engine/reference/builder/#dockerignore-file
 
 ???
 

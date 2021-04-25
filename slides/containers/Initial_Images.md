@@ -383,11 +383,11 @@ class: extra-details
 
 - In a *manifest list*, each image is identified by a combination of:
 
-  - os (linux, windows)
+  - `os` (linux, windows)
 
-  - architecture (amd64, arm, arm64...)
+  - `architecture` (amd64, arm, arm64...)
 
-  - optional fields like variant (for arm and arm64), os.version (for windows)
+  - optional fields like `variant` (for arm and arm64), `os.version` (for windows)
 
 ---
 

@@ -272,6 +272,45 @@ $ docker run -it --entrypoint bash myfiglet
 root@6027e44e2955:/# 
 ```
 
+---
+
+## `CMD` and `ENTRYPOINT` recap
+
+- `docker run myimage` executes `ENTRYPOINT` + `CMD`
+
+- `docker run myimage args` executes `ENTRYPOINT` + `args` (overriding `CMD`)
+
+- `docker run --entrypoint prog myimage` executes `prog` (overriding both)
+
+.small[
+| Command                         | `ENTRYPOINT`       | `CMD`   | Result
+|---------------------------------|--------------------|---------|-------
+| `docker run figlet`             | none               | none    | Use values from base image (`bash`)
+| `docker run figlet hola`        | none               | none    | Error (executable `hola` not found)
+| `docker run figlet`             | `figlet -f script` | none    | `figlet -f script`
+| `docker run figlet hola`        | `figlet -f script` | none    | `figlet -f script hola`
+| `docker run figlet`             | none    | `figlet -f script` | `figlet -f script`
+| `docker run figlet hola`        | none    | `figlet -f script` | Error (executable `hola` not found)
+| `docker run figlet`             | `figlet -f script` | `hello` | `figlet -f script hello`
+| `docker run figlet hola`        | `figlet -f script` | `hello` | `figlet -f script hola`
+]
+
+---
+
+## When to use `ENTRYPOINT` vs `CMD`
+
+`ENTRYPOINT` is great for "containerized binaries".
+
+Example: `docker run consul --help`
+
+(Pretend that the `docker run` part isn't there!)
+
+`CMD` is great for images with multiple binaries.
+
+Example: `docker run busybox ifconfig`
+
+(It makes sense to indicate *which* program we want to run!)
+
 ???
 
 :EN:- CMD and ENTRYPOINT
