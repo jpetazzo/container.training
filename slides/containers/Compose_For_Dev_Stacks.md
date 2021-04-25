@@ -1,51 +1,40 @@
 # Compose for development stacks
 
-Dockerfiles are great to build container images.
+Dockerfile = great to build *one* container image.
 
-But what if we work with a complex stack made of multiple containers?
+What if we have multiple containers?
 
-Eventually, we will want to write some custom scripts and automation to build, run, and connect
-our containers together.
+What if some of them require particular `docker run` parameters?
 
-There is a better way: using Docker Compose.
+How do we connect them all together?
 
-In this section, you will use Compose to bootstrap a development environment.
+... Compose solves these use-cases (and a few more).
 
 ---
 
-## What is Docker Compose?
+## Life before Compose
 
-Docker Compose (formerly known as `fig`) is an external tool.
+Before we had Compose, we would typically write custom scripts to:
 
-Unlike the Docker Engine, it is written in Python. It's open source as well.
+- build container images,
 
-The general idea of Compose is to enable a very simple, powerful onboarding workflow:
+- run containers using these images,
 
-1. Checkout your code.
+- connect the containers together,
+
+- rebuild, restart, update these images and containers.
+
+---
+
+## Life with Compose
+
+Compose enables a simple, powerful onboarding workflow:
+
+1. Checkout our code.
 
 2. Run `docker-compose up`.
 
-3. Your app is up and running!
-
----
-
-## Compose overview
-
-This is how you work with Compose:
-
-* You describe a set (or stack) of containers in a YAML file called `docker-compose.yml`.
-
-* You run `docker-compose up`.
-
-* Compose automatically pulls images, builds containers, and starts them.
-
-* Compose can set up links, volumes, and other Docker options for you.
-
-* Compose can run the containers in the background, or in the foreground.
-
-* When containers are running in the foreground, their aggregated output is shown.
-
-Before diving in, let's see a small example of Compose in action.
+3. Our app is up and running!
 
 ---
 
@@ -55,20 +44,61 @@ class: pic
 
 ---
 
-## Checking if Compose is installed
+## Life after Compose
 
-If you are using the official training virtual machines, Compose has been
-pre-installed.
+(Or: when do we need something else?)
 
-If you are using Docker for Mac/Windows or the Docker Toolbox, Compose comes with them.
+- Compose is *not* an orchestrator
 
-If you are on Linux (desktop or server environment), you will need to install Compose from its [release page](https://github.com/docker/compose/releases) or with `pip install docker-compose`.
+- It isn't designed to need to run containers on multiple nodes
 
-You can always check that it is installed by running:
+  (it can, however, work with Docker Swarm Mode)
 
-```bash
-$ docker-compose --version
-```
+- Compose isn't ideal if we want to run containers on Kubernetes
+
+  - it uses different concepts (Compose services ≠ Kubernetes services)
+
+  - it needs a Docker Engine (althought containerd support might be coming)
+
+---
+
+## First rodeo with Compose
+
+1. Write Dockerfiles
+
+2. Describe our stack of containers in a YAML file called `docker-compose.yml`
+
+3. `docker-compose up` (or `docker-compose up -d` to run in the background)
+
+4. Compose pulls and builds the required images, and starts the containers
+
+5. Compose shows the combined logs of all the containers
+
+   (if running in the background, use `docker-compose logs`)
+
+6. Hit Ctrl-C to stop the whole stack
+
+   (if running in the background, use `docker-compose stop`)
+
+---
+
+## Iterating
+
+After making changes to our source code, we can:
+
+1. `docker-compose build` to rebuild container images
+
+2. `docker-compose up` to restart the stack with the new images
+
+We can also combine both with `docker-compose up --build`
+
+Compose will be smart, and only recreate the containers that have changed.
+
+When working with interpreted languages:
+
+- dont' rebuild each time
+
+- leverage a `volumes` section instead
 
 ---
 
@@ -77,38 +107,37 @@ $ docker-compose --version
 First step: clone the source code for the app we will be working on.
 
 ```bash
-$ cd
-$ git clone https://github.com/jpetazzo/trainingwheels
-...
-$ cd trainingwheels
+git clone https://github.com/jpetazzo/trainingwheels
+cd trainingwheels
 ```
 
-
-Second step: start your app.
+Second step: start the app.
 
 ```bash
-$ docker-compose up
+docker-compose up
 ```
 
-Watch Compose build and run your app with the correct parameters,
-including linking the relevant containers together.
+Watch Compose build and run the app.
+
+That Compose stack exposes a web server on port 8000; try connecting to it.
 
 ---
 
 ## Launching Our First Stack with Compose
 
-Verify that the app is running at `http://<yourHostIP>:8000`.
+We should see a web page like this:
 
 ![composeapp](images/composeapp.png)
+
+Each time we reload, the counter should increase.
 
 ---
 
 ## Stopping the app
 
-When you hit `^C`, Compose tries to gracefully terminate all of the containers.
+When we hit Ctrl-C, Compose tries to gracefully terminate all of the containers.
 
-After ten seconds (or if you press `^C` again) it will forcibly kill
-them.
+After ten seconds (or if we press `^C` again) it will forcibly kill them.
 
 ---
 
@@ -118,13 +147,13 @@ Here is the file used in the demo:
 
 .small[
 ```yaml
-version: "2"
+version: "3"
 
 services:
   www:
     build: www
     ports:
-      - 8000:5000
+      - ${PORT-8000}:5000
     user: nobody
     environment:
       DEBUG: 1
@@ -143,9 +172,9 @@ services:
 
 A Compose file has multiple sections:
 
-* `version` is mandatory. (We should use `"2"` or later; version 1 is deprecated.)
+* `version` is mandatory. (Typically use "3".)
 
-* `services` is mandatory. A service is one or more replicas of the same image running as containers.
+* `services` is mandatory. Each service corresponds to a container.
 
 * `networks` is optional and indicates to which networks containers should be connected.
   <br/>(By default, containers will be connected on a private, per-compose-file network.)
@@ -163,6 +192,8 @@ A Compose file has multiple sections:
 * Version 2 added support for networks and volumes.
 
 * Version 3 added support for deployment options (scaling, rolling updates, etc).
+
+* Typically use `version: "3"`.
 
 The [Docker documentation](https://docs.docker.com/compose/compose-file/)
 has excellent information about the Compose file format if you need to know more about versions.
@@ -201,34 +232,45 @@ For the full list, check: https://docs.docker.com/compose/compose-file/
 
 ---
 
-## Compose commands
+## Environment variables
 
-We already saw `docker-compose up`, but another one is `docker-compose build`.
+- We can use environment variables in Compose files
 
-It will execute `docker build` for all containers mentioning a `build` path.
+  (like `$THIS` or `${THAT}`)
 
-It can also be invoked automatically when starting the application:
+- We can provide default values, e.g. `${PORT-8000}`
 
-```bash
-docker-compose up --build
-```
+- Compose will also automatically load the environment file `.env`
 
-Another common option is to start containers in the background:
+  (it should contain `VAR=value`, one per line)
 
-```bash
-docker-compose up -d
-```
+- This is a great way to customize build and run parameters
+
+  (base image versions to use, build and run secrets, port numbers...)
 
 ---
 
-## Check container status
+## Running multiple copies of a stack
 
-It can be tedious to check the status of your containers with `docker ps`,
-especially when running multiple apps at the same time.
+- Copy the stack in two different directories, e.g. `front` and `frontcopy`
 
-Compose makes it easier; with `docker-compose ps` you will see only the status of the
-containers of the current stack:
+- Compose prefixes images and containers with the directory name:
 
+  `front_www`, `front_www_1`, `front_db_1`
+
+  `frontcopy_www`, `frontcopy_www_1`, `frontcopy_db_1`
+
+- Alternatively, use `docker-compose -p frontcopy` 
+
+  (to set the `--project-name` of a stack, which default to the dir name)
+
+- Each copy is isolated from the others (runs on a different network)
+
+---
+
+## Checking stack status
+
+We have `ps`, `docker ps`, and similarly, `docker-compose ps`:
 
 ```bash
 $ docker-compose ps
@@ -237,6 +279,10 @@ Name                      Command             State           Ports
 trainingwheels_redis_1   /entrypoint.sh red   Up      6379/tcp               
 trainingwheels_www_1     python counter.py    Up      0.0.0.0:8000->5000/tcp 
 ```
+
+Shows the status of all the containers of our stack.
+
+Doesn't show the other containers.
 
 ---
 
@@ -281,47 +327,39 @@ Use `docker-compose down -v` to remove everything including volumes.
 
 ## Special handling of volumes
 
-Compose is smart. If your container uses volumes, when you restart your
-application, Compose will create a new container, but carefully re-use
-the volumes it was using previously.
+- When an image gets updated, Compose automatically creates a new container
 
-This makes it easy to upgrade a stateful service, by pulling its
-new image and just restarting your stack with Compose.
+- The data in the old container is lost...
 
----
+- ... Except if the container is using a *volume*
 
-## Compose project name
+- Compose will then re-attach that volume to the new container
 
-* When you run a Compose command, Compose infers the "project name" of your app.
+  (and data is then retained across database upgrades)
 
-* By default, the "project name" is the name of the current directory.
+- All good database images use volumes
 
-* For instance, if you are in `/home/zelda/src/ocarina`, the project name is `ocarina`.
-
-* All resources created by Compose are tagged with this project name.
-
-* The project name also appears as a prefix of the names of the resources.
-
-  E.g. in the previous example, service `www` will create a container `ocarina_www_1`.
-
-* The project name can be overridden with `docker-compose -p`.
+  (e.g. all official images)
 
 ---
 
-## Running two copies of the same app
+class: extra-details
 
-If you want to run two copies of the same app simultaneously, all you have to do is to
-make sure that each copy has a different project name.
+## A bit of history and trivia
 
-You can:
+- Compose was initially named "Fig"
 
-* copy your code in a directory with a different name
+- Compose is one of the only components of Docker written in Python
 
-* start each copy with `docker-compose -p myprojname up`
+  (almost everything else is in Go)
 
-Each copy will run in a different network, totally isolated from the other.
+- In 2020, Docker introduced "Compose CLI":
 
-This is ideal to debug regressions, do side-by-side comparisons, etc.
+  - `docker compose` command to deploy Compose stacks to some clouds
+
+  - progressively getting feature parity with `docker-compose`
+
+  - also provides numerous improvements (e.g. leverages BuildKit by default)
 
 ???
 
