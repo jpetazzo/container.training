@@ -44,6 +44,64 @@ Fri Feb 20 00:28:55 UTC 2015
 
 ---
 
+## When `^C` doesn't work...
+
+Sometimes, `^C` won't be enough.
+
+Why? And how can we stop the container in that case?
+
+---
+
+## What happens when we hit `^C`
+
+`SIGINT` gets sent to the container, which means:
+
+- `SIGINT` gets sent to PID 1 (default case)
+
+- `SIGINT` gets sent to *foreground processes* when running with `-ti`
+
+But there is a special case for PID 1: it ignores all signals!
+
+- except `SIGKILL` and `SIGSTOP`
+
+- except signals handled explicitly
+
+TL,DR: there are many circumstances when `^C` won't stop the container.
+
+---
+
+class: extra-details
+
+## Why is PID 1 special?
+
+- PID 1 has some extra responsibilities:
+
+  - it starts (directly or indirectly) every other process
+
+  - when a process exits, its processes are "reparented" under PID 1
+
+- When PID 1 exits, everything stops:
+
+  - on a "regular" machine, it causes a kernel panic
+
+  - in a container, it kills all the processes
+
+- We don't want PID 1 to stop accidentally
+
+- That's why it has these extra protections
+
+---
+
+## How to stop these containers, then?
+
+- Start another terminal and forget about them
+
+  (for now!)
+
+- We'll shortly learn about `docker kill`
+
+---
+
 ## Run a container in the background
 
 Containers can be started in the background, with the `-d` flag (daemon mode):

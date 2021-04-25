@@ -118,7 +118,7 @@ Let's check how many packages are installed there.
 
 ```bash
 root@04c0bb0a6c07:/# dpkg -l | wc -l
-190
+97
 ```
 
 * `dpkg -l` lists the packages installed in our container
@@ -175,7 +175,7 @@ Now try to run `figlet`. Does that work?
 
 * We can run *any container* on *any host*.
 
-  (One exception: Windows containers cannot run on Linux machines; at least not yet.)
+  (One exception: Windows containers can only run on Windows hosts; at least for now.)
 
 ---
 

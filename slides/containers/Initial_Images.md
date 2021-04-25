@@ -56,6 +56,8 @@ Each of the following items will correspond to one layer:
 * Our application code and assets
 * Our application configuration
 
+(Note: app config is generally added by orchestration facilities.)
+
 ---
 
 class: pic
@@ -364,6 +366,44 @@ Do specify tags:
 * To ensure repeatability later.
 
 This is similar to what we would do with `pip install`, `npm install`, etc.
+
+---
+
+class: extra-details
+
+## Multi-arch images
+
+- An image can support multiple architectures
+
+- More precisely, a specific *tag* in a given *repository* can have either:
+
+  - a single *manifest* referencing an image for a single architecture
+
+  - a *manifest list* (or *fat manifest*) referencing multiple images
+
+- In a *manifest list*, each image is identified by a combination of:
+
+  - os (linux, windows)
+
+  - architecture (amd64, arm, arm64...)
+
+  - optional fields like variant (for arm and arm64), os.version (for windows)
+
+---
+
+class: extra-details
+
+## Working with multi-arch images
+
+- The Docker Engine will pull "native" images when available
+
+  (images matching its own os/architecture/variant)
+
+- We can ask for a specific image platform with `--platform`
+
+- The Docker Engine can run non-native images thanks to QEMU+binfmt
+
+  (automatically on Docker Desktop; with a bit of setup on Linux)
 
 ---
 
