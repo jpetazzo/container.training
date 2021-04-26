@@ -154,7 +154,7 @@ Option 2:
 
 Option 3:
 
-* Use a *volume* to mount local files into the container
+* Use a *bind mount* to share local files with the container
 * Make changes locally
 * Changes are reflected in the container
 
@@ -199,7 +199,28 @@ The flag structure is:
 
 * If you don't specify `rw` or `ro`, it will be `rw` by default.
 
-There will be a full chapter about volumes!
+---
+
+class: extra-details
+
+## Hold your horses... and your mounts
+
+- The `-v /path/on/host:/path/in/container` syntax is the "old" syntax
+
+- The modern syntax looks like this:
+
+  `--mount type=bind,source=/path/on/host,target=/path/in/container`
+
+- `--mount` is more explicit, but `-v` is quicker to type
+
+- `--mount` supports all mount types; `-v` doesn't support `tmpfs` mounts
+
+- `--mount` fails if the path on the host doesn't exist; `-v` creates it
+
+With the new syntax, our command becomes:
+```bash
+docker run --mount=type=bind,source=$(pwd),target=/src -dP namer
+```
 
 ---
 
@@ -253,15 +274,43 @@ color: red;
 
 ## Understanding volumes
 
-* Volumes are *not* copying or synchronizing files between the host and the container.
+- Volumes are *not* copying or synchronizing files between the host and the container
 
-* Volumes are *bind mounts*: a kernel mechanism associating one path with another.
+- Changes made in the host are immediately visible in the container (and vice versa)
 
-* Bind mounts are *kind of* similar to symbolic links, but at a very different level.
+- When running on Linux:
 
-* Changes made on the host or on the container will be visible on the other side.
+  - volumes and bind mounts correspond to directories on the host
 
-  (Under the hood, it's the same file anyway.)
+  - if Docker runs in a Linux VM, these directories are in the Linux VM
+
+- When running on Docker Desktop:
+
+  - volumes correspond to directories in a small Linux VM running Docker
+
+  - access to bind mounts is translated to host filesystem access
+    <br/>
+    (a bit like a network filesystem)
+
+---
+
+class: extra-details
+
+## Docker Desktop caveats
+
+- When running Docker natively on Linux, accessing a mount = native I/O
+
+- When running Docker Desktop, accessing a bind mount = file access translation
+
+- That file access translation has relatively good performance *in general*
+
+  (watch out, however, for that big `npm install` working on a bind mount!)
+
+- There are some corner cases when watching files (with mechanisms like inotify)
+
+- Features like "live reload" or programs like `entr` don't always behave properly
+
+  (due to e.g. file attribute caching, and other interesting details!)
 
 ---
 
