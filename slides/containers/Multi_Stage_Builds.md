@@ -298,21 +298,20 @@ virtually "free."
 
 ## Build targets
 
-* We can also tag an intermediary stage with `docker build --target STAGE --tag NAME`
+* We can also tag an intermediary stage with the following command:
+  ```bash
+  docker build --target STAGE --tag NAME
+  ```
 
 * This will create an image (named `NAME`) corresponding to stage `STAGE`
 
 * This can be used to easily access an intermediary stage for inspection
 
-  (Instead of parsing the output of `docker build` to find out the image ID)
+  (instead of parsing the output of `docker build` to find out the image ID)
 
 * This can also be used to describe multiple images from a single Dockerfile
 
-  (Instead of using multiple Dockerfiles, which could go out of sync)
-
-* Sometimes, we want to inspect a specific intermediary build stage.
-
-* Or, we want to describe multiple images using a single Dockerfile.
+  (instead of using multiple Dockerfiles, which could go out of sync)
 
 ???
 
