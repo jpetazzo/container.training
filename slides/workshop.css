@@ -94,7 +94,31 @@ span.footnote {
 .underline { text-decoration: underline; }
 .strike { text-decoration: line-through; }
 
-/* On pic slides, zoom images as big as possible */
+/*
+The pic class is tricky.
+
+It is used to display full screen pictures (for isntance, diagrams).
+We want the picture to take as much space as possible on the slide.
+
+But we have two problems here:
+- some pictures are taller than wide, others are wider than tall;
+- some pictures are displayed by themselves, others with a title.
+
+This makes it particularly difficult to resize the pictures. If we
+set an absolute width or height, it won't work for both taller and
+wider pictures. If we set an absolute height, it won't work with
+both pics-with-title and pics-by-themselves.
+
+Perhaps it would be a good idea to replace the pic class with two
+different classes, like pic-with-title and pic-by-itself; but in
+the meantime, we'll check if the <img> tag is within the first <p>
+in the slide to try and guess if the pic is by itself, or with
+a title. It won't be 100% bulletproof but it should work for
+our slides.
+
+The pixel dimensions in the classes below correspond to the base
+scaler dimensions of remark (see scaler.js in remark source code).
+*/
 div.pic {
   padding: 0;
   vertical-align: middle;
@@ -105,17 +129,12 @@ div.pic p {
 div.pic img {
   display: block;
   margin: auto;
-  /*
-  "pic" class slides should have a single, full screen picture.
-  We used to have these attributes below but they prevented
-  pictures from taking up the whole slide. Replacing them with
-  100%/100% seems to put the pictures full screen, but I've left
-  these old attributes here just in case.
   max-width: 1210px;
   max-height: 550px;
-  */
-  max-width: 100%;
-  max-height: 100%;
+}
+div.pic p:first-child img {
+  max-width: 1210px;
+  max-height: 681px;
 }
 div.pic h1, div.pic h2, div.title h1, div.title h2 {
   text-align: center;
@@ -126,7 +145,7 @@ div.title img {
   display: block;
   margin: auto;
   max-width: 1210px;
-  max-height: 420px; /* Arbitrary value to have so space for the title */
+  max-height: 420px; /* Arbitrary value to have some space for the title */
 }
 div.title {
   vertical-align: middle; 
