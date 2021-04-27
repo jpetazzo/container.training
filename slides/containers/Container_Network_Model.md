@@ -27,9 +27,9 @@ We will also explain the principle of overlay networks and network plugins.
 
 ## The Container Network Model
 
-The CNM was introduced in Engine 1.9.0 (November 2015).
+Docker has "networks".
 
-The CNM adds the notion of a *network*, and a new top-level command to manipulate and see those networks: `docker network`.
+We can manage them with the `docker network` commands; for instance:
 
 ```bash
 $ docker network ls
@@ -41,59 +41,79 @@ eb0eeab782f4        host                host
 228a4355d548        blog-prod           overlay
 ```
 
----
+New networks can be created (with `docker network create`).
 
-## What's in a network?
-
-* Conceptually, a network is a virtual switch.
-
-* It can be local (to a single Engine) or global (spanning multiple hosts).
-
-* A network has an IP subnet associated to it.
-
-* Docker will allocate IP addresses to the containers connected to a network.
-
-* Containers can be connected to multiple networks.
-
-* Containers can be given per-network names and aliases.
-
-* The names and aliases can be resolved via an embedded DNS server.
+(Note: networks `none` and `host` are special; let's set them aside for now.)
 
 ---
 
-## Network implementation details
+## What's a network?
 
-* A network is managed by a *driver*.
+- Conceptually, a Docker "network" is a virtual switch
 
-* The built-in drivers include:
+  (we can also think about it like a VLAN, or a WiFi SSID, for instance)
 
-  * `bridge` (default)
+- By default, containers are connected to a single network
 
-  * `none`
+  (but they can be connected to zero, or many networks, even dynamically)
 
-  * `host`
+- Each network has its own subnet (IP address range)
 
-  * `macvlan`
+- A network can be local (to a single Docker Engine) or global (span multiple hosts)
 
-* A multi-host driver, *overlay*, is available out of the box (for Swarm clusters).
+- Containers can have *network aliases* providing DNS-based service discovery
 
-* More drivers can be provided by plugins (OVS, VLAN...)
-
-* A network can have a custom IPAM (IP allocator).
+  (and each network has its own "domain", "zone", or "scope")
 
 ---
 
-class: extra-details
+## Service discovery
 
-## Differences with the CNI
+- A container can be given a network alias
 
-* CNI = Container Network Interface
+  (e.g. with `docker run --net some-network --net-alias db ...`)
 
-* CNI is used notably by Kubernetes
+- The containers running in the same network can resolve that network alias
 
-* With CNI, all the nodes and containers are on a single IP network
+  (i.e. if they do a DNS lookup on `db`, it will give the container's address)
 
-* Both CNI and CNM offer the same functionality, but with very different methods
+- We can have a different `db` container in each network
+
+  (this avoids naming conflicts between different stacks)
+
+- When we name a container, it automatically adds the name as a network alias
+
+  (i.e. `docker run --name xyz ...` is like `docker run --net-alias xyz ...`
+
+---
+
+## Network isolation
+
+- Networks are isolated
+
+- By default, containers in network A cannot reach those in network B
+
+- A container connected to both networks A and B can act as a router or proxy
+
+- Published ports are always reachable through the Docker host address
+
+  (`docker run -P ...` makes a container port available to everyone)
+
+---
+
+## How to use networks
+
+- We typically create one network per "stack" or app that we deploy
+
+- More complex apps or stacks might require multiple networks
+
+  (e.g. `frontend`, `backend`, ...)
+
+- Networks allow us to deploy multiple copies of the same stack
+
+  (e.g. `prod`, `dev`, `pr-442`, ....)
+
+- If we use Docker Compose, this is managed automatically for us
 
 ---
 
@@ -118,6 +138,30 @@ class: pic
 ## Two containers on two Docker networks
 
 ![bridge3](images/bridge3.png)
+
+---
+
+class: extra-details
+
+## CNM vs CNI
+
+- CNM is the model used by Docker
+
+- Kubernetes uses a different model, architectured around CNI
+
+  (CNI is a kind of API between a container engine and *CNI plugins*)
+
+- Docker model:
+
+  - multiple isolated networks
+  - per-network service discovery
+  - network interconnection requires extra steps
+
+- Kubernetes model:
+
+  - single flat network
+  - per-namespace service discovery
+  - network isolation requires extra steps (Network Policies)
 
 ---
 
@@ -190,8 +234,12 @@ class: extra-details
 
 ## Resolving container addresses
 
-In Docker Engine 1.9, name resolution is implemented with `/etc/hosts`, and
-updating it each time containers are added/removed.
+Since Docker Engine 1.10, name resolution is implemented by a dynamic resolver.
+
+Archeological note: when CNM was intoduced (in Docker Engine 1.9, November 2015)
+name resolution was implemented with `/etc/hosts`, and it was updated each time
+CONTAINERs were added/removed. This could cause interesting race conditions
+since `/etc/hosts` was a bind-mount (and couldn't be updated atomically).
 
 .small[
 ```bash
@@ -207,10 +255,6 @@ ff02::2 ip6-allrouters
 172.18.0.2      es.dev
 ```
 ]
-
-In Docker Engine 1.10, this has been replaced by a dynamic resolver.
-
-(This avoids race conditions when updating `/etc/hosts`.)
 
 ---
 
@@ -265,12 +309,12 @@ Note: we're not using a FQDN or an IP address here; just `redis`.
 
 * That container must be on the same network as the web server.
 
-* It must have the right name (`redis`) so the application can find it.
+* It must have the right network alias (`redis`) so the application can find it.
 
 Start the container:
 
 ```bash
-$ docker run --net dev --name redis -d redis
+$ docker run --net dev --net-alias redis -d redis
 ```
 
 ---
@@ -287,36 +331,19 @@ $ docker run --net dev --name redis -d redis
 
 ## A few words on *scope*
 
-* What if we want to run multiple copies of our application?
+- Container names are unique (there can be only one `--name redis`)
 
-* Since names are unique, there can be only one container named `redis` at a time.
+- Network aliases are not unique
 
-* However, we can specify the network name of our container with `--net-alias`.
+- We can have the same network alias in different networks:
+  ```bash
+  docker run --net dev --net-alias redis ...
+  docker run --net prod --net-alias redis ...
+  ```
 
-* `--net-alias` is scoped per network, and independent from the container name.
+- We can even have multiple containers with the same alias in the same network
 
----
-
-class: extra-details
-
-## Using a network alias instead of a name
-
-Let's remove the `redis` container:
-
-```bash
-$ docker rm -f redis
-```
-
-* `-f`: Force the removal of a running container (uses SIGKILL)
-
-And create one that doesn't block the `redis` name:
-
-```bash
-$ docker run --net dev --net-alias redis -d redis
-```
-
-Check that the app still works (but the counter is back to 1,
-since we wiped out the old Redis container).
+  (in that case, we get multiple DNS entries, aka "DNS round robin")
 
 ---
 
@@ -349,7 +376,9 @@ A container can have multiple network aliases.
 
 Network aliases are *local* to a given network (only exist in this network).
 
-Multiple containers can have the same network alias (even on the same network). In Docker Engine 1.11, resolving a network alias yields the IP addresses of all containers holding this alias.
+Multiple containers can have the same network alias (even on the same network).
+
+Since Docker Engine 1.11, resolving a network alias yields the IP addresses of all containers holding this alias.
 
 ---
 
@@ -499,6 +528,24 @@ b2887adeb5578a01fd9c55c435cad56bbbe802350711d2743691f95743680b09
 *Note: don't hard code container IP addresses in your code!*
 
 *I repeat: don't hard code container IP addresses in your code!*
+
+---
+
+## Network drivers
+
+* A network is managed by a *driver*.
+
+* The built-in drivers include:
+
+  * `bridge` (default)
+  * `none`
+  * `host`
+  * `macvlan`
+  * `overlay` (for Swarm clusters)
+
+* More drivers can be provided by plugins (OVS, VLAN...)
+
+* A network can have a custom IPAM (IP allocator).
 
 ---
 

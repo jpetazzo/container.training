@@ -1,18 +1,20 @@
 # Container network drivers
 
-The Docker Engine supports many different network drivers.
+The Docker Engine supports different network drivers.
 
 The built-in drivers include:
 
 * `bridge` (default)
 
-* `none`
+* `null` (for the special network called `none`)
 
-* `host`
+* `host` (for the special network called `host`)
 
-* `container`
+* `container` (that one is a bit magic!)
 
-The driver is selected with `docker run --net ...`.
+The network is selected with `docker run --net ...`.
+
+Each network is managed by a driver.
 
 The different drivers are explained with more details on the following slides.
 
