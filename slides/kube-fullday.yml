@@ -106,6 +106,7 @@ content:
   #- k8s/build-with-kaniko.md
   #- k8s/logs-centralized.md
   #- k8s/prometheus.md
+  #- k8s/prometheus-stack.md
   #- k8s/statefulsets.md
   #- k8s/local-persistent-volumes.md
   #- k8s/portworx.md

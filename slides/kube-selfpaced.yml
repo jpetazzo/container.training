@@ -116,6 +116,7 @@ content:
 -
   - k8s/logs-centralized.md
   - k8s/prometheus.md
+  - k8s/prometheus-stack.md
   - k8s/resource-limits.md
   - k8s/metrics-server.md
   - k8s/cluster-sizing.md

@@ -69,6 +69,7 @@ content:
   - k8s/aggregation-layer.md
   - k8s/metrics-server.md
   - k8s/prometheus.md
+  - k8s/prometheus-stack.md
   - k8s/hpa-v2.md
 - #9
   - k8s/operators-design.md
