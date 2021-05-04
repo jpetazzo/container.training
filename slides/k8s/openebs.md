@@ -519,3 +519,11 @@ class: extra-details
 - The Pod will then be able to start
 
 - Failover is complete!
+
+???
+
+:EN:- Understanding Container Attached Storage (CAS)
+:EN:- Deploying stateful apps with OpenEBS
+
+:FR:- Comprendre le "Container Attached Storage" (CAS)
+:FR:- Déployer une application "stateful" avec OpenEBS

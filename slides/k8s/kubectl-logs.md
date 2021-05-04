@@ -160,3 +160,8 @@ class: extra-details
 - The problem was fixed in Kubernetes 1.13
 
 *See [#70554](https://github.com/kubernetes/kubernetes/issues/70554) for details.*
+
+???
+
+:EN:- Viewing logs with "kubectl logs"
+:FR:- Consulter les logs avec "kubectl logs"
