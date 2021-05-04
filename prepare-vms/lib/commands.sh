@@ -1,5 +1,9 @@
 export AWS_DEFAULT_OUTPUT=text
 
+# Ignore SSH key validation when connecting to these remote hosts.
+# (Otherwise, deployment scripts break when a VM IP address reuse.)
+SSHOPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR"
+
 HELP=""
 _cmd() {
     HELP="$(printf "%s\n%-20s %s\n" "$HELP" "$1" "$2")"
@@ -122,7 +126,7 @@ _cmd_deploy() {
     # If /home/docker/.ssh/id_rsa doesn't exist, copy it from the first node
     pssh "
     sudo -u docker [ -f /home/docker/.ssh/id_rsa ] ||
-    ssh -o StrictHostKeyChecking=no \$(cat /etc/name_of_first_node) sudo -u docker tar -C /home/docker -cvf- .ssh |
+    ssh $SSHOPTS \$(cat /etc/name_of_first_node) sudo -u docker tar -C /home/docker -cvf- .ssh |
     sudo -u docker tar -C /home/docker -xf-"
 
     # if 'docker@' doesn't appear in /home/docker/.ssh/authorized_keys, copy it there
@@ -252,7 +256,7 @@ _cmd_kube() {
     pssh --timeout 200 "
     if ! i_am_first_node && [ ! -f /etc/kubernetes/kubelet.conf ]; then
         FIRSTNODE=\$(cat /etc/name_of_first_node) &&
-        TOKEN=\$(ssh -o StrictHostKeyChecking=no \$FIRSTNODE cat /tmp/token) &&
+        TOKEN=\$(ssh $SSHOPTS \$FIRSTNODE cat /tmp/token) &&
         sudo kubeadm join --discovery-token-unsafe-skip-ca-verification --token \$TOKEN \$FIRSTNODE:6443
     fi"
 
@@ -574,7 +578,8 @@ _cmd_ssh() {
     need_tag
     IP=$(head -1 tags/$TAG/ips.txt)
     info "Logging into $IP"
-    ssh docker@$IP
+    ssh $SSHOPTS docker@$IP
+
 }
 
 _cmd start "Start a group of VMs"
@@ -713,7 +718,7 @@ _cmd_tmux() {
     IP=$(head -1 tags/$TAG/ips.txt)
     info "Opening ssh+tmux with $IP"
     rm -f /tmp/tmux-$UID/default
-    ssh -t -L /tmp/tmux-$UID/default:/tmp/tmux-1001/default docker@$IP tmux new-session -As 0
+    ssh $SSHOPTS -t -L /tmp/tmux-$UID/default:/tmp/tmux-1001/default docker@$IP tmux new-session -As 0
 }
 
 _cmd helmprom "Install Helm and Prometheus"
@@ -751,11 +756,7 @@ _cmd_passwords() {
     $0 ips "$TAG" | paste "$PASSWORDS_FILE" - | while read password nodes; do
         info "Setting password for $nodes..."
         for node in $nodes; do
-            echo docker:$password | ssh \
-                -o LogLevel=ERROR \
-                -o UserKnownHostsFile=/dev/null \
-                -o StrictHostKeyChecking=no \
-                ubuntu@$node sudo chpasswd
+            echo docker:$password | ssh $SSHOPTS ubuntu@$node sudo chpasswd
         done
     done
     info "Done."
@@ -889,10 +890,7 @@ test_vm() {
         "ls -la /home/docker/.ssh"; do
         sep "$cmd"
         echo "$cmd" \
-            | ssh -A -q \
-                -o "UserKnownHostsFile /dev/null" \
-                -o "StrictHostKeyChecking=no" \
-                $user@$ip sudo -u docker -i \
+            | ssh -A $SSHOPTS $user@$ip sudo -u docker -i \
             || {
                 status=$?
                 error "$cmd exit status: $status"
