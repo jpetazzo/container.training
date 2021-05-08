@@ -2,9 +2,9 @@
 
 - Bonjour ! 
 
-- Sur scène : Jérôme ([@jpetazzo@hachyderm.io])
+- Sur scène : Julien
 
-- En backstage : Alexandre, Antoine, Aurélien (x2), Baptiste, Benjamin, David, Hadrien, Kostas, Louis, Magalie, Nicolas, Paul, Sébastien, Thibault, Yoann...
+- En backstage : Alexandre, Antoine, Aurélien (x2), Benji, David, Kostas, Nicolas, Paul, Sébastien, Thibault...
 
 - Horaires : tous les jours de 9h à 13h
 
@@ -55,16 +55,22 @@
 
 ---
 
-## La hotline
+## Allô Docker¹ ?
 
 - Chaque après-midi : une heure de questions/réponses ouvertes !
 
-  (sauf le dernier jour)
+  (sauf le vendredi)
 
-- Mardi: 15h00-16h00
+- Mardi: 15h-16h
 
-- Mercredi: 14h30-15h30
+- Mercredi: 16h-17h
 
-- Jeudi: 14h00-15h00
+- Jeudi: 14h-15h
 
-- Sur Jitsi (lien "visioconf" sur le portail de formation)
+- Sur [Jitsi][jitsi] (lien "visioconf" sur le portail de formation)
+
+.footnote[¹Clin d'œil à l'excellent ["Quoi de neuf Docker?"][qdnd] de l'excellent [Nicolas Deloof][ndeloof] 🙂]
+
+[qdnd]: https://www.youtube.com/channel/UCOAhkxpryr_BKybt9wIw-NQ
+[ndeloof]: https://github.com/ndeloof
+[jitsi]: https://training.enix.io/jitsi-magic/jitsi.container.training/AlloDockerMai2023
