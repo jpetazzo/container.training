@@ -1,62 +1,24 @@
-## Introductions
+## Introductions (en 🇫🇷)
 
-⚠️ This slide should be customized by the tutorial instructor(s).
-
-<!--
-
-- Hello! We are:
-
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
-
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Ardan Labs)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Tiny Shell Script LLC)
-
--->
+- Bonjour ! 
 
 <!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
+- Sur scène : Jérôme ([@jpetazzo@hachyderm.io])
 -->
 
-<!--
+- Sur scène lundi+mardi : Jérôme ([@jpetazzo@hachyderm.io])
 
-- The workshop will run from XXX to YYY
+- Sur scène mercredi+jeudi : Ludovic
 
-- There will be a lunch break at ZZZ
+- En backstage : Alexandre, Antoine, Aurélien (x2), Baptiste, Benjamin, David, Hadrien, Kostas, Louis, Magalie, Nicolas, Paul, Sébastien, Thibault, Yoann...
 
-  (And coffee breaks!)
+- Horaires : tous les jours de 9h à 13h
 
--->
+- On fera une pause vers (environ) 11h
 
-<!--
+- N'hésitez pas à poser un maximum de questions!
 
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
-
-- Live feedback, questions, help: @@CHAT@@
-
--->
-
-<!--
-
-- You ~~should~~ must ask questions! Lots of questions!
-
-  (especially when you see full screen container pictures)
-
-- Use @@CHAT@@ to ask questions, get help, etc.
-
--->
-
-<!-- -->
+- Utilisez @@CHAT@@ pour les questions, demander de l'aide, etc.
 
 [@alexbuisine]: https://twitter.com/alexbuisine
 [EphemeraSearch]: https://ephemerasearch.com/
@@ -67,16 +29,48 @@
 
 ---
 
-## Exercises
+## Les 15 minutes du matin
 
-- At the end of each day, there is a series of exercises
+- Chaque jour, on commencera à 9h par une mini-présentation de 15 minutes
 
-- To make the most out of the training, please try the exercises!
+  (sur un sujet choisi ensemble, pas forcément en relation avec la formation!)
 
-  (it will help to practice and memorize the content of the day)
+- L'occasion de s'échauffer les neurones avec 🥐/☕️/🍊
 
-- We recommend to take at least one hour to work on the exercises
+  (avant d'attaquer les choses sérieuses)
 
-  (if you understood the content of the day, it will be much faster)
+- Puis à 9h15 on rentre dans le vif du sujet
 
-- Each day will start with a quick review of the exercises of the previous day
+---
+
+## Travaux pratiques
+
+- À la fin de chaque matinée, il y a un exercice pratique concret
+
+  (pour mettre en œuvre ce qu'on a vu)
+
+- Les exercices font partie de la formation !
+
+- Ils sont prévus pour prendre entre 15 minutes et 2 heures
+
+  (selon les connaissances et l'aisance de chacun·e)
+
+- Chaque matinée commencera avec un passage en revue de l'exercice de la veille
+
+- On est là pour vous aider si vous bloquez sur un exercice !
+
+---
+
+## La hotline
+
+- Chaque après-midi : une heure de questions/réponses ouvertes !
+
+  (sauf le dernier jour)
+
+- Mardi: 16h00-17h00
+
+- Mercredi: 15h30-16h30
+
+- Jeudi: 15h00-16h00
+
+- Sur Jitsi (lien "visioconf" sur le portail de formation)

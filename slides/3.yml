@@ -1,0 +1,48 @@
+title: |
+  Packaging d’applications
+  pour Kubernetes
+
+chat: "[Mattermost](https://training.enix.io/mattermost)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2026-01-enix.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- shared/about-slides.md
+- shared/chat-room-im.md
+- k8s/prereqs-advanced.md
+- shared/handson.md
+#- shared/webssh.md
+- k8s/labs-live.md
+- shared/connecting.md
+- k8s/labs-async.md
+- shared/toc.md
+-
+  - k8s/demo-apps.md
+  - k8s/templating.md
+  - k8s/kustomize.md
+  - k8s/helm-intro.md
+  - k8s/helm-chart-format.md
+  - k8s/helm-create-basic-chart.md
+  - exercises/helm-generic-chart-details.md
+-
+  - k8s/helm-create-better-chart.md
+  - k8s/helm-dependencies.md
+  - k8s/helm-values-schema-validation.md
+  - k8s/helm-secrets.md
+  - exercises/helm-umbrella-chart-details.md
+-
+  - k8s/helmfile.md
+  - k8s/ytt.md
+  - k8s/gitworkflows.md
+  - k8s/flux.md
+  - k8s/argocd.md
+  - shared/thankyou.md
