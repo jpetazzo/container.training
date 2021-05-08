@@ -1,5 +1,7 @@
 # Backing up clusters
 
+**(Note: we won't do the labs for that section!)**
+
 - Backups can have multiple purposes:
 
   - disaster recovery (servers or storage are destroyed or unreachable)
