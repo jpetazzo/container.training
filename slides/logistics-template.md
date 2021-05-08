@@ -1,81 +1,59 @@
 ## Introductions
 
-⚠️ This slide should be customized by the tutorial instructor(s).
+- Hi! I'm Jérôme Petazzoni ([@jpetazzo])
 
-<!--
+- Work:
 
-- Hello! We are:
+  - 7 years at Docker (2011-2018)
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
+  - sysadmin → dev → SRE manager → evangelist → trainer → ?
 
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
+  - container hipster (ran containers in production before it was cool!)
 
-   - 🐳 Jérôme ([@jpetazzo], Ardan Labs)
+- Non-work:
 
-   - 🐳 Jérôme ([@jpetazzo], Enix SAS)
+  - [music], [reading SF], video games
 
-   - 🐳 Jérôme ([@jpetazzo], Tiny Shell Script LLC)
-
--->
-
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
-
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
-
-- Live feedback, questions, help: @@CHAT@@
-
--->
-
-<!--
-
-- You ~~should~~ must ask questions! Lots of questions!
-
-  (especially when you see full screen container pictures)
-
-- Use @@CHAT@@ to ask questions, get help, etc.
-
--->
-
-<!-- -->
-
-[@alexbuisine]: https://twitter.com/alexbuisine
-[EphemeraSearch]: https://ephemerasearch.com/
 [@jpetazzo]: https://twitter.com/jpetazzo
-[@s0ulshake]: https://twitter.com/s0ulshake
-[Quantgene]: https://www.quantgene.com/
+[music]: https://github.com/jpetazzo/griode
+[reading SF]: https://gist.github.com/jpetazzo/046b8d32218e57d0c081b97aa85c3bb3
 
 ---
 
-## Exercises
+## Schedule
 
-- At the end of each day, there is a series of exercises
+- Monday: Docker
 
-- To make the most out of the training, please try the exercises!
+  9:00-12:00 + 14:00-18:00
 
-  (it will help to practice and memorize the content of the day)
+- Tuesday-Wednesday-Thursday: Kubernetes
 
-- We recommend to take at least one hour to work on the exercises
+  9:30-12:00 + 14:00-17:00
 
-  (if you understood the content of the day, it will be much faster)
+- Friday: Kubernetes Packaging (Kustomize, Helm...)
 
-- Each day will start with a quick review of the exercises of the previous day
+  9:30-12:00 + 14:00-17:30
+
+- And breaks! (Lots of breaks!)
+
+---
+
+## Q&A
+
+- Two ways to ask questions:
+
+  - Slack
+
+  - Google Meet
+
+- Don't hesitate to ask questions at any time!
+
+---
+
+## La matinale
+
+- Every day, I'll be online 15 minutes earlier
+
+  (so, 9:15 every day)
+
+- We can use that as extra Q&A or to cover any topic!

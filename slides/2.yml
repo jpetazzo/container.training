@@ -1,0 +1,108 @@
+title: |
+  Kubernetes
+
+chat: "[#masterclass-module-kubernetes](https://enixteam.slack.com/archives/C045GKSEB4L) (or GMeet)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2022-10-wemanity.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+- shared/chat-room-im.md
+#- shared/chat-room-zoom-meeting.md
+#- shared/chat-room-zoom-webinar.md
+- shared/prereqs.md
+#- shared/webssh.md
+- shared/connecting.md
+- shared/toc.md
+- # 1
+  #- k8s/versions-k8s.md
+  - shared/sampleapp.md
+  #- shared/composescale.md
+  #- shared/hastyconclusions.md
+  - shared/composedown.md
+  - k8s/concepts-k8s.md
+  - k8s/kubectlget.md
+  - k8s/kubectl-run.md
+  - k8s/kubectlexpose.md
+  #- k8s/shippingimages.md
+  #- k8s/buildshiprun-selfhosted.md
+  #- k8s/buildshiprun-dockerhub.md
+  - exercises/k8sfundamentals-details.md
+- # 2
+  - k8s/ourapponkube.md
+  - k8s/labels-annotations.md
+  - k8s/kubectl-logs.md
+  - k8s/logs-cli.md
+  - k8s/namespaces.md
+  - k8s/yamldeploy.md
+  - k8s/authoring-yaml.md
+  - shared/declarative.md
+  - k8s/declarative.md
+  - k8s/deploymentslideshow.md
+  - k8s/k9s.md
+- # 3
+  - k8s/kubenet.md
+  - k8s/setup-overview.md
+  - k8s/setup-devel.md
+  - k8s/setup-managed.md
+  - k8s/setup-selfhosted.md
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
+  - k8s/kubectlproxy.md
+  - exercises/localcluster-details.md
+- # 4
+  #- k8s/kubectlscale.md
+  - k8s/scalingdockercoins.md
+  - shared/hastyconclusions.md
+  - k8s/daemonset.md
+  - k8s/rollout.md
+  - k8s/healthchecks.md
+  #- k8s/healthchecks-more.md
+  #- k8s/dashboard.md
+  - k8s/tilt.md
+  #- exercises/healthchecks-details.md
+- # 5
+  - k8s/ingress.md
+  - k8s/volumes.md
+  - k8s/configuration.md
+  - k8s/secrets.md
+- #6
+  - k8s/netpol.md
+  - k8s/authn-authz.md
+  - k8s/resource-limits.md
+-
+  - |
+    # (Extra materials - autoscaling)
+  - k8s/metrics-server.md
+  - k8s/cluster-sizing.md
+  - k8s/horizontal-pod-autoscaler.md
+  - k8s/batch-jobs.md
+-
+  - |
+    # (Extra materials - stateful apps)
+  - k8s/statefulsets.md
+  - k8s/consul.md
+  - k8s/pv-pvc-sc.md
+  - k8s/volume-claim-templates.md
+  #- k8s/eck.md
+  #- k8s/portworx.md
+  - k8s/openebs.md
+  - k8s/stateful-failover.md
+-
+  - |
+    # (Extra materials - operators)
+  - k8s/operators-design.md
+  - k8s/operators-example.md
+  - k8s/owners-and-dependents.md
+  - k8s/events.md
+  - k8s/finalizers.md
