@@ -1,0 +1,51 @@
+title: |
+  Kubernetes Avancé
+
+chat: "[Mattermost](https://highfive.container.training/mattermost)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2021-09-enix.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+- shared/chat-room-im.md
+#- shared/chat-room-zoom.md
+- shared/prereqs.md
+- shared/webssh.md
+- shared/connecting.md
+- shared/toc.md
+- #1
+  - k8s/netpol.md
+  - k8s/authn-authz.md
+  - k8s/extending-api.md
+  - k8s/sealed-secrets.md
+  - exercises/sealed-secrets-details.md
+- #2
+  - k8s/crd.md
+  - k8s/operators.md
+  - k8s/admission.md
+  - k8s/kyverno.md
+  - exercises/ingress-secret-policy-details.md
+- #3
+  - k8s/resource-limits.md
+  - k8s/metrics-server.md
+  - k8s/cluster-sizing.md
+  - k8s/horizontal-pod-autoscaler.md
+  - k8s/aggregation-layer.md
+  - k8s/prometheus.md
+  - k8s/hpa-v2.md
+- #4
+  - k8s/statefulsets.md
+  - k8s/local-persistent-volumes.md
+  - k8s/eck.md
+  #- k8s/portworx.md
+  - k8s/openebs.md

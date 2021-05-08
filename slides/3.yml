@@ -1,0 +1,44 @@
+title: |
+  Packaging d'applications
+  et CI/CD pour Kubernetes
+
+chat: "[Mattermost](https://highfive.container.training/mattermost)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2021-09-enix.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+#- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+- shared/prereqs.md
+- shared/webssh.md
+- shared/connecting.md
+#- shared/chat-room-im.md
+#- shared/chat-room-zoom.md
+- shared/toc.md
+-
+  - k8s/kustomize.md
+  - k8s/helm-intro.md
+  - k8s/helm-chart-format.md
+  - k8s/helm-create-basic-chart.md
+-
+  - k8s/helm-create-better-chart.md
+  - k8s/helm-dependencies.md
+  - k8s/helm-values-schema-validation.md
+  - k8s/helm-secrets.md
+-
+  - k8s/cert-manager.md
+  - k8s/gitlab.md
+-
+  - |
+    # (Extra content)
+  - k8s/prometheus.md
+  - k8s/prometheus-stack.md
