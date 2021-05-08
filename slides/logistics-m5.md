@@ -2,15 +2,9 @@
 
 - Bonjour ! 
 
-<!--
-- Sur scène : Jérôme ([@jpetazzo@hachyderm.io])
--->
+- Sur scène : Jérôme + Ludovic
 
-- Sur scène lundi+mardi : Jérôme ([@jpetazzo@hachyderm.io])
-
-- Sur scène mercredi+jeudi : Ludovic
-
-- En backstage : Alexandre, Antoine, Aurélien (x2), Baptiste, Benjamin, David, Hadrien, Kostas, Louis, Magalie, Nicolas, Paul, Sébastien, Thibault, Yoann...
+- En backstage : Alexandre, Antoine, Aurélien (x2), Benjamin (x2), David, Kostas, Nicolas, Paul, Sébastien, Thibault...
 
 - Horaires : tous les jours de 9h à 13h
 
@@ -61,16 +55,16 @@
 
 ---
 
-## La hotline
+## La visio
 
-- Chaque après-midi : une heure de questions/réponses ouvertes !
+- Si vous avez des questions, besoin d'aide personnalisée...
 
-  (sauf le dernier jour)
+- Rejoignez-nous sur la visio, plusieurs après-midi dans la semaine!
 
-- Mardi: 16h00-17h00
+- Mardi: 15h-16h
 
 - Mercredi: 15h30-16h30
 
-- Jeudi: 15h00-16h00
+- Jeudi: 15h-16h
 
 - Sur Jitsi (lien "visioconf" sur le portail de formation)
