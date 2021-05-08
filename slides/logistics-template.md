@@ -1,62 +1,18 @@
 ## Introductions
 
-⚠️ This slide should be customized by the tutorial instructor(s).
+- Hello! 
 
-<!--
+- On stage: Jérôme ([@jpetazzo])
 
-- Hello! We are:
+- Backstage: Alexandre, Amy, Antoine, Aurélien (x2), Benji, David, Julien, Kostas, Nicolas, Thibault
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
+- The training will run from 9:30 to 13:00
 
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], Ardan Labs)
-
-   - 🐳 Jérôme ([@jpetazzo], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], Tiny Shell Script LLC)
-
--->
-
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
-
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
-
-- Live feedback, questions, help: @@CHAT@@
-
--->
-
-<!--
+- There will be a break at (approximately) 11:00
 
 - You ~~should~~ must ask questions! Lots of questions!
 
-  (especially when you see full screen container pictures)
-
 - Use @@CHAT@@ to ask questions, get help, etc.
-
--->
-
-<!-- -->
 
 [@alexbuisine]: https://twitter.com/alexbuisine
 [EphemeraSearch]: https://ephemerasearch.com/
