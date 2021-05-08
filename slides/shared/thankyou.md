@@ -1,11 +1,24 @@
-class: title, self-paced
+class: title
 
-Thank you!
+Merci !
+
+![end](images/end.jpg)
 
 ---
 
-class: title, in-person
+## Derniers mots...
 
-That's all, folks! <br/> Questions?
+- Le portail de formation reste en ligne après la formation
 
-![end](images/end.jpg)
+- N'hésitez pas à nous contacter via la messagerie instantanée !
+
+- Les VM ENIX restent en ligne au moins une semaine après la formation
+
+  (mais pas les clusters cloud ; eux on les éteint très vite)
+
+- N'oubliez pas de remplier les formulaires d'évaluation
+
+  (c'est pas pour nous, c'est une obligation légale😅)
+
+- Encore **merci** à vous !
+
