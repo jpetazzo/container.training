@@ -1,68 +1,38 @@
-## Introductions
+## Introductions (en 🇫🇷)
 
-⚠️ This slide should be customized by the tutorial instructor(s).
+- Bonjour ! 
 
-<!--
+- Sur scène : Jérôme ([@jpetazzo])
 
-- Hello! We are:
+- En backstage : Alexandre, Amy, Antoine, Aurélien (x2), Benji, David, Julien, Kostas, Nicolas, Paul, Thibault...
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
+- Horaires : tous les jours de 9h à 13h
 
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
+- On fera une pause vers (environ) 11h
 
-   - 🐳 Jérôme ([@jpetazzo], Ardan Labs)
+- N'hésitez pas à poser un maximum de questions!
 
-   - 🐳 Jérôme ([@jpetazzo], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], Tiny Shell Script LLC)
-
--->
-
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
-
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
-
-- Live feedback, questions, help: @@CHAT@@
-
--->
-
-<!--
-
-- You ~~should~~ must ask questions! Lots of questions!
-
-  (especially when you see full screen container pictures)
-
-- Use @@CHAT@@ to ask questions, get help, etc.
-
--->
-
-<!-- -->
+- Utilisez @@CHAT@@ pour les questions, demander de l'aide, etc.
 
 [@alexbuisine]: https://twitter.com/alexbuisine
 [EphemeraSearch]: https://ephemerasearch.com/
 [@jpetazzo]: https://twitter.com/jpetazzo
 [@s0ulshake]: https://twitter.com/s0ulshake
 [Quantgene]: https://www.quantgene.com/
+
+---
+
+## Les 15 minutes du matin
+
+- Chaque jour, on commencera à 9h par une mini-présentation de 15 minutes
+
+  (sur un sujet choisi ensemble, pas forcément en relation avec la formation!)
+
+- L'occasion de s'échauffer les neurones avec 🥐/☕️/🍊
+
+  (avant d'attaquer les choses sérieuses)
+
+- Puis à 9h15 on rentre dans le vif du sujet
 
 ---
 
