@@ -2,9 +2,9 @@
 
 - Bonjour ! 
 
-- Sur scène : Jérôme ([@jpetazzo@hachyderm.io])
+- Sur scène : Julien
 
-- En backstage : Alexandre, Antoine, Aurélien (x2), Benji, David, Julien, Kostas, Nicolas, Paul, Sébastien, Thibault...
+- En backstage : Alexandre, Antoine, Aurélien (x2), Benji, David, Kostas, Nicolas, Paul, Sébastien, Thibault...
 
 - Horaires : tous les jours de 9h à 13h
 
@@ -59,13 +59,13 @@
 
 - Chaque après-midi : une heure de questions/réponses ouvertes !
 
-  (sauf le dernier jour)
+  (sauf le vendredi)
 
-- Lundi: 15h-16h
-
-- Mardi: 14h-15h
+- Mardi: 15h-16h
 
 - Mercredi: 16h-17h
+
+- Jeudi: 17h-18h
 
 - Sur [Jitsi][jitsi] (lien "visioconf" sur le portail de formation)
 
