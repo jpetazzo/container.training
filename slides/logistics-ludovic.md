@@ -2,7 +2,7 @@
 
 - Bonjour ! 
 
-- Sur scène : Jérôme ([@jpetazzo@hachyderm.io])
+- Sur scène : Ludovic
 
 - En backstage : Alexandre, Antoine, Aurélien (x2), Benjamin (x2), David, Kostas, Nicolas, Paul, Sébastien, Thibault...
 
@@ -59,13 +59,13 @@
 
 - Chaque après-midi : une heure de questions/réponses ouvertes !
 
-  (sauf le dernier jour)
+  (sauf le vendredi)
 
-- Mardi: 15h00-16h00
+- Mardi: 15h-16h
 
-- Mercredi: 15h30-16h30
+- Mercredi: 16h-17h
 
-- Jeudi: 16h00-17h00
+- Jeudi: 17h-18h
 
 - Sur [Jitsi][jitsi] (lien "visioconf" sur le portail de formation)
 
