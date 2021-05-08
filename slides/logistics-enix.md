@@ -59,7 +59,7 @@
 
 - On est là pour vous aider si vous bloquez sur un exercice !
 
-???
+---
 
 ## La hotline
 
@@ -67,10 +67,10 @@
 
   (sauf le dernier jour)
 
-- Mardi: 16h00-17h00
+- Mardi: 15h00-16h00
 
 - Mercredi: 15h30-16h30
 
-- Jeudi: 15h00-16h00
+- Jeudi: 16h00-17h00
 
 - Sur Jitsi (lien "visioconf" sur le portail de formation)
