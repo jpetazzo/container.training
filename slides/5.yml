@@ -1,0 +1,58 @@
+title: |
+  Opérer Kubernetes
+
+chat: "[Mattermost](https://highfive.container.training/mattermost)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2022-06-enix.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+- shared/chat-room-im.md
+#- shared/chat-room-zoom-meeting.md
+#- shared/chat-room-zoom-webinar.md
+- shared/toc.md
+# DAY 1
+-
+  - k8s/prereqs-admin.md
+  - k8s/architecture.md
+  - k8s/deploymentslideshow.md
+  - k8s/dmuc.md
+-
+  - k8s/multinode.md
+  - k8s/cni.md
+  - k8s/interco.md
+-
+  - k8s/cni-internals.md
+  - k8s/apilb.md
+  - k8s/internal-apis.md
+  - k8s/staticpods.md
+  - k8s/cluster-upgrade.md
+  - k8s/cluster-backup.md
+  #- k8s/cloud-controller-manager.md
+-
+  - k8s/control-plane-auth.md
+  - k8s/user-cert.md
+  - k8s/csr-api.md
+  - k8s/openid-connect.md
+  - k8s/pod-security-intro.md
+  - k8s/pod-security-policies.md
+  - k8s/pod-security-admission.md
+  - shared/thankyou.md
+-
+  |
+  # (Extra content)
+  - k8s/apiserver-deepdive.md
+  - k8s/setup-overview.md
+  - k8s/setup-devel.md
+  - k8s/setup-managed.md
+  - k8s/setup-selfhosted.md

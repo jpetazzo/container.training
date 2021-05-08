@@ -1,0 +1,87 @@
+title: |
+  Fondamentaux Kubernetes
+
+chat: "[Mattermost](https://highfive.container.training/mattermost)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2022-06-enix.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+- shared/chat-room-im.md
+#- shared/chat-room-zoom-meeting.md
+#- shared/chat-room-zoom-webinar.md
+- shared/prereqs.md
+#- shared/webssh.md
+- shared/connecting.md
+- exercises/k8sfundamentals-brief.md
+- exercises/localcluster-brief.md
+- exercises/healthchecks-brief.md
+- shared/toc.md
+- # 1
+  #- k8s/versions-k8s.md
+  - shared/sampleapp.md
+  #- shared/composescale.md
+  #- shared/hastyconclusions.md
+  - shared/composedown.md
+  - k8s/concepts-k8s.md
+  - k8s/kubectlget.md
+  - k8s/kubectl-run.md
+  - k8s/kubenet.md
+  - k8s/kubectlexpose.md
+  - k8s/shippingimages.md
+  #- k8s/buildshiprun-selfhosted.md
+  - k8s/buildshiprun-dockerhub.md
+  - exercises/k8sfundamentals-details.md
+  - k8s/ourapponkube.md
+  #- k8s/exercise-wordsmith.md
+- # 2
+  - k8s/labels-annotations.md
+  - k8s/kubectl-logs.md
+  - k8s/logs-cli.md
+  - k8s/namespaces.md
+  - k8s/yamldeploy.md
+  - shared/declarative.md
+  - k8s/declarative.md
+  - k8s/deploymentslideshow.md
+  - k8s/authoring-yaml.md
+  - k8s/setup-overview.md
+  - k8s/setup-devel.md
+  #- k8s/setup-managed.md
+  #- k8s/setup-selfhosted.md
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
+  - k8s/kubectlproxy.md
+  - exercises/localcluster-details.md
+- # 3
+  #- k8s/kubectlscale.md
+  - k8s/scalingdockercoins.md
+  - shared/hastyconclusions.md
+  - k8s/daemonset.md
+  - k8s/rollout.md
+  - k8s/healthchecks.md
+  #- k8s/healthchecks-more.md
+  - k8s/dashboard.md
+  - k8s/k9s.md
+  - k8s/tilt.md
+  - exercises/healthchecks-details.md
+- # 4
+  - k8s/ingress.md
+  - k8s/ingress-tls.md
+  - k8s/volumes.md
+  #- k8s/exercise-configmap.md
+  #- k8s/build-with-docker.md
+  #- k8s/build-with-kaniko.md
+  - k8s/configuration.md
+  - k8s/secrets.md
+  - k8s/batch-jobs.md
+  - shared/thankyou.md
