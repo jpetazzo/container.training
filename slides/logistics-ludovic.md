@@ -2,9 +2,9 @@
 
 - Bonjour ! 
 
-- Sur scène : Jérôme ([@jpetazzo@hachyderm.io])
+- Sur scène : Ludovic
 
-- En backstage : Alexandre, Antoine, Aurélien (x2), Benjamin, David, Kostas, Nicolas, Paul, Sébastien, Thibault...
+- En backstage : Alexandre, Antoine, Aurélien (x2), Benjamin (x2), David, Kostas, Nicolas, Paul, Sébastien, Thibault...
 
 - Horaires : tous les jours de 9h à 13h
 
@@ -59,15 +59,13 @@
 
 - Chaque après-midi : une heure de questions/réponses ouvertes !
 
-  (sauf le dernier jour)
+  (sauf le vendredi)
 
-- Une heure de questions/réponses ouvertes !
+- Mardi: 15h-16h
 
-- Jeudi: 16h00-17h00
+- Mercredi: 16h-17h
 
-- Vendredi: 15h00-16h00
-
-- Lundi: 15h30-16h30
+- Jeudi: 17h-18h
 
 - Sur [Jitsi][jitsi] (lien "visioconf" sur le portail de formation)
 
@@ -75,4 +73,4 @@
 
 [qdnd]: https://www.youtube.com/channel/UCOAhkxpryr_BKybt9wIw-NQ
 [ndeloof]: https://github.com/ndeloof
-[jitsi]: https://training.enix.io/jitsi-magic/jitsi.container.training/Janvier2025
+[jitsi]: https://training.enix.io/jitsi-magic/jitsi.container.training/AlloDockerMai2024
