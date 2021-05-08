@@ -1,4 +1,4 @@
-# Pre-requirements
+## Pre-requirements
 
 - Be comfortable with the UNIX command line
 

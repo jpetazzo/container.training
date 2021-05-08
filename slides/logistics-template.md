@@ -1,35 +1,17 @@
 ## Intros
 
-- This slide should be customized by the tutorial instructor(s).
+- Hello! 
 
-- Hello! We are:
+- On stage: Jérôme ([@jpetazzo](https://twitter.com/jpetazzo))
 
-   - 👩🏻‍🏫 Ann O'Nymous ([@...](https://twitter.com/...), Megacorp Inc)
+- Backstage: Kostas, Amy, Thibault, Alexandre, Antoine, Aurélien (x2)
 
-   - 👨🏾‍🎓 Stu Dent ([@...](https://twitter.com/...), University of Wakanda)
+- The training will run from 9:30 to 13:00
 
- <!-- .dummy[
-
-   - 👷🏻‍♀️ AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
-
-   - 🚁 Alexandre ([@alexbuisine](https://twitter.com/alexbuisine), Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
-
-   - ⛵ Jérémy ([@jeremygarrouste](twitter.com/jeremygarrouste), Inpiwee)
-
-   - 🎧 Romain ([@rdegez](https://twitter.com/rdegez), Enix SAS)
-
-] -->
-
-- The workshop will run from ...
-
-- There will be a lunch break at ...
+- There will be a break at (approximately) 11:00
 
   (And coffee breaks!)
 
 - Feel free to interrupt for questions at any time
 
 - *Especially when you see full screen container pictures!*
-
-- Live feedback, questions, help: @@CHAT@@
