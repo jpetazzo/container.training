@@ -1,30 +1,14 @@
 ## Intros
 
-- This slide should be customized by the tutorial instructor(s).
-
 - Hello! We are:
 
-   - 👩🏻‍🏫 Ann O'Nymous ([@...](https://twitter.com/...), Megacorp Inc)
+  - Jérôme Petazzoni ([@jpetazzo](https://twitter.com/jpetazzo))
 
-   - 👨🏾‍🎓 Stu Dent ([@...](https://twitter.com/...), University of Wakanda)
+  - AJ Bowen ([@s0ulshake](https://twitter.com/s0ulshake))
 
- <!-- .dummy[
+- The training will run from 14:00 UTC to 20:15 UTC
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
-
-   - 🚁 Alexandre ([@alexbuisine](https://twitter.com/alexbuisine), Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
-
-   - ⛵ Jérémy ([@jeremygarrouste](twitter.com/jeremygarrouste), Inpiwee)
-
-   - 🎧 Romain ([@rdegez](https://twitter.com/rdegez), Enix SAS)
-
-] -->
-
-- The workshop will run from ...
-
-- There will be a lunch break at ...
+- There will be a lunch break between 16:15 UTC and 17:00 UTC
 
   (And coffee breaks!)
 
@@ -33,3 +17,9 @@
 - *Especially when you see full screen container pictures!*
 
 - Live feedback, questions, help: @@CHAT@@
+
+---
+
+class: pic
+
+![Schedule in various timezones](/schedule.png)
