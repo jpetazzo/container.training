@@ -42,7 +42,7 @@ def insertslide(markdown, title):
 
     before = markdown[:slide_position]
 
-    toclink = "toc-module-{}".format(title2path[title][0])
+    toclink = "toc-part-{}".format(title2part[title])
     _titles_ = [""] + all_titles + [""]
     currentindex = _titles_.index(title)
     previouslink = anchor(_titles_[currentindex-1])
@@ -54,7 +54,7 @@ def insertslide(markdown, title):
 
 class: pic
 
-.interstitial[![Image separating from the next module]({interstitial})]
+.interstitial[![Image separating from the next part]({interstitial})]
 
 ---
 
@@ -64,11 +64,11 @@ class: title
  {title}
 
 .nav[
-[Previous section](#{previouslink})
+[Previous part](#{previouslink})
 |
 [Back to table of contents](#{toclink})
 |
-[Next section](#{nextlink})
+[Next part](#{nextlink})
 ]
 
 .debug[(automatically generated title slide)]
@@ -156,43 +156,44 @@ def generatefromyaml(manifest, filename):
     return html
 
 
-# Maps a section title (the string just after "^# ") to its position
-# in the table of content (as a (module,part,subpart,...) tuple).
-title2path = {}
+# Maps a title (the string just after "^# ") to its position in the TOC
+# (to which part it belongs).
+title2part = {}
 all_titles = []
 
+# Generate the table of contents for a tree of titles.
 # "tree" is a list of titles, potentially nested.
-def gentoc(tree, path=()):
-    if not tree:
-        return ""
-    if isinstance(tree, str):
-        logging.debug("Path {} Title {}".format(path, tree))
-        title = tree
-        title2path[title] = path
-        all_titles.append(title)
-        return "- [{}](#{})".format(title, anchor(title))
-    if isinstance(tree, list):
-        # If there is only one sub-element, give it index zero.
-        # Otherwise, elements will have indices 1-to-N.
-        offset = 0 if len(tree) == 1 else 1
-        logging.debug(
-            "Path {} Tree [...({} sub-elements)]"
-            .format(path, len(tree)))
-        if len(path) == 0:
-            return "\n---\n".join(gentoc(subtree, path+(i+offset,)) for (i,subtree) in enumerate(tree))
-        elif len(path) == 1:
-            # If there is only one module, don't show "Module 1" but just "TOC"
-            if path[0] == 0:
-                label = "Table of contents"
-            else:
-                label = "Module {}".format(path[0])
-            moduleslide = "name: toc-module-{n}\n\n## {label}\n\n".format(n=path[0], label=label)
-            for (i,subtree) in enumerate(tree):
-                moduleslide += gentoc(subtree, path+(i+offset,)) + "\n\n"
-            moduleslide += ".debug[(auto-generated TOC)]"
-            return moduleslide
+# Each entry is either:
+# - a title (then it's a top-level section that doesn't show up in the TOC)
+# - a list (then it's a part that will show up in the TOC on its own slide)
+# In a list, we can have:
+# - titles (simple entry)
+# - further lists (they are then flattened; we don't represent subsubparts)
+def gentoc(tree):
+    # First, remove the top-level sections that don't show up in the TOC.
+    tree = [ entry for entry in tree if type(entry)==list ]
+    # Then, flatten the sublists.
+    tree = [ list(flatten(entry)) for entry in tree ]
+    # Now, process each part.
+    parts = []
+    for i, part in enumerate(tree):
+        slide = "name: toc-part-{}\n\n".format(i+1)
+        if len(tree) == 1:
+            slide += "## Table of contents\n\n"
         else:
-            return "\n\n".join(gentoc(subtree, path+(i+offset,)) for (i,subtree) in enumerate(tree))
+            slide += "## Part {}\n\n".format(i+1)
+        for title in part:
+            logging.debug("Generating TOC, part {}, title {}.".format(i+1, title))
+            title2part[title] = i+1
+            all_titles.append(title)
+            slide += "- [{}](#{})\n".format(title, anchor(title))
+            # If we don't have too many subparts, add some space to breathe.
+            # (Otherwise, we display the titles smooched together.)
+            if len(part) < 10:
+                slide += "\n"
+        slide += "\n.debug[(auto-generated TOC)]"
+        parts.append(slide)
+    return "\n---\n".join(parts)
 
 
 # Arguments:
