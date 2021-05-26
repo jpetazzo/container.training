@@ -132,6 +132,7 @@ content:
   - k8s/operators-design.md
   - k8s/kubebuilder.md
   - k8s/sealed-secrets.md
+  #- k8s/exercise-sealed-secrets.md
   - k8s/kyverno.md
   - k8s/eck.md
   - k8s/finalizers.md
