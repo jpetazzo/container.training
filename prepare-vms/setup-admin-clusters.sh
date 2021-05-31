@@ -30,7 +30,7 @@ TAG=$PREFIX-$SETTINGS
 	--tag $TAG \
 	--infra $INFRA \
 	--settings settings/$SETTINGS.yaml \
-	--count $STUDENTS
+	--students $STUDENTS
 
 retry 5 ./workshopctl deploy $TAG
 retry 5 ./workshopctl disabledocker $TAG
@@ -45,7 +45,7 @@ TAG=$PREFIX-$SETTINGS
 	--tag $TAG \
 	--infra $INFRA \
 	--settings settings/$SETTINGS.yaml \
-	--count $((3*$STUDENTS))
+	--students $STUDENTS
 
 retry 5 ./workshopctl disableaddrchecks $TAG
 retry 5 ./workshopctl deploy $TAG
@@ -60,7 +60,7 @@ TAG=$PREFIX-$SETTINGS
 	--tag $TAG \
 	--infra $INFRA \
 	--settings settings/$SETTINGS.yaml \
-	--count $((3*$STUDENTS))
+	--students $STUDENTS
 
 retry 5 ./workshopctl disableaddrchecks $TAG
 retry 5 ./workshopctl deploy $TAG
@@ -79,10 +79,9 @@ TAG=$PREFIX-$SETTINGS
 	--tag $TAG \
 	--infra $INFRA \
 	--settings settings/$SETTINGS.yaml \
-	--count $((3*$STUDENTS))
+	--students $STUDENTS
 
 retry 5 ./workshopctl deploy $TAG
-retry 5 ./workshopctl kube $TAG 1.17.13
+retry 5 ./workshopctl kube $TAG 1.19.11
 retry 5 ./workshopctl webssh $TAG
 retry 5 ./workshopctl tailhist $TAG
-./workshopctl cards $TAG

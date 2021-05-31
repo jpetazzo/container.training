@@ -170,24 +170,27 @@ _cmd_kubebins() {
     TAG=$1
     need_tag
 
+    ##VERSION##
+    ETCD_VERSION=v3.4.13
+    K8SBIN_VERSION=v1.19.11 # Can't go to 1.20 because it requires a serviceaccount signing key.
+    CNI_VERSION=v0.8.7
     pssh --timeout 300 "
     set -e
     cd /usr/local/bin
     if ! [ -x etcd ]; then
-        ##VERSION##
-        curl -L https://github.com/etcd-io/etcd/releases/download/v3.4.9/etcd-v3.4.9-linux-amd64.tar.gz \
+        curl -L https://github.com/etcd-io/etcd/releases/download/$ETCD_VERSION/etcd-$ETCD_VERSION-linux-amd64.tar.gz \
         | sudo tar --strip-components=1 --wildcards -zx '*/etcd' '*/etcdctl'
     fi
     if ! [ -x hyperkube ]; then
         ##VERSION##
-        curl -L https://dl.k8s.io/v1.18.10/kubernetes-server-linux-amd64.tar.gz \
+        curl -L https://dl.k8s.io/$K8SBIN_VERSION/kubernetes-server-linux-amd64.tar.gz \
         | sudo tar --strip-components=3 -zx \
           kubernetes/server/bin/kube{ctl,let,-proxy,-apiserver,-scheduler,-controller-manager}
     fi
     sudo mkdir -p /opt/cni/bin
     cd /opt/cni/bin
     if ! [ -x bridge ]; then
-        curl -L https://github.com/containernetworking/plugins/releases/download/v0.8.6/cni-plugins-linux-amd64-v0.8.6.tgz \
+        curl -L https://github.com/containernetworking/plugins/releases/download/$CNI_VERSION/cni-plugins-linux-amd64-$CNI_VERSION.tgz \
         | sudo tar -zx
     fi
     "
