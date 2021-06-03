@@ -1,3 +1,6 @@
+# Note: hyperkube isn't available after Kubernetes 1.18.
+# So we'll have to update this for Kubernetes 1.19!
+
 version: "3"
 
 services:
