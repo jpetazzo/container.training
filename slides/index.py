@@ -112,7 +112,10 @@ TEMPLATE="""<html>
         {% for item in all_past_workshops %}
           <tr>
             <td>{{ item.title }}</td>
-            <td><a class="slides" href="{{ item.slides }}" /></td>
+            <td>{% if item.slides %}<a class="slides" href="{{ item.slides }}" />
+            {% else %}
+              <p class="details">{{ item.status }}</p>
+            {% endif %}</td>
             {% if item.video %}
               <td><a class="video" href="{{ item.video }}" /></td>
             {% endif %}

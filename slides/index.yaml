@@ -1,3 +1,103 @@
+- date: [2021-09-27, 2021-09-29]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Docker intensif (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+  #slides: https://2021-05-enix.container.training/1.yml.html
+
+- date: [2021-10-04, 2021-10-07]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Fondamentaux Kubernetes (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+  #slides: https://2021-05-enix.container.training/2.yml.html
+
+- date: [2021-10-11, 2021-10-12]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Packaging et CI/CD pour Kubernetes (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+  #slides: https://2021-05-enix.container.training/3.yml.html
+
+- date: [2021-11-08, 2021-11-16]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Kubernetes avancé (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+  #slides: https://2021-05-enix.container.training/4.yml.html
+
+- date: [2021-11-18, 2021-11-19]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Opérer Kubernetes (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+  #slides: https://2021-05-enix.container.training/5.yml.html
+
+- date: [2021-05-10, 2021-05-12]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Docker intensif (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+  slides: https://2021-05-enix.container.training/1.yml.html
+
+- date: [2021-05-17, 2021-05-20]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Fondamentaux Kubernetes (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+  slides: https://2021-05-enix.container.training/2.yml.html
+
+- date: [2021-05-24, 2021-05-25]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Packaging et CI/CD pour Kubernetes (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+  slides: https://2021-05-enix.container.training/3.yml.html
+
+- date: [2021-05-26, 2021-05-28]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Kubernetes avancé (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+  slides: https://2021-05-enix.container.training/4.yml.html
+
+- date: [2021-05-31, 2021-06-01]
+  country: www
+  city: streaming
+  event: ENIX SAS
+  speaker: jpetazzo
+  title: Opérer Kubernetes (en français)
+  lang: fr
+  attend: https://enix.io/fr/services/formation/online/
+  slides: https://2021-05-enix.container.training/5.yml.html
+
 - date: [2021-02-08, 2021-02-10]
   country: www
   city: streaming
@@ -6,6 +106,7 @@
   title: Docker intensif (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2021-02-enix.container.training/1.yml.html
 
 - date: [2021-02-15, 2021-02-18]
   country: www
@@ -15,6 +116,7 @@
   title: Fondamentaux Kubernetes (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2021-02-enix.container.training/2.yml.html
 
 - date: [2021-02-22, 2021-02-23]
   country: www
@@ -24,6 +126,7 @@
   title: Packaging et CI/CD pour Kubernetes (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2021-02-enix.container.training/3.yml.html
 
 - date: [2021-02-24, 2021-02-26]
   country: www
@@ -33,6 +136,7 @@
   title: Kubernetes avancé (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2021-02-enix.container.training/4.yml.html
 
 - date: [2021-03-01, 2021-03-02]
   country: www
@@ -42,6 +146,7 @@
   title: Opérer Kubernetes (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2021-02-enix.container.training/5.yml.html
 
 - date: [2020-10-05, 2020-10-06]
   country: www
@@ -51,6 +156,7 @@
   title: Docker intensif (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2020-10-enix.container.training/1.yml.html
 
 - date: [2020-10-07, 2020-10-09]
   country: www
@@ -60,6 +166,7 @@
   title: Fondamentaux Kubernetes (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2020-10-enix.container.training/2.yml.html
 
 - date: 2020-10-12
   country: www
@@ -69,6 +176,7 @@
   title: Packaging pour Kubernetes (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2020-10-enix.container.training/3.yml.html
 
 - date: [2020-10-13, 2020-10-14]
   country: www
@@ -78,6 +186,7 @@
   title: Kubernetes avancé (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2020-10-enix.container.training/4.yml.html
 
 - date: [2020-10-19, 2020-10-20]
   country: www
@@ -87,6 +196,7 @@
   title: Opérer Kubernetes (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2020-10-enix.container.training/5.yml.html
 
 - date: [2020-09-28, 2020-10-01]
   country: www
@@ -95,6 +205,7 @@
   speaker: jpetazzo
   title: Advanced Kubernetes Concepts
   attend: https://skillsmatter.com/courses/700-advanced-kubernetes-concepts-workshop-jerome-petazzoni
+  slides: https://2020-09-skillsmatter.container.training/
 
 - date: [2020-08-29, 2020-08-30]
   country: www
@@ -130,6 +241,7 @@
   title: Docker intensif (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2020-06-enix.container.training/1.yml.html
 
 - date: [2020-06-17, 2020-06-19]
   country: www
@@ -139,6 +251,7 @@
   title: Fondamentaux Kubernetes (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2020-06-enix.container.training/2.yml.html
 
 - date: 2020-06-22
   country: www
@@ -148,6 +261,7 @@
   title: Packaging pour Kubernetes (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2020-06-enix.container.training/3.yml.html
 
 - date: [2020-06-23, 2020-06-24]
   country: www
@@ -157,6 +271,7 @@
   title: Kubernetes avancé (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2020-06-enix.container.training/4.yml.html
 
 - date: [2020-06-25, 2020-06-26]
   country: www
@@ -166,6 +281,8 @@
   title: Opérer Kubernetes (en français)
   lang: fr
   attend: https://enix.io/fr/services/formation/online/
+  slides: https://2020-06-enix.container.training/5.yml.html
+
 
 - date: [2020-06-09, 2020-06-11]
   country: www
