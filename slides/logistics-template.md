@@ -8,7 +8,7 @@
 
 - I'm now doing consulting, training, etc. on Docker & Kubernetes
 
-  (check out [container.training](https://container.trianing/)!)
+  (check out [container.training](https://container.training/)!)
 
 - I'll show you how to deploy a complete CI/CD pipeline on LKE!
 
