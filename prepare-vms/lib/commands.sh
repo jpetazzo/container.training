@@ -431,7 +431,7 @@ _cmd_inventory() {
     case "$1" in
     "")
         for INFRA in infra/*; do
-            $0 list $INFRA
+            $0 inventory $INFRA
         done
         ;;
     */example.*)
