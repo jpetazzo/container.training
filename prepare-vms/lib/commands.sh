@@ -330,7 +330,7 @@ EOF"
     # Install the AWS IAM authenticator
     pssh "
     if [ ! -x /usr/local/bin/aws-iam-authenticator ]; then
-	    ##VERSION##
+        ##VERSION##
         sudo curl -o /usr/local/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator
 	sudo chmod +x /usr/local/bin/aws-iam-authenticator
     fi"
@@ -345,13 +345,17 @@ EOF"
         echo export PATH=/home/docker/.krew/bin:\\\$PATH | sudo -u docker tee -a /home/docker/.bashrc
     fi"
 
-    # Install k9s and popeye
+    # Install k9s
     pssh "
     if [ ! -x /usr/local/bin/k9s ]; then
-        FILENAME=k9s_\$(uname -s)_\$(uname -m).tar.gz &&
-        curl -sSL https://github.com/derailed/k9s/releases/latest/download/\$FILENAME |
+        VERSION=v0.24.10 &&
+        FILENAME=k9s_\${VERSION}_\$(uname -s)_\$(uname -m).tar.gz &&
+        curl -sSL https://github.com/derailed/k9s/releases/download/\$VERSION/\$FILENAME |
         sudo tar -zxvf- -C /usr/local/bin k9s
-    fi
+    fi"
+
+    # Install popeye
+    pssh "
     if [ ! -x /usr/local/bin/popeye ]; then
         FILENAME=popeye_\$(uname -s)_\$(uname -m).tar.gz &&
         curl -sSL https://github.com/derailed/popeye/releases/latest/download/\$FILENAME |
