@@ -1,30 +1,10 @@
 ## Intros
 
-- This slide should be customized by the tutorial instructor(s).
+- Hello! I'm Jérôme Petazzoni ([@jpetazzo](https://twitter.com/jpetazzo))
 
-- Hello! We are:
+- The training will run from 10h00 to 16h00 (Israel time)
 
-   - 👩🏻‍🏫 Ann O'Nymous ([@...](https://twitter.com/...), Megacorp Inc)
-
-   - 👨🏾‍🎓 Stu Dent ([@...](https://twitter.com/...), University of Wakanda)
-
- <!-- .dummy[
-
-   - 👷🏻‍♀️ AJ ([@s0ulshake](https://twitter.com/s0ulshake), Travis CI)
-
-   - 🚁 Alexandre ([@alexbuisine](https://twitter.com/alexbuisine), Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo](https://twitter.com/jpetazzo), Enix SAS)
-
-   - ⛵ Jérémy ([@jeremygarrouste](twitter.com/jeremygarrouste), Inpiwee)
-
-   - 🎧 Romain ([@rdegez](https://twitter.com/rdegez), Enix SAS)
-
-] -->
-
-- The workshop will run from ...
-
-- There will be a lunch break at ...
+- There will be a lunch break between 13h00 and 14h00
 
   (And coffee breaks!)
 
