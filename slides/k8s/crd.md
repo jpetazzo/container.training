@@ -187,7 +187,7 @@ Note: we can update a CRD without having to re-create the corresponding resource
 
 ---
 
-## OpenAPI v3 scheme exapmle
+## OpenAPI v3 schema example
 
 This is what we have in @@LINK[k8s/coffee-3.yaml]:
 
