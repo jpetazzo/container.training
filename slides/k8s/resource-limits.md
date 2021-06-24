@@ -66,7 +66,7 @@ class: extra-details
 
 - Each request takes 1 second of CPU
 
-- Average load: 0.16%
+- Average load: 1.66%
 
 - Let's say we set a CPU limit of 10%
 
