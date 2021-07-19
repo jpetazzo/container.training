@@ -5,4 +5,3 @@ variable "prefix" {
 variable "count" {
   type = "string"
 }
-
