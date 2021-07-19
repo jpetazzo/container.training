@@ -621,24 +621,104 @@ It's important to note a couple of details in these flags...
 
 ---
 
-## Testing directly with `kubectl`
+## `kubectl auth` and other CLI tools
 
-- We can also check for permission with `kubectl auth can-i`:
+- The `kubectl auth can-i` command can tell us:
+
+  - if we can perform an action
+
+  - if someone else can perform an action
+
+  - what actions we can perform
+
+- There are also other very useful tools to work with RBAC
+
+- Let's do a quick review!
+
+---
+
+## `kubectl auth can-i dothis onthat`
+
+- These commands will give us a `yes`/`no` answer:
+
   ```bash
   kubectl auth can-i list nodes
   kubectl auth can-i create pods
   kubectl auth can-i get pod/name-of-pod
   kubectl auth can-i get /url-fragment-of-api-request/
   kubectl auth can-i '*' services
+  kubectl auth can-i get coffee
+  kubectl auth can-i drink coffee
   ```
 
-- And we can check permissions on behalf of other users:
+- The RBAC system is flexible
+
+- We can check permissions on resources that don't exist yet (e.g. CRDs)
+
+- We can check permissions for arbitrary actions
+
+---
+
+## `kubectl auth can-i ... --as someoneelse`
+
+- We can check permissions on behalf of other users
+
   ```bash
   kubectl auth can-i list nodes \
           --as some-user
   kubectl auth can-i list nodes \
           --as system:serviceaccount:<namespace>:<name-of-service-account>
   ```
+
+- We can also use `--as-group` to check permissions for members of a group
+
+- `--as` and `--as-group` leverage the *impersonation API*
+
+- These flags can be used with many other `kubectl` commands
+
+  (not just `auth can-i`)
+
+---
+
+## `kubectl auth can-i --list`
+
+- We can list the actions that are available to us:
+
+  ````bash
+  kubectl auth can-i --list
+  ```
+
+- ... Or to someone else (with `--as SomeOtherUser`)
+
+- This is very useful to check users or service accounts for overly broad permissions
+
+  (or when looking for ways to exploit a security vulnerability!)
+
+- To learn more about Kubernetes attacks and threat models around RBAC:
+
+  📽️ [Hacking into Kubernetes Security for Beginners](https://www.youtube.com/watch?v=mLsCm9GVIQg)
+  by [Ellen Körbes](https://twitter.com/ellenkorbes)
+  and [Tabitha Sable](https://twitter.com/TabbySable)
+
+---
+
+class: extra-details
+
+## Other useful tools
+
+- For auditing purposes, sometimes we want to know who can perform which actions
+
+- There are a few tools to help us with that, available as `kubectl` plugins:
+
+  - `kubectl who-can` / [kubectl-who-can](https://github.com/aquasecurity/kubectl-who-can) by Aqua Security
+
+  - `kubectl access-matrix` / [Rakkess (Review Access)](https://github.com/corneliusweig/rakkess) by Cornelius Weig
+
+  - `kubectl rbac-lookup` / [RBAC Lookup](https://github.com/FairwindsOps/rbac-lookup) by FairwindsOps
+
+- `kubectl` plugins can be installed and managed with `krew`
+
+- They can also be installed and executed as standalone programs
 
 ---
 
@@ -681,9 +761,38 @@ class: extra-details
 
 - This ClusterRole permissions will be added to `admin`/`edit`/`view` respectively
 
-- This is particulary useful when using CustomResourceDefinitions
+---
 
-  (since Kubernetes cannot guess which resources are sensitive and which ones aren't)
+class: extra-details
+
+## When should we use aggregation?
+
+- By default, CRDs aren't included in `view` / `edit` / etc.
+
+  (Kubernetes cannot guess which one are security sensitive and which ones are not)
+
+- If we edit `view` / `edit` / etc directly, our edits will conflict
+
+  (imagine if we have two CRDs and they both provide a custom `view` ClusterRole)
+
+- Using aggregated roles lets us enrich the default roles without touching them
+
+---
+
+class: extra-details
+
+## How aggregation works
+
+- The corresponding roles will have `aggregationRules` like this:
+
+   ```yaml
+    aggregationRule:
+      clusterRoleSelectors:
+      - matchLabels:
+          rbac.authorization.k8s.io/aggregate-to-view: "true"
+   ```
+
+- We can define our own custom roles with their own aggregation rules
 
 ---
 
@@ -726,26 +835,6 @@ class: extra-details
   ```bash
   kubectl describe clusterrole cluster-admin
   ```
-
----
-
-class: extra-details
-
-## Figuring out who can do what
-
-- For auditing purposes, sometimes we want to know who can perform which actions
-
-- There are a few tools to help us with that, available as `kubectl` plugins:
-
-  - `kubectl who-can` / [kubectl-who-can](https://github.com/aquasecurity/kubectl-who-can) by Aqua Security
-
-  - `kubectl access-matrix` / [Rakkess (Review Access)](https://github.com/corneliusweig/rakkess) by Cornelius Weig
-
-  - `kubectl rbac-lookup` / [RBAC Lookup](https://github.com/FairwindsOps/rbac-lookup) by FairwindsOps
-
-- `kubectl` plugins can be installed and managed with `krew`
-
-- They can also be installed and executed as standalone programs
 
 ???
 
