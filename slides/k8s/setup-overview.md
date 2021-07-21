@@ -20,15 +20,31 @@
 
 - Then it's a good idea to have a development cluster!
 
-- Development clusters only need one node
+- Instead of shipping containers images, we can test them on Kubernetes
 
-- This simplifies their setup a lot:
+- Extremely useful when authoring or testing Kubernetes-specific objects
+
+  (ConfigMaps, Secrets, StatefulSets, Jobs, RBAC, etc.)
+
+- Extremely convenient to quickly test/check what a particular thing looks like
+
+  (e.g. what are the fields a Deployment spec?)
+
+---
+
+## One-node clusters
+
+- It's perfectly fine to work with a cluster that has only one node
+
+- It simplifies a lot of things:
 
   - pod networking doesn't even need CNI plugins, overlay networks, etc.
 
-  - they can be fully contained (no pun intended) in an easy-to-ship VM image
+  - these clusters can be fully contained (no pun intended) in an easy-to-ship VM or container image
 
   - some of the security aspects may be simplified (different threat model)
+
+  - images can be built directly on the node (we don't need to ship them with a registry)
 
 - Examples: Docker Desktop, k3d, KinD, MicroK8s, Minikube
 
@@ -36,11 +52,11 @@
 
 ---
 
-## Managed clusters
+## Managed clusters ("Turnkey Solutions")
 
 - Many cloud providers and hosting providers offer "managed Kubernetes"
 
-- The deployment and maintenance of the cluster is entirely managed by the provider
+- The deployment and maintenance of the *control plane* is entirely managed by the provider
 
   (ideally, clusters can be spun up automatically through an API, CLI, or web interface)
 
@@ -56,17 +72,19 @@
 
 ---
 
-## Managed clusters details
+## Node management
 
-- Pricing models differ from one provider to another
+- Most "Turnkey Solutions" offer fully managed control planes
 
-  - nodes are generally charged at their usual price
+  (including control plane upgrades, sometimes done automatically)
 
-  - control plane may be free or incur a small nominal fee
+- However, with most providers, we still need to take care of *nodes*
 
-- Beyond pricing, there are *huge* differences in features between providers
+  (provisioning, upgrading, scaling the nodes)
 
-- The "major" providers are not always the best ones!
+- Example with Amazon EKS ["managed node groups"](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html):
+
+  *...when bugs or issues are reported [...] you're responsible for deploying these patched AMI versions to your managed node groups.*
 
 ---
 
@@ -90,6 +108,22 @@
 
 ---
 
+## Choosing a provider
+
+- Pricing models differ from one provider to another
+
+  - nodes are generally charged at their usual price
+
+  - control plane may be free or incur a small nominal fee
+
+- Beyond pricing, there are *huge* differences in features between providers
+
+- The "major" providers are not always the best ones!
+
+- See [this page](https://kubernetes.io/docs/setup/production-environment/turnkey-solutions/) for a list of available providers
+
+---
+
 ## Kubernetes distributions and installers
 
 - If you want to run Kubernetes yourselves, there are many options
@@ -102,9 +136,9 @@
 
   (like Puppet, Terraform ...)
 
-- A good starting point to explore these options is this [guide](https://v1-16.docs.kubernetes.io/docs/setup/#production-environment)
+- There are too many options to list them all
 
-  (it defines categories like "managed", "turnkey" ...)
+  (check [this page](https://kubernetes.io/partners/#conformance) for an overview!)
 
 ---
 
