@@ -152,11 +152,9 @@ class: extra-details
 
 - If it's not installed yet on the cluster, install Prometheus:
   ```bash
-    helm repo add prometheus-community
-         https://prometheus-community.github.io/helm-charts
-    helm upgrade prometheus prometheus-community/prometheus \
-         --install \
-         --namespace kube-system \
+    helm upgrade --install prometheus prometheus \
+         --repo https://prometheus-community.github.io/helm-charts \
+         --namespace prometheus --create-namespace \
          --set server.service.type=NodePort \
          --set server.service.nodePort=30090 \
          --set server.persistentVolume.enabled=false \
@@ -475,10 +473,11 @@ no custom metrics API (custom.metrics.k8s.io) registered
 
 - Install the Prometheus adapter:
   ```bash
-    helm upgrade prometheus-adapter prometheus-community/prometheus-adapter \
-         --install --namespace=kube-system \
-         --set prometheus.url=http://prometheus-server.kube-system.svc \
-         --set prometheus.port=80
+    helm upgrade --install prometheus-adapter prometheus-adapter \
+      --repo https://prometheus-community.github.io/helm-charts \
+      --namespace=prometheus-adapter --create-namespace \
+      --set prometheus.url=http://prometheus-server.prometheus.svc \
+      --set prometheus.port=80
   ```
 
 ]

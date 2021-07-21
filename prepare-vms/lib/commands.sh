@@ -728,15 +728,15 @@ _cmd_tmux() {
     ssh $SSHOPTS -t -L /tmp/tmux-$UID/default:/tmp/tmux-1001/default docker@$IP tmux new-session -As 0
 }
 
-_cmd helmprom "Install Helm and Prometheus"
+_cmd helmprom "Install Prometheus with Helm"
 _cmd_helmprom() {
     TAG=$1
     need_tag
     pssh "
     if i_am_first_node; then
-        sudo -u docker -H helm repo add prometheus-community https://prometheus-community.github.io/helm-charts/
-        sudo -u docker -H helm install prometheus prometheus-community/prometheus \
-            --namespace kube-system \
+        sudo -u docker -H helm upgrade --install prometheus prometheus \
+            --repo https://prometheus-community.github.io/helm-charts/ \
+            --namespace prometheus --create-namespace \
             --set server.service.type=NodePort \
             --set server.service.nodePort=30090 \
             --set server.persistentVolume.enabled=false \

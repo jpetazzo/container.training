@@ -218,27 +218,7 @@ We need to:
 
 ---
 
-## Step 2: add the `prometheus-community` repo
-
-- This will add the repository containing the chart for Prometheus
-
-- This command is idempotent
-
-  (it won't break anything if the repository was already added)
-
-.exercise[
-
-- Add the repository:
-  ```bash
-    helm repo add prometheus-community \
-         https://prometheus-community.github.io/helm-charts
-  ```
-
-]
-
----
-
-## Step 3: install Prometheus
+## Step 2: install Prometheus
 
 - The following command, just like the previous ones, is idempotent
 
@@ -248,9 +228,9 @@ We need to:
 
 - Install Prometheus on our cluster:
   ```bash
-    helm upgrade prometheus prometheus-community/prometheus \
-        --install \
-        --namespace kube-system \
+    helm upgrade prometheus --install prometheus \
+        --repo https://prometheus-community.github.io/helm-charts \
+        --namespace prometheus --create-namespace \
         --set server.service.type=NodePort \
         --set server.service.nodePort=30090 \
         --set server.persistentVolume.enabled=false \
@@ -267,24 +247,37 @@ class: extra-details
 
 ## Explaining all the Helm flags
 
-- `helm upgrade prometheus` → upgrade the release named `prometheus` ...
+- `helm upgrade prometheus` → upgrade the release named `prometheus`
   <br/>
   (a "release" is an instance of an app deployed with Helm)
 
-- `prometheus-community/...` → of a chart located in the `prometheus-community` repo ...
+- `--install` → if it doesn't exist, install it (instead of upgrading)
 
-- `.../prometheus` → in that repo, get the chart named `prometheus` ...
+- `prometheus` → use the chart named `prometheus`
 
-- `--install` → if the app doesn't exist, create it ...
+- `--repo ...` → the chart is located on the following repository
 
-- `--namespace kube-system` → put it in that specific namespace ...
+- `--namespace prometheus` → put it in that specific namespace
 
-- ... and set the following *values* when rendering the chart's templates:
+- `--create-namespace` → create the namespace if it doesn't exist
 
-  - `server.service.type=NodePort` → expose the Prometheus server with a NodePort
-  - `server.service.nodePort=30090` → set the specific NodePort number to use
-  - `server.persistentVolume.enabled=false` → do not use a PersistentVolumeClaim
-  - `alertmanager.enabled=false` → disable the alert manager entirely
+- `--set ...` → here are some *values* to be used when rendering the chart's templates
+
+---
+
+class: extra-details
+
+## Values for the Prometheus chart
+
+Helm *values* are parameters to customize our installation.
+
+- `server.service.type=NodePort` → expose the Prometheus server with a NodePort
+
+- `server.service.nodePort=30090` → set the specific NodePort number to use
+
+- `server.persistentVolume.enabled=false` → do not use a PersistentVolumeClaim
+
+- `alertmanager.enabled=false` → disable the alert manager entirely
 
 ---
 
@@ -300,6 +293,9 @@ class: extra-details
   ```
 
 - With your browser, connect to that port
+
+
+- It should be 30090 if we just installed Prometheus with the Helm chart!
 
 ]
 
