@@ -12,9 +12,21 @@
 
 ---
 
-## A very simple CRD
+## Creating a CRD
 
-The file @@LINK[k8s/coffee-1.yaml] describes a very simple CRD representing different kinds of coffee:
+- We will create a CRD to represent the different species of coffee
+
+  (arabica, liberica, and robusta)
+
+- We will be able to run `kubectl get coffees` and it will list the species
+
+- Then we can label, edit, etc. the species to attach some information
+
+  (e.g. the taste profile of the coffee, or whatever we want)
+
+---
+
+## First shot of coffee
 
 ```yaml
 @@INCLUDE[k8s/coffee-1.yaml]
@@ -22,7 +34,43 @@ The file @@LINK[k8s/coffee-1.yaml] describes a very simple CRD representing diff
 
 ---
 
-## Creating a CRD
+## The joys of API deprecation
+
+- Unfortunately, the CRD manifest on the previous slide is deprecated!
+
+- It is using `apiextensions.k8s.io/v1beta1`, which is dropped in Kubernetes 1.22
+
+- We need to use `apiextensions.k8s.io/v1`, which is a little bit more complex
+
+  (a few optional things become mandatory, see [this guide](https://kubernetes.io/docs/reference/using-api/deprecation-guide/#customresourcedefinition-v122) for details)
+
+- `apiextensions.k8s.io/v1beta1` is available since Kubernetes 1.16
+
+---
+
+## Second shot of coffee
+
+- The next slide will show file @@LINK[k8s/coffee-2.yaml]
+
+- Note the `spec.versions` list
+
+  - we need exactly one version with `storage: true`
+
+  - we can have multiple versions with `served: true`
+
+- `spec.versions[].schema.openAPI3Schema` is required
+
+  (and must be a valid OpenAPI schema; here it's a trivial one)
+
+---
+
+```yaml
+@@INCLUDE[k8s/coffee-2.yaml]
+```
+
+---
+
+## Creating our Coffee CRD
 
 - Let's create the Custom Resource Definition for our Coffee resource
 
@@ -30,7 +78,7 @@ The file @@LINK[k8s/coffee-1.yaml] describes a very simple CRD representing diff
 
 - Load the CRD:
   ```bash
-  kubectl apply -f ~/container.training/k8s/coffee-1.yaml
+  kubectl apply -f ~/container.training/k8s/coffee-2.yaml
   ```
 
 - Confirm that it shows up:
@@ -169,13 +217,13 @@ Note: we can update a CRD without having to re-create the corresponding resource
 
 ## Data validation
 
-- By default, CRDs are not *validated*
+- CRDs are validated with the OpenAPI v3 schema that we specify
 
-  (we can put anything we want in the `spec`)
+  (with older versions of the API, when the schema was optional,
+  <br/>
+  no schema = no validation at all)
 
-- When creating a CRD, we can pass an OpenAPI v3 schema
-
-  (which will then be used to validate resources)
+- Otherwise, we can put anything we want in the `spec`
 
 - More advanced validation can also be done with admission webhooks, e.g.:
 
