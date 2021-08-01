@@ -14,7 +14,7 @@
     export TAG=v0.1
     for SERVICE in hasher rng webui worker; do
       docker build -t $REGISTRY/$SERVICE:$TAG ./$SERVICE
-      docker push $REGISTRY/$SERVICE
+      docker push $REGISTRY/$SERVICE:$TAG
     done
   ```
 
