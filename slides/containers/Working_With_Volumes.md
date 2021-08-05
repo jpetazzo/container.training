@@ -159,6 +159,24 @@ Volumes are not anchored to a specific path.
 
 ---
 
+## Populating volumes
+
+* When an empty volume is mounted on a non-empty directory, the directory is copied to the volume.
+
+* This makes it easy to "promote" a normal directory to a volume.
+
+* Non-empty volumes are always mounted as-is.
+
+Let's populate the webapps volume with the webapps.dist directory from the Tomcat image.
+
+````bash
+$ docker run -v webapps:/usr/local/tomcat/webapps.dist tomcat true
+```
+
+Note: running `true` will cause the container to exit successfully once the `webapps.dist` directory has been copied to the `webapps` volume, instead of starting tomcat.
+
+---
+
 ## Using our named volumes
 
 * Volumes are used with the `-v` option.
