@@ -34,6 +34,23 @@ If anything goes wrong — ask for help!
 
 ---
 
+## Cloning the container.training repository
+
+- We will use many YAML files and other assets during the training
+
+- All these files are stored in a public git repository
+
+.exercise[
+
+- Clone the repository:
+  ```bash
+  git clone https://container.training/
+  ```
+
+]
+
+---
+
 class: in-person
 
 ## `tailhist`
