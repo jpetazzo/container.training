@@ -205,7 +205,7 @@ _cmd_kube() {
     KUBEVERSION=$2
     if [ "$KUBEVERSION" ]; then
         EXTRA_APTGET="=$KUBEVERSION-00"
-        EXTRA_KUBEADM="--kubernetes-version=v$KUBEVERSION"
+        EXTRA_KUBEADM="kubernetesVersion: v$KUBEVERSION"
     else
         EXTRA_APTGET=""
         EXTRA_KUBEADM=""
@@ -235,7 +235,24 @@ _cmd_kube() {
     pssh --timeout 200 "
     if i_am_first_node && [ ! -f /etc/kubernetes/admin.conf ]; then
         kubeadm token generate > /tmp/token &&
-	sudo kubeadm init $EXTRA_KUBEADM --token \$(cat /tmp/token) --apiserver-cert-extra-sans \$(cat /tmp/ipv4) --ignore-preflight-errors=NumCPU
+        cat >/tmp/kubeadm-config.yaml <<EOF
+kind: InitConfiguration
+apiVersion: kubeadm.k8s.io/v1beta2
+bootstrapTokens:
+- token: \$(cat /tmp/token)
+---
+kind: KubeletConfiguration
+apiVersion: kubelet.config.k8s.io/v1beta1
+cgroupDriver: cgroupfs
+---
+kind: ClusterConfiguration
+apiVersion: kubeadm.k8s.io/v1beta2
+apiServer:
+  certSANs:
+  - \$(cat /tmp/ipv4)
+$EXTRA_KUBEADM
+EOF
+	sudo kubeadm init --config=/tmp/kubeadm-config.yaml --ignore-preflight-errors=NumCPU
     fi"
 
     # Put kubeconfig in ubuntu's and docker's accounts
