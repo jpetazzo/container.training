@@ -22,7 +22,7 @@
 
 - We can create resources with one-line commands
 
-  (`kubectl run`, `kubectl createa deployment`, `kubectl expose`...)
+  (`kubectl run`, `kubectl create deployment`, `kubectl expose`...)
 
 - We can also create resources by loading YAML files
 
