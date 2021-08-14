@@ -312,7 +312,7 @@ Helm *values* are parameters to customize our installation.
     sum by (instance) (
       irate(
         container_cpu_usage_seconds_total{
-          pod_name=~"worker.*"
+          pod=~"worker.*"
           }[5m]
       )
     )
@@ -367,7 +367,7 @@ container_cpu_usage_seconds_total
 
 This query will show us only metrics for worker containers:
 ```
-container_cpu_usage_seconds_total{pod_name=~"worker.*"}
+container_cpu_usage_seconds_total{pod=~"worker.*"}
 ```
 
 - The `=~` operator allows regex matching
@@ -384,7 +384,7 @@ container_cpu_usage_seconds_total{pod_name=~"worker.*"}
 
 This query will show us CPU usage % instead of total seconds used:
 ```
-100*irate(container_cpu_usage_seconds_total{pod_name=~"worker.*"}[5m])
+100*irate(container_cpu_usage_seconds_total{pod=~"worker.*"}[5m])
 ```
 
 - The [`irate`](https://prometheus.io/docs/prometheus/latest/querying/functions/#irate) operator computes the "per-second instant rate of increase"
@@ -404,7 +404,7 @@ This query will show us CPU usage % instead of total seconds used:
 This query sums the CPU usage per node:
 ```
 sum by (instance) (
-  irate(container_cpu_usage_seconds_total{pod_name=~"worker.*"}[5m])
+  irate(container_cpu_usage_seconds_total{pod=~"worker.*"}[5m])
 )
 ```
 
@@ -526,15 +526,17 @@ class: extra-details
 
 ---
 
-## Unfortunately ...
+class: extra-details
 
-- The cAdvisor exporter uses tag `pod_name` for the name of a pod
+## What if the tags don't match?
+
+- Older versions of cAdvisor exporter used tag `pod_name` for the name of a pod
 
 - The Kubernetes service endpoints exporter uses tag `pod` instead
 
 - See [this blog post](https://www.robustperception.io/exposing-the-software-version-to-prometheus) or [this other one](https://www.weave.works/blog/aggregating-pod-resource-cpu-memory-usage-arbitrary-labels-prometheus/) to see how to perform "joins"
 
-- Alas, Prometheus cannot "join" time series with different labels
+- Note that Prometheus cannot "join" time series with different labels
 
   (see [Prometheus issue #2204](https://github.com/prometheus/prometheus/issues/2204) for the rationale)
 
