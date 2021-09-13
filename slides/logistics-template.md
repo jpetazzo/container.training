@@ -48,13 +48,15 @@
 
 <!--
 
-- You ~should~ must ask questions! Lots of questions!
+- You ~~should~~ must ask questions! Lots of questions!
 
   (especially when you see full screen container pictures)
 
 - Use @@CHAT@@ to ask questions, get help, etc.
 
 -->
+
+<!-- -->
 
 [@alexbuisine]: https://twitter.com/alexbuisine
 [EphemeraSearch]: https://ephemerasearch.com/
