@@ -1,5 +1,5 @@
 # Specify a base image
-FROM python:slim
+FROM python:alpine
 
 # Make a virtualenv to run pip as a non-root user
 ENV VIRTUAL_ENV=/opt/venv

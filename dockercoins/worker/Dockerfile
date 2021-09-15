@@ -1,5 +1,5 @@
 # Specify a base image
-FROM python:slim
+FROM python:alpine
 
 # Make a virtualenv for pip
 ENV VIRTUAL_ENV=/opt/venv
