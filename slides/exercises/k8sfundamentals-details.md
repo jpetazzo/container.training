@@ -20,7 +20,7 @@
 
 - hasher → `dockercoins/hasher:v0.1`
 
-- redis → `rng`
+- redis → `redis`
 
 - rng → `dockercoins/rng:v0.1`
 
