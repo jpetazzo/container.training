@@ -16,7 +16,7 @@ services:
     ports:
     - "8000:80"
     volumes:
-    - "./webui/files/:/files/"
+    - "./webui/files:/files"
 
   redis:
     image: redis
