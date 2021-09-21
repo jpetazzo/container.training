@@ -1,62 +1,54 @@
 # Exposing HTTP services with Ingress resources
 
-- *Services* give us a way to access a pod or a set of pods
+- HTTP services are typically exposed on port 80
 
-- Services can be exposed to the outside world:
+  (and 443 for HTTPS)
 
-  - with type `NodePort` (on a port >30000)
+- `NodePort` services are great, but they are *not* on port 80
 
-  - with type `LoadBalancer` (allocating an external load balancer)
+  (by default, they use port range 30000-32767)
 
-- What about HTTP services?
-
-  - how can we expose `webui`, `rng`, `hasher`?
-
-  - the Kubernetes dashboard?
-
-  - a new version of `webui`?
+- How can we get *many* HTTP services on port 80? 🤔
 
 ---
 
-## Exposing HTTP services
+## Various ways to expose something on port 80
 
-- If we use `NodePort` services, clients have to specify port numbers
+- Service with `type: LoadBalancer`
 
-  (i.e. http://xxxxx:31234 instead of just http://xxxxx)
+  *costs a little bit of money; not always available*
 
-- `LoadBalancer` services are nice, but:
+- Service with one (or multiple) `ExternalIP`
 
-  - they are not available in all environments
+  *requires public nodes; limited by number of nodes*
 
-  - they often carry an additional cost (e.g. they provision an ELB)
+- Service with `hostPort` or `hostNetwork`
 
-  - they require one extra step for DNS integration
-    <br/>
-    (waiting for the `LoadBalancer` to be provisioned; then adding it to DNS)
+  *same limitations as `ExternalIP`; even harder to manage*
 
-- We could build our own reverse proxy
+- Ingress resources
+
+  *addresses all these limitations, yay!*
 
 ---
 
-## Building a custom reverse proxy
+## `LoadBalancer` vs `Ingress`
 
-- There are many options available:
+- Service with `type: LoadBalancer`
 
-  Apache, HAProxy, Hipache, NGINX, Traefik, ...
+  - requires a particular controller (e.g. CCM, MetalLB)
+  - costs a bit of money for each service
+  - if TLS is desired, it has to be implemented by the app
+  - works for any TCP protocol (not just HTTP)
+  - doesn't interpret the HTTP protocol (no fancy routing)
 
-  (look at [jpetazzo/aiguillage](https://github.com/jpetazzo/aiguillage) for a minimal reverse proxy configuration using NGINX)
+- Ingress
 
-- Most of these options require us to update/edit configuration files after each change
-
-- Some of them can pick up virtual hosts and backends from a configuration store
-
-- Wouldn't it be nice if this configuration could be managed with the Kubernetes API?
-
---
-
-- Enter.red[¹] *Ingress* resources!
-
-.footnote[.red[¹] Pun maybe intended.]
+  - requires an ingress controller
+  - flat cost regardless of number of ingresses
+  - can implement TLS transparently for the app
+  - only supports HTTP
+  - can do content-based routing (e.g. per URI)
 
 ---
 
@@ -66,17 +58,47 @@
 
 - Designed to expose HTTP services
 
-- Basic features:
+- Requires an *ingress controller*
 
-  - load balancing
-  - SSL termination
-  - name-based virtual hosting
+  (otherwise, resources can be created, but nothing happens)
 
-- Can also route to different services depending on:
+- Some ingress controllers are based on existing load balancers
 
-  - URI path (e.g. `/api`→`api-service`, `/static`→`assets-service`)
-  - Client headers, including cookies (for A/B testing, canary deployment...)
-  - and more!
+  (HAProxy, NGINX...)
+
+- Some are standalone, and sometimes designed for Kubernetes
+
+  (Contour, Traefik...)
+
+- Note: there is no "default" or "official" ingress controller!
+
+---
+
+## Ingress standard features
+
+- Load balancing
+
+- SSL termination
+
+- Name-based virtual hosting
+
+- URI routing
+
+  (e.g. `/api`→`api-service`, `/static`→`assets-service`)
+
+---
+
+## Ingress extended features
+
+(Not always supported; supported through annotations, CRDs, etc.)
+
+- Routing with other headers or cookies
+
+- A/B testing
+
+- Canary deployment
+
+- etc.
 
 ---
 
@@ -84,19 +106,33 @@
 
 - Step 1: deploy an *ingress controller*
 
-  - ingress controller = load balancer + control loop
+  (one-time setup)
 
-  - the control loop watches over ingress resources, and configures the LB accordingly
+- Step 2: create *Ingress resources*
 
-- Step 2: set up DNS
+  - maps a domain and/or path to a Kubernetes Service
+
+  - the controller watches ingress resources and sets up a LB
+
+- Step 3: set up DNS
 
   - associate DNS entries with the load balancer address
 
-- Step 3: create *ingress resources*
+---
 
-  - the ingress controller picks up these resources and configures the LB
+class: extra-details
 
-- Step 4: profit!
+## Single or multiple LoadBalancer
+
+- Most ingress controllers will create a LoadBalancer Service
+
+- We need to point our DNS entries to the IP address of that LB
+
+- Some rare ingress controllers will allocate one LB per ingress resource
+
+  (example: by default, the AWS ingress controller based on ALBs)
+
+- This leads to increased costs
 
 ---
 
@@ -424,7 +460,47 @@ This is normal: we haven't provided any ingress rule yet.
 
 ---
 
-## What does an ingress resource look like?
+## Creating ingress resources
+
+- Before Kubernetes 1.19, we must use YAML manifests
+
+  (see example on next slide)
+
+- Since Kubernetes 1.19, we can use `kubectl create ingress`
+
+  ```bash
+  kubectl create ingress cheddar \
+      --rule=cheddar.`A.B.C.D`.nip.io/*=cheddar:80
+  ```
+
+- We can specify multiple rules per resource
+
+  ```bash
+  kubectl create ingress cheeses \
+      --rule=cheddar.`A.B.C.D`.nip.io/*=cheddar:80 \
+      --rule=stilton.`A.B.C.D`.nip.io/*=stilton:80 \
+      --rule=wensleydale.`A.B.C.D`.nip.io/*=wensleydale:80
+  ```
+
+---
+
+## Pay attention to the `*`!
+
+- The `*` is important:
+
+  ```
+  --rule=cheddar.A.B.C.D.nip.io/`*`=cheddar:80
+  ```
+
+- It means "all URIs below that path"
+
+- Without the `*`, it means "only that exact path"
+
+  (and requests for e.g. images or other URIs won't work)
+
+---
+
+## Ingress resources in YAML
 
 Here is a minimal host-based ingress resource:
 
@@ -449,39 +525,37 @@ spec:
 
 ---
 
-## Creating our first ingress resources
+class: extra-details
 
-.exercise[
+## Ingress API version
 
-- Edit the file `~/container.training/k8s/ingress.yaml`
+- The YAML on the previous slide uses `apiVersion: networking.k8s.io/v1beta1`
 
-- Replace A.B.C.D with the IP address of `node1`
+- Starting with Kubernetes 1.19, `networking.k8s.io/v1` is available
 
-- Apply the file
+- However, with Kubernetes 1.19 (and later), we can use `kubectl create ingress`
 
-- Open http://cheddar.A.B.C.D.nip.io
+- We chose to keep an "old" (deprecated!) YAML example for folks still using older versions of Kubernetes
 
-]
+- If we want to see "modern" YAML, we can use `-o yaml --dry-run=client`:
 
-(An image of a piece of cheese should show up.)
+  ```bash
+  kubectl create ingress cheddar -o yaml --dry-run=client \
+      --rule=cheddar.`A.B.C.D`.nip.io/*=cheddar:80
+
+  ```
 
 ---
 
-## Creating the other ingress resources
+## Creating ingress resources
 
-.exercise[
+- Create the ingress resources with `kubectl create ingress`
 
-- Edit the file `~/container.training/k8s/ingress.yaml`
+  (or use the YAML manifests if using Kubernetes 1.18 or older)
 
-- Replace `cheddar` with `stilton` (in `name`, `host`, `serviceName`)
+- Make sure to update the hostnames!
 
-- Apply the file
-
-- Check that `stilton.A.B.C.D.nip.io` works correctly
-
-- Repeat for `wensleydale`
-
-]
+- Check that you can connect to the exposed web apps
 
 ---
 
@@ -507,41 +581,31 @@ class: extra-details
 
 ---
 
-## Ingress: the good
+## Ingress in the past
 
-- The traffic flows directly from the ingress load balancer to the backends
+- Before the v1 spec, some features were not standardized
 
-  - it doesn't need to go through the `ClusterIP`
-
-  - in fact, we don't even need a `ClusterIP` (we can use a headless service)
-
-- The load balancer can be outside of Kubernetes
-
-  (as long as it has access to the cluster subnet)
-
-- This allows the use of external (hardware, physical machines...) load balancers
-
-- Annotations can encode special features
-
-  (rate-limiting, A/B testing, session stickiness, etc.)
-
----
-
-## Ingress: the bad
-
-- Aforementioned "special features" are not standardized yet
-
-- Some controllers will support them; some won't
-
-- Even relatively common features (stripping a path prefix) can differ:
+- Example: stripping path prefixes in Traefik vs NGINX
 
   - [traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip](https://docs.traefik.io/user-guide/kubernetes/#path-based-routing)
 
   - [ingress.kubernetes.io/rewrite-target: /](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/rewrite)
 
-- The Ingress spec stabilized in Kubernetes 1.19 ...
+- However, the v1 spec didn't standardize everything
 
-  ... without specifying these features! 😭
+  (e.g. A/B, sticky sessions, canary...)
+
+---
+
+## Ingress in the future
+
+- The [Gateway API SIG](https://gateway-api.sigs.k8s.io/) might be the future of Ingress
+
+- It proposes new resources:
+
+ GatewayClass, Gateway, HTTPRoute, TCPRoute...
+
+- It is still in alpha stage
 
 ---
 
