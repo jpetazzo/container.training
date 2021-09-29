@@ -1,0 +1,42 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tilt-registry
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tilt-registry
+  name: tilt-registry
+  namespace: tilt-registry
+spec:
+  selector:
+    matchLabels:
+      app: tilt-registry
+  template:
+    metadata:
+      labels:
+        app: tilt-registry
+    spec:
+      containers:
+      - image: registry
+        name: registry
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tilt-registry
+  name: tilt-registry
+  namespace: tilt-registry
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+    nodePort: 30555
+  selector:
+    app: tilt-registry
+  type: NodePort

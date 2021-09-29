@@ -181,17 +181,57 @@ Ah, right ...
 
 - The `dockercoins` directory in our repository has a `Tiltfile`
 
-- Go to that directory and try `tilt up`
+- That Tiltfile includes definitions for the DockerCoins app, including:
 
-- Tilt should refuse to start, but it will explain why
+  - building the images for the app
 
-- Edit the `Tiltfile` accordingly and try again
+  - Kubernetes manifests to deploy the app
 
-- Open the Tilt web UI
+  - a self-hosted registry to host the app image
 
-  (if running Tilt on a remote machine, you will need `tilt up --host 0.0.0.0`)
+- Let's try it out!
 
-- Watch as the Dockercoins app is built, pushed, started
+---
+
+## Running Tilt
+
+- If you're running on your local machine:
+  ```bash
+  tilt up
+  ```
+  Then press "space" or connect to http://localhost:10350/
+
+- If you're running on a remote machine:
+  ```bash
+  tilt up --host=0.0.0.0
+  ```
+  Then connect to the remote machine on port 10350
+
+- The Tilt web interface might complain about the Kubernetes context
+
+  ...If it does, don't worry, we'll fix that right away!
+
+---
+
+## Kubernetes contexts
+
+- Tilt is designed to run in dev environments
+
+- It will try to figure out if we're really in a dev environment:
+
+  - if Tilt thinks that are on a local dev cluster, it will start
+
+  - otherwise, it will give us a warning and it won't continue
+
+- In the latter case, we need to add one line to the Tiltfile
+
+  (to tell Tilt "it's okay, you can run safely in this environment!")
+
+- If this happens, add the line to the Tiltfile
+
+  (Tilt will tell you exactly what to add!)
+
+- We don't need to restart Tilt, it will detect the change immediately
 
 ---
 
