@@ -96,6 +96,8 @@ class: extra-details
 
 - Example: `*/3 * * * *` means "every three minutes"
 
+- The website https://crontab.guru/ can help to create cron schedules!
+
 ---
 
 ## Creating a Cron Job
@@ -165,46 +167,6 @@ class: extra-details
   - the deadline of the job will stop the entire job
 
   - the deadline of the pod will only stop an individual pod
-
----
-
-class: extra-details
-
-## What about `kubectl run` before v1.18?
-
-- Creating a Deployment:
-
-  `kubectl run`
-
-- Creating a Pod:
-
-  `kubectl run --restart=Never`
-
-- Creating a Job:
-
-  `kubectl run --restart=OnFailure`
-
-- Creating a Cron Job:
-
-  `kubectl run --restart=OnFailure --schedule=...`
-
-*Avoid using these forms, as they are deprecated since Kubernetes 1.18!*
-
----
-
-## Beyond `kubectl create`
-
-- As hinted earlier, `kubectl create` doesn't always expose all options
-
-  - can't express parallelism or completions of Jobs
-
-  - can't express healthchecks, resource limits
-
-- `kubectl create` and `kubectl run` are *helpers* that generate YAML manifests
-
-- If we write these manifests ourselves, we can use all features and options
-
-- We'll see later how to do that!
 
 ???
 
