@@ -122,6 +122,24 @@
 
 ---
 
+## [Rancher Desktop](https://rancherdesktop.io/)
+
+- Available on Mac and Windows
+
+- Runs a single cluster with a single node
+
+- Lets you pick the Kubernetes version that you want to use
+
+  (and change it any time you like)
+
+- Emphasis on ease of use (like Docker Desktop)
+
+- Very young product (first release in May 2021)
+
+- Based on k3s and other proven components
+
+---
+
 ## VM with custom install
 
 - Choose your own adventure!
