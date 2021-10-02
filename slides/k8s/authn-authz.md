@@ -475,37 +475,64 @@ class: extra-details
 
 ## In practice
 
-- We are going to create a service account
+- We are going to run a pod
 
-- We will use a default cluster role (`view`)
+- This pod will use the default service account of its namespace
 
-- We will bind together this role and this service account
+- We will check our API permissions
 
-- Then we will run a pod using that service account
+  (there shouldn't be any)
 
-- In this pod, we will install `kubectl` and check our permissions
+- Then we will bind a role to the service account
+
+- We will check that we were granted the corresponding permissions
 
 ---
 
-## Creating a service account
+## Running a pod
 
-- We will call the new service account `viewer`
-
-  (note that nothing prevents us from calling it `view`, like the role)
+- We will run an `alpine` pod and install `kubectl` there
 
 .exercise[
 
-- Create the new service account:
+- Run a one-time pod:
   ```bash
-  kubectl create serviceaccount viewer
+  kubectl run eyepod --rm -ti --restart=Never \
+          --image alpine
   ```
 
-- List service accounts now:
+- Install `curl`, then use it to install `kubectl`:
   ```bash
-  kubectl get serviceaccounts
+  apk add --no-cache curl
+  URLBASE=https://storage.googleapis.com/kubernetes-release/release
+  KUBEVER=$(curl -s $URLBASE/stable.txt)
+  curl -LO $URLBASE/$KUBEVER/bin/linux/amd64/kubectl
+  chmod +x kubectl
   ```
 
 ]
+
+---
+
+## Checking our permissions
+
+- Normally, at this point, we don't have any API permission
+
+.exercise[
+
+- Check our permissions with `kubectl`:
+  ```bash
+  kubectl get pods
+  ```
+
+]
+
+- We should get a message telling us that our service account
+  doesn't have permissions to list "pods" in the current namespace
+
+- We can also make requests to the API server directly
+
+  (use `kubectl -v6` to see the exact request URI!)
 
 ---
 
@@ -513,17 +540,17 @@ class: extra-details
 
 - Binding a role = creating a *rolebinding* object
 
-- We will call that object `viewercanview`
+- We will call that object `can-view`
 
-  (but again, we could call it `view`)
+  (but again, we could call it `view` or whatever we like)
 
 .exercise[
 
 - Create the new role binding:
   ```bash
-  kubectl create rolebinding viewercanview \
+  kubectl create rolebinding can-view \
           --clusterrole=view \
-          --serviceaccount=default:viewer
+          --serviceaccount=default:default
   ```
 
 ]
@@ -553,9 +580,9 @@ It's important to note a couple of details in these flags...
 
 ## Users vs Service Accounts
 
-- We used `--serviceaccount=default:viewer`
+- We used `--serviceaccount=default:default`
 
-- What would have happened if we had used `--user=default:viewer`?
+- What would have happened if we had used `--user=default:default`?
 
   - we would have bound the role to a user instead of a service account
 
@@ -571,46 +598,20 @@ It's important to note a couple of details in these flags...
 
 ---
 
-## Testing
+## Checking our new permissions
 
-- We will run an `alpine` pod and install `kubectl` there
-
-.exercise[
-
-- Run a one-time pod:
-  ```bash
-  kubectl run eyepod --rm -ti --restart=Never \
-          --serviceaccount=viewer \
-          --image alpine
-  ```
-
-- Install `curl`, then use it to install `kubectl`:
-  ```bash
-  apk add --no-cache curl
-  URLBASE=https://storage.googleapis.com/kubernetes-release/release
-  KUBEVER=$(curl -s $URLBASE/stable.txt)
-  curl -LO $URLBASE/$KUBEVER/bin/linux/amd64/kubectl
-  chmod +x kubectl
-  ```
-
-]
-
----
-
-## Running `kubectl` in the pod
-
-- We'll try to use our `view` permissions, then to create an object
+- We should be able to *view* things, but not to *edit* them
 
 .exercise[
 
-- Check that we can, indeed, view things:
+- Check our permissions with `kubectl`:
   ```bash
-  ./kubectl get all
+  kubectl get pods
   ```
 
-- But that we can't create things:
-  ```
-  ./kubectl create deployment testrbac --image=nginx
+- Try to create something:
+  ```bash
+  kubectl create deployment can-i-do-this --image=nginx
   ```
 
 - Exit the container with `exit` or `^D`
@@ -618,6 +619,24 @@ It's important to note a couple of details in these flags...
 <!-- ```key ^D``` -->
 
 ]
+
+---
+
+class: extra-details
+
+## `kubectl run --serviceaccount`
+
+- `kubectl run` also has a `--serviceaccount` flag
+
+- ...But it's supposed to be deprecated "soon"
+
+  (see [kubernetes/kubernetes#99732](https://github.com/kubernetes/kubernetes/pull/99732) for details)
+
+- It's possible to specify the service account with an override:
+  ```bash
+  kubectl run my-pod -ti --image=alpine --restart=Never \
+          --overrides='{ "spec": { "serviceAccountName" : "my-service-account" } }'
+  ```
 
 ---
 
