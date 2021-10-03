@@ -30,7 +30,7 @@ variable "pool_size" {
 
 variable "pool_min_size" {
   type    = number
-  default = 1
+  default = 2
 }
 
 variable "pool_max_size" {
