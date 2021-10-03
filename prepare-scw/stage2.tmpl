@@ -1,0 +1,136 @@
+terraform {
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.0.3"
+    }
+  }
+  required_version = ">= 0.14"
+}
+
+
+%{ for index in range(101, 101+count) ~}
+
+provider "kubernetes" {
+  alias = "kapsule_cluster_${index}"
+  config_path = "$${path.module}/kubeconfig.${index}"
+}
+
+resource "kubernetes_namespace" "sshpod_${index}" {
+  provider = kubernetes.kapsule_cluster_${index}
+  metadata {
+    name = "sshpod"
+  }
+}
+
+resource "kubernetes_deployment" "sshpod_${index}" {
+  provider = kubernetes.kapsule_cluster_${index}
+  metadata {
+    name = "sshpod"
+    namespace = kubernetes_namespace.sshpod_${index}.metadata.0.name
+  }
+  spec {
+    selector {
+      match_labels = {
+        app = "sshpod"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "sshpod"
+        }
+      }
+      spec {
+        service_account_name = "sshpod"
+        container {
+          image = "jpetazzo/sshpod"
+          name = "sshpod"
+          env {
+            name = "PASSWORD"
+            value = random_string.sshpod_${index}.result
+          }
+          lifecycle {
+            post_start {
+              exec {
+                command = [ "sh", "-c", "curl http://myip.enix.org/REMOTE_ADDR > /etc/HOSTIP || true" ]
+              }
+            }
+          }
+          resources {
+            limits = {
+              cpu    = "2"
+              memory = "100M"
+            }
+            requests = {
+              cpu    = "100m"
+              memory = "100M"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "sshpod_${index}" {
+  provider = kubernetes.kapsule_cluster_${index}
+  metadata {
+    name = "sshpod"
+    namespace = kubernetes_namespace.sshpod_${index}.metadata.0.name
+  }
+  spec {
+    selector = {
+      app = "sshpod"
+    }
+    port {
+      port = 22
+      target_port = 22
+      node_port = 32222
+    }
+    type = "NodePort"
+  }
+}
+
+resource "kubernetes_service_account" "sshpod_${index}" {
+  provider = kubernetes.kapsule_cluster_${index}
+  metadata {
+    name = "sshpod"
+    namespace = kubernetes_namespace.sshpod_${index}.metadata.0.name
+  }
+}
+
+resource "kubernetes_cluster_role_binding" "sshpod_${index}" {
+  provider = kubernetes.kapsule_cluster_${index}
+  metadata {
+    name = "sshpod"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "sshpod"
+    namespace = "sshpod"
+  }
+}
+
+resource "random_string" "sshpod_${index}" {
+  length  = 6
+  special = false
+  upper   = false
+}
+
+output "ssh_${index}" {
+  value = format(
+            "ssh -l %s -p %s ssh.%s # password=%s",
+            "k8s",
+            "32222",
+            file(format("%s/wildcard_dns.%03d", path.module, ${index})),
+            random_string.sshpod_${index}.result
+          )
+}
+
+%{ endfor ~}
