@@ -122,7 +122,7 @@ and displays aggregated logs.
 
 class: pic
 
-![Diagram showing the 5 containers of the applications](images/dockercoins-diagram.svg)
+![Diagram showing the 5 containers of the applications](images/dockercoins-diagram.png)
 
 ---
 
