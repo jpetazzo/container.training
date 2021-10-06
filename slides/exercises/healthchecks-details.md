@@ -8,9 +8,9 @@
 
   (using a simple HTTP check on the `/` route of the service)
 
-- Check what happens when deploying an invalid image (e.g. `alpine`)
+- Check what happens when deploying an invalid image for `rng` (e.g. `alpine`)
 
-- Then, add a liveness probe on the `rng` service
+- Then roll back `rng` to the original image and add a liveness probe
 
   (with the same parameters)
 
