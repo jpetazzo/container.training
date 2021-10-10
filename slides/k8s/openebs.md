@@ -58,9 +58,12 @@ class: extra-details
   ```bash  
     helm upgrade --install openebs openebs \
          --repo https://openebs.github.io/charts \
-         --namespace openebs --create-namespace
+         --namespace openebs --create-namespace \
+         --version 2.12.9
   ```
 ]
+
+⚠️ We stick to OpenEBS 2.x because 3.x requires additional configuration.
 
 ---
 
