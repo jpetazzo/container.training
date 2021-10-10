@@ -581,19 +581,19 @@ class: extra-details
 
 ---
 
-## Ingress in the past
+## Ingress shortcomings
 
-- Before the v1 spec, some features were not standardized
+- A lot of things have been left out of the Ingress v1 spec
 
-- Example: stripping path prefixes in Traefik vs NGINX
+  (routing requests according to weight, cookies, across namespaces...)
 
-  - [traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip](https://docs.traefik.io/user-guide/kubernetes/#path-based-routing)
+- Example: stripping path prefixes
 
-  - [ingress.kubernetes.io/rewrite-target: /](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/rewrite)
+  - NGINX: [nginx.ingress.kubernetes.io/rewrite-target: /](https://github.com/kubernetes/ingress-nginx/blob/main/docs/examples/rewrite/README.md)
 
-- However, the v1 spec didn't standardize everything
+  - Traefik v1: [traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip](https://doc.traefik.io/traefik/migration/v1-to-v2/#strip-and-rewrite-path-prefixes)
 
-  (e.g. A/B, sticky sessions, canary...)
+  - Traefik v2: [requires a CRD](https://doc.traefik.io/traefik/migration/v1-to-v2/#strip-and-rewrite-path-prefixes)
 
 ---
 
