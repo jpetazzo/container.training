@@ -30,21 +30,26 @@ domain_or_domain_file = sys.argv[1]
 if os.path.isfile(domain_or_domain_file):
   domains = open(domain_or_domain_file).read().split()
   domains = [ d for d in domains if not d.startswith('#') ]
-  tag = sys.argv[2]
-  ips = open(f"tags/{tag}/ips.txt").read().split()
-  settings_file = f"tags/{tag}/settings.yaml"
-  clustersize = yaml.safe_load(open(settings_file))["clustersize"]
+  ips_file_or_tag = sys.argv[2]
+  if os.path.isfile(ips_file_or_tag):
+    lines = open(ips_file_or_tag).read().split('\n')
+    clusters = [line.split() for line in lines]
+  else:
+    ips = open(f"tags/{ips_file_or_tag}/ips.txt").read().split()
+    settings_file = f"tags/{tag}/settings.yaml"
+    clustersize = yaml.safe_load(open(settings_file))["clustersize"]
+    clusters = []
+    while ips:
+      clusters.append(ips[:clustersize])
+      ips = ips[clustersize:]
 else:
   domains = [domain_or_domain_file]
-  ips = sys.argv[2:]
-  clustersize = len(ips)
+  clusters = [sys.argv[2:]]
 
 # Now, do the work.
-while domains and ips:
-  domain = domains[0]
-  domains = domains[1:]
-  cluster = ips[:clustersize]
-  ips = ips[clustersize:]
+while domains and clusters:
+  domain = domains.pop(0)
+  cluster = clusters.pop(0)
   print(f"{domain} => {cluster}")
   zone = ""
   node = 0
@@ -67,5 +72,5 @@ while domains and ips:
 if domains:
   print(f"Good, we have {len(domains)} domains left.")
 
-if ips:
-  print(f"Crap, we have {len(ips)} IP addresses left.")
+if clusters:
+  print(f"Crap, we have {len(clusters)} clusters left.")
