@@ -43,7 +43,7 @@
 
 - To prevent the first mistake, we need to tell Helm:
 
-  *"let me know if any additional (unknonw) value was set!"*
+  *"let me know if any additional (unknown) value was set!"*
 
 - To prevent the second mistake, we need to tell Helm:
 
