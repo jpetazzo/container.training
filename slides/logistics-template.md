@@ -1,4 +1,4 @@
-## Intros
+## Introductions
 
 ⚠️ This slide should be customized by the tutorial instructor(s).
 

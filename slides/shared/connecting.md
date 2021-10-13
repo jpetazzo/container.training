@@ -147,7 +147,7 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ---
 
-## Tmux cheatsheet
+## Tmux cheat sheet
 
 [Tmux](https://en.wikipedia.org/wiki/Tmux) is a terminal multiplexer like `screen`.
 
@@ -166,4 +166,4 @@ It has been preinstalled on your workshop nodes.*
 - Ctrl-b Alt-2 → rearrange windows in rows
 - Ctrl-b arrows → navigate to other windows
 - Ctrl-b d → detach session
-- tmux attach → reattach to session
+- tmux attach → re-attach to session

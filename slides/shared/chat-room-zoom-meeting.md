@@ -1,6 +1,6 @@
 ## Use the chat!
 
-- In the Zoom UI, click on "Chat" (at the bottom of the screen, in the middle)
+- In the Zoom GUI, click on "Chat" (at the bottom of the screen, in the middle)
 
 - This will bring up the chat panel
 
@@ -24,7 +24,7 @@
 
 --
 
-- In the Zoom UI, click on "Participants" (at the bottom of the screen, in the middle)
+- In the Zoom VI, click on "Participants" (at the bottom of the screen, in the middle)
 
 - This will bring up the list of participants
 

@@ -32,7 +32,7 @@ Let's start this before we look around, as downloading will take a little time..
 
 .exercise[
 
-- Go to the `dockercoins` directory, in the cloned repo:
+- Go to the `dockercoins` directory, in the cloned repository:
   ```bash
   cd ~/container.training/dockercoins
   ```
@@ -62,11 +62,11 @@ and displays aggregated logs.
 
 --
 
-- No, you can't buy coffee with DockerCoins
+- No, you can't buy coffee with DockerCoin
 
 --
 
-- How DockerCoins works:
+- How dockercoins works:
 
   - generate a few random bytes
 
@@ -78,15 +78,15 @@ and displays aggregated logs.
 
 --
 
-- DockerCoins is *not* a cryptocurrency
+- DockerCoin is *not* a cryptocurrency
 
   (the only common points are "randomness," "hashing," and "coins" in the name)
 
 ---
 
-## DockerCoins in the microservices era
+## DockerCoin in the microservices era
 
-- DockerCoins is made of 5 services:
+- The dockercoins app is made of 5 services:
 
   - `rng` = web service generating random bytes
 
@@ -104,7 +104,7 @@ and displays aggregated logs.
 
 ---
 
-## How DockerCoins works
+## How dockercoins works
 
 - `worker` invokes web service `rng` to generate random bytes
 

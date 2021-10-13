@@ -97,7 +97,7 @@ class: in-person
 
 - All you need is a computer (or even a phone or tablet!), with:
 
-  - an internet connection
+  - an Internet connection
 
   - a web browser
 
@@ -122,7 +122,7 @@ class: in-person
   ([Play Store](https://play.google.com/store/apps/details?id=com.sonelli.juicessh))
   works pretty well
 
-- Nice-to-have: [Mosh](https://mosh.org/) instead of SSH, if your internet connection tends to lose packets
+- Nice-to-have: [Mosh](https://mosh.org/) instead of SSH, if your Internet connection tends to lose packets
 
 ---
 

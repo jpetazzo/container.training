@@ -38,7 +38,7 @@
 
 - You are welcome to use, re-use, share these slides
 
-- These slides are written in markdown
+- These slides are written in Markdown
 
 - The sources of these slides are available in a public GitHub repository:
 
