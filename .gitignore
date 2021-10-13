@@ -6,13 +6,13 @@ prepare-vms/tags
 prepare-vms/infra
 prepare-vms/www
 
-prepare-scw/.terraform*
-prepare-scw/terraform.*
-prepare-scw/stage2/*.tf
-prepare-scw/stage2/kubeconfig.*
-prepare-scw/stage2/.terraform*
-prepare-scw/stage2/terraform.*
-prepare-scw/stage2/wildcard_dns.*
+prepare-tf/.terraform*
+prepare-tf/terraform.*
+prepare-tf/stage2/*.tf
+prepare-tf/stage2/kubeconfig.*
+prepare-tf/stage2/.terraform*
+prepare-tf/stage2/terraform.*
+prepare-tf/stage2/externalips.*
 
 slides/*.yml.html
 slides/autopilot/state.yaml
