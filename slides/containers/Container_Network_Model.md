@@ -119,25 +119,19 @@ New networks can be created (with `docker network create`).
 
 class: pic
 
-## Single container in a Docker network
-
-![bridge0](images/bridge1.png)
+![Multiple containers on the default bridge network, on a Linux machine](images/docker-networking-default-bridge-linux.png)
 
 ---
 
 class: pic
 
-## Two containers on a single Docker network
-
-![bridge2](images/bridge2.png)
+![Multiple containers in multiple bridge networks, on a Linux machine](images/docker-networking-networks-linux.png)
 
 ---
 
 class: pic
 
-## Two containers on two Docker networks
-
-![bridge3](images/bridge3.png)
+![Multiple containers in multiple bridge networks, on a Mac/Windows machine](images/docker-networking-networks-macwin.png)
 
 ---
 
