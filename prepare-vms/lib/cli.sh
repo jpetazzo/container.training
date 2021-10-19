@@ -88,3 +88,8 @@ need_settings() {
         die "Settings file $1 doesn't exist."
     fi
 }
+
+need_login_password() {
+    USER_LOGIN=$(yq -r .user_login < tags/$TAG/settings.yaml)
+    USER_PASSWORD=$(yq -r .user_password < tags/$TAG/settings.yaml)
+}

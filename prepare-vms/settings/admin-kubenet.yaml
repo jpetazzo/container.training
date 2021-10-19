@@ -10,15 +10,23 @@ cards_template: cards.html
 # Use "Letter" in the US, and "A4" everywhere else
 paper_size: A4
 
-# This can be "test" or "stable"
-engine_version: stable
-
-# These correspond to the version numbers visible on their respective GitHub release pages
-compose_version: 1.24.1
-machine_version: 0.14.0
-
-# Password used to connect with the "docker user"
-docker_user_password: training
+# Login and password that students will use
+user_login: k8s
+user_password: training
 
 clusternumber: 100
 image:
+
+steps:
+  - disableaddrchecks
+  - wait
+  - clusterize
+  - tools
+  - docker
+  - createuser
+  - webssh
+  - tailhist
+  - kubebins
+  - kubetools
+  - cards
+  - ips

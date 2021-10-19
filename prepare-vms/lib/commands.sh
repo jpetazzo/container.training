@@ -57,30 +57,105 @@ _cmd_clean() {
 	done	
 }
 
-_cmd deploy "Install Docker on a bunch of running VMs"
-_cmd_deploy() {
+_cmd createuser "Create the user that students will use"
+_cmd_createuser() {
+    TAG=$1
+    need_tag
+    need_login_password
+
+    pssh "
+    set -e
+    # Create the user if it doesn't exist yet.
+    id $USER_LOGIN || sudo useradd -d /home/$USER_LOGIN -g users -m -s /bin/bash $USER_LOGIN
+    # Add them to the docker group, if there is one.
+    grep ^docker: /etc/group && sudo usermod -aG docker $USER_LOGIN
+    # Set their password.
+    echo $USER_LOGIN:$USER_PASSWORD | sudo chpasswd
+    # Add them to sudoers and allow passwordless authentication.
+    echo '$USER_LOGIN ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$USER_LOGIN
+    "
+
+    pssh "
+    set -e
+    sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+    sudo service ssh restart
+    "
+
+    pssh "
+    set -e
+    cd /home/$USER_LOGIN
+    sudo -u $USER_LOGIN mkdir -p .ssh
+    if i_am_first_node; then
+      # Generate a key pair with an empty passphrase.
+      if ! sudo -u $USER_LOGIN [ -f .ssh/id_rsa ]; then
+        sudo -u $USER_LOGIN ssh-keygen -t rsa -f .ssh/id_rsa -P ''
+        sudo -u $USER_LOGIN cp .ssh/id_rsa.pub .ssh/authorized_keys
+      fi
+    fi
+    "
+
+    pssh "
+    set -e
+    cd /home/$USER_LOGIN
+    if ! i_am_first_node; then
+      # Copy keys from the first node.
+      ssh $SSHOPTS \$(cat /etc/name_of_first_node) sudo -u $USER_LOGIN tar -C /home/$USER_LOGIN -cvf- .ssh |
+      sudo -u $USER_LOGIN tar -xf-
+    fi
+    "
+
+    # FIXME do this only once.
+    pssh -I "sudo -u $USER_LOGIN tee -a /home/$USER_LOGIN/.bashrc" <<"SQRL"
+
+# Fancy prompt courtesy of @soulshake.
+export PS1='\e[1m\e[31m[$HOSTIP] \e[32m($(docker-prompt)) \e[34m\u@\h\e[35m \w\e[0m\n$ '
+
+# Bigger history, in a different file, and saved before executing each command.
+export HISTSIZE=9999
+export HISTFILESIZE=9999
+shopt -s histappend
+trap 'history -a' DEBUG
+export HISTFILE=~/.history
+SQRL
+
+    pssh -I "sudo -u $USER_LOGIN tee /home/$USER_LOGIN/.vimrc" <<SQRL
+syntax on
+set autoindent
+set expandtab
+set number
+set shiftwidth=2
+set softtabstop=2
+set nowrap
+SQRL
+
+    pssh -I "sudo -u $USER_LOGIN tee /home/$USER_LOGIN/.tmux.conf" <<SQRL
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Allow using mouse to switch panes
+set -g mouse on
+
+# Make scrolling with wheels work
+
+bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
+bind -n WheelDownPane select-pane -t= \; send-keys -M
+SQRL
+
+    # Install docker-prompt script
+    pssh -I sudo tee /usr/local/bin/docker-prompt <lib/docker-prompt
+    pssh sudo chmod +x /usr/local/bin/docker-prompt
+
+}
+
+_cmd clusterize "Group VMs in clusters"
+_cmd_clusterize() {
     TAG=$1
     need_tag
 
-    # wait until all hosts are reachable before trying to deploy
-    info "Trying to reach $TAG instances..."
-    while ! tag_is_reachable; do
-        >/dev/stderr echo -n "."
-        sleep 2
-    done
-    >/dev/stderr echo ""
-
-    echo deploying > tags/$TAG/status
-    sep "Deploying tag $TAG"
-
-    # If this VM image is using cloud-init,
-    # wait for cloud-init to be done
-    pssh "
-    if [ -d /var/lib/cloud ]; then
-        while [ ! -f /var/lib/cloud/instance/boot-finished ]; do
-            sleep 1
-        done
-    fi"
+    echo clusterizing > tags/$TAG/status
+    sep "Clusterizing tag $TAG"
 
     # Special case for scaleway since it doesn't come with sudo
     if [ "$INFRACLASS" = "scaleway" ]; then
@@ -116,40 +191,20 @@ _cmd_deploy() {
     #fi"
 
     # Copy postprep.py to the remote machines, and execute it, feeding it the list of IP addresses
-    pssh -I tee /tmp/postprep.py <lib/postprep.py
-    pssh --timeout 900 --send-input "python /tmp/postprep.py >>/tmp/pp.out 2>>/tmp/pp.err" <tags/$TAG/ips.txt
-
-    # Install docker-prompt script
-    pssh -I sudo tee /usr/local/bin/docker-prompt <lib/docker-prompt
-    pssh sudo chmod +x /usr/local/bin/docker-prompt
-
-    # If /home/docker/.ssh/id_rsa doesn't exist, copy it from the first node
-    pssh "
-    sudo -u docker [ -f /home/docker/.ssh/id_rsa ] ||
-    ssh $SSHOPTS \$(cat /etc/name_of_first_node) sudo -u docker tar -C /home/docker -cvf- .ssh |
-    sudo -u docker tar -C /home/docker -xf-"
-
-    # if 'docker@' doesn't appear in /home/docker/.ssh/authorized_keys, copy it there
-    pssh "
-    grep docker@ /home/docker/.ssh/authorized_keys ||
-    cat /home/docker/.ssh/id_rsa.pub |
-    sudo -u docker tee -a /home/docker/.ssh/authorized_keys"
+    pssh -I tee /tmp/clusterize.py <lib/clusterize.py
+    pssh --timeout 900 --send-input "python /tmp/clusterize.py >>/tmp/pp.out 2>>/tmp/pp.err" <tags/$TAG/ips.txt
 
     # On the first node, create and deploy TLS certs using Docker Machine
     # (Currently disabled.)
     true || pssh "
     if i_am_first_node; then
         grep '[0-9]\$' /etc/hosts |
-        xargs -n2 sudo -H -u docker \
-        docker-machine create -d generic --generic-ssh-user docker --generic-ip-address
+        xargs -n2 sudo -H -u $USER_LOGIN \
+        docker-machine create -d generic --generic-ssh-user $USER_LOGIN --generic-ip-address
     fi"
 
-    sep "Deployed tag $TAG"
-    echo deployed > tags/$TAG/status
-    info "You may want to run one of the following commands:"
-    info "$0 kube $TAG"
-    info "$0 pull_images $TAG"
-    info "$0 cards $TAG"
+    sep "Clusterized tag $TAG"
+    echo clusterized > tags/$TAG/status
 }
 
 _cmd disabledocker "Stop Docker Engine and don't restart it automatically"
@@ -158,10 +213,51 @@ _cmd_disabledocker() {
     need_tag
 
     pssh "
-    sudo systemctl disable docker.service
-    sudo systemctl disable docker.socket
-    sudo systemctl stop docker
-    sudo killall containerd
+    sudo systemctl disable docker.socket --now
+    sudo systemctl disable docker.service --now
+    sudo systemctl disable containerd.service --now
+    "
+}
+
+_cmd docker "Install and start Docker"
+_cmd_docker() {
+    TAG=$1
+    need_tag
+
+    pssh "
+    set -e
+    # On EC2, the ephemeral disk might be mounted on /mnt.
+    # If /mnt is a mountpoint, place Docker workspace on it.
+    if mountpoint -q /mnt; then
+      sudo mkdir -p /mnt/docker
+      sudo ln -sfn /mnt/docker /var/lib/docker
+    fi
+
+    # This will install the latest Docker.
+    sudo apt-get -qy install apt-transport-https ca-certificates curl software-properties-common
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    sudo add-apt-repository 'deb https://download.docker.com/linux/ubuntu bionic stable'
+    sudo apt-get -q update
+    sudo apt-get -qy install docker-ce
+    "
+
+    pssh "
+    set -e
+    ### Install docker-compose.
+    ##VERSION## https://docs.docker.com/compose/release-notes/
+    COMPOSE_VERSION=1.29.2
+    sudo curl -fsSL -o /usr/local/bin/docker-compose \
+      https://github.com/docker/compose/releases/download/\$COMPOSE_VERSION/docker-compose-\$(uname -s)-\$(uname -m)
+    sudo chmod +x /usr/local/bin/docker-compose
+    docker-compose version
+
+    ### Install docker-machine.
+    ##VERSION##
+    MACHINE_VERSION=v0.16.2
+    sudo curl -fsSL -o /usr/local/bin/docker-machine \
+      https://github.com/docker/machine/releases/download/\$MACHINE_VERSION/docker-machine-\$(uname -s)-\$(uname -m)
+    sudo chmod +x /usr/local/bin/docker-machine
+    docker-machine version
     "
 }
 
@@ -200,6 +296,7 @@ _cmd kube "Setup kubernetes clusters with kubeadm (must be run AFTER deploy)"
 _cmd_kube() {
     TAG=$1
     need_tag
+    need_login_password
 
     # Optional version, e.g. 1.13.5
     KUBEVERSION=$2
@@ -255,14 +352,14 @@ EOF
 	sudo kubeadm init --config=/tmp/kubeadm-config.yaml --ignore-preflight-errors=NumCPU
     fi"
 
-    # Put kubeconfig in ubuntu's and docker's accounts
+    # Put kubeconfig in ubuntu's and $USER_LOGIN's accounts
     pssh "
     if i_am_first_node; then
-        sudo mkdir -p \$HOME/.kube /home/docker/.kube &&
+        sudo mkdir -p \$HOME/.kube /home/$USER_LOGIN/.kube &&
         sudo cp /etc/kubernetes/admin.conf \$HOME/.kube/config &&
-        sudo cp /etc/kubernetes/admin.conf /home/docker/.kube/config &&
+        sudo cp /etc/kubernetes/admin.conf /home/$USER_LOGIN/.kube/config &&
         sudo chown -R \$(id -u) \$HOME/.kube &&
-        sudo chown -R docker /home/docker/.kube
+        sudo chown -R $USER_LOGIN /home/$USER_LOGIN/.kube
     fi"
 
     # Install weave as the pod network
@@ -291,23 +388,35 @@ _cmd kubetools "Install a bunch of CLI tools for Kubernetes"
 _cmd_kubetools() {
     TAG=$1
     need_tag
+    need_login_password
 
     # Install kubectx and kubens
     pssh "
-    [ -d kubectx ] || git clone https://github.com/ahmetb/kubectx &&
-    sudo ln -sf \$HOME/kubectx/kubectx /usr/local/bin/kctx &&
-    sudo ln -sf \$HOME/kubectx/kubens /usr/local/bin/kns &&
-    sudo cp \$HOME/kubectx/completion/*.bash /etc/bash_completion.d &&
-    [ -d kube-ps1 ] || git clone https://github.com/jonmosco/kube-ps1 &&
-    sudo -u docker sed -i s/docker-prompt/kube_ps1/ /home/docker/.bashrc &&
-    sudo -u docker tee -a /home/docker/.bashrc <<EOF
-. \$HOME/kube-ps1/kube-ps1.sh
+    set -e
+    if ! [ -x /usr/local/bin/kctx ]; then
+      cd /tmp
+      git clone https://github.com/ahmetb/kubectx
+      sudo cp kubectx/kubectx /usr/local/bin/kctx
+      sudo cp kubectx/kubens /usr/local/bin/kns
+      sudo cp kubectx/completion/*.bash /etc/bash_completion.d
+    fi"
+
+    # Install kube-ps1
+    pssh "
+    set -e
+    if ! [ -f /etc/profile.d/kube-ps1.sh ]; then
+      cd /tmp
+      git clone https://github.com/jonmosco/kube-ps1
+      sudo cp kube-ps1/kube-ps1.sh /etc/profile.d/kube-ps1.sh
+      sudo -u $USER_LOGIN sed -i s/docker-prompt/kube_ps1/ /home/$USER_LOGIN/.bashrc &&
+      sudo -u $USER_LOGIN tee -a /home/$USER_LOGIN/.bashrc <<EOF
 KUBE_PS1_PREFIX=""
 KUBE_PS1_SUFFIX=""
 KUBE_PS1_SYMBOL_ENABLE="false"
 KUBE_PS1_CTX_COLOR="green"
 KUBE_PS1_NS_COLOR="green"
-EOF"
+EOF
+    fi"
 
     # Install stern
     pssh "
@@ -354,12 +463,13 @@ EOF"
 
     # Install the krew package manager
     pssh "
-    if [ ! -d /home/docker/.krew ]; then
+    if [ ! -d /home/$USER_LOGIN/.krew ]; then
         cd /tmp &&
-        curl -fsSL https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz |
+        KREW=krew-linux_amd64
+        curl -fsSL https://github.com/kubernetes-sigs/krew/releases/latest/download/\$KREW.tar.gz |
         tar -zxf- &&
-        sudo -u docker -H ./krew-linux_amd64 install krew &&
-        echo export PATH=/home/docker/.krew/bin:\\\$PATH | sudo -u docker tee -a /home/docker/.bashrc
+        sudo -u $USER_LOGIN -H ./\$KREW install krew &&
+        echo export PATH=/home/$USER_LOGIN/.krew/bin:\\\$PATH | sudo -u $USER_LOGIN tee -a /home/$USER_LOGIN/.bashrc
     fi"
 
     # Install k9s
@@ -474,14 +584,6 @@ _cmd_maketag() {
     date +%Y-%m-%d-%H-%M-$MS-$USER
 }
 
-_cmd ping "Ping VMs in a given tag, to check that they have network access"
-_cmd_ping() {
-    TAG=$1
-    need_tag
-
-    fping < tags/$TAG/ips.txt
-}
-
 _cmd netfix "Disable GRO and run a pinger job on the VMs"
 _cmd_netfix () {
     TAG=$1
@@ -507,10 +609,19 @@ EOF
     sudo systemctl start pinger"
 }
 
+_cmd ping "Ping VMs in a given tag, to check that they have network access"
+_cmd_ping() {
+    TAG=$1
+    need_tag
+
+    fping < tags/$TAG/ips.txt
+}
+
 _cmd tailhist "Install history viewer on port 1088"
 _cmd_tailhist () {
     TAG=$1
     need_tag
+    need_login_password
 
     pssh "
     wget https://github.com/joewalnes/websocketd/releases/download/v0.3.0/websocketd-0.3.0_amd64.deb
@@ -525,7 +636,7 @@ WantedBy=multi-user.target
 
 [Service]
 WorkingDirectory=/tmp/tailhist
-ExecStart=/usr/bin/websocketd --port=1088 --staticdir=. sh -c \"tail -n +1 -f /home/docker/.history || echo 'Could not read history file. Perhaps you need to \\\"chmod +r .history\\\"?'\"
+ExecStart=/usr/bin/websocketd --port=1088 --staticdir=. sh -c \"tail -n +1 -f /home/$USER_LOGIN/.history || echo 'Could not read history file. Perhaps you need to \\\"chmod +r .history\\\"?'\"
 User=nobody
 Group=nogroup
 Restart=always
@@ -533,6 +644,21 @@ EOF
     sudo systemctl enable /root/tailhist.service
     sudo systemctl start tailhist"
     pssh -I sudo tee /tmp/tailhist/index.html <lib/tailhist.html
+}
+
+_cmd tools "Install a bunch of useful tools (editors, git, jq...)"
+_cmd_tools() {
+    TAG=$1
+    need_tag
+
+    pssh "
+    sudo apt-get -q update
+    sudo apt-get -qy install apache2-utils emacs-nox git httping htop jid joe jq mosh python-setuptools tree unzip
+    # This is for VMs with broken PRNG (symptom: running docker-compose randomly hangs)
+    sudo apt-get -qy install haveged
+    # I don't remember why we need to remove this
+    sudo apt-get remove -y --purge dnsmasq-base
+    "
 }
 
 _cmd opensg "Open the default security group to ALL ingress traffic"
@@ -600,9 +726,10 @@ _cmd ssh "Open an SSH session to the first node of a tag"
 _cmd_ssh() {
     TAG=$1
     need_tag
+    need_login_password
     IP=$(head -1 tags/$TAG/ips.txt)
-    info "Logging into $IP"
-    ssh $SSHOPTS docker@$IP
+    info "Logging into $IP (default password: $USER_PASSWORD)"
+    ssh $SSHOPTS $USER_LOGIN@$IP
 
 }
 
@@ -751,7 +878,7 @@ _cmd_helmprom() {
     need_tag
     pssh "
     if i_am_first_node; then
-        sudo -u docker -H helm upgrade --install prometheus prometheus \
+        sudo -u $USER_LOGIN -H helm upgrade --install prometheus prometheus \
             --repo https://prometheus-community.github.io/helm-charts/ \
             --namespace prometheus --create-namespace \
             --set server.service.type=NodePort \
@@ -784,6 +911,30 @@ _cmd_passwords() {
         done
     done
     info "Done."
+}
+
+_cmd wait "Wait until VMs are ready (reachable and cloud init is done)"
+_cmd_wait() {
+    TAG=$1
+    need_tag
+
+    # Wait until all hosts are reachable.
+    info "Trying to reach $TAG instances..."
+    while ! pssh -t 5 true 2>&1 >/dev/null; do
+        >/dev/stderr echo -n "."
+        sleep 2
+    done
+    >/dev/stderr echo ""
+
+    # If this VM image is using cloud-init,
+    # wait for cloud-init to be done
+    info "Waiting for cloud-init to be done on $TAG instances..."
+    pssh "
+    if [ -d /var/lib/cloud ]; then
+        while [ ! -f /var/lib/cloud/instance/boot-finished ]; do
+            sleep 1
+        done
+    fi"
 }
 
 # Sometimes, weave fails to come up on some nodes.
@@ -872,14 +1023,10 @@ pull_tag() {
         google/cadvisor \
         dockersamples/visualizer \
         nathanleclaire/redisonrails; do
-        sudo -u docker docker pull $I
+        sudo docker pull $I
     done'
 
     info "Finished pulling images for $TAG."
-}
-
-tag_is_reachable() {
-    pssh -t 5 true 2>&1 >/dev/null
 }
 
 test_tag() {

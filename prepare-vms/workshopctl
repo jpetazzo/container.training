@@ -15,13 +15,14 @@ for lib in lib/*.sh; do
 done
 
 DEPENDENCIES="
-    ssh
     curl
     fping
     jq
-    pssh
-    wkhtmltopdf
     man
+    pssh
+    ssh
+    wkhtmltopdf
+    yq
     "
 
 # Check for missing dependencies, and issue a warning if necessary.

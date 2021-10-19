@@ -1,24 +1,9 @@
 #!/bin/sh
 set -e
 
-retry () {
-	N=$1
-	I=0
-	shift
-
-	while ! "$@"; do
-		I=$(($I+1))
-		if [ $I -gt $N ]; then
-			echo "FAILED, ABORTING"
-			exit 1
-		fi
-		echo "FAILED, RETRYING ($I/$N)"
-	done
-}
-
 export AWS_INSTANCE_TYPE=t3a.small
 
-INFRA=infra/aws-eu-west-3
+INFRA=infra/aws-us-east-2
 
 STUDENTS=2
 
@@ -32,13 +17,6 @@ TAG=$PREFIX-$SETTINGS
 	--settings settings/$SETTINGS.yaml \
 	--students $STUDENTS
 
-retry 5 ./workshopctl deploy $TAG
-retry 5 ./workshopctl disabledocker $TAG
-retry 5 ./workshopctl kubebins $TAG
-retry 5 ./workshopctl webssh $TAG
-retry 5 ./workshopctl tailhist $TAG
-./workshopctl cards $TAG
-
 SETTINGS=admin-kubenet
 TAG=$PREFIX-$SETTINGS
 ./workshopctl start \
@@ -47,13 +25,6 @@ TAG=$PREFIX-$SETTINGS
 	--settings settings/$SETTINGS.yaml \
 	--students $STUDENTS
 
-retry 5 ./workshopctl disableaddrchecks $TAG
-retry 5 ./workshopctl deploy $TAG
-retry 5 ./workshopctl kubebins $TAG
-retry 5 ./workshopctl webssh $TAG
-retry 5 ./workshopctl tailhist $TAG
-./workshopctl cards $TAG
-
 SETTINGS=admin-kuberouter
 TAG=$PREFIX-$SETTINGS
 ./workshopctl start \
@@ -61,13 +32,6 @@ TAG=$PREFIX-$SETTINGS
 	--infra $INFRA \
 	--settings settings/$SETTINGS.yaml \
 	--students $STUDENTS
-
-retry 5 ./workshopctl disableaddrchecks $TAG
-retry 5 ./workshopctl deploy $TAG
-retry 5 ./workshopctl kubebins $TAG
-retry 5 ./workshopctl webssh $TAG
-retry 5 ./workshopctl tailhist $TAG
-./workshopctl cards $TAG
 
 #INFRA=infra/aws-us-west-1
 
@@ -80,8 +44,3 @@ TAG=$PREFIX-$SETTINGS
 	--infra $INFRA \
 	--settings settings/$SETTINGS.yaml \
 	--students $STUDENTS
-
-retry 5 ./workshopctl deploy $TAG
-retry 5 ./workshopctl kube $TAG 1.19.11
-retry 5 ./workshopctl webssh $TAG
-retry 5 ./workshopctl tailhist $TAG

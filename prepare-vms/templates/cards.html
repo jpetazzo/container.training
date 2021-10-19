@@ -230,9 +230,9 @@ function scale() {
 	            <tr><td class="logpass">{{ clusternumber + loop.index }}</td></tr>
             	{% endif %}
                 <tr><td>login:</td></tr>
-                <tr><td class="logpass">docker</td></tr>
+                <tr><td class="logpass">{{ user_login }}</td></tr>
                 <tr><td>password:</td></tr>
-                <tr><td class="logpass">{{ docker_user_password }}</td></tr>
+                <tr><td class="logpass">{{ user_password }}</td></tr>
             </table>
 
         </p>
