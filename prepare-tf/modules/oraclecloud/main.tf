@@ -55,5 +55,4 @@ resource "oci_containerengine_node_pool" "_" {
     image_id    = data.oci_core_images._[each.key].images[0].id
     source_type = "image"
   }
-  ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDxLXAXB3CUztORPd+SCEcxhSGakSqecCgtCQTK3owuOKnG9LAYsXFDc7DLGoWzhnYeU9fVkKuMh6aDXYCHJmjSyK5V7f+VVxrH/6kf2VrIK+bGglHbPxNVLS1/UsSEzdZdP0vFwoBoGjAFNFEcn0NXKAvtNlMsyakvjfrpuPIFrb7xkrZHhvezNKrG3Sx6lQ2RaSFFGJSTPOWQg/q8DsCv0D1T7RaR1oHrrb6KKQAWjGYoU75/zNN6x7nD/ITQe7JGNPS3JbqXqXj7WtM4Wm0FHF5CthEKecbyxCFGxhpNBwXN2GzNkItQkeans+pn6/g6lstWIT/ugddoxW3CvQt1 /home/jp/.ssh/id_rsa"
 }
