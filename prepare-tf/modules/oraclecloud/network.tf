@@ -1,7 +1,7 @@
 resource "oci_core_vcn" "_" {
   compartment_id = local.compartment_id
   cidr_block     = "10.0.0.0/16"
-  display_name   = "tf-vcn-${var.cluster_name}"
+  display_name   = "tf-vcn"
 }
 
 #
@@ -57,7 +57,7 @@ resource "oci_core_subnet" "controlplane" {
   compartment_id    = local.compartment_id
   cidr_block        = "10.0.254.0/24"
   vcn_id            = oci_core_vcn._.id
-  display_name      = "tf-subnet-controlplane"
+  display_name      = "tf-controlplane"
   route_table_id    = oci_core_default_route_table._.id
   security_list_ids = [oci_core_default_security_list._.id]
 }
@@ -66,7 +66,7 @@ resource "oci_core_subnet" "nodes" {
   compartment_id    = local.compartment_id
   cidr_block        = "10.0.0.0/20"
   vcn_id            = oci_core_vcn._.id
-  display_name      = "tf-subnet-nodes"
+  display_name      = "tf-nodes"
   route_table_id    = oci_core_default_route_table._.id
   security_list_ids = [oci_core_default_security_list._.id]
 }
@@ -75,7 +75,7 @@ resource "oci_core_subnet" "loadbalancers" {
   compartment_id    = local.compartment_id
   cidr_block        = "10.0.96.0/20"
   vcn_id            = oci_core_vcn._.id
-  display_name      = "tf-subnet-loadbalancers"
+  display_name      = "tf-loadbalancers"
   route_table_id    = oci_core_default_route_table._.id
   security_list_ids = [oci_core_default_security_list._.id]
 }

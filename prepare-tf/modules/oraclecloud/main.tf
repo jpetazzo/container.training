@@ -22,7 +22,7 @@ data "oci_core_images" "_" {
 resource "oci_containerengine_cluster" "_" {
   compartment_id     = local.compartment_id
   kubernetes_version = var.k8s_version
-  name               = "oke-tf"
+  name               = "tf-oke"
   vcn_id             = oci_core_vcn._.id
   options {
     service_lb_subnet_ids = [oci_core_subnet.loadbalancers.id]
