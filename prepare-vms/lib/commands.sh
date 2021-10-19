@@ -147,15 +147,13 @@ SQRL
     pssh -I sudo tee /usr/local/bin/docker-prompt <lib/docker-prompt
     pssh sudo chmod +x /usr/local/bin/docker-prompt
 
+    echo user_ok > tags/$TAG/status
 }
 
 _cmd clusterize "Group VMs in clusters"
 _cmd_clusterize() {
     TAG=$1
     need_tag
-
-    echo clusterizing > tags/$TAG/status
-    sep "Clusterizing tag $TAG"
 
     # Special case for scaleway since it doesn't come with sudo
     if [ "$INFRACLASS" = "scaleway" ]; then
@@ -203,8 +201,7 @@ _cmd_clusterize() {
         docker-machine create -d generic --generic-ssh-user $USER_LOGIN --generic-ip-address
     fi"
 
-    sep "Clusterized tag $TAG"
-    echo clusterized > tags/$TAG/status
+    echo cluster_ok > tags/$TAG/status
 }
 
 _cmd disabledocker "Stop Docker Engine and don't restart it automatically"
@@ -539,6 +536,7 @@ _cmd_kubetest() {
         echo \$NODE ; kubectl get nodes | grep -w \$NODE | grep -w Ready
       done
     fi"
+    echo kube_ok > tags/$TAG/status
 }
 
 _cmd ips "Show the IP addresses for a given tag"
@@ -778,7 +776,7 @@ _cmd_start() {
     infra_start $COUNT
     sep
     info "Successfully created $COUNT instances with tag $TAG"
-    echo created > tags/$TAG/status
+    echo create_ok > tags/$TAG/status
 
     # If the settings.yaml file has a "steps" field,
     # automatically execute all the actions listed in that field.
@@ -792,8 +790,7 @@ _cmd_start() {
         if [ -z "$step" ]; then
             break
         fi
-        sep
-        info "Automatically executing step '$step'."
+        sep "$TAG -> $step"
         TRY=1
         MAXTRY=10
         while ! $0 $step $TAG ; do
@@ -805,7 +802,7 @@ _cmd_start() {
                 die "Giving up."
             else
                 sep
-                info "Step '$step' failed. Let's wait 10 seconds and try again."
+                info "Step '$step' failed for '$TAG'. Let's wait 10 seconds and try again."
                 info "(Attempt $TRY out of $MAXTRY.)"
                 sleep 10
             fi
