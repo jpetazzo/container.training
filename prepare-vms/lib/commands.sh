@@ -238,18 +238,24 @@ _cmd_docker() {
     sudo apt-get -qy install docker-ce
     "
 
-    pssh "
+    ##VERSION## https://github.com/docker/compose/releases
+    if [ "$ARCHITECTURE" ]; then
+        COMPOSE_VERSION=v2.0.1
+        COMPOSE_PLATFORM='linux-$(uname -m)'
+    else
+        COMPOSE_VERSION=1.29.2
+        COMPOSE_PLATFORM='Linux-$(uname -m)'
+    fi
+    pssh -i "
     set -e
     ### Install docker-compose.
-    ##VERSION## https://docs.docker.com/compose/release-notes/
-    COMPOSE_VERSION=1.29.2
     sudo curl -fsSL -o /usr/local/bin/docker-compose \
-      https://github.com/docker/compose/releases/download/\$COMPOSE_VERSION/docker-compose-\$(uname -s)-\$(uname -m)
+      https://github.com/docker/compose/releases/download/$COMPOSE_VERSION/docker-compose-$COMPOSE_PLATFORM
     sudo chmod +x /usr/local/bin/docker-compose
     docker-compose version
 
     ### Install docker-machine.
-    ##VERSION##
+    ##VERSION## https://github.com/docker/machine/releases
     MACHINE_VERSION=v0.16.2
     sudo curl -fsSL -o /usr/local/bin/docker-machine \
       https://github.com/docker/machine/releases/download/\$MACHINE_VERSION/docker-machine-\$(uname -s)-\$(uname -m)
@@ -267,23 +273,24 @@ _cmd_kubebins() {
     ETCD_VERSION=v3.4.13
     K8SBIN_VERSION=v1.19.11 # Can't go to 1.20 because it requires a serviceaccount signing key.
     CNI_VERSION=v0.8.7
+    ARCH=${ARCHITECTURE-amd64}
     pssh --timeout 300 "
     set -e
     cd /usr/local/bin
     if ! [ -x etcd ]; then
-        curl -L https://github.com/etcd-io/etcd/releases/download/$ETCD_VERSION/etcd-$ETCD_VERSION-linux-amd64.tar.gz \
+        curl -L https://github.com/etcd-io/etcd/releases/download/$ETCD_VERSION/etcd-$ETCD_VERSION-linux-$ARCH.tar.gz \
         | sudo tar --strip-components=1 --wildcards -zx '*/etcd' '*/etcdctl'
     fi
     if ! [ -x hyperkube ]; then
         ##VERSION##
-        curl -L https://dl.k8s.io/$K8SBIN_VERSION/kubernetes-server-linux-amd64.tar.gz \
+        curl -L https://dl.k8s.io/$K8SBIN_VERSION/kubernetes-server-linux-$ARCH.tar.gz \
         | sudo tar --strip-components=3 -zx \
           kubernetes/server/bin/kube{ctl,let,-proxy,-apiserver,-scheduler,-controller-manager}
     fi
     sudo mkdir -p /opt/cni/bin
     cd /opt/cni/bin
     if ! [ -x bridge ]; then
-        curl -L https://github.com/containernetworking/plugins/releases/download/$CNI_VERSION/cni-plugins-linux-amd64-$CNI_VERSION.tgz \
+        curl -L https://github.com/containernetworking/plugins/releases/download/$CNI_VERSION/cni-plugins-linux-$ARCH-$CNI_VERSION.tgz \
         | sudo tar -zx
     fi
     "
@@ -387,6 +394,23 @@ _cmd_kubetools() {
     need_tag
     need_login_password
 
+    ARCH=${ARCHITECTURE-amd64}
+
+    # Folks, please, be consistent!
+    # Either pick "uname -m" (on Linux, that's x86_64, aarch64, etc.)
+    # Or GOARCH (amd64, arm64, etc.)
+    # But don't mix both! Thank you ♥
+    case $ARCH in
+    amd64)
+        HERP_DERP_ARCH=x86_64
+        TILT_ARCH=x86_64
+        ;;
+    *)
+        HERP_DERP_ARCH=$ARCH
+        TILT_ARCH=${ARCH}_ALPHA
+        ;;
+    esac
+
     # Install kubectx and kubens
     pssh "
     set -e
@@ -416,12 +440,17 @@ EOF
     fi"
 
     # Install stern
+    ##VERSION## https://github.com/stern/stern/releases
+    STERN_VERSION=1.20.1
+    FILENAME=stern_${STERN_VERSION}_linux_${HERP_DERP_ARCH}
+    URL=https://github.com/stern/stern/releases/download/v$STERN_VERSION/$FILENAME.tar.gz
     pssh "
     if [ ! -x /usr/local/bin/stern ]; then
-        ##VERSION##
-        sudo curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64 &&
-        sudo chmod +x /usr/local/bin/stern &&
+        curl -fsSL $URL |
+        sudo tar -C /usr/local/bin -zx --strip-components=1 $FILENAME/stern
+        sudo chmod +x /usr/local/bin/stern
         stern --completion bash | sudo tee /etc/bash_completion.d/stern
+        stern --version
     fi"
 
     # Install helm
@@ -429,24 +458,30 @@ EOF
     if [ ! -x /usr/local/bin/helm ]; then
         curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get-helm-3 | sudo bash &&
         helm completion bash | sudo tee /etc/bash_completion.d/helm
+        helm version
     fi"
 
     # Install kustomize
+    ##VERSION## https://github.com/kubernetes-sigs/kustomize/releases
+    KUSTOMIZE_VERSION=v4.4.0
+    URL=https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${HERP_DERP_ARCH}.tar.gz
     pssh "
     if [ ! -x /usr/local/bin/kustomize ]; then
-        ##VERSION##
-        curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v3.6.1/kustomize_v3.6.1_linux_amd64.tar.gz |
-            sudo tar -C /usr/local/bin -zx kustomize
+        curl -fsSL $URL |
+        sudo tar -C /usr/local/bin -zx kustomize
         echo complete -C /usr/local/bin/kustomize kustomize | sudo tee /etc/bash_completion.d/kustomize
+        kustomize version
     fi"
 
     # Install ship
     # Note: 0.51.3 is the last version that doesn't display GIN-debug messages
     # (don't want to get folks confused by that!)
+    # Only install ship on Intel platforms (no ARM 64 builds).
+    [ "$ARCH" = "amd64" ] &&
     pssh "
     if [ ! -x /usr/local/bin/ship ]; then
         ##VERSION##
-        curl -L https://github.com/replicatedhq/ship/releases/download/v0.51.3/ship_0.51.3_linux_amd64.tar.gz |
+        curl -fsSL https://github.com/replicatedhq/ship/releases/download/v0.51.3/ship_0.51.3_linux_$ARCH.tar.gz |
              sudo tar -C /usr/local/bin -zx ship
     fi"
 
@@ -454,15 +489,16 @@ EOF
     pssh "
     if [ ! -x /usr/local/bin/aws-iam-authenticator ]; then
         ##VERSION##
-        sudo curl -o /usr/local/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator
+        sudo curl -fsSLo /usr/local/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/$ARCH/aws-iam-authenticator
 	sudo chmod +x /usr/local/bin/aws-iam-authenticator
+    aws-iam-authenticator version
     fi"
 
     # Install the krew package manager
     pssh "
     if [ ! -d /home/$USER_LOGIN/.krew ]; then
         cd /tmp &&
-        KREW=krew-linux_amd64
+        KREW=krew-linux_$ARCH
         curl -fsSL https://github.com/kubernetes-sigs/krew/releases/latest/download/\$KREW.tar.gz |
         tar -zxf- &&
         sudo -u $USER_LOGIN -H ./\$KREW install krew &&
@@ -472,44 +508,61 @@ EOF
     # Install k9s
     pssh "
     if [ ! -x /usr/local/bin/k9s ]; then
-        VERSION=v0.24.10 &&
-        FILENAME=k9s_\${VERSION}_\$(uname -s)_\$(uname -m).tar.gz &&
-        curl -sSL https://github.com/derailed/k9s/releases/download/\$VERSION/\$FILENAME |
+        FILENAME=k9s_Linux_$HERP_DERP_ARCH.tar.gz &&
+        curl -fsSL https://github.com/derailed/k9s/releases/latest/download/\$FILENAME |
         sudo tar -zxvf- -C /usr/local/bin k9s
+        k9s version
     fi"
 
     # Install popeye
     pssh "
     if [ ! -x /usr/local/bin/popeye ]; then
-        FILENAME=popeye_\$(uname -s)_\$(uname -m).tar.gz &&
-        curl -sSL https://github.com/derailed/popeye/releases/latest/download/\$FILENAME |
+        FILENAME=popeye_Linux_$HERP_DERP_ARCH.tar.gz &&
+        curl -fsSL https://github.com/derailed/popeye/releases/latest/download/\$FILENAME |
         sudo tar -zxvf- -C /usr/local/bin popeye
+        popeye version
     fi"
 
     # Install Tilt
+    # Official instructions:
+    # curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
+    # But the install script is not arch-aware (see https://github.com/tilt-dev/tilt/pull/5050).
     pssh "
     if [ ! -x /usr/local/bin/tilt ]; then
-        curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
+        FILENAME=tilt.0.22.13.linux.$TILT_ARCH.tar.gz
+        curl -fsSL https://github.com/tilt-dev/tilt/releases/latest/download/\$FILENAME |
+        sudo tar -zxvf- -C /usr/local/bin tilt
+        tilt version
     fi"
 
     # Install Skaffold
     pssh "
     if [ ! -x /usr/local/bin/skaffold ]; then
-        curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 &&
+        curl -fsSLo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-$ARCH &&
         sudo install skaffold /usr/local/bin/
+        skaffold version
     fi"
 
     # Install Kompose
     pssh "
     if [ ! -x /usr/local/bin/kompose ]; then
-        curl -Lo kompose https://github.com/kubernetes/kompose/releases/latest/download/kompose-linux-amd64 &&
+        curl -fsSLo kompose https://github.com/kubernetes/kompose/releases/latest/download/kompose-linux-$ARCH &&
         sudo install kompose /usr/local/bin
+        kompose version
     fi"
 
-    pssh "
+    ##VERSION## https://github.com/bitnami-labs/sealed-secrets/releases
+    KUBESEAL_VERSION=v0.16.0
+    case $ARCH in
+    amd64) FILENAME=kubeseal-linux-amd64;;
+    arm64) FILENAME=kubeseal-arm64;;
+    *)     FILENAME=nope;;
+    esac
+    [ "$FILENAME" = "nope" ] || pssh "
     if [ ! -x /usr/local/bin/kubeseal ]; then
-        curl -Lo kubeseal https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.13.1/kubeseal-linux-amd64 &&
+        curl -fsSLo kubeseal https://github.com/bitnami-labs/sealed-secrets/releases/download/$KUBESEAL_VERSION/$FILENAME &&
         sudo install kubeseal /usr/local/bin
+        kubeseal --version
     fi"
 }
 
@@ -621,9 +674,14 @@ _cmd_tailhist () {
     need_tag
     need_login_password
 
-    pssh "
-    wget https://github.com/joewalnes/websocketd/releases/download/v0.3.0/websocketd-0.3.0_amd64.deb
-    sudo dpkg -i websocketd-0.3.0_amd64.deb
+    ARCH=${ARCHITECTURE-amd64}
+    [ "$ARCH" = "aarch64" ] && ARCH=arm64
+
+    pssh -i "
+    set -e
+    wget https://github.com/joewalnes/websocketd/releases/download/v0.3.0/websocketd-0.3.0-linux_$ARCH.zip
+    unzip websocketd-0.3.0-linux_$ARCH.zip websocketd
+    sudo mv websocketd /usr/local/bin/websocketd
     sudo mkdir -p /tmp/tailhist
     sudo tee /root/tailhist.service <<EOF
 [Unit]
@@ -634,13 +692,14 @@ WantedBy=multi-user.target
 
 [Service]
 WorkingDirectory=/tmp/tailhist
-ExecStart=/usr/bin/websocketd --port=1088 --staticdir=. sh -c \"tail -n +1 -f /home/$USER_LOGIN/.history || echo 'Could not read history file. Perhaps you need to \\\"chmod +r .history\\\"?'\"
+ExecStart=/usr/local/bin/websocketd --port=1088 --staticdir=. sh -c \"tail -n +1 -f /home/$USER_LOGIN/.history || echo 'Could not read history file. Perhaps you need to \\\"chmod +r .history\\\"?'\"
 User=nobody
 Group=nogroup
 Restart=always
 EOF
-    sudo systemctl enable /root/tailhist.service
-    sudo systemctl start tailhist"
+    sudo systemctl enable /root/tailhist.service --now
+    "
+
     pssh -I sudo tee /tmp/tailhist/index.html <lib/tailhist.html
 }
 

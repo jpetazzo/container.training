@@ -217,7 +217,7 @@ aws_tag_instances() {
 
 aws_get_ami() {
     ##VERSION##
-    find_ubuntu_ami -r $AWS_DEFAULT_REGION -a ${AWS_ARCHITECTURE-amd64} -v 18.04 -t hvm:ebs -N -q
+    find_ubuntu_ami -r $AWS_DEFAULT_REGION -a ${ARCHITECTURE-amd64} -v 18.04 -t hvm:ebs -N -q
 }
 
 aws_greet() {
