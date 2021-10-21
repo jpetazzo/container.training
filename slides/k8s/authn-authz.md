@@ -735,6 +735,8 @@ class: extra-details
 
   - `kubectl rbac-lookup` / [RBAC Lookup](https://github.com/FairwindsOps/rbac-lookup) by FairwindsOps
 
+  - `kubectl rbac-tool` / [RBAC Tool](https://github.com/alcideio/rbac-tool) by insightCloudSec
+
 - `kubectl` plugins can be installed and managed with `krew`
 
 - They can also be installed and executed as standalone programs
