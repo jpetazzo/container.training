@@ -90,6 +90,21 @@
 
 ---
 
+class: pic
+![](images/kubernetes-services/CIP-by-addr.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/CIP-by-name.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/CIP-both.png)
+
+---
+
 ## `LoadBalancer`
 
 - An external load balancer is allocated for the service
@@ -106,6 +121,56 @@
 - Ideally, traffic would flow directly from the load balancer to the pods
 
 - In practice, it will often flow through a `NodePort` first
+
+---
+
+class: pic
+![](images/kubernetes-services/LB-internal.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/LB-external.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/LB-both.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/NP-why.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/NP-how-1.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/NP-how-2.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/NP-how-3.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/NP-how-4.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/NP-how-5.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/NP-only.png)
 
 ---
 
@@ -137,37 +202,13 @@
 
   ... we wouldn't be able to tell the backends from each other!
 
-- We are going to use `jpetazzo/httpenv`, a tiny HTTP server written in Go
+- We are going to use `jpetazzo/color`, a tiny HTTP server written in Go
 
-- `jpetazzo/httpenv` listens on port 8888
+- `jpetazzo/color` listens on port 80
 
-- It serves its environment variables in JSON format
+- It serves a page showing the pod's name
 
-- The environment variables will include `HOSTNAME`, which will be the pod name
-
-  (and therefore, will be different on each backend)
-
----
-
-class: extra-details
-
-## Supporting other CPU architectures
-
-- The `jpetazzo/httpenv` image is currently only available for `x86_64`
-
-  (the "classic" Intel 64 bits architecture found on most PCs and Macs)
-
-- That image won't work on other architectures
-
-  (e.g. Raspberry Pi or other ARM-based machines)
-
-- Note that Docker supports [multi-arch](https://www.docker.com/blog/multi-arch-build-and-images-the-simple-way/) images
-
-  (so *technically* we could make it work across multiple architectures)
-
-- If you want to build `httpenv` for your own platform, here is the source:
-
-  https://github.com/jpetazzo/httpenv
+  (this will be useful when checking load balancing behavior)
 
 ---
 
@@ -191,12 +232,12 @@ class: extra-details
 
 - Create a deployment for this very lightweight HTTP server:
   ```bash
-  kubectl create deployment httpenv --image=jpetazzo/httpenv
+  kubectl create deployment blue --image=jpetazzo/color
   ```
 
 - Scale it to 10 replicas:
   ```bash
-  kubectl scale deployment httpenv --replicas=10
+  kubectl scale deployment blue --replicas=10
   ```
 
 ]
@@ -211,7 +252,7 @@ class: extra-details
 
 - Expose the HTTP port of our server:
   ```bash
-  kubectl expose deployment httpenv --port 8888
+  kubectl expose deployment blue --port=80
   ```
 
 - Look up which IP address was allocated:
@@ -247,23 +288,18 @@ class: extra-details
 
 - Let's obtain the IP address that was allocated for our service, *programmatically:*
   ```bash
-  IP=$(kubectl get svc httpenv -o go-template --template '{{ .spec.clusterIP }}')
+  IP=$(kubectl get svc blue -o go-template --template '{{ .spec.clusterIP }}')
   ```
 
 <!--
-```hide kubectl wait deploy httpenv --for condition=available```
+```hide kubectl wait deploy blue --for condition=available```
 ```key ^D```
 ```key ^C```
 -->
 
 - Send a few requests:
   ```bash
-  curl http://$IP:8888/
-  ```
-
-- Too much output? Filter it with `jq`:
-  ```bash
-  curl -s http://$IP:8888/ | jq .HOSTNAME
+  curl http://$IP:80/
   ```
 
 ]
@@ -365,9 +401,9 @@ class: extra-details
 
 .exercise[
 
-- Check the endpoints that Kubernetes has associated with our `httpenv` service:
+- Check the endpoints that Kubernetes has associated with our `blue` service:
   ```bash
-  kubectl describe service httpenv
+  kubectl describe service blue
   ```
 
 ]
@@ -389,15 +425,15 @@ class: extra-details
 
 - If we want to see the full list, we can use one of the following commands:
   ```bash
-  kubectl describe endpoints httpenv
-  kubectl get endpoints httpenv -o yaml
+  kubectl describe endpoints blue
+  kubectl get endpoints blue -o yaml
   ```
 
 - These commands will show us a list of IP addresses
 
 - These IP addresses should match the addresses of the corresponding pods:
   ```bash
-  kubectl get pods -l app=httpenv -o wide
+  kubectl get pods -l app=blue -o wide
   ```
 
 ---
@@ -438,9 +474,9 @@ class: extra-details
   IP=$(kubectl -n kube-system get svc kube-dns -o jsonpath={.spec.clusterIP})
   ```
 
-- Resolve the cluster IP for the `httpenv` service:
+- Resolve the cluster IP for the `blue` service:
   ```bash
-  host httpenv.default.svc.cluster.local $IP
+  host blue.default.svc.cluster.local $IP
   ```
 
 ]
@@ -460,6 +496,26 @@ class: extra-details
 - They can also handle TLS certificates, URL rewriting ...
 
 - They require an *Ingress Controller* to function
+
+---
+
+class: pic
+![](images/kubernetes-services/ING.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/ING-path.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/ING-policy.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/ING-nolocal.png)
 
 ???
 
