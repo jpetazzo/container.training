@@ -11,11 +11,21 @@ spec:
       resources:
         kinds:
         - Pod
+    preconditions:
+    - key: "{{ request.operation }}"
+      operator: Equals
+      value: UPDATE
+    - key: "{{ request.oldObject.metadata.labels.color }}"
+      operator: Equals
+      value: "*"
+    - key: "{{ request.object.metadata.labels.color }}"
+      operator: Equals
+      value: "*"
     validate:
       message: "Once label color has been added, it cannot be changed."
       deny:
         conditions:
-        - key: "{{ request.oldObject.metadata.labels.color }}"
-          operator: NotEqual
-          value: "{{ request.object.metadata.labels.color }}"
+        - key: "{{ request.object.metadata.labels.color }}"
+          operator: NotEquals
+          value: "{{ request.oldObject.metadata.labels.color }}"
 

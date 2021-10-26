@@ -132,7 +132,7 @@
 
 - It also runs a controller that will:
 
-  - run optional checks in the background (and generate PolicyViolation objects)
+  - run checks in the background (and generate PolicyReport objects)
 
   - process GenerateRequest objects asynchronously
 
@@ -146,22 +146,6 @@
 
 ---
 
-class: extra-details
-
-## Kyverno versions
-
-- We're going to use version 1.2
-
-- Version 1.3.0-rc came out in November 2020
-
-- It introduces a few changes
-
-  (e.g. PolicyViolations are now PolicyReports)
-
-- Expect this to change in the near future!
-
----
-
 ## Installing Kyverno
 
 - Kyverno can be installed with a (big) YAML manifest
@@ -172,8 +156,7 @@ class: extra-details
 
 - Install Kyverno:
   ```bash
-  kubectl apply -f https://raw.githubusercontent.com/kyverno/kyverno\
-  /v1.2.1/definitions/release/install.yaml
+  kubectl create -f https://raw.githubusercontent.com/kyverno/kyverno/release-1.5/definitions/release/install.yaml
   ```
 
 ]
@@ -390,6 +373,8 @@ class: extra-details
 
 ---
 
+<!--
+
 ## Immutable primary colors, take 3
 
 - New rule: once a `color` label has been added, it cannot be removed
@@ -441,13 +426,15 @@ class: extra-details
 
 ---
 
+-->
+
 ## Background checks
 
 - What about the `test-color-0` pod that we create initially?
 
   (remember: we did set `color=purple`)
 
-- Kyverno generated a ClusterPolicyViolation to indicate it
+- We can see the infringing Pod in a PolicyReport
 
 .exercise[
 
@@ -456,10 +443,10 @@ class: extra-details
   kubectl get pods -L color
   ```
 
-- List ClusterPolicyViolations:
+- List PolicyReports:
   ```bash
-  kubectl get clusterpolicyviolations
-  kubectl get cpolv
+  kubectl get policyreports
+  kubectl get polr
   ```
 
 ]
@@ -557,11 +544,11 @@ Note: the `apiVersion` field appears to be optional.
 
 ## Footprint
 
-- 5 CRDs: 4 user-facing, 1 internal (GenerateRequest)
+- 7 CRDs
 
 - 5 webhooks
 
-- 1 Service, 1 Deployment, 1 ConfigMap
+- 2 Services, 1 Deployment, 2 ConfigMaps
 
 - Internal resources (GenerateRequest) "parked" in a Namespace
 
