@@ -1,0 +1,8 @@
+k8s_yaml(helm(
+    "./path-to-chart", name="blue",
+    values=[], # Example: ["./path/to/values.yaml"]
+    set=[
+        "image.repository=jpetazzo/color",
+        "image.tag=latest",
+    ]
+))
