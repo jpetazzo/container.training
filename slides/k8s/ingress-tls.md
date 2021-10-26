@@ -96,6 +96,26 @@ class: extra-details
 
 ---
 
+## Choose your adventure!
+
+- We present 3 methods to obtain a certificate
+
+- We suggest that we use method 1 (self-signed certificate)
+
+  - it's the simplest and fastest method
+
+  - it doesn't rely on other components
+
+- You're welcome to try methods 2 and 3 (leveraging certbot)
+
+  - they're great if you want to understand "how the sausage is made"
+
+  - they require some hacks (make sure port 80 is available)
+
+  - they won't be used in production (cert-manager is better)
+
+---
+
 ## Method 1, self-signed certificate
 
 - Thanks to `openssl`, generating a self-signed cert is just one command away!
@@ -352,6 +372,22 @@ Remove `--test-cert` to get a production certificate.
 
 ---
 
+## `kubectl create ingress`
+
+- We can also create an Ingress using TLS directly
+
+- To do it, add `,tls=secret-name` to an Ingress rule
+
+- Example:
+  ```bash
+  kubectl create ingress hello \
+          --rule=hello.example.com/*=hello:80,tls=hello
+  ```
+
+- The domain will automatically be inferred from the rule
+
+---
+
 class: extra-details
 
 ## About the ingress controller
@@ -368,16 +404,17 @@ class: extra-details
 
 .exercise[
 
-- Edit the Ingress manifest, `~/container.training/k8s/ingress.yaml`
+- Add the `tls` section to an existing Ingress
 
-- Uncomment the `tls` section
+- If you need to see what the `tls` section should look like, you can:
 
-- Update the `secretName` and `hosts` list
+  - `kubectl explain ingress.spec.tls`
 
-- Create or update the Ingress:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/ingress.yaml
-  ```
+  - `kubectl create ingress --dry-run=client -o yaml ...`
+
+  - check `~/container.training/k8s/ingress.yaml` for inspiration
+
+  - read the docs
 
 - Check that the URL now works over `https`
 
@@ -396,6 +433,26 @@ class: extra-details
 - In most production scenarios, the certificates will be obtained automatically
 
 - A very popular option is to use the [cert-manager](https://cert-manager.io/docs/) operator
+
+---
+
+## Security
+
+- Since TLS certificates are stored in Secrets...
+
+- ...It means that our Ingress controller must be able to read Secrets
+
+- A vulnerability in the Ingress controller can have dramatic consequences
+
+- See [CVE-2021-25742](https://github.com/kubernetes/ingress-nginx/issues/7837) for an example
+
+- This can be mitigated by limiting which Secrets the controller can access
+
+  (RBAC rules can specify resource names)
+
+- Downside: each TLS secret must explicitly be listed in RBAC
+
+  (but that's better than a full cluster compromise, isn't it?)
 
 ???
 
