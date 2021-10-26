@@ -23,63 +23,36 @@
 
 ---
 
-## Exporting the YAML for our application
+## Adding the manifests of our app
 
-- The following section assumes that DockerCoins is currently running
-
-- If DockerCoins is not running, see next slide
+- There is a convenient `dockercoins.yml` in the repo
 
 .exercise[
 
-- Create one YAML file for each resource that we need:
-  .small[
+- Copy the YAML file to the `templates` subdirectory in the chart:
   ```bash
-
-	while read kind name; do
-	  kubectl get -o yaml $kind $name > dockercoins/templates/$name-$kind.yaml
-	done <<EOF
-	deployment worker
-	deployment hasher
-	daemonset rng
-	deployment webui
-	deployment redis
-	service hasher
-	service rng
-	service webui
-	service redis
-	EOF
-  ```
-  ]
-
-]
-
----
-
-## Obtaining DockerCoins YAML
-
-- If DockerCoins is not running, we can also obtain the YAML from a public repository
-
-.exercise[
-
-- Clone the kubercoins repository:
-  ```bash
-  git clone https://github.com/jpetazzo/kubercoins
-  ```
-
-- Copy the YAML files to the `templates/` directory:
-  ```bash
-  cp kubercoins/*.yaml dockercoins/templates/
+  cp ~/container.training/k8s/dockercoins.yaml dockercoins/
   ```
 
 ]
 
+- Note: it is probably easier to have multiple YAML files
+
+  (rather than a single, big file with all the manifests)
+
+- But that works too!
+
 ---
 
-## Testing our helm chart
+## Testing our Helm chart
+
+- Our Helm chart is now ready
+
+  (as surprising as it might seem!)
 
 .exercise[
 
-- Let's install our helm chart!
+- Let's try to install the chart:
   ```
   helm install helmcoins dockercoins
   ```
@@ -89,24 +62,22 @@
 
 --
 
-- Since the application is already deployed, this will fail:
+- If the application is already deployed, this will fail:
 ```
 Error: rendered manifests contain a resource that already exists.
 Unable to continue with install: existing resource conflict:
 kind: Service, namespace: default, name: hasher
 ```
 
-- To avoid naming conflicts, we will deploy the application in another *namespace*
-
 ---
 
 ## Switching to another namespace
 
-- We need create a new namespace
+- If there is already a copy of dockercoins in the current namespace:
 
-  (Helm 2 creates namespaces automatically; Helm 3 doesn't anymore)
+  - we can switch with `kubens` or `kubectl config set-context`
 
-- We need to tell Helm which namespace to use
+  - we can also tell Helm to use a different namespace
 
 .exercise[
 
