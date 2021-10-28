@@ -74,6 +74,7 @@ content:
   - k8s/hpa-v2.md
 - #9
   - k8s/operators-design.md
+  - k8s/operators-example.md
   - k8s/kubebuilder.md
   - k8s/events.md
   - k8s/finalizers.md

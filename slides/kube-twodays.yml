@@ -115,6 +115,7 @@ content:
   #- k8s/admission.md
   #- k8s/operators.md
   #- k8s/operators-design.md
+  #- k8s/operators-example.md
   #- k8s/staticpods.md
   #- k8s/owners-and-dependents.md
   #- k8s/gitworkflows.md

@@ -70,6 +70,7 @@ content:
   - k8s/operators.md
   - k8s/eck.md
   ###- k8s/operators-design.md
+  ###- k8s/operators-example.md
 # CONCLUSION
 - - k8s/lastwords.md
   - k8s/links.md

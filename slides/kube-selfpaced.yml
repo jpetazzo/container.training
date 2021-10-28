@@ -130,6 +130,7 @@ content:
   - k8s/admission.md
   - k8s/operators.md
   - k8s/operators-design.md
+  - k8s/operators-example.md
   - k8s/kubebuilder.md
   - k8s/sealed-secrets.md
   #- k8s/exercise-sealed-secrets.md
