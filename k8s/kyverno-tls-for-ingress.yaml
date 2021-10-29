@@ -1,0 +1,46 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: tls-for-ingress
+spec:
+  rules:
+  - name: create-role
+    match:
+      resources: 
+        kinds:
+        - Certificate
+    generate: 
+      kind: Role
+      apiVersion: rbac.authorization.k8s.io/v1
+      name: "{{request.object.metadata.name}}"
+      namespace: "{{request.object.metadata.namespace}}"
+      data:
+        rules:
+        - verbs:
+          - get
+          apiGroups:
+          - ""
+          resources:
+          - secrets
+          resourceNames:
+          - "{{request.object.metadata.name}}"
+  - name: create-rolebinding
+    match:
+      resources: 
+        kinds:
+        - Certificate
+    generate: 
+      kind: RoleBinding
+      apiVersion: rbac.authorization.k8s.io/v1
+      name: "{{request.object.metadata.name}}"
+      namespace: "{{request.object.metadata.namespace}}"
+      data:
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: Role
+          name: "{{request.object.metadata.name}}"
+        subjects:
+        - kind: ServiceAccount
+          name: default
+          namespace: "{{request.object.metadata.namespace}}"
+
