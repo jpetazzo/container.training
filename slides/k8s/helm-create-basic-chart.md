@@ -190,6 +190,47 @@ have details about recommended annotations and labels.
 
 ]
 
+---
+
+## Tips when writing charts
+
+- It is not necessary to `helm install`/`upgrade` to test a chart
+
+- If we just want to look at the generated YAML, use `helm template`:
+  ```bash
+  helm template ./my-chart
+  helm template release-name ./my-chart
+  ```
+
+- Of course, we can use `--set` and `--values` too
+
+- Note that this won't fully validate the YAML!
+
+  (e.g. if there is `apiVersion: klingon` it won't complain)
+
+- This can be used when trying things out
+
+---
+
+## Exploring the templating system
+
+Try to put something like this in a file in the `templates` directory:
+
+```yaml
+hello: {{ .Values.service.port }}
+comment: {{/* something completely.invalid !!!  */}}
+type: {{ .Values.service | typeOf | printf }}
+### print complex value
+{{ .Values.service | toYaml }}
+### indent it
+indented:
+{{ .Values.service | toYaml | indent 2 }}
+```
+
+Then run `helm template`.
+
+The result is not a valid YAML manifest, but this is a great debugging tool!
+
 ???
 
 :EN:- Writing a basic Helm chart for the whole app
