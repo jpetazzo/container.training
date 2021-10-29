@@ -2,17 +2,16 @@
 
 - Let's look at a simple operator
 
-- It has:
+- It does have:
 
-  - control loop
-
-  - resource management
-
-  - deployment instructions
+  - a control loop
+  - resource lifecycle management
+  - basic logging
 
 - It doesn't have:
 
   - CRDs (and therefore, resource versioning, conversion webhooks...)
+  - advanced observability (metrics, Kubernetes Events)
 
 ---
 
@@ -148,3 +147,7 @@ on my needs) to be deployed into its specific Kubernetes Namespace.*
 - If the algorithms are correct, shell performance won't matter at all
 
   (but it will be difficult to keep a resource cache in shell)
+
+- Improvement idea: this operator could generate *events*
+
+  (visible with `kubectl get events` and `kubectl describe`)
