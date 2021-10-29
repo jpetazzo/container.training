@@ -91,17 +91,22 @@
 ---
 
 class: pic
-![](images/kubernetes-services/CIP-by-addr.png)
+![](images/kubernetes-services/11-CIP-by-addr.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/CIP-by-name.png)
+![](images/kubernetes-services/12-CIP-by-name.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/CIP-both.png)
+![](images/kubernetes-services/13-CIP-both.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/14-CIP-headless.png)
 
 ---
 
@@ -125,52 +130,82 @@ class: pic
 ---
 
 class: pic
-![](images/kubernetes-services/LB-internal.png)
+![](images/kubernetes-services/31-LB-no-service.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/LB-external.png)
+![](images/kubernetes-services/32-LB-plus-cip.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/LB-both.png)
+![](images/kubernetes-services/33-LB-plus-lb.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/NP-why.png)
+![](images/kubernetes-services/34-LB-internal-traffic.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/NP-how-1.png)
+![](images/kubernetes-services/35-LB-pending.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/NP-how-2.png)
+![](images/kubernetes-services/36-LB-ccm.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/NP-how-3.png)
+![](images/kubernetes-services/37-LB-externalip.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/NP-how-4.png)
+![](images/kubernetes-services/38-LB-external-traffic.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/NP-how-5.png)
+![](images/kubernetes-services/39-LB-all-traffic.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/NP-only.png)
+![](images/kubernetes-services/41-NP-why.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/42-NP-how-1.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/43-NP-how-2.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/44-NP-how-3.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/45-NP-how-4.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/46-NP-how-5.png)
+
+---
+
+class: pic
+![](images/kubernetes-services/47-NP-only.png)
 
 ---
 
@@ -500,22 +535,22 @@ class: extra-details
 ---
 
 class: pic
-![](images/kubernetes-services/ING.png)
+![](images/kubernetes-services/61-ING.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/ING-path.png)
+![](images/kubernetes-services/62-ING-path.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/ING-policy.png)
+![](images/kubernetes-services/63-ING-policy.png)
 
 ---
 
 class: pic
-![](images/kubernetes-services/ING-nolocal.png)
+![](images/kubernetes-services/64-ING-nolocal.png)
 
 ???
 
