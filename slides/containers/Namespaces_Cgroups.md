@@ -1122,3 +1122,12 @@ See `man capabilities` for the full list and details.
 - LSMs add a layer of access control to all process operations.
 
 - Container engines take care of this so you don't have to.
+
+???
+
+:EN:Containers internals
+:EN:- Linux kernel namespaces
+:EN:- Control groups (cgroups)
+:FR:Fonctionnement interne des conteneurs
+:FR:- Les namespaces du noyau Linux
+:FR:- Les "control groups" (cgroups)

@@ -337,3 +337,9 @@ class: extra-details
   <br/>
   data should always be stored in volumes anyway!
 
+???
+
+:EN:- Copy-on-write filesystems
+:EN:- Docker graph drivers
+:FR:- Les systèmes de fichiers "copy-on-write"
+:FR:- Les "graph drivers" de Docker
