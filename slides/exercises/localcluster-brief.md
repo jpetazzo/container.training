@@ -1,4 +1,4 @@
-## Exercise - Local Cluster
+## Exercise — Local Cluster
 
 - Deploy a local Kubernetes cluster if you don't already have one
 

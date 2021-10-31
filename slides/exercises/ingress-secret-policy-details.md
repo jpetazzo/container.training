@@ -1,4 +1,4 @@
-# Exercise - Ingress Secret Policy
+# Exercise — Ingress Secret Policy
 
 - Most ingress controllers have access to all Secrets
 

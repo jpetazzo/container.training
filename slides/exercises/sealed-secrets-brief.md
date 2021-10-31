@@ -1,4 +1,4 @@
-## Exercise — sealed secrets
+## Exercise — Sealed Secrets
 
 - Install the sealed secrets operator
 

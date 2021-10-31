@@ -1,4 +1,4 @@
-## Exercise - Deploy Dockercoins
+## Exercise — Deploy Dockercoins
 
 - Deploy the dockercoins application to our Kubernetes cluster
 

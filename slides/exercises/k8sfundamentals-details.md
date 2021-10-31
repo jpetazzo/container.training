@@ -1,4 +1,4 @@
-# Exercise - Deploy Dockercoins
+# Exercise — Deploy Dockercoins
 
 - We want to deploy the dockercoins app
 

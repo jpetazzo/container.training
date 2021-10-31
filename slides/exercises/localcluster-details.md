@@ -1,4 +1,4 @@
-# Exercise - Local Cluster
+# Exercise — Local Cluster
 
 - We want to have our own local Kubernetes cluster
 

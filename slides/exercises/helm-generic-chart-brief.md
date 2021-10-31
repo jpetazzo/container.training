@@ -1,4 +1,4 @@
-## Exercise - Helm Charts
+## Exercise — Helm Charts
 
 - Create a Helm chart to deploy a generic microservice
 

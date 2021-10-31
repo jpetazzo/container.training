@@ -1,4 +1,4 @@
-# Exercise — sealed secrets
+# Exercise — Sealed Secrets
 
 This is a "combo exercise" to practice the following concepts:
 

@@ -1,4 +1,4 @@
-## Exercise - Umbrella Charts
+## Exercise — Umbrella Charts
 
 - Create a Helm chart with dependencies on other charts
 

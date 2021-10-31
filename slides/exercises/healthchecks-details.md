@@ -1,4 +1,4 @@
-# Exercise - Healthchecks
+# Exercise — Healthchecks
 
 - We want to add healthchecks to the `rng` service in dockercoins
 

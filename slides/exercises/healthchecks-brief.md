@@ -1,4 +1,4 @@
-## Exercise - Healthchecks
+## Exercise — Healthchecks
 
 - Add readiness and liveness probes to a web service
 

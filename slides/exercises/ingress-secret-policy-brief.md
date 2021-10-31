@@ -1,4 +1,4 @@
-## Exercise - Ingress Secret Policy
+## Exercise — Ingress Secret Policy
 
 *Implement policy to limit impact of ingress controller vulnerabilities.*
 

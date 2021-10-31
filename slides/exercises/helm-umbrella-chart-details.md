@@ -1,4 +1,4 @@
-# Exercise - Umbrella Charts
+# Exercise — Umbrella Charts
 
 - We want to deploy dockercoins with a single Helm chart
 

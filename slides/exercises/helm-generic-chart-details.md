@@ -1,4 +1,4 @@
-# Exercise - Helm Charts
+# Exercise — Helm Charts
 
 - We want to deploy dockercoins with a Helm chart
 
