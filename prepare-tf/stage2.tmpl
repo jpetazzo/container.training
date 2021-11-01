@@ -74,7 +74,9 @@ resource "kubernetes_deployment" "shpod_${index}" {
 resource "kubernetes_service" "shpod_${index}" {
   provider = kubernetes.cluster_${index}
   lifecycle {
-    ignore_changes = all
+    # Folks might alter their shpod Service to expose extra ports.
+    # Don't reset their changes.
+    ignore_changes = [ spec ]
   }
   metadata {
     name = "shpod"
