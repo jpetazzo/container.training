@@ -14,39 +14,39 @@ provider "kubernetes" {
   config_path = "./kubeconfig.${index}"
 }
 
-resource "kubernetes_namespace" "sshpod_${index}" {
+resource "kubernetes_namespace" "shpod_${index}" {
   provider = kubernetes.cluster_${index}
   metadata {
-    name = "sshpod"
+    name = "shpod"
   }
 }
 
-resource "kubernetes_deployment" "sshpod_${index}" {
+resource "kubernetes_deployment" "shpod_${index}" {
   provider = kubernetes.cluster_${index}
   metadata {
-    name = "sshpod"
-    namespace = kubernetes_namespace.sshpod_${index}.metadata.0.name
+    name = "shpod"
+    namespace = kubernetes_namespace.shpod_${index}.metadata.0.name
   }
   spec {
     selector {
       match_labels = {
-        app = "sshpod"
+        app = "shpod"
       }
     }
     template {
       metadata {
         labels = {
-          app = "sshpod"
+          app = "shpod"
         }
       }
       spec {
-        service_account_name = "sshpod"
+        service_account_name = "shpod"
         container {
-          image = "jpetazzo/sshpod"
-          name = "sshpod"
+          image = "jpetazzo/shpod"
+          name = "shpod"
           env {
             name = "PASSWORD"
-            value = random_string.sshpod_${index}.result
+            value = random_string.shpod_${index}.result
           }
           lifecycle {
             post_start {
@@ -58,11 +58,11 @@ resource "kubernetes_deployment" "sshpod_${index}" {
           resources {
             limits = {
               cpu    = "2"
-              memory = "100M"
+              memory = "500M"
             }
             requests = {
               cpu    = "100m"
-              memory = "100M"
+              memory = "250M"
             }
           }
         }
@@ -71,17 +71,18 @@ resource "kubernetes_deployment" "sshpod_${index}" {
   }
 }
 
-resource "kubernetes_service" "sshpod_${index}" {
+resource "kubernetes_service" "shpod_${index}" {
   provider = kubernetes.cluster_${index}
   metadata {
-    name = "sshpod"
-    namespace = kubernetes_namespace.sshpod_${index}.metadata.0.name
+    name = "shpod"
+    namespace = kubernetes_namespace.shpod_${index}.metadata.0.name
   }
   spec {
     selector = {
-      app = "sshpod"
+      app = "shpod"
     }
     port {
+      name = "ssh"
       port = 22
       target_port = 22
       node_port = 32222
@@ -90,18 +91,18 @@ resource "kubernetes_service" "sshpod_${index}" {
   }
 }
 
-resource "kubernetes_service_account" "sshpod_${index}" {
+resource "kubernetes_service_account" "shpod_${index}" {
   provider = kubernetes.cluster_${index}
   metadata {
-    name = "sshpod"
-    namespace = kubernetes_namespace.sshpod_${index}.metadata.0.name
+    name = "shpod"
+    namespace = kubernetes_namespace.shpod_${index}.metadata.0.name
   }
 }
 
-resource "kubernetes_cluster_role_binding" "sshpod_${index}" {
+resource "kubernetes_cluster_role_binding" "shpod_${index}" {
   provider = kubernetes.cluster_${index}
   metadata {
-    name = "sshpod"
+    name = "shpod"
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
@@ -110,25 +111,54 @@ resource "kubernetes_cluster_role_binding" "sshpod_${index}" {
   }
   subject {
     kind      = "ServiceAccount"
-    name      = "sshpod"
-    namespace = "sshpod"
+    name      = "shpod"
+    namespace = "shpod"
   }
 }
 
-resource "random_string" "sshpod_${index}" {
+resource "random_string" "shpod_${index}" {
   length  = 6
   special = false
   upper   = false
 }
 
-output "ssh_${index}" {
-  value = format(
-            "ssh -l %s -p %s %s # password=%s",
-            "k8s",
-            "32222",
-            split(" ", file("./externalips.${index}"))[0],
-            random_string.sshpod_${index}.result
-          )
+provider "helm" {
+  alias = "cluster_${index}"
+  kubernetes {
+    config_path = "./kubeconfig.${index}"
+  }
+}
+
+resource "helm_release" "metrics_server_${index}" {
+  provider = helm.cluster_${index}
+  repository = "https://charts.bitnami.com/bitnami"
+  chart = "metrics-server"
+  name = "metrics-server"
+  namespace = "metrics-server"
+  create_namespace = true
+  set {
+    name = "apiService.create"
+    value = "true"
+  }
+  set {
+    name = "extraArgs.kubelet-insecure-tls"
+    value = "true"
+  }
+  set {
+    name = "extraArgs.kubelet-preferred-address-types"
+    value = "InternalIP"
+  }
 }
 
 %{ endfor ~}
+
+output "ip_addresses_of_nodes" {
+  value = join("\n", [
+  %{ for index, cluster in clusters ~}
+    join("\t", concat(
+      [ random_string.shpod_${index}.result, "ssh -l k8s -p 32222" ],
+      split(" ", file("./externalips.${index}"))
+    )),
+  %{ endfor ~}
+  ])
+}
