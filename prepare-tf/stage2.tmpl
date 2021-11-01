@@ -73,6 +73,9 @@ resource "kubernetes_deployment" "shpod_${index}" {
 
 resource "kubernetes_service" "shpod_${index}" {
   provider = kubernetes.cluster_${index}
+  lifecycle {
+    ignore_changes = all
+  }
   metadata {
     name = "shpod"
     namespace = kubernetes_namespace.shpod_${index}.metadata.0.name
