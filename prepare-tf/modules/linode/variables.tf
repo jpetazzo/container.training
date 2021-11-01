@@ -42,9 +42,11 @@ locals {
   node_type = var.node_types[var.node_size]
 }
 
+# To view supported versions, run:
+# linode-cli regions list
 variable "region" {
   type    = string
-  default = "eu-central"
+  default = "us-east"
 }
 
 # To view supported versions, run:

@@ -14,4 +14,3 @@ resource "linode_lke_cluster" "_" {
   }
 
 }
-
