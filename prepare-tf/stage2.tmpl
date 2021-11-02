@@ -155,6 +155,17 @@ resource "helm_release" "metrics_server_${index}" {
   }
 }
 
+resource "kubernetes_config_map" "kubeconfig_${index}" {
+  provider = kubernetes.cluster_${index}
+  metadata {
+    name = "kubeconfig"
+    namespace = kubernetes_namespace.shpod_${index}.metadata.0.name
+  }
+  data = {
+    kubeconfig = file("./kubeconfig.${index}")
+  }
+}
+
 %{ endfor ~}
 
 output "ip_addresses_of_nodes" {
