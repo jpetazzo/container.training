@@ -41,19 +41,37 @@ resource "local_file" "externalips" {
   for_each        = local.clusters
   filename        = each.value.externalips_path
   file_permission = "0600"
-  content         = ""
+  content         = data.external.externalips[each.key].result.externalips
+}
 
+resource "null_resource" "wait_for_nodes" {
+  for_each = local.clusters
   provisioner "local-exec" {
     environment = {
       KUBECONFIG = local_file.kubeconfig[each.key].filename
     }
-
     command = <<-EOT
-      kubectl get nodes --watch \
-      | grep --silent --line-buffered . \
-      && kubectl wait node --for=condition=Ready --all --timeout=10m \
-      && kubectl get nodes \
-      -o 'jsonpath={.items[*].status.addresses[?(@.type=="ExternalIP")].address}' > ${each.value.externalips_path}
+      set -e
+      kubectl get nodes --watch | grep --silent --line-buffered .
+      kubectl wait node --for=condition=Ready --all --timeout=10m
       EOT
   }
+}
+
+data "external" "externalips" {
+  for_each = local.clusters
+  depends_on = [ null_resource.wait_for_nodes ]
+  program = [
+    "sh",
+    "-c",
+    <<-EOT
+      set -e
+      cat >/dev/null
+      export KUBECONFIG=${local_file.kubeconfig[each.key].filename}
+      echo -n '{"externalips": "'
+      kubectl get nodes \
+      -o 'jsonpath={.items[*].status.addresses[?(@.type=="ExternalIP")].address}'
+      echo -n '"}'
+      EOT
+  ]
 }
