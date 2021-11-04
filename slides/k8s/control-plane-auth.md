@@ -289,11 +289,11 @@ Here is an example showing how to check if `jean.doe` can `get` some `pods` in `
 
 ```bash
 kubectl -v9 create -f- <<EOF
-apiVersion: authorization.k8s.io/v1beta1
+apiVersion: authorization.k8s.io/v1
 kind: SubjectAccessReview
 spec:
   user: jean.doe
-  group:
+  groups:
   - foo
   - bar
   resourceAttributes:

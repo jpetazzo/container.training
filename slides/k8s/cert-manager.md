@@ -201,7 +201,7 @@ class: extra-details
 - This is what the manifest would look like:
 
 ```yaml
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: xyz

@@ -160,7 +160,7 @@ class: extra-details
 - Check that we can access the CSR API:
   ```bash
   curl -k -H "Authorization: Bearer abcdef.1234567890abcdef" \
-       https://10.96.0.1/apis/certificates.k8s.io/v1beta1/certificatesigningrequests
+       https://10.96.0.1/apis/certificates.k8s.io/v1/certificatesigningrequests
   ```
 
 ]

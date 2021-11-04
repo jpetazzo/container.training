@@ -318,7 +318,7 @@ The command above generates:
 - Generate and create the CSR resource:
   ```bash
     kubectl apply -f - <<EOF
-    apiVersion: certificates.k8s.io/v1beta1
+    apiVersion: certificates.k8s.io/v1
     kind: CertificateSigningRequest
     metadata:
       name: user=jean.doe
