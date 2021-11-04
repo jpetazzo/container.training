@@ -6,20 +6,23 @@ spec:
   validationFailureAction: enforce
   background: false
   rules:
-  - name: prevent-color-removal
+  - name: prevent-color-change
     match:
       resources:
         kinds:
         - Pod
-        selector:
-          matchExpressions:
-          - key: color
-            operator: DoesNotExist
+    preconditions:
+    - key: "{{ request.operation }}"
+      operator: Equals
+      value: UPDATE
+    - key: "{{ request.oldObject.metadata.labels.color }}"
+      operator: NotEquals
+      value: ""
+    - key: "{{ request.object.metadata.labels.color }}"
+      operator: Equals
+      value: ""
     validate:
       message: "Once label color has been added, it cannot be removed."
       deny:
         conditions:
-        - key: "{{ request.oldObject.metadata.labels.color }}"
-          operator: NotIn
-          value: []
 

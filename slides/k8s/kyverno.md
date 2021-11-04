@@ -100,11 +100,11 @@
 
   - Policy and ClusterPolicy (per-namespace and cluster-scope policies)
 
-  - PolicyViolation and ClusterPolicyViolation (used in audit mode)
+  - PolicyReport and ClusterPolicyReport (used in audit mode)
 
   - GenerateRequest (used internally when generating resources asynchronously)
 
-- We will be able to do e.g. `kubectl get policyviolations --all-namespaces`
+- We will be able to do e.g. `kubectl get clusterpolicyreports --all-namespaces`
 
   (to see policy violations across all namespaces)
 
@@ -266,15 +266,33 @@
 
   - *match* all pods
 
+  - add a *precondition* matching pods that have a `color` label
+    <br/>
+    (both in their "before" and "after" states)
+
   - *deny* these pods if their `color` label has changed
+
+- Again, other approaches are possible!
+
+---
+
+## Invalid references
+
+- We can access the `color` label through `{{ request.object.metadata.labels.color }}`
+
+- If we reference a label (or any field) that doesn't exist, the policy fails
+
+- Except in *preconditions*: it then evaluates to an empty string
+
+- We use a *precondition* to makes sure the label exists in both "old" and "new" objects
+
+- Then in the *deny* block we can compare the old and new values
+
+  (and reject changes)
 
 - "Old" and "new" versions of the pod can be referenced through
 
   `{{ request.oldObject }}` and `{{ request.object }}`
-
-- Our label is available through `{{ request.object.metadata.labels.color }}`
-
-- Again, other approaches are possible!
 
 ---
 
@@ -351,9 +369,7 @@
 
   (the `AdmissionRequest` object is the thing that gets submitted to the webhook)
 
-- Kyverno lets us access the `AdmissionRequest` object
-
-  (and in particular, `{{ request.object }}` and `{{ request.oldObject }}`)
+- We access the `AdmissionRequest` object through `{{ request }}`
 
 --
 
@@ -373,19 +389,17 @@
 
 ---
 
-<!--
-
 ## Immutable primary colors, take 3
 
 - New rule: once a `color` label has been added, it cannot be removed
 
-- Our approach:
+- Our approach is to match all pods that:
 
-  - *match* all pods that *do not* have a `color` label
+  - *had* a `color` label (in `request.oldObject`)
 
-  - *deny* these pods if they had a `color` label before
+  - *don't have* a `color` label (in `request.Object`)
 
-  - "before" can be referenced through `{{ request.oldObject }}`
+- And *deny* these pods
 
 - Again, other approaches are possible!
 
@@ -426,8 +440,6 @@
 
 ---
 
--->
-
 ## Background checks
 
 - What about the `test-color-0` pod that we create initially?
@@ -450,6 +462,8 @@
   ```
 
 ]
+
+(Sometimes it takes a little while for the infringement to show up, though.)
 
 ---
 

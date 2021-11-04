@@ -16,11 +16,11 @@ spec:
       operator: Equals
       value: UPDATE
     - key: "{{ request.oldObject.metadata.labels.color }}"
-      operator: Equals
-      value: "*"
+      operator: NotEquals
+      value: ""
     - key: "{{ request.object.metadata.labels.color }}"
-      operator: Equals
-      value: "*"
+      operator: NotEquals
+      value: ""
     validate:
       message: "Once label color has been added, it cannot be changed."
       deny:
