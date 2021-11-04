@@ -162,8 +162,53 @@ resource "kubernetes_config_map" "kubeconfig_${index}" {
     namespace = kubernetes_namespace.shpod_${index}.metadata.0.name
   }
   data = {
-    kubeconfig = file("./kubeconfig.${index}")
+    kubeconfig_from_provider = file("./kubeconfig.${index}")
+    kubeconfig_cluster_admin = <<-EOT
+      kind: Config
+      apiVersion: v1
+      current-context: cluster-admin@k8s-${index}
+      clusters:
+      - name: k8s-${index}
+        cluster:
+          certificate-authority-data: $${yamldecode(file("./kubeconfig.${index}")).clusters.0.cluster.certificate-authority-data}
+          server: $${yamldecode(file("./kubeconfig.${index}")).clusters.0.cluster.server}
+      contexts:
+      - name: cluster-admin@k8s-${index}
+        context:
+          cluster: k8s-${index}
+          user: cluster-admin
+      users:
+      - name: cluster-admin
+        user:
+          client-key-data: $${base64encode(tls_private_key.cluster_admin_${index}.private_key_pem)}
+          client-certificate-data: $${base64encode(kubernetes_certificate_signing_request.cluster_admin_${index}.certificate)}
+    EOT
   }
+}
+
+resource "tls_private_key" "cluster_admin_${index}" {
+  algorithm = "RSA"
+}
+
+resource "tls_cert_request" "cluster_admin_${index}" {
+  key_algorithm = tls_private_key.cluster_admin_${index}.algorithm
+  private_key_pem = tls_private_key.cluster_admin_${index}.private_key_pem
+  subject {
+    common_name = "cluster-admin"
+    organization = "system:masters"
+  }
+}
+
+resource "kubernetes_certificate_signing_request" "cluster_admin_${index}" {
+  provider = kubernetes.cluster_${index}
+  metadata {
+    name = "cluster-admin"
+  }
+  spec {
+    usages = ["client auth"]
+    request = tls_cert_request.cluster_admin_${index}.cert_request_pem
+  }
+  auto_approve = true
 }
 
 %{ endfor ~}
