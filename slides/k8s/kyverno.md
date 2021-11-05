@@ -181,11 +181,31 @@
 
 ---
 
+## Painting pods
+
+- As an example, we'll implement a policy regarding "Pod color"
+
+- The color of a Pod is the value of the label `color`
+
+- Example: `kubectl label pod hello color=yellow` to paint a Pod in yellow
+
+- We want to implement the following policies:
+
+  - color is optional (i.e. the label is not required)
+
+  - if color is set, it *must* be `red`, `green`, or `blue`
+
+  - once the color has been set, it cannot be changed
+
+  - once the color has been set, it cannot be removed
+
+---
+
 ## Immutable primary colors, take 1
 
-- Our pods can have an optional `color` label
+- First, we will add a policy to block forbidden colors
 
-- If the label exists, it *must* be `red`, `green`, or `blue`
+  (i.e. only allow `red`, `green`, or `blue`)
 
 - One possible approach:
 
@@ -194,6 +214,14 @@
   - *deny* these pods
 
 - We could also *match* all pods, then *deny* with a condition
+
+---
+
+.small[
+```yaml
+@@INCLUDE[k8s/kyverno-pod-color-1.yaml]
+```
+]
 
 ---
 
@@ -217,16 +245,6 @@
   kubectl label pod test-color-0 color=purple
   ```
 
-]
-
----
-
-## Our first Kyverno policy
-
-.small[
-```yaml
-@@INCLUDE[k8s/kyverno-pod-color-1.yaml]
-```
 ]
 
 ---
@@ -258,7 +276,7 @@
 
 ## Immutable primary colors, take 2
 
-- New rule: once a `color` label has been added, it cannot be changed
+- Next rule: once a `color` label has been added, it cannot be changed
 
   (i.e. if `color=red`, we can't change it to `color=blue`)
 
@@ -273,6 +291,14 @@
   - *deny* these pods if their `color` label has changed
 
 - Again, other approaches are possible!
+
+---
+
+.small[
+```yaml
+@@INCLUDE[k8s/kyverno-pod-color-2.yaml]
+```
+]
 
 ---
 
@@ -293,16 +319,6 @@
 - "Old" and "new" versions of the pod can be referenced through
 
   `{{ request.oldObject }}` and `{{ request.object }}`
-
----
-
-## Our second Kyverno policy
-
-.small[
-```yaml
-@@INCLUDE[k8s/kyverno-pod-color-2.yaml]
-```
-]
 
 ---
 
@@ -391,7 +407,7 @@
 
 ## Immutable primary colors, take 3
 
-- New rule: once a `color` label has been added, it cannot be removed
+- Last rule: once a `color` label has been added, it cannot be removed
 
 - Our approach is to match all pods that:
 
@@ -404,8 +420,6 @@
 - Again, other approaches are possible!
 
 ---
-
-## Our third Kyverno policy
 
 .small[
 ```yaml
@@ -582,8 +596,6 @@ Note: the `apiVersion` field appears to be optional.
 
 - It offers both namespaced and cluster-scope policies
 
-  (same thing for the policy violations)
-
 - The policy language leverages existing constructs
 
   (e.g. `matchExpressions`)
@@ -592,9 +604,9 @@ Note: the `apiVersion` field appears to be optional.
 
 ## Caveats
 
-- By default, the webhook failure policy is `Ignore`
+- The `{{ request }}` context is powerful, but difficult to validate
 
-  (meaning that there is a potential to evade policies if we can DOS the webhook)
+  (Kyverno can't know ahead of time how it will be populated)
 
 - Advanced policies (with conditionals) have unique, exotic syntax:
   ```yaml
@@ -604,11 +616,7 @@ Note: the `apiVersion` field appears to be optional.
 	        path: "!/var/run/docker.sock"
   ```
 
-- The `{{ request }}` context is powerful, but difficult to validate
-
-  (Kyverno can't know ahead of time how it will be populated)
-
-- Policy validation is difficult
+- Writing and validating policies can be difficult
 
 ---
 
