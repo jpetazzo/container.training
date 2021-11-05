@@ -652,6 +652,22 @@ Also check the logs of the `prometheus-adapter` and the `kube-controller-manager
 
 - [Prometheus adapter configuration walkthrough](https://github.com/DirectXMan12/k8s-prometheus-adapter/blob/master/docs/config-walkthrough.md)
 
+---
+
+## Discussion
+
+- This system works great if we have a single, centralized metrics system
+
+  (and the corresponding "adapter" to expose these metrics through the Kubernetes API)
+
+- If we have metrics in multiple places, we must aggregate them
+
+  (good news: Prometheus has exporters for almost everything!)
+
+- It is complex and has a steep learning curve
+
+- Another approach is [KEDA](https://keda.sh/)
+
 ???
 
 :EN:- Autoscaling with custom metrics
