@@ -110,7 +110,7 @@
 
 - TLS client certificates
 
-  (that's what we've been doing with `kubectl` so far)
+  (that's the default for clusters provisioned with `kubeadm`)
 
 - Bearer tokens
 
@@ -146,17 +146,15 @@
 
 ## Authentication with TLS certificates
 
-- This is enabled in most Kubernetes deployments
+- Enabled in almost all Kubernetes deployments
 
-- The user name is derived from the `CN` in the client certificates
+- The user name is indicated by the `CN` in the client certificate
 
-- The groups are derived from the `O` fields in the client certificate
+- The groups are indicated by the `O` fields in the client certificate
 
 - From the point of view of the Kubernetes API, users do not exist
 
-  (i.e. they are not stored in etcd or anywhere else)
-
-- Users can be created (and added to groups) independently of the API
+  (i.e. there is no resource with `kind: User`)
 
 - The Kubernetes API can be set up to use your custom CA to validate client certs
 
@@ -164,44 +162,21 @@
 
 class: extra-details
 
-## Viewing our admin certificate
+## Authentication for kubelet
 
-- Let's inspect the certificate we've been using all this time!
+- In most clusters, kubelets authenticate using certificates
 
-.exercise[
+  (`O=system:nodes`, `CN=system:node:name-of-the-node`)
 
-- This command will show the `CN` and `O` fields for our certificate:
-  ```bash
-  kubectl config view \
-          --raw \
-          -o json \
-          | jq -r .users[0].user[\"client-certificate-data\"] \
-          | openssl base64 -d -A \
-          | openssl x509 -text \
-          | grep Subject:
-  ```
+- The Kubernetse API can act as a CA
 
-]
+  (by wrapping an X509 CSR into a CertificateSigningRequest resource)
 
-Let's break down that command together! 😅
+- This enables kubelets to renew their own certificates
 
----
+- It can also be used to issue user certificates
 
-class: extra-details
-
-## Breaking down the command
-
-- `kubectl config view` shows the Kubernetes user configuration
-- `--raw` includes certificate information (which shows as REDACTED otherwise)
-- `-o json` outputs the information in JSON format
-- `| jq ...` extracts the field with the user certificate (in base64)
-- `| openssl base64 -d -A` decodes the base64 format (now we have a PEM file)
-- `| openssl x509 -text` parses the certificate and outputs it as plain text
-- `| grep Subject:` shows us the line that interests us
-
-→ We are user `kubernetes-admin`, in group `system:masters`.
-
-(We will see later how and why this gives us the permissions that we have.)
+  (but it lacks flexibility; e.g. validity can't be customized)
 
 ---
 
@@ -215,17 +190,31 @@ class: extra-details
 
   (if their key is compromised, or they leave the organization)
 
-- Option 1: re-create a new CA and re-issue everyone's certificates
-  <br/>
-  → Maybe OK if we only have a few users; no way otherwise
+- Issue short-lived certificates if you use them to authenticate users!
 
-- Option 2: don't use groups; grant permissions to individual users
-  <br/>
-  → Inconvenient if we have many users and teams; error-prone
+  (short-lived = a few hours)
 
-- Option 3: issue short-lived certificates (e.g. 24 hours) and renew them often
-  <br/>
-  → This can be facilitated by e.g. Vault or by the Kubernetes CSR API
+- This can be facilitated by e.g. Vault, cert-manager...
+
+---
+
+## What if a certificate is compromised?
+
+- Option 1: wait for the certificate to expire
+
+  (which is why short-lived certs are convenient!)
+
+- Option 2: remove access from that certificate's user and groups
+
+  - if that user was `bob.smith`, create a new user `bob.smith.2`
+
+  - if Bob was in groups `dev`, create a new group `dev.2`
+
+  - let's agree that this is not a great solution!
+
+- Option 3: re-create a new CA and re-issue all certificates
+
+  - let's agree that this is an even worse solution!
 
 ---
 
@@ -264,6 +253,95 @@ class: extra-details
 - Service accounts are generally used to grant permissions to applications, services...
 
   (as opposed to humans)
+
+---
+
+class: extra-details
+
+## Checking our authentication method
+
+- Let's check our kubeconfig file
+
+- Do we have a certificate, a token, or something else?
+
+---
+
+class: extra-details
+
+## Inspecting a certificate
+
+If we have a certificate, let's use the following command:
+
+```bash
+kubectl config view \
+        --raw \
+        -o json \
+        | jq -r .users[0].user[\"client-certificate-data\"] \
+        | openssl base64 -d -A \
+        | openssl x509 -text \
+        | grep Subject:
+```
+
+This command will show the `CN` and `O` fields for our certificate.
+
+---
+
+class: extra-details
+
+## Breaking down the command
+
+- `kubectl config view` shows the Kubernetes user configuration
+- `--raw` includes certificate information (which shows as REDACTED otherwise)
+- `-o json` outputs the information in JSON format
+- `| jq ...` extracts the field with the user certificate (in base64)
+- `| openssl base64 -d -A` decodes the base64 format (now we have a PEM file)
+- `| openssl x509 -text` parses the certificate and outputs it as plain text
+- `| grep Subject:` shows us the line that interests us
+
+→ We are user `kubernetes-admin`, in group `system:masters`.
+
+(We will see later how and why this gives us the permissions that we have.)
+
+---
+
+class: extra-details
+
+## Inspecting a token
+
+If we have a token, let's use the following command:
+
+```bash
+kubectl config view \
+        --raw \
+        -o json \
+        | jq -r .users[0].user.token \
+        | base64 -d \
+        | cut -d. -f2 \
+        | base64 -d \
+        | jq .
+```
+
+If our token is a JWT / OIDC token, this command will show its content.
+
+---
+
+class: extra-details
+
+## Other authentication methods
+
+- Other types of tokens
+
+  - these tokens are typically shorter than JWT or OIDC tokens
+
+  - it is generally not possible to extract information from them
+
+- Plugins
+
+  - some clusters use external `exec` plugins
+
+  - these plugins typically use API keys to generate or obtain tokens
+
+  - example: the AWS EKS authenticator works this way
 
 ---
 
@@ -491,23 +569,16 @@ class: extra-details
 
 ## Running a pod
 
-- We will run an `alpine` pod and install `kubectl` there
+- We'll use [Nixery](https://nixery.dev/) to run a pod with `curl` and `kubectl`
+
+- Nixery automatically generates images with the requested packages
 
 .exercise[
 
-- Run a one-time pod:
+- Run our pod:
   ```bash
   kubectl run eyepod --rm -ti --restart=Never \
-          --image alpine
-  ```
-
-- Install `curl`, then use it to install `kubectl`:
-  ```bash
-  apk add --no-cache curl
-  URLBASE=https://storage.googleapis.com/kubernetes-release/release
-  KUBEVER=$(curl -s $URLBASE/stable.txt)
-  curl -LO $URLBASE/$KUBEVER/bin/linux/amd64/kubectl
-  chmod +x kubectl
+          --image nixery.dev/shell/curl/kubectl -- bash
   ```
 
 ]
@@ -703,7 +774,7 @@ class: extra-details
 
 - We can list the actions that are available to us:
 
-  ````bash
+  ```bash
   kubectl auth can-i --list
   ```
 

@@ -324,6 +324,7 @@ The command above generates:
       name: user=jean.doe
     spec:
       request: $(base64 -w0 < csr.pem)
+      signerName: kubernetes.io/kube-apiserver-client
       usages:
       - digital signature
       - key encipherment
@@ -356,6 +357,8 @@ The command above generates:
   ```
 
 ]
+
+*Kubernetes 1.22 supports a new `spec.expirationSeconds` field.*
 
 ---
 
