@@ -44,7 +44,7 @@
 
 - Ask `kubectl` to generate the YAML
 
-  (with a `kubectl create --dry-run -o yaml`)
+  (with a `kubectl create --dry-run=client -o yaml`)
 
 - Use The Docs, Luke
 
@@ -91,22 +91,18 @@
 
 ## Generating YAML without creating resources
 
-- We can use the `--dry-run` option
+- We can use the `--dry-run=client` option
 
 .exercise[
 
 - Generate the YAML for a Deployment without creating it:
   ```bash
-  kubectl create deployment web --image nginx --dry-run
+  kubectl create deployment web --image nginx --dry-run=client
   ```
 
 - Optionally clean it up with `kubectl neat`, too
 
 ]
-
-Note: in recent versions of Kubernetes, we should use `--dry-run=client`
-
-(Or `--dry-run=server`; more on that later!)
 
 ---
 
@@ -130,7 +126,7 @@ class: extra-details
 
 class: extra-details
 
-## The limits of `kubectl apply --dry-run`
+## The limits of `kubectl apply --dry-run=client`
 
 .exercise[
 
@@ -146,7 +142,7 @@ class: extra-details
 
 - Ask `kubectl` what would be applied:
   ```bash
-  kubectl apply -f web.yaml --dry-run --validate=false -o yaml
+  kubectl apply -f web.yaml --dry-run=client --validate=false -o yaml
   ```
 
 ]
@@ -245,19 +241,37 @@ Note: we don't need to specify `--validate=false` here.
 
 - Get started with `kubectl create deployment` and `kubectl expose`
 
-- Dump the YAML with `kubectl get -o yaml`
+  (until you have something that works)
 
-- Tweak that YAML and `kubectl apply` it back
+- Then, run these commands again, but with `-o yaml --dry-run=client`
 
-- Store that YAML for reference (for further deployments)
+  (to generate and save YAML manifests)
 
-- Feel free to clean up the YAML:
+- Try to apply these manifests in a clean environment
 
-  - remove fields you don't know
+  (e.g. a new Namespace)
 
-  - check that it still works!
+- Check that everything works; tweak and iterate if needed
 
-- That YAML will be useful later when using e.g. Kustomize or Helm
+- Commit the YAML to a repo 💯🏆️
+
+---
+
+## "Day 2" YAML
+
+- Don't hesitate to remove unused fields
+
+  (e.g. `creationTimestamp: null`, most `{}` values...)
+
+- Check your YAML with:
+
+  [kube-score](https://github.com/zegl/kube-score) (installable with krew)
+
+  [kube-linter](https://github.com/stackrox/kube-linter)
+
+- Check live resources with tools like [popeye](https://popeyecli.io/)
+
+- Remember that like all linters, they need to be configured for your needs!
 
 ???
 
