@@ -2,7 +2,7 @@
 
 This is a "combo exercise" to practice the following concepts:
 
-- Secrets (mounting them in containers)
+- Secrets (exposing them in containers)
 
 - RBAC (granting specific permissions to specific users)
 
@@ -14,17 +14,35 @@ For this exercise, you will need two clusters.
 
 (It can be two local clusters.)
 
-We will call them "source cluster" and "target cluster".
+We will call them "dev cluster" and "prod cluster".
+
+---
+
+## Overview
+
+- For simplicity, our application will be NGINX (or `jpetazzo/color`)
+
+- Our application needs two secrets:
+
+  - `logging_api_token` (not too sensitive; same in dev and prod)
+
+  - `database_password` (sensitive; different in dev and prod)
+
+- Secrets can be exposed as env vars, or mounted in volumes
+
+  (it doesn't matter for this exercise)
+
+- We want to prepare and deploy the application in the dev cluster
+
+- ...Then deploy it to the prod cluster
 
 ---
 
 ## Step 1 (easy)
 
-- Install the sealed secrets operator on both clusters
+- On the dev cluster, create a Namespace called `dev`
 
-- On source cluster, create a Namespace called `dev`
-
-- Create two sealed secrets, `verysecure` and `veryverysecure`
+- Create the two secrets, `logging_api_token` and `database_password`
 
   (the content doesn't matter; put a random string of your choice)
 
@@ -34,66 +52,66 @@ We will call them "source cluster" and "target cluster".
 
 - Verify that the secrets are available to the Deployment
 
+  (e.g. with `kubectl exec`)
+
+- Generate YAML manifests for the application (Deployment+Secrets)
+
 ---
 
 ## Step 2 (medium)
 
-- Create another Namespace called `prod`
+- Deploy the sealed secrets operator on the dev cluster
 
-  (on the source cluster)
+- In the YAML, replace the Secrets with SealedSecrets
 
-- Create the same Deployment `app` using both secrets
+- Delete the `dev` Namespace, recreate it, redeploy the app
 
-- Verify that the secrets are available to the Deployment
+  (to make sure everything works fine)
+
+- Create a `staging` Namespace and try to deploy the app
+
+- If something doesn't work, fix it
+
+--
+
+- Hint: set the *scope* of the sealed secrets
 
 ---
 
 ## Step 3 (hard)
 
-- On the target cluster, create a Namespace called `prod`
+- On the prod cluster, create a Namespace called `prod`
 
-- Create the `app` Deployment and both sealed secrets
+- Try to deploy the application using the YAML manifests
 
-  (do not copy the Secrets; only the sealed secrets)
+- It won't work (the cluster needs the sealing key)
 
-- Check the next slide if you need a hint!
+- Fix it!
+
+  (check the next slides if you need hints)
 
 --
 
 - You will have to copy the Sealed Secret private key
 
+--
+
+- And restart the operator so that it picks up the key
+
 ---
 
 ## Step 4 (medium)
 
-On the target cluster, create the Namespace `dev`.
-
-Let's say that user `alice` has access to the target cluster.
+Let's say that we have a user called `alice` on the prod cluster.
 
 (You can use `kubectl --as=alice` to impersonate her.)
 
 We want Alice to be able to:
 
-- deploy the whole application
+- deploy the whole application in the `prod` namespace
 
-- access the `verysecure` secret
+- access the `logging_api_token` secret
 
-- but *not* the `veryverysecure` secret
+- but *not* the `database_password` secret
 
----
-
-## Step 5 (hard)
-
-- Make sure that Alice can view the logs of the Deployment
-
-- Can you think of a way for Alice to access the `veryverysecure` Secret?
-
-  (check next slide for a hint)
-
---
-
-- `kubectl exec`, maybe?
-
---
-
-- Can you think of a way to prevent that?
+- view the logs of the app
