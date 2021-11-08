@@ -14,9 +14,9 @@ infra_start() {
                         die "Aborting."
                 fi
                 echo prefix = \"$TAG\" >> terraform.tfvars
-                echo count = \"$COUNT\" >> terraform.tfvars
+                echo how_many_nodes = \"$COUNT\" >> terraform.tfvars
                 terraform apply -auto-approve
-                terraform output ip_addresses > ips.txt
+                terraform output -raw ip_addresses > ips.txt
         )
 }
 

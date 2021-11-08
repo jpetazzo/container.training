@@ -1,7 +1,7 @@
 variable "prefix" {
-  type = "string"
+  type = string
 }
 
-variable "count" {
-  type = "string"
+variable "how_many_nodes" {
+  type = number
 }
