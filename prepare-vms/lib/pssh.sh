@@ -26,6 +26,7 @@ pssh() {
 
     $PSSH -h $HOSTFILE -l $LOGIN \
         --par 100 \
+        --timeout 300 \
         -O LogLevel=ERROR \
         -O UserKnownHostsFile=/dev/null \
         -O StrictHostKeyChecking=no \

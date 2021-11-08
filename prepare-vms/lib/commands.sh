@@ -246,7 +246,7 @@ _cmd_docker() {
         COMPOSE_VERSION=1.29.2
         COMPOSE_PLATFORM='Linux-$(uname -m)'
     fi
-    pssh -i "
+    pssh "
     set -e
     ### Install docker-compose.
     sudo curl -fsSL -o /usr/local/bin/docker-compose \
@@ -442,7 +442,7 @@ EOF
     # Install stern
     ##VERSION## https://github.com/stern/stern/releases
     STERN_VERSION=1.20.1
-    FILENAME=stern_${STERN_VERSION}_linux_${HERP_DERP_ARCH}
+    FILENAME=stern_${STERN_VERSION}_linux_${ARCH}
     URL=https://github.com/stern/stern/releases/download/v$STERN_VERSION/$FILENAME.tar.gz
     pssh "
     if [ ! -x /usr/local/bin/stern ]; then
@@ -464,7 +464,7 @@ EOF
     # Install kustomize
     ##VERSION## https://github.com/kubernetes-sigs/kustomize/releases
     KUSTOMIZE_VERSION=v4.4.0
-    URL=https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${HERP_DERP_ARCH}.tar.gz
+    URL=https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz
     pssh "
     if [ ! -x /usr/local/bin/kustomize ]; then
         curl -fsSL $URL |
@@ -529,8 +529,9 @@ EOF
     # But the install script is not arch-aware (see https://github.com/tilt-dev/tilt/pull/5050).
     pssh "
     if [ ! -x /usr/local/bin/tilt ]; then
-        FILENAME=tilt.0.22.13.linux.$TILT_ARCH.tar.gz
-        curl -fsSL https://github.com/tilt-dev/tilt/releases/latest/download/\$FILENAME |
+        TILT_VERSION=0.22.15
+        FILENAME=tilt.\$TILT_VERSION.linux.$TILT_ARCH.tar.gz
+        curl -fsSL https://github.com/tilt-dev/tilt/releases/download/v\$TILT_VERSION/\$FILENAME |
         sudo tar -zxvf- -C /usr/local/bin tilt
         tilt version
     fi"
