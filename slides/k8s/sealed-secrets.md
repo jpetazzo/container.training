@@ -91,11 +91,15 @@ class: extra-details
 - Conclusion: to install Sealed Secrets on Kubernetes 1.22, use the Helm chart:
 
   ```bash
-  helm install --repo https://bitnami-labs.github.io/sealed-secrets/ \
-    sealed-secrets sealed-secrets --namespace kube-system
+    helm install --repo https://bitnami-labs.github.io/sealed-secrets/ \
+         sealed-secrets-controller sealed-secrets --namespace kube-system
   ```
 
-- Make sure to install in `kube-system` (or configure `kubeseal` accordingly!)
+- Make sure to install in the `kube-system` Namespace
+
+- Make sure that the release is named `sealed-secrets-controller`
+
+  (or pass a `--controller-name` option to `kubeseal` later)
 
 ---
 
