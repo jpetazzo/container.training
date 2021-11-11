@@ -55,5 +55,5 @@ variable "region" {
 # doctl kubernetes options versions -o json | jq -r .[].slug
 variable "k8s_version" {
   type    = string
-  default = "1.21.3-do.0"
+  default = "1.21.5-do.0"
 }
