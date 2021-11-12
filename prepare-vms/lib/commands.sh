@@ -236,6 +236,12 @@ _cmd_docker() {
     sudo add-apt-repository 'deb https://download.docker.com/linux/ubuntu bionic stable'
     sudo apt-get -q update
     sudo apt-get -qy install docker-ce
+
+    # Add registry mirror configuration.
+    if ! [ -f /etc/docker/daemon.json ]; then
+        echo '{\"registry-mirrors\": [\"https://mirror.gcr.io\"]}' | sudo tee /etc/docker/daemon.json
+        sudo systemctl restart docker
+    fi
     "
 
     ##VERSION## https://github.com/docker/compose/releases
