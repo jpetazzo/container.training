@@ -14,7 +14,7 @@
 
 ## Disclaimers
 
-- We'll use GitLab here as an exemple, but there are many other options
+- We'll use GitLab here as an example, but there are many other options
 
   (e.g. some combination of Argo, Harbor, Tekton ...)
 
