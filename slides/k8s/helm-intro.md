@@ -389,7 +389,7 @@ Note: it is also possible to install directly a chart, with `--repo https://...`
 
 - "Installing a chart" means creating a *release*
 
-- In the previous exemple, the release was named "my-juice-shop"
+- In the previous example, the release was named "my-juice-shop"
 
 - We can also use `--generate-name` to ask Helm to generate a name for us
 
