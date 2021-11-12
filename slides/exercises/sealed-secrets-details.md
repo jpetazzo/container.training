@@ -24,9 +24,9 @@ We will call them "dev cluster" and "prod cluster".
 
 - Our application needs two secrets:
 
-  - `logging_api_token` (not too sensitive; same in dev and prod)
+  - a *logging API token* (not too sensitive; same in dev and prod)
 
-  - `database_password` (sensitive; different in dev and prod)
+  - a *database password* (sensitive; different in dev and prod)
 
 - Secrets can be exposed as env vars, or mounted in volumes
 
@@ -42,7 +42,7 @@ We will call them "dev cluster" and "prod cluster".
 
 - On the dev cluster, create a Namespace called `dev`
 
-- Create the two secrets, `logging_api_token` and `database_password`
+- Create the two secrets, `logging-api-token` and `database-password`
 
   (the content doesn't matter; put a random string of your choice)
 
@@ -110,8 +110,8 @@ We want Alice to be able to:
 
 - deploy the whole application in the `prod` namespace
 
-- access the `logging_api_token` secret
+- access the *logging API token* secret
 
-- but *not* the `database_password` secret
+- but *not* the *database password* secret
 
 - view the logs of the app
