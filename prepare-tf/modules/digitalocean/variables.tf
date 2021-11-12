@@ -46,9 +46,11 @@ locals {
   node_type = var.node_types[var.node_size]
 }
 
+# To view supported regions, run:
+# doctl compute region list
 variable "region" {
   type    = string
-  default = "ams3"
+  default = "nyc1"
 }
 
 # To view supported versions, run:
