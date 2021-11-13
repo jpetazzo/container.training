@@ -125,7 +125,7 @@ We see the components mentioned above: `Chart.yaml`, `templates/`, `values.yaml`
 
 - `{{ template "x.y" }}` expands a [named template](https://helm.sh/docs/chart_template_guide/named_templates/#declaring-and-using-templates-with-define-and-template)
 
-  (previously defined with `{{ define "x.y "}}...stuff...{{ end }}`)
+  (previously defined with `{{ define "x.y" }}...stuff...{{ end }}`)
 
 - The `.` in `{{ template "x.y" . }}` is the *context* for that named template
 
