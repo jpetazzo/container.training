@@ -88,6 +88,6 @@
 
 ## Step 5: double-check
 
-- Check that the Ingres Controller can't access other secrets
+- Check that the Ingress Controller can't access other secrets
 
   (e.g. by manually creating a Secret and checking with `kubectl exec`?)
