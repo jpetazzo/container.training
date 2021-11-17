@@ -179,14 +179,14 @@ class: extra-details
 
 .exercise[
 
-- Create a Deployment running NGINX:
+- Create a Deployment running `jpetazzo/color`:
   ```bash
-  kubectl create deployment web --image=nginx
+  kubectl create deployment blue --image=jpetazzo/color
   ```
 
 - Scale it:
   ```bash
-  kubectl scale deployment web --replicas=5
+  kubectl scale deployment blue --replicas=5
   ```
 
 ]
@@ -197,7 +197,7 @@ class: extra-details
 
 - The pods will be scheduled on the nodes
 
-- The nodes will pull the `nginx` image, and start the pods
+- The nodes will pull the `jpetazzo/color` image, and start the pods
 
 - What are the IP addresses of our pods?
 
@@ -403,7 +403,7 @@ class: extra-details
 
 - Expose our Deployment:
   ```bash
-  kubectl expose deployment web --port=80
+  kubectl expose deployment blue --port=80
   ```
 
 ]
@@ -416,7 +416,7 @@ class: extra-details
 
 - Retrieve the ClusterIP address:
   ```bash
-  kubectl get svc web
+  kubectl get svc blue
   ```
 
 - Send a few requests to the ClusterIP address (with `curl`)

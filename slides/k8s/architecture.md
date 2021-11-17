@@ -20,25 +20,67 @@ The control plane can run:
 
 - in containers, on the same nodes that run other application workloads
 
-  (example: [Minikube](https://github.com/kubernetes/minikube); 1 node runs everything, [kind](https://kind.sigs.k8s.io/))
+  (default behavior for local clusters like [Minikube](https://github.com/kubernetes/minikube), [kind](https://kind.sigs.k8s.io/)...)
 
 - on a dedicated node
 
-  (example: a cluster installed with kubeadm)
+  (default behavior when deploying with kubeadm)
 
 - on a dedicated set of nodes
 
-  (example: [Kubernetes The Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way); [kops](https://github.com/kubernetes/kops))
+  ([Kubernetes The Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way); [kops](https://github.com/kubernetes/kops); also kubeadm)
 
 - outside of the cluster
 
-  (example: most managed clusters like AKS, EKS, GKE)
+  (most managed clusters like AKS, DOK, EKS, GKE, Kapsule, LKE, OKE...)
 
 ---
 
 class: pic
 
-![Kubernetes architecture diagram: control plane and nodes](images/k8s-arch2.png)
+![](images/control-planes/single-node-dev.svg)
+
+---
+
+class: pic
+
+![](images/control-planes/managed-kubernetes.svg)
+
+---
+
+class: pic
+
+![](images/control-planes/single-control-and-workers.svg)
+
+---
+
+class: pic
+
+![](images/control-planes/stacked-control-plane.svg)
+
+---
+
+class: pic
+
+![](images/control-planes/non-dedicated-stacked-nodes.svg)
+
+---
+
+class: pic
+
+![](images/control-planes/advanced-control-plane.svg)
+
+---
+
+class: pic
+
+![](images/control-planes/advanced-control-plane-split-events.svg)
+
+---
+
+class: pic
+
+![Kubernetes architecture diagram: communication between components](images/k8s-arch4-thanks-luxas.png)
 
 ---
 
@@ -112,12 +154,6 @@ The kubelet agent uses a number of special-purpose protocols and interfaces, inc
   - network plugins are implemented as executable programs invoked by kubelet
   - network plugins provide IPAM
   - network plugins set up network interfaces in pods
-
----
-
-class: pic
-
-![Kubernetes architecture diagram: communication between components](images/k8s-arch4-thanks-luxas.png)
 
 ---
 
