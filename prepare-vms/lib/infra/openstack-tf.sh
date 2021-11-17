@@ -1,7 +1,7 @@
 infra_start() {
         COUNT=$1
 
-        cp terraform/*.tf tags/$TAG
+        cp terraform-openstack/*.tf tags/$TAG
         (
                 cd tags/$TAG
                 if ! terraform init; then
