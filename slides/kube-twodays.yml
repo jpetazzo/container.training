@@ -95,7 +95,9 @@ content:
   - k8s/authn-authz.md
   #- k8s/csr-api.md
   #- k8s/openid-connect.md
-  #- k8s/podsecuritypolicy.md
+  #- k8s/pod-security-intro.md
+  #- k8s/pod-security-policies.md
+  #- k8s/pod-security-admission.md
 -
   - k8s/volumes.md
   #- k8s/exercise-configmap.md

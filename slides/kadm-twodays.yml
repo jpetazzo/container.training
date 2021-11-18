@@ -58,7 +58,9 @@ content:
   - k8s/control-plane-auth.md
   ###- k8s/bootstrap.md
   - k8s/netpol.md
-  - k8s/podsecuritypolicy.md
+  - k8s/pod-security-intro.md
+  - k8s/pod-security-policies.md
+  - k8s/pod-security-admission.md
 - - k8s/resource-limits.md
   - k8s/metrics-server.md
   - k8s/cluster-sizing.md
