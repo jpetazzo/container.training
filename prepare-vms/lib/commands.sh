@@ -309,7 +309,8 @@ _cmd_kube() {
     need_login_password
 
     # Optional version, e.g. 1.13.5
-    KUBEVERSION=$2
+    SETTINGS=tags/$TAG/settings.yaml
+    KUBEVERSION=$(awk '/^kubernetes_version:/ {print $2}' $SETTINGS)
     if [ "$KUBEVERSION" ]; then
         EXTRA_APTGET="=$KUBEVERSION-00"
         EXTRA_KUBEADM="kubernetesVersion: v$KUBEVERSION"
@@ -684,7 +685,7 @@ _cmd_tailhist () {
     ARCH=${ARCHITECTURE-amd64}
     [ "$ARCH" = "aarch64" ] && ARCH=arm64
 
-    pssh -i "
+    pssh "
     set -e
     wget https://github.com/joewalnes/websocketd/releases/download/v0.3.0/websocketd-0.3.0-linux_$ARCH.zip
     unzip websocketd-0.3.0-linux_$ARCH.zip websocketd

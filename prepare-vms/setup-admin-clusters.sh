@@ -3,7 +3,7 @@ set -e
 
 export AWS_INSTANCE_TYPE=t3a.small
 
-INFRA=infra/aws-us-east-2
+INFRA=infra/aws-eu-north-1
 
 STUDENTS=2
 
@@ -33,9 +33,15 @@ TAG=$PREFIX-$SETTINGS
 	--settings settings/$SETTINGS.yaml \
 	--students $STUDENTS
 
-#INFRA=infra/aws-us-west-1
+INFRA=infra/enix
 
-export AWS_INSTANCE_TYPE=t3a.medium
+SETTINGS=admin-oldversion
+TAG=$PREFIX-$SETTINGS
+./workshopctl start \
+	--tag $TAG \
+	--infra $INFRA \
+	--settings settings/$SETTINGS.yaml \
+	--students $STUDENTS
 
 SETTINGS=admin-test
 TAG=$PREFIX-$SETTINGS

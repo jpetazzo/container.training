@@ -1,0 +1,31 @@
+# Number of VMs per cluster
+clustersize: 3
+
+# The hostname of each node will be clusterprefix + a number
+clusterprefix: oldversion
+
+# Jinja2 template to use to generate ready-to-cut cards
+cards_template: cards.html
+
+# Use "Letter" in the US, and "A4" everywhere else
+paper_size: A4
+
+# Login and password that students will use
+user_login: k8s
+user_password: training
+
+kubernetes_version: 1.19.16
+
+image:
+
+steps:
+  - wait
+  - clusterize
+  - tools
+  - docker
+  - createuser
+  - webssh
+  - tailhist
+  - kube
+  - kubetools
+  - kubetest
