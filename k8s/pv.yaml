@@ -1,0 +1,20 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  generateName: my-pv-
+  labels:
+    container.training/pv: ""
+spec:
+  accessModes:
+  - ReadWriteOnce
+  - ReadWriteMany
+  capacity:
+    storage: 1G
+  hostPath:
+    path: /tmp/my-pv
+  #storageClassName: my-sc
+  #claimRef:
+  #  kind: PersistentVolumeClaim
+  #  apiVersion: v1
+  #  namespace: default
+  #  name: my-pvc-XYZ45

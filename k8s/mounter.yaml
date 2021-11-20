@@ -1,0 +1,20 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  generateName: mounter-
+  labels:
+    container.training/mounter: ""
+spec:
+  volumes:
+  - name: pvc
+    persistentVolumeClaim:
+      claimName: my-pvc-XYZ45
+  containers:
+  - name: mounter
+    image: alpine
+    stdin: true
+    tty: true
+    volumeMounts:
+    - name: pvc
+      mountPath: /pvc
+    workingDir: /pvc

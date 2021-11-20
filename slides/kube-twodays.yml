@@ -110,9 +110,12 @@ content:
   #- k8s/prometheus-stack.md
 -
   - k8s/statefulsets.md
-  - k8s/local-persistent-volumes.md
-  - k8s/portworx.md
-  #- k8s/openebs.md
+  - k8s/consul.md
+  - k8s/pv-pvc-sc.md
+  - k8s/volume-claim-templates.md
+  #- k8s/portworx.md
+  - k8s/openebs.md
+  - k8s/stateful-failover.md
   #- k8s/extending-api.md
   #- k8s/admission.md
   #- k8s/operators.md
