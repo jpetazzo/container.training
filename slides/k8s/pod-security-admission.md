@@ -191,11 +191,11 @@ class: extra-details
 
 - Let's allow `privileged` pods in `kube-system`:
   ```bash
-  kubectl label namespaces \
+  kubectl label namespace kube-system \
       pod-security.kubernetes.io/enforce=privileged \
       pod-security.kubernetes.io/audit=privileged \
       pod-security.kubernetes.io/warn=privileged \
-      kube-system --overwrite
+      --overwrite
   ```
 
 ]

@@ -124,7 +124,7 @@
 
 ## Admission plugins
 
-- [PodSecurityPolicy](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) (will be removed in Kubernetes 1.24)
+- [PodSecurityPolicy](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) (will be removed in Kubernetes 1.25)
 
   - create PodSecurityPolicy resources
 
