@@ -1,62 +1,16 @@
 ## Introductions
 
-⚠️ This slide should be customized by the tutorial instructor(s).
+- Hello! I'm FIXME
 
-<!--
+- The training will run Monday to Friday:
 
-- Hello! We are:
+  - 11am-3pm (New-York)
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
+  - 4pm-8pm (London)
 
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
+  - 5pm-9pm (Barcelona, Paris, Berlin)
 
-   - 🐳 Jérôme ([@jpetazzo], Ardan Labs)
-
-   - 🐳 Jérôme ([@jpetazzo], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], Tiny Shell Script LLC)
-
--->
-
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
-
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
-
-- Live feedback, questions, help: @@CHAT@@
-
--->
-
-<!--
-
-- You ~~should~~ must ask questions! Lots of questions!
-
-  (especially when you see full screen container pictures)
-
-- Use @@CHAT@@ to ask questions, get help, etc.
-
--->
-
-<!-- -->
+- There will be a short break (\~10 min) every hour
 
 [@alexbuisine]: https://twitter.com/alexbuisine
 [EphemeraSearch]: https://ephemerasearch.com/
@@ -74,8 +28,10 @@
 
   (it will help to practice and memorize the content of the day)
 
-- We recommend to take at least one hour to work on the exercises
+- We'll try to finish a bit earlier each day so that you can have lab time
 
-  (if you understood the content of the day, it will be much faster)
+  (and if you can put some extra time that's even better ♥)
 
 - Each day will start with a quick review of the exercises of the previous day
+
+- Ping us on @@CHAT@@!
