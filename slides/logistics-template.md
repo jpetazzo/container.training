@@ -1,69 +1,21 @@
 ## Introductions
 
-⚠️ This slide should be customized by the tutorial instructor(s).
+- Hello! I'm Jérôme Petazzoni ([@jpetazzo], [@jpetazzo@hachyderm.io], Ardan Labs)
 
-<!--
+- The training will run Monday to Friday:
 
-- Hello! We are:
-
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
-
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Ardan Labs)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Tiny Shell Script LLC)
-
--->
-
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
+  - 8am-noon (Barcelona/Berlin/Paris)
+  - 9am-1pm (Tel Aviv)
+  - 2pm-6pm (Singapore)
 
 - Feel free to interrupt for questions at any time
 
-- *Especially when you see full screen container pictures!*
-
 - Live feedback, questions, help: @@CHAT@@
 
--->
+- There will be a short break (\~10 min) every hour
 
-<!--
-
-- You ~~should~~ must ask questions! Lots of questions!
-
-  (especially when you see full screen container pictures)
-
-- Use @@CHAT@@ to ask questions, get help, etc.
-
--->
-
-<!-- -->
-
-[@alexbuisine]: https://twitter.com/alexbuisine
-[EphemeraSearch]: https://ephemerasearch.com/
 [@jpetazzo]: https://twitter.com/jpetazzo
 [@jpetazzo@hachyderm.io]: https://hachyderm.io/@jpetazzo
-[@s0ulshake]: https://twitter.com/s0ulshake
-[Quantgene]: https://www.quantgene.com/
 
 ---
 
@@ -75,8 +27,10 @@
 
   (it will help to practice and memorize the content of the day)
 
-- We recommend to take at least one hour to work on the exercises
+- We'll try to finish a bit earlier each day so that you can have lab time
 
-  (if you understood the content of the day, it will be much faster)
+  (and if you can put some extra time that's even better ♥)
 
 - Each day will start with a quick review of the exercises of the previous day
+
+- Ping us on @@CHAT@@!
