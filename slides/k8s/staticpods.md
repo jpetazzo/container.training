@@ -138,18 +138,18 @@
 
 - We restart it using static pods!
 
-- This can be done automatically with the [Pod Checkpointer]
+- This can be done automatically with a “pod checkpointer”
 
-- The Pod Checkpointer automatically generates manifests of running pods
+- The pod checkpointer automatically generates manifests of running pods
 
 - The manifests are used to restart these pods if API contact is lost
 
-  (More details in the [Pod Checkpointer] documentation page)
+- This pattern is implemented in [openshift/pod-checkpointer-operator] and [bootkube checkpointer]
 
-- This technique is used by [bootkube]
+- Unfortunately, as of 2021, both seem abandoned / unmaintained 😢
 
-[Pod Checkpointer]: https://github.com/kubernetes-incubator/bootkube/blob/master/cmd/checkpoint/README.md
-[bootkube]: https://github.com/kubernetes-incubator/bootkube
+[openshift/pod-checkpointer-operator]: https://github.com/openshift/pod-checkpointer-operator
+[bootkube checkpointer]: https://github.com/kubernetes-retired/bootkube/blob/master/cmd/checkpoint/README.md
 
 ---
 
