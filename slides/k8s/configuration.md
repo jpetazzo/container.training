@@ -344,32 +344,94 @@ We'll cover them just after!*
 
 ---
 
-## Passing a configuration file with a configmap
+## Example: HAProxy configuration
 
-- We will start a load balancer powered by HAProxy
+- We are going to deploy HAProxy, a popular load balancer
 
-- We will use the [official `haproxy` image](https://hub.docker.com/_/haproxy/)
+- It expects to find its configuration in a specific place:
 
-- It expects to find its configuration in `/usr/local/etc/haproxy/haproxy.cfg`
+  `/usr/local/etc/haproxy/haproxy.cfg`
 
-- We will provide a simple HAproxy configuration, `k8s/haproxy.cfg`
+- We will create a ConfigMap holding the configuration file
 
-- It listens on port 80, and load balances connections between IBM and Google
+- Then we will mount that ConfigMap in a Pod running HAProxy
 
 ---
 
-## Creating the configmap
+## Blue/green load balancing
+
+- In this example, we will deploy two versions of our app:
+
+  - the "blue" version in the `blue` namespace
+
+  - the "green" version in the `green` namespace
+
+- In both namespaces, we will have a Deployment and a Service
+
+  (both named `color`)
+
+- We want to load balance traffic between both namespaces
+
+  (we can't do that with a simple service selector: these don't cross namespaces)
+
+---
+
+## Deploying the app
+
+- We're going to use the image `jpetazzo/color`
+
+  (it is a simple "HTTP echo" server showing which pod served the request)
+
+- We can create each Namespace, Deployment, and Service by hand, or...
 
 .exercise[
 
-- Go to the `k8s` directory in the repository:
+- We can deploy the app with a YAML manifest:
   ```bash
-  cd ~/container.training/k8s
+  kubectl apply -f ~/container.training/k8s/rainbow.yaml
   ```
 
-- Create a configmap named `haproxy` and holding the configuration file:
+]
+
+---
+
+## Testing the app
+
+- Reminder: Service `x` in Namespace `y` is available through:
+
+  `x.y`, `x.y.svc`, `x.y.svc.cluster.local`
+
+- Since the `cluster.local` suffix can change, we'll use `x.y.svc`
+
+.exercise[
+
+- Check that the app is up and running:
   ```bash
-  kubectl create configmap haproxy --from-file=haproxy.cfg
+    kubectl run --rm -it --restart=Never --image=nixery.dev/curl my-test-pod \
+            curl color.blue.svc
+  ```
+
+]
+
+---
+
+## Creating the HAProxy configuration
+
+Here is the file that we will use, @@LINK[k8s/haproxy.cfg]:
+
+```
+@@INCLUDE[k8s/haproxy.cfg]
+```
+
+---
+
+## Creating the ConfigMap
+
+.exercise[
+
+- Create a ConfigMap named `haproxy` and holding the configuration file:
+  ```bash
+  kubectl create configmap haproxy --from-file=~/container.training/k8s/haproxy.cfg
   ```
 
 - Check what our configmap looks like:
@@ -381,37 +443,21 @@ We'll cover them just after!*
 
 ---
 
-## Using the configmap
+## Using the ConfigMap
 
-We are going to use the following pod definition:
+Here is @@LINK[k8s/haproxy.yaml], a Pod manifest using that ConfigMap:
 
 ```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: haproxy
-spec:
-  volumes:
-  - name: config
-    configMap:
-      name: haproxy
-  containers:
-  - name: haproxy
-    image: haproxy
-    volumeMounts:
-    - name: config
-      mountPath: /usr/local/etc/haproxy/
+@@INCLUDE[k8s/haproxy.yaml]
 ```
 
 ---
 
-## Using the configmap
-
-- The resource definition from the previous slide is in `k8s/haproxy.yaml`
+## Creating the Pod
 
 .exercise[
 
-- Create the HAProxy pod:
+- Create the HAProxy Pod:
   ```bash
   kubectl apply -f ~/container.training/k8s/haproxy.yaml
   ```
@@ -430,26 +476,20 @@ spec:
 
 ## Testing our load balancer
 
-- The load balancer will send:
+- If everything went well, when we should see a perfect round robin
 
-  - half of the connections to Google
-
-  - the other half to IBM
+  (one request to `blue`, one request to `green`, one request to `blue`, etc.)
 
 .exercise[
 
-- Access the load balancer a few times:
+- Send a few requests:
   ```bash
+  for i in $(seq 10); do
   curl $IP
-  curl $IP
-  curl $IP
+  done
   ```
 
 ]
-
-We should see connections served by Google, and others served by IBM.
-<br/>
-(Each server sends us a redirect page. Look at the URL that they send us to!)
 
 ---
 
@@ -490,27 +530,14 @@ We should see connections served by Google, and others served by IBM.
 We are going to use the following pod definition:
 
 ```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: registry
-spec:
-  containers:
-  - name: registry
-    image: registry
-    env:
-    - name: REGISTRY_HTTP_ADDR
-      valueFrom:
-        configMapKeyRef:
-          name: registry
-          key: http.addr
+@@INCLUDE[k8s/registry.yaml]
 ```
 
 ---
 
 ## Using the configmap
 
-- The resource definition from the previous slide is in `k8s/registry.yaml`
+- The resource definition from the previous slide is in @@LINK[k8s/registry.yaml]
 
 .exercise[
 

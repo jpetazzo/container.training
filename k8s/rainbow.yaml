@@ -1,0 +1,147 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: blue
+  labels:
+    app: rainbow
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rainbow
+    color: blue
+  name: color
+  namespace: blue
+spec:
+  selector:
+    matchLabels:
+      app: color
+      color: blue
+  template:
+    metadata:
+      labels:
+        app: color
+        color: blue
+    spec:
+      containers:
+      - image: jpetazzo/color
+        name: color
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: color
+    color: blue
+  name: color
+  namespace: blue
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: color
+    color: blue
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: green
+  labels:
+    app: rainbow
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rainbow
+    color: green
+  name: color
+  namespace: green
+spec:
+  selector:
+    matchLabels:
+      app: color
+      color: green
+  template:
+    metadata:
+      labels:
+        app: color
+        color: green
+    spec:
+      containers:
+      - image: jpetazzo/color
+        name: color
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: color
+    color: green
+  name: color
+  namespace: green
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: color
+    color: green
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: red
+  labels:
+    app: rainbow
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rainbow
+    color: red
+  name: color
+  namespace: red
+spec:
+  selector:
+    matchLabels:
+      app: color
+      color: red
+  template:
+    metadata:
+      labels:
+        app: color
+        color: red
+    spec:
+      containers:
+      - image: jpetazzo/color
+        name: color
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: color
+    color: red
+  name: color
+  namespace: red
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: color
+    color: red
+  type: ClusterIP
