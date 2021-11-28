@@ -193,25 +193,43 @@ Ah, right ...
 
 ---
 
-## Running Tilt
+## Running Tilt locally
 
-- If you're running on your local machine:
+*These instructions are valid only if you run Tilt on your local machine.*
+
+*If you are running Tilt on a remote machine or in a Pod, see next slide.*
+
+- Start Tilt:
   ```bash
   tilt up
   ```
-  Then press "space" or connect to http://localhost:10350/
 
-- If you're running on a remote machine:
-  ```bash
-  tilt up --host=0.0.0.0
-  ```
-  Then connect to the remote machine on port 10350
-
-- The Tilt web interface might complain about the Kubernetes context
-
-  ...If it does, don't worry, we'll fix that right away!
+- Then press "space" or connect to http://localhost:10350/
 
 ---
+
+## Running Tilt on a remote machine
+
+- If Tilt runs remotely, we can't access http://localhost:10350
+
+- Our Tiltfile includes an ngrok tunnel, let's use that
+
+- Start Tilt:
+  ```bash
+  tilt up
+  ```
+
+- The ngrok URL should appear in the Tilt output
+
+  (something like `https://xxxx-aa-bb-cc-dd.ngrok.io/`)
+
+- Open that URL in your browser
+
+*Note: it's also possible to run `tilt up --host=0.0.0.0`.*
+
+---
+
+class: extra-details
 
 ## Kubernetes contexts
 
