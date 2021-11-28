@@ -495,6 +495,49 @@ class: extra-details
 
 ---
 
+class: extra-details
+
+## Listing all possible verbs
+
+- The Kubernetes API is self-documented
+
+- We can ask it which resources, subresources, and verb exist
+
+- One way to do this is to use:
+
+  - `kubectl get --raw /api/v1` (for core resources with `apiVersion: v1`)
+
+  - `kubectl get --raw /apis/<group>/<version>` (for other resources)
+
+- The JSON response can be formatted with e.g. `jq` for readability
+
+---
+
+class: extra-details
+
+## Examples
+
+- List all verbs across all `v1` resources
+
+  ```bash
+  kubectl get --raw /api/v1 | jq -r .resources[].verbs[] | sort -u
+  ```
+
+- List all resources and subresources in `apps/v1`
+
+  ```bash
+  kubectl get --raw /apis/apps/v1 | jq -r .resources[].name
+  ```
+
+- List which verbs are available on which resources in `networking.k8s.io`
+
+  ```bash
+  kubectl get --raw /apis/networking.k8s.io/v1 | \
+          jq -r '.resources[] | .name + ": " + (.verbs | join(", "))'
+  ```
+
+---
+
 ## From rules to roles to rolebindings
 
 - A *role* is an API object containing a list of *rules*
@@ -927,6 +970,18 @@ class: extra-details
   ```bash
   kubectl describe clusterrole cluster-admin
   ```
+
+---
+
+## `list` vs. `get`
+
+⚠️ `list` grants read permissions to resources!
+
+- It's not possible to give permission to list resources without also reading them
+
+- This has implications for e.g. Secrets
+
+  (if a controller needs to be able to enumerate Secrets, it will be able to read them)
 
 ???
 
