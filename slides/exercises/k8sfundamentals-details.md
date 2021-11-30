@@ -8,25 +8,37 @@
 
 - We'll use one Deployment for each component
 
-  (see next slide for the images to use)
+  (created with `kubectl create deployment`)
 
 - We'll connect them with Services
 
-- We'll check that we can access the web UI in a browser
+  (create with `kubectl expose`)
 
 ---
 
 ## Images
 
-- hasher → `dockercoins/hasher:v0.1`
+- We'll use the following images:
 
-- redis → `redis`
+  - hasher → `dockercoins/hasher:v0.1`
 
-- rng → `dockercoins/rng:v0.1`
+  - redis → `redis`
 
-- webui → `dockercoins/webui:v0.1`
+  - rng → `dockercoins/rng:v0.1`
 
-- worker → `dockercoins/worker:v0.1`
+  - webui → `dockercoins/webui:v0.1`
+
+  - worker → `dockercoins/worker:v0.1`
+
+- All services should be internal services, except the web UI
+
+  (since we want to be able to connect to the web UI from outside)
+
+---
+
+class: pic
+
+![Dockercoins architecture diagram](images/dockercoins-diagram.png)
 
 ---
 
@@ -34,7 +46,7 @@
 
 - We should be able to see the web UI in our browser
 
-  (with the graph showing approximatiely 3-4 hashes/second)
+  (with the graph showing approximately 3-4 hashes/second)
 
 ---
 
@@ -44,4 +56,4 @@
 
   (check the logs of the worker; they indicate the port numbers)
 
-- The web UI can be exposed with a NodePort Service
+- The web UI can be exposed with a NodePort or LoadBalancer Service
