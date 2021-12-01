@@ -16,7 +16,7 @@
 
 - Scale up the `worker` service (to 15+ workers) and observe
 
-- What happens, and how can we improve the situation?
+- What happens?
 
 ---
 
@@ -33,5 +33,3 @@
 - When adding the liveness probe, nothing special should happen
 
 - Scaling the `worker` service will then cause disruptions
-
-- The final goal is to understand why, and how to fix it
