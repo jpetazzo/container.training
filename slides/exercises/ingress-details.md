@@ -6,7 +6,7 @@
 
   - the web app itself (dockercoins, NGINX, whatever we want)
 
-  - an ingress controller (we suggest Traefik)
+  - an ingress controller
 
   - a domain name (`use \*.nip.io` or `\*.localdev.me`)
 
@@ -30,11 +30,13 @@
 
 ## Hints
 
-- Traefik can be installed with Helm
+- For the ingress controller, we can use:
 
-  (it can be found on the Artifact Hub)
+  - [ingress-nginx](https://github.com/kubernetes/ingress-nginx/blob/main/docs/deploy/index.md)
 
-- If using Kubernetes 1.22+, make sure to use Traefik 2.5+
+  - the [Traefik Helm chart](https://doc.traefik.io/traefik/getting-started/install-traefik/#use-the-helm-chart)
+
+  - the container.training [Traefik DaemonSet](https://raw.githubusercontent.com/jpetazzo/container.training/main/k8s/traefik-v2.yaml)
 
 - If our cluster supports LoadBalancer Services: easy
 
