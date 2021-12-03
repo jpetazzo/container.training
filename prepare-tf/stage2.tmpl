@@ -138,6 +138,7 @@ resource "helm_release" "metrics_server_${index}" {
   provider = helm.cluster_${index}
   repository = "https://charts.bitnami.com/bitnami"
   chart = "metrics-server"
+  version = "5.8.8"
   name = "metrics-server"
   namespace = "metrics-server"
   create_namespace = true
