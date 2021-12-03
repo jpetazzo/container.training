@@ -32,8 +32,8 @@
 
 ## Stern
 
-[Stern](https://github.com/wercker/stern) is an open source project
-by [Wercker](http://www.wercker.com/).
+[Stern](https://github.com/stern/stern) is an open source project
+originally by [Wercker](http://www.wercker.com/).
 
 From the README:
 
@@ -63,22 +63,17 @@ Exactly what we need!
 
 ## Installing Stern
 
-- Stern is written in Go, and Go programs are usually shipped as a single binary
+- Stern is written in Go
 
-- We just need to download that binary and put it in our `PATH`!
+- Go programs are usually very easy to install
 
-- Binary releases are available [here](https://github.com/wercker/stern/releases) on GitHub
+  (no dependencies, extra libraries to install, etc)
 
-- The following commands will install Stern on a Linux Intel 64 bit machine:
-  ```bash
-  sudo curl -L -o /usr/local/bin/stern \
-       https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64
-  sudo chmod +x /usr/local/bin/stern
-  ```
+- Binary releases are available [here](https://github.com/stern/stern/releases) on GitHub
 
-- On macOS, we can also `brew install stern` or `sudo port install stern`
+- Stern is also available through most package managers
 
-<!-- ##VERSION## -->
+  (e.g. on macOS, we can `brew install stern` or `sudo port install stern`)
 
 ---
 
