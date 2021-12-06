@@ -1,8 +1,9 @@
 resource "scaleway_k8s_cluster" "_" {
-  name    = var.cluster_name
-  tags    = var.common_tags
-  version = var.k8s_version
-  cni     = var.cni
+  name                        = var.cluster_name
+  tags                        = var.common_tags
+  version                     = var.k8s_version
+  cni                         = var.cni
+  delete_additional_resources = true
 }
 
 resource "scaleway_k8s_pool" "_" {
