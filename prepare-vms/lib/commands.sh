@@ -75,9 +75,11 @@ _cmd_createuser() {
     echo '$USER_LOGIN ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$USER_LOGIN
     "
 
+    # The MaxAuthTries is here to help with folks who have many SSH keys.
     pssh "
     set -e
     sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+    sudo sed -i 's/#MaxAuthTries 6/MaxAuthTries 42/' /etc/ssh/sshd_config
     sudo service ssh restart
     "
 
