@@ -176,15 +176,7 @@ The `curl` command should now time out.
 This is the file that we applied:
 
 ```yaml
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: deny-all-for-testweb
-spec:
-  podSelector:
-    matchLabels:
-      app: testweb
-  ingress: []
+@@INCLUDE[k8s/netpol-deny-all-for-testweb.yaml]
 ```
 
 ---
@@ -211,19 +203,7 @@ spec:
 This is the second file that we applied:
 
 ```yaml
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: allow-testcurl-for-testweb
-spec:
-  podSelector:
-    matchLabels:
-      app: testweb
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          run: testcurl
+@@INCLUDE[k8s/netpol-allow-testcurl-for-testweb.yaml]
 ```
 
 ---
@@ -359,7 +339,7 @@ spec:
 
 ## Applying both network policies
 
-- Both network policies are declared in the file `k8s/netpol-dockercoins.yaml`
+- Both network policies are declared in the file @@LINK[k8s/netpol-dockercoins.yaml]
 
 .exercise[
 
