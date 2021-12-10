@@ -21,6 +21,15 @@ k8s_resource(workload='tilt-registry', port_forwards='30555:5000')
 
 # (2) Telling Tilt how to build and run our app.
 
+# The following two lines will use the kubectl-build plugin
+# to leverage buildkit and build the images in our Kubernetes
+# cluster. This is not enabled by default, because it requires
+# the plugin to be installed.
+# See https://github.com/vmware-tanzu/buildkit-cli-for-kubectl
+# for more information about this plugin.
+#load('ext://kubectl_build', 'kubectl_build')
+#docker_build = kubectl_build
+
 # Our Kubernetes manifests use images 'dockercoins/...' so we tell Tilt
 # how each of these images should be built. The first argument is the name
 # of the image, the second argument is the directory containing the build
