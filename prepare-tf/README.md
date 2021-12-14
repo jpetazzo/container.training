@@ -20,10 +20,15 @@ terraform init
 
 3. Configure provider authentication.
 
-- Digital Ocean: `export DIGITALOCEAN_ACCESS_TOKEN=...`
-  (check `~/.config/doctl/config.yaml` for the token)
-- Linode: `export LINODE_TOKEN=...`
-  (check `~/.config/linode-cli` for the token)
+- Digital Ocean:
+  ```bash
+  export DIGITALOCEAN_ACCESS_TOKEN=$(grep ^access-token ~/.config/doctl/config.yaml | cut -d: -f2 | tr -d " "
+)
+  ```
+- Linode:
+  ```bash
+  export LINODE_TOKEN=$(grep ^token ~/.config/linode-cli | cut -d= -f2 | tr -d " ")
+  ```
 - Oracle Cloud: it should use `~/.oci/config`
 - Scaleway: run `scw init`
 
