@@ -1,6 +1,7 @@
 resource "oci_identity_compartment" "_" {
-  name        = var.cluster_name
-  description = var.cluster_name
+  name          = var.cluster_name
+  description   = var.cluster_name
+  enable_delete = true
 }
 
 locals {
