@@ -1,3 +1,5 @@
+⚠️ BROKEN EXERCISE - DO NOT USE
+
 ## Exercise — Ingress Secret Policy
 
 *Implement policy to limit impact of ingress controller vulnerabilities.*

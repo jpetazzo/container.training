@@ -1,0 +1,28 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: ingress-domain-name
+spec:
+  rules:
+  - name: create-ingress
+    match:
+      resources: 
+        kinds:
+        - Service
+    generate: 
+      kind: Ingress
+      name: "{{request.object.metadata.name}}"
+      namespace: "{{request.object.metadata.namespace}}"
+      data:
+        spec:
+          rules:
+          - host: "{{request.object.metadata.name}}.{{request.object.metadata.namespace}}.A.B.C.D.nip.io"
+            http:
+              paths:
+              - backend:
+                  service:
+                    name: "{{request.object.metadata.name}}"
+                    port:
+                      number: 80
+                path: /
+                pathType: Prefix
