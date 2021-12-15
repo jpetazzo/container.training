@@ -16,7 +16,7 @@
 
 ## Goal
 
-- We want to be able to access the web app using an URL like:
+- We want to be able to access the web app using a URL like:
 
   http://webapp.localdev.me
 
