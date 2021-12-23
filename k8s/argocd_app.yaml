@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: worker
+spec:
+  destination:
+    namespace: helmcoins
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: generic-service
+    repoURL: 'https://github.com/antweiss/kubercoins.git'
+    targetRevision: helm
+    helm:
+      valueFiles:
+        - values.yaml
+        - ../values/worker.yaml
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+
