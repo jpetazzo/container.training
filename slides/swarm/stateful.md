@@ -20,7 +20,7 @@
 
 - We will expose it on port 10000 to access it easily
 
-.exercise[
+.lab[
 
 - Start the Redis service:
   ```bash
@@ -40,7 +40,7 @@
 
 - Typing that whole command is going to be tedious
 
-.exercise[
+.lab[
 
 - Define a shell alias to make our lives easier:
   ```bash
@@ -58,7 +58,7 @@
 
 ## Basic Redis commands
 
-.exercise[
+.lab[
 
 - Check that the `foo` key doesn't exist:
   ```bash
@@ -107,7 +107,7 @@
 
 - We will do that with a *constraint*
 
-.exercise[
+.lab[
 
 - Add a placement constraint to our service:
   ```bash
@@ -122,7 +122,7 @@
 
 - If we look for our `foo` key, it's gone!
 
-.exercise[
+.lab[
 
 - Check the `foo` key:
   ```bash
@@ -146,7 +146,7 @@ This ensures consistent behavior.
 
 - Since our database was wiped out, let's populate it again
 
-.exercise[
+.lab[
 
 - Set `foo` again:
   ```bash
@@ -166,7 +166,7 @@ This ensures consistent behavior.
 
 - Let's try to make a trivial update to the service and see what happens
 
-.exercise[
+.lab[
 
 - Set a memory limit to our Redis service:
   ```bash
@@ -188,7 +188,7 @@ The key is blank again!
 
 - Let's highlight what's going on with volumes!
 
-.exercise[
+.lab[
 
 - Check the current list of volumes:
   ```bash
@@ -211,7 +211,7 @@ even when it is not strictly technically necessary.
 
 - What happened to our data?
 
-.exercise[
+.lab[
 
 - The list of volumes is slightly different:
   ```bash
@@ -228,7 +228,7 @@ even when it is not strictly technically necessary.
 
 - Let's add an explicit volume mount to our service, referencing a named volume
 
-.exercise[
+.lab[
 
 - Update the service with a volume mount:
   ```bash
@@ -249,7 +249,7 @@ Note: the `local` volume driver automatically creates volumes.
 
 ## Checking that data is now persisted correctly
 
-.exercise[
+.lab[
 
 - Store something in the `foo` key:
   ```bash
@@ -294,7 +294,7 @@ It's easy to make that mistake — __Trust me!__]
 
 ## Cleaning up
 
-.exercise[
+.lab[
 
 - Remove the stateful service:
   ```bash

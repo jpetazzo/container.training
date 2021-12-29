@@ -60,7 +60,7 @@
 
 - Let's start it, then we'll explain what happens behind the scenes
 
-.exercise[
+.lab[
 
 - Install Portworx:
   ```bash
@@ -165,7 +165,7 @@ class: extra-details
 
 - The installation process will take a few minutes
 
-.exercise[
+.lab[
 
 - Check out the logs:
   ```bash
@@ -225,7 +225,7 @@ class: extra-details
 
 - The YAML manifest applied earlier should define a default storage class
 
-.exercise[
+.lab[
 
 - Check that we have a default storage class:
   ```bash

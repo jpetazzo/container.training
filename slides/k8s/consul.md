@@ -86,7 +86,7 @@ consul agent -data-dir=/consul/data -client=0.0.0.0 -server -ui \
 
 - We'll use the provided YAML file
 
-.exercise[
+.lab[
 
 - Create the stateful set and associated service:
   ```bash
@@ -177,7 +177,7 @@ consul agent -data-dir=/consul/data -client=0.0.0.0 -server -ui \
 
   (pods will be replaced one by one)
 
-.exercise[
+.lab[
 
 - Deploy a better Consul cluster:
   ```bash

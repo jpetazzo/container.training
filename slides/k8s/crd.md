@@ -74,7 +74,7 @@
 
 - Let's create the Custom Resource Definition for our Coffee resource
 
-.exercise[
+.lab[
 
 - Load the CRD:
   ```bash
@@ -103,7 +103,7 @@ spec:
   taste: strong
 ```
 
-.exercise[
+.lab[
 
 - Create a few types of coffee beans:
   ```bash
@@ -118,7 +118,7 @@ spec:
 
 - By default, `kubectl get` only shows name and age of custom resources
 
-.exercise[
+.lab[
 
 - View the coffee beans that we just created:
   ```bash
@@ -195,7 +195,7 @@ There are many possibilities!
 
 - Let's update our CRD using @@LINK[k8s/coffee-3.yaml]
 
-.exercise[
+.lab[
 
 - Update the CRD:
   ```bash

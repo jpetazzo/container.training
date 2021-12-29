@@ -51,7 +51,7 @@
 
 - First, let's edit `Chart.yaml`
 
-.exercise[
+.lab[
 
 - In `Chart.yaml`, fill the `dependencies` section:
   ```yaml
@@ -93,7 +93,7 @@ use Bitnami's Redis chart.
 
 - After adding the dependency, we ask Helm to pin an download it
 
-.exercise[
+.lab[
 
 - Ask Helm:
   ```bash
@@ -262,7 +262,7 @@ class: extra-details
 
 ## Embedding a dependency
 
-.exercise[
+.lab[
 
 - Decompress the chart:
   ```yaml

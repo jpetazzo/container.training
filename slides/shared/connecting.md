@@ -2,7 +2,7 @@ class: in-person
 
 ## Connecting to our lab environment
 
-.exercise[
+.lab[
 
 - Log into the first VM (`node1`) with your SSH client:
   ```bash
@@ -82,7 +82,7 @@ class: in-person
 
 - It comes with many tools pre-installed (helm, stern...)
 
-- These tools are used in many exercises in these slides
+- These tools are used in many demos and exercises in these slides
 
 - `shpod` also gives you completion and a fancy prompt
 
@@ -96,7 +96,7 @@ class: self-paced
 
 - If not: let's get some thanks to Play-With-Docker
 
-.exercise[
+.lab[
 
 - Go to http://www.play-with-docker.com/
 

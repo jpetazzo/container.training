@@ -22,7 +22,7 @@
 
 - This is achieved through the `docker swarm update` command
 
-.exercise[
+.lab[
 
 - Lock our cluster:
   ```bash
@@ -39,7 +39,7 @@ This will display the unlock key. Copy-paste it somewhere safe.
 
 - If we restart a manager, it will now be locked
 
-.exercise[
+.lab[
 
 - Restart the local Engine:
   ```bash
@@ -59,7 +59,7 @@ that you [provisioned yourself](https://@@GITREPO@@/tree/master/prepare-machine)
 
 - Other commands are OK
 
-.exercise[
+.lab[
 
 - Try a few basic commands:
   ```bash
@@ -80,7 +80,7 @@ that you [provisioned yourself](https://@@GITREPO@@/tree/master/prepare-machine)
 
 - The state of the node shows up in the output of `docker info`
 
-.exercise[
+.lab[
 
 - Check the output of `docker info`:
   ```bash
@@ -100,7 +100,7 @@ that you [provisioned yourself](https://@@GITREPO@@/tree/master/prepare-machine)
 
 - You will need the secret token that we obtained when enabling auto-lock earlier
 
-.exercise[
+.lab[
 
 - Unlock the node:
   ```bash
@@ -141,7 +141,7 @@ Note: if somebody steals both your disks and your key, .strike[you're doomed! Do
 
 - If you want to remove the secret key, disable auto-lock
 
-.exercise[
+.lab[
 
 - Permanently unlock the cluster:
   ```bash

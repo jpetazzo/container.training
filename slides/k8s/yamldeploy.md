@@ -78,7 +78,7 @@
 
 - We can use it if we need to deploy or redeploy Dockercoins
 
-.exercise[
+.lab[
 
 - Deploy or redeploy Dockercoins:
   ```bash

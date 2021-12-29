@@ -152,7 +152,7 @@
 
 - ... or with Helm charts (which allows to customize a few things)
 
-.exercise[
+.lab[
 
 - Install Kyverno:
   ```bash
@@ -233,7 +233,7 @@
 
 - We will use this later
 
-.exercise[
+.lab[
 
 - Create a pod:
   ```bash
@@ -251,7 +251,7 @@
 
 ## Load and try the policy
 
-.exercise[
+.lab[
 
 - Load the policy:
   ```bash
@@ -324,7 +324,7 @@
 
 ## Load and try the policy
 
-.exercise[
+.lab[
 
 - Load the policy:
   ```bash
@@ -431,7 +431,7 @@
 
 ## Load and try the policy
 
-.exercise[
+.lab[
 
 - Load the policy:
   ```bash
@@ -462,7 +462,7 @@
 
 - We can see the infringing Pod in a PolicyReport
 
-.exercise[
+.lab[
 
 - Check that the pod still an "invalid" color:
   ```bash

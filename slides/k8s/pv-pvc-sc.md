@@ -144,7 +144,7 @@ class: extra-details
 
 - Let's create a standalone PVC and see what happens!
 
-.exercise[
+.lab[
 
 - Check if we have a StorageClass:
   ```bash
@@ -223,7 +223,7 @@ class: extra-details
 
 ## Running the Pod
 
-.exercise[
+.lab[
 
 - Edit the `mounter.yaml` manifest
 

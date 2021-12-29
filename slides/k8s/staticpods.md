@@ -179,7 +179,7 @@
 
 - On our clusters, the `staticPodPath` is `/etc/kubernetes/manifests`
 
-.exercise[
+.lab[
 
 - Have a look at this directory:
   ```bash
@@ -198,7 +198,7 @@ class: static-pods-exercise
 
 - We are going to add a pod manifest to the directory, and kubelet will run it
 
-.exercise[
+.lab[
 
 - Copy a manifest to the directory:
   ```bash

@@ -252,7 +252,7 @@ class: extra-details
 
 ## `ship init`
 
-.exercise[
+.lab[
 
 - Change to a new directory:
   ```bash
@@ -320,7 +320,7 @@ class: extra-details
 
 ## Deploy DockerCoins with Kustomize
 
-.exercise[
+.lab[
 
 - Create a new namespace:
   ```bash
@@ -345,7 +345,7 @@ class: extra-details
 
 - We can check the worker logs, or the web UI
 
-.exercise[
+.lab[
 
 - Retrieve the NodePort number of the web UI:
   ```bash

@@ -22,7 +22,7 @@
 
 - Let's see what we get when we create a Deployment
 
-.exercise[
+.lab[
 
 - Create a Deployment:
   ```bash
@@ -62,7 +62,7 @@ So, what do we get?
 
 - Let's look up the Pod that was created and check it too
 
-.exercise[
+.lab[
 
 - Find the name of the Pod:
   ```bash
@@ -107,7 +107,7 @@ So, what do we get?
 
 - It will restrict a command to the objects matching *at least* all these labels
 
-.exercise[
+.lab[
 
 - List all the pods with at least `app=clock`:
   ```bash
@@ -127,7 +127,7 @@ So, what do we get?
 
 - The easiest method is to use `kubectl label` and `kubectl annotate`
 
-.exercise[
+.lab[
 
 - Set a label on the `clock` Deployment:
   ```bash
@@ -151,7 +151,7 @@ So, what do we get?
 
 - `kubectl get -L xyz` shows the value of label `xyz`
 
-.exercise[
+.lab[
 
 - List all the labels that we have on pods:
   ```bash
@@ -191,7 +191,7 @@ class: extra-details
 
 - We can use the `--show-labels` flag with `kubectl get`
 
-.exercise[
+.lab[
 
 - Show labels for a bunch of objects:
   ```bash

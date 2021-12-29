@@ -87,7 +87,7 @@ Exactly what we need!
 
 - These two ways can be combined if necessary
 
-.exercise[
+.lab[
 
 - View the logs for all the pingpong containers:
   ```bash
@@ -113,7 +113,7 @@ Exactly what we need!
 
 - The `--all-namespaces` flag is self-explanatory
 
-.exercise[
+.lab[
 
 - View what's up with the `weave` system containers:
   ```bash
@@ -141,7 +141,7 @@ Exactly what we need!
 
 - We can use that property to view the logs of all the pods created with `kubectl create deployment`
 
-.exercise[
+.lab[
 
 - View the logs for all the things started with `kubectl create deployment`:
   ```bash

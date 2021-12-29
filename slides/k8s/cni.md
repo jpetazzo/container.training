@@ -204,7 +204,7 @@ class: extra-details
 
 ## Logging into the new cluster
 
-.exercise[
+.lab[
 
 - Log into node `kuberouter1`
 
@@ -228,7 +228,7 @@ class: extra-details
 
 - By default, kubelet gets the CNI configuration from `/etc/cni/net.d`
 
-.exercise[
+.lab[
 
 - Check the content of `/etc/cni/net.d`
 
@@ -262,7 +262,7 @@ class: extra-details
 
   (where `C` is our cluster number)
 
-.exercise[
+.lab[
 
 - Edit the Compose file to set the Cluster CIDR:
   ```bash
@@ -298,7 +298,7 @@ class: extra-details
 
   (where `A.B.C.D` is the public address of `kuberouter1`, running the control plane)
 
-.exercise[
+.lab[
 
 - Edit the YAML file to set the API server address:
   ```bash
@@ -320,7 +320,7 @@ Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
 
 - This is similar to what we did for the `kubenet` cluster
 
-.exercise[
+.lab[
 
 - Generate the kubeconfig file (replacing `X.X.X.X` with the address of `kuberouter1`):
   ```bash
@@ -338,7 +338,7 @@ Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
 
 - We need to copy that kubeconfig file to the other nodes
 
-.exercise[
+.lab[
 
 - Copy `kubeconfig` to the other nodes:
   ```bash
@@ -359,7 +359,7 @@ Note: the DaemonSet won't create any pods (yet) since there are no nodes (yet).
 
 - We need to pass `--network-plugin=cni`
 
-.exercise[
+.lab[
 
 - Join the first node:
    ```bash
@@ -384,7 +384,7 @@ class: extra-details
 
   (in `/etc/cni/net.d`)
 
-.exercise[
+.lab[
 
 - Check the content of `/etc/cni/net.d`
 
@@ -400,7 +400,7 @@ class: extra-details
 
 - Let's create a Deployment and expose it with a Service
 
-.exercise[
+.lab[
 
 - Create a Deployment running a web server:
   ```bash
@@ -423,7 +423,7 @@ class: extra-details
 
 ## Checking that everything works
 
-.exercise[
+.lab[
 
 - Get the ClusterIP address for the service:
   ```bash
@@ -449,7 +449,7 @@ class: extra-details
 
 - What if we need to check that everything is working properly?
 
-.exercise[
+.lab[
 
 - Check the IP addresses of our pods:
   ```bash
@@ -490,7 +490,7 @@ class: extra-details
 
 ## Trying `kubectl logs` / `kubectl exec`
 
-.exercise[
+.lab[
 
 - Try to show the logs of a kube-router pod:
   ```bash

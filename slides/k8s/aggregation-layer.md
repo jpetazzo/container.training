@@ -66,7 +66,7 @@
 
 - We'll ask `kubectl` to show us the exacts requests that it's making
 
-.exercise[
+.lab[
 
 - Check the URI for a cluster-scope, "core" resource, e.g. a Node:
   ```bash
@@ -122,7 +122,7 @@ class: extra-details
 
 - What about namespaced resources?
 
-.exercise[
+.lab[
 
 - Check the URI for a namespaced, "core" resource, e.g. a Service:
   ```bash
@@ -169,7 +169,7 @@ class: extra-details
 
 ## Accessing a subresource
 
-.exercise[
+.lab[
 
 - List `kube-proxy` pods:
   ```bash
@@ -200,7 +200,7 @@ command=echo&command=hello&command=world&container=kube-proxy&stderr=true&stdout
 
 - There are at least three useful commands to introspect the API server
 
-.exercise[
+.lab[
 
 - List resources types, their group, kind, short names, and scope:
   ```bash
@@ -249,7 +249,7 @@ command=echo&command=hello&command=world&container=kube-proxy&stderr=true&stdout
 
 The following assumes that `metrics-server` is deployed on your cluster.
 
-.exercise[
+.lab[
 
 - Check that the metrics.k8s.io is registered with `metrics-server`:
   ```bash
@@ -271,7 +271,7 @@ The following assumes that `metrics-server` is deployed on your cluster.
 
 - We can have multiple resources with the same name
 
-.exercise[
+.lab[
 
 - Look for resources named `node`:
   ```bash
@@ -298,7 +298,7 @@ The following assumes that `metrics-server` is deployed on your cluster.
 
 - But we can look at the raw data (with `-o json` or `-o yaml`)
 
-.exercise[
+.lab[
 
 - Look at NodeMetrics objects with one of these commands:
   ```bash
@@ -320,7 +320,7 @@ The following assumes that `metrics-server` is deployed on your cluster.
 
 --
 
-.exercise[
+.lab[
 
 - Display node metrics:
   ```bash
@@ -342,7 +342,7 @@ The following assumes that `metrics-server` is deployed on your cluster.
 
 - Then we can register that server by creating an APIService resource
 
-.exercise[
+.lab[
 
 - Check the definition used for the `metrics-server`:
   ```bash

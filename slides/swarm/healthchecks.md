@@ -115,7 +115,7 @@ We will use the following Compose file (`stacks/dockercoins+healthcheck.yml`):
 
 We need to update our services with a healthcheck.
 
-.exercise[
+.lab[
 
 - Go to the `stacks` directory:
   ```bash
@@ -139,7 +139,7 @@ We need to update our services with a healthcheck.
 
 - The container still runs fine, it just won't accept connections on port 80
 
-.exercise[
+.lab[
 
 - Change the HTTP listening port:
   ```bash

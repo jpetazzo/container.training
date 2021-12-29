@@ -32,7 +32,7 @@
 
 - You're welcome to use whatever you like (e.g. AWS profiles)
 
-.exercise[
+.lab[
 
 - Set the AWS region, API access key, and secret key:
   ```bash
@@ -58,7 +58,7 @@
 
   - register it in our kubeconfig file
 
-.exercise[
+.lab[
 
 - Update our kubeconfig file:
   ```bash

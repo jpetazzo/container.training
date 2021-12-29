@@ -186,7 +186,7 @@ class: extra-details
 
 .warning[If you want to use another name than `jean.doe`, update the YAML file!]
 
-.exercise[
+.lab[
 
 - Create the global namespace for all users:
   ```bash
@@ -208,7 +208,7 @@ class: extra-details
 
   (the token will be their password)
 
-.exercise[
+.lab[
 
 - List the user's secrets:
   ```bash
@@ -228,7 +228,7 @@ class: extra-details
 
 - Let's create a new context that will use that token to access the API
 
-.exercise[
+.lab[
 
 - Add a new identity to our kubeconfig file:
   ```bash
@@ -254,7 +254,7 @@ class: extra-details
 
 - Let's check that our access rights are set properly
 
-.exercise[
+.lab[
 
 - Try to access any resource:
   ```bash
@@ -280,7 +280,7 @@ class: extra-details
 
   (many people prefer cfssl, easyrsa, or other tools; that's fine too!)
 
-.exercise[
+.lab[
 
 - Generate the key and certificate signing request:
   ```bash
@@ -313,7 +313,7 @@ The command above generates:
 
 ## Sending the CSR to Kubernetes
 
-.exercise[
+.lab[
 
 - Generate and create the CSR resource:
   ```bash
@@ -344,7 +344,7 @@ The command above generates:
 
 - Fow now, this is configured [through an experimental controller manager flag](https://github.com/kubernetes/kubernetes/issues/67324)
 
-.exercise[
+.lab[
 
 - Edit the static pod definition for the controller manager:
   ```bash
@@ -366,7 +366,7 @@ The command above generates:
 
 - Let's inspect the CSR, and if it is valid, approve it
 
-.exercise[
+.lab[
 
 - Switch back to `cluster-admin`:
   ```bash
@@ -389,7 +389,7 @@ The command above generates:
 
 ## Obtaining the certificate
 
-.exercise[
+.lab[
 
 - Switch back to the user's identity:
   ```bash
@@ -414,7 +414,7 @@ The command above generates:
 
 ## Using the certificate
 
-.exercise[
+.lab[
 
 - Add the key and certificate to kubeconfig:
   ```bash

@@ -52,7 +52,7 @@
 
 - Let's make sure we have everything we need first
 
-.exercise[
+.lab[
 
 - Log into the `dmuc1` machine
 
@@ -101,7 +101,7 @@
 
 ## Starting API server
 
-.exercise[
+.lab[
 
 - Try to start the API server:
   ```bash
@@ -118,7 +118,7 @@ it cannot start without it.
 
 ## Starting etcd
 
-.exercise[
+.lab[
 
 - Try to start etcd:
   ```bash
@@ -144,7 +144,7 @@ serving insecure client requests on 127.0.0.1:2379, this is strongly discouraged
 
 - That argument should be a comma-separated list of URLs
 
-.exercise[
+.lab[
 
 - Start API server:
   ```bash
@@ -161,7 +161,7 @@ Success!
 
 - Let's try a few "classic" commands
 
-.exercise[
+.lab[
 
 - List nodes:
   ```bash
@@ -201,7 +201,7 @@ class: extra-details
 
 - Let's run a web server!
 
-.exercise[
+.lab[
 
 - Create a Deployment with NGINX:
   ```bash
@@ -216,7 +216,7 @@ Success?
 
 ## Checking our Deployment status
 
-.exercise[
+.lab[
 
 - Look at pods, deployments, etc.:
   ```bash
@@ -249,7 +249,7 @@ And, there is no ReplicaSet, and no Pod.
 
 ## Starting the controller manager
 
-.exercise[
+.lab[
 
 - Try to start the controller manager:
   ```bash
@@ -289,7 +289,7 @@ Using the inClusterConfig.  This might not work.
 
 ## Starting the controller manager (for real)
 
-.exercise[
+.lab[
 
 - Start the controller manager:
   ```bash
@@ -304,7 +304,7 @@ Success!
 
 ## Checking our Deployment status
 
-.exercise[
+.lab[
 
 - Check all our resources again:
   ```bash
@@ -371,7 +371,7 @@ Of course, we don't need to perform *all* the solutions mentioned here.
 
 - The ReplicaSet controller will no longer create pods referencing the (missing) token
 
-.exercise[
+.lab[
 
 - Programmatically change the `default` ServiceAccount:
   ```bash
@@ -402,7 +402,7 @@ Of course, we don't need to perform *all* the solutions mentioned here.
 
 - Once we patch the default service account, the ReplicaSet can create a Pod
 
-.exercise[
+.lab[
 
 - Check that we now have a pod:
   ```bash
@@ -437,7 +437,7 @@ If we're impatient, we can restart the controller manager.
 
 - We're going to use Docker (because it's the default option)
 
-.exercise[
+.lab[
 
 - Start the Docker Engine:
   ```bash
@@ -479,7 +479,7 @@ docker run alpine echo hello world
 
 - Or we can generate the file with `kubectl`
 
-.exercise[
+.lab[
 
 - Create the file `~/.kube/config` with `kubectl`:
   ```bash
@@ -519,7 +519,7 @@ clusters:
 
 ## Starting kubelet
 
-.exercise[
+.lab[
 
 - Start kubelet with that kubeconfig file:
   ```bash
@@ -536,7 +536,7 @@ Success!
 
 - Let's check that our node registered correctly
 
-.exercise[
+.lab[
 
 - List the nodes in our cluster:
   ```bash
@@ -555,7 +555,7 @@ Its name will be its hostname (it should be `dmuc1`).
 
 - Let's check if our pod is running
 
-.exercise[
+.lab[
 
 - List all resources:
   ```bash
@@ -594,7 +594,7 @@ Which is normal: it needs to be *scheduled*.
 
 - Just like for controller manager, we can use `--kubeconfig` or `--master`
 
-.exercise[
+.lab[
 
 - Start the scheduler:
   ```bash
@@ -613,7 +613,7 @@ Which is normal: it needs to be *scheduled*.
 
 - Then it will be `Running`
 
-.exercise[
+.lab[
 
 - Check pod status:
   ```bash
@@ -654,7 +654,7 @@ class: extra-details
 
 - Let's check that our pod correctly runs NGINX
 
-.exercise[
+.lab[
 
 - Check our pod's IP address:
   ```bash
@@ -676,7 +676,7 @@ We should see the `Welcome to nginx!` page.
 
 - We can now create a Service associated with this Deployment
 
-.exercise[
+.lab[
 
 - Expose the Deployment's port 80:
   ```bash
@@ -705,7 +705,7 @@ This won't work. We need kube-proxy to enable internal communication.
 
   (although that will be deprecated in the future)
 
-.exercise[
+.lab[
 
 - Start kube-proxy:
   ```bash
@@ -720,7 +720,7 @@ This won't work. We need kube-proxy to enable internal communication.
 
 - Now that kube-proxy is running, we should be able to connect
 
-.exercise[
+.lab[
 
 - Check the Service's ClusterIP again, and retry connecting:
   ```bash
@@ -742,7 +742,7 @@ class: extra-details
 
 - When a Service is created or updated, kube-proxy creates iptables rules
 
-.exercise[
+.lab[
 
 - Check out the `OUTPUT` chain in the `nat` table:
   ```bash
@@ -766,7 +766,7 @@ class: extra-details
 
 - The last command showed a chain named `KUBE-SVC-...` corresponding to our service
 
-.exercise[
+.lab[
 
 - Check that `KUBE-SVC-...` chain:
   ```bash

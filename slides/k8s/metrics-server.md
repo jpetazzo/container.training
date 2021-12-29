@@ -6,7 +6,7 @@
 
 - We need metrics!
 
-.exercise[
+.lab[
 
 - Let's try the following command:
   ```bash

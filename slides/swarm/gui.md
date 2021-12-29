@@ -16,7 +16,7 @@ What about web interfaces to control and manage Swarm?
 
 - Yet another stack file
 
-.exercise[
+.lab[
 
 - Make sure we are in the stacks directory:
   ```bash

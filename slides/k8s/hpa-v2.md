@@ -62,7 +62,7 @@
 
 - That's the easy part!
 
-.exercise[
+.lab[
 
 - Create a new namespace and switch to it:
   ```bash
@@ -90,7 +90,7 @@
 
   (by about 100ms per `worker` Pod after the 3rd worker)
 
-.exercise[
+.lab[
 
 - Check the `webui` port and open it in your browser:
   ```bash
@@ -114,7 +114,7 @@
 
 - It monitors exactly one URL, that must be passed as a command-line argument
 
-.exercise[
+.lab[
 
 - Deploy `httplat`:
   ```bash
@@ -148,7 +148,7 @@ class: extra-details
 
   (because we can configure it dynamically with annotations)
 
-.exercise[
+.lab[
 
 - If it's not installed yet on the cluster, install Prometheus:
   ```bash
@@ -169,7 +169,7 @@ class: extra-details
 
 - We can use annotations to tell Prometheus to collect the metrics
 
-.exercise[
+.lab[
 
 - Tell Prometheus to "scrape" our latency exporter:
   ```bash
@@ -191,7 +191,7 @@ You'll need to instruct it to scrape http://httplat.customscaling.svc:9080/metri
 
 - Before moving on, confirm that Prometheus has our metrics
 
-.exercise[
+.lab[
 
 - Connect to Prometheus
 
@@ -407,7 +407,7 @@ Putting togeher @@LINK[k8s/hpa-v2-pa-httplat.yaml]:
 
 - Of course, it won't quite work yet (we're missing the *Prometheus adapter*)
 
-.exercise[
+.lab[
 
 - Create the HorizontalPodAutoscaler:
   ```bash
@@ -469,7 +469,7 @@ no custom metrics API (custom.metrics.k8s.io) registered
 
 - There is ~~an app~~ a Helm chart for that
 
-.exercise[
+.lab[
 
 - Install the Prometheus adapter:
   ```bash
@@ -534,7 +534,7 @@ Here is the rule that we need to add to the configuration:
 
 ## Editing the adapter's configuration
 
-.exercise[
+.lab[
 
 - Edit the adapter's ConfigMap:
   ```bash

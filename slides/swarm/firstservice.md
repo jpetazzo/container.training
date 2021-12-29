@@ -4,7 +4,7 @@
 
   `docker run` → `docker service create`
 
-.exercise[
+.lab[
 
 - Create a service featuring an Alpine container pinging Google resolvers:
   ```bash
@@ -28,7 +28,7 @@
 
 - ... `docker service logs` shows the output of all the containers of a specific service
 
-.exercise[
+.lab[
 
 - Check the output of our ping command:
   ```bash
@@ -49,7 +49,7 @@ class: extra-details
 
 - The `docker service ps` command told us where our container was scheduled
 
-.exercise[
+.lab[
 
 - Look up the `NODE` on which the container is running:
   ```bash
@@ -68,7 +68,7 @@ class: extra-details
 
 ## Viewing the logs of the container
 
-.exercise[
+.lab[
 
 - See that the container is running and check its ID:
   ```bash
@@ -92,7 +92,7 @@ class: extra-details
 
 - Services can be scaled in a pinch with the `docker service update` command
 
-.exercise[
+.lab[
 
 - Scale the service to ensure 2 copies per node:
   ```bash
@@ -164,7 +164,7 @@ class: extra-details
 
 ## `--detach` in action
 
-.exercise[
+.lab[
 
 - Scale the service to ensure 3 copies per node:
   ```bash
@@ -203,7 +203,7 @@ class: extra-details
 
 ## Expose ElasticSearch on its default port
 
-.exercise[
+.lab[
 
 - Create an ElasticSearch service (and give it a name while we're at it):
   ```bash
@@ -249,7 +249,7 @@ class: extra-details, pic
 
 - Let's try to reach that port!
 
-.exercise[
+.lab[
 
 <!-- Give it a few seconds to be ready ```bash sleep 5``` -->
 
@@ -271,7 +271,7 @@ about this instance; including a randomly-generated super-hero name.
 
 - If we repeat our `curl` command multiple times, we will see different names
 
-.exercise[
+.lab[
 
 - Send 10 requests, and see which instances serve them:
   ```bash
@@ -437,7 +437,7 @@ class: extra-details
 
 - Let's leverage the Docker API!
 
-.exercise[
+.lab[
 
 - Run this simple-yet-beautiful visualization app:
   ```bash
@@ -455,7 +455,7 @@ class: extra-details
 
 - It runs a web server on port 8080
 
-.exercise[
+.lab[
 
 - Point your browser to port 8080 of your node1's public ip
 
@@ -513,7 +513,7 @@ it to Swarm and maintains it.
 
 - A Shell snippet a day keeps the cruft away
 
-.exercise[
+.lab[
 
 - Remove all services with this one liner:
   ```bash

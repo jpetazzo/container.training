@@ -20,7 +20,7 @@
 
 - Let's create a new namespace called "green"
 
-.exercise[
+.lab[
 
 - Create the "green" namespace:
   ```bash
@@ -40,7 +40,7 @@
 
 - Just to check that everything works correctly, deploy NGINX
 
-.exercise[
+.lab[
 
 - Create a Deployment using the official NGINX image:
   ```bash
@@ -66,7 +66,7 @@
 
 - The Pods of the DaemonSet will do so by mounting `/root` from the host
 
-.exercise[
+.lab[
 
 - Check the file `k8s/hacktheplanet.yaml` with a text editor:
   ```bash
@@ -83,7 +83,7 @@
 
 - Let's deploy our "exploit"!
 
-.exercise[
+.lab[
 
 - Create the DaemonSet:
   ```bash

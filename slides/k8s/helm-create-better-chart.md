@@ -24,7 +24,7 @@
 
 - This will give us a basic chart that we will customize
 
-.exercise[
+.lab[
 
 - Create a basic chart:
   ```bash
@@ -81,7 +81,7 @@ This creates a basic chart in the directory `helmcoins`.
 
 - Exception: for redis, we want to use the official image redis:latest
 
-.exercise[
+.lab[
 
 - Write YAML files for the 5 components, with the following model:
   ```yaml
@@ -98,7 +98,7 @@ This creates a basic chart in the directory `helmcoins`.
 
 - For convenience, let's work in a separate namespace
 
-.exercise[
+.lab[
 
 - Create a new namespace (if it doesn't already exist):
   ```bash
@@ -126,7 +126,7 @@ This creates a basic chart in the directory `helmcoins`.
   helm upgrade COMPONENT-NAME CHART-DIRECTORY --install
   ```
 
-.exercise[
+.lab[
 
 - Install the 5 components of DockerCoins:
   ```bash
@@ -165,7 +165,7 @@ class: extra-details
 
 - Let's see if DockerCoins is working!
 
-.exercise[
+.lab[
 
 - Check the logs of the worker:
   ```bash
@@ -187,7 +187,7 @@ There are *many* issues to fix!
 
 - It looks like our images can't be found
 
-.exercise[
+.lab[
 
 - Use `kubectl describe` on any of the pods in error
 
@@ -205,7 +205,7 @@ There are *many* issues to fix!
 
   (and try to find the one generating the Deployment resource)
 
-.exercise[
+.lab[
 
 - Show the structure of the `helmcoins` chart that Helm generated:
   ```bash
@@ -228,7 +228,7 @@ There are *many* issues to fix!
 
 - Let's look for `AppVersion` there!
 
-.exercise[
+.lab[
 
 - Check the file `helmcoins/Chart.yaml`
 
@@ -250,7 +250,7 @@ There are *many* issues to fix!
 
   (to match what we've specified in our values YAML files)
 
-.exercise[
+.lab[
 
 - Edit `helmcoins/templates/deployment.yaml`
 
@@ -266,7 +266,7 @@ There are *many* issues to fix!
 
 - To use the new template, we need to *upgrade* the release to use that chart
 
-.exercise[
+.lab[
 
 - Upgrade all components:
   ```bash
@@ -306,7 +306,7 @@ We should see all pods "Running". But ... not all of them are READY.
 
   (`kubectl describe` will retrieve the events related to the object)
 
-.exercise[
+.lab[
 
 - Check the events for the redis pods:
   ```bash
@@ -345,7 +345,7 @@ It's failing both its liveness and readiness probes!
 
   `{{ end }}` at the end
 
-.exercise[
+.lab[
 
 - Edit `helmcoins/templates/deployment.yaml`
 
@@ -386,7 +386,7 @@ This is what the new YAML should look like (added lines in yellow):
 
 - We need to upgrade all the services again to use the new chart
 
-.exercise[
+.lab[
 
 - Upgrade all components:
   ```bash
@@ -410,7 +410,7 @@ Everything should now be running!
 
 - Is this working now?
 
-.exercise[
+.lab[
 
 - Let's check the logs of the worker:
   ```bash
@@ -429,7 +429,7 @@ Typically, that error means that the `redis` service doesn't exist.
 
 - What about the services created by our chart?
 
-.exercise[
+.lab[
 
 - Check the list of services:
   ```bash
@@ -452,7 +452,7 @@ We need to change that!
 
 - `include` indicates a *template block* defined somewhere else
 
-.exercise[
+.lab[
 
 - Find where that `fullname` thing is defined:
   ```bash
@@ -473,7 +473,7 @@ We can look at the definition, but it's fairly complex ...
 
 - The name of the release is available as `{{ .Release.Name }}`
 
-.exercise[
+.lab[
 
 - Edit `helmcoins/templates/service.yaml`
 
@@ -528,7 +528,7 @@ We can look at the definition, but it's fairly complex ...
 
 - Let's add a `service.port` value to the redis release
 
-.exercise[
+.lab[
 
 - Edit `redis.yaml` to add:
   ```yaml
@@ -563,7 +563,7 @@ We can look at the definition, but it's fairly complex ...
 
 ## Changing the deployment template
 
-.exercise[  
+.lab[  
 
 - Edit `helmcoins/templates/deployment.yaml`
 

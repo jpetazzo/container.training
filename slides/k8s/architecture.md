@@ -203,9 +203,9 @@ What does that mean?
 
 ## Let's experiment a bit!
 
-- For the exercises in this section, connect to the first node of the `test` cluster
+- For this section, connect to the first node of the `test` cluster
 
-.exercise[
+.lab[
 
 - SSH to the first node of the test cluster
 
@@ -224,7 +224,7 @@ What does that mean?
 
 - Let's create a simple object
 
-.exercise[
+.lab[
 
 - Create a namespace with the following command:
   ```bash
@@ -246,7 +246,7 @@ This is equivalent to `kubectl create namespace hello`.
 
 - Let's retrieve the object we just created
 
-.exercise[
+.lab[
 
 - Read back our object:
   ```bash
@@ -354,7 +354,7 @@ class: extra-details
 
 - The easiest way is to use `kubectl label`
 
-.exercise[
+.lab[
 
 - In one terminal, watch namespaces:
   ```bash
@@ -402,7 +402,7 @@ class: extra-details
 
   - DELETED resources
 
-.exercise[
+.lab[
 
 - In one terminal, watch pods, displaying full events:
   ```bash

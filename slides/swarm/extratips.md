@@ -167,7 +167,7 @@ docker node update <node-name> --availability <active|pause|drain>
 
 - Breaks down between *active* and *reclaimable* categories
 
-.exercise[
+.lab[
 
 - Check how much disk space is used at the end of the workshop:
   ```bash
@@ -188,7 +188,7 @@ docker node update <node-name> --availability <active|pause|drain>
 
 - Removes empty networks
 
-.exercise[
+.lab[
 
 - Try it:
   ```bash

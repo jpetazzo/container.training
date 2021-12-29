@@ -109,7 +109,7 @@ class: extra-details
 
 - Example: [ctr.run](https://ctr.run/)
 
-.exercise[
+.lab[
 
 - Use ctr.run to automatically build a container image and run it:
   ```bash

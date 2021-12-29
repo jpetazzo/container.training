@@ -40,7 +40,7 @@
 
 - Let's build the image for the DockerCoins `worker` service with Kaniko
 
-.exercise[
+.lab[
 
 - Find the port number for our self-hosted registry:
   ```bash
@@ -160,7 +160,7 @@ spec:
 
 - The YAML for the pod is in `k8s/kaniko-build.yaml`
 
-.exercise[
+.lab[
 
 - Create the pod:
   ```bash

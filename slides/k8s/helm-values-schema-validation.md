@@ -119,7 +119,7 @@
 
 - Let's try to install a couple releases with that schema!
 
-.exercise[
+.lab[
 
 - Try an invalid `pullPolicy`:
   ```bash
@@ -147,7 +147,7 @@
 
 - We can fix that with `"additionalProperties": false`
 
-.exercise[
+.lab[
 
 - Edit `values.schema.json` to add `"additionalProperties": false`
   ```json
@@ -165,7 +165,7 @@
 
 ## Testing with unknown properties
 
-.exercise[
+.lab[
 
 - Try to pass an extra property:
   ```bash

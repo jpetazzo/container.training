@@ -2,7 +2,7 @@
 
 - We can retag a small image, and push it to the registry
 
-.exercise[
+.lab[
 
 - Make sure we have the busybox image, and retag it:
   ```bash
@@ -23,7 +23,7 @@
 
 - The registry API has endpoints to query what's there
 
-.exercise[
+.lab[
 
 - Ensure that our busybox image is now in the local registry:
   ```bash

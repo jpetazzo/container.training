@@ -2,7 +2,7 @@
 
 - Let's force an update on hasher to watch it update
 
-.exercise[
+.lab[
 
 - First lets scale up hasher to 7 replicas:
   ```bash
@@ -26,7 +26,7 @@
 
 - We can change many options on how updates happen
 
-.exercise[
+.lab[
 
 - Change the parallelism to 2, and the max failed container updates to 25%:
   ```bash
@@ -68,7 +68,7 @@
 
   - by using `docker service rollback`
 
-.exercise[
+.lab[
 
 - Try to rollback the webui service:
   ```bash

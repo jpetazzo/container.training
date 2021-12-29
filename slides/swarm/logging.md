@@ -64,7 +64,7 @@ class: elk-manual
 
 - We will place them on a common network, `logging`
 
-.exercise[
+.lab[
 
 - Create the network:
   ```bash
@@ -93,7 +93,7 @@ class: elk-manual
 - We don't want Kibana logs to show up in Kibana (it would create clutter)
   <br/>so we tell Logspout to ignore them
 
-.exercise[
+.lab[
 
 - Create the Kibana service:
   ```bash
@@ -115,7 +115,7 @@ class: elk-manual
 
 - We can also pass the [configuration](https://@@GITREPO@@/blob/master/elk/logstash.conf) on the command line
 
-.exercise[
+.lab[
 
 - Create the Logstash service:
   ```bash
@@ -133,7 +133,7 @@ class: elk-manual
 
 - Before proceeding, let's make sure that Logstash started properly
 
-.exercise[
+.lab[
 
 - Lookup the node running the Logstash container:
   ```bash
@@ -150,7 +150,7 @@ class: elk-manual
 
 ## View Logstash logs
 
-.exercise[
+.lab[
 
 - View the logs of the logstash service:
   ```bash
@@ -181,7 +181,7 @@ class: elk-auto
 
 - We will use a stack file
 
-.exercise[
+.lab[
 
 - Build, ship, and run our ELK stack:
   ```bash
@@ -207,7 +207,7 @@ class: elk-auto
 
   (Who logs the loggers?)
 
-.exercise[
+.lab[
 
 - Stream logstash's logs:
   ```bash
@@ -236,7 +236,7 @@ You should see the heartbeat messages:
 
 - We will use a one-off container, and Docker's GELF logging driver
 
-.exercise[
+.lab[
 
 - Send a test message:
   ```bash
@@ -256,7 +256,7 @@ The test message should show up in the logstash container logs.
 - We're lucky: the parameters (`--log-driver` and `--log-opt`) are exactly the same!
 
 
-.exercise[
+.lab[
 
 - Send a test message:
   ```bash
@@ -285,7 +285,7 @@ In fact, *multiple messages will show up, and continue to show up every few seco
 
 - This behavior can be changed by setting the *restart condition* parameter
 
-.exercise[
+.lab[
 
 - Change the restart condition so that Swarm doesn't try to restart our container forever:
   ```bash
@@ -303,7 +303,7 @@ You can also set `--restart-delay`, `--restart-max-attempts`, and `--restart-win
 
 - The Kibana web UI is exposed on cluster port 5601
 
-.exercise[
+.lab[
 
 - Connect to port 5601 of your cluster
 
@@ -344,7 +344,7 @@ You can also set `--restart-delay`, `--restart-max-attempts`, and `--restart-win
 
 - The logging flags are the same as before
 
-.exercise[
+.lab[
 
 - Enable GELF logging for the `rng` service:
   ```bash
@@ -366,7 +366,7 @@ After ~15 seconds, you should see the log messages in Kibana.
 
 - We can customize the web UI to be more readable
 
-.exercise[
+.lab[
 
 - In the left column, move the mouse over the following
   columns, and click the "Add" button that appears:

@@ -84,7 +84,7 @@ services:
 
 - All the stack files that we will use are in the `stacks` directory
 
-.exercise[
+.lab[
 
 - Go to the `stacks` directory:
   ```bash
@@ -110,7 +110,7 @@ services:
 
 - Stacks are specified with the aforementioned Compose file format version 3
 
-.exercise[
+.lab[
 
 - Deploy our local registry:
   ```bash
@@ -125,7 +125,7 @@ services:
 
 - `docker stack ps` shows the detailed state of all services of a stack
 
-.exercise[
+.lab[
 
 - Check that our registry is running correctly:
   ```bash
@@ -169,7 +169,7 @@ class: btp-auto
 
 - Therefore, we can use `localhost:5000` or `127.0.0.1:5000` as our registry
 
-.exercise[
+.lab[
 
 - Issue the following API request to the registry:
   ```bash
@@ -194,7 +194,7 @@ class: btp-auto
 
 - We can retag a small image, and push it to the registry
 
-.exercise[
+.lab[
 
 - Make sure we have the busybox image, and retag it:
   ```bash
@@ -217,7 +217,7 @@ class: btp-auto
 
 - The registry API has endpoints to query what's there
 
-.exercise[
+.lab[
 
 - Ensure that our busybox image is now in the local registry:
   ```bash
@@ -259,7 +259,7 @@ The curl command should now output:
 
 ## Using Compose to build and push images
 
-.exercise[
+.lab[
 
 - Try it:
   ```bash
@@ -300,7 +300,7 @@ services:
 
 - Now that the images are on the registry, we can deploy our application stack
 
-.exercise[
+.lab[
 
 - Create the application stack:
   ```bash

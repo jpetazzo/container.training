@@ -103,7 +103,7 @@ It runs a single NGINX container.
 
 ## Trying the basic pod
 
-.exercise[
+.lab[
 
 - Create the Pod:
   ```bash
@@ -170,7 +170,7 @@ spec:
 
 ## Trying the Pod with a volume
 
-.exercise[
+.lab[
 
 - Create the Pod:
   ```bash
@@ -266,7 +266,7 @@ spec:
 
 - Then send a request to it *as fast as possible*
 
-.exercise[
+.lab[
 
 - Watch the pods (so that we can catch the Pod IP address)
   ```bash
@@ -284,7 +284,7 @@ spec:
 
 ## Shared volume in action
 
-.exercise[
+.lab[
 
 - Create the pod:
   ```bash
@@ -415,7 +415,7 @@ spec:
 
 ## Trying the init container
 
-.exercise[
+.lab[
 
 - Create the pod:
   ```bash

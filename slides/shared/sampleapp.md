@@ -4,7 +4,7 @@
 
 - The repository also contains scripts and tools that we will use through the workshop
 
-.exercise[
+.lab[
 
 <!--
 ```bash
@@ -30,7 +30,7 @@ fi
 
 Let's start this before we look around, as downloading will take a little time...
 
-.exercise[
+.lab[
 
 - Go to the `dockercoins` directory, in the cloned repository:
   ```bash
@@ -246,7 +246,7 @@ class: extra-details
 
 - The `webui` container exposes a web dashboard; let's view it
 
-.exercise[
+.lab[
 
 - With a web browser, connect to `node1` on port 8000
 
@@ -338,7 +338,7 @@ class: extra-details
 
 - If the containers do not exit in a timely manner, the Engine sends a `KILL` signal
 
-.exercise[
+.lab[
 
 - Stop the application by hitting `^C`
 

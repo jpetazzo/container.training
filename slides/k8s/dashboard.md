@@ -56,7 +56,7 @@
 
 - The guest/admin account
 
-.exercise[
+.lab[
 
 - Create all the dashboard resources, with the following command:
   ```bash
@@ -69,7 +69,7 @@
 
 ## Connecting to the dashboard
 
-.exercise[
+.lab[
 
 - Check which port the dashboard is on:
   ```bash
@@ -81,7 +81,7 @@
 You'll want the `3xxxx` port.
 
 
-.exercise[
+.lab[
 
 - Connect to http://oneofournodes:3xxxx/
 
@@ -115,7 +115,7 @@ The dashboard will then ask you which authentication you want to use.
 
 - Seriously, don't leave that thing running!
 
-.exercise[
+.lab[
 
 - Remove what we just created:
   ```bash
@@ -160,7 +160,7 @@ The dashboard will then ask you which authentication you want to use.
 
   (named `kubernetes-dashboard:cluster-admin`)
 
-.exercise[
+.lab[
 
 - Create all the dashboard resources, with the following command:
   ```bash
@@ -177,7 +177,7 @@ The dashboard will then ask you which authentication you want to use.
 
 - Kubernetes will automatically generate a token for that ServiceAccount
 
-.exercise[
+.lab[
 
 - Display the token:
   ```bash
@@ -197,7 +197,7 @@ Note that the secret name will actually be `cluster-admin-token-xxxxx`.
 
 ## Connecting to the dashboard
 
-.exercise[
+.lab[
 
 - Check which port the dashboard is on:
   ```bash
@@ -209,7 +209,7 @@ Note that the secret name will actually be `cluster-admin-token-xxxxx`.
 You'll want the `3xxxx` port.
 
 
-.exercise[
+.lab[
 
 - Connect to http://oneofournodes:3xxxx/
 

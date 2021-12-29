@@ -25,7 +25,7 @@ code {
 code.remark-code {
   font-size: 100%;
 }
-.exercise ul li code.remark-code.hljs.bash {
+.lab ul li code.remark-code.hljs.bash {
   padding: 0;
 }
 
@@ -192,7 +192,7 @@ div img {
   background-repeat: no-repeat;
   background-position: left;
 }
-.exercise {
+.lab {
   background-color: #eee;
   background-image: url("images/keyboard.png");
   background-size: 1.4em;
@@ -200,9 +200,11 @@ div img {
   background-position: 0.2em 0.2em;
   border: 2px dotted black;
 }
-.exercise:before {
-  content: "Exercise";
+.lab:before {
+  content: ">";
   margin-left: 1.8em;
+  margin-top: 0.25em;
+  display: block;
 }
 
 li p { line-height: 1.25em; }

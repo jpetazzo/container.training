@@ -28,7 +28,7 @@
 
 - Deploy and scale a simple web server
 
-.exercise[
+.lab[
 
 - Log into `kubenet1`
 
@@ -40,7 +40,7 @@
 
 - We will use a Compose file to start the control plane components
 
-.exercise[
+.lab[
 
 - Clone the repository containing the workshop materials:
   ```bash
@@ -65,7 +65,7 @@
 
 - Before moving on, verify that the control plane works
 
-.exercise[
+.lab[
 
 - Show control plane component statuses:
   ```bash
@@ -100,7 +100,7 @@ class: extra-details
 
   (instead of `localhost` or `127.0.0.1`)
 
-.exercise[
+.lab[
 
 - Generate the `kubeconfig` file:
   ```bash
@@ -118,7 +118,7 @@ class: extra-details
 
 - We need that `kubeconfig` file on the other nodes, too
 
-.exercise[
+.lab[
 
 - Copy `kubeconfig` to the other nodes:
   ```bash
@@ -135,7 +135,7 @@ class: extra-details
 
 - Reminder: kubelet needs to run as root; don't forget `sudo`!
 
-.exercise[
+.lab[
 
 - Join the first node:
    ```bash
@@ -160,7 +160,7 @@ class: extra-details
 
 - They will move to `Ready` state after approximately 10 seconds
 
-.exercise[
+.lab[
 
 - Check the list of nodes:
   ```bash
@@ -177,7 +177,7 @@ class: extra-details
 
   (so that we have multiple pods on multiple nodes)
 
-.exercise[
+.lab[
 
 - Create a Deployment running `jpetazzo/color`:
   ```bash
@@ -201,7 +201,7 @@ class: extra-details
 
 - What are the IP addresses of our pods?
 
-.exercise[
+.lab[
 
 - Check the IP addresses of our pods
   ```bash
@@ -333,7 +333,7 @@ class: extra-details
 
 - We will use pod CIDR `10.C.N.0/24` (where `N` is the node number: 1, 2, 3)
 
-.exercise[
+.lab[
 
 - Stop all the kubelets (Ctrl-C is fine)
 
@@ -349,7 +349,7 @@ class: extra-details
 
 - When kubelet starts again, it detects the containers
 
-.exercise[
+.lab[
 
 - Check that our pods are still here:
   ```bash
@@ -372,7 +372,7 @@ class: extra-details
 
 - We must delete our pods and recreate them
 
-.exercise[
+.lab[
 
 - Delete all the pods, and let the ReplicaSet recreate them:
   ```bash
@@ -394,7 +394,7 @@ class: extra-details
 
 - Then see if we can create a Service and use it to contact our pods
 
-.exercise[
+.lab[
 
 - Start kube-proxy:
   ```bash
@@ -412,7 +412,7 @@ class: extra-details
 
 ## Test internal load balancing
 
-.exercise[
+.lab[
 
 - Retrieve the ClusterIP address:
   ```bash
@@ -505,7 +505,7 @@ Sometimes it works, sometimes it doesn't. Why?
 
 ## Setting up routing
 
-.exercise[
+.lab[
 
 - Create all the routes on all the nodes
 

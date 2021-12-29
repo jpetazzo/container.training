@@ -68,7 +68,7 @@ class: extra-details
 
 - Let's look at our `Node` resources with `kubectl get`!
 
-.exercise[
+.lab[
 
 - Look at the composition of our cluster:
   ```bash
@@ -90,7 +90,7 @@ class: extra-details
 
 - `kubectl get` can output JSON, YAML, or be directly formatted
 
-.exercise[
+.lab[
 
 - Give us more info about the nodes:
   ```bash
@@ -111,7 +111,7 @@ class: extra-details
 
 - It's super easy to build custom reports
 
-.exercise[
+.lab[
 
 - Show the capacity of all our nodes as a stream of JSON objects:
   ```bash
@@ -212,7 +212,7 @@ class: extra-details
 
 - `kubectl describe` will retrieve some extra information about the resource
 
-.exercise[
+.lab[
 
 - Look at the information available for `node1` with one of the following commands:
   ```bash
@@ -236,7 +236,7 @@ class: extra-details
 
  - sharing resources (RAM, CPU; but also network, volumes)
 
-.exercise[
+.lab[
 
 - List pods on our cluster:
   ```bash
@@ -255,7 +255,7 @@ class: extra-details
 
 - Namespaces allow us to segregate resources
 
-.exercise[
+.lab[
 
 - List the namespaces on our cluster with one of these commands:
   ```bash
@@ -282,7 +282,7 @@ class: extra-details
 
 - We can see resources in all namespaces with `--all-namespaces`
 
-.exercise[
+.lab[
 
 - List the pods in all namespaces:
   ```bash
@@ -324,7 +324,7 @@ class: extra-details
 
 - We can also look at a different namespace (other than `default`)
 
-.exercise[
+.lab[
 
 - List only the pods in the `kube-system` namespace:
   ```bash
@@ -358,7 +358,7 @@ class: extra-details
 
 ## What about `kube-public`?
 
-.exercise[
+.lab[
 
 - List the pods in the `kube-public` namespace:
   ```bash
@@ -379,7 +379,7 @@ class: extra-details
 
 - The only interesting object in `kube-public` is a ConfigMap named `cluster-info`
 
-.exercise[
+.lab[
 
 - List ConfigMap objects:
   ```bash
@@ -407,7 +407,7 @@ class: extra-details
 
 - But `cluster-info` is readable by everyone (even without authentication)
 
-.exercise[
+.lab[
 
 - Retrieve `cluster-info`:
   ```bash
@@ -428,7 +428,7 @@ class: extra-details
 
 - We can easily extract the `kubeconfig` file from this ConfigMap
 
-.exercise[
+.lab[
 
 - Display the content of `kubeconfig`:
   ```bash
@@ -473,7 +473,7 @@ class: extra-details
 
   (In the initial proposal, they were called "portals")
 
-.exercise[
+.lab[
 
 - List the services on our cluster with one of these commands:
   ```bash
@@ -495,7 +495,7 @@ There is already one service on our cluster: the Kubernetes API itself.
 
 - This is useful for introspection from within containers
 
-.exercise[
+.lab[
 
 - Try to connect to the API:
   ```bash

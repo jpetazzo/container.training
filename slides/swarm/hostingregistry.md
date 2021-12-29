@@ -23,7 +23,7 @@
 - We will create a single-instance service, publishing its port
   on the whole cluster
 
-.exercise[
+.lab[
 
 - Create the registry service:
   ```bash

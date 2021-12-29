@@ -18,7 +18,7 @@
 
 - Let's create two networks for testing purposes
 
-.exercise[
+.lab[
 
 - Create an "insecure" network:
   ```bash
@@ -44,7 +44,7 @@
 
 - We will use a placement constraint to make sure that it is on a different node
 
-.exercise[
+.lab[
 
 - Create a web server running somewhere else:
   ```bash
@@ -64,7 +64,7 @@
 
 - We will run it in a container, using host networking to access the host's interfaces
 
-.exercise[
+.lab[
 
 - Sniff network traffic and display all packets containing "HTTP":
   ```bash
@@ -89,7 +89,7 @@ docker service update dockercoins_worker --replicas=0
 
 - Let's see if we can intercept our traffic with Google!
 
-.exercise[
+.lab[
 
 - Open a new terminal
 
@@ -124,7 +124,7 @@ class: extra-details
 
 - We will run `curl web` through both secure and insecure networks
 
-.exercise[
+.lab[
 
 - Access the web server through the insecure network:
   ```bash

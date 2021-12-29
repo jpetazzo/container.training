@@ -48,7 +48,7 @@
 
 - If you haven't done it before, you need to add the repo for that chart
 
-.exercise[
+.lab[
 
 - Add the repo that holds the chart for the OWASP Juice Shop:
   ```bash
@@ -63,7 +63,7 @@
 
 - We can use `helm pull` to download a chart from a repo
 
-.exercise[
+.lab[
 
 - Download the tarball for `juice/juice-shop`:
   ```bash
@@ -85,7 +85,7 @@
 
 - Let's look at the files and directories in the `juice-shop` chart
 
-.exercise[
+.lab[
 
 - Display the tree structure of the chart we just downloaded:
   ```bash
@@ -108,7 +108,7 @@ We see the components mentioned above: `Chart.yaml`, `templates/`, `values.yaml`
 
   (using the standard Go template library)
 
-.exercise[
+.lab[
 
 - Look at the template file for the Service resource:
   ```bash

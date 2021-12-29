@@ -22,7 +22,7 @@ class: secrets
 
 - Must specify a name for the secret; and the secret itself
 
-.exercise[
+.lab[
 
 - Assign [one of the four most commonly used passwords](https://www.youtube.com/watch?v=0Jx8Eay5fWQ) to a secret called `hackme`:
   ```bash
@@ -43,7 +43,7 @@ class: secrets
 
 - Picking lousy passwords always leads to security breaches
 
-.exercise[
+.lab[
 
 - Let's craft a better password, and assign it to another secret:
   ```bash
@@ -62,7 +62,7 @@ class: secrets
 
 - Secrets must be handed explicitly to services
 
-.exercise[
+.lab[
 
 - Create a dummy service with both secrets:
   ```bash
@@ -87,7 +87,7 @@ class: secrets
 
 - Secrets are materialized on `/run/secrets` (which is an in-memory filesystem)
 
-.exercise[
+.lab[
 
 - Find the ID of the container for the dummy service:
   ```bash
@@ -135,7 +135,7 @@ class: secrets
 
 - We want to replace our `hackme` secret with a better one
 
-.exercise[
+.lab[
 
 - Remove the insecure `hackme` secret:
   ```bash
@@ -161,7 +161,7 @@ class: secrets
 
 - We will use the power of `docker exec`!
 
-.exercise[
+.lab[
 
 - Get the ID of the new container:
   ```bash

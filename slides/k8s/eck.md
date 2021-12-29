@@ -28,7 +28,7 @@
 
 - ... But losing a node = losing the volumes on that node!
 
-.exercise[
+.lab[
 
 - Install the local path storage provisioner:
   ```bash
@@ -49,7 +49,7 @@
 
 - Or we need to tag a StorageClass to be used as the default one
 
-.exercise[
+.lab[
 
 - List StorageClasses:
   ```bash
@@ -68,7 +68,7 @@ We should see the `local-path` StorageClass.
 
   `storageclass.kubernetes.io/is-default-class: true`
 
-.exercise[
+.lab[
 
 - Tag the StorageClass so that it's the default one:
   ```bash
@@ -99,7 +99,7 @@ Now, the StorageClass should have `(default)` next to its name.
 
 - All these resources are grouped in a convenient YAML file
 
-.exercise[
+.lab[
 
 - Install the operator:
   ```bash
@@ -114,7 +114,7 @@ Now, the StorageClass should have `(default)` next to its name.
 
 - Let's see which CRDs were created
 
-.exercise[
+.lab[
 
 - List all CRDs:
   ```bash
@@ -135,7 +135,7 @@ This operator supports ElasticSearch, but also Kibana and APM. Cool!
 
 - We need to create that namespace
 
-.exercise[
+.lab[
 
 - Create the `eck-demo` namespace:
   ```bash
@@ -180,7 +180,7 @@ ServiceAccount is located.
   - whether to use TLS or not
   - etc.
 
-.exercise[
+.lab[
 
 - Create our ElasticSearch cluster:
   ```bash
@@ -197,7 +197,7 @@ ServiceAccount is located.
 
 - It will report our cluster status through the CRD
 
-.exercise[
+.lab[
 
 - Check the logs of the operator:
   ```bash
@@ -231,7 +231,7 @@ ServiceAccount is located.
 
 - But let's check at least if ElasticSearch is up!
 
-.exercise[
+.lab[
 
 - Get the ClusterIP of our ES instance:
   ```bash
@@ -255,7 +255,7 @@ We get an authentication error. Our cluster is protected!
 
 - It generates a random password and stores it in a Secret
 
-.exercise[
+.lab[
 
 - Extract the password:
   ```bash
@@ -280,7 +280,7 @@ We should see a JSON payload with the `"You Know, for Search"` tagline.
 
 - We'll deploy a filebeat DaemonSet to collect node logs
 
-.exercise[
+.lab[
 
 - Deploy filebeat:
   ```bash
@@ -314,7 +314,7 @@ We should see a JSON payload with the `"You Know, for Search"` tagline.
 
 - Let's give it a try!
 
-.exercise[
+.lab[
 
 - Deploy a Kibana instance:
   ```bash
@@ -345,7 +345,7 @@ We should see a JSON payload with the `"You Know, for Search"` tagline.
 
 - It's using the same user/password as ElasticSearch
 
-.exercise[
+.lab[
 
 - Get the NodePort allocated to Kibana:
   ```bash
@@ -364,7 +364,7 @@ We should see a JSON payload with the `"You Know, for Search"` tagline.
 
 After the Kibana UI loads, we need to click around a bit
 
-.exercise[
+.lab[
 
 - Pick "explore on my own"
 
@@ -404,7 +404,7 @@ After the Kibana UI loads, we need to click around a bit
 
 - We prepared yet another manifest for that!
 
-.exercise[
+.lab[
 
 - Deploy Cerebro:
   ```bash
@@ -428,7 +428,7 @@ After the Kibana UI loads, we need to click around a bit
 
 - Let's change that!
 
-.exercise[
+.lab[
 
 - Edit the ElasticSearch cluster manifest:
   ```bash

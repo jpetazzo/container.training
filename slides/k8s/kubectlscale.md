@@ -2,7 +2,7 @@
 
 - We will start with an easy one: the `worker` deployment
 
-.exercise[
+.lab[
 
 - Open two new terminals to check what's going on with pods and deployments:
   ```bash

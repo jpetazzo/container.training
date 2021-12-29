@@ -253,7 +253,7 @@ class: pic
 
 - Then we will scale it with `kubectl scale`
 
-.exercise[
+.lab[
 
 - In another window, watch the pods (to see when they are created):
   ```bash
@@ -283,7 +283,7 @@ class: pic
 
 - We'll create a default `ClusterIP` service
 
-.exercise[
+.lab[
 
 - Expose the HTTP port of our server:
   ```bash
@@ -319,7 +319,7 @@ class: pic
 
 - We will now send a few HTTP requests to our pods
 
-.exercise[
+.lab[
 
 - Let's obtain the IP address that was allocated for our service, *programmatically:*
   ```bash
@@ -434,7 +434,7 @@ class: extra-details
 
 - The endpoints are maintained and updated automatically by Kubernetes
 
-.exercise[
+.lab[
 
 - Check the endpoints that Kubernetes has associated with our `blue` service:
   ```bash
@@ -502,7 +502,7 @@ class: extra-details
 
 - The default domain name for the service we created is `default.svc.cluster.local`
 
-.exercise[
+.lab[
 
 - Get the IP address of the internal DNS server:
   ```bash

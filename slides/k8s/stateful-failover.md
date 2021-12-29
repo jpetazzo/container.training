@@ -54,7 +54,7 @@
 
 - Before applying the YAML, watch what's going on with `kubectl get events -w`
 
-.exercise[
+.lab[
 
 - Apply that YAML:
   ```bash
@@ -73,7 +73,7 @@
 
 - Good to know: we need to use the `postgres` user in the pod
 
-.exercise[
+.lab[
 
 - Get a shell in the pod, as the `postgres` user:
   ```bash
@@ -102,7 +102,7 @@ autopilot prompt detection expects $ or # at the beginning of the line.
 
 - We will create a database and populate it with `pgbench`
 
-.exercise[
+.lab[
 
 - Create a database named `demo`:
   ```bash
@@ -126,7 +126,7 @@ autopilot prompt detection expects $ or # at the beginning of the line.
 
 - The `pgbench` tool inserts rows in table `pgbench_accounts`
 
-.exercise[
+.lab[
 
 - Check that the `demo` base exists:
   ```bash
@@ -151,7 +151,7 @@ autopilot prompt detection expects $ or # at the beginning of the line.
 
 - Let's use `pgbench` to generate a few transactions
 
-.exercise[
+.lab[
 
 - Run `pgbench` for 10 seconds, reporting progress every second:
   ```bash
@@ -175,7 +175,7 @@ Note: on small cloud instances, a typical speed is about 100 transactions/second
 
 - While it's running, we will disrupt the database server
 
-.exercise[
+.lab[
 
 - Run `pgbench` for 10 minutes, reporting progress every second:
   ```bash
@@ -194,7 +194,7 @@ Note: on small cloud instances, a typical speed is about 100 transactions/second
 
 - We can find that information with `kubectl get pods -o wide`
 
-.exercise[
+.lab[
 
 - Check the node running the database:
   ```bash
@@ -229,7 +229,7 @@ By "disrupt" we mean: "disconnect it from the network".
 
 ## Disconnecting the node from the cluster
 
-.exercise[
+.lab[
 
 - Find out where the Pod is running, and SSH into that node:
   ```bash
@@ -264,7 +264,7 @@ class: extra-details
 
   (except SSH traffic, so we can repair the node later if needed)
 
-.exercise[
+.lab[
 
 - SSH to the node to disrupt:
   ```bash
@@ -285,7 +285,7 @@ class: extra-details
 
 - Let's look at the status of Nodes, Pods, and Events
 
-.exercise[
+.lab[
 
 - In a first pane/tab/window, check Nodes and Pods:
   ```bash
@@ -373,7 +373,7 @@ class: extra-details
 
 - This is done with a simple `kubectl delete node`
 
-.exercise[
+.lab[
 
 - `kubectl delete` the Node that we disconnected
 
@@ -419,7 +419,7 @@ class: extra-details
 
 - We are going to reconnect to the (new) pod and check
 
-.exercise[
+.lab[
 
 - Get a shell on the pod:
   ```bash
@@ -450,7 +450,7 @@ and we failed the node after 30 seconds, we should have about 2400 row in that t
 
 - Just to make sure the system is not bluffing!
 
-.exercise[
+.lab[
 
 - Look at which node the pod is now running on
   ```bash

@@ -20,7 +20,7 @@
 
 - The owners are recorded in the field `ownerReferences` in the `metadata` block
 
-.exercise[
+.lab[
 
 - Let's create a deployment running `nginx`:
   ```bash
@@ -47,7 +47,7 @@ These pods are owned by a ReplicaSet named yanginx-xxxxxxxxxx.
 
 - This is a good opportunity to try the `custom-columns` output!
 
-.exercise[
+.lab[
 
 - Show all pods with their owners:
   ```bash
@@ -100,7 +100,7 @@ so the lines should not be indented (otherwise the indentation will insert space
 
 - ... without deleting the corresponding pods!
 
-.exercise[
+.lab[
 
 - Delete the Deployment:
   ```bash
@@ -149,7 +149,7 @@ class: extra-details
 
 - And we will display their name
 
-.exercise[
+.lab[
 
 - List all pods that *do not* have an owner:
   ```bash
@@ -167,7 +167,7 @@ class: extra-details
 
 - Now that we can list orphan pods, deleting them is easy
 
-.exercise[
+.lab[
 
 - Add `| xargs kubectl delete pod` to the previous command:
   ```bash

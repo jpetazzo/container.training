@@ -37,7 +37,7 @@ class: in-person
 
 - Let's get the token, and use a one-liner for the remaining node with SSH
 
-.exercise[
+.lab[
 
 - Obtain the manager token:
   ```bash
@@ -57,7 +57,7 @@ class: in-person
 
 ## Controlling the Swarm from other nodes
 
-.exercise[
+.lab[
 
 - Try the following command on a few different nodes:
   ```bash
@@ -102,7 +102,7 @@ class: self-paced
   <br/>
   `docker node demote nodeX` → make nodeX a worker
 
-.exercise[
+.lab[
 
 - See the current list of nodes:
   ```

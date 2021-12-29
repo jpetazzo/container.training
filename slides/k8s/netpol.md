@@ -113,7 +113,7 @@ This is our game plan:
 
 ## Running our test web server
 
-.exercise[
+.lab[
 
 - Let's use the `nginx` image:
   ```bash
@@ -148,7 +148,7 @@ The `curl` command should show us the "Welcome to nginx!" page.
 
 - It will specify an empty list of ingress rules (matching nothing)
 
-.exercise[
+.lab[
 
 - Apply the policy in this YAML file:
   ```bash
@@ -187,7 +187,7 @@ This is the file that we applied:
 
 - Reminder: this label is automatically applied when we do `kubectl run testcurl ...`
 
-.exercise[
+.lab[
 
 - Apply another policy:
   ```bash
@@ -212,7 +212,7 @@ This is the second file that we applied:
 
 - Let's create pods with, and without, the required label
 
-.exercise[
+.lab[
 
 - Try to connect to testweb from a pod with the `run=testcurl` label:
   ```bash
@@ -341,7 +341,7 @@ spec:
 
 - Both network policies are declared in the file @@LINK[k8s/netpol-dockercoins.yaml]
 
-.exercise[
+.lab[
 
 - Apply the network policies:
   ```bash
@@ -366,9 +366,9 @@ troubleshoot easily, without having to poke holes in our firewall.
 
 - The network policies that we have installed block all traffic to the default namespace
 
-- We should remove them, otherwise further exercises will fail!
+- We should remove them, otherwise further demos and exercises will fail!
 
-.exercise[
+.lab[
 
 - Remove all network policies:
   ```bash

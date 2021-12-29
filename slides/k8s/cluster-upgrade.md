@@ -18,7 +18,7 @@
 
 - It's easy to check the version for the API server
 
-.exercise[
+.lab[
 
 - Log into node `test1`
 
@@ -39,7 +39,7 @@
 
 - It's also easy to check the version of kubelet
 
-.exercise[
+.lab[
 
 - Check node versions (includes kubelet, kernel, container engine):
   ```bash
@@ -60,7 +60,7 @@
 
 - If the control plane is self-hosted (running in pods), we can check it
 
-.exercise[
+.lab[
 
 - Show image versions for all pods in `kube-system` namespace:
   ```bash
@@ -240,7 +240,7 @@ and kubectl, which can be one MINOR ahead or behind API server.]
 
 - We will edit the YAML file to use a different image version
 
-.exercise[
+.lab[
 
 - Log into node `test1`
 
@@ -264,7 +264,7 @@ and kubectl, which can be one MINOR ahead or behind API server.]
 
 - The API server will be briefly unavailable while kubelet restarts it
 
-.exercise[
+.lab[
 
 - Check the API server version:
   ```bash
@@ -299,7 +299,7 @@ and kubectl, which can be one MINOR ahead or behind API server.]
 
   (note: this is possible only because the cluster was installed with kubeadm)
 
-.exercise[
+.lab[
 
 - Check what will be upgraded:
   ```bash
@@ -320,7 +320,7 @@ Note 2: kubeadm itself is still version 1.15.9.
 
 - First things first: we need to upgrade kubeadm
 
-.exercise[
+.lab[
 
 - Upgrade kubeadm:
   ```
@@ -347,7 +347,7 @@ We need to install kubeadm version 1.16.X.
 
 - We need to go back to version 1.16.X (e.g. 1.16.6)
 
-.exercise[
+.lab[
 
 - View available versions for package `kubeadm`:
   ```bash
@@ -378,7 +378,7 @@ kubeadm should now agree to upgrade to 1.16.6.
 
 - Or we can try the upgrade anyway
 
-.exercise[
+.lab[
 
 - Perform the upgrade:
   ```bash
@@ -395,7 +395,7 @@ kubeadm should now agree to upgrade to 1.16.6.
 
 - We can therefore use `apt` or `apt-get`
 
-.exercise[
+.lab[
 
 - Log into node `test3`
 
@@ -415,7 +415,7 @@ kubeadm should now agree to upgrade to 1.16.6.
 
 ## Checking what we've done
 
-.exercise[
+.lab[
 
 - Log into node `test1`
 
@@ -458,7 +458,7 @@ kubeadm should now agree to upgrade to 1.16.6.
 
   (after upgrading the control plane)
 
-.exercise[
+.lab[
 
 - Download the configuration on each node, and upgrade kubelet:
   ```bash
@@ -477,7 +477,7 @@ kubeadm should now agree to upgrade to 1.16.6.
 
 - All our nodes should now be updated to version 1.16.6
 
-.exercise[
+.lab[
 
 - Check nodes versions:
   ```bash

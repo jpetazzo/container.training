@@ -6,7 +6,7 @@
 
 <!-- ##VERSION## -->
 
-.exercise[
+.lab[
 
 - Check all installed versions:
   ```bash

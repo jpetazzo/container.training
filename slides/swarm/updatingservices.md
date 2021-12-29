@@ -56,7 +56,7 @@
 
 - Let's make the numbers on the Y axis bigger!
 
-.exercise[
+.lab[
 
 - Update the size of text on our webui:
   ```bash
@@ -76,7 +76,7 @@
   3. `docker-compose push`
   4. `docker stack deploy`
 
-.exercise[
+.lab[
 
 - Build, ship, and run:
   ```bash

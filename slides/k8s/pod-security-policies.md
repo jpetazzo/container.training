@@ -92,7 +92,7 @@
 
 - Let's edit the manifest for the API server pod
 
-.exercise[
+.lab[
 
 - Have a look at the static pods:
   ```bash
@@ -116,7 +116,7 @@
 
 - Let's add `PodSecurityPolicy` on that line
 
-.exercise[
+.lab[
 
 - Locate the line with `--enable-admission-plugins=`
 
@@ -148,7 +148,7 @@
 
 - During that time, the API server is unavailable
 
-.exercise[
+.lab[
 
 - Wait until the API server is available again
 
@@ -160,7 +160,7 @@
 
 - Normally, we can't create any Pod at this point
 
-.exercise[
+.lab[
 
 - Try to create a Pod directly:
   ```bash
@@ -204,7 +204,7 @@ We can get hints at what's happening by looking at the ReplicaSet and Events.
   - k8s/psp-privileged.yaml: policy `privileged`, role `psp:privileged`
   - k8s/psp-restricted.yaml: policy `restricted`, role `psp:restricted`
 
-.exercise[
+.lab[
 
 - Create both policies and their associated ClusterRoles:
   ```bash
@@ -225,7 +225,7 @@ We can get hints at what's happening by looking at the ReplicaSet and Events.
 
 - But `cluster-admin` can implicitly `use` all policies
 
-.exercise[
+.lab[
 
 - Check that we can now create a Pod directly:
   ```bash
@@ -278,7 +278,7 @@ We can get hints at what's happening by looking at the ReplicaSet and Events.
 
   (because these Pods will be using that ServiceAccount automatically)
 
-.exercise[
+.lab[
 
 - Create the following RoleBinding:
   ```bash
@@ -299,7 +299,7 @@ We can get hints at what's happening by looking at the ReplicaSet and Events.
 
 - If we create a new Deployment now, it should work immediately
 
-.exercise[
+.lab[
 
 - Create a simple Deployment:
   ```bash
@@ -319,7 +319,7 @@ We can get hints at what's happening by looking at the ReplicaSet and Events.
 
 - Let's create the same DaemonSet we used earlier
 
-.exercise[
+.lab[
 
 - Create a hostile DaemonSet:
   ```bash
@@ -403,7 +403,7 @@ class: extra-details
 
 - Let's disable the PSP admission plugin
 
-.exercise[
+.lab[
 
 - Edit the Kubernetes API server static pod manifest
 

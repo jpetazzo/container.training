@@ -16,7 +16,7 @@
 
 - We are going to install a Go compiler, then download SwarmKit source and build it
 
-.exercise[
+.lab[
 - Download, compile, and install SwarmKit with this one-liner:
   ```bash
   docker run -v /usr/local/bin:/go/bin golang \
@@ -54,7 +54,7 @@ the build might fail. In that case, just skip the Swarm tools section.
 
 - You need root privileges to access it
 
-.exercise[
+.lab[
 
 - If you are using Play-With-Docker, set the following alias:
   ```bash
@@ -76,7 +76,7 @@ the build might fail. In that case, just skip the Swarm tools section.
 
 - Let's review a few useful `swarmctl` commands
 
-.exercise[
+.lab[
 
 - List cluster nodes (that's equivalent to `docker node ls`):
   ```bash
@@ -145,7 +145,7 @@ It *cannot* work on live files, so you must stop Docker or make a copy first.
 
 - First, let's make a copy of the current Swarm data
 
-.exercise[
+.lab[
 
 - If you are using Play-With-Docker, the Docker data directory is `/graph`:
   ```bash
@@ -169,7 +169,7 @@ It *cannot* work on live files, so you must stop Docker or make a copy first.
 
   (Otherwise `swarm-rafttool` will try to use the live data, and complain that it's locked!)
 
-.exercise[
+.lab[
 
 - If you are using Play-With-Docker, you must use the musl linker:
   ```bash

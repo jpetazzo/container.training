@@ -4,7 +4,7 @@
 - Compose 1.23
 - Machine 0.16
 
-.exercise[
+.lab[
 
 - Check all installed versions:
   ```bash

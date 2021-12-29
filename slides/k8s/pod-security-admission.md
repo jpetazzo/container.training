@@ -96,7 +96,7 @@ class: extra-details
 
 - In later versions, this might be enabled automatically
 
-.exercise[
+.lab[
 
 - Edit `/etc/kubernetes/manifests/kube-apiserver.yaml`
 
@@ -146,7 +146,7 @@ Note: for bonus points, edit the `kubeadm-config` ConfigMap instead!
 
 - And issue warnings and audit for anything above the `restricted` level
 
-.exercise[
+.lab[
 
 - Set up the default policy for all namespaces:
   ```bash
@@ -187,7 +187,7 @@ class: extra-details
 
 - These pods aren't affected yet, but if there is a rolling update or something like that, the new pods won't be able to come up
 
-.exercise[
+.lab[
 
 - Let's allow `privileged` pods in `kube-system`:
   ```bash
@@ -235,7 +235,7 @@ Let's use @@LINK[k8s/admission-configuration.yaml]:
   (it's definitely where it *should* be, but that'll do!)
 
 
-.exercise[
+.lab[
 
 - Copy the file:
   ```bash
@@ -251,7 +251,7 @@ Let's use @@LINK[k8s/admission-configuration.yaml]:
 
 - We need to add a flag to the API server to use that file
 
-.exercise[
+.lab[
 
 - Edit `/etc/kubernetes/manifests/kube-apiserver.yaml`
 

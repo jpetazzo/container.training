@@ -97,7 +97,7 @@ class: namespaces
 
 - Let's make sure that we do not pick the node running the registry!
 
-.exercise[
+.lab[
 
 - Check on which node the registry is running:
   ```bash
@@ -114,7 +114,7 @@ class: namespaces
 
 ## Logging into the right Engine
 
-.exercise[
+.lab[
 
 - Log into the right node:
   ```bash
@@ -129,7 +129,7 @@ class: namespaces
 
 ## Configuring the Engine
 
-.exercise[
+.lab[
 
 - Create a configuration file for the Engine:
   ```bash
@@ -149,7 +149,7 @@ class: namespaces
 
 ## Checking that User Namespaces are enabled
 
-.exercise[
+.lab[
   - Notice the new Docker path:
   ```bash
   docker info | grep var/lib
@@ -173,7 +173,7 @@ class: namespaces
 
 ## Add the node back to the Swarm
 
-.exercise[
+.lab[
 
 - Get our manager token from another node:
   ```bash
@@ -190,7 +190,7 @@ class: namespaces
 
 ## Check the new UID:GID
 
-.exercise[
+.lab[
 
 - Run a background container on the node:
   ```bash
@@ -211,7 +211,7 @@ class: namespaces
 
 ## Comparing on-disk ownership with/without User Namespaces
 
-.exercise[
+.lab[
 
 - Compare the output of the two following commands:
   ```bash

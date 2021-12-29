@@ -254,7 +254,7 @@ class: extra-details
 
 ## Checking taints on our nodes
 
-.exercise[
+.lab[
 
 - Check our nodes specs:
   ```bash
@@ -305,7 +305,7 @@ class: extra-details
 
 ## Checking tolerations on the control plane
 
-.exercise[
+.lab[
 
 - Check tolerations for CoreDNS:
   ```bash
@@ -331,7 +331,7 @@ class: extra-details
 
 ## Special tolerations
 
-.exercise[
+.lab[
 
 - Check tolerations on `kube-proxy`:
   ```bash
@@ -360,7 +360,7 @@ This one is a special case that means "ignore all taints and run anyway."
 
   - [Traefik's RBAC rules](https://github.com/containous/traefik/blob/v1.7/examples/k8s/traefik-rbac.yaml) allowing it to watch necessary API objects
 
-.exercise[
+.lab[
 
 - Apply the YAML:
   ```bash
@@ -375,7 +375,7 @@ This one is a special case that means "ignore all taints and run anyway."
 
 - If Traefik started correctly, we now have a web server listening on each node
 
-.exercise[
+.lab[
 
 - Check that Traefik is serving 80/tcp:
   ```bash
@@ -410,7 +410,7 @@ This is normal: we haven't provided any ingress rule yet.
 
 - With the current install method, it's listening on port 8080
 
-.exercise[
+.lab[
 
 - Go to `http://node1:8080` (replacing `node1` with its IP address)
 
@@ -440,7 +440,7 @@ This is normal: we haven't provided any ingress rule yet.
 
 ## Running cheesy web servers
 
-.exercise[
+.lab[
 
 - Run all three deployments:
   ```bash
@@ -670,7 +670,7 @@ class: extra-details
 
 - Let's send requests to our 3 cheesy services!
 
-.exercise[
+.lab[
 
 - Create the resource shown on the next slide
 
@@ -717,7 +717,7 @@ spec:
 
 - Let's check the percentage of requests going to each service
 
-.exercise[
+.lab[
 
 - Continuously send HTTP requests to the new ingress:
   ```bash

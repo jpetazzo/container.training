@@ -157,7 +157,7 @@ scrape_configs:
 
 - Before trying to install Prometheus, let's check if it's already there
 
-.exercise[
+.lab[
 
 - Look for services with a label `app=prometheus` across all namespaces:
   ```bash
@@ -206,7 +206,7 @@ We need to:
 
 - If we already installed Helm earlier, this command won't break anything
 
-.exercise[
+.lab[
 
 - Install the Helm CLI:
   ```bash
@@ -224,7 +224,7 @@ We need to:
 
   (it won't error out if Prometheus is already installed)
 
-.exercise[
+.lab[
 
 - Install Prometheus on our cluster:
   ```bash
@@ -285,7 +285,7 @@ Helm *values* are parameters to customize our installation.
 
 - Let's connect to the web UI and see what we can do
 
-.exercise[
+.lab[
 
 - Figure out the NodePort that was allocated to the Prometheus server:
   ```bash
@@ -305,7 +305,7 @@ Helm *values* are parameters to customize our installation.
 
 - This is easy... if you are familiar with PromQL
 
-.exercise[
+.lab[
 
 - Click on "Graph", and in "expression", paste the following:
   ```

@@ -49,7 +49,7 @@
 .footnote[👇 Try it! The source file will be shown and you can view it on GitHub and fork and edit it.]
 
 <!--
-.exercise[
+.lab[
 ```open https://@@GITREPO@@/tree/master/slides/common/about-slides.md```
 ]
 -->

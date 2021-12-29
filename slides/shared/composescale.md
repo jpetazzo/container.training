@@ -2,7 +2,7 @@
 
 - Many flags and commands of Compose are modeled after those of `docker`
 
-.exercise[
+.lab[
 
 - Start the app in the background with the `-d` option:
   ```bash
@@ -26,7 +26,7 @@ class: extra-details
 
 - The `docker-compose logs` command works like `docker logs`
 
-.exercise[
+.lab[
 
 - View all logs since container creation and exit when done:
   ```bash
@@ -67,7 +67,7 @@ Tip: use `^S` and `^Q` to pause/resume log output.
 
 - Let's look at CPU, memory, and I/O usage
 
-.exercise[
+.lab[
 
 - run `top` to see CPU and memory usage (you should see idle cycles)
 
@@ -102,7 +102,7 @@ We have available resources.
 - Docker Compose supports scaling
 - Let's scale `worker` and see what happens!
 
-.exercise[
+.lab[
 
 - Start one more `worker` container:
   ```bash
@@ -123,7 +123,7 @@ We have available resources.
 
 - Great, let's add more workers and call it a day, then!
 
-.exercise[
+.lab[
 
 - Start eight more `worker` containers:
   ```bash
@@ -187,7 +187,7 @@ We have available resources.
 
 We will use `httping`.
 
-.exercise[
+.lab[
 
 - Check the latency of `rng`:
   ```bash

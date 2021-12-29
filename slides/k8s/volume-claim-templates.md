@@ -61,7 +61,7 @@
 
   - the corresponding `volumeMounts` in the Pod spec
 
-.exercise[
+.lab[
 
 - Apply the persistent Consul YAML file:
   ```bash
@@ -92,7 +92,7 @@
 
 - Let's look at Persistent Volume Claims and Pods
 
-.exercise[
+.lab[
 
 - Check that we now have an unbound Persistent Volume Claim:
   ```bash
@@ -135,7 +135,7 @@
 
 - Then create 3 Persistent Volumes corresponding to these directories
 
-.exercise[
+.lab[
 
 - Create the local directories:
   ```bash
@@ -163,7 +163,7 @@
 
 - Eventually, our Consul cluster is up, and backend by "persistent" volumes
 
-.exercise[
+.lab[
 
 - Check that our Consul clusters has 3 members indeed:
   ```bash
@@ -238,7 +238,7 @@ These are the steps when dynamic provisioning happens:
 
 - Let's see that!
 
-.exercise[
+.lab[
 
 - Put some data in Consul:
   ```bash
@@ -256,7 +256,7 @@ These are the steps when dynamic provisioning happens:
 
 ## Validating persistence (2)
 
-.exercise[
+.lab[
 
 - Wait until the last Pod is deleted:
   ```bash
@@ -274,7 +274,7 @@ These are the steps when dynamic provisioning happens:
 
 ## Validating persistence (3)
 
-.exercise[
+.lab[
 
 - Re-create the cluster:
   ```bash

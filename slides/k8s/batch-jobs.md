@@ -30,7 +30,7 @@
 
   - or we hit the *backoff limit* of the Job (default=6)
 
-.exercise[
+.lab[
 
 - Create a Job that has a 50% chance of success:
   ```bash
@@ -49,7 +49,7 @@
 
 - If the Pod fails, the Job creates another Pod
 
-.exercise[
+.lab[
 
 - Check the status of the Pod(s) created by the Job:
   ```bash
@@ -108,7 +108,7 @@ class: extra-details
 
   (The Cron Job will not hold if a previous job is still running)
 
-.exercise[
+.lab[
 
 - Create the Cron Job:
   ```bash
@@ -135,7 +135,7 @@ class: extra-details
 
   (re-creating another one if it fails, for instance if its node fails)
 
-.exercise[
+.lab[
 
 - Check the Jobs that are created:
   ```bash

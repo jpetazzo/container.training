@@ -6,7 +6,7 @@ What did we change to make it compatible with Swarm mode?
 
 --
 
-.exercise[
+.lab[
 
 - Go to the app directory:
   ```bash

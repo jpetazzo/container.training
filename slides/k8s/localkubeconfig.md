@@ -8,13 +8,13 @@
 
 ## Requirements
 
-.warning[The exercises in this chapter should be done *on your local machine*.]
+.warning[The commands in this chapter should be run *on your local machine*.]
 
 - `kubectl` is officially available on Linux, macOS, Windows
 
   (and unofficially anywhere we can build and run Go binaries)
 
-- You may skip these exercises if you are following along from:
+- You may skip these commands if you are following along from:
 
   - a tablet or phone
 
@@ -28,7 +28,7 @@
 
 - If you already have `kubectl` on your local machine, you can skip this
 
-.exercise[
+.lab[
 
 <!-- ##VERSION## -->
 
@@ -56,7 +56,7 @@ Note: if you are following along with a different platform (e.g. Linux on an arc
 
   (before even trying to connect to a remote cluster!)
 
-.exercise[
+.lab[
 
 - Ask `kubectl` to show its version number:
   ```bash
@@ -83,7 +83,7 @@ Platform:"darwin/amd64"}
 
 - If you never used `kubectl` on your machine before: nothing to do!
 
-.exercise[
+.lab[
 
 - Make a copy of `~/.kube/config`; if you are using macOS or Linux, you can do:
   ```bash
@@ -102,7 +102,7 @@ Platform:"darwin/amd64"}
 
 - Let's copy it over!
 
-.exercise[
+.lab[
 
 - Copy the file from `node1`; if you are using macOS or Linux, you can do:
   ```
@@ -178,7 +178,7 @@ class: extra-details
 
 - We can now run a couple of trivial commands to check that all is well
 
-.exercise[
+.lab[
 
 - Check the versions of the local client and remote server:
   ```bash

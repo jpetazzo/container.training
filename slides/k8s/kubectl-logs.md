@@ -12,7 +12,7 @@
 
 - By default, `kubectl logs` shows us the output of a single Pod
 
-.exercise[
+.lab[
 
 - Try to check the output of the Pods related to a Deployment:
   ```bash
@@ -40,7 +40,7 @@
 
   (this is just a default label that gets added when using `kubectl create deployment`)
 
-.exercise[
+.lab[
 
 - View the last line of log from all pods with the `app=pingpong` label:
   ```bash
@@ -55,7 +55,7 @@
 
 - Can we stream the logs of all our `pingpong` pods?
 
-.exercise[
+.lab[
 
 - Combine `-l` and `-f` flags:
   ```bash
@@ -81,7 +81,7 @@ class: extra-details
 
 - Let's see what happens if we try to stream the logs for more than 5 pods
 
-.exercise[
+.lab[
 
 - Scale up our deployment:
   ```bash

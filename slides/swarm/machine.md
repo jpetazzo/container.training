@@ -45,7 +45,7 @@ class: self-paced
 
 - Instead, to "talk" to another node, we'll just set `DOCKER_HOST`
 
-- You can skip the exercises telling you to do things with Docker Machine!
+- You can skip the commands telling you to do things with Docker Machine!
 
 ---
 
@@ -57,7 +57,7 @@ class: self-paced
 
   - `docker-machine env` (switch to a specific host)
 
-.exercise[
+.lab[
 
 - List configured hosts:
   ```bash
@@ -98,7 +98,7 @@ class: in-person
 
 - To unset these variables, use `eval $(docker-machine env -u)`
 
-.exercise[
+.lab[
 
 - View the variables used by Docker Machine:
   ```bash
@@ -117,7 +117,7 @@ class: in-person
 
 - This must be done from a manager
 
-.exercise[
+.lab[
 
 - Make sure we talk to the local node, or `node1`:
   ```bash
@@ -137,7 +137,7 @@ class: in-person
 
 - We need to set the right environment variables to communicate with `node3`
 
-.exercise[
+.lab[
 
 - If you're using Play-With-Docker:
   ```bash
@@ -157,7 +157,7 @@ class: in-person
 
 - Let's use the Docker API to ask "who are you?" to the remote node
 
-.exercise[
+.lab[
 
 - Extract the node name from the output of `docker info`:
   ```bash
@@ -178,7 +178,7 @@ reflecting the `DOCKER_HOST` variable.
 
 - We are going to use the same `docker swarm join` command as before
 
-.exercise[
+.lab[
 
 - Add `node3` to the Swarm:
   ```bash
@@ -193,7 +193,7 @@ reflecting the `DOCKER_HOST` variable.
 
 - We need to revert the environment variable(s) that we had set previously
 
-.exercise[
+.lab[
 
 - If you're using Play-With-Docker, just clear `DOCKER_HOST`:
   ```bash
@@ -215,7 +215,7 @@ From that point, we are communicating with `node1` again.
 
 - Now that we're talking to `node1` again, we can use management commands
 
-.exercise[
+.lab[
 
 - Check that the node is here:
   ```bash

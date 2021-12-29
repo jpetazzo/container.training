@@ -2,7 +2,7 @@
 
 - Before moving on, let's remove those containers
 
-.exercise[
+.lab[
 
 - Tell Compose to remove everything:
   ```bash

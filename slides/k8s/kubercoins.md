@@ -18,7 +18,7 @@
 
   (but we can use it for debugging, troubleshooting, etc.)
 
-.exercise[
+.lab[
 
 - Log into `node1`
 
@@ -39,7 +39,7 @@
 
 - ... as well as these slides, some scripts, more manifests
 
-.exercise[
+.lab[
 
 - Clone the repository on `node1`:
   ```bash
@@ -54,7 +54,7 @@
 
 Without further ado, let's start this application!
 
-.exercise[
+.lab[
 
 - Apply the manifest for dockercoins:
   ```bash
@@ -205,7 +205,7 @@ https://@@GITREPO@@/blob/8279a3bce9398f7c1a53bdd95187c53eda4e6435/dockercoins/wo
 
 - We can check the logs of our application's pods
 
-.exercise[
+.lab[
 
 - Check the logs of the various components:
   ```bash
@@ -223,7 +223,7 @@ https://@@GITREPO@@/blob/8279a3bce9398f7c1a53bdd95187c53eda4e6435/dockercoins/wo
 
 - The `webui` container exposes a web dashboard; let's view it
 
-.exercise[
+.lab[
 
 - Check the NodePort allocated to the web UI:
   ```bash

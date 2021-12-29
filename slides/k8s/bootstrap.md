@@ -98,7 +98,7 @@
 
 - Let's list our bootstrap tokens on a cluster created with kubeadm
 
-.exercise[
+.lab[
 
 - Log into node `test1`
 
@@ -145,7 +145,7 @@ class: extra-details
 
 - The token we need to use has the form `abcdef.1234567890abcdef`
 
-.exercise[
+.lab[
 
 - Check that it is accepted by the API server:
   ```bash
@@ -177,7 +177,7 @@ class: extra-details
 
 - That information is stored in a public ConfigMap
 
-.exercise[
+.lab[
 
 - Retrieve that ConfigMap:
   ```bash

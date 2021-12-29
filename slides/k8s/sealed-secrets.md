@@ -60,7 +60,7 @@
 
 <!-- #VERSION# -->
 
-.exercise[
+.lab[
 
 - Install the operator:
   .small[
@@ -107,7 +107,7 @@ class: extra-details
 
 - Let's create a normal (unencrypted) secret
 
-.exercise[
+.lab[
 
 - Create a Secret with a couple of API tokens:
   ```bash
@@ -133,7 +133,7 @@ class: extra-details
 
 - It will obtain the public key from the cluster
 
-.exercise[
+.lab[
 
 - Create the Sealed Secret:
   ```bash
@@ -154,7 +154,7 @@ class: extra-details
 
 - The Sealed Secret controller will "unseal" it for us
 
-.exercise[
+.lab[
 
 - Check that our Secret doesn't exist (yet):
   ```bash
@@ -181,7 +181,7 @@ class: extra-details
 
   (or use it in a different namespace)
 
-.exercise[
+.lab[
 
 - Delete both the Secret and the SealedSecret
 

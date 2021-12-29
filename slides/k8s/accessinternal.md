@@ -20,13 +20,13 @@
 
 ## Suspension of disbelief
 
-The exercises in this section assume that we have set up `kubectl` on our
+The labs and demos in this section assume that we have set up `kubectl` on our
 local machine in order to access a remote cluster.
 
 We will therefore show how to access services and pods of the remote cluster,
 from our local machine.
 
-You can also run these exercises directly on the cluster (if you haven't
+You can also run these commands directly on the cluster (if you haven't
 installed and set up `kubectl` locally).
 
 Running commands locally will be less useful
@@ -58,7 +58,7 @@ installed and set up `kubectl` to communicate with your cluster.
 
 - Let's access the `webui` service through `kubectl proxy`
 
-.exercise[
+.lab[
 
 - Run an API proxy in the background:
   ```bash
@@ -101,7 +101,7 @@ installed and set up `kubectl` to communicate with your cluster.
 
 - Let's access our remote Redis server
 
-.exercise[
+.lab[
 
 - Forward connections from local port 10000 to remote port 6379:
   ```bash

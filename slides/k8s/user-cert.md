@@ -32,7 +32,7 @@
 
   (if a cluster has been provisioned for you for a training, it's `node1`)
 
-.exercise[
+.lab[
 
 - Check that the CA key is here:
   ```bash
@@ -55,7 +55,7 @@ The output should include `ca.key` and `ca.crt`.
 
   - the groups the user belongs to (as multiple `O` fields)
 
-.exercise[
+.lab[
 
 - Check which CA is used by the Kubernetes API server:
   ```bash
@@ -79,7 +79,7 @@ This is the flag that we're looking for:
 
   (we never need to expoes the private key)
 
-.exercise[
+.lab[
 
 - Generate a private key:
   ```bash
@@ -101,7 +101,7 @@ This is the flag that we're looking for:
 
   (copy the `user.csr` file if needed)
 
-.exercise[
+.lab[
 
 - Verify the CSR paramters:
   ```bash
@@ -127,7 +127,7 @@ If you are using two separate machines, transfer `user.crt` to the other machine
 
 - This can be done relatively easily with `kubectl config`
 
-.exercise[
+.lab[
 
 - Create a new `user` entry in our `.kube/config` file:
   ```bash
@@ -153,7 +153,7 @@ We could also embed the key and certs with the `--embed-certs` option.
 
 - Let's edit our *context* to use our new certificate instead!
 
-.exercise[
+.lab[
 
 - Edit the context:
   ```bash
@@ -175,7 +175,7 @@ Access will be denied, but we should see that were correctly *authenticated* as 
 
 - Let's add some read-only permissions to the `devs` group (for instance)
 
-.exercise[
+.lab[
 
 - Switch back to our admin identity:
   ```bash
@@ -198,7 +198,7 @@ Access will be denied, but we should see that were correctly *authenticated* as 
 
 - Let's verify that we can e.g. list pods!
 
-.exercise[
+.lab[
 
 - Switch to our user identity again:
   ```bash

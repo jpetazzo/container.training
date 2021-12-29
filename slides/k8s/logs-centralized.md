@@ -36,7 +36,7 @@
 
 - We are going to use a YAML file describing all the required resources
 
-.exercise[
+.lab[
 
 - Load the YAML file into our cluster:
   ```bash
@@ -94,7 +94,7 @@ and a few roles and role bindings (to give fluentd the required permissions).
 
 - Let's check it out!
 
-.exercise[
+.lab[
 
 - Check which `NodePort` was allocated to Kibana:
   ```bash

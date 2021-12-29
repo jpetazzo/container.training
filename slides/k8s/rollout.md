@@ -57,7 +57,7 @@
 
 - Recall how we build custom reports with `kubectl` and `jq`:
 
-.exercise[
+.lab[
 
 - Show the rollout plan for our deployments:
   ```bash
@@ -83,7 +83,7 @@
 
 ## Rolling out the new `worker` service
 
-.exercise[
+.lab[
 
 - Let's monitor what's going on by opening a few terminals, and run:
   ```bash
@@ -136,7 +136,7 @@ That rollout should be pretty quick. What shows in the web UI?
 
 - What happens if we make a mistake?
 
-.exercise[
+.lab[
 
 - Update `worker` by specifying a non-existent image:
   ```bash
@@ -207,7 +207,7 @@ class: extra-details
 
 If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
-.exercise[
+.lab[
 
 - Connect to the dashboard that we deployed earlier
 
@@ -227,7 +227,7 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 - Or we could invoke a manual rollback
 
-.exercise[
+.lab[
 
 <!-- ```key ^C``` -->
 
@@ -255,7 +255,7 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 - What happens if we try `kubectl rollout undo` again?
 
-.exercise[
+.lab[
 
 - Try it:
   ```bash
@@ -280,7 +280,7 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 - Multiple "undos" just swap back and forth between the last two versions!
 
-.exercise[
+.lab[
 
 - Go back to v0.2 again:
   ```bash
@@ -305,7 +305,7 @@ If you didn't deploy the Kubernetes dashboard earlier, just skip this slide.
 
 - We can list successive versions of a Deployment with `kubectl rollout history`
 
-.exercise[
+.lab[
 
 - Look at our successive versions:
   ```bash
@@ -328,7 +328,7 @@ We might see something like 1, 4, 5.
 
 - This information is stored in the Replica Set annotations
 
-.exercise[
+.lab[
 
 - Check the annotations for our replica sets:
   ```bash
@@ -359,7 +359,7 @@ class: extra-details
 
 - `kubectl rollout undo` can work with a revision number
 
-.exercise[
+.lab[
 
 - Roll back to the "known good" deployment version:
   ```bash
@@ -411,7 +411,7 @@ class: extra-details
 
 - But we could also use `kubectl patch` with the exact YAML shown before
 
-.exercise[
+.lab[
 
 .small[
 

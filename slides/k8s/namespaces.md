@@ -52,7 +52,7 @@
 
   the tuple *(kind, name)* needs to be unique
 
-.exercise[
+.lab[
 
 - List resource types again, and check the NAMESPACED column:
   ```bash
@@ -83,7 +83,7 @@
 
 - Let's see two identical methods to create a namespace
 
-.exercise[
+.lab[
 
 - We can use `kubectl create namespace`:
   ```bash
@@ -123,7 +123,7 @@
 
 - On our training environments, at this point, there should be only one context
 
-.exercise[
+.lab[
 
 - View existing contexts to see the cluster name and the current user:
   ```bash
@@ -178,7 +178,7 @@
 
 - We can update a context by passing its name, or the current context with `--current`
 
-.exercise[
+.lab[
 
 - Update the current context to use the `blue` namespace:
   ```bash
@@ -198,7 +198,7 @@
 
 - Let's check that we are in our new namespace, then deploy a new copy of Dockercoins
 
-.exercise[
+.lab[
 
 - Verify that the new context is empty:
   ```bash
@@ -213,7 +213,7 @@
 
 - The GitHub repository `jpetazzo/kubercoins` contains everything we need!
 
-.exercise[
+.lab[
 
 - Clone the kubercoins repository:
   ```bash
@@ -238,7 +238,7 @@ The subdirectories are *not* processed, unless we also add the `-R` flag.
 
 - Let's see if this worked correctly!
 
-.exercise[
+.lab[
 
 - Retrieve the port number allocated to the `webui` service:
   ```bash
@@ -287,9 +287,9 @@ If the graph shows up but stays at zero, give it a minute or two!
 
 ## Switch back to the default namespace
 
-- Let's make sure that we don't run future exercises in the `blue` namespace
+- Let's make sure that we don't run future exercises and labs in the `blue` namespace
 
-.exercise[
+.lab[
 
 - Switch back to the original context:
   ```bash

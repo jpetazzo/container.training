@@ -20,7 +20,7 @@
 
 - Let's make a couple of changes to a Deployment and record them
 
-.exercise[
+.lab[
 
 - Roll back `worker` to image version 0.1:
   ```bash
@@ -45,7 +45,7 @@
 
 - What happens if we don't specify `--record`?
 
-.exercise[
+.lab[
 
 - Promote `worker` to image version 0.3:
   ```bash
@@ -85,7 +85,7 @@ It recorded version 0.2 instead of 0.3! Why?
 
 - What happens if we use `kubectl scale --record`?
 
-.exercise[
+.lab[
 
 - Check the current history:
   ```bash
@@ -130,7 +130,7 @@ The last entry in the history was overwritten by the `scale` command! Why?
 
 - Let's see what happens if we set the annotation manually
 
-.exercise[
+.lab[
 
 - Annotate the Deployment:
   ```bash

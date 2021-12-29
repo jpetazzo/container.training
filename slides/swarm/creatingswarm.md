@@ -8,7 +8,7 @@
 
   You would have multiple disjoint clusters.
 
-.exercise[
+.lab[
 
 - Create our cluster from node1:
   ```bash
@@ -149,7 +149,7 @@ class: extra-details
 
 ## Checking that Swarm mode is enabled
 
-.exercise[
+.lab[
 
 - Run the traditional `docker info` command:
   ```bash
@@ -174,7 +174,7 @@ Swarm: active
 
 - Let's retry the exact same command as earlier
 
-.exercise[
+.lab[
 
 - List the nodes (well, the only node) of our cluster:
   ```bash
@@ -211,7 +211,7 @@ ID             HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
 
 ## Adding nodes to the Swarm
 
-.exercise[
+.lab[
 
 - Show the token again:
   ```bash
@@ -238,7 +238,7 @@ class: extra-details
 
 - Stay on `node2` for now!
 
-.exercise[
+.lab[
 
 - We can still use `docker info` to verify that the node is part of the Swarm:
   ```bash
@@ -263,7 +263,7 @@ class: extra-details
 
 - Let's go back to `node1` and see what our cluster looks like
 
-.exercise[
+.lab[
 
 - Switch back to `node1` (with `exit`, `Ctrl-D` ...)
 

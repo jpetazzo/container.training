@@ -52,7 +52,7 @@ class: extra-details
 
 - It will run as a set of containers on Kubernetes worker nodes
 
-.exercise[
+.lab[
 
   - Install OpenEBS:
   ```bash  
@@ -71,7 +71,7 @@ class: extra-details
 
 - Wait a little bit ...
 
-.exercise[
+.lab[
 
 - Look at the pods in the `openebs` namespace:
   ```bash  
@@ -154,7 +154,7 @@ provisioner: openebs.io/local
 
 - Let's inspect the StorageClass that OpenEBS created for us
 
-.exercise[
+.lab[
 
 - Let's look at the OpenEBS LocalPV hostpath StorageClass:
   ```bash
@@ -168,7 +168,7 @@ provisioner: openebs.io/local
 
 - Let's create a Persistent Volume Claim using an explicit StorageClass
 
-.exercise[
+.lab[
 
 ```bash
 kubectl apply -f - <<EOF
@@ -194,7 +194,7 @@ EOF
 
 - Normally, the `openebs-hostpath` StorageClass created a PV for our PVC
 
-.exercise[
+.lab[
 
 - Look at the PV and PVC:
   ```bash
@@ -207,7 +207,7 @@ EOF
 
 ## Create a Pod to consume the PV
 
-.exercise[
+.lab[
 
 - Create a Pod using that PVC:
   ```bash
@@ -235,7 +235,7 @@ EOF
 
 - Let's find the file written by the Pod on the node where the Pod is running
 
-.exercise[
+.lab[
 
 - Get the worker node where the pod is located
   ```bash
@@ -283,7 +283,7 @@ EOF
 
 - This is done with the annotation `storageclass.kubernetes.io/is-default-class`
 
-.exercise[
+.lab[
 
 - Check if we have a default StorageClass:
   ```bash
@@ -299,7 +299,7 @@ EOF
 
 - Let's set the default StorageClass to use `openebs-jiva-default`
 
-.exercise[
+.lab[
 
 - Remove the annotation (just in case we already have a default class):
   ```bash

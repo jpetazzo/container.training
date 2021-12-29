@@ -32,7 +32,7 @@ class: extra-details
 
 - Then we will use `docker exec` to run more processes in this container
 
-.exercise[
+.lab[
 
 - Start a "do nothing" container using our favorite Swiss-Army distro:
   ```bash
@@ -50,7 +50,7 @@ The `constraint` makes sure that the container will be created on the local node
 
 - Once our container is started (which should be really fast because the alpine image is small), we can enter it (from any node)
 
-.exercise[
+.lab[
 
 - Locate the container:
   ```bash
@@ -74,7 +74,7 @@ The `constraint` makes sure that the container will be created on the local node
 
 - SwarmKit places labels on containers
 
-.exercise[
+.lab[
 
 - Get the ID of the container:
   ```bash
@@ -96,7 +96,7 @@ The `constraint` makes sure that the container will be created on the local node
 
 - But we can also dynamically install whatever we need
 
-.exercise[
+.lab[
 
 - Install a few tools:
   ```bash
@@ -111,7 +111,7 @@ The `constraint` makes sure that the container will be created on the local node
 
 - First, let's check what `rng` resolves to
 
-.exercise[
+.lab[
 
 - Use drill or nslookup to resolve `rng`:
   ```bash
@@ -127,7 +127,7 @@ It is a virtual IP address (VIP) for the `rng` service.
 
 ## Investigating the VIP
 
-.exercise[
+.lab[
 
 - Try to ping the VIP:
   ```bash
@@ -172,7 +172,7 @@ backend is available anywhere.
 
 - It will give you the IP addresses of the containers for a given service
 
-.exercise[
+.lab[
 
 - Obtain the IP addresses of the containers for the `rng` service:
   ```bash
@@ -192,7 +192,7 @@ class: extra-details, benchmarking
 - We will check that the service is up with `rng`, then
   benchmark it with `ab`
 
-.exercise[
+.lab[
 
 - Make a test request to the service:
   ```bash
@@ -217,7 +217,7 @@ class: extra-details, benchmarking
 
 We will send 50 requests, but with various levels of concurrency.
 
-.exercise[
+.lab[
 
 - Send 50 requests, with a single sequential client:
   ```bash
@@ -255,7 +255,7 @@ The command is slightly more complex, since we need to post random data.
 
 First, we need to put the POST payload in a temporary file.
 
-.exercise[
+.lab[
 
 - Generate 10 bytes of random data:
   ```bash
@@ -272,7 +272,7 @@ class: extra-details, benchmarking
 
 Once again, we will send 50 requests, with different levels of concurrency.
 
-.exercise[
+.lab[
 
 - Send 50 requests with a sequential client:
   ```bash

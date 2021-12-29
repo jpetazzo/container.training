@@ -66,7 +66,7 @@ We will build *two* different metrics pipelines:
 
 - Another based on Prometheus.
 
-If you're using Play-With-Docker, skip the exercises
+If you're using Play-With-Docker, skip the commands
 relevant to Intel Snap (we rely on a SSH server to deploy,
 and PWD doesn't have that yet).
 
@@ -169,7 +169,7 @@ class: snap
 
 - This will get Snap on all nodes
 
-.exercise[
+.lab[
 
 ```bash
 docker service create --restart-condition=none --mode global \
@@ -198,7 +198,7 @@ class: snap
 
 - Application made up of a REST API, control module, and scheduler module
 
-.exercise[
+.lab[
 
 - Start `snapd` with plugin trust disabled and log level set to debug:
   ```bash
@@ -220,7 +220,7 @@ class: snap
 
 - Let's load a *collector* and a *publisher* plugins
 
-.exercise[
+.lab[
 
 - Open a new terminal
 
@@ -244,7 +244,7 @@ class: snap
 
 - Good to know: Docker CLI uses `ls`, Snap CLI uses `list`
 
-.exercise[
+.lab[
 
 - See your loaded plugins:
   ```bash
@@ -313,7 +313,7 @@ class: snap
 
 - The task manifest shown on the previous slide is stored in `snap/psutil-file.yml`.
 
-.exercise[
+.lab[
 
 - Create a task using the manifest:
 
@@ -339,7 +339,7 @@ class: snap
 
 ## Checking existing tasks
 
-.exercise[
+.lab[
 
 - This will confirm that our task is running correctly, and remind us of its task ID
 
@@ -364,7 +364,7 @@ class: snap
 
 - That publisher just writes text lines in a file (one line per data point)
 
-.exercise[
+.lab[
 
 - Check that the data is flowing indeed:
   ```bash
@@ -385,7 +385,7 @@ class: snap
 
 - `snapctl task watch` will stream the metrics you are collecting to STDOUT
 
-.exercise[
+.lab[
 
 ```bash
 snapctl task watch <ID>
@@ -452,7 +452,7 @@ class: snap
 
 - Snap runs in the foreground, so you need to use `&` or start it in tmux
 
-.exercise[
+.lab[
 
 - Run the following command *on every node*:
   ```bash
@@ -488,7 +488,7 @@ class: snap
 
 - I might go to hell for showing you this, but here it goes ...
 
-.exercise[
+.lab[
 
 - Start Snap all over the place:
   ```bash
@@ -513,7 +513,7 @@ class: snap
 
 - If everything went fine, Snap is now running in tribe mode
 
-.exercise[
+.lab[
 
 - View the members of our tribe:
   ```bash
@@ -532,7 +532,7 @@ class: snap
 
 - We can now create an *agreement* for our plugins and tasks
 
-.exercise[
+.lab[
 
 - Create an agreement; make sure to use the same name all along:
   ```bash
@@ -558,7 +558,7 @@ class: snap
 
 - We can join nodes from any existing node of the cluster
 
-.exercise[
+.lab[
 
 - Add all nodes to the agreement:
   ```bash
@@ -586,7 +586,7 @@ class: snap
 
 - But just in case you did things differently, let's create a dummy global service
 
-.exercise[
+.lab[
 
 - Create an alpine container on the whole cluster:
   ```bash
@@ -623,7 +623,7 @@ class: snap
 
 ## Creating the InfluxDB service
 
-.exercise[
+.lab[
 
 - Start an InfluxDB service, publishing ports 8083 and 8086:
   ```bash
@@ -651,7 +651,7 @@ class: snap
 
 - We need to create the "snap" database
 
-.exercise[
+.lab[
 
 - Open port 8083 with your browser
 
@@ -676,7 +676,7 @@ Note: the InfluxDB query language *looks like* SQL but it's not.
 
 - Snap still uses "default" and this results in errors
 
-.exercise[
+.lab[
 
 - Create a "default" retention policy by entering the following query in the box:
   ```
@@ -696,7 +696,7 @@ class: snap
 - Since our local node is a member of the agreement, all other
   nodes in the agreement will also load these plugins
 
-.exercise[
+.lab[
 
 - Load Docker collector:
 
@@ -722,7 +722,7 @@ class: snap
 
 - The task will be replicated on other nodes members of the same agreement
 
-.exercise[
+.lab[
 
 - Load a task manifest file collecting a couple of metrics on all containers,
   <br/>and sending them to InfluxDB:
@@ -766,7 +766,7 @@ class: snap
 
 - Let's check existing data with a few manual queries in the InfluxDB admin interface
 
-.exercise[
+.lab[
 
 - List "measurements":
   ```
@@ -792,7 +792,7 @@ class: snap
 
 - We will publish Grafana's web interface on its default port (3000)
 
-.exercise[
+.lab[
 
 - Create the Grafana service:
   ```bash
@@ -807,7 +807,7 @@ class: snap
 
 ## Set up Grafana
 
-.exercise[
+.lab[
 
 - Open port 3000 with your browser
 
@@ -859,7 +859,7 @@ class: snap
 
 ## Create a dashboard in Grafana
 
-.exercise[
+.lab[
 
 - Click on the Grafana logo again (the orange spiral in the top left corner)
 
@@ -883,7 +883,7 @@ class: snap
 
 ## Setting up a graph in Grafana
 
-.exercise[
+.lab[
 
 - Panel data source: select snap
 - Click on the SELECT metrics query to expand it
@@ -989,7 +989,7 @@ class: prom-manual
 
 - This is the easiest step ☺
 
-.exercise[
+.lab[
 
 - Create an overlay network:
   ```bash
@@ -1009,7 +1009,7 @@ class: prom-manual
   <br/>
   (it needs to access the host's filesystems, in particular /proc and /sys)
 
-.exercise[
+.lab[
 
 - Start the node exporter:
   ```bash
@@ -1035,7 +1035,7 @@ class: prom-manual
 
 - But it can run in containers, if configured properly
 
-.exercise[
+.lab[
 
 - Start the cAdvisor collector:
   ```bash
@@ -1109,7 +1109,7 @@ class: prom-manual
 
 - We will use the local registry started previously on 127.0.0.1:5000
 
-.exercise[
+.lab[
 
 - Build the image using the provided Dockerfile:
   ```bash
@@ -1133,7 +1133,7 @@ class: prom-manual
 
   (If we want to access Prometheus from outside!)
 
-.exercise[
+.lab[
 
 - Start the Prometheus server:
   ```bash
@@ -1151,7 +1151,7 @@ class: prom-auto
 
 - We will use a stack definition (once again)
 
-.exercise[
+.lab[
 
 - Make sure we are in the stacks directory:
   ```bash
@@ -1175,7 +1175,7 @@ class: prom
 
 - First, let's make sure that Prometheus is correctly scraping all metrics
 
-.exercise[
+.lab[
 
 - Open port 9090 with your browser
 
@@ -1293,7 +1293,7 @@ class: prom-auto, config
 
 - We will update the existing stack using `prometheus+config.yml`
 
-.exercise[
+.lab[
 
 - Redeploy the `prometheus` stack:
   ```bash
@@ -1314,7 +1314,7 @@ class: prom-auto, config
 
 - Config objects can be viewed from the Docker CLI (or API)
 
-.exercise[
+.lab[
 
 - List existing config objects:
   ```bash
@@ -1340,7 +1340,7 @@ class: prom-auto, config
 
 - Let's retrieve that Prometheus configuration!
 
-.exercise[
+.lab[
 
 - Extract the BASE64 payload with `jq`:
   ```bash
@@ -1362,7 +1362,7 @@ class: prom
 
 - This is easy ... if you are familiar with PromQL
 
-.exercise[
+.lab[
 
 - Click on "Graph", and in "expression", paste the following:
   ```
@@ -1519,7 +1519,7 @@ class: prom, snap
 
 ## Add Prometheus as a data source in Grafana
 
-.exercise[
+.lab[
 
 - In a new tab, connect to Grafana (port 3000)
 
@@ -1539,7 +1539,7 @@ class: prom, snap
 
 ## Connecting to Prometheus from Grafana
 
-.exercise[
+.lab[
 
 - Enter "prom" in the name field
 
@@ -1563,7 +1563,7 @@ class: prom, snap
 
 ## Adding the Prometheus data to our dashboard
 
-.exercise[
+.lab[
 
 - Go back to the the tab where we had our first Grafana dashboard
 
@@ -1583,7 +1583,7 @@ class: prom, snap
 
 The editor is a bit less friendly than the one we used for InfluxDB.
 
-.exercise[
+.lab[
 
 - Select "prom" as Panel data source
 
@@ -1610,7 +1610,7 @@ class: prom, snap
 
 - Protip: align the time references!
 
-.exercise[
+.lab[
 
 - Click on the clock in the top right corner
 

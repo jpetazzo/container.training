@@ -100,7 +100,7 @@
 
 - Let's keep an eye on the API server output!
 
-.exercise[
+.lab[
 
 - Tail the logs of the API server:
   ```bash
@@ -119,7 +119,7 @@
 
   (even if we were still using Google as the OpenID provider)
 
-.exercise[
+.lab[
 
 - Open the Google OAuth Playground:
   ```
@@ -143,7 +143,7 @@
 
 - We will use it to obtain tokens
 
-.exercise[
+.lab[
 
 - Click on "Exchange authorization code for tokens"
 
@@ -161,7 +161,7 @@
 
   (if we just add the token or use `kubectl --token`, our certificate will still be used)
 
-.exercise[
+.lab[
 
 - Create a new authentication section in kubeconfig:
   ```bash
@@ -208,7 +208,7 @@ We should get an `Unauthorized` response, since we haven't enabled OpenID Connec
 
 - If your cluster is deployed differently, you will need to adapt them
 
-.exercise[
+.lab[
 
 - Edit `/etc/kubernetes/manifests/kube-apiserver.yaml`
 
@@ -230,7 +230,7 @@ We should get an `Unauthorized` response, since we haven't enabled OpenID Connec
 
   (using the updated command line flags)
 
-.exercise[
+.lab[
 
 - After making the changes described on the previous slide, save the file
 
@@ -248,7 +248,7 @@ We should get an `Unauthorized` response, since we haven't enabled OpenID Connec
 
 - Now that the API server is set up to recognize our token, try again!
 
-.exercise[
+.lab[
 
 - Try an API command with our token:
   ```bash
@@ -274,7 +274,7 @@ cannot list resource "nodes" in API group "" at the cluster scope
 
 - We will use the pre-defined ClusterRole `view`
 
-.exercise[
+.lab[
 
 - Create a ClusterRoleBinding allowing us to view resources:
   ```bash
@@ -324,7 +324,7 @@ class: extra-details
 
 - They are signed and verified using a special service account key pair
 
-.exercise[
+.lab[
 
 - Extract the token of a service account in the current namespace:
   ```bash
@@ -365,7 +365,7 @@ class: extra-details
 
   `/etc/kubernetes/pki/sa.pub` (used by the API server to validate the same tokens)
 
-.exercise[
+.lab[
 
 - Display the public key used to sign Service Account tokens:
   ```bash

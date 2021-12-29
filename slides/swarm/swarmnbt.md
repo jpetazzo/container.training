@@ -8,7 +8,7 @@ class: nbt, extra-details
 - [Alexandros Mavrogiannis](https://github.com/alexmavr) wrote
   [Swarm NBT](https://github.com/alexmavr/swarm-nbt), a tool doing exactly that!
 
-.exercise[
+.lab[
 
 - Start Swarm NBT:
   ```bash
@@ -32,7 +32,7 @@ class: nbt, extra-details
 
 - We can directly consume the Prometheus endpoint to view telemetry data
 
-.exercise[
+.lab[
 
 - Point your browser to any Swarm node, on port 9090
 
@@ -54,7 +54,7 @@ class: nbt, in-person, extra-details
 
 - If you are using a "real" cluster (not Play-With-Docker) you can use Grafana
 
-.exercise[
+.lab[
 
 - Start Grafana with `docker service create -p 3000:3000 grafana`
 - Point your browser to Grafana, on port 3000 on any Swarm node

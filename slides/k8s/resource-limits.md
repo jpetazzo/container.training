@@ -630,7 +630,7 @@ services.nodeports               0     0
 
 - `kubectl describe namespace` will display resource limits and quotas
 
-.exercise[
+.lab[
 
 - Try it out:
   ```bash

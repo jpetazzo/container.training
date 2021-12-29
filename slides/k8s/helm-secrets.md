@@ -16,7 +16,7 @@
 
 - If you haven't done it before, you need to add the repo for that chart
 
-.exercise[
+.lab[
 
 - Add the repo that holds the chart for the OWASP Juice Shop:
   ```bash
@@ -33,7 +33,7 @@
 
 - Let's use the `juice/juice-shop` chart as an example
 
-.exercise[
+.lab[
 
 - Install a release called `orange` with the chart `juice/juice-shop`:
   ```bash
@@ -53,7 +53,7 @@
 
 - Helm stores successive revisions of each release
 
-.exercise[
+.lab[
 
 - View the history for that release:
   ```bash
@@ -76,7 +76,7 @@ Where does that come from?
 
   - ConfigMaps, Secrets?
 
-.exercise[
+.lab[
 
 - Look for ConfigMaps and Secrets:
   ```bash
@@ -95,7 +95,7 @@ We should see a number of secrets with TYPE `helm.sh/release.v1`.
 
 - Let's find out what is in these Helm secrets
 
-.exercise[
+.lab[
 
 - Examine the secret corresponding to the second release of `orange`:
   ```bash
@@ -113,7 +113,7 @@ There is a key named `release`.
 
 - Let's see what's in this `release` thing!
 
-.exercise[
+.lab[
 
 - Dump the secret:
   ```bash
@@ -131,7 +131,7 @@ Secrets are encoded in base64. We need to decode that!
 
 - We can pipe the output through `base64 -d` or use go-template's `base64decode`
 
-.exercise[
+.lab[
 
 - Decode the secret:
   ```bash
@@ -155,7 +155,7 @@ Let's try one more round of decoding!
 
 - Just add one more base64 decode filter
 
-.exercise[
+.lab[
 
 - Decode it twice:
   ```bash
@@ -175,7 +175,7 @@ Let's try one more round of decoding!
 
 - We could use `file` to figure out the data type
 
-.exercise[
+.lab[
 
 - Pipe the decoded release through `file -`:
   ```bash
@@ -196,7 +196,7 @@ Gzipped data! It can be decoded with `gunzip -c`.
 
 - Let's uncompress the data and save it to a file
 
-.exercise[
+.lab[
 
 - Rerun the previous command, but with `| gunzip -c > release-info` :
   ```bash

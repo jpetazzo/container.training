@@ -56,7 +56,7 @@
 
 - It can be installed with a YAML manifest, or with Helm
 
-.exercise[
+.lab[
 
 - Let's install the cert-manager Helm chart with this one-liner:
   ```bash
@@ -86,7 +86,7 @@
 
 - The manifest shown on the previous slide is in @@LINK[k8s/cm-clusterissuer.yaml]
 
-.exercise[
+.lab[
 
 - Create the ClusterIssuer:
   ```bash
@@ -115,7 +115,7 @@
 
 - The manifest shown on the previous slide is in @@LINK[k8s/cm-certificate.yaml]
 
-.exercise[
+.lab[
 
 - Edit the Certificate to update the domain name
 
@@ -140,7 +140,7 @@
 
 - then it waits for the challenge to complete
 
-.exercise[
+.lab[
 
 - View the resources created by cert-manager:
   ```bash
@@ -158,7 +158,7 @@
 
   `http://<our-domain>/.well-known/acme-challenge/<token>`
 
-.exercise[
+.lab[
 
 - Check the *path* of the Ingress in particular:
   ```bash
@@ -176,7 +176,7 @@
 
 An Ingress Controller! 😅
 
-.exercise[
+.lab[
 
 - Install an Ingress Controller:
   ```bash

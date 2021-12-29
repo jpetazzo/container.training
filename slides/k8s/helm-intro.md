@@ -203,7 +203,7 @@ class: extra-details
 
 - If the `helm` CLI is not installed in your environment, install it
 
-.exercise[
+.lab[
 
 - Check if `helm` is installed:
   ```bash
@@ -232,7 +232,7 @@ class: extra-details
 
 - They can be managed (installed, upgraded...) with the `helm` CLI
 
-.exercise[
+.lab[
 
 - Deploy Tiller:
   ```bash
@@ -258,7 +258,7 @@ class: extra-details
 - In a more realistic deployment, you might create per-user or per-team
   service accounts, roles, and role bindings
 
-.exercise[
+.lab[
 
 - Grant `cluster-admin` role to `kube-system:default` service account:
   ```bash
@@ -329,7 +329,7 @@ class: extra-details
 
 - We can use `helm search hub <keyword>`
 
-.exercise[
+.lab[
 
 - Look for the OWASP Juice Shop app:
   ```bash
@@ -351,7 +351,7 @@ Then go to → https://artifacthub.io/packages/helm/seccurecodebox/juice-shop
 
 - We can also use the Artifact Hub search feature
 
-.exercise[
+.lab[
 
 - Go to https://artifacthub.io/
 
@@ -367,7 +367,7 @@ Then go to → https://artifacthub.io/packages/helm/seccurecodebox/juice-shop
 
 - Click on the "Install" button, it will show instructions
 
-.exercise[
+.lab[
 
 - First, add the repository for that chart:
   ```bash
@@ -393,7 +393,7 @@ Note: it is also possible to install directly a chart, with `--repo https://...`
 
 - We can also use `--generate-name` to ask Helm to generate a name for us
 
-.exercise[
+.lab[
 
 - List the releases:
   ```bash
@@ -433,7 +433,7 @@ class: extra-details
 
 - We can use a selector to see these resources
 
-.exercise[
+.lab[
 
 - List all the resources created by this release:
   ```bash
@@ -472,7 +472,7 @@ It is defined in that chart. In other words, not all charts will provide this la
 
 - We can inspect a chart with `helm show` or `helm inspect`
 
-.exercise[
+.lab[
 
 - Look at the README for the app:
   ```bash
@@ -500,7 +500,7 @@ The `readme` may or may not have (accurate) explanations for the values.
 
 - We are going to update `my-juice-shop` to change the type of the service
 
-.exercise[
+.lab[
 
 - Update `my-juice-shop`:
   ```bash
@@ -523,7 +523,7 @@ All unspecified values will take the default values defined in the chart.
 
 - Let's check the app that we just installed
 
-.exercise[
+.lab[
 
 - Check the node port allocated to the service:
   ```bash

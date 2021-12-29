@@ -4,7 +4,7 @@
 
 - We need to retag them (to `127.0.0.1:5000/XXX:v1`) and push them
 
-.exercise[
+.lab[
 
 - Set `REGISTRY` and `TAG` environment variables to use our local registry
 - And run this little for loop:
@@ -31,7 +31,7 @@
 - Make sure to specify that you want an *overlay* network
   <br/>(otherwise you will get a local *bridge* network by default)
 
-.exercise[
+.lab[
 
 - Create an overlay network for our application:
   ```bash
@@ -46,7 +46,7 @@
 
 - Let's confirm that our network was created
 
-.exercise[
+.lab[
 
 - List existing networks:
   ```bash
@@ -99,7 +99,7 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 - First, create the `redis` service; that one is using a Docker Hub image
 
-.exercise[
+.lab[
 
 - Create the `redis` service:
   ```bash
@@ -116,7 +116,7 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 - We will use the images pushed previously
 
-.exercise[
+.lab[
 
 - Start the other services:
   ```bash
@@ -138,7 +138,7 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 - Let's reconfigure it to publish a port
 
-.exercise[
+.lab[
 
 - Update `webui` so that we can connect to it from outside:
   ```bash
@@ -156,7 +156,7 @@ Note: to "de-publish" a port, you would have to specify the container port.
 
 - Let's find out what happened to our `webui` service
 
-.exercise[
+.lab[
 
 - Look at the tasks and containers associated to `webui`:
   ```bash
@@ -178,7 +178,7 @@ It has been replaced by the new version, with port 80 accessible from outside.
 
 - The web UI is now available on port 8000, *on all the nodes of the cluster*
 
-.exercise[
+.lab[
 
 - If you're using Play-With-Docker, just click on the `(8000)` badge
 
@@ -194,7 +194,7 @@ It has been replaced by the new version, with port 80 accessible from outside.
 
 - We will do the equivalent of `docker-compose scale`
 
-.exercise[
+.lab[
 
 - Bring up more workers:
   ```bash
@@ -226,7 +226,7 @@ You should see the performance peaking at 10 hashes/s (like before).
 
 ## Scaling the `rng` service
 
-.exercise[
+.lab[
 
 - Remove the existing `rng` service:
   ```bash
@@ -271,7 +271,7 @@ class: extra-details
 
 - Before moving on, let's get a clean slate
 
-.exercise[
+.lab[
 
 - Remove *all* the services:
   ```bash

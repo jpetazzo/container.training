@@ -41,7 +41,7 @@
 
 - When we use `kubectl describe` on an object, `kubectl` retrieves the associated events
 
-.exercise[
+.lab[
 
 - See the API requests happening when we use `kubectl describe`:
   ```bash
@@ -82,7 +82,7 @@
 
 - Let's create an event related to a Node, based on @@LINK[k8s/event-node.yaml]
 
-.exercise[
+.lab[
 
 - Edit `k8s/event-node.yaml`
 
@@ -100,7 +100,7 @@
 
 - Let's create an event related to a Pod, based on @@LINK[k8s/event-pod.yaml]
 
-.exercise[
+.lab[
 
 - Create a pod
 

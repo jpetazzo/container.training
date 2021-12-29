@@ -361,7 +361,7 @@ class: extra-details
 
 ## Listing service accounts
 
-.exercise[
+.lab[
 
 - The resource name is `serviceaccount` or `sa` for short:
   ```bash
@@ -378,7 +378,7 @@ class: extra-details
 
 ## Finding the secret
 
-.exercise[
+.lab[
 
 - List the secrets for the `default` service account:
   ```bash
@@ -398,7 +398,7 @@ class: extra-details
 
 - The token is stored in the secret, wrapped with base64 encoding
 
-.exercise[
+.lab[
 
 - View the secret:
   ```bash
@@ -421,7 +421,7 @@ class: extra-details
 
 - Let's send a request to the API, without and with the token
 
-.exercise[
+.lab[
 
 - Find the ClusterIP for the `kubernetes` service:
   ```bash
@@ -616,7 +616,7 @@ class: extra-details
 
 - Nixery automatically generates images with the requested packages
 
-.exercise[
+.lab[
 
 - Run our pod:
   ```bash
@@ -632,7 +632,7 @@ class: extra-details
 
 - Normally, at this point, we don't have any API permission
 
-.exercise[
+.lab[
 
 - Check our permissions with `kubectl`:
   ```bash
@@ -658,7 +658,7 @@ class: extra-details
 
   (but again, we could call it `view` or whatever we like)
 
-.exercise[
+.lab[
 
 - Create the new role binding:
   ```bash
@@ -716,7 +716,7 @@ It's important to note a couple of details in these flags...
 
 - We should be able to *view* things, but not to *edit* them
 
-.exercise[
+.lab[
 
 - Check our permissions with `kubectl`:
   ```bash

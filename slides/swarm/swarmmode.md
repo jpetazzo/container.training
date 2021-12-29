@@ -27,7 +27,7 @@
 - Swarm mode can be enabled, "unlocking" SwarmKit functions
   <br/>(services, out-of-the-box overlay networks, etc.)
 
-.exercise[
+.lab[
 
 - Try a Swarm-specific command:
   ```bash

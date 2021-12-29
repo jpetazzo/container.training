@@ -26,7 +26,7 @@
 
 - First, let's check which version of Kubernetes we're running
 
-.exercise[
+.lab[
 
 - Check our API server version:
   ```bash
@@ -51,7 +51,7 @@
 
 - Optionally, we can specify the command to run in the pod
 
-.exercise[
+.lab[
 
 - Let's ping the address of `localhost`, the loopback interface:
   ```bash
@@ -91,7 +91,7 @@
 
 - What resources were created by `kubectl run`?
 
-.exercise[
+.lab[
 
 - Let's ask Kubernetes to show us *all* the resources:
   ```bash
@@ -274,7 +274,7 @@ class: extra-details
 
 - Then we will use `kubectl create deployment` to re-create it
 
-.exercise[
+.lab[
 
 - On Kubernetes 1.18+, delete the Pod named `pingpong`:
   ```bash
@@ -326,7 +326,7 @@ class: extra-details
 
 - It will use the image `jpetazzo/ping`
 
-.exercise[
+.lab[
 
 - Create the Deployment:
   ```bash
@@ -369,7 +369,7 @@ class: extra-details
 
   (Good thing there's only one in ours!)
 
-.exercise[
+.lab[
 
 - View the result of our `ping` command:
   ```bash
@@ -390,7 +390,7 @@ class: extra-details
 
   - `--since` to get logs only after a given timestamp
 
-.exercise[
+.lab[
 
 - View the latest logs of our `ping` command:
   ```bash
@@ -412,7 +412,7 @@ class: extra-details
 
 - We can create additional copies of our container (I mean, our pod) with `kubectl scale`
 
-.exercise[
+.lab[
 
 - Scale our `pingpong` deployment:
   ```bash
@@ -457,7 +457,7 @@ class: extra-details
 
 - What happens if we try `kubectl logs` now that we have multiple pods?
 
-.exercise[
+.lab[
 
   ```bash
   kubectl logs deploy/pingpong --tail 3
@@ -481,7 +481,7 @@ We'll see later how to address that shortcoming.
 
 - What happens if pods disappear?
 
-.exercise[
+.lab[
 
 - In a separate window, watch the list of pods:
   ```bash

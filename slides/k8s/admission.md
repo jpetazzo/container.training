@@ -198,7 +198,7 @@ Some examples ...
 
   (the Node "echo" app, the Flask app, and one ngrok tunnel for each of them)
 
-.exercise[
+.lab[
 
 - Go to the webhook directory:
   ```bash
@@ -244,7 +244,7 @@ class: extra-details
 
 - We need to update the configuration with the correct `url`
 
-.exercise[
+.lab[
 
 - Edit the webhook configuration manifest:
   ```bash
@@ -271,7 +271,7 @@ class: extra-details
 
   (so if the webhook server is down, we can still create pods)
 
-.exercise[
+.lab[
 
 - Register the webhook:
   ```bash
@@ -288,7 +288,7 @@ It is strongly recommended to tail the logs of the API server while doing that.
 
 - Let's create a pod and try to set a `color` label
 
-.exercise[
+.lab[
 
 - Create a pod named `chroma`:
   ```bash
@@ -328,7 +328,7 @@ Note: the webhook doesn't do anything (other than printing the request payload).
 
 ## Update the webhook configuration
 
-.exercise[
+.lab[
 
 - First, check the ngrok URL of the tunnel for the Flask app:
   ```bash
@@ -395,7 +395,7 @@ Note: the webhook doesn't do anything (other than printing the request payload).
 
 ## Let's get to work!
 
-.exercise[
+.lab[
 
 - Make sure we're in the right directory:
   ```bash
@@ -424,7 +424,7 @@ Note: the webhook doesn't do anything (other than printing the request payload).
 
   ... we'll store it in a ConfigMap, and install dependencies on the fly
 
-.exercise[
+.lab[
 
 - Load the webhook source in a ConfigMap:
   ```bash
@@ -446,7 +446,7 @@ Note: the webhook doesn't do anything (other than printing the request payload).
 
   (of course, there are plenty others options; e.g. `cfssl`)
 
-.exercise[
+.lab[
 
 - Generate a self-signed certificate:
   ```bash
@@ -470,7 +470,7 @@ Note: the webhook doesn't do anything (other than printing the request payload).
 
 - Let's reconfigure the webhook to use our Service instead of ngrok
 
-.exercise[
+.lab[
 
 - Edit the webhook configuration manifest:
   ```bash
@@ -504,7 +504,7 @@ Note: the webhook doesn't do anything (other than printing the request payload).
 
 Shell to the rescue!
 
-.exercise[
+.lab[
 
 - Load up our cert and encode it in base64:
   ```bash

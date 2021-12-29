@@ -93,7 +93,7 @@
 
 - We can use the `--dry-run=client` option
 
-.exercise[
+.lab[
 
 - Generate the YAML for a Deployment without creating it:
   ```bash
@@ -128,7 +128,7 @@ class: extra-details
 
 ## The limits of `kubectl apply --dry-run=client`
 
-.exercise[
+.lab[
 
 - Generate the YAML for a deployment:
   ```bash
@@ -161,7 +161,7 @@ class: extra-details
 
   (all validation and mutation hooks will be executed)
 
-.exercise[
+.lab[
 
 - Try the same YAML file as earlier, with server-side dry run:
   ```bash
@@ -200,7 +200,7 @@ class: extra-details
 
 - `kubectl diff` does a server-side dry run, *and* shows differences
 
-.exercise[
+.lab[
 
 - Try `kubectl diff` on the YAML that we tweaked earlier:
   ```bash

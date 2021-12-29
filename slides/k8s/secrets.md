@@ -96,7 +96,7 @@
   - user = reader
   - password = VmQvqdtXFwXfyy4Jb5DR
 
-.exercise[
+.lab[
 
 - Create a Deployment using that image:
   ```bash
@@ -117,7 +117,7 @@
 
 - Let's create a secret with the information provided earlier
 
-.exercise[
+.lab[
 
 - Create the registry secret:
   ```bash
@@ -141,7 +141,7 @@ If we use multiple sets of credentials for different registries, it prevents lea
 
   (in the `spec` section of a Pod template)
 
-.exercise[
+.lab[
 
 - Patch the `priv` Deployment that we created earlier:
   ```bash
@@ -160,7 +160,7 @@ If we use multiple sets of credentials for different registries, it prevents lea
 
 ## Checking the results
 
-.exercise[
+.lab[
 
 - Confirm that our Pod can now start correctly:
   ```bash
@@ -179,7 +179,7 @@ If we use multiple sets of credentials for different registries, it prevents lea
 
   (as long as they're using a specific ServiceAccount, of course)
 
-.exercise[
+.lab[
 
 - Add the secret to the ServiceAccount:
   ```bash

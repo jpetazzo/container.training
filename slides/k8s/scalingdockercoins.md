@@ -17,7 +17,7 @@
 
 - All we have to do is scale the `worker` Deployment
 
-.exercise[
+.lab[
 
 - Open a new terminal to keep an eye on our pods:
   ```bash
@@ -44,7 +44,7 @@ After a few seconds, the graph in the web UI should show up.
 
 - If 2 workers give us 2x speed, what about 3 workers?
 
-.exercise[
+.lab[
 
 - Scale the `worker` Deployment further:
   ```bash
@@ -63,7 +63,7 @@ The graph in the web UI should go up again.
 
 - Let's see if 10 workers give us 10x speed!
 
-.exercise[
+.lab[
 
 - Scale the `worker` Deployment to a bigger number:
   ```bash
@@ -169,7 +169,7 @@ class: extra-details
 
 - Or do it programmatically, as in the example below
 
-.exercise[
+.lab[
 
 - Retrieve the IP addresses:
   ```bash
@@ -185,7 +185,7 @@ Now we can access the IP addresses of our services through `$HASHER` and `$RNG`.
 
 ## Checking `hasher` and `rng` response times
 
-.exercise[
+.lab[
 
 - Check the response times for both services:
   ```bash

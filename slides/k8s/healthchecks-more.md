@@ -79,9 +79,9 @@
 
 ## Creating a new namespace
 
-- This will make sure that we don't collide / conflict with previous exercises
+- This will make sure that we don't collide / conflict with previous labs and exercises
 
-.exercise[
+.lab[
 
 - Create the yellow namespace:
   ```bash
@@ -103,7 +103,7 @@
 
   https://github.com/jpetazzo/kubercoins
 
-.exercise[
+.lab[
 
 - Clone that repository:
   ```bash
@@ -152,7 +152,7 @@ It will use the default success threshold (1 successful attempt = alive).
 
 - Let's add the liveness probe, then deploy DockerCoins
 
-.exercise[
+.lab[
 
 - Edit `rng-deployment.yaml` and add the liveness probe
   ```bash
@@ -180,7 +180,7 @@ It will use the default success threshold (1 successful attempt = alive).
 
 - Let's generate traffic and see what happens!
 
-.exercise[
+.lab[
 
 - Get the ClusterIP address of the rng service:
   ```bash
@@ -195,7 +195,7 @@ It will use the default success threshold (1 successful attempt = alive).
 
 - Each command below will show us what's happening on a different level
 
-.exercise[
+.lab[
 
 - In one window, monitor cluster events:
   ```bash
@@ -220,7 +220,7 @@ It will use the default success threshold (1 successful attempt = alive).
 
 - Let's use `ab` to send concurrent requests to rng
 
-.exercise[
+.lab[
 
 - In yet another window, generate traffic:
   ```bash

@@ -37,7 +37,7 @@ so that your build pipeline is automated.*
 
 - We will deploy a registry container, and expose it with a NodePort
 
-.exercise[
+.lab[
 
 - Create the registry service:
   ```bash
@@ -57,7 +57,7 @@ so that your build pipeline is automated.*
 
 - We need to find out which port has been allocated
 
-.exercise[
+.lab[
 
 - View the service details:
   ```bash
@@ -78,7 +78,7 @@ so that your build pipeline is automated.*
 
 - A convenient Docker registry API route to remember is `/v2/_catalog`
 
-.exercise[
+.lab[
 
 <!-- ```hide kubectl wait deploy/registry --for condition=available```-->
 
@@ -102,7 +102,7 @@ We should see:
 
 - We can retag a small image, and push it to the registry
 
-.exercise[
+.lab[
 
 - Make sure we have the busybox image, and retag it:
   ```bash
@@ -123,7 +123,7 @@ We should see:
 
 - Let's use the same endpoint as before
 
-.exercise[
+.lab[
 
 - Ensure that our busybox image is now in the local registry:
   ```bash
@@ -143,7 +143,7 @@ The curl command should now output:
 
 - We are going to use a convenient feature of Docker Compose
 
-.exercise[
+.lab[
 
 - Go to the `stacks` directory:
   ```bash
@@ -217,7 +217,7 @@ class: extra-details
 
 - All our images should now be in the registry
 
-.exercise[
+.lab[
 
 - Re-run the same `curl` command as earlier:
   ```bash
@@ -232,4 +232,4 @@ variable, so that we can quickly switch from
 the self-hosted registry to pre-built images
 hosted on the Docker Hub. So make sure that
 this $REGISTRY variable is set correctly when
-running the exercises!*
+running these commands!*

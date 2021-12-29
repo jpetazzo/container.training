@@ -6,7 +6,7 @@
 
   (Resource names, service types, number of replicas...)
 
-.exercise[
+.lab[
 
 - Create a sample chart:
   ```bash
@@ -27,7 +27,7 @@
 
 - There is a convenient `dockercoins.yml` in the repo
 
-.exercise[
+.lab[
 
 - Copy the YAML file to the `templates` subdirectory in the chart:
   ```bash
@@ -50,7 +50,7 @@
 
   (as surprising as it might seem!)
 
-.exercise[
+.lab[
 
 - Let's try to install the chart:
   ```
@@ -79,7 +79,7 @@ kind: Service, namespace: default, name: hasher
 
   - we can also tell Helm to use a different namespace
 
-.exercise[
+.lab[
 
 - Create a new namespace:
   ```bash
@@ -99,7 +99,7 @@ kind: Service, namespace: default, name: hasher
 
 - Let's try to see the release that we just deployed
 
-.exercise[
+.lab[
 
 - List Helm releases:
   ```bash
@@ -118,7 +118,7 @@ We have to specify its namespace (or switch to that namespace).
 
 - Try again, with the correct namespace
 
-.exercise[
+.lab[
 
 - List Helm releases in `helmcoins`:
   ```bash
@@ -133,7 +133,7 @@ We have to specify its namespace (or switch to that namespace).
 
 - We can check the worker logs, or the web UI
 
-.exercise[
+.lab[
 
 - Retrieve the NodePort number of the web UI:
   ```bash
@@ -181,7 +181,7 @@ have details about recommended annotations and labels.
 
 - Let's remove that chart before moving on
 
-.exercise[
+.lab[
 
 - Delete the release (don't forget to specify the namespace):
   ```bash

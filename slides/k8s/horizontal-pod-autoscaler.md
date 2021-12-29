@@ -76,7 +76,7 @@
 
   (it is a web server that will use 1s of CPU for each HTTP request)
 
-.exercise[
+.lab[
 
 - Deploy the web server:
   ```bash
@@ -101,7 +101,7 @@
 
 - Let's start a bunch of commands to watch what is happening
 
-.exercise[
+.lab[
 
 - Monitor pod CPU usage:
   ```bash
@@ -143,7 +143,7 @@
 
 - We will use `ab` (Apache Bench) to send traffic
 
-.exercise[
+.lab[
 
 - Send a lot of requests to the service, with a concurrency level of 3:
   ```bash
@@ -170,7 +170,7 @@ The CPU utilization should increase to 100%.
 
 - There is a helper command to do that for us: `kubectl autoscale`
 
-.exercise[
+.lab[
 
 - Create the HPA policy for the `busyhttp` deployment:
   ```bash
@@ -209,7 +209,7 @@ This can also be set with `--cpu-percent=`.
 
 - Since our server can use up to 1 core, let's request 1 core
 
-.exercise[
+.lab[
 
 - Edit the Deployment definition:
   ```bash
@@ -287,7 +287,7 @@ This can also be set with `--cpu-percent=`.
 
 - Since `busyhttp` uses CPU cycles, let's stop it before moving on
 
-.exercise[
+.lab[
 
 - Delete the `busyhttp` Deployment:
   ```bash

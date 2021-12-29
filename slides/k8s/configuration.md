@@ -384,7 +384,7 @@ We'll cover them just after!*
 
 - We can create each Namespace, Deployment, and Service by hand, or...
 
-.exercise[
+.lab[
 
 - We can deploy the app with a YAML manifest:
   ```bash
@@ -403,7 +403,7 @@ We'll cover them just after!*
 
 - Since the `cluster.local` suffix can change, we'll use `x.y.svc`
 
-.exercise[
+.lab[
 
 - Check that the app is up and running:
   ```bash
@@ -427,7 +427,7 @@ Here is the file that we will use, @@LINK[k8s/haproxy.cfg]:
 
 ## Creating the ConfigMap
 
-.exercise[
+.lab[
 
 - Create a ConfigMap named `haproxy` and holding the configuration file:
   ```bash
@@ -455,7 +455,7 @@ Here is @@LINK[k8s/haproxy.yaml], a Pod manifest using that ConfigMap:
 
 ## Creating the Pod
 
-.exercise[
+.lab[
 
 - Create the HAProxy Pod:
   ```bash
@@ -480,7 +480,7 @@ Here is @@LINK[k8s/haproxy.yaml], a Pod manifest using that ConfigMap:
 
   (one request to `blue`, one request to `green`, one request to `blue`, etc.)
 
-.exercise[
+.lab[
 
 - Send a few requests:
   ```bash
@@ -509,7 +509,7 @@ Here is @@LINK[k8s/haproxy.yaml], a Pod manifest using that ConfigMap:
 
 ## Creating the configmap
 
-.exercise[
+.lab[
 
 - Our configmap will have a single key, `http.addr`:
   ```bash
@@ -539,7 +539,7 @@ We are going to use the following pod definition:
 
 - The resource definition from the previous slide is in @@LINK[k8s/registry.yaml]
 
-.exercise[
+.lab[
 
 - Create the registry pod:
   ```bash

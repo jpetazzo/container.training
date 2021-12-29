@@ -44,7 +44,7 @@ Misattributed to Benjamin Franklin
 
 - All hands-on sections are clearly identified, like the gray rectangle below
 
-.exercise[
+.lab[
 
 - This is the stuff you're supposed to do!
 

@@ -85,7 +85,7 @@ class: extra-details
 
 - Let's set it now
 
-.exercise[
+.lab[
 
 - Set the `DOMAIN` environment variable:
   ```bash
@@ -120,7 +120,7 @@ class: extra-details
 
 - Thanks to `openssl`, generating a self-signed cert is just one command away!
 
-.exercise[
+.lab[
 
 - Generate a key and certificate:
   ```bash
@@ -175,7 +175,7 @@ class: extra-details
 
 - Let's use a volume to get easy access to the generated key and certificate
 
-.exercise[
+.lab[
 
 - Obtain a certificate from Let's Encrypt:
   ```bash
@@ -203,7 +203,7 @@ Remove `--test-cert` to obtain a *real* certificate.
 
   - they are owned by `root`
 
-.exercise[
+.lab[
 
 - Grant ourselves permissions on these files:
   ```bash
@@ -265,7 +265,7 @@ Remove `--test-cert` to obtain a *real* certificate.
 
 - However, the Endpoints needs to be adapted to put the current node's address
 
-.exercise[
+.lab[
 
 - Edit `~/containers.training/k8s/certbot.yaml`
 
@@ -286,7 +286,7 @@ Remove `--test-cert` to obtain a *real* certificate.
 
   (i.e. 8000)
 
-.exercise[
+.lab[
 
 - Run `certbot`:
   ```bash
@@ -312,7 +312,7 @@ Remove `--test-cert` to get a production certificate.
 
   (and owned by root)
 
-.exercise[
+.lab[
 
 - Grand ourselves permissions on these files:
   ```bash
@@ -338,7 +338,7 @@ Remove `--test-cert` to get a production certificate.
 
 - We can create a Secret to hold them
 
-.exercise[
+.lab[
 
 - Create the Secret:
   ```bash
@@ -402,7 +402,7 @@ class: extra-details
 
 ## Using the certificate
 
-.exercise[
+.lab[
 
 - Add the `tls` section to an existing Ingress
 

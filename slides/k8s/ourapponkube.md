@@ -2,7 +2,7 @@
 
 - We can now deploy our code (as well as a redis instance)
 
-.exercise[
+.lab[
 
 - Deploy `redis`:
   ```bash
@@ -47,7 +47,7 @@ class: extra-details
 
   (Hint: use `kubectl get deploy -w` to watch deployment events)
 
-.exercise[
+.lab[
 
 <!-- ```hide
 kubectl wait deploy/rng --for condition=available
@@ -80,7 +80,7 @@ kubectl wait deploy/worker --for condition=available
 
 - `webui` will be dealt with later
 
-.exercise[
+.lab[
 
 - Expose each deployment, specifying the right port:
   ```bash
@@ -97,7 +97,7 @@ kubectl wait deploy/worker --for condition=available
 
 - The `worker` has an infinite loop, that retries 10 seconds after an error
 
-.exercise[
+.lab[
 
 - Stream the worker's logs:
   ```bash
@@ -127,7 +127,7 @@ We should now see the `worker`, well, working happily.
 
   (just like we did for the registry)
 
-.exercise[
+.lab[
 
 - Create a `NodePort` service for the Web UI:
   ```bash
@@ -147,7 +147,7 @@ We should now see the `worker`, well, working happily.
 
 - We can now connect to *any node*, on the allocated node port, to view the web UI
 
-.exercise[
+.lab[
 
 - Open the web UI in your browser (http://node-ip-address:3xxxx/)
 

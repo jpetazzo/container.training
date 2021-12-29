@@ -83,7 +83,7 @@
 
 - Let's start with the YAML file for the current `rng` resource
 
-.exercise[
+.lab[
 
 - Dump the `rng` resource in YAML:
   ```bash
@@ -102,7 +102,7 @@
 
   (It can't be that easy, right?)
 
-.exercise[
+.lab[
 
 - Change `kind: Deployment` to `kind: DaemonSet`
 
@@ -169,7 +169,7 @@ We all knew this couldn't be that easy, right!
 
 - The `--force` flag's actual name is `--validate=false`
 
-.exercise[
+.lab[
 
 - Try to load our YAML file and ignore errors:
   ```bash
@@ -192,7 +192,7 @@ Wait ... Now, can it be *that* easy?
 
 - Did we transform our `deployment` into a `daemonset`?
 
-.exercise[
+.lab[
 
 - Look at the resources that we have now:
   ```bash
@@ -289,7 +289,7 @@ The master node has [taints](https://kubernetes.io/docs/concepts/configuration/t
 
 - That set of pods is defined by the *selector* of the `rng` service
 
-.exercise[
+.lab[
 
 - Check the *selector* in the `rng` service definition:
   ```bash
@@ -312,7 +312,7 @@ The master node has [taints](https://kubernetes.io/docs/concepts/configuration/t
 
 - For instance, with `kubectl get`, `kubectl logs`, `kubectl delete` ... and more
 
-.exercise[
+.lab[
 
 - Get the list of pods matching selector `app=rng`:
   ```bash
@@ -480,7 +480,7 @@ be any interruption.*
 
 - `kubectl label` can use selectors itself
 
-.exercise[
+.lab[
 
 - Add `active=yes` to all pods that have `app=rng`:
   ```bash
@@ -501,7 +501,7 @@ be any interruption.*
 
   - the selector of the service (that's the one we want to change)
 
-.exercise[
+.lab[
 
 - Update the service to add `active: yes` to its selector:
   ```bash
@@ -546,7 +546,7 @@ be any interruption.*
 
 ## Updating the service selector, take 2
 
-.exercise[
+.lab[
 
 - Update the YAML manifest of the service
 
@@ -592,7 +592,7 @@ If we did everything correctly, the web UI shouldn't show any change.
 
 ## Removing a pod from the load balancer
 
-.exercise[
+.lab[
 
 - In one window, check the logs of that pod:
   ```bash

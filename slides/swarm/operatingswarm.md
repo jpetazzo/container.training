@@ -2,7 +2,7 @@ class: self-paced
 
 ## Before we continue ...
 
-The following exercises assume that you have a 5-nodes Swarm cluster.
+The following section assumes that you have a 5-nodes Swarm cluster.
 
 If you come here from a previous tutorial and still have your cluster: great!
 

@@ -74,7 +74,7 @@
 
 - We need to pass two command-line flags to the kube-router process
 
-.exercise[
+.lab[
 
 - Edit the `kuberouter.yaml` file
 
@@ -104,7 +104,7 @@
 
   (they will be recreated with the updated definition)
 
-.exercise[
+.lab[
 
 - Delete all the kube-router pods:
   ```bash

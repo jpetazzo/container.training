@@ -88,7 +88,7 @@ spec:
 
 - Let's try this out!
 
-.exercise[
+.lab[
 
 - Check the port used by our self-hosted registry:
   ```bash

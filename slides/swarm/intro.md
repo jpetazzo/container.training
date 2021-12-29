@@ -29,7 +29,7 @@ class: self-paced
 - Likewise, it will take more than merely *reading* these slides
   to make you an expert
 
-- These slides include *tons* of exercises and examples
+- These slides include *tons* of demos, exercises, and examples
 
 - They assume that you have access to some Docker nodes
 
