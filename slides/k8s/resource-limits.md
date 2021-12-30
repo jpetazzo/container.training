@@ -353,7 +353,7 @@ This set of resources makes sure that this service won't be killed (as long as i
 
 ---
 
-# Defining min, max, and default resources
+## Defining min, max, and default resources
 
 - We can create LimitRange objects to indicate any combination of:
 
@@ -426,7 +426,7 @@ per Pod, but it's not [officially documented yet](https://github.com/kubernetes/
 
 ---
 
-# Namespace quotas
+## Namespace quotas
 
 - We can also set quotas per namespace
 

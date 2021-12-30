@@ -1,62 +1,6 @@
 # Exposing containers
 
-- We can connect to our pods using their IP address
-
-- Then we need to figure out a lot of things:
-
-  - how do we look up the IP address of the pod(s)?
-
-  - how do we connect from outside the cluster?
-
-  - how do we load balance traffic?
-
-  - what if a pod fails?
-
-- Kubernetes has a resource type named *Service*
-
-- Services address all these questions!
-
----
-
-## Services in a nutshell
-
-- Services give us a *stable endpoint* to connect to a pod or a group of pods
-
-- An easy way to create a service is to use `kubectl expose`
-
-- If we have a deployment named `my-little-deploy`, we can run:
-
-  `kubectl expose deployment my-little-deploy --port=80`
-
-  ... and this will create a service with the same name (`my-little-deploy`)
-
-- Services are automatically added to an internal DNS zone
-
-  (in the example above, our code can now connect to http://my-little-deploy/)
-
----
-
-## Advantages of services
-
-- We don't need to look up the IP address of the pod(s)
-
-  (we resolve the IP address of the service using DNS)
-
-- There are multiple service types; some of them allow external traffic
-
-  (e.g. `LoadBalancer` and `NodePort`)
-
-- Services provide load balancing
-
-  (for both internal and external traffic)
-
-- Service addresses are independent from pods' addresses
-
-  (when a pod fails, the service seamlessly sends traffic to its replacement)
-
----
-
-## Many kinds and flavors of service
+- A little reminder on Services!
 
 - There are different types of services:
 
@@ -229,76 +173,6 @@ class: pic
 
 ---
 
-## Running containers with open ports
-
-- Since `ping` doesn't have anything to connect to, we'll have to run something else
-
-- We could use the `nginx` official image, but ...
-
-  ... we wouldn't be able to tell the backends from each other!
-
-- We are going to use `jpetazzo/color`, a tiny HTTP server written in Go
-
-- `jpetazzo/color` listens on port 80
-
-- It serves a page showing the pod's name
-
-  (this will be useful when checking load balancing behavior)
-
----
-
-## Creating a deployment for our HTTP server
-
-- We will create a deployment with `kubectl create deployment`
-
-- Then we will scale it with `kubectl scale`
-
-.lab[
-
-- In another window, watch the pods (to see when they are created):
-  ```bash
-  kubectl get pods -w
-  ```
-
-<!--
-```wait NAME```
-```tmux split-pane -h```
--->
-
-- Create a deployment for this very lightweight HTTP server:
-  ```bash
-  kubectl create deployment blue --image=jpetazzo/color
-  ```
-
-- Scale it to 10 replicas:
-  ```bash
-  kubectl scale deployment blue --replicas=10
-  ```
-
-]
-
----
-
-## Exposing our deployment
-
-- We'll create a default `ClusterIP` service
-
-.lab[
-
-- Expose the HTTP port of our server:
-  ```bash
-  kubectl expose deployment blue --port=80
-  ```
-
-- Look up which IP address was allocated:
-  ```bash
-  kubectl get service
-  ```
-
-]
-
----
-
 ## Services are layer 4 constructs
 
 - You can assign IP addresses to services, but they are still *layer 4*
@@ -312,36 +186,6 @@ class: pic
 - As a result: you *have to* indicate the port number for your service
     
   (with some exceptions, like `ExternalName` or headless services, covered later)
-
----
-
-## Testing our service
-
-- We will now send a few HTTP requests to our pods
-
-.lab[
-
-- Let's obtain the IP address that was allocated for our service, *programmatically:*
-  ```bash
-  IP=$(kubectl get svc blue -o go-template --template '{{ .spec.clusterIP }}')
-  ```
-
-<!--
-```hide kubectl wait deploy blue --for condition=available```
-```key ^D```
-```key ^C```
--->
-
-- Send a few requests:
-  ```bash
-  curl http://$IP:80/
-  ```
-
-]
-
---
-
-Try it a few times! Our requests are load balanced across multiple pods.
 
 ---
 
@@ -434,18 +278,9 @@ class: extra-details
 
 - The endpoints are maintained and updated automatically by Kubernetes
 
-.lab[
+- There is also *endpoint slices*
 
-- Check the endpoints that Kubernetes has associated with our `blue` service:
-  ```bash
-  kubectl describe service blue
-  ```
-
-]
-
-In the output, there will be a line starting with `Endpoints:`.
-
-That line will list a bunch of addresses in `host:port` format.
+  (in more recent version of Kubernetes; optimization for large clusters)
 
 ---
 

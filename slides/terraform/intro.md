@@ -1,4 +1,4 @@
-# Terraform
+# Terraform - part 1
 
 “An open-source **infrastructure as code** software tool created by HashiCorp¹.”
 

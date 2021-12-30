@@ -32,6 +32,12 @@ But first, let's re(re)visit the API server ...
 
 ---
 
+class: pic
+
+![Kubernetes architecture diagram: communication between components](images/k8s-arch4-thanks-luxas.png)
+
+---
+
 ## Some controllers
 
 - `kube-controller-manager` runs built-on controllers

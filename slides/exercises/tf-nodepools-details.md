@@ -1,4 +1,4 @@
-# Exercise — Terraform Node Pools
+## Exercise — Terraform Node Pools
 
 - Write a Terraform configuration to deploy a cluster
 

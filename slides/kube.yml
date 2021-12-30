@@ -1,0 +1,122 @@
+title: |
+  Advanced Kubernetes
+
+chat: "[#training_k8s_jan18](https://elastic.slack.com/archives/C02SMC577T4)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2022-01-elastic.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+- shared/chat-room-im.md
+- |
+  ## Recording
+
+  - This is recorded!
+
+  - At the end of each day, we'll share the links to the recording in Slack
+
+  - We have three slots of asynchronous Q&A time
+
+  - That means: it's OK to ask questions about yesterday's content!
+
+    (it's even encouraged ♥)
+#- shared/chat-room-slack.md
+- shared/toc.md
+- # TUESDAY
+  #- shared/prereqs.md
+  #- shared/webssh.md
+  - shared/connecting.md
+  #- k8s/batch-jobs.md
+  #- shared/declarative.md
+  #- k8s/declarative.md
+  #- k8s/deploymentslideshow.md
+  #- k8s/kubenet.md
+  #- k8s/k9s.md
+  #- k8s/tilt.md
+  #- k8s/authoring-yaml.md
+  - k8s/demo-apps.md
+  - k8s/kubectlexpose.md
+  - k8s/ingress.md
+  #- k8s/ingress-tls.md
+  - k8s/ingress-advanced.md
+  - k8s/resource-limits.md
+  - k8s/metrics-server.md
+  - k8s/cluster-sizing.md
+  - k8s/cluster-autoscaler.md
+  - terraform/intro.md
+  - terraform/quickstart.md
+  - terraform/quickstart-gke.md
+  - terraform/nodepools.md
+  - terraform/nodepools-gke.md
+  - terraform/variables.md
+  - terraform/state.md
+  - exercises/tf-nodepools-details.md
+- # WEDNESDAY
+  - k8s/netpol.md
+  - k8s/authn-authz.md
+  - k8s/extending-api.md
+  - k8s/apiserver-deepdive.md
+  - k8s/crd.md
+  - |
+    # Terraform - part 2
+
+    - GKE networking specifics
+
+    - Cluster types (routes-based vs VPC-native)
+
+    - Provisioning Kubernetes resources
+  - terraform/networking-gke.md
+  - terraform/kubernetes.md
+- # THURSDAY
+  - k8s/dmuc.md
+  - k8s/multinode.md
+  - k8s/cni.md
+  - k8s/cni-internals.md
+  - k8s/apilb.md
+  - k8s/staticpods.md
+  - k8s/cluster-upgrade.md
+- # FRIDAY
+  - k8s/statefulsets.md
+  - k8s/consul.md
+  - k8s/pv-pvc-sc.md
+  - k8s/volume-claim-templates.md
+  - k8s/openebs.md
+  - k8s/stateful-failover.md
+  - k8s/cluster-backup.md
+  - shared/thankyou.md
+- #
+  - |
+    # The Secret Lives Of Pods
+  
+    *In hommage to [“The Secret Lives Of Data”](http://thesecretlivesofdata.com/)*
+
+  - k8s/deploymentslideshow.md
+  - |
+    # Kubernetes Network Lasagna Dish
+
+    The three layers of Kubernetes networking.
+    ---
+    class: pic
+    ![Overview of the three Kubernetes network layers](images/k8s-net-0-overview.svg)
+    ---
+    class: pic
+    ![Pod-to-pod network](images/k8s-net-1-pod-to-pod.svg)
+    ---
+    class: pic
+    ![Pod-to-service network](images/k8s-net-2-pod-to-svc.svg)
+    ---
+    class: pic
+    ![Network policies](images/k8s-net-3-netpol.svg)
+    ---
+    class: pic
+    ![View with all the layers again](images/k8s-net-4-overview.svg)
