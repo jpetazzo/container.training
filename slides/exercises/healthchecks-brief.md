@@ -4,8 +4,6 @@
 
   (we will use the `rng` service in the dockercoins app)
 
-- Observe the correct behavior of the readiness probe
+- See what happens when the load increses
 
-  (when deploying e.g. an invalid image)
-
-- Observe the behavior of the liveness probe
+  (spoiler alert: it involves timeouts!)
