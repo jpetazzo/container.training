@@ -14,7 +14,9 @@ These tools can help you to create VMs on:
 
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
-- [Parallel SSH](https://code.google.com/archive/p/parallel-ssh/) (on a Mac: `brew install pssh`) 
+- [Parallel SSH](https://github.com/lilydjwg/pssh)
+  (should be installable with `pip install git+https://github.com/lilydjwg/pssh`;
+  on a Mac, try `brew install pssh`)
 
 Depending on the infrastructure that you want to use, you also need to install
 the CLI that is specific to that cloud. For OpenStack deployments, you will
