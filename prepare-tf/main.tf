@@ -1,5 +1,5 @@
 module "clusters" {
-  source             = "./modules/linode"
+  source             = "./modules/oraclecloud"
   for_each           = local.clusters
   cluster_name       = each.value.cluster_name
   min_nodes_per_pool = var.min_nodes_per_pool
