@@ -430,3 +430,16 @@ class: extra-details
 - We can also check the logs of the autoscaler
 
   (except on managed clusters where it's running internally, not visible to us)
+
+---
+
+## Acknowledgements
+
+Special thanks to [@s0ulshake] for their help with this section!
+
+If you need help to run your data science workloads on Kubernetes,
+<br/>they're available for consulting.
+
+(Get in touch with them through https://www.linkedin.com/in/ajbowen/)
+
+[@s0ulshake]: https://twitter.com/s0ulshake
