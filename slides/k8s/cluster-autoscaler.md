@@ -40,7 +40,7 @@
 
 - If you're not using some kind of autoscaling, you're wasting money
 
-  (except if you like lining up the pockets of your cloud provider)
+  (except if you like lining the pockets of your cloud provider)
 
 ---
 
@@ -62,7 +62,7 @@
 
 ---
 
-## Principle of operation
+## Scaling up in theory
 
 IF a Pod is `Pending`,
 
@@ -76,33 +76,49 @@ THEN add a Node.
 
 *IF a Pod is `Pending`...*
 
-- If our Pods do not have resource requests:
+- First of all, the Pod must exist
 
-  *they will be in the `BestEffort` class*
+- Pod creation might be blocked by e.g. a namespace quota
 
-- Pods in the `BestEffort` class are always schedulable
-
-  (except special cases of placement constraints, e.g. pod anti-affinity)
-
-- Therefore, if we want to leverage cluster autoscaling:
-
-  *our Pods must have resource requests*
-
-- Also, Pods must exist
-
-  (which means: not blocked by e.g. namespace quotas)
+- In that case, the cluster autoscaler will never trigger
 
 ---
 
 ## Fine print 2
 
+*IF a Pod is `Pending`...*
+
+- If our Pods do not have resource requests:
+
+  *they will be in the `BestEffort` class*
+
+- Generally, Pods in the `BestEffort` class are schedulable
+
+  - except if they have anti-affinity placement constraints
+
+  - except if all Nodes already run the max number of pods (110 by default)
+
+- Therefore, if we want to leverage cluster autoscaling:
+
+  *our Pods should have resource requests*
+
+---
+
+## Fine print 3
+
 *AND adding a Node would allow this Pod to be scheduled...*
 
 - The autoscaler won't act if:
 
-  - the Pod is too big to fit on a Node
+  - the Pod is too big to fit on a single Node
 
   - the Pod has impossible placement constraints
+
+- Examples:
+
+  - "run one Pod per datacenter" with 4 pods and 3 datacenters
+
+  - "use this nodeSelector" but no such Node exists
 
 ---
 
@@ -135,7 +151,7 @@ THEN add a Node.
 
   3 nodes with 2.8 CPUs allocatable each
 
-- To trigger autoscaling, we will create 7 pods with 1 CPU each
+- To trigger autoscaling, we will create 7 pods requesting 1 CPU each
 
   (each node can fit 2 such pods)
 
@@ -167,7 +183,7 @@ THEN add a Node.
 
 ---
 
-## Scaling up
+## Scaling up in practice
 
 - This assumes that we have strictly less than 7 CPUs available
 
@@ -227,7 +243,7 @@ By default, Pods are evictable, except if any of the following is true.
 
 - They have a restrictive Pod Disruption Budget
 
-- They are "standalone" (not controlled by a ReplicaSet, StatefulSet, Job...)
+- They are "standalone" (not controlled by a ReplicaSet/Deployment, StatefulSet, Job...)
 
 - They are in `kube-system` and don't have a Pod Disruption Budget
 
@@ -381,6 +397,20 @@ class: extra-details
 - Have alerts on cloud spend
 
 - *Especially when using big/expensive nodes (e.g. with GPU!)*
+
+---
+
+## Preferred vs. Required
+
+- Some Kubernetes mechanisms allow to express "soft preferences":
+
+  - affinity (`requiredDuringSchedulingIgnoredDuringExecution` vs `preferredDuringSchedulingIgnoredDuringExecution`)
+
+  - taints (`NoSchedule`/`NoExecute` vs `PreferNoSchedule`)
+
+- Remember that these "soft preferences" can be ignored
+
+  (and given enough time and churn on the cluster, they will!)
 
 ---
 
