@@ -268,7 +268,7 @@ This can be overridden by setting the annotation:
 
 - If we have e.g. an `EmptyDir` volume for caching/sharing:
 
-  make sure to set the `safe-to-evict` annotation!
+  make sure to set the `.../safe-to-evict` annotation to `true`!
 
 - Even if the volume...
 
@@ -290,7 +290,7 @@ This can be overridden by setting the annotation:
 
   (especially if they use less than 50% of the allocatable resources)
 
-- Make sure to set the `safe-to-evict` annotation!
+- Make sure to set the `.../safe-to-evict` annotation to `false`!
 
 ---
 
@@ -320,13 +320,15 @@ class: extra-details
 
 - *Spot* capacity:
 
-  - has a much lower cost
+  - has a much lower cost (see e.g. AWS [spot instance advisor][awsspot])
 
   - has a cost that varies continuously depending on regions, instance type...
 
   - can be preempted at all times
 
 - To be cost-effective, it is strongly recommended to leverage spot capacity
+
+[awsspot]: https://aws.amazon.com/ec2/spot/instance-advisor/
 
 ---
 
