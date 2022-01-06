@@ -60,6 +60,7 @@ content:
   - k8s/crd.md
 - #6
   - k8s/ingress-tls.md
+  - k8s/ingress-advanced.md
   - k8s/cert-manager.md
   - k8s/eck.md
 - #7
