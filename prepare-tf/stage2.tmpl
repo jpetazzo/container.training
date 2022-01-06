@@ -2,7 +2,7 @@ terraform {
   required_providers {
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.0.3"
+      version = "2.7.1"
     }
   }
 }
@@ -119,6 +119,11 @@ resource "kubernetes_cluster_role_binding" "shpod_${index}" {
     name      = "shpod"
     namespace = "shpod"
   }
+  subject {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "Group"
+    name      = "shpod-cluster-admins"
+  }
 }
 
 resource "random_string" "shpod_${index}" {
@@ -135,6 +140,9 @@ provider "helm" {
 }
 
 resource "helm_release" "metrics_server_${index}" {
+  # Uncomment this for cluster that already install metrics-server
+  # (e.g. Scaleway Kapsule 1.22+, GKE...)
+  #count = 0
   provider = helm.cluster_${index}
   repository = "https://charts.bitnami.com/bitnami"
   chart = "metrics-server"
@@ -182,7 +190,7 @@ resource "kubernetes_config_map" "kubeconfig_${index}" {
       - name: cluster-admin
         user:
           client-key-data: $${base64encode(tls_private_key.cluster_admin_${index}.private_key_pem)}
-          client-certificate-data: $${base64encode(kubernetes_certificate_signing_request.cluster_admin_${index}.certificate)}
+          client-certificate-data: $${base64encode(kubernetes_certificate_signing_request_v1.cluster_admin_${index}.certificate)}
     EOT
   }
 }
@@ -196,11 +204,14 @@ resource "tls_cert_request" "cluster_admin_${index}" {
   private_key_pem = tls_private_key.cluster_admin_${index}.private_key_pem
   subject {
     common_name = "cluster-admin"
-    organization = "system:masters"
+    # Note: CSR API v1 doesn't allow issuing certs with "system:masters" anymore.
+    #organization = "system:masters"
+    # We'll use this custom group name instead.cluster-admin user.
+    organization = "shpod-cluster-admins"
   }
 }
 
-resource "kubernetes_certificate_signing_request" "cluster_admin_${index}" {
+resource "kubernetes_certificate_signing_request_v1" "cluster_admin_${index}" {
   provider = kubernetes.cluster_${index}
   metadata {
     name = "cluster-admin"
@@ -208,6 +219,7 @@ resource "kubernetes_certificate_signing_request" "cluster_admin_${index}" {
   spec {
     usages = ["client auth"]
     request = tls_cert_request.cluster_admin_${index}.cert_request_pem
+    signer_name = "kubernetes.io/kube-apiserver-client"
   }
   auto_approve = true
 }
