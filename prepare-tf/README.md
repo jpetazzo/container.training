@@ -1,5 +1,6 @@
 This directory contains a Terraform configuration to deploy
-a bunch of Kubernetes clusters on various cloud providers, using their respective managed Kubernetes products.
+a bunch of Kubernetes clusters on various cloud providers,
+using their respective managed Kubernetes products.
 
 To use it:
 
@@ -22,14 +23,22 @@ terraform init
 
 - Digital Ocean:
   ```bash
-  export DIGITALOCEAN_ACCESS_TOKEN=$(grep ^access-token ~/.config/doctl/config.yaml | cut -d: -f2 | tr -d " "
-)
+  export DIGITALOCEAN_ACCESS_TOKEN=$(grep ^access-token ~/.config/doctl/config.yaml | cut -d: -f2 | tr -d " ")
   ```
+
+- Google Cloud Platform: you will need to create a project named `prepare-tf`
+  and enable the relevant APIs for this project (sorry, if you're new to GCP,
+  this sounds vague; but if you're familiar with it you know what to do; if you
+  want to change the project name you can edit the Terraform configuration)
+
 - Linode:
   ```bash
   export LINODE_TOKEN=$(grep ^token ~/.config/linode-cli | cut -d= -f2 | tr -d " ")
   ```
-- Oracle Cloud: it should use `~/.oci/config`
+
+- Oracle Cloud: if you have setup the OCI CLI (and have a `~/.oci/config` config file),
+  Terraform will use it by default
+
 - Scaleway: run `scw init`
 
 4. Decide how many clusters and how many nodes per clusters you want.
@@ -77,5 +86,5 @@ terraform destroy
 9. Clean up stage2.
 
 ```bash
-rm stage/terraform.tfstate*
+rm stage2/terraform.tfstate*
 ```
