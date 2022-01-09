@@ -77,17 +77,18 @@
 
 - Create a new branch in your fork; e.g. `prod`
 
-  (e.g. by adding a line in the README through the GitHub web UI)
+  (e.g. with "branch" dropdown through the GitHub web UI)
 
 - This is the branch that we are going to use for deployment
 
 ---
 
-## Setting up Flux
+## Setting up Flux with kustomize
 
 - Clone the Flux repository:
-  ```
+  ```bash
   git clone https://github.com/fluxcd/flux
+  cd flux
   ```
 
 - Edit `deploy/flux-deployment.yaml`
@@ -99,8 +100,27 @@
   ```
 
 - Apply all the YAML:
+  ```bash
+  kubectl apply -k deploy/
   ```
-  kubectl apply -f deploy/
+
+---
+
+## Setting up Flux with Helm
+
+- Add Flux helm repo:
+  ```bash
+  helm repo add fluxcd https://charts.fluxcd.io
+  ```
+
+- Install Flux:
+  ```bash
+  kubectl create namespace flux
+  helm upgrade --install flux \
+    --set git.url=git@github.com:your-git-username/kubercoins \
+    --set git.branch=prod \
+    --namespace flux \
+    fluxcd/flux
   ```
 
 ---
@@ -110,8 +130,8 @@
 - When it starts, Flux generates an SSH key
 
 - Display that key:
-  ```
-  kubectl logs deployment/flux | grep identity
+  ```bash
+  kubectl -n flux logs deployment/flux | grep identity.pub | cut -d '"' -f2
   ```
 
 - Then add that key to the repository, giving it **write** access
@@ -157,14 +177,14 @@
 ## Setting up Gitkube
 
 - Install the CLI:
-  ```
+  ```bash
   sudo curl -L -o /usr/local/bin/gitkube \
        https://github.com/hasura/gitkube/releases/download/v0.2.1/gitkube_linux_amd64
   sudo chmod +x /usr/local/bin/gitkube
   ```
 
 - Install Gitkube on the cluster:
-  ```
+  ```bash
   gitkube install --expose ClusterIP
   ```
 
@@ -196,20 +216,20 @@
 ## Pushing to our remote
 
 - Get the `gitkubed` IP address:
-  ```
+  ```bash
   kubectl -n kube-system get svc gitkubed
   IP=$(kubectl -n kube-system get svc gitkubed -o json | 
   	   jq -r .spec.clusterIP)
   ```
 
 - Get ourselves a sample repository with resource YAML files:
-  ```
+  ```bash
   git clone git://github.com/jpetazzo/kubercoins
   cd kubercoins
   ```
 
 - Add the remote and push to it:
-  ```
+  ```bash
   git remote add k8s ssh://default-example@$IP/~/git/default-example
   git push k8s master
   ```
