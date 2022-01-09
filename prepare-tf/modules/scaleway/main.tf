@@ -8,7 +8,7 @@ resource "scaleway_k8s_cluster" "_" {
 
 resource "scaleway_k8s_pool" "_" {
   cluster_id  = scaleway_k8s_cluster._.id
-  name        = "scw-x86"
+  name        = "x86"
   tags        = var.common_tags
   node_type   = local.node_type
   size        = var.min_nodes_per_pool

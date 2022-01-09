@@ -1,5 +1,5 @@
 module "clusters" {
-  source             = "./modules/scaleway"
+  source             = "./modules/linode"
   for_each           = local.clusters
   cluster_name       = each.value.cluster_name
   min_nodes_per_pool = var.min_nodes_per_pool
@@ -13,10 +13,10 @@ locals {
   clusters = {
     for i in range(101, 101 + var.how_many_clusters) :
     i => {
-      cluster_name    = format("%s-%03d", local.tag, i)
-      kubeconfig_path = format("./stage2/kubeconfig.%03d", i)
-      #dashdash_kubeconfig = format("--kubeconfig=./stage2/kubeconfig.%03d", i)
+      cluster_name     = format("%s-%03d", local.tag, i)
+      kubeconfig_path  = format("./stage2/kubeconfig.%03d", i)
       externalips_path = format("./stage2/externalips.%03d", i)
+      flags_path       = format("./stage2/flags.%03d", i)
     }
   }
 }
@@ -28,6 +28,15 @@ resource "local_file" "stage2" {
     "./stage2.tmpl",
     { clusters = local.clusters }
   )
+}
+
+resource "local_file" "flags" {
+  for_each        = local.clusters
+  filename        = each.value.flags_path
+  file_permission = "0600"
+  content         = <<-EOT
+    has_metrics_server: ${module.clusters[each.key].has_metrics_server}
+  EOT
 }
 
 resource "local_file" "kubeconfig" {

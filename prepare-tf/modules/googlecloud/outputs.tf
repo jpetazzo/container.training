@@ -29,3 +29,7 @@ output "kubeconfig" {
 output "cluster_id" {
   value = google_container_cluster._.id
 }
+
+output "has_metrics_server" {
+  value = true
+}

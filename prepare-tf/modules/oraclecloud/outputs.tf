@@ -9,3 +9,7 @@ output "kubeconfig" {
 output "cluster_id" {
   value = oci_containerengine_cluster._.id
 }
+
+output "has_metrics_server" {
+  value = false
+}

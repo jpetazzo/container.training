@@ -3,14 +3,18 @@ resource "google_container_cluster" "_" {
   project            = "prepare-tf"
   location           = "europe-north1-a"
   min_master_version = var.k8s_version
-  initial_node_count = var.min_nodes_per_pool
-  #max_size    = max(var.min_nodes_per_pool, var.max_nodes_per_pool)
-  #autoscaling = true
-  #autohealing = true
 
-  node_config {
-    tags         = var.common_tags
-    machine_type = local.node_type
+  node_pool {
+    name = "x86"
+    node_config {
+      tags         = var.common_tags
+      machine_type = local.node_type
+    }
+    initial_node_count = var.min_nodes_per_pool
+    autoscaling {
+      min_node_count = var.min_nodes_per_pool
+      max_node_count = max(var.min_nodes_per_pool, var.max_nodes_per_pool)
+    }
   }
 
   # This is not strictly necessary.
@@ -23,3 +27,4 @@ resource "google_container_cluster" "_" {
     }
   }
 }
+

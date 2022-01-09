@@ -1,12 +1,14 @@
 variable "how_many_clusters" {
   type    = number
-  default = 2
+  default = 1
 }
 
 variable "node_size" {
   type    = string
   default = "M"
   # Can be S, M, L.
+  # We map these values to different specific instance types for each provider,
+  # but the idea is that they shoudl correspond to the following sizes:
   # S = 2 GB RAM
   # M = 4 GB RAM
   # L = 8 GB RAM
@@ -24,5 +26,5 @@ variable "max_nodes_per_pool" {
 
 variable "enable_arm_pool" {
   type    = bool
-  default = true
+  default = false
 }

@@ -5,7 +5,7 @@ resource "digitalocean_kubernetes_cluster" "_" {
   version = var.k8s_version
 
   node_pool {
-    name       = "dok-x86"
+    name       = "x86"
     tags       = local.common_tags
     size       = local.node_type
     auto_scale = true

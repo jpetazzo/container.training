@@ -5,3 +5,7 @@ output "kubeconfig" {
 output "cluster_id" {
   value = scaleway_k8s_cluster._.id
 }
+
+output "has_metrics_server" {
+  value = var.k8s_version >= 1.22
+}

@@ -140,9 +140,10 @@ provider "helm" {
 }
 
 resource "helm_release" "metrics_server_${index}" {
-  # Uncomment this for cluster that already install metrics-server
-  # (e.g. Scaleway Kapsule 1.22+, GKE...)
-  #count = 0
+  # Some providers pre-install metrics-server.
+  # Some don't. Let's install metrics-server,
+  # but only if it's not already installed.
+  count = yamldecode(file("./flags.${index}"))["has_metrics_server"] ? 0 : 1
   provider = helm.cluster_${index}
   repository = "https://charts.bitnami.com/bitnami"
   chart = "metrics-server"
