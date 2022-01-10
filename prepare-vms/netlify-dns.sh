@@ -10,7 +10,7 @@
   echo "$0 add <name> <ipaddr>"
   echo ""
   echo "Example to create a A record for eu.container.training:"
-  echo "$0 eu 185.145.250.0"
+  echo "$0 add eu 185.145.250.0"
   echo ""
   exit 1
 }
