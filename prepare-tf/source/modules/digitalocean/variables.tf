@@ -32,9 +32,9 @@ variable "enable_arm_pool" {
 variable "node_types" {
   type = map(string)
   default = {
-    "S" = "e2-small"
-    "M" = "e2-medium"
-    "L" = "e2-standard-2"
+    "S" = "s-1vcpu-2gb"
+    "M" = "s-2vcpu-4gb"
+    "L" = "s-4vcpu-8gb"
   }
 }
 
@@ -42,10 +42,16 @@ locals {
   node_type = var.node_types[var.node_size]
 }
 
-# See supported versions with:
-# gcloud container get-server-config --region=europe-north1 '--format=flattened(channels)'
-# But it's also possible to just specify e.g. "1.20" and it figures it out.
+# To view supported regions, run:
+# doctl compute region list
+variable "location" {
+  type    = string
+  default = null
+}
+
+# To view supported versions, run:
+# doctl kubernetes options versions -o json | jq -r .[].slug
 variable "k8s_version" {
   type    = string
-  default = "1.21"
+  default = "1.21.5-do.0"
 }

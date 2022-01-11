@@ -1,5 +1,5 @@
 module "clusters" {
-  source             = "./modules/linode"
+  source             = "./modules/PROVIDER"
   for_each           = local.clusters
   cluster_name       = each.value.cluster_name
   min_nodes_per_pool = var.min_nodes_per_pool
@@ -7,6 +7,7 @@ module "clusters" {
   enable_arm_pool    = var.enable_arm_pool
   node_size          = var.node_size
   common_tags        = local.common_tags
+  location           = var.location
 }
 
 locals {

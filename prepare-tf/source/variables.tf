@@ -28,3 +28,9 @@ variable "enable_arm_pool" {
   type    = bool
   default = false
 }
+
+variable "location" {
+  type    = string
+  default = null
+}
+

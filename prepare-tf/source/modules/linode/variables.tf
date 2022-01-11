@@ -32,9 +32,9 @@ variable "enable_arm_pool" {
 variable "node_types" {
   type = map(string)
   default = {
-    "S" = "DEV1-S"
-    "M" = "DEV1-M"
-    "L" = "DEV1-L"
+    "S" = "g6-standard-1"
+    "M" = "g6-standard-2"
+    "L" = "g6-standard-4"
   }
 }
 
@@ -42,14 +42,16 @@ locals {
   node_type = var.node_types[var.node_size]
 }
 
-variable "cni" {
+# To view supported regions, run:
+# linode-cli regions list
+variable "location" {
   type    = string
-  default = "cilium"
+  default = null
 }
 
-# See supported versions with:
-# scw k8s version list -o json | jq -r .[].name
+# To view supported versions, run:
+# linode-cli lke versions-list --json | jq -r .[].id
 variable "k8s_version" {
   type    = string
-  default = "1.22.2"
+  default = "1.21"
 }

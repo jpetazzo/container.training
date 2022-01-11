@@ -70,6 +70,13 @@ locals {
   node_type = var.node_types[var.node_size]
 }
 
+# To view supported regions, run:
+# oci iam region list | jq .data[].name
+variable "location" {
+  type    = string
+  default = null
+}
+
 # To view supported versions, run:
 # oci ce cluster-options get --cluster-option-id all | jq -r '.data["kubernetes-versions"][]'
 variable "k8s_version" {

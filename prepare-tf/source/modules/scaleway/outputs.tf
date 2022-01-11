@@ -7,5 +7,5 @@ output "cluster_id" {
 }
 
 output "has_metrics_server" {
-  value = var.k8s_version >= 1.22
+  value = sort([var.k8s_version, "1.22"])[0] == "1.22"
 }

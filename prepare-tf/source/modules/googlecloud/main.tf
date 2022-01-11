@@ -1,7 +1,8 @@
 resource "google_container_cluster" "_" {
   name               = var.cluster_name
   project            = "prepare-tf"
-  location           = "europe-north1-a"
+  # "location" is mandatory, so let's provide a default value if none was given.
+  location           = var.location!=null ? var.location : "europe-north1-a"
   min_master_version = var.k8s_version
 
   node_pool {

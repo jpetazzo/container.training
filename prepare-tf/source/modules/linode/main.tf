@@ -1,7 +1,8 @@
 resource "linode_lke_cluster" "_" {
   label       = var.cluster_name
   tags        = var.common_tags
-  region      = var.region
+  # "region" is mandatory, so let's provide a default value if none was given.
+  region      = var.location!=null ? var.location : "eu-central"
   k8s_version = var.k8s_version
 
   pool {
