@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webui
+spec:
+  selector:
+    matchLabels:
+      app: webui
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: webui
+    spec:
+      containers:
+      - name: webui
+        image: "dockercoins/webui:v0.1"
+        volumeMounts:
+        - mountPath: /files
+          name: web-ui-files
+        ports:
+        - containerPort: 80
+      volumes:
+      - name: web-ui-files
+        hostPath:
+          # directory location on host
+          path: /Users/lloyd/Documents/kay8s/container.training/dockercoins/webui/files
+          # this field is optional
+          type: Directory
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webui
+spec:
+  type: LoadBalancer
+  selector:
+    app: webui
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 80

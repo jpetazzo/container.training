@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rng
+spec:
+  selector:
+    matchLabels:
+      app: rng
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: rng
+    spec:
+      containers:
+      - name: rng
+        image: "dockercoins/rng:v0.1"
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rng
+spec:
+  type: LoadBalancer
+  selector:
+    app: rng
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
