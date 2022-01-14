@@ -34,3 +34,7 @@ variable "location" {
   default = null
 }
 
+# TODO: perhaps handle if it's space-separated instead of newline?
+locals {
+  locations = var.location == null ? [null] : split("\n", var.location)
+}

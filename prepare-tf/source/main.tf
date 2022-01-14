@@ -7,7 +7,7 @@ module "clusters" {
   enable_arm_pool    = var.enable_arm_pool
   node_size          = var.node_size
   common_tags        = local.common_tags
-  location           = var.location
+  location           = each.value.location
 }
 
 locals {
@@ -18,12 +18,13 @@ locals {
       kubeconfig_path  = format("./stage2/kubeconfig.%03d", i)
       externalips_path = format("./stage2/externalips.%03d", i)
       flags_path       = format("./stage2/flags.%03d", i)
+      location         = local.locations[i % length(local.locations)]
     }
   }
 }
 
 resource "local_file" "stage2" {
-  filename = "./stage2/main.tf"
+  filename        = "./stage2/main.tf"
   file_permission = "0644"
   content = templatefile(
     "./stage2.tmpl",
@@ -69,8 +70,8 @@ resource "null_resource" "wait_for_nodes" {
 }
 
 data "external" "externalips" {
-  for_each = local.clusters
-  depends_on = [ null_resource.wait_for_nodes ]
+  for_each   = local.clusters
+  depends_on = [null_resource.wait_for_nodes]
   program = [
     "sh",
     "-c",

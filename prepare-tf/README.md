@@ -57,6 +57,22 @@ The value of the `location` variable is provider-specific. Examples:
 | Linode        | `eu-central`      | `linode-cli regions list`
 | Oracle Cloud  | `eu-stockholm-1`  | `oci iam region list`
 
+You can also specify multiple locations, and then they will be
+used in round-robin fashion.
+
+For example, with Google Cloud, since the default quotas are very
+low (my account is limited to 8 public IP addresses per zone, and
+my requests to increase that quota were denied) you can do the
+following:
+
+```bash
+export TF_VAR_location=$(gcloud compute zones list --format=json | jq -r .[].name | grep ^europe)
+```
+
+Then when you apply, clusters will be created across all available
+zones in Europe. (When I write this, there are 20+ zones in Europe,
+so even with my quota, I can create 40 clusters.)
+
 3. Run!
 
 ```bash

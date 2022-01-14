@@ -1,8 +1,8 @@
 resource "digitalocean_kubernetes_cluster" "_" {
-  name    = var.cluster_name
-  tags    = var.common_tags
+  name = var.cluster_name
+  tags = var.common_tags
   # Region is mandatory, so let's provide a default value.
-  region  = var.location!=null ? var.location : "nyc1"
+  region  = var.location != null ? var.location : "nyc1"
   version = var.k8s_version
 
   node_pool {
