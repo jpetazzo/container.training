@@ -14,7 +14,9 @@ paper_size: A4
 user_login: k8s
 user_password: training
 
-kubernetes_version: 1.19.16
+# For a list of old versions, check:
+# https://kubernetes.io/releases/patch-releases/#non-active-branch-history
+kubernetes_version: 1.18.20
 
 image:
 
