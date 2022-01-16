@@ -17,12 +17,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: color
+      app: rainbow
       color: blue
   template:
     metadata:
       labels:
-        app: color
+        app: rainbow
         color: blue
     spec:
       containers:
@@ -33,7 +33,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: color
+    app: rainbow
     color: blue
   name: color
   namespace: blue
@@ -44,7 +44,7 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    app: color
+    app: rainbow
     color: blue
   type: ClusterIP
 ---
@@ -66,12 +66,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: color
+      app: rainbow
       color: green
   template:
     metadata:
       labels:
-        app: color
+        app: rainbow
         color: green
     spec:
       containers:
@@ -82,7 +82,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: color
+    app: rainbow
     color: green
   name: color
   namespace: green
@@ -93,7 +93,7 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    app: color
+    app: rainbow
     color: green
   type: ClusterIP
 ---
@@ -115,12 +115,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: color
+      app: rainbow
       color: red
   template:
     metadata:
       labels:
-        app: color
+        app: rainbow
         color: red
     spec:
       containers:
@@ -131,7 +131,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: color
+    app: rainbow
     color: red
   name: color
   namespace: red
@@ -142,6 +142,6 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    app: color
+    app: rainbow
     color: red
   type: ClusterIP
