@@ -1,0 +1,120 @@
+## GKE quick start
+
+- Install Terraform and GCP SDK (`gcloud`)
+
+- Authenticate with `gcloud auth login`
+
+- Create a project or use one of your existing ones
+
+- Set the `GOOGLE_PROJECT` env var to the project name
+
+  (this will be used by Terraform)
+
+Note 1: there must be a billing account linked to the project.
+
+Note 2: if the required APIs are not enabled on the project,
+we will get error messages telling us "please enable that API"
+when using the APIs for the first time. The error messages
+should include instructions to do this one-time process.
+
+---
+
+## Create configuration
+
+- Create empty directory
+
+- Create a bunch of `.tf` files as shown in next slides
+
+  (feel free to adjust the values!)
+
+---
+
+## Configuring providers
+
+- We'll use the [google provider](https://registry.terraform.io/providers/hashicorp/google)
+
+- It's an official provider (maintained by `hashicorp`)
+
+- Which means that we don't have to add it explicitly to our configuration
+
+  (`terraform init` will take care of it automatically)
+
+- That'll simplify a tiny bit our "getting started" experience!
+
+---
+
+## `cluster.tf`
+
+```tf
+resource "google_container_cluster" "mycluster" {
+  name = "klstr"
+  location = "europe-north1-a"
+  initial_node_count = 2
+}
+```
+
+- [`google_container_cluster`](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster) is the *type* of the resource
+
+- `mycluster` is the internal Terraform name for that resource
+
+  (useful if we have multiple resources of that type)
+
+- `location` can be a *zone* or a *region* (see next slides for details)
+
+- don't forget `initial_node_count` otherwise we get a zero-node cluster 🙃
+
+---
+
+## Regional vs Zonal vs Multi-Zonal
+
+- If `location` is a zone, we get a "zonal" cluster
+
+  (control plane and nodes are in a single zone)
+
+- If `location` is a region, we get a "regional" cluster
+
+  (control plane and nodes span all zones in this region)
+
+- In a region with Z zones, if we say we want N nodes...
+
+  ...we get Z×N nodes
+
+- We can also set `location` to be a zone, and set additional `node_locations`
+
+- We get a "multi-zonal" cluster with control plane in a single zone
+
+---
+
+## Create the cluster
+
+- Initialize providers
+  ```bash
+  terraform init
+  ```
+
+- Create the cluster:
+  ```bash
+  terraform apply
+  ```
+
+- We'll explain later what that "plan" thing is; just approve it for now!
+
+- Check what happens if we run `terraform apply` again
+
+---
+
+## Now what?
+
+- Let's connect to the cluster
+
+- Get the credentials for the cluster:
+  ```bash
+  gcloud container clusters get-credentials klstr --zone=europe-north1
+  ```
+  (Adjust the `zone` if you changed it earlier!)
+
+- This will add the cluster to our `kubeconfig` file
+
+- Deploy a simple app to the cluster
+
+🎉
