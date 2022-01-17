@@ -81,7 +81,29 @@ resource "google_container_cluster" "mycluster" {
 
 - We can also set `location` to be a zone, and set additional `node_locations`
 
-- We get a "multi-zonal" cluster with control plane in a single zone
+- In that case we get a "multi-zonal" cluster with control plane in a single zone
+
+---
+
+## Standard vs [Autopilot]
+
+- Standard clusters:
+
+  - we manage nodes, node pools, etc.
+
+  - we pay for control plane + nodes
+
+- Autopilot clusters:
+
+  - GKE manages nodes and node pools automatically
+
+  - we cannot add/remove/change/SSH into nodes
+
+  - all pods are in the "guaranteed" QoS class
+
+  - we pay for the resources requested by the pods
+
+[Autopilot]: https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-overview
 
 ---
 
