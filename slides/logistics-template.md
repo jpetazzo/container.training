@@ -6,7 +6,7 @@
 
 - Hello! We are:
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch])
+   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
 
    - 🚁 Alexandre ([@alexbuisine], Enix SAS)
 
@@ -62,6 +62,7 @@
 [EphemeraSearch]: https://ephemerasearch.com/
 [@jpetazzo]: https://twitter.com/jpetazzo
 [@s0ulshake]: https://twitter.com/s0ulshake
+[Quantgene]: https://www.quantgene.com/
 
 ---
 
