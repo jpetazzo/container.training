@@ -76,7 +76,7 @@ class: in-person
 
 ## For a consistent Kubernetes experience ...
 
-- If you are using your own Kubernetes cluster, you can use [shpod](https://github.com/jpetazzo/shpod)
+- If you are using your own Kubernetes cluster, you can use [jpetazzo/shpod](https://github.com/jpetazzo/shpod)
 
 - `shpod` provides a shell running in a pod on your own cluster
 
@@ -85,6 +85,8 @@ class: in-person
 - These tools are used in many demos and exercises in these slides
 
 - `shpod` also gives you completion and a fancy prompt
+
+- It can also be used as an SSH server if needed
 
 ---
 

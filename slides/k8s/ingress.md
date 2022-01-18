@@ -37,18 +37,19 @@
 - Service with `type: LoadBalancer`
 
   - requires a particular controller (e.g. CCM, MetalLB)
-  - costs a bit of money for each service
   - if TLS is desired, it has to be implemented by the app
   - works for any TCP protocol (not just HTTP)
   - doesn't interpret the HTTP protocol (no fancy routing)
+  - costs a bit of money for each service
 
 - Ingress
 
   - requires an ingress controller
-  - flat cost regardless of number of ingresses
   - can implement TLS transparently for the app
   - only supports HTTP
   - can do content-based routing (e.g. per URI)
+  - lower cost per service
+    <br/>(exact pricing depends on provider's model)
 
 ---
 
@@ -122,17 +123,45 @@
 
 class: extra-details
 
+## Special cases
+
+- GKE has "[GKE Ingress]", a custom ingress controller
+
+  (enabled by default)
+
+- EKS has "AWS ALB Ingress Controller" as well
+
+  (not enabled by default, requires extra setup)
+
+- They leverage cloud-specific HTTP load balancers
+
+  (GCP HTTP LB, AWS ALB)
+
+- They typically a cost *per ingress resource*
+
+[GKE Ingress]: https://cloud.google.com/kubernetes-engine/docs/concepts/ingress
+
+---
+
+class: extra-details
+
 ## Single or multiple LoadBalancer
 
 - Most ingress controllers will create a LoadBalancer Service
+
+  (and will receive all HTTP/HTTPS traffic through it)
 
 - We need to point our DNS entries to the IP address of that LB
 
 - Some rare ingress controllers will allocate one LB per ingress resource
 
-  (example: by default, the AWS ingress controller based on ALBs)
+  (example: the GKE Ingress and ALB Ingress mentioned previously)
 
 - This leads to increased costs
+
+- Note that it's possible to have multiple "rules" per ingress resource
+
+  (this will reduce costs but may be less convenient to manage)
 
 ---
 
@@ -222,15 +251,22 @@ class: extra-details
 
 ## Running Traefik
 
-- The [Traefik documentation](https://docs.traefik.io/user-guide/kubernetes/#deploy-trfik-using-a-deployment-or-daemonset) tells us to pick between Deployment and Daemon Set
+- The [Traefik documentation][traefikdoc] recommends to use a Helm chart
 
-- We are going to use a Daemon Set so that each node can accept connections
+- For simplicity, we're going to use a custom YAML manifest
 
-- We will do two minor changes to the [YAML provided by Traefik](https://github.com/containous/traefik/blob/v1.7/examples/k8s/traefik-ds.yaml):
+- Our manifest will:
+
+  - use a Daemon Set so that each node can accept connections
 
   - enable `hostNetwork`
 
-  - add a *toleration* so that Traefik also runs on `node1`
+  - add a *toleration* so that Traefik also runs on all nodes
+
+- We could do the same with the official [Helm chart][traefikchart]
+
+[traefikdoc]: https://doc.traefik.io/traefik/getting-started/install-traefik/#use-the-helm-chart
+[traefikchart]: https://artifacthub.io/packages/helm/traefik/traefik
 
 ---
 
@@ -394,7 +430,7 @@ This is normal: we haven't provided any ingress rule yet.
 
 - To make our lives easier, we will use [nip.io](http://nip.io)
 
-- Check out `http://cheddar.A.B.C.D.nip.io`
+- Check out `http://red.A.B.C.D.nip.io`
 
   (replacing A.B.C.D with the IP address of `node1`)
 
@@ -422,38 +458,36 @@ This is normal: we haven't provided any ingress rule yet.
 
 ## Setting up host-based routing ingress rules
 
-- We are going to use `errm/cheese` images
+- We are going to use the `jpetazzo/color` image
 
-  (there are [3 tags available](https://hub.docker.com/r/errm/cheese/tags/): wensleydale, cheddar, stilton)
+- This image contains a simple static HTTP server on port 80
 
-- These images contain a simple static HTTP server sending a picture of cheese
-
-- We will run 3 deployments (one for each cheese)
+- We will run 3 deployments (`red`, `green`, `blue`)
 
 - We will create 3 services (one for each deployment)
 
 - Then we will create 3 ingress rules (one for each service)
 
-- We will route `<name-of-cheese>.A.B.C.D.nip.io` to the corresponding deployment
+- We will route `<color>.A.B.C.D.nip.io` to the corresponding deployment
 
 ---
 
-## Running cheesy web servers
+## Running colorful web servers
 
 .lab[
 
 - Run all three deployments:
   ```bash
-  kubectl create deployment cheddar --image=errm/cheese:cheddar
-  kubectl create deployment stilton --image=errm/cheese:stilton
-  kubectl create deployment wensleydale --image=errm/cheese:wensleydale
+  kubectl create deployment red   --image=jpetazzo/color
+  kubectl create deployment green --image=jpetazzo/color
+  kubectl create deployment blue  --image=jpetazzo/color
   ```
 
 - Create a service for each of them:
   ```bash
-  kubectl expose deployment cheddar --port=80
-  kubectl expose deployment stilton --port=80
-  kubectl expose deployment wensleydale --port=80
+  kubectl expose deployment red   --port=80
+  kubectl expose deployment green --port=80
+  kubectl expose deployment blue  --port=80
   ```
 
 ]
@@ -469,17 +503,17 @@ This is normal: we haven't provided any ingress rule yet.
 - Since Kubernetes 1.19, we can use `kubectl create ingress`
 
   ```bash
-  kubectl create ingress cheddar \
-      --rule=cheddar.`A.B.C.D`.nip.io/*=cheddar:80
+  kubectl create ingress red \
+      --rule=red.`A.B.C.D`.nip.io/*=red:80
   ```
 
 - We can specify multiple rules per resource
 
   ```bash
-  kubectl create ingress cheeses \
-      --rule=cheddar.`A.B.C.D`.nip.io/*=cheddar:80 \
-      --rule=stilton.`A.B.C.D`.nip.io/*=stilton:80 \
-      --rule=wensleydale.`A.B.C.D`.nip.io/*=wensleydale:80
+  kubectl create ingress rgb \
+      --rule=red.`A.B.C.D`.nip.io/*=red:80 \
+      --rule=green.`A.B.C.D`.nip.io/*=green:80 \
+      --rule=blue.`A.B.C.D`.nip.io/*=blue:80
   ```
 
 ---
@@ -489,14 +523,14 @@ This is normal: we haven't provided any ingress rule yet.
 - The `*` is important:
 
   ```
-  --rule=cheddar.A.B.C.D.nip.io/`*`=cheddar:80
+  --rule=red.A.B.C.D.nip.io/`*`=red:80
   ```
 
 - It means "all URIs below that path"
 
 - Without the `*`, it means "only that exact path"
 
-  (and requests for e.g. images or other URIs won't work)
+  (if we omit it, requests for e.g. `red.A.B.C.D.nip.io/hello` will 404)
 
 ---
 
@@ -508,15 +542,15 @@ Here is a minimal host-based ingress resource:
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: cheddar
+  name: red
 spec:
   rules:
-  - host: cheddar.`A.B.C.D`.nip.io
+  - host: red.`A.B.C.D`.nip.io
     http:
       paths:
       - path: /
         backend:
-          serviceName: cheddar
+          serviceName: red
           servicePort: 80
 
 ```
@@ -540,8 +574,8 @@ class: extra-details
 - If we want to see "modern" YAML, we can use `-o yaml --dry-run=client`:
 
   ```bash
-  kubectl create ingress cheddar -o yaml --dry-run=client \
-      --rule=cheddar.`A.B.C.D`.nip.io/*=cheddar:80
+  kubectl create ingress red -o yaml --dry-run=client \
+      --rule=red.`A.B.C.D`.nip.io/*=red:80
 
   ```
 
@@ -609,13 +643,21 @@ class: extra-details
 
 ---
 
-## A special feature in action
+## Vendor-specific example
 
-- We're going to see how to implement *canary releases* with Traefik
+- Let's see how to implement *canary releases*
 
-- This feature is available on multiple ingress controllers
+- The example here will use Traefik v1
 
-- ... But it is configured very differently on each of them
+  (which is obsolete)
+
+- It won't work on your Kubernetes cluster!
+
+  (unless you're running an oooooold version of Kubernetes)
+
+  (and an equally oooooooold version of Traefik)
+
+- We've left it here just as an example!
 
 ---
 
@@ -656,7 +698,7 @@ class: extra-details
 
 ---
 
-## Canary releases with Traefik
+## Canary releases with Traefik v1
 
 - We need to deploy the canary and expose it with a separate service
 
@@ -668,14 +710,6 @@ class: extra-details
 
 - If we want, we can send requests to more than 2 services
 
-- Let's send requests to our 3 cheesy services!
-
-.lab[
-
-- Create the resource shown on the next slide
-
-]
-
 ---
 
 ## The Ingress resource
@@ -685,60 +719,31 @@ class: extra-details
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: cheeseplate
+  name: rgb
   annotations:
     traefik.ingress.kubernetes.io/service-weights: |
-      cheddar: 50%
-      wensleydale: 25%
-      stilton: 25%
+      red: 50%
+      green: 25%
+      blue: 25%
 spec:
   rules:
-  - host: cheeseplate.`A.B.C.D`.nip.io
+  - host: rgb.`A.B.C.D`.nip.io
     http:
       paths:
       - path: /
         backend:
-          serviceName: cheddar
+          serviceName: red
           servicePort: 80
       - path: /
         backend:
-          serviceName: wensleydale
+          serviceName: green
           servicePort: 80
       - path: /
         backend:
-          serviceName: stilton
+          serviceName: blue
           servicePort: 80
 ```
 ]
-
----
-
-## Testing the canary
-
-- Let's check the percentage of requests going to each service
-
-.lab[
-
-- Continuously send HTTP requests to the new ingress:
-  ```bash
-    while sleep 0.1; do
-      curl -s http://cheeseplate.A.B.C.D.nip.io/
-    done
-  ```
-
-]
-
-We should see a 50/25/25 request mix.
-
----
-
-class: extra-details
-
-## Load balancing fairness
-
-Note: if we use odd request ratios, the load balancing algorithm might appear to be broken on a small scale (when sending a small number of requests), but on a large scale (with many requests) it will be fair.
-
-For instance, with a 11%/89% ratio, we can see 79 requests going to the 89%-weighted service, and then requests alternating between the two services; then 79 requests again, etc. 
 
 ---
 
