@@ -103,7 +103,7 @@ class: extra-details
 
 ---
 
-## `WithWaitGroup`, 
+## `WithWaitGroup`
 
 - When we shutdown, tells clients (with in-flight requests) to retry
 
