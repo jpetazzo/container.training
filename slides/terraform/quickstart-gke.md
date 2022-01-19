@@ -4,6 +4,16 @@
 
 - Authenticate with `gcloud auth login`
 
+  (this is to use `gcloud` CLI commands)
+
+- Authenticate with `gcloud auth application-default login`
+
+  (this is so that Terraform can use the GCP API)
+
+---
+
+## Create project
+
 - Create a project or use one of your existing ones
 
 - Set the `GOOGLE_PROJECT` env var to the project name
