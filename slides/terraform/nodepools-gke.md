@@ -71,24 +71,6 @@ resource "google_container_cluster" "mycluster" {
 
 ---
 
-## Our normal node pool
-
-```tf
-resource "google_container_node_pool" "ondemand" {
-  name       = "ondemand"
-  cluster    = google_container_cluster.mycluster.id
-  autoscaling {
-    min_node_count = 0
-    max_node_count = 5
-  }
-  node_config {
-    preemptible  = false
-  }
-}
-```
-
----
-
 ## Our preemptible node pool
 
 ```tf
@@ -108,6 +90,24 @@ resource "google_container_node_pool" "preemptible" {
 
 ---
 
+## Our normal node pool
+
+```tf
+resource "google_container_node_pool" "ondemand" {
+  name       = "ondemand"
+  cluster    = google_container_cluster.mycluster.id
+  autoscaling {
+    min_node_count = 0
+    max_node_count = 5
+  }
+  node_config {
+    preemptible  = false
+  }
+}
+```
+
+---
+
 ## Scale to zero
 
 - It is possible to scale a single node pool to zero
@@ -121,6 +121,10 @@ resource "google_container_node_pool" "preemptible" {
   (the cluster autoscaler can't/won't work if we have zero node)
 
 - Make sure that at least one pool has at least one node!
+
+⚠️ Make sure to set `initial_node_count` to more than zero
+
+⚠️ Setting `min_node_count` is not enough!
 
 ---
 
