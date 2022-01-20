@@ -133,6 +133,49 @@ resource "google_container_cluster" "mycluster" {
 
 - Check what happens if we run `terraform apply` again
 
+- Problems? Check next slide for suggestions...
+
+---
+
+## Potential issues
+
+```
+Unknown token: 18:16 IDENT google_compute_network._.name
+```
+
+This seems to happen with older versions of Terraform (pre-1.0).
+<br/>
+Upgrade to a recent version. Use [tfenv] if you need to switch between versions.
+
+```
+Error: google_container_cluster.mycluster: : invalid or unknown key: networking_mode
+```
+
+This seems to happen with older versions of the `hashicorp/google` provider.
+<br/>
+We'll show on next slide how to get a newer version.
+
+[tfenv]: https://github.com/tfutils/tfenv
+
+---
+
+## Pinning provider versions
+
+To upgrade the `hashicorp/google` provider, add this to the configuration:
+
+```tf
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "4.6.0"
+    }
+  }
+}
+```
+
+Then run `terraform init -upgrade`, then try `terraform apply` again.
+
 ---
 
 ## Now what?
