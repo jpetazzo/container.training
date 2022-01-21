@@ -136,7 +136,7 @@ class: extra-details
 
   (this will associate it to the specified PVC, but only if the PV satisfies all the requirements of the PVC; otherwise another PV might end up being picked)
 
-- For all the details about the PersistentVolumeClaimBinder, check [this doc](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/persistent-storage.md#matching-and-binding)
+- For all the details about the PersistentVolumeClaimBinder, check [this doc](https://github.com/kubernetes/design-proposals-archive/blob/main/storage/persistent-storage.md#matching-and-binding)
 
 ---
 
