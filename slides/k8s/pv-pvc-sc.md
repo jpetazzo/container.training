@@ -320,4 +320,3 @@ kubectl get pv,pvc
 :EN:- Storage provisioning
 :EN:- PV, PVC, StorageClass
 :FR:- Création de volumes
-:FR:- PV, PVC, et StorageClass
