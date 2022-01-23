@@ -2,7 +2,7 @@
 
 - It's *recommended* to run consistent versions across a cluster
 
-  (mostly to have feature parity and laoldversion security updates)
+  (mostly to have feature parity and latest security updates)
 
 - It's not *mandatory*
 
@@ -167,7 +167,7 @@
 
   (e.g. 1.18.20 and 1.18.15 are compatible)
 
-- It is recommended to run the laoldversion PATCH release
+- It is recommended to run the latest PATCH release
 
   (but it's mandatory only when there is a security advisory)
 
