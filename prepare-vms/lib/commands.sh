@@ -341,6 +341,11 @@ _cmd_kube() {
         sudo swapoff -a"
     fi
 
+    # Re-enable CRI interface in containerd
+    pssh "
+    echo '# Use default parameters for containerd.' | sudo tee /etc/containerd/config.toml
+    sudo systemctl restart containerd"
+
     # Initialize kube control plane
     pssh --timeout 200 "
     if i_am_first_node && [ ! -f /etc/kubernetes/admin.conf ]; then
@@ -350,10 +355,30 @@ kind: InitConfiguration
 apiVersion: kubeadm.k8s.io/v1beta2
 bootstrapTokens:
 - token: \$(cat /tmp/token)
+nodeRegistration:
+  # Comment out the next line to switch back to Docker.
+  criSocket: /run/containerd/containerd.sock
+  ignorePreflightErrors:
+  - NumCPU
+---
+kind: JoinConfiguration
+apiVersion: kubeadm.k8s.io/v1beta2
+discovery:
+  bootstrapToken:
+    apiServerEndpoint: \$(cat /etc/name_of_first_node):6443
+    token: \$(cat /tmp/token)
+    unsafeSkipCAVerification: true
+nodeRegistration:
+  # Comment out the next line to switch back to Docker.
+  criSocket: /run/containerd/containerd.sock
+  ignorePreflightErrors:
+  - NumCPU
 ---
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
-cgroupDriver: cgroupfs
+# The following line is necessary when using Docker.
+# It doesn't seem necessary when using containerd.
+#cgroupDriver: cgroupfs
 ---
 kind: ClusterConfiguration
 apiVersion: kubeadm.k8s.io/v1beta2
@@ -362,7 +387,7 @@ apiServer:
   - \$(cat /tmp/ipv4)
 $EXTRA_KUBEADM
 EOF
-	sudo kubeadm init --config=/tmp/kubeadm-config.yaml --ignore-preflight-errors=NumCPU
+	sudo kubeadm init --config=/tmp/kubeadm-config.yaml
     fi"
 
     # Put kubeconfig in ubuntu's and $USER_LOGIN's accounts
@@ -386,8 +411,8 @@ EOF
     pssh --timeout 200 "
     if ! i_am_first_node && [ ! -f /etc/kubernetes/kubelet.conf ]; then
         FIRSTNODE=\$(cat /etc/name_of_first_node) &&
-        TOKEN=\$(ssh $SSHOPTS \$FIRSTNODE cat /tmp/token) &&
-        sudo kubeadm join --discovery-token-unsafe-skip-ca-verification --token \$TOKEN \$FIRSTNODE:6443
+        ssh $SSHOPTS \$FIRSTNODE cat /tmp/kubeadm-config.yaml > /tmp/kubeadm-config.yaml &&
+        sudo kubeadm join --config /tmp/kubeadm-config.yaml
     fi"
 
     # Install metrics server
