@@ -1,16 +1,18 @@
 # Healthchecks
 
-- Kubernetes provides two kinds of healthchecks: liveness and readiness
+- Containers can have *healthchecks*
 
-- Healthchecks are *probes* that apply to *containers* (not to pods)
+- There are three kinds of healthchecks, corresponding to very different use-cases:
 
-- Each container can have two (optional) probes:
+  - liveness  = detect when a container is "dead" and needs to be restarted
 
-  - liveness = is this container dead or alive?
+  - readiness = detect when a container is ready to serve traffic
 
-  - readiness = is this container ready to serve traffic?
+  - startup = detect if a container has finished to boot
 
-- Different probes are available (HTTP, TCP, program execution)
+- These healthchecks are optional (we can use none, all, or some of them)
+
+- Different probes are available (HTTP request, TCP connection, program execution)
 
 - Let's see the difference and how to use them!
 
@@ -18,11 +20,13 @@
 
 ## Liveness probe
 
+*This container is dead, we don't know how to fix it, other than restarting it.*
+
 - Indicates if the container is dead or alive
 
 - A dead container cannot come back to life
 
-- If the liveness probe fails, the container is killed
+- If the liveness probe fails, the container is killed (destroyed)
 
   (to make really sure that it's really dead; no zombies or undeads!)
 
@@ -50,9 +54,31 @@
 
 ---
 
-## Readiness probe
+## Readiness probe (1)
 
-- Indicates if the container is ready to serve traffic
+*Make sure that a container is ready before continuing a rolling update.*
+
+- Indicates if the container is ready to handle traffic
+
+- When doing a rolling update, the Deployment controller waits for Pods to be ready
+
+  (a Pod is ready when all the containers in the Pod are ready)
+
+- Improves reliability and safety of rolling updates:
+
+  - don't roll out a broken version (that doesn't pass readiness checks)
+
+  - don't lose processing capacity during a rolling update
+
+---
+
+## Readiness probe (2)
+
+*Temporarily remove a container (overloaded or otherwise) from a Service load balancer.*
+
+- A container can mark itself "not ready" temporarily
+
+  (e.g. if it's overloaded or needs to reload/restart/garbage collect...)
 
 - If a container becomes "unready" it might be ready again soon
 
@@ -80,9 +106,9 @@
 
   - runtime is busy doing garbage collection or initial data load
 
-- For processes that take a long time to start
+- To redirect new connections to other Pods
 
-  (more on that later)
+  (e.g. fail the readiness probe when the Pod's load is too high)
 
 ---
 
@@ -120,27 +146,35 @@
 
 ---
 
-class: extra-details
-
 ## Startup probe
 
-- Kubernetes 1.16 introduces a third type of probe: `startupProbe`
+*The container takes too long to start, and is killed by the liveness probe!*
 
-  (it is in `alpha` in Kubernetes 1.16)
+- By default, probes (including liveness) start immediately
 
-- It can be used to indicate "container not ready *yet*"
+- With the default probe interval and failure threshold:
 
-  - process is still starting
+  *a container must respond in less than 30 seconds, or it will be killed!*
 
-  - loading external data, priming caches
+- There are two ways to avoid that:
 
-- Before Kubernetes 1.16, we had to use the `initialDelaySeconds` parameter
+  - set `initialDelaySeconds` (a fixed, rigid delay)
 
-  (available for both liveness and readiness probes)
+  - use a `startupProbe`
 
-- `initialDelaySeconds` is a rigid delay (always wait X before running probes)
+- Kubernetes will run only the startup probe, and when it succeeds, run the other probes
 
-- `startupProbe` works better when a container start time can vary a lot
+---
+
+## When to use a startup probe
+
+- For containers that take a long time to start
+
+  (more than 30 seconds)
+
+- Especially if that time can vary a lot
+
+  (e.g. fast in dev, slow in prod, or the other way around)
 
 ---
 
@@ -190,17 +224,16 @@ Here is a pod template for the `rng` web service of the DockerCoins app:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: rng-with-liveness
+  name: healthy-app
 spec:
   containers:
-  - name: rng
-    image: dockercoins/rng:v0.1
+  - name: myapp
+    image: myregistry.io/myapp:v1.0
     livenessProbe:
       httpGet:
-        path: /
+        path: /health
         port: 80
-      initialDelaySeconds: 10
-      periodSeconds: 1
+      periodSeconds: 5
 ```
 
 If the backend serves an error, or takes longer than 1s, 3 times in a row, it gets killed.
@@ -267,7 +300,7 @@ If the Redis process becomes unresponsive, it will be killed.
 
 (In that context, worker = process that doesn't accept connections)
 
-- Readiness isn't useful
+- Readiness is useful mostly for rolling updates
 
   (because workers aren't backends for a service)
 
