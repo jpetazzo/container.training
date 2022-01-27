@@ -2,6 +2,12 @@
 # There is still no actual persistence, but:
 # - podAntiaffinity prevents pod colocation
 # - clusters works when scaling down to 1 (thanks to lifecycle hook)
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: consul
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -25,11 +31,6 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: consul
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: consul
 ---
 apiVersion: v1
 kind: Service
@@ -68,7 +69,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: consul
-          image: "consul:1.8"
+          image: "consul:1.11"
           env:
             - name: NAMESPACE
               valueFrom:

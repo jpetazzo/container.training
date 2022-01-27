@@ -1,5 +1,11 @@
 # Even better Consul cluster.
 # That one uses a volumeClaimTemplate to achieve true persistence.
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: consul
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -23,11 +29,6 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: consul
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: consul
 ---
 apiVersion: v1
 kind: Service
@@ -75,7 +76,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: consul
-          image: "consul:1.8"
+          image: "consul:1.11"
           volumeMounts:
             - name: data
               mountPath: /consul/data
