@@ -504,7 +504,7 @@ EOF
     if [ ! -x /usr/local/bin/kustomize ]; then
         curl -fsSL $URL |
         sudo tar -C /usr/local/bin -zx kustomize
-        echo complete -C /usr/local/bin/kustomize kustomize | sudo tee /etc/bash_completion.d/kustomize
+        kustomize completion bash | sudo tee /etc/bash_completion.d/kustomize
         kustomize version
     fi"
 
