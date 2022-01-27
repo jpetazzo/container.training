@@ -10,36 +10,31 @@
 
 - In that container in the pod, we are going to run a simple `ping` command
 
---
-
-- Sounds simple enough, right?
-
---
-
-- Except ... that the `kubectl run` command changed in Kubernetes 1.18!
-
-- We'll explain what has changed, and why
-
 ---
 
-## Choose your own adventure
+class: extra-details
 
-- First, let's check which version of Kubernetes we're running
+## If you're running Kubernetes 1.17 (or older)...
 
-.lab[
+- This material assumes that you're running a recent version of Kubernetes
 
-- Check our API server version:
-  ```bash
-  kubectl version
-  ```
+  (at least 1.19) <!-- ##VERSION## -->
 
-- Look at the **Server Version** in the second part of the output
+- You can check your version number with `kubectl version`
 
-]
+  (look at the server part)
 
-- In the following slides, we will talk about 1.17- or 1.18+
+- In Kubernetes 1.17 and older, `kubectl run` creates a Deployment
 
-  (to indicate "up to Kubernetes 1.17" and "from Kubernetes 1.18")
+- If you're running such an old version:
+
+  - it's obsolete and no longer maintained
+
+  - Kubernetes 1.17 is [EOL since January 2021][nonactive]
+
+  - **upgrade NOW!**
+
+[nonactive]: https://kubernetes.io/releases/patch-releases/#non-active-branch-history
 
 ---
 
@@ -62,38 +57,168 @@
 
 ]
 
----
-
-## What do we see?
-
-- In Kubernetes 1.18+, the output tells us that a Pod is created:
-  ```
-  pod/pingpong created
-  ```
-
-- In Kubernetes 1.17-, the output is much more verbose:
-  ```
-  kubectl run --generator=deployment/apps.v1 is DEPRECATED 
-  and will be removed in a future version. Use kubectl run 
-  --generator=run-pod/v1 or kubectl create instead.
-  deployment.apps/pingpong created
-  ```
-
-- There is a deprecation warning ...
-
-- ... And a Deployment was created instead of a Pod
-
-🤔 What does that mean?
+The output tells us that a Pod was created:
+```
+pod/pingpong created
+```
 
 ---
 
-## Show me all you got!
+## Viewing container output
 
-- What resources were created by `kubectl run`?
+- Let's use the `kubectl logs` command
+
+- It takes a Pod name as argument
+
+- Unless specified otherwise, it will only show logs of the first container in the pod
+
+  (Good thing there's only one in ours!)
 
 .lab[
 
-- Let's ask Kubernetes to show us *all* the resources:
+- View the result of our `ping` command:
+  ```bash
+  kubectl logs pingpong
+  ```
+
+]
+
+---
+
+## Streaming logs in real time
+
+- Just like `docker logs`, `kubectl logs` supports convenient options:
+
+  - `-f`/`--follow` to stream logs in real time (à la `tail -f`)
+
+  - `--tail` to indicate how many lines you want to see (from the end)
+
+  - `--since` to get logs only after a given timestamp
+
+.lab[
+
+- View the latest logs of our `ping` command:
+  ```bash
+  kubectl logs pingpong --tail 1 --follow
+  ```
+
+- Stop it with Ctrl-C
+
+<!--
+```wait seq=3```
+```keys ^C```
+-->
+
+]
+
+---
+
+## Scaling our application
+
+- `kubectl` gives us a simple command to scale a workload:
+
+  `kubectl scale TYPE NAME --replicas=HOWMANY`
+
+- Let's try it on our Pod, so that we have more Pods!
+
+.lab[
+
+- Try to scale the Pod:
+  ```bash
+  kubectl scale pod pingpong --replicas=3
+  ```
+
+]
+
+🤔 We get the following error, what does that mean?
+
+```
+Error from server (NotFound): the server could not find the requested resource
+```
+
+---
+
+## Scaling a Pod
+
+- We cannot "scale a Pod"
+
+  (that's not completely true; we could give it more CPU/RAM)
+
+- If we want more Pods, we need to create more Pods
+
+  (i.e. execute `kubectl run` multiple times)
+
+- There must be a better way!
+
+  (spoiler alert: yes, there is a better way!)
+
+---
+
+class: extra-details
+
+## `NotFound`
+
+- What's the meaning of that error?
+  ```
+  Error from server (NotFound): the server could not find the requested resource
+  ```
+
+- When we execute `kubectl scale THAT-RESOURCE --replicas=THAT-MANY`,
+  <br/>
+  it is like telling Kubernetes:
+
+  *go to THAT-RESOURCE and set the scaling button to position THAT-MANY*
+
+- Pods do not have a "scaling button"
+
+- Try to execute the `kubectl scale pod` command with `-v6`
+
+- We see a `PATCH` request to `/scale`: that's the "scaling button"
+
+  (technically it's called a *subresource* of the Pod)
+
+---
+
+## Creating more pods
+
+- We are going to create a ReplicaSet
+
+  (= set of replicas = set of identical pods)
+
+- In fact, we will create a Deployment, which itself will create a ReplicaSet
+
+- Why so many layers? We'll explain that shortly, don't worry!
+
+---
+
+## Creating a Deployment running `ping`
+
+- Let's create a Deployment instead of a single Pod
+
+.lab[
+
+- Create the Deployment; pay attention to the `--`:
+  ```bash
+  kubectl create deployment pingpong --image=alpine -- ping 127.0.0.1
+  ```
+
+]
+
+- The `--` is used to separate:
+
+  - "options/flags of `kubectl create`
+
+  - command to run in the container
+
+---
+
+## What has been created?
+
+.lab[
+
+<!-- ```hide kubectl wait pod --selector=app=pingpong --for condition=ready ``` -->
+
+- Check the resources that were created:
   ```bash
   kubectl get all
   ```
@@ -106,26 +231,11 @@ Note: `kubectl get all` is a lie. It doesn't show everything.
 
 ---
 
-## The situation with Kubernetes 1.18+
-
-```
-NAME           READY   STATUS    RESTARTS   AGE
-pod/pingpong   1/1     Running   0          9s
-
-NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
-service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   3h30m
-```
-
-We wanted a pod, we got a pod, named `pingpong`. Great!
-
-(We can ignore `service/kubernetes`, it was already there before.)
-
----
-
-## The situation with Kubernetes 1.17-
+## There's a lot going on here!
 
 ```
 NAME                            READY   STATUS        RESTARTS   AGE
+pod/pingpong                    1/1     Running       0          4m17s
 pod/pingpong-6ccbc77f68-kmgfn   1/1     Running       0          11s
 
 NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
@@ -138,9 +248,9 @@ NAME                                  DESIRED   CURRENT   READY   AGE
 replicaset.apps/pingpong-6ccbc77f68   1         1         1       11s
 ```
 
-Our pod is not named `pingpong`, but `pingpong-xxxxxxxxxxx-yyyyy`.
+Our new Pod is not named `pingpong`, but `pingpong-xxxxxxxxxxx-yyyyy`.
 
-We have a Deployment named `pingpong`, and an extra Replica Set, too. What's going on?
+We have a Deployment named `pingpong`, and an extra ReplicaSet, too. What's going on?
 
 ---
 
@@ -176,7 +286,7 @@ Let's explain what these things are.
 
   (e.g. in case of node outage)
 
-- Pods cannot be scaled
+- Pods cannot be scaled horizontally
 
   (except by manually creating more Pods)
 
@@ -248,180 +358,20 @@ class: extra-details
 
 ---
 
-## `kubectl run` through the ages
+## Can we scale now?
 
-- When we want to run an app on Kubernetes, we *generally* want a Deployment
-
-- Up to Kubernetes 1.17, `kubectl run` created a Deployment
-
-  - it could also create other things, by using special flags
-
-  - this was powerful, but potentially confusing
-
-  - creating a single Pod was done with `kubectl run --restart=Never`
-
-  - other resources could also be created with `kubectl create ...`
-
-- From Kubernetes 1.18, `kubectl run` creates a Pod
-
-  - other kinds of resources can still be created with `kubectl create`
-
----
-
-## Creating a Deployment the proper way
-
-- Let's destroy that `pingpong` app that we created
-
-- Then we will use `kubectl create deployment` to re-create it
-
-.lab[
-
-- On Kubernetes 1.18+, delete the Pod named `pingpong`:
-  ```bash
-  kubectl delete pod pingpong
-  ```
-
-- On Kubernetes 1.17-, delete the Deployment named `pingpong`:
-  ```bash
-  kubectl delete deployment pingpong
-  ```
-
-]
-
----
-
-## Running `ping` in a Deployment
-
-<!-- ##VERSION## -->
-
-- When using `kubectl create deployment`, we cannot indicate the command to execute
-
-  (at least, not in Kubernetes 1.18; but that changed in Kubernetes 1.19)
-
-- We can:
-
-  - write a custom YAML manifest for our Deployment
-
---
-
-  - (yeah right ... too soon!)
-
---
-
-  - use an image that has the command to execute baked in
-
-  - (much easier!)
-
---
-
-- We will use the image `jpetazzo/ping`
-
-  (it has a default command of `ping 127.0.0.1`)
-
----
-
-## Creating a Deployment running `ping`
-
-- Let's create a Deployment named `pingpong`
-
-- It will use the image `jpetazzo/ping`
-
-.lab[
-
-- Create the Deployment:
-  ```bash
-  kubectl create deployment pingpong --image=jpetazzo/ping
-  ```
-
-- Check the resources that were created:
-  ```bash
-  kubectl get all
-  ```
-
-<!-- ```hide kubectl wait pod --selector=app=pingpong --for condition=ready ``` -->
-
-]
-
----
-
-class: extra-details
-
-## In Kubernetes 1.19
-
-- Since Kubernetes 1.19, we can specify the command to run
-
-- The command must be passed after two dashes:
-  ```bash
-  kubectl create deployment pingpong --image=alpine -- ping 127.1
-  ```
-
----
-
-## Viewing container output
-
-- Let's use the `kubectl logs` command
-
-- We will pass either a *pod name*, or a *type/name*
-
-  (E.g. if we specify a deployment or replica set, it will get the first pod in it)
-
-- Unless specified otherwise, it will only show logs of the first container in the pod
-
-  (Good thing there's only one in ours!)
-
-.lab[
-
-- View the result of our `ping` command:
-  ```bash
-  kubectl logs deploy/pingpong
-  ```
-
-]
-
----
-
-## Streaming logs in real time
-
-- Just like `docker logs`, `kubectl logs` supports convenient options:
-
-  - `-f`/`--follow` to stream logs in real time (à la `tail -f`)
-
-  - `--tail` to indicate how many lines you want to see (from the end)
-
-  - `--since` to get logs only after a given timestamp
-
-.lab[
-
-- View the latest logs of our `ping` command:
-  ```bash
-  kubectl logs deploy/pingpong --tail 1 --follow
-  ```
-
-- Stop it with Ctrl-C
-
-<!--
-```wait seq=3```
-```keys ^C```
--->
-
-]
-
----
-
-## Scaling our application
-
-- We can create additional copies of our container (I mean, our pod) with `kubectl scale`
+- Let's try `kubectl scale` again, but on the Deployment!
 
 .lab[
 
 - Scale our `pingpong` deployment:
   ```bash
-  kubectl scale deploy/pingpong --replicas 3
+  kubectl scale deployment pingpong --replicas 3
   ```
 
-- Note that this command does exactly the same thing:
+- Note that we could also write it like this:
   ```bash
-  kubectl scale deployment pingpong --replicas 3
+  kubectl scale deployment/pingpong --replicas 3
   ```
 
 - Check that we now have multiple pods:
@@ -453,23 +403,26 @@ class: extra-details
 
 ---
 
-## Streaming logs of multiple pods
+## Checking Deployment logs
 
-- What happens if we try `kubectl logs` now that we have multiple pods?
+- `kubectl logs` needs a Pod name
+
+- But it can also work with a *type/name*
+
+  (e.g. `deployment/pingpong`)
 
 .lab[
 
+- View the result of our `ping` command:
   ```bash
-  kubectl logs deploy/pingpong --tail 3
+  kubectl logs deploy/pingpong --tail 2
   ```
 
 ]
 
-`kubectl logs` will warn us that multiple pods were found.
+- It shows us the logs of the first Pod of the Deployment
 
-It is showing us only one of them.
-
-We'll see later how to address that shortcoming.
+- We'll see later how to get the logs of *all* the Pods!
 
 ---
 
@@ -506,8 +459,6 @@ We'll see later how to address that shortcoming.
 ```paste```
 ```key ^J```
 ```check```
-```key ^D```
-```key ^C```
 -->
 
 ]
@@ -527,6 +478,34 @@ We'll see later how to address that shortcoming.
 - Until 30 seconds later, when the grace period expires
 
 - The pod is then killed, and `kubectl logs` exits
+
+---
+
+## Deleting a standalone Pod
+
+- What happens if we delete a standalone Pod?
+ 
+  (like the first `pingpong` Pod that we created)
+
+.lab[
+
+- Delete the Pod:
+  ```bash
+  kubectl delete pod pingpong
+  ```
+
+<!--
+```key ^D```
+```key ^C```
+-->
+
+]
+
+- No replacement Pod gets created because there is no *controller* watching it
+
+- That's why we will rarely use standalone Pods in practice
+
+  (except for e.g. punctual debugging or executing a short supervised task)
 
 ???
 
