@@ -542,15 +542,55 @@ services.nodeports               0     0
 
 ## Advanced quotas and PriorityClass
 
-- Since Kubernetes 1.12, it is possible to create PriorityClass objects
+- Pods can have a *priority*
 
-- Pods can be assigned a PriorityClass
+- The priority is a number from 0 to 1000000000
 
-- Quotas can be linked to a PriorityClass
+  (or even higher for system-defined priorities)
 
-- This allows us to reserve resources for pods within a namespace
+- High number = high priority = "more important" Pod
 
-- For more details, check [this documentation page](https://kubernetes.io/docs/concepts/policy/resource-quotas/#resource-quota-per-priorityclass)
+- Pods with a higher priority can *preempt* Pods with lower priority
+
+  (= low priority pods will be *evicted* if needed)
+
+- Useful when mixing workloads in resource-constrained environments
+
+---
+
+## Setting the priority of a Pod
+
+- Create a PriorityClass
+
+  (or use an existing one)
+
+- When creating the Pod, set the field `spec.priorityClassName`
+
+- If the field is not set:
+
+  - if there is a PriorityClass with `globalDefault`, it is used
+
+  - otherwise, the default priority will be zero
+
+---
+
+class: extra-details
+
+## PriorityClass and ResourceQuotas
+
+- A ResourceQuota can include a list of *scopes* or a *scope selector*
+
+- In that case, the quota will only apply to the scoped resources
+
+- Example: limit the resources allocated to "high priority" Pods
+
+- In that case, make sure that the quota is created in every Namespace
+
+  (or use *admission configuration* to enforce it)
+
+- See the [resource quotas documentation][quotadocs] for details
+
+[quotadocs]: https://kubernetes.io/docs/concepts/policy/resource-quotas/#resource-quota-per-priorityclass
 
 ---
 
