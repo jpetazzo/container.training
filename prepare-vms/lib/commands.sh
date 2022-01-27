@@ -314,11 +314,12 @@ _cmd_kube() {
     SETTINGS=tags/$TAG/settings.yaml
     KUBEVERSION=$(awk '/^kubernetes_version:/ {print $2}' $SETTINGS)
     if [ "$KUBEVERSION" ]; then
-        EXTRA_APTGET="=$KUBEVERSION-00"
-        EXTRA_KUBEADM="kubernetesVersion: v$KUBEVERSION"
-    else
-        EXTRA_APTGET=""
-        EXTRA_KUBEADM=""
+        pssh "
+        sudo tee /etc/apt/preferences.d/kubernetes <<EOF
+Package: kubectl kubeadm kubelet
+Pin: version $KUBEVERSION*
+Pin-Priority: 1000
+EOF"
     fi
 
     # Install packages
@@ -329,7 +330,8 @@ _cmd_kube() {
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
     pssh --timeout 200 "
     sudo apt-get update -q &&
-    sudo apt-get install -qy kubelet$EXTRA_APTGET kubeadm$EXTRA_APTGET kubectl$EXTRA_APTGET &&
+    sudo apt-get install -qy kubelet kubeadm kubectl &&
+    sudo apt-mark hold kubelet kubeadm kubectl
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl &&
     echo 'alias k=kubectl' | sudo tee /etc/bash_completion.d/k &&
     echo 'complete -F __start_kubectl k' | sudo tee -a /etc/bash_completion.d/k"
@@ -385,7 +387,6 @@ apiVersion: kubeadm.k8s.io/v1beta2
 apiServer:
   certSANs:
   - \$(cat /tmp/ipv4)
-$EXTRA_KUBEADM
 EOF
 	sudo kubeadm init --config=/tmp/kubeadm-config.yaml
     fi"
