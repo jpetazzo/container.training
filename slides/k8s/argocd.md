@@ -4,7 +4,7 @@
 
 - These YAML files can and should be stored in source control - specifically - Git
 
-- YAML manifests from Git can then be used to continuously update our cluster configuraition
+- YAML manifests from Git can then be used to continuously update our cluster configuration
 
 - When this process is automated - it is now called "GitOps"
 
@@ -445,3 +445,15 @@ Change the ~/container.training/k8s/argocd_app.yaml to deploy `rng`, `hasher`, `
 Apply the application resource for each.
 
 ]
+
+---
+
+## Additional Considerations for Using ArgoCD
+
+- When running in production ArgoCD should be integrated with an SSO (Single-Sign On) provider - either with the bundled [Dex](https://argo-cd-docs.readthedocs.io/en/latest/operator-manual/sso/#dex) instance or with an existing OIDC provider (Okta, Auth0, etc)
+
+- A single ArgoCD instance can manage multiple clusters 
+
+- Alternatively one can have an ArgoCD per cluster
+
+- ArgoCD can be complemented with [Argo Rollouts](https://argoproj.github.io/argo-rollouts/) for advanced rollout control
