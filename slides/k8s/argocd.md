@@ -427,7 +427,7 @@ spec:
         - ../values/worker.yaml
 ...
   ```
-
+We can do gitops of gitops!
 ---
 
 ## Create an Application for each Microservice
