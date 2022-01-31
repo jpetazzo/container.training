@@ -96,7 +96,7 @@ Compose will be smart, and only recreate the containers that have changed.
 
 When working with interpreted languages:
 
-- dont' rebuild each time
+- don't rebuild each time
 
 - leverage a `volumes` section instead
 
@@ -250,6 +250,24 @@ For the full list, check: https://docs.docker.com/compose/compose-file/
 
 ---
 
+## Configuring a Compose stack
+
+- Follow [12-factor app configuration principles][12factorconfig]
+
+  (configure the app through environment variables)
+
+- Provide (in the repo) a default environment file suitable for development
+
+  (no secret or sensitive value)
+
+- Copy the default environment file to `.env` and tweak it
+
+  (or: provide a script to generate `.env` from a template)
+
+[12factorconfig]: https://12factor.net/config
+
+---
+
 ## Running multiple copies of a stack
 
 - Copy the stack in two different directories, e.g. `front` and `frontcopy`
@@ -331,7 +349,7 @@ Use `docker-compose down -v` to remove everything including volumes.
 
 - The data in the old container is lost...
 
-- ... Except if the container is using a *volume*
+- ...Except if the container is using a *volume*
 
 - Compose will then re-attach that volume to the new container
 
@@ -340,6 +358,102 @@ Use `docker-compose down -v` to remove everything including volumes.
 - All good database images use volumes
 
   (e.g. all official images)
+
+---
+
+## Gotchas with volumes
+
+- Unfortunately, Docker volumes don't have labels or metadata
+
+- Compose tracks volumes thanks to their associated container
+
+- If the container is deleted, the volume gets orphaned
+
+- Example: `docker-compose down && docker-compose up`
+
+  - the old volume still exists, detached from its container
+
+  - a new volume gets created
+
+- `docker-compose down -v`/`--volumes` deletes volumes
+
+  (but **not** `docker-compose down && docker-compose down -v`!)
+ 
+---
+
+## Managing volumes explicitly
+
+Option 1: *named volumes*
+
+```yaml
+services:
+  app:
+    volumes:
+    - data:/some/path
+volumes:
+  data:
+```
+
+- Volume will be named `<project>_data`
+
+- It won't be orphaned with `docker-compose down`
+
+- It will correctly be removed with `docker-compose down -v`
+
+---
+
+## Managing volumes explicitly
+
+Option 2: *relative paths*
+
+```yaml
+services:
+  app:
+    volumes:
+    - ./data:/some/path
+```
+
+- Makes it easy to colocate the app and its data
+
+  (for migration, backups, disk usage accounting...)
+
+- Won't be removed by `docker-compose down -v`
+
+---
+
+## Managing complex stacks
+
+- Compose provides multiple features to manage complex stacks
+
+  (with many containers)
+
+- `-f`/`--file`/`$COMPOSE_FILE` can be a list of Compose files
+
+  (separated by `:` and merged together)
+
+- Services can be assigned to one or more *profiles*
+
+- `--profile`/`$COMPOSE_PROFILE` can be a list of comma-separated profiles
+
+  (see [Using service profiles][profiles] in the Compose documentation)
+
+- These variables can be set in `.env`
+
+[profiles]: https://docs.docker.com/compose/profiles/
+
+---
+
+## Dependencies
+
+- A service can have a `depends_on` section
+
+  (listing one or more other services)
+
+- This is used when bringing up individual services
+
+  (e.g. `docker-compose up blah` or `docker-compose run foo`)
+
+⚠️ It doesn't make a service "wait" for another one to be up!
 
 ---
 
