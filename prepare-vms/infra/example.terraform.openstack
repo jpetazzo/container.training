@@ -1,4 +1,5 @@
-INFRACLASS=openstack-tf
+INFRACLASS=terraform
+TERRAFORM=openstack
 
 # If you are using OpenStack, copy this file (e.g. to "openstack" or "enix")
 # and customize the variables below.

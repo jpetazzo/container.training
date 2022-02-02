@@ -178,6 +178,13 @@ _cmd_clusterize() {
     #    install --owner=ubuntu --mode=600 /root/.ssh/authorized_keys --target-directory /home/ubuntu/.ssh"
     #fi
 
+    # Special case for oracle since their iptables blocks everything but SSH
+    pssh "
+    if [ -f /etc/iptables/rules.v4 ]; then
+        sudo sed -i 's/-A INPUT -j REJECT --reject-with icmp-host-prohibited//' /etc/iptables/rules.v4
+        sudo netfilter-persistent start
+    fi"
+
     # Copy settings and install Python YAML parser
     pssh -I tee /tmp/settings.yaml <tags/$TAG/settings.yaml
     pssh "
@@ -185,10 +192,10 @@ _cmd_clusterize() {
     sudo apt-get install -y python-yaml"
 
     # If there is no "python" binary, symlink to python3
-    #pssh "
-    #if ! which python; then
-    #    ln -s $(which python3) /usr/local/bin/python
-    #fi"
+    pssh "
+    if ! which python; then
+        sudo ln -s $(which python3) /usr/local/bin/python
+    fi"
 
     # Copy postprep.py to the remote machines, and execute it, feeding it the list of IP addresses
     pssh -I tee /tmp/clusterize.py <lib/clusterize.py
@@ -248,7 +255,7 @@ _cmd_docker() {
 
     ##VERSION## https://github.com/docker/compose/releases
     if [ "$ARCHITECTURE" ]; then
-        COMPOSE_VERSION=v2.0.1
+        COMPOSE_VERSION=v2.2.3
         COMPOSE_PLATFORM='linux-$(uname -m)'
     else
         COMPOSE_VERSION=1.29.2
@@ -1051,7 +1058,8 @@ _cmd_webssh() {
     need_tag
     pssh "
     sudo apt-get update &&
-    sudo apt-get install python-tornado python-paramiko -y"
+    sudo apt-get install python-tornado python-paramiko -y ||
+    sudo apt-get install python3-tornado python3-paramiko -y"
     pssh "
     cd /opt
     [ -d webssh ] || sudo git clone https://github.com/jpetazzo/webssh"
