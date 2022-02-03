@@ -32,6 +32,432 @@ The last item should be done for educational purposes only!
 
 ---
 
+# Control groups
+
+- Control groups provide resource *metering* and *limiting*.
+
+- This covers a number of "usual suspects" like:
+
+  - memory
+
+  - CPU
+
+  - block I/O
+
+  - network (with cooperation from iptables/tc)
+
+- And a few exotic ones:
+
+  - huge pages (a special way to allocate memory)
+
+  - RDMA (resources specific to InfiniBand / remote memory transfer)
+
+---
+
+## Crowd control
+
+- Control groups also allow to group processes for special operations:
+
+  - freezer (conceptually similar to a "mass-SIGSTOP/SIGCONT")
+
+  - perf_event (gather performance events on multiple processes)
+
+  - cpuset (limit or pin processes to specific CPUs)
+
+- There is a "pids" cgroup to limit the number of processes in a given group.
+
+- There is also a "devices" cgroup to control access to device nodes.
+
+  (i.e. everything in `/dev`.)
+
+---
+
+## Generalities
+
+- Cgroups form a hierarchy (a tree).
+
+- We can create nodes in that hierarchy.
+
+- We can associate limits to a node.
+
+- We can move a process (or multiple processes) to a node.
+
+- The process (or processes) will then respect these limits.
+
+- We can check the current usage of each node.
+
+- In other words: limits are optional (if we only want accounting).
+
+- When a process is created, it is placed in its parent's groups.
+
+---
+
+## Example
+
+The numbers are PIDs.
+
+The names are the names of our nodes (arbitrarily chosen).
+
+.small[
+```bash
+cpu                      memory
+├── batch                ├── stateless
+│   ├── cryptoscam       │   ├── 25
+│   │   └── 52           │   ├── 26
+│   └── ffmpeg           │   ├── 27
+│       ├── 109          │   ├── 52
+│       └── 88           │   ├── 109
+└── realtime             │   └── 88
+    ├── nginx            └── databases
+    │   ├── 25               ├── 1008
+    │   ├── 26               └── 524
+    │   └── 27
+    ├── postgres
+    │   └── 524
+    └── redis
+        └── 1008
+```
+]
+
+---
+
+class: extra-details, deep-dive
+
+## Cgroups v1 vs v2
+
+- Cgroups v1 are available on all systems (and widely used).
+
+- Cgroups v2 are a huge refactor.
+
+  (Development started in Linux 3.10, released in 4.5.)
+
+- Cgroups v2 have a number of differences:
+
+  - single hierarchy (instead of one tree per controller),
+
+  - processes can only be on leaf nodes (not inner nodes),
+
+  - and of course many improvements / refactorings.
+
+- Cgroups v2 enabled by default on Fedora 31 (2019), Ubuntu 21.10...
+
+---
+
+## Memory cgroup: accounting
+
+- Keeps track of pages used by each group:
+
+  - file (read/write/mmap from block devices),
+  - anonymous (stack, heap, anonymous mmap),
+  - active (recently accessed),
+  - inactive (candidate for eviction).
+
+- Each page is "charged" to a group.
+
+- Pages can be shared across multiple groups.
+
+  (Example: multiple processes reading from the same files.)
+
+- To view all the counters kept by this cgroup:
+
+  ```bash
+  $ cat /sys/fs/cgroup/memory/memory.stat
+  ```
+
+---
+
+## Memory cgroup v1: limits
+
+- Each group can have (optional) hard and soft limits.
+
+- Limits can be set for different kinds of memory:
+
+  - physical memory,
+
+  - kernel memory,
+
+  - total memory (including swap).
+
+---
+
+## Soft limits and hard limits
+
+- Soft limits are not enforced.
+
+  (But they influence reclaim under memory pressure.)
+
+- Hard limits *cannot* be exceeded:
+
+  - if a group of processes exceeds a hard limit,
+
+  - and if the kernel cannot reclaim any memory,
+
+  - then the OOM (out-of-memory) killer is triggered,
+
+  - and processes are killed until memory gets below the limit again.
+
+---
+
+class: extra-details, deep-dive
+
+## Avoiding the OOM killer
+
+- For some workloads (databases and stateful systems), killing
+  processes because we run out of memory is not acceptable.
+
+- The "oom-notifier" mechanism helps with that.
+
+- When "oom-notifier" is enabled and a hard limit is exceeded:
+
+  - all processes in the cgroup are frozen,
+
+  - a notification is sent to user space (instead of killing processes),
+
+  - user space can then raise limits, migrate containers, etc.,
+
+  - once the memory usage is below the hard limit, unfreeze the cgroup.
+
+---
+
+class: extra-details, deep-dive
+
+## Overhead of the memory cgroup
+
+- Each time a process grabs or releases a page, the kernel update counters.
+
+- This adds some overhead.
+
+- Unfortunately, this cannot be enabled/disabled per process.
+
+- It has to be done system-wide, at boot time.
+
+- Also, when multiple groups use the same page:
+
+  - only the first group gets "charged",
+
+  - but if it stops using it, the "charge" is moved to another group.
+
+---
+
+class: extra-details, deep-dive
+
+## Setting up a limit with the memory cgroup
+
+Create a new memory cgroup:
+
+```bash
+$ CG=/sys/fs/cgroup/memory/onehundredmegs
+$ sudo mkdir $CG
+```
+
+Limit it to approximately 100MB of memory usage:
+
+```bash
+$ sudo tee $CG/memory.memsw.limit_in_bytes <<< 100000000
+```
+
+Move the current process to that cgroup:
+
+```bash
+$ sudo tee $CG/tasks <<< $$
+```
+
+The current process *and all its future children* are now limited.
+
+(Confused about `<<<`? Look at the next slide!)
+
+---
+
+class: extra-details, deep-dive
+
+## What's `<<<`?
+
+- This is a "here string". (It is a non-POSIX shell extension.)
+
+- The following commands are equivalent:
+
+  ```bash
+  foo <<< hello
+  ```
+
+  ```bash
+  echo hello | foo
+  ```
+
+  ```bash
+  foo <<EOF
+  hello
+  EOF
+  ```
+
+- Why did we use that?
+
+---
+
+class: extra-details, deep-dive
+
+## Writing to cgroups pseudo-files requires root
+
+Instead of:
+
+```bash
+sudo tee $CG/tasks <<< $$
+```
+
+We could have done:
+
+```bash
+sudo sh -c "echo $$ > $CG/tasks"
+```
+
+The following commands, however, would be invalid:
+
+```bash
+sudo echo $$ > $CG/tasks
+```
+
+```bash
+sudo -i # (or su)
+echo $$ > $CG/tasks
+```
+
+---
+
+class: extra-details, deep-dive
+
+## Testing the memory limit
+
+Start the Python interpreter:
+
+```bash
+$ python
+Python 3.6.4 (default, Jan  5 2018, 02:35:40)
+[GCC 7.2.1 20171224] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+```
+
+Allocate 80 megabytes:
+
+```python
+>>> s = "!" * 1000000 * 80
+```
+
+Add 20 megabytes more:
+
+```python
+>>> t = "!" * 1000000 * 20
+Killed
+```
+
+---
+
+## Memory cgroup v2: limits
+
+- `memory.min` = hard reservation (guaranteed memory for this cgroup)
+
+- `memory.low` = soft reservation ("*try* not to reclaim memory if we're below this")
+
+- `memory.high` = soft limit (aggressively reclaim memory; don't trigger OOMK)
+
+- `memory.max` = hard limit (triggers OOMK)
+
+- `memory.swap.high` = aggressively reclaim memory when using that much swap
+
+- `memory.swap.max` = prevent using more swap than this
+
+---
+
+## CPU cgroup
+
+- Keeps track of CPU time used by a group of processes.
+
+  (This is easier and more accurate than `getrusage` and `/proc`.)
+
+- Keeps track of usage per CPU as well.
+
+  (i.e., "this group of process used X seconds of CPU0 and Y seconds of CPU1".)
+
+- Allows setting relative weights used by the scheduler.
+
+---
+
+## Cpuset cgroup
+
+- Pin groups to specific CPU(s).
+
+- Use-case: reserve CPUs for specific apps.
+
+- Warning: make sure that "default" processes aren't using all CPUs!
+
+- CPU pinning can also avoid performance loss due to cache flushes.
+
+- This is also relevant for NUMA systems.
+
+- Provides extra dials and knobs.
+
+  (Per zone memory pressure, process migration costs...)
+
+---
+
+## Blkio cgroup
+
+- Keeps track of I/Os for each group:
+
+  - per block device
+  - read vs write
+  - sync vs async
+
+- Set throttle (limits) for each group:
+
+  - per block device
+  - read vs write
+  - ops vs bytes
+
+- Set relative weights for each group.
+
+- Note: most writes go through the page cache.
+  <br/>(So classic writes will appear to be unthrottled at first.)
+
+---
+
+## Net_cls and net_prio cgroup
+
+- Only works for egress (outgoing) traffic.
+
+- Automatically set traffic class or priority
+  for traffic generated by processes in the group.
+
+- Net_cls will assign traffic to a class.
+
+- Classes have to be matched with tc or iptables, otherwise traffic just flows normally.
+
+- Net_prio will assign traffic to a priority.
+
+- Priorities are used by queuing disciplines.
+
+---
+
+## Devices cgroup
+
+- Controls what the group can do on device nodes
+
+- Permissions include read/write/mknod
+
+- Typical use:
+
+  - allow `/dev/{tty,zero,random,null}` ...
+  - deny everything else
+
+- A few interesting nodes:
+
+  - `/dev/net/tun` (network interface manipulation)
+  - `/dev/fuse` (filesystems in user space)
+  - `/dev/kvm` (VMs in containers, yay inception!)
+  - `/dev/dri` (GPU)
+
+---
+
 # Namespaces
 
 - Provide processes with their own view of the system.
@@ -46,6 +472,8 @@ The last item should be done for educational purposes only!
   - uts
   - ipc
   - user
+  - time
+  - cgroup
 
   (We are going to detail them individually.)
 
@@ -619,411 +1047,25 @@ class: extra-details, deep-dive
 
 ---
 
-# Control groups
+## Time namespace
 
-- Control groups provide resource *metering* and *limiting*.
+- Virtualize time
 
-- This covers a number of "usual suspects" like:
+- Expose a slower/faster clock to some processes
 
-  - memory
+  (for e.g. simulation purposes)
 
-  - CPU
+- Expose a clock offset to some processes
 
-  - block I/O
-
-  - network (with cooperation from iptables/tc)
-
-- And a few exotic ones:
-
-  - huge pages (a special way to allocate memory)
-
-  - RDMA (resources specific to InfiniBand / remote memory transfer)
+  (simulation, suspend/restore...)
 
 ---
 
-## Crowd control
+## Cgroup namespace
 
-- Control groups also allow to group processes for special operations:
+- Virtualize access to `/proc/<PID>/cgroup`
 
-  - freezer (conceptually similar to a "mass-SIGSTOP/SIGCONT")
-
-  - perf_event (gather performance events on multiple processes)
-
-  - cpuset (limit or pin processes to specific CPUs)
-
-- There is a "pids" cgroup to limit the number of processes in a given group.
-
-- There is also a "devices" cgroup to control access to device nodes.
-
-  (i.e. everything in `/dev`.)
-
----
-
-## Generalities
-
-- Cgroups form a hierarchy (a tree).
-
-- We can create nodes in that hierarchy.
-
-- We can associate limits to a node.
-
-- We can move a process (or multiple processes) to a node.
-
-- The process (or processes) will then respect these limits.
-
-- We can check the current usage of each node.
-
-- In other words: limits are optional (if we only want accounting).
-
-- When a process is created, it is placed in its parent's groups.
-
----
-
-## Example
-
-The numbers are PIDs.
-
-The names are the names of our nodes (arbitrarily chosen).
-
-.small[
-```bash
-cpu                      memory
-├── batch                ├── stateless
-│   ├── cryptoscam       │   ├── 25
-│   │   └── 52           │   ├── 26
-│   └── ffmpeg           │   ├── 27
-│       ├── 109          │   ├── 52
-│       └── 88           │   ├── 109
-└── realtime             │   └── 88
-    ├── nginx            └── databases
-    │   ├── 25               ├── 1008
-    │   ├── 26               └── 524
-    │   └── 27
-    ├── postgres
-    │   └── 524
-    └── redis
-        └── 1008
-```
-]
-
----
-
-class: extra-details, deep-dive
-
-## Cgroups v1 vs v2
-
-- Cgroups v1 are available on all systems (and widely used).
-
-- Cgroups v2 are a huge refactor.
-
-  (Development started in Linux 3.10, released in 4.5.)
-
-- Cgroups v2 have a number of differences:
-
-  - single hierarchy (instead of one tree per controller),
-
-  - processes can only be on leaf nodes (not inner nodes),
-
-  - and of course many improvements / refactorings.
-
----
-
-## Memory cgroup: accounting
-
-- Keeps track of pages used by each group:
-
-  - file (read/write/mmap from block devices),
-  - anonymous (stack, heap, anonymous mmap),
-  - active (recently accessed),
-  - inactive (candidate for eviction).
-
-- Each page is "charged" to a group.
-
-- Pages can be shared across multiple groups.
-
-  (Example: multiple processes reading from the same files.)
-
-- To view all the counters kept by this cgroup:
-
-  ```bash
-  $ cat /sys/fs/cgroup/memory/memory.stat
-  ```
-
----
-
-## Memory cgroup: limits
-
-- Each group can have (optional) hard and soft limits.
-
-- Limits can be set for different kinds of memory:
-
-  - physical memory,
-
-  - kernel memory,
-
-  - total memory (including swap).
-
----
-
-## Soft limits and hard limits
-
-- Soft limits are not enforced.
-
-  (But they influence reclaim under memory pressure.)
-
-- Hard limits *cannot* be exceeded:
-
-  - if a group of processes exceeds a hard limit,
-
-  - and if the kernel cannot reclaim any memory,
-
-  - then the OOM (out-of-memory) killer is triggered,
-
-  - and processes are killed until memory gets below the limit again.
-
----
-
-class: extra-details, deep-dive
-
-## Avoiding the OOM killer
-
-- For some workloads (databases and stateful systems), killing
-  processes because we run out of memory is not acceptable.
-
-- The "oom-notifier" mechanism helps with that.
-
-- When "oom-notifier" is enabled and a hard limit is exceeded:
-
-  - all processes in the cgroup are frozen,
-
-  - a notification is sent to user space (instead of killing processes),
-
-  - user space can then raise limits, migrate containers, etc.,
-
-  - once the memory usage is below the hard limit, unfreeze the cgroup.
-
----
-
-class: extra-details, deep-dive
-
-## Overhead of the memory cgroup
-
-- Each time a process grabs or releases a page, the kernel update counters.
-
-- This adds some overhead.
-
-- Unfortunately, this cannot be enabled/disabled per process.
-
-- It has to be done system-wide, at boot time.
-
-- Also, when multiple groups use the same page:
-
-  - only the first group gets "charged",
-
-  - but if it stops using it, the "charge" is moved to another group.
-
----
-
-class: extra-details, deep-dive
-
-## Setting up a limit with the memory cgroup
-
-Create a new memory cgroup:
-
-```bash
-$ CG=/sys/fs/cgroup/memory/onehundredmegs
-$ sudo mkdir $CG
-```
-
-Limit it to approximately 100MB of memory usage:
-
-```bash
-$ sudo tee $CG/memory.memsw.limit_in_bytes <<< 100000000
-```
-
-Move the current process to that cgroup:
-
-```bash
-$ sudo tee $CG/tasks <<< $$
-```
-
-The current process *and all its future children* are now limited.
-
-(Confused about `<<<`? Look at the next slide!)
-
----
-
-class: extra-details, deep-dive
-
-## What's `<<<`?
-
-- This is a "here string". (It is a non-POSIX shell extension.)
-
-- The following commands are equivalent:
-
-  ```bash
-  foo <<< hello
-  ```
-
-  ```bash
-  echo hello | foo
-  ```
-
-  ```bash
-  foo <<EOF
-  hello
-  EOF
-  ```
-
-- Why did we use that?
-
----
-
-class: extra-details, deep-dive
-
-## Writing to cgroups pseudo-files requires root
-
-Instead of:
-
-```bash
-sudo tee $CG/tasks <<< $$
-```
-
-We could have done:
-
-```bash
-sudo sh -c "echo $$ > $CG/tasks"
-```
-
-The following commands, however, would be invalid:
-
-```bash
-sudo echo $$ > $CG/tasks
-```
-
-```bash
-sudo -i # (or su)
-echo $$ > $CG/tasks
-```
-
----
-
-class: extra-details, deep-dive
-
-## Testing the memory limit
-
-Start the Python interpreter:
-
-```bash
-$ python
-Python 3.6.4 (default, Jan  5 2018, 02:35:40)
-[GCC 7.2.1 20171224] on linux
-Type "help", "copyright", "credits" or "license" for more information.
->>>
-```
-
-Allocate 80 megabytes:
-
-```python
->>> s = "!" * 1000000 * 80
-```
-
-Add 20 megabytes more:
-
-```python
->>> t = "!" * 1000000 * 20
-Killed
-```
-
----
-
-## CPU cgroup
-
-- Keeps track of CPU time used by a group of processes.
-
-  (This is easier and more accurate than `getrusage` and `/proc`.)
-
-- Keeps track of usage per CPU as well.
-
-  (i.e., "this group of process used X seconds of CPU0 and Y seconds of CPU1".)
-
-- Allows setting relative weights used by the scheduler.
-
----
-
-## Cpuset cgroup
-
-- Pin groups to specific CPU(s).
-
-- Use-case: reserve CPUs for specific apps.
-
-- Warning: make sure that "default" processes aren't using all CPUs!
-
-- CPU pinning can also avoid performance loss due to cache flushes.
-
-- This is also relevant for NUMA systems.
-
-- Provides extra dials and knobs.
-
-  (Per zone memory pressure, process migration costs...)
-
----
-
-## Blkio cgroup
-
-- Keeps track of I/Os for each group:
-
-  - per block device
-  - read vs write
-  - sync vs async
-
-- Set throttle (limits) for each group:
-
-  - per block device
-  - read vs write
-  - ops vs bytes
-
-- Set relative weights for each group.
-
-- Note: most writes go through the page cache.
-  <br/>(So classic writes will appear to be unthrottled at first.)
-
----
-
-## Net_cls and net_prio cgroup
-
-- Only works for egress (outgoing) traffic.
-
-- Automatically set traffic class or priority
-  for traffic generated by processes in the group.
-
-- Net_cls will assign traffic to a class.
-
-- Classes have to be matched with tc or iptables, otherwise traffic just flows normally.
-
-- Net_prio will assign traffic to a priority.
-
-- Priorities are used by queuing disciplines.
-
----
-
-## Devices cgroup
-
-- Controls what the group can do on device nodes
-
-- Permissions include read/write/mknod
-
-- Typical use:
-
-  - allow `/dev/{tty,zero,random,null}` ...
-  - deny everything else
-
-- A few interesting nodes:
-
-  - `/dev/net/tun` (network interface manipulation)
-  - `/dev/fuse` (filesystems in user space)
-  - `/dev/kvm` (VMs in containers, yay inception!)
-  - `/dev/dri` (GPU)
+- Lets containerized processes view their relative cgroup tree
 
 ---
 
@@ -1126,8 +1168,8 @@ See `man capabilities` for the full list and details.
 ???
 
 :EN:Containers internals
-:EN:- Linux kernel namespaces
 :EN:- Control groups (cgroups)
+:EN:- Linux kernel namespaces
 :FR:Fonctionnement interne des conteneurs
-:FR:- Les namespaces du noyau Linux
 :FR:- Les "control groups" (cgroups)
+:FR:- Les namespaces du noyau Linux
