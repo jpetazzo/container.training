@@ -62,6 +62,7 @@ content:
   - containers/Container_Engines.md
   - containers/Init_Systems.md
   - containers/Advanced_Dockerfiles.md
+  - containers/Buildkit.md
 -
   - containers/Application_Configuration.md
   - containers/Logging.md

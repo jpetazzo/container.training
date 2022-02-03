@@ -56,6 +56,7 @@ content:
   - containers/Exercise_Dockerfile_Advanced.md
   #- containers/Docker_Machine.md
   #- containers/Advanced_Dockerfiles.md
+  #- containers/Buildkit.md
   #- containers/Init_Systems.md
   #- containers/Application_Configuration.md
   #- containers/Logging.md
