@@ -30,9 +30,9 @@
 
   - ReadWriteOncePod (only one pod can access the volume; new in Kubernetes 1.22)
 
-- A PV lists the access modes that it requires
+- A PVC lists the access modes that it requires
 
-- A PVC lists the access modes that it supports
+- A PV lists the access modes that it supports
 
 ⚠️ A PV with only ReadWriteMany won't satisfy a PVC with ReadWriteOnce!
 
