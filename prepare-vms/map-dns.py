@@ -60,7 +60,10 @@ while domains and clusters:
     zone += f"node{node} 300 IN A {ip}\n"
   r = requests.put(
     f"{apiurl}/{domain}/records",
-    headers={"x-api-key": apikey},
+    headers={
+      "x-api-key": apikey,
+      "content-type": "text/plain",
+    },
     data=zone)
   print(r.text)
 
