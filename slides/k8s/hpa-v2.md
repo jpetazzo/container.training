@@ -511,20 +511,18 @@ no custom metrics API (custom.metrics.k8s.io) registered
 Here is the rule that we need to add to the configuration:
 
 ```yaml
-    - seriesQuery: |
-        httplat_latency_seconds_sum{kubernetes_namespace!="",kubernetes_name!=""}
+    - seriesQuery: 'httplat_latency_seconds_sum{namespace!="",service!=""}'
       resources:
         overrides:
-          kubernetes_namespace:
+          namespace:
             resource: namespace
-          kubernetes_name:
+          service:
             resource: service
       name:
         matches: "httplat_latency_seconds_sum"
         as: "httplat_latency_seconds"
       metricsQuery: |
-        rate(httplat_latency_seconds_sum{<<.LabelMatchers>>}[2m])
-        /rate(httplat_latency_seconds_count{<<.LabelMatchers>>}[2m])
+        rate(httplat_latency_seconds_sum{<<.LabelMatchers>>}[2m])/rate(httplat_latency_seconds_count{<<.LabelMatchers>>}[2m])
 ```
 
 (I built it following the [walkthrough](https://github.com/DirectXMan12/k8s-prometheus-adapter/blob/master/docs/config-walkthrough.md
