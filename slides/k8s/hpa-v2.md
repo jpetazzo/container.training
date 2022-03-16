@@ -538,7 +538,7 @@ Here is the rule that we need to add to the configuration:
 
 - Edit the adapter's ConfigMap:
   ```bash
-  kubectl edit configmap prometheus-adapter --namespace=kube-system
+  kubectl edit configmap prometheus-adapter --namespace=prometheus-adapter
   ```
 
 - Add the new rule in the `rules` section, at the end of the configuration file
@@ -547,7 +547,7 @@ Here is the rule that we need to add to the configuration:
 
 - Restart the Prometheus adapter:
   ```bash
-  kubectl rollout restart deployment --namespace=kube-system prometheus-adapter
+  kubectl rollout restart deployment --namespace=prometheus-adapter prometheus-adapter
   ```
 
 ]
