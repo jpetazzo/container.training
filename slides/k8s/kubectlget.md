@@ -460,9 +460,9 @@ class: extra-details
 
   (i.e. node regularly pinging the control plane to say "I'm alive!")
 
-- For more details, see [KEP-0009] or the [node controller documentation]
+- For more details, see [Efficient Node Heartbeats KEP] or the [node controller documentation]
 
-[KEP-0009]: https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/0009-node-heartbeat.md
+[Efficient Node Heartbeats KEP]: https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/589-efficient-node-heartbeats/README.md
 [node controller documentation]: https://kubernetes.io/docs/concepts/architecture/nodes/#node-controller
 
 ---
