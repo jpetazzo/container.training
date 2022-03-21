@@ -1,4 +1,4 @@
-# Managing configuration
+# Managing configuration (in a nutshell)
 
 - Some applications need to be configured (obviously!)
 

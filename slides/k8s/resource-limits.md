@@ -1,4 +1,4 @@
-# Resource Limits
+# Resource Limits (in a nutshell)
 
 - We can attach resource indications to our pods
 
