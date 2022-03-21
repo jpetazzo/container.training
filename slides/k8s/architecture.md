@@ -14,70 +14,6 @@ Kubernetes also relies on underlying infrastructure:
 
 ---
 
-## Control plane location
-
-The control plane can run:
-
-- in containers, on the same nodes that run other application workloads
-
-  (default behavior for local clusters like [Minikube](https://github.com/kubernetes/minikube), [kind](https://kind.sigs.k8s.io/)...)
-
-- on a dedicated node
-
-  (default behavior when deploying with kubeadm)
-
-- on a dedicated set of nodes
-
-  ([Kubernetes The Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way); [kops](https://github.com/kubernetes/kops); also kubeadm)
-
-- outside of the cluster
-
-  (most managed clusters like AKS, DOK, EKS, GKE, Kapsule, LKE, OKE...)
-
----
-
-class: pic
-
-![](images/control-planes/single-node-dev.svg)
-
----
-
-class: pic
-
-![](images/control-planes/managed-kubernetes.svg)
-
----
-
-class: pic
-
-![](images/control-planes/single-control-and-workers.svg)
-
----
-
-class: pic
-
-![](images/control-planes/stacked-control-plane.svg)
-
----
-
-class: pic
-
-![](images/control-planes/non-dedicated-stacked-nodes.svg)
-
----
-
-class: pic
-
-![](images/control-planes/advanced-control-plane.svg)
-
----
-
-class: pic
-
-![](images/control-planes/advanced-control-plane-split-events.svg)
-
----
-
 class: pic
 
 ![Kubernetes architecture diagram: communication between components](images/k8s-arch4-thanks-luxas.png)
@@ -154,6 +90,70 @@ The kubelet agent uses a number of special-purpose protocols and interfaces, inc
   - network plugins are implemented as executable programs invoked by kubelet
   - network plugins provide IPAM
   - network plugins set up network interfaces in pods
+
+---
+
+## Control plane location
+
+The control plane can run:
+
+- in containers, on the same nodes that run other application workloads
+
+  (default behavior for local clusters like [Minikube](https://github.com/kubernetes/minikube), [kind](https://kind.sigs.k8s.io/)...)
+
+- on a dedicated node
+
+  (default behavior when deploying with kubeadm)
+
+- on a dedicated set of nodes
+
+  ([Kubernetes The Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way); [kops](https://github.com/kubernetes/kops); also kubeadm)
+
+- outside of the cluster
+
+  (most managed clusters like AKS, DOK, EKS, GKE, Kapsule, LKE, OKE...)
+
+---
+
+class: pic
+
+![](images/control-planes/single-node-dev.svg)
+
+---
+
+class: pic
+
+![](images/control-planes/managed-kubernetes.svg)
+
+---
+
+class: pic
+
+![](images/control-planes/single-control-and-workers.svg)
+
+---
+
+class: pic
+
+![](images/control-planes/stacked-control-plane.svg)
+
+---
+
+class: pic
+
+![](images/control-planes/non-dedicated-stacked-nodes.svg)
+
+---
+
+class: pic
+
+![](images/control-planes/advanced-control-plane.svg)
+
+---
+
+class: pic
+
+![](images/control-planes/advanced-control-plane-split-events.svg)
 
 ---
 
