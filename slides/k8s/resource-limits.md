@@ -697,13 +697,9 @@ class: extra-details
   - gives PromQL expressions to compute good values
     <br/>(our app needs to be running for a while)
 
-- [Kube Resource Report](https://github.com/hjacobs/kube-resource-report/)
+- [Kube Resource Report](https://codeberg.org/hjacobs/kube-resource-report)
 
   - generates web reports on resource usage
-
-  - [static demo](https://hjacobs.github.io/kube-resource-report/sample-report/output/index.html)
-    |
-    [live demo](https://kube-resource-report.demo.j-serv.de/applications.html)
 
 ???
 
