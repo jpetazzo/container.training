@@ -168,7 +168,7 @@ class: extra-details
 
   (`O=system:nodes`, `CN=system:node:name-of-the-node`)
 
-- The Kubernetse API can act as a CA
+- The Kubernetes API can act as a CA
 
   (by wrapping an X509 CSR into a CertificateSigningRequest resource)
 

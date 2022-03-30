@@ -127,7 +127,7 @@ class: extra-details
   - either directly
 
   - or by extending the API server
-    <br/>(for instance by using the agregation layer, like [metrics server](https://github.com/kubernetes-incubator/metrics-server) does)
+    <br/>(for instance by using the aggregation layer, like [metrics server](https://github.com/kubernetes-incubator/metrics-server) does)
 
 ---
 

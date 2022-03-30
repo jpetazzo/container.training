@@ -99,9 +99,9 @@ Pros:
 
 - That Pod will fetch metrics from all our Nodes
 
-- It will expose them through the Kubernetes API agregation layer
+- It will expose them through the Kubernetes API aggregation layer
 
-  (we won't say much more about that agregation layer; that's fairly advanced stuff!)
+  (we won't say much more about that aggregation layer; that's fairly advanced stuff!)
 
 ---
 
@@ -128,7 +128,7 @@ Pros:
 
 - `apiService.create=true`
 
-  register `metrics-server` with the Kubernetes agregation layer
+  register `metrics-server` with the Kubernetes aggregation layer
 
   (create an entry that will show up in `kubectl get apiservices`)
 

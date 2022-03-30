@@ -66,7 +66,7 @@
 
 Where do that `repository` and `version` come from?
 
-We're assuming here that we did our reserach,
+We're assuming here that we did our research,
 or that our resident Helm expert advised us to
 use Bitnami's Redis chart.
 
