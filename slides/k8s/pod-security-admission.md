@@ -6,7 +6,7 @@
 
 - Easier to use
 
-  (doesn't require complex interaction bewteen policies and RBAC)
+  (doesn't require complex interaction between policies and RBAC)
 
 ---
 
@@ -206,7 +206,7 @@ class: extra-details
 
 - If new namespaces are created, they will get default permissions
 
-- We can change that be using an *admission configuration*
+- We can change that by using an *admission configuration*
 
 - Step 1: write an "admission configuration file"
 
@@ -232,7 +232,7 @@ Let's use @@LINK[k8s/admission-configuration.yaml]:
 
 - For convenience, let's copy it do `/etc/kubernetes/pki`
 
-  (it's definitely where it *should* be, but that'll do!)
+  (it's definitely not where it *should* be, but that'll do!)
 
 
 .lab[

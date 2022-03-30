@@ -72,7 +72,7 @@
 
 ## Accessing private repositories
 
-- Let's see how to access an image on private registry!
+- Let's see how to access an image on a private registry!
 
 - These images are protected by a username + password
 
@@ -243,7 +243,7 @@ class: extra-details
 
 ## Encryption at rest
 
-- It is possible to [encrypted secrets at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/)
+- It is possible to [encrypt secrets at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/)
 
 - This means that secrets will be safe if someone ...
 

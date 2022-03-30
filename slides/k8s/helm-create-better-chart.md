@@ -157,7 +157,7 @@ class: extra-details
 
   (as opposed to, e.g., installing a new release each time we run it)
 
-- Other example: `kubectl -f some-file.yaml`
+- Other example: `kubectl apply -f some-file.yaml`
 
 ---
 
