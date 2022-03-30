@@ -192,7 +192,7 @@ Pros:
 
 - kube-resource-report can generate HTML reports
 
-  (https://github.com/hjacobs/kube-resource-report)
+  (https://codeberg.org/hjacobs/kube-resource-report)
 
 ???
 
