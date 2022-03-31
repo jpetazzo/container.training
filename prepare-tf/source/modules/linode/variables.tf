@@ -53,5 +53,5 @@ variable "location" {
 # linode-cli lke versions-list --json | jq -r .[].id
 variable "k8s_version" {
   type    = string
-  default = "1.21"
+  default = "1.22"
 }
