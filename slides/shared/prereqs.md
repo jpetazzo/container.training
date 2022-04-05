@@ -1,4 +1,4 @@
-# Pre-requirements
+## Pre-requirements
 
 - Be comfortable with the UNIX command line
 
@@ -8,15 +8,13 @@
 
   - a little bit of bash-fu (environment variables, loops)
 
-- Some Docker knowledge
+- Some Kubernetes knowledge
 
-  - `docker run`, `docker ps`, `docker build`
+  - Pods, Deployments, Services
 
-  - ideally, you know how to write a Dockerfile and build it
-    <br/>
-    (even if it's a `FROM` line and a couple of `RUN` commands)
+  - labels, selectors
 
-- It's totally OK if you are not a Docker expert!
+- It's totally OK if you are not a Kubernetes expert!
 
 ---
 
