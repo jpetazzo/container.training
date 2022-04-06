@@ -151,3 +151,8 @@ on my needs) to be deployed into its specific Kubernetes Namespace.*
 - Improvement idea: this operator could generate *events*
 
   (visible with `kubectl get events` and `kubectl describe`)
+
+???
+
+:EN:- How to write a simple operator with shell scripts
+:FR:- Comment écrire un opérateur simple en shell script
