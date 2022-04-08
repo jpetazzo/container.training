@@ -427,6 +427,9 @@ EOF
     pssh "
     if i_am_first_node; then
 	kubectl apply -f https://raw.githubusercontent.com/jpetazzo/container.training/master/k8s/metrics-server.yaml
+    #helm upgrade --install metrics-server \
+    #     --repo https://kubernetes-sigs.github.io/metrics-server/ metrics-server \
+    #     --namespace kube-system --set args={--kubelet-insecure-tls}
     fi"
 }
 
