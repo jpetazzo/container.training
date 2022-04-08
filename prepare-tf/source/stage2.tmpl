@@ -145,23 +145,15 @@ resource "helm_release" "metrics_server_${index}" {
   # but only if it's not already installed.
   count = yamldecode(file("./flags.${index}"))["has_metrics_server"] ? 0 : 1
   provider = helm.cluster_${index}
-  repository = "https://charts.bitnami.com/bitnami"
+  repository = "https://kubernetes-sigs.github.io/metrics-server/"
   chart = "metrics-server"
-  version = "5.8.8"
+  version = "3.8.2"
   name = "metrics-server"
   namespace = "metrics-server"
   create_namespace = true
   set {
-    name = "apiService.create"
-    value = "true"
-  }
-  set {
-    name = "extraArgs.kubelet-insecure-tls"
-    value = "true"
-  }
-  set {
-    name = "extraArgs.kubelet-preferred-address-types"
-    value = "InternalIP"
+    name = "args"
+    value = "{--kubelet-insecure-tls}"
   }
 }
 
