@@ -210,25 +210,54 @@ Ah, right ...
 
 ## Running Tilt on a remote machine
 
-- If Tilt runs remotely, we can't access http://localhost:10350
+- If Tilt runs remotely, we can't access `http://localhost:10350`
 
-- Our Tiltfile includes an ngrok tunnel, let's use that
+- We'll need to tell Tilt to listen to `0.0.0.0`
 
-- Start Tilt:
-  ```bash
-  tilt up
-  ```
+  (instead of just `localhost`)
 
-- The ngrok URL should appear in the Tilt output
+- If we run Tilt in a Pod, we need to expose port 10350 somehow
 
-  (something like `https://xxxx-aa-bb-cc-dd.ngrok.io/`)
-
-- Open that URL in your browser
-
-*Note: it's also possible to run `tilt up --host=0.0.0.0`.*
+  (and Tilt needs to listen on `0.0.0.0`, too)
 
 ---
 
+## Telling Tilt to listen in `0.0.0.0`
+
+- This can be done with the `--host` flag:
+  ```bash
+  tilt --host=0.0.0.0
+  ```
+
+- Or by setting the `TILT_HOST` environment variable:
+  ```bash
+  export TILT_HOST=0.0.0.0
+  tilt up
+  ```
+
+---
+
+## Running Tilt in a Pod
+
+If you use `shpod`, you can use the following command:
+
+```bash
+kubectl patch service shpod --namespace shpod -p "
+spec:
+  ports:
+  - name: tilt
+    port: 10350
+    targetPort: 10350
+    nodePort: 30150
+    protocol: TCP
+"
+```
+
+Then connect to port 30150 on any of your nodes.
+
+If you use something else than `shpod`, adapt these instructions!
+
+---
 class: extra-details
 
 ## Kubernetes contexts

@@ -48,20 +48,25 @@ k8s_yaml('../k8s/dockercoins.yaml')
 # The following line lets Tilt run with the default kubeadm cluster-admin context.
 allow_k8s_contexts('kubernetes-admin@kubernetes')
 
-# This will run an ngrok tunnel to expose Tilt to the outside world.
-# This is intended to be used when Tilt runs on a remote machine.
-local_resource(name='ngrok:tunnel', serve_cmd='ngrok http 10350')
+# Note: the whole section below (to set up ngrok tunnels) is disabled,
+# because ngrok now requires to set up an account to serve HTML
+# content. So we can still use ngrok for e.g. webhooks and "raw" APIs,
+# but not to serve web pages like the Tilt UI.
 
-# This will wait until the ngrok tunnel is up, and show its URL to the user.
-# We send the output to /dev/tty so that it doesn't get intercepted by
-# Tilt, and gets displayed to the user's terminal instead.
-# Note: this assumes that the ngrok instance will be running on port 4040.
-# If you have other ngrok instances running on the machine, this might not work.
-local_resource(name='ngrok:showurl', cmd='''
-  while sleep 1; do
-    TUNNELS=$(curl -fsSL http://localhost:4040/api/tunnels | jq -r .tunnels[].public_url)
-    [ "$TUNNELS" ] && break
-  done
-  printf "\nYou should be able to connect to the Tilt UI with the following URL(s): %s\n" "$TUNNELS" >/dev/tty
-  '''
-)
+# # This will run an ngrok tunnel to expose Tilt to the outside world.
+# # This is intended to be used when Tilt runs on a remote machine.
+# local_resource(name='ngrok:tunnel', serve_cmd='ngrok http 10350')
+
+# # This will wait until the ngrok tunnel is up, and show its URL to the user.
+# # We send the output to /dev/tty so that it doesn't get intercepted by
+# # Tilt, and gets displayed to the user's terminal instead.
+# # Note: this assumes that the ngrok instance will be running on port 4040.
+# # If you have other ngrok instances running on the machine, this might not work.
+# local_resource(name='ngrok:showurl', cmd='''
+#   while sleep 1; do
+#     TUNNELS=$(curl -fsSL http://localhost:4040/api/tunnels | jq -r .tunnels[].public_url)
+#     [ "$TUNNELS" ] && break
+#   done
+#   printf "\nYou should be able to connect to the Tilt UI with the following URL(s): %s\n" "$TUNNELS" >/dev/tty
+#   '''
+# )
