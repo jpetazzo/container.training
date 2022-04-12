@@ -54,9 +54,7 @@
 
 - The official installation is done through a single YAML file
 
-- There is also a Helm chart if you prefer that
-
-  (if you're using Kubernetes 1.22+, see next slide!)
+- There is also a Helm chart if you prefer that (see next slide!)
 
 <!-- #VERSION# -->
 
@@ -66,7 +64,7 @@
   .small[
   ```bash
     kubectl apply -f \
-            https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.16.0/controller.yaml
+            https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.4/controller.yaml
   ```
   ]
 
@@ -80,15 +78,9 @@ If you change that, you will also need to inform `kubeseal` later on.
 
 class: extra-details
 
-## Sealed Secrets on Kubernetes 1.22
+## Installing with Helm
 
-- As of version 0.16, Sealed Secrets manifests uses RBAC v1beta1
-
-- RBAC v1beta1 isn't supported anymore in Kubernetes 1.22
-
-- Sealed Secerets Helm chart provides manifests using RBAC v1
-
-- Conclusion: to install Sealed Secrets on Kubernetes 1.22, use the Helm chart:
+- The Sealed Secrets controller can be installed like this:
 
   ```bash
     helm install --repo https://bitnami-labs.github.io/sealed-secrets/ \

@@ -598,16 +598,16 @@ EOF
     fi"
 
     ##VERSION## https://github.com/bitnami-labs/sealed-secrets/releases
-    KUBESEAL_VERSION=v0.16.0
-    case $ARCH in
-    amd64) FILENAME=kubeseal-linux-amd64;;
-    arm64) FILENAME=kubeseal-arm64;;
-    *)     FILENAME=nope;;
-    esac
-    [ "$FILENAME" = "nope" ] || pssh "
+    KUBESEAL_VERSION=0.17.4
+    #case $ARCH in
+    #amd64) FILENAME=kubeseal-linux-amd64;;
+    #arm64) FILENAME=kubeseal-arm64;;
+    #*)     FILENAME=nope;;
+    #esac
+    pssh "
     if [ ! -x /usr/local/bin/kubeseal ]; then
-        curl -fsSLo kubeseal https://github.com/bitnami-labs/sealed-secrets/releases/download/$KUBESEAL_VERSION/$FILENAME &&
-        sudo install kubeseal /usr/local/bin
+        curl -fsSL https://github.com/bitnami-labs/sealed-secrets/releases/download/v$KUBESEAL_VERSION/kubeseal-$KUBESEAL_VERSION-linux-$ARCH.tar.gz |
+        sudo tar -zxvf- -C /usr/local/bin kubeseal
         kubeseal --version
     fi"
 }
