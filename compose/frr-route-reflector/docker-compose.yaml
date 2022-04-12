@@ -2,30 +2,36 @@ version: "3"
 
 services:
   bgpd:
-    image: ajones17/frr:662
+    image: frrouting/frr:v8.2.2
     volumes:
     - ./conf:/etc/frr
     - ./run:/var/run/frr
     network_mode: host
-    entrypoint: /usr/lib/frr/bgpd -f /etc/frr/bgpd.conf --log=stdout --log-level=debug --no_kernel
+    cap_add:
+    - NET_ADMIN
+    - SYS_ADMIN
+    entrypoint: /usr/lib/frr/bgpd -f /etc/frr/bgpd.conf --log=stdout --log-level=debug --no_kernel --no_zebra
     restart: always
 
   zebra:
-    image: ajones17/frr:662
+    image: frrouting/frr:v8.2.2
     volumes:
     - ./conf:/etc/frr
     - ./run:/var/run/frr
     network_mode: host
+    cap_add:
+    - NET_ADMIN
+    - SYS_ADMIN
     entrypoint: /usr/lib/frr/zebra -f /etc/frr/zebra.conf --log=stdout --log-level=debug
     restart: always
 
   vtysh:
-    image: ajones17/frr:662
+    image: frrouting/frr:v8.2.2
     volumes:
     - ./conf:/etc/frr
     - ./run:/var/run/frr
     network_mode: host
-    entrypoint: vtysh -c "show ip bgp"
+    entrypoint: vtysh
 
   chmod:
     image: alpine
