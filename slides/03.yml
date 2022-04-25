@@ -1,0 +1,114 @@
+title: |
+  Docker & Kubernetes
+
+chat: "[Teams](https://teams.microsoft.com/l/team/19%3aMhQUes73UU8qA8zZDA7b7ZAbQRZUxEdanl5bbN4A1EM1%40thread.tacv2/conversations?groupId=44c2561d-82c8-4db0-9269-0aa802fa85d8&tenantId=72aa0d83-624a-4ebf-a683-1b9b45548610)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2022-05-derivco.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics-03.md
+- containers/intro.md
+- shared/about-slides.md
+- shared/chat-room-im.md
+#- shared/chat-room-zoom-meeting.md
+#- shared/chat-room-zoom-webinar.md
+- shared/toc.md
+- # DAY 1
+  #- containers/Docker_Overview.md
+  #- containers/Docker_History.md
+  - containers/Training_Environment.md
+  #- containers/Installing_Docker.md
+  - containers/First_Containers.md
+  - containers/Background_Containers.md
+  - containers/Container_Networking_Basics.md
+  - containers/Container_Network_Model.md
+  - containers/Getting_Inside.md
+  - containers/Initial_Images.md
+  - containers/Building_Images_Interactively.md
+  - containers/Building_Images_With_Dockerfiles.md
+  - containers/Cmd_And_Entrypoint.md
+  - containers/Copying_Files_During_Build.md
+  - containers/Exercise_Dockerfile_Basic.md
+- # DAY 2
+  - containers/Dockerfile_Tips.md
+  - containers/Local_Development_Workflow.md
+  - containers/Compose_For_Dev_Stacks.md
+  - containers/Exercise_Composefile.md
+  - |
+    # Kubernetes
+  - shared/connecting.md
+  #- shared/webssh.md
+  #- k8s/versions-k8s.md
+  - shared/sampleapp.md
+  #- shared/composescale.md
+  #- shared/hastyconclusions.md
+  - shared/composedown.md
+  - k8s/concepts-k8s.md
+  - k8s/kubectlget.md
+  - k8s/kubectl-run.md
+  - k8s/kubenet.md
+  - k8s/kubectlexpose.md
+  - k8s/shippingimages.md
+  #- k8s/buildshiprun-selfhosted.md
+  - k8s/buildshiprun-dockerhub.md
+  - exercises/k8sfundamentals-details.md
+- # DAY 3
+  - k8s/ourapponkube.md
+  - k8s/labels-annotations.md
+  - k8s/kubectl-logs.md
+  - k8s/logs-cli.md
+  - k8s/namespaces.md
+  - k8s/yamldeploy.md
+  - shared/declarative.md
+  - k8s/declarative.md
+  - k8s/deploymentslideshow.md
+  - k8s/authoring-yaml.md
+  - k8s/scalingdockercoins.md
+  - shared/hastyconclusions.md
+  - k8s/daemonset.md
+  - k8s/setup-devel.md
+  - k8s/localkubeconfig.md
+  #- k8s/access-eks-cluster.md
+  - k8s/accessinternal.md
+  #- k8s/kubectlproxy.md
+  - exercises/localcluster-details.md
+  - containers/Multi_Stage_Builds.md
+  - containers/Exercise_Dockerfile_Advanced.md
+- # DAY 4
+  - k8s/rollout.md
+  - k8s/healthchecks.md
+  - k8s/volumes.md
+  - k8s/configuration.md
+  - k8s/secrets.md
+  - k8s/resource-limits.md
+  - k8s/helm-intro.md
+  - k8s/helm-chart-format.md
+  - k8s/helm-create-basic-chart.md
+  - k8s/helm-create-better-chart.md
+  - shared/thankyou.md
+- # EXTRA
+  - |
+    # (Extra Docker content)
+  - containers/Start_And_Attach.md
+  - containers/Naming_And_Inspecting.md
+  - containers/Labels.md
+  - containers/Advanced_Dockerfiles.md
+  - containers/Network_Drivers.md
+- # EXTRA
+  - |
+    # (Extra Kubernetes content)
+  - k8s/batch-jobs.md
+  - k8s/netpol.md
+  - k8s/authn-authz.md
+  - k8s/statefulsets.md
+  - k8s/consul.md
+  - k8s/pv-pvc-sc.md
+  - k8s/volume-claim-templates.md
