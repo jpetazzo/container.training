@@ -26,12 +26,24 @@ infra_start() {
         info "          Name: $NAME"
         info " Instance type: $LINODE_TYPE"
         ROOT_PASS="$(base64 /dev/urandom | cut -c1-20 | head -n 1)"
-        linode-cli linodes create \
+        MAX_TRY=5
+        TRY=1
+        WAIT=1
+        while ! linode-cli linodes create \
             --type=${LINODE_TYPE} --region=${LINODE_REGION} \
             --image=linode/ubuntu18.04 \
             --authorized_keys="${LINODE_SSHKEY}" \
             --root_pass="${ROOT_PASS}" \
-            --tags=${TAG} --label=${NAME}
+            --tags=${TAG} --label=${NAME}; do
+              warning "Failed to create VM (attempt $TRY/$MAX_TRY)."
+              if [ $TRY -ge $MAX_TRY ]; then
+                  die "Giving up."
+              fi
+              info "Waiting $WAIT seconds and retrying."
+              sleep $WAIT
+              TRY=$(($TRY+1))
+              WAIT=$(($WAIT*2))
+            done
     done
     sep
 
