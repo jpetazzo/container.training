@@ -317,8 +317,10 @@ class: extra-details
 ## Trash your servers and burn your code
 
 *(This is the title of a
-[2013 blog post](http://chadfowler.com/2013/06/23/immutable-deployments.html)
+[2013 blog post][immutable-deployments]
 by Chad Fowler, where he explains the concept of immutable infrastructure.)*
+
+[immutable-deployments]: https://web.archive.org/web/20160305073617/http://chadfowler.com/blog/2013/06/23/immutable-deployments/
 
 --
 

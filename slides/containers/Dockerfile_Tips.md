@@ -111,7 +111,7 @@ CMD ["python", "app.py"]
     RUN wget http://.../foo.tar.gz \
      && tar -zxf foo.tar.gz \
      && mv foo/fooctl /usr/local/bin \
-     && rm -rf foo
+     && rm -rf foo foo.tar.gz
   ...
   ```
 

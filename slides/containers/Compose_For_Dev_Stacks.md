@@ -58,7 +58,7 @@ class: pic
 
   - it uses different concepts (Compose services ≠ Kubernetes services)
 
-  - it needs a Docker Engine (althought containerd support might be coming)
+  - it needs a Docker Engine (although containerd support might be coming)
 
 ---
 
