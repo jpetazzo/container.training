@@ -13,7 +13,7 @@
 - ... Or be comfortable spending some time reading the Docker
  [documentation](https://docs.docker.com/) ...
 
-- ... And looking for answers in the [Docker forums](forums.docker.com),
+- ... And looking for answers in the [Docker forums](https://forums.docker.com),
   [StackOverflow](http://stackoverflow.com/questions/tagged/docker),
   and other outlets
 
