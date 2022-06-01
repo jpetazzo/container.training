@@ -190,18 +190,24 @@ EOF
 
 ---
 
-## Making sure that a PV was created for our PVC
+## `WaitForFirstConsumer`
 
-- Normally, the `openebs-hostpath` StorageClass created a PV for our PVC
+- Did OpenEBS create a PV for our PVC?
 
 .lab[
 
-- Look at the PV and PVC:
+- Find out:
   ```bash
   kubectl get pv,pvc
   ```
 
 ]
+
+--
+
+- No!
+
+- This is because that class is `WaitForFirstConsumer` instead of `Immediate`
 
 ---
 
@@ -225,6 +231,21 @@ EOF
       volumeMounts:
       - mountPath: /mnt/storage
         name: my-storage
+  ```
+
+]
+
+---
+
+## Making sure that a PV was created for our PVC
+
+- At that point, the `openebs-hostpath` StorageClass created a PV for our PVC
+
+.lab[
+
+- Look at the PV and PVC:
+  ```bash
+  kubectl get pv,pvc
   ```
 
 ]
