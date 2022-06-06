@@ -1,19 +1,58 @@
 # Operators
 
+The Kubernetes documentation describes the [Operator pattern] as follows:
+
+*Operators are software extensions to Kubernetes that make use of custom resources to manage applications and their components. Operators follow Kubernetes principles, notably the control loop.*
+
+Another good definition from [CoreOS](https://coreos.com/blog/introducing-operators.html):
+
 *An operator represents **human operational knowledge in software,**
 <br/>
-to reliably manage an application.
-— [CoreOS](https://coreos.com/blog/introducing-operators.html)*
+to reliably manage an application.*
 
-Examples:
+There are many different use cases spanning different domains; but the general idea is:
 
-- Deploying and configuring replication with MySQL, PostgreSQL ...
+*Manage some resources (that reside inside our outside the cluster),
+<br/>
+using Kubernetes manifests and tooling.*
 
-- Setting up Elasticsearch, Kafka, RabbitMQ, Zookeeper ...
+[Operator pattern]: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
 
-- Reacting to failures when intervention is needed
+---
 
-- Scaling up and down these systems
+## Some uses cases
+
+- Managing external resources ([AWS], [GCP], [KubeVirt]...)
+
+- Setting up database replication or distributed systems
+  <br/>
+  (Cassandra, Consul, CouchDB, ElasticSearch, etcd, Kafka, MongoDB, MySQL, PostgreSQL, RabbitMQ, Redis, ZooKeeper...)
+
+- Running and configuring CI/CD
+  <br/>
+  ([ArgoCD], [Flux]), backups ([Velero]), policies ([Gatekeeper], [Kyverno])...
+
+- Automating management of certificates and secrets
+  <br/>
+  ([cert-manager]), secrets ([External Secrets Operator], [Sealed Secrets]...)
+
+- Configuration of cluster components ([Istio], [Prometheus])
+
+- etc.
+
+[ArgoCD]: https://github.com/argoproj/argo-cd
+[AWS]: https://aws-controllers-k8s.github.io/community/docs/community/services/
+[cert-manager]: https://cert-manager.io/
+[External Secrets Operator]: https://external-secrets.io/
+[Flux]: https://fluxcd.io/
+[Gatekeeper]: https://open-policy-agent.github.io/gatekeeper/website/docs/
+[GCP]: https://github.com/paulczar/gcp-cloud-compute-operator
+[Istio]: https://istio.io/latest/docs/setup/install/operator/
+[KubeVirt]: https://kubevirt.io/
+[Kyverno]: https://kyverno.io/
+[Prometheus]: https://prometheus-operator.dev/
+[Sealed Secrets]: https://github.com/bitnami-labs/sealed-secrets
+[Velero]: https://velero.io/
 
 ---
 
@@ -37,7 +76,7 @@ Examples:
 
 ---
 
-## Why use operators?
+## Operators for e.g. replicated databases
 
 - Kubernetes gives us Deployments, StatefulSets, Services ...
 
@@ -59,38 +98,6 @@ Examples:
 
 ---
 
-## Use-cases for operators
-
-- Systems with primary/secondary replication
-
-  Examples: MariaDB, MySQL, PostgreSQL, Redis ...
-
-- Systems where different groups of nodes have different roles
-
-  Examples: ElasticSearch, MongoDB ...
-
-- Systems with complex dependencies (that are themselves managed with operators)
-
-  Examples: Flink or Kafka, which both depend on Zookeeper
-
----
-
-## More use-cases
-
-- Representing and managing external resources
-
-  (Example: [AWS S3 Operator](https://operatorhub.io/operator/awss3-operator-registry))
-
-- Managing complex cluster add-ons
-
-  (Example: [Istio operator](https://operatorhub.io/operator/istio))
-
-- Deploying and managing our applications' lifecycles
-
-  (more on that later)
-
----
-
 ## How operators work
 
 - An operator creates one or more CRDs
@@ -102,38 +109,6 @@ Examples:
 - Each time we create/update/delete a resource, the controller is notified
 
   (we could write our own cheap controller with `kubectl get --watch`)
-
----
-
-## Deploying our apps with operators
-
-- It is very simple to deploy with `kubectl create deployment` / `kubectl expose`
-
-- We can unlock more features by writing YAML and using `kubectl apply`
-
-- Kustomize or Helm let us deploy in multiple environments
-
-  (and adjust/tweak parameters in each environment)
-
-- We can also use an operator to deploy our application
-
----
-
-## Pros and cons of deploying with operators
-
-- The app definition and configuration is persisted in the Kubernetes API
-
-- Multiple instances of the app can be manipulated with `kubectl get`
-
-- We can add labels, annotations to the app instances
-
-- Our controller can execute custom code for any lifecycle event
-
-- However, we need to write this controller
-
-- We need to be careful about changes
-
-  (what happens when the resource `spec` is updated?)
 
 ---
 
