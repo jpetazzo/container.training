@@ -1,8 +1,8 @@
 ## Introductions
 
-- Hello! I'm Jérôme Petazzoni ([@jpetazzo], Ardan Labs)
+- Hello! I'm [Gerry Seidman](https://www.linkedin.com/in/gerryseidman), Ardan Labs (gerry.seidman@ardanlabs.com)
 
-- The training will run from Monday to Thurday, from 11:00 to 16:00 UTC
+- The training will run Monday to Friday, from 8:00AM to 12:00PM PST (11AM-3PM EST)
 
 - There will be breaks!
 
