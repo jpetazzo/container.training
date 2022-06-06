@@ -100,7 +100,11 @@ _We will give more details about namespaces and cgroups later._
 * But it is easier to use `docker exec`.
 
 ```bash
-$ docker exec -ti ticktock sh
+$ docker ps -lq       # Get Last Container ID
+17e4e95e2702
+$ docker exec 17
+
+$ docker exec -ti $(docker ps -lq) sh  # bash-fu version
 ```
 
 * This creates a new process (running `sh`) _inside_ the container.
