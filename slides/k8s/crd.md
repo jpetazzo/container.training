@@ -105,12 +105,26 @@ spec:
 
 .lab[
 
-- Create a few types of coffee beans:
+- Try to create a few types of coffee beans:
   ```bash
   kubectl apply -f ~/container.training/k8s/coffees.yaml
   ```
 
 ]
+
+---
+
+## Type validation
+
+- Older versions of Kubernetes will accept our coffee beans as is
+
+- Newer versions, however, will issue warnings about unknown fields
+
+  (and if we turn off validation, these fields will simply be dropped)
+
+- We need to improve our OpenAPI schema
+
+  (to add e.g. the `spec.taste` field used by our coffee resources)
 
 ---
 
