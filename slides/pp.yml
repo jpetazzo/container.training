@@ -25,7 +25,6 @@ content:
   #- containers/Docker_Overview.md
   #- containers/Docker_History.md
   - containers/Training_Environment.md
-  #  - containers/High_Level_View.md
   #- containers/Installing_Docker.md
   - containers/First_Containers.md
   - containers/Background_Containers.md
