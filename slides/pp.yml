@@ -1,11 +1,11 @@
-  title: |
+title: |
   Docker & Kubernetes
 
 chat: "[Teams](#FIXME)"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: https://2022-06-proofpoint.container.training/
+slides: https://2022-07-proofpoint.container.training/
 
 #slidenumberprefix: "#SomeHashTag &mdash; "
 
