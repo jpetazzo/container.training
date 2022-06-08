@@ -56,5 +56,5 @@ variable "location" {
 # scw k8s version list -o json | jq -r .[].name
 variable "k8s_version" {
   type    = string
-  default = "1.22.2"
+  default = "1.23.6"
 }
