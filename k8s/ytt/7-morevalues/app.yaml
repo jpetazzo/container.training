@@ -1,0 +1,65 @@
+---
+#@ load("@ytt:data", "data")
+#@ load("@ytt:template", "template")
+---
+#@ def component(name, repository, tag, port=None, type="ClusterIP"):
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: #@ name
+    container.training/generated-by: ytt
+  name: #@ name
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: #@ name
+  template:
+    metadata:
+      labels:
+        app: #@ name
+    spec:
+      containers:
+      - image: #@ repository + "/" + name + ":" + tag
+        name: #@ name
+        #@ if/end port==80:
+        readinessProbe:
+          httpGet:
+            port: #@ port
+#@ if port != None:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: #@ name
+    container.training/generated-by: ytt
+  name: #@ name
+spec:
+  ports:
+  - port: #@ port
+    protocol: TCP
+    targetPort: #@ port
+  selector:
+    app: #@ name
+  type: #@ type
+#@ end
+#@ end
+---
+#@ defaults = {}
+#@ for name in data.values:
+#@   if name.startswith("_"):
+#@     defaults.update(data.values[name])
+#@   end
+#@ end
+---
+#@ for name in data.values:
+#@   if not name.startswith("_"):
+#@     values = dict(name=name)
+#@     values.update(defaults)
+#@     values.update(data.values[name])
+--- #@ template.replace(component(**values))
+#@   end
+#@ end

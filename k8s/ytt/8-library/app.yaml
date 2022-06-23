@@ -1,0 +1,20 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:library", "library")
+#@ load("@ytt:template", "template")
+#@ 
+#@ component = library.get("component")
+#@ 
+#@ defaults = {}
+#@ for name in data.values:
+#@   if name.startswith("_"):
+#@     defaults.update(data.values[name])
+#@   end
+#@ end
+#@ for name in data.values:
+#@   if not name.startswith("_"):
+#@     values = dict(name=name)
+#@     values.update(defaults)
+#@     values.update(data.values[name])
+--- #@ template.replace(component.with_data_values(values).eval())
+#@   end
+#@ end

@@ -1,0 +1,19 @@
+#@ load("@ytt:data", "data")
+#@ if data.values.port > 0:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: #@ data.values.name
+    container.training/generated-by: ytt
+  name: #@ data.values.name
+spec:
+  ports:
+  - port: #@ data.values.port
+    protocol: TCP
+    targetPort: #@ data.values.port
+  selector:
+    app: #@ data.values.name
+  type: #@ data.values.type
+#@ end

@@ -1,0 +1,164 @@
+#! Define and use variables.
+---
+#@ repository = "dockercoins"
+#@ tag = "v0.1"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hasher
+  name: hasher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hasher
+  template:
+    metadata:
+      labels:
+        app: hasher
+    spec:
+      containers:
+      - image: #@ "{}/hasher:{}".format(repository, tag)
+        name: hasher
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hasher
+  name: hasher
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: hasher
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - image: redis
+        name: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis
+  name: redis
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    app: redis
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rng
+  name: rng
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rng
+  template:
+    metadata:
+      labels:
+        app: rng
+    spec:
+      containers:
+      - image: #@ "{}/rng:{}".format(repository, tag)
+        name: rng
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: rng
+  name: rng
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: rng
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: webui
+  name: webui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webui
+  template:
+    metadata:
+      labels:
+        app: webui
+    spec:
+      containers:
+      - image: #@ "{}/webui:{}".format(repository, tag)
+        name: webui
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: webui
+  name: webui
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: webui
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: worker
+  name: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - image: #@ "{}/worker:{}".format(repository, tag)
+        name: worker

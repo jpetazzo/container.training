@@ -1,0 +1,20 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@ def match():
+kind: Deployment
+metadata:
+  name: rng
+#@ end
+
+#@overlay/match by=overlay.subset(match())
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      - name: rng
+        readinessProbe:
+          httpGet:
+            #@overlay/match missing_ok=True
+            path: /1

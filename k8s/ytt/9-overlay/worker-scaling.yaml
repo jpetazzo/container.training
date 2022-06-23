@@ -1,0 +1,25 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@ def match():
+kind: Deployment
+metadata:
+  name: worker
+#@ end
+
+#! This removes the number of replicas:
+#@overlay/match by=overlay.subset(match())
+---
+spec:
+  #@overlay/remove
+  replicas:
+
+#! This overrides it:
+#@overlay/match by=overlay.subset(match())
+---
+spec:
+  #@overlay/match missing_ok=True
+  replicas: 10
+
+#! Note that it's not necessary to remove the number of replicas.
+#! We're just presenting both options here (for instance, you might
+#! want to remove the number of replicas if you're using an HPA).

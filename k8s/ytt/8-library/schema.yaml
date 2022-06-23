@@ -1,0 +1,19 @@
+#@data/values-schema
+#! Entries starting with an underscore will hold default values.
+#! Entires NOT starting with an underscore will generate a Deployment
+#! (and a Service if a port number is set).
+---
+_default_:
+  repository: dockercoins
+  tag: v0.1
+hasher:
+  port: 80
+redis:
+  repository: library
+  tag: latest
+rng:
+  port: 80
+webui:
+  port: 80
+  type: NodePort
+worker: {}

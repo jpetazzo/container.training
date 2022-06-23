@@ -1,0 +1,54 @@
+---
+#@ load("@ytt:data", "data")
+---
+#@ def Deployment(component, repository=data.values.repository, tag=data.values.tag):
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: #@ component
+    container.training/generated-by: ytt
+  name: #@ component
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: #@ component
+  template:
+    metadata:
+      labels:
+        app: #@ component
+    spec:
+      containers:
+      - image: #@ repository + "/" + component + ":" + tag
+        name: #@ component
+#@ end
+---
+#@ def Service(component, port=80, type="ClusterIP"):
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: #@ component
+    container.training/generated-by: ytt
+  name: #@ component
+spec:
+  ports:
+  - port: #@ port
+    protocol: TCP
+    targetPort: #@ port
+  selector:
+    app: #@ component
+  type: #@ type
+#@ end
+---
+--- #@ Deployment("hasher")
+--- #@ Service("hasher")
+--- #@ Deployment("redis", repository="library", tag="latest")
+--- #@ Service("redis", port=6379)
+--- #@ Deployment("rng")
+--- #@ Service("rng")
+--- #@ Deployment("webui")
+--- #@ Service("webui", type="NodePort")
+--- #@ Deployment("worker")
+---

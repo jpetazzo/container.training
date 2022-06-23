@@ -53,6 +53,7 @@ content:
   - k8s/helm-dependencies.md
   - k8s/helm-values-schema-validation.md
   - k8s/helm-secrets.md
+  - k8s/ytt.md
 - #5
   - k8s/extending-api.md
   - k8s/operators.md

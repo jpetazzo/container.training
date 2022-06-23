@@ -1,0 +1,4 @@
+#@data/values-schema
+---
+repository: dockercoins
+tag: v0.1

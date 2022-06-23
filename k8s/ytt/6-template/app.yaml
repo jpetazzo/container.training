@@ -1,0 +1,56 @@
+---
+#@ load("@ytt:data", "data")
+#@ load("@ytt:template", "template")
+---
+#@ def component(name, repository=data.values.repository, tag=data.values.tag, port=None, type="ClusterIP"):
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: #@ name
+    container.training/generated-by: ytt
+  name: #@ name
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: #@ name
+  template:
+    metadata:
+      labels:
+        app: #@ name
+    spec:
+      containers:
+      - image: #@ repository + "/" + name + ":" + tag
+        name: #@ name
+        #@ if/end port==80:
+        readinessProbe:
+          httpGet:
+            port: #@ port
+#@ if port != None:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: #@ name
+    container.training/generated-by: ytt
+  name: #@ name
+spec:
+  ports:
+  - port: #@ port
+    protocol: TCP
+    targetPort: #@ port
+  selector:
+    app: #@ name
+  type: #@ type
+#@ end
+#@ end
+---
+--- #@ template.replace(component("hasher", port=80))
+--- #@ template.replace(component("redis", repository="library", tag="latest", port=6379))
+--- #@ template.replace(component("rng", port=80))
+--- #@ template.replace(component("webui", port=80, type="NodePort"))
+--- #@ template.replace(component("worker"))
+---

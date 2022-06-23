@@ -1,0 +1,26 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: #@ data.values.name
+    container.training/generated-by: ytt
+  name: #@ data.values.name
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: #@ data.values.name
+  template:
+    metadata:
+      labels:
+        app: #@ data.values.name
+    spec:
+      containers:
+      - image: #@ data.values.repository + "/" + data.values.name + ":" + data.values.tag
+        name: #@ data.values.name
+        #@ if/end data.values.port==80:
+        readinessProbe:
+          httpGet:
+            port: #@ data.values.port
