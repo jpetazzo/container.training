@@ -701,6 +701,10 @@ class: extra-details
 
   - generates web reports on resource usage
 
+- [nsinjector](https://github.com/blakelead/nsinjector)
+
+  - controller to automatically populate a Namespace when it is created
+
 ???
 
 :EN:- Setting compute resource limits
