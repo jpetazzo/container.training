@@ -14,22 +14,20 @@
 
 ## Creating a CRD
 
-- We will create a CRD to represent the different species of coffee
+- We will create a CRD to represent different recipes of pizzas
 
-  (arabica, liberica, and robusta)
+- We will be able to run `kubectl get pizzas` and it will list the recipes
 
-- We will be able to run `kubectl get coffees` and it will list the species
+- Creating/deleting recipes won't do anything else
 
-- Then we can label, edit, etc. the species to attach some information
-
-  (e.g. the taste profile of the coffee, or whatever we want)
+  (because we won't implement a *controller*)
 
 ---
 
-## First shot of coffee
+## First slice of pizza
 
 ```yaml
-@@INCLUDE[k8s/coffee-1.yaml]
+@@INCLUDE[k8s/pizza-1.yaml]
 ```
 
 ---
@@ -48,9 +46,9 @@
 
 ---
 
-## Second shot of coffee
+## Second slice of pizza
 
-- The next slide will show file @@LINK[k8s/coffee-2.yaml]
+- The next slide will show file @@LINK[k8s/pizza-2.yaml]
 
 - Note the `spec.versions` list
 
@@ -65,20 +63,20 @@
 ---
 
 ```yaml
-@@INCLUDE[k8s/coffee-2.yaml]
+@@INCLUDE[k8s/pizza-2.yaml]
 ```
 
 ---
 
-## Creating our Coffee CRD
+## Baking some pizza
 
-- Let's create the Custom Resource Definition for our Coffee resource
+- Let's create the Custom Resource Definition for our Pizza resource
 
 .lab[
 
 - Load the CRD:
   ```bash
-  kubectl apply -f ~/container.training/k8s/coffee-2.yaml
+  kubectl apply -f ~/container.training/k8s/pizza-2.yaml
   ```
 
 - Confirm that it shows up:
@@ -95,19 +93,19 @@
 The YAML below defines a resource using the CRD that we just created:
 
 ```yaml
-kind: Coffee
+kind: Pizza
 apiVersion: container.training/v1alpha1
 metadata:
-  name: arabica
+  name: napolitana
 spec:
-  taste: strong
+  toppings: [ mozzarella ]
 ```
 
 .lab[
 
-- Try to create a few types of coffee beans:
+- Try to create a few pizza recipes:
   ```bash
-  kubectl apply -f ~/container.training/k8s/coffees.yaml
+  kubectl apply -f ~/container.training/k8s/pizzas.yaml
   ```
 
 ]
@@ -116,15 +114,39 @@ spec:
 
 ## Type validation
 
-- Older versions of Kubernetes will accept our coffee beans as is
+- Older versions of Kubernetes will accept our pizza definition as is
 
 - Newer versions, however, will issue warnings about unknown fields
 
-  (and if we turn off validation, these fields will simply be dropped)
+  (and if we use `--validate=false`, these fields will simply be dropped)
 
 - We need to improve our OpenAPI schema
 
-  (to add e.g. the `spec.taste` field used by our coffee resources)
+  (to add e.g. the `spec.toppings` field used by our pizza resources)
+
+---
+
+## Third slice of pizza
+
+- Let's add a full OpenAPI v3 schema to our Pizza CRD
+
+- We'll require a field `spec.sauce` which will be a string
+
+- And a field `spec.toppings` which will have to be a list of strings
+
+.lab[
+
+- Update our pizza CRD:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/pizza-3.yaml
+  ```
+
+- Load our pizza recipes:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/pizzas.yaml
+  ```
+
+]
 
 ---
 
@@ -134,91 +156,48 @@ spec:
 
 .lab[
 
-- View the coffee beans that we just created:
+- View the pizza recipes that we just created:
   ```bash
-  kubectl get coffees
+  kubectl get pizzas
   ```
 
 ]
 
-- We'll see in a bit how to improve that
-
----
-
-## What can we do with CRDs?
-
-There are many possibilities!
-
-- *Operators* encapsulate complex sets of resources
-
-  (e.g.: a PostgreSQL replicated cluster; an etcd cluster...
-  <br/>
-  see [awesome operators](https://github.com/operator-framework/awesome-operators) and
-  [OperatorHub](https://operatorhub.io/) to find more)
-
-- Custom use-cases like [gitkube](https://gitkube.sh/)
-
-  - creates a new custom type, `Remote`, exposing a git+ssh server
-
-  - deploy by pushing YAML or Helm charts to that remote
-
-- Replacing built-in types with CRDs
-
-  (see [this lightning talk by Tim Hockin](https://www.youtube.com/watch?v=ji0FWzFwNhA))
-
----
-
-## What's next?
-
-- Creating a basic CRD is quick and easy
-
-- But there is a lot more that we can (and probably should) do:
-
-  - improve input with *data validation*
-
-  - improve output with *custom columns*
-
-- And of course, we probably need a *controller* to go with our CRD!
-
-  (otherwise, we're just using the Kubernetes API as a fancy data store)
+- Let's see how we can improve that display!
 
 ---
 
 ## Additional printer columns
 
-- We can specify `additionalPrinterColumns` in the CRD
-
-- This is similar to `-o custom-columns`
-
-  (map a column name to a path in the object, e.g. `.spec.taste`)
-
-```yaml
+- We can tell Kubernetes which columns to show:
+  ```yaml
     additionalPrinterColumns:
-    - jsonPath: .spec.taste
-      description: Subjective taste of that kind of coffee bean
-      name: Taste
+    - jsonPath: .spec.sauce
+      name: Sauce
       type: string
-    - jsonPath: .metadata.creationTimestamp
-      name: Age
-      type: date
-```
+    - jsonPath: .spec.toppings
+      name: Toppings
+      type: string
+  ```
+
+- There is an updated CRD in @@LINK[k8s/pizza-4.yaml]
 
 ---
 
 ## Using additional printer columns
 
-- Let's update our CRD using @@LINK[k8s/coffee-3.yaml]
+- Let's update our CRD!
 
 .lab[
 
 - Update the CRD:
   ```bash
-  kubectl apply -f ~/container.training/k8s/coffee-3.yaml
+  kubectl apply -f ~/container.training/k8s/pizza-4.yaml
   ```
 
-- Look at our Coffee resources:
+- Look at our Pizza resources:
   ```bash
-  kubectl get coffees
+  kubectl get pizzas
   ```
 
 ]
@@ -229,50 +208,26 @@ Note: we can update a CRD without having to re-create the corresponding resource
 
 ---
 
-## Data validation
+## Better data validation
 
-- CRDs are validated with the OpenAPI v3 schema that we specify
+- Let's change the data schema so that the sauce can only be `red` or `white`
 
-  (with older versions of the API, when the schema was optional,
-  <br/>
-  no schema = no validation at all)
+- This will be implemented by @@LINK[k8s/pizza-5.yaml]
 
-- Otherwise, we can put anything we want in the `spec`
+.lab[
 
-- More advanced validation can also be done with admission webhooks, e.g.:
+- Update the Pizza CRD:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/pizza-5.yaml
+  ```
 
-  - consistency between parameters
-
-  - advanced integer filters (e.g. odd number of replicas)
-
-  - things that can change in one direction but not the other
-
----
-
-## OpenAPI v3 schema example
-
-This is what we have in @@LINK[k8s/coffee-3.yaml]:
-
-```yaml
-    schema:
-      openAPIV3Schema:
-        type: object
-        required: [ spec ]
-        properties:
-          spec:
-            type: object
-            properties:
-              taste:
-                description: Subjective taste of that kind of coffee bean
-                type: string
-            required: [ taste ]
-```
+]
 
 ---
 
 ## Validation *a posteriori*
 
-- Some of the "coffees" that we defined earlier *do not* pass validation
+- Some of the pizzas that we defined earlier *do not* pass validation
 
 - How is that possible?
 
@@ -340,15 +295,23 @@ This is what we have in @@LINK[k8s/coffee-3.yaml]:
 
 ---
 
-## What's next?
+## Even better data validation
 
-- Generally, when creating a CRD, we also want to run a *controller*
+- If we need more complex data validation, we can use a validating webhook
 
-  (otherwise nothing will happen when we create resources of that type)
+- Use cases:
 
-- The controller will typically *watch* our custom resources
+  - validating a "version" field for a database engine
 
-  (and take action when they are created/updated)
+  - validating that the number of e.g. coordination nodes is even
+
+  - preventing inconsistent or dangerous changes
+    <br/>
+    (e.g. major version downgrades)
+
+  - checking a key or certificate format or validity
+
+  - and much more!
 
 ---
 
@@ -389,6 +352,24 @@ This is what we have in @@LINK[k8s/coffee-3.yaml]:
 - By loading CRDs, we can have it manage totally different objects
 
   (unrelated to containers, clusters, etc.)
+
+---
+
+## What's next?
+
+- Creating a basic CRD is relatively straightforward
+
+- But CRDs generally require a *controller* to do anything useful
+
+- The controller will typically *watch* our custom resources
+
+  (and take action when they are created/updated)
+
+- Most serious use-cases will also require *validation web hooks*
+
+- When our CRD data format evolves, we'll also need *conversion web hooks*
+
+- Doing all that work manually is tedious; use a framework!
 
 ???
 

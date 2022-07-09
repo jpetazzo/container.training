@@ -1,0 +1,45 @@
+---
+apiVersion: container.training/v1alpha1
+kind: Pizza
+metadata:
+  name: margherita
+spec:
+  sauce: red
+  toppings:
+    - mozarella
+    - basil
+---
+apiVersion: container.training/v1alpha1
+kind: Pizza
+metadata:
+  name: quatrostagioni
+spec:
+  sauce: red
+  toppings:
+    - artichoke
+    - basil
+    - mushrooms
+    - prosciutto
+---
+apiVersion: container.training/v1alpha1
+kind: Pizza
+metadata:
+  name: mehl31
+spec:
+  sauce: white
+  toppings:
+    - goatcheese
+    - pear
+    - walnuts
+    - mozzarella
+    - rosemary
+    - honey
+---
+apiVersion: container.training/v1alpha1
+kind: Pizza
+metadata:
+  name: brownie
+spec:
+  sauce: chocolate
+  toppings:
+    - nuts
