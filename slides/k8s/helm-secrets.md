@@ -167,7 +167,7 @@ Let's try one more round of decoding!
 
 --
 
-... OK, that was *a lot* of binary data. What sould we do with it?
+... OK, that was *a lot* of binary data. What should we do with it?
 
 ---
 
