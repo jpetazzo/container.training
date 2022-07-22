@@ -81,7 +81,7 @@
 
 ## What version are we running anyway?
 
-- When I say, "I'm running Kubernetes 1.18", is that the version of:
+- When I say, "I'm running Kubernetes 1.20", is that the version of:
 
   - kubectl
 
@@ -157,15 +157,15 @@
 
 ## Kubernetes uses semantic versioning
 
-- Kubernetes versions look like MAJOR.MINOR.PATCH; e.g. in 1.18.20:
+- Kubernetes versions look like MAJOR.MINOR.PATCH; e.g. in 1.20.15:
 
   - MAJOR = 1
-  - MINOR = 18
-  - PATCH = 20
+  - MINOR = 20
+  - PATCH = 15
 
 - It's always possible to mix and match different PATCH releases
 
-  (e.g. 1.18.20 and 1.18.15 are compatible)
+  (e.g. 1.20.0 and 1.20.15 are compatible)
 
 - It is recommended to run the latest PATCH release
 
@@ -181,9 +181,9 @@
 
 - All components support a difference of one¹ MINOR version
 
-- This allows live upgrades (since we can mix e.g. 1.18 and 1.19)
+- This allows live upgrades (since we can mix e.g. 1.20 and 1.21)
 
-- It also means that going from 1.18 to 1.20 requires going through 1.19
+- It also means that going from 1.20 to 1.22 requires going through 1.21
 
 .footnote[¹Except kubelet, which can be up to two MINOR behind API server,
 and kubectl, which can be one MINOR ahead or behind API server.]
@@ -254,7 +254,7 @@ and kubectl, which can be one MINOR ahead or behind API server.]
   sudo vim /etc/kubernetes/manifests/kube-apiserver.yaml
   ```
 
-- Look for the `image:` line, and update it to e.g. `v1.19.0`
+- Look for the `image:` line, and update it to e.g. `v1.24.0`
 
 ]
 
@@ -308,11 +308,11 @@ and kubectl, which can be one MINOR ahead or behind API server.]
 
 ]
 
-Note 1: kubeadm thinks that our cluster is running 1.19.0.
+Note 1: kubeadm thinks that our cluster is running 1.24.0.
 <br/>It is confused by our manual upgrade of the API server!
 
-Note 2: kubeadm itself is still version 1.18.20..
-<br/>It doesn't know how to upgrade do 1.19.X.
+Note 2: kubeadm itself is still version 1.20.15..
+<br/>It doesn't know how to upgrade do 1.21.X.
 
 ---
 
@@ -335,28 +335,28 @@ Note 2: kubeadm itself is still version 1.18.20..
 ]
 
 Problem: kubeadm doesn't know know how to handle
-upgrades from version 1.18.
+upgrades from version 1.20.
 
-This is because we installed version 1.22 (or even later).
+This is because we installed version 1.24 (or even later).
 
-We need to install kubeadm version 1.19.X.
+We need to install kubeadm version 1.21.X.
 
 ---
 
 ## Downgrading kubeadm
 
-- We need to go back to version 1.19.X.
+- We need to go back to version 1.21.X.
 
 .lab[
 
 - View available versions for package `kubeadm`:
   ```bash
-  apt show kubeadm -a | grep ^Version | grep 1.19
+  apt show kubeadm -a | grep ^Version | grep 1.21
   ```
 
 - Downgrade kubeadm:
   ```
-  sudo apt install kubeadm=1.19.8-00
+  sudo apt install kubeadm=1.21.0-00
   ```
 
 - Check what kubeadm tells us:
@@ -366,7 +366,7 @@ We need to install kubeadm version 1.19.X.
 
 ]
 
-kubeadm should now agree to upgrade to 1.19.8.
+kubeadm should now agree to upgrade to 1.21.X.
 
 ---
 
@@ -464,9 +464,9 @@ kubeadm should now agree to upgrade to 1.19.8.
   ```bash
     for N in 1 2 3; do
       ssh oldversion$N "
-        sudo apt install kubeadm=1.19.8-00 &&
+        sudo apt install kubeadm=1.21.14-00 &&
         sudo kubeadm upgrade node &&
-        sudo apt install kubelet=1.19.8-00"
+        sudo apt install kubelet=1.21.14-00"
     done
   ```
 ]
@@ -475,7 +475,7 @@ kubeadm should now agree to upgrade to 1.19.8.
 
 ## Checking what we've done
 
-- All our nodes should now be updated to version 1.19.8
+- All our nodes should now be updated to version 1.21.14
 
 .lab[
 
@@ -492,7 +492,7 @@ class: extra-details
 
 ## Skipping versions
 
-- This example worked because we went from 1.18 to 1.19
+- This example worked because we went from 1.20 to 1.21
 
 - If you are upgrading from e.g. 1.16, you will have to go through 1.17 first
 
