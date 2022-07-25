@@ -2,8 +2,12 @@
 
 Good Morning!
 
-- If you have not already done so, [please complete this survey](https://docs.google.com/forms/d/1GeHlvBn07QOXVoS5ePfEn5KoYJiSYlX3IxqogecjIQs/edit)
+- If you have not already done so, please complete this survey
 
+  - [https://tinyurl.com/9hjpe527
+](https://docs.google.com/forms/d/1GeHlvBn07QOXVoS5ePfEn5KoYJiSYlX3IxqogecjIQs/edit)
+
+<BR>
 - Class Starts at 9AM PST
 
 ---
