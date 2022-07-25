@@ -2,7 +2,7 @@
 
 class: title
 
-# The Macroscopic View
+# A Macroscopic View
 
 ---
 
