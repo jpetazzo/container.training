@@ -1,3 +1,11 @@
+## Waiting To Get Started
+
+Good Morning!
+
+- Class Starts at 9AM PST
+
+- If you have not already done so, [please complete this survey](https://docs.google.com/forms/d/1GeHlvBn07QOXVoS5ePfEn5KoYJiSYlX3IxqogecjIQs/edit)
+
 ## Introductions
 
 - Hello! I'm [Gerry Seidman](https://www.linkedin.com/in/gerryseidman), Ardan Labs (gerry.seidman@ardanlabs.com)

@@ -14,7 +14,7 @@ exclude:
 
 content:
 - shared/title.md
-- logistics.md
+- logistics-gerry.md
 - containers/intro.md
 - shared/about-slides.md
 - shared/chat-room-im.md
@@ -26,8 +26,6 @@ content:
   #- containers/Docker_History.md
   - containers/Training_Environment_And_Tmux.md
   - containers/Macro_View.md
-  # - containers/Macro_View_What_Is_The_Problem.md
-  # - containers/Macro_View_of_Apps_and_OS.md
   #- containers/Installing_Docker.md
   - containers/First_Containers.md
   - containers/Background_Containers.md
