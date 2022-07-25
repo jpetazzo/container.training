@@ -1,10 +1,12 @@
-## Waiting To Get Started
+## While We are Waiting To Get Started ...
 
 Good Morning!
 
+- If you have not already done so, [please complete this survey](https://docs.google.com/forms/d/1GeHlvBn07QOXVoS5ePfEn5KoYJiSYlX3IxqogecjIQs/edit)
+
 - Class Starts at 9AM PST
 
-- If you have not already done so, [please complete this survey](https://docs.google.com/forms/d/1GeHlvBn07QOXVoS5ePfEn5KoYJiSYlX3IxqogecjIQs/edit)
+---
 
 ## Introductions
 
