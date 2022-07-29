@@ -1,0 +1,17 @@
+FROM test-image-0
+
+WORKDIR /play
+   
+RUN echo "== LAYER 1 ==  Change File B, Create File C/CC, Add Dir C/CD, Remove File E, Create Dir F, Add File G, Create Empty Dir H" && \
+    echo "B is for Butterfly" >B && \
+    echo "C is for Cowboy Chuck">C/CC && \
+    mkdir -p C/CD && \
+    echo "A is for Cowboy Dandy Austin" >C/CD/CDA && \
+    rm E && \
+    mkdir F && \
+    echo "A is for Ferret Albert" >F/FA  && \
+    echo "G is for Gorilla" >G && \
+    mkdir H && \
+    find . >../state.layer-1 
+
+

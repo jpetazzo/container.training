@@ -1,0 +1,20 @@
+FROM busybox
+
+ADD verifyImageFiles.sh /
+
+WORKDIR /play
+
+RUN echo "== LAYER 0 ==" && \
+    echo "A is for Aardvark" >A && \
+    echo "B is for Beetle" >B && \
+    mkdir C/ && \
+    echo "A is for Cowboy Allan" >C/CA && \
+    mkdir -p C/CB && \
+    echo "A is for Cowboy Buffalo Alex" >C/CB/CBA && \
+    echo "B is for Cowboy Buffalo Bill" >C/CB/CBB && \
+    echo "Z is for Cowboy Zeke" >> C/CZ && \
+    mkdir D/ && \
+    echo "A is for Detective Alisha" >D/DA && \
+    echo "B is for Detective Betty" >D/DB && \
+    echo "E is for Elephant" >E && \
+    find . >../state.layer-0
