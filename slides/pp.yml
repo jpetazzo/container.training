@@ -111,6 +111,9 @@ content:
   #- exercises/localcluster-details.md
   - k8s/batch-jobs.md
   - k8s/netpol.md
+  - k8s/ingress.md
+  # - k8s/ingress-tls.md
+  - k8s/ingress-advanced.md
   - k8s/authn-authz.md
   - k8s/resource-limits.md
   - k8s/statefulsets.md
