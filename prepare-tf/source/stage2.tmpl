@@ -193,7 +193,6 @@ resource "tls_private_key" "cluster_admin_${index}" {
 }
 
 resource "tls_cert_request" "cluster_admin_${index}" {
-  key_algorithm = tls_private_key.cluster_admin_${index}.algorithm
   private_key_pem = tls_private_key.cluster_admin_${index}.private_key_pem
   subject {
     common_name = "cluster-admin"

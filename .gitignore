@@ -6,13 +6,7 @@ prepare-vms/tags
 prepare-vms/infra
 prepare-vms/www
 
-prepare-tf/.terraform*
-prepare-tf/terraform.*
-prepare-tf/stage2/*.tf
-prepare-tf/stage2/kubeconfig.*
-prepare-tf/stage2/.terraform*
-prepare-tf/stage2/terraform.*
-prepare-tf/stage2/externalips.*
+prepare-tf/tag-*
 
 slides/*.yml.html
 slides/autopilot/state.yaml

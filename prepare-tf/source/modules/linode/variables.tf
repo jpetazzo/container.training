@@ -51,7 +51,22 @@ variable "location" {
 
 # To view supported versions, run:
 # linode-cli lke versions-list --json | jq -r .[].id
+data "external" "k8s_version" {
+  program = [
+    "sh",
+    "-c",
+    <<-EOT
+      linode-cli lke versions-list --json |
+      jq -r '{"latest": [.[].id] | sort [-1]}'
+    EOT
+  ]
+}
+
 variable "k8s_version" {
   type    = string
-  default = "1.22"
+  default = ""
+}
+
+locals {
+  k8s_version = var.k8s_version != "" ? var.k8s_version : data.external.k8s_version.result.latest
 }
