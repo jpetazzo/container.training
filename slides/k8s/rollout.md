@@ -1,14 +1,18 @@
 # Rolling updates
 
-- By default (without rolling updates), when a scaled resource is updated:
+- How should we update a running application?
 
-  - new pods are created
+- Strategy 1: delete old version, then deploy new version
 
-  - old pods are terminated
+  (not great, because it obviously provokes downtime!)
 
-  - ... all at the same time
+- Strategy 2: deploy new version, then delete old version
 
-  - if something goes wrong, ¯\\\_(ツ)\_/¯
+  (uses a lot of resources; also how do we shift traffic?)
+
+- Strategy 3: replace running pods one at a time
+
+  (sounds interesting; and good news, Kubernetes does it for us!)
 
 ---
 
