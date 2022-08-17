@@ -17,6 +17,7 @@ These tools can help you to create VMs on:
 - [Parallel SSH](https://github.com/lilydjwg/pssh)
   (should be installable with `pip install git+https://github.com/lilydjwg/pssh`;
   on a Mac, try `brew install pssh`)
+- [yq](https://github.com/kislyuk/yq)
 
 Depending on the infrastructure that you want to use, you also need to install
 the CLI that is specific to that cloud. For OpenStack deployments, you will
