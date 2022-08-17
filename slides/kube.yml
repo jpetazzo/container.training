@@ -1,0 +1,45 @@
+title: |
+  Thoughtworks Infrastructure
+  (Starring: Kubernetes!)
+
+chat: "[thoughtworks-infrastructure Slack](https://skillsmatter.slack.com/archives/C03E90W6Z6U)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2022-08-thoughtworks.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+#- shared/chat-room-im.md
+#- shared/chat-room-zoom.md
+- shared/prereqs.md
+#- shared/webssh.md
+- shared/connecting.md
+- shared/toc.md
+- #1
+  - k8s/demo-apps.md
+  - k8s/netpol.md
+  - k8s/authn-authz.md
+  - exercises/netpol-details.md
+  - exercises/rbac-details.md
+- #2
+  - k8s/rollout.md
+  - k8s/healthchecks.md
+  - k8s/localkubeconfig.md
+  - k8s/accessinternal.md
+  - k8s/kubectlproxy.md
+  - k8s/setup-devel.md
+  - exercises/localcluster-details.md
+  - exercises/healthchecks-details.md
+- #3
+  - |
+    # (Extra material)
+  - k8s/deploymentslideshow.md
