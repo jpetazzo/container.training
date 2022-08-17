@@ -246,13 +246,35 @@ class: extra-details
 
   (they don't require hand-editing a file and restarting the API server)
 
-- A service account is associated with a set of secrets
+- A service account can be associated with a set of secrets
 
   (the kind that you can view with `kubectl get secrets`)
 
 - Service accounts are generally used to grant permissions to applications, services...
 
   (as opposed to humans)
+
+---
+
+## Service account tokens evolution
+
+- In Kubernetes 1.21 and above, pods use *bound service account tokens*:
+
+  - these tokens are *bound* to a specific object (e.g. a Pod)
+
+  - they are automatically invalidated when the object is deleted
+
+  - these tokens also expire quickly (e.g. 1 hour) and gets rotated automatically
+
+- In Kubernetes 1.24 and above, unbound tokens aren't created automatically
+
+  - before 1.24, we would see unbound tokens with `kubectl get secrets`
+
+  - with 1.24 and above, these tokens can be created with `kubectl create token`
+
+  - ...or with a Secret with the right [type and annotation][create-token]
+
+[create-token]: https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#to-create-additional-api-tokens
 
 ---
 
@@ -389,6 +411,10 @@ class: extra-details
 ]
 
 It should be named `default-token-XXXXX`.
+
+When running Kubernetes 1.24 and above, this Secret won't exist.
+<br/>
+Instead, create a token with `kubectl create token default`.
 
 ---
 
