@@ -554,6 +554,28 @@ Note: the `apiVersion` field appears to be optional.
 
 ---
 
+class: extra-details
+
+## Managing `ownerReferences`
+
+- By default, the generated object and triggering object have independent lifecycles
+
+  (deleting the triggering object doesn't affect the generated object)
+
+- It is possible to associate the generated object with the triggering object
+
+  (so that deleting the triggering object also deletes the generated object)
+
+- This is done by adding the triggering object information to `ownerReferences`
+
+  (in the generated object `metadata`)
+
+- See [Linking resources with ownerReferences][ownerref] for an example
+
+[ownerref]: https://kyverno.io/docs/writing-policies/generate/#linking-resources-with-ownerreferences
+
+---
+
 ## Asynchronous creation
 
 - Kyverno creates resources asynchronously
