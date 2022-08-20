@@ -19,7 +19,7 @@ They abstract the connection details for this services, and can help with:
 
 * fail over (how do I know to which instance of a replicated service I should connect?)
 
-* load balancing (how to I spread my requests across multiple instances of a service?)
+* load balancing (how do I spread my requests across multiple instances of a service?)
 
 * authentication (what if my service requires credentials, certificates, or otherwise?)
 
