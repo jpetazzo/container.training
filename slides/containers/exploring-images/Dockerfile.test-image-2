@@ -1,0 +1,18 @@
+FROM test-image-1
+
+WORKDIR /play
+
+RUN echo "== LAYER 2 ==  Remove File C/CA, Remove Dir G, Remove Dir D / Replace with new Dir D, Remove Dir C/CB, Remove Dir C/CB, Remove Dir F, Add File G, Remove Dir H / Create File H" && \
+    rm C/CA  && \
+    rm -rf C/CB && \
+    echo "Z is for Cowboy Zoe" >> CZ && \
+    rm -rf D && \
+    mkdir -p D && \
+    echo "A is for Duplicitous Albatros" >D/DA && \
+    rm -rf F && \
+    rm G && \
+    echo "G is for Geccos" >G && \
+    rmdir H \
+    echo "H is for Human" >H && \
+    find . >../state.layer-2
+
