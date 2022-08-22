@@ -182,7 +182,21 @@ _cmd_clusterize() {
     pssh "
     if [ -f /etc/iptables/rules.v4 ]; then
         sudo sed -i 's/-A INPUT -j REJECT --reject-with icmp-host-prohibited//' /etc/iptables/rules.v4
+        sudo netfilter-persistent flush
         sudo netfilter-persistent start
+    fi"
+
+    # oracle-cloud-agent upgrades pacakges in the background.
+    # This breaks our deployment scripts, because when we invoke apt-get, it complains
+    # that the lock already exists (symptom: random "Exited with error code 100").
+    # Workaround: if we detect oracle-cloud-agent, remove it.
+    # But this agent seems to also take care of installing/upgrading
+    # the unified-monitoring-agent package, so when we stop the snap,
+    # it can leave dpkg in a broken state. We "fix" it with the 2nd command.
+    pssh "
+    if [ -d /snap/oracle-cloud-agent ]; then
+        sudo snap remove oracle-cloud-agent
+        sudo dpkg --remove --force-remove-reinstreq unified-monitoring-agent
     fi"
 
     # Copy settings and install Python YAML parser
