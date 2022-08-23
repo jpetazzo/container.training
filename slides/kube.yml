@@ -36,7 +36,6 @@ content:
 - 
 # DAY 1 
   - containers/Macro_View.md
-  - containers/software-deployment.md
   #- shared/webssh.md
   #- k8s/versions-k8s.md
   #- shared/composescale.md
@@ -53,25 +52,27 @@ content:
   - k8s/alias-and-references.md
 
 - # DAY 2
+  - k8s/labels-annotations.md
   - k8s/kubectl-logs.md
   - k8s/logs-cli.md
-  - k8s/labels-annotations.md
   - k8s/kubectl-run.md
   - k8s/kubectl-more.md
+  - k8s/kubectlexpose.md
   - k8s/rollout.md
   - k8s/yamldeploy.md  
-  - k8s/namespaces.md
-  - k8s/daemonset.md
 
 - # DAY  3
+  - k8s/daemonset.md
+  - k8s/namespaces.md
   - k8s/healthchecks.md
   - k8s/kubenet.md
-  - k8s/kubectlexpose.md
+  - k8s/netpol.md
+  - exercises/ingress-details.md
+  - containers/software-deployment.md
   - k8s/volumes.md
   - k8s/configuration.md
   - k8s/secrets.md
   - k8s/ingress.md
-  - exercises/ingress-details.md
   - exercises/healthchecks-details.md
   - exercises/appconfig-details.md
 
@@ -87,7 +88,6 @@ content:
   - exercises/localcluster-details.md
 
 - # DAY 5
-  - k8s/netpol.md
   - k8s/authn-authz.md
   - k8s/resource-limits.md
   - k8s/metrics-server.md
