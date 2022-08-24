@@ -2,7 +2,7 @@
 
 # External References && kubectl Aliases
 
-Class Slides:    https://2022-07-proofpoint.container.training/
+Class Slides:    https://2022-08-nr.container.training/
     
 Kubectl Cheat Sheet:    https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 

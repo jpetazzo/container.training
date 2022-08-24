@@ -66,17 +66,16 @@ content:
   - k8s/namespaces.md
   - k8s/healthchecks.md
   - k8s/kubenet.md
-  - k8s/netpol.md
-  - exercises/ingress-details.md
   - containers/software-deployment.md
   - k8s/volumes.md
   - k8s/configuration.md
   - k8s/secrets.md
-  - k8s/ingress.md
   - exercises/healthchecks-details.md
   - exercises/appconfig-details.md
 
 - # DAY 4
+  - k8s/netpol.md
+  - k8s/ingress.md
   - k8s/statefulsets.md
   - k8s/pv-pvc-sc.md
   - k8s/volume-claim-templates.md  
@@ -84,10 +83,11 @@ content:
   - k8s/setup-devel.md
   - k8s/localkubeconfig.md
   - k8s/accessinternal.md
-  - k8s/kubectlproxy.md
+  - exercises/ingress-details.md
   - exercises/localcluster-details.md
 
 - # DAY 5
+  - k8s/kubectlproxy.md
   - k8s/authn-authz.md
   - k8s/resource-limits.md
   - k8s/metrics-server.md
