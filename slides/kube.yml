@@ -61,40 +61,40 @@ content:
   - k8s/rollout.md
   - k8s/yamldeploy.md  
 
-- # DAY  3
+- # DAY  3  (Started with 2 hour's lab and discussion)
   - k8s/daemonset.md
   - k8s/namespaces.md
   - k8s/healthchecks.md
   - k8s/kubenet.md
-  - containers/software-deployment.md
-  - k8s/volumes.md
-  - k8s/configuration.md
-  - k8s/secrets.md
   - exercises/healthchecks-details.md
   - exercises/appconfig-details.md
 
 - # DAY 4
   - k8s/netpol.md
+  - k8s/accessinternal.md
   - k8s/ingress.md
+  - containers/software-deployment.md
+  - k8s/volumes.md
+  - k8s/configuration.md
+  - k8s/secrets.md
   - k8s/statefulsets.md
   - k8s/pv-pvc-sc.md
   - k8s/volume-claim-templates.md  
-  - k8s/setup-overview.md
-  - k8s/setup-devel.md
-  - k8s/localkubeconfig.md
-  - k8s/accessinternal.md
   - exercises/ingress-details.md
-  - exercises/localcluster-details.md
 
 - # DAY 5
-  - k8s/kubectlproxy.md
+  # - k8s/kubectlproxy.md
   - k8s/authn-authz.md
   - k8s/resource-limits.md
   - k8s/metrics-server.md
+  - k8s/setup-overview.md
+  - k8s/setup-devel.md
   - k8s/cluster-sizing.md
+  - k8s/localkubeconfig.md
   - k8s/k9s.md
   - k8s/tilt.md  
   - k8s/consul.md
+  - exercises/localcluster-details.md
   - shared/thankyou.md
 
 - # DockerCoins
