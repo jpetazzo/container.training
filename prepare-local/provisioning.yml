@@ -1,11 +1,10 @@
 ---
 - hosts: nodes
-  sudo: true
+  become: yes
   vars_files:
     - vagrant.yml
 
   tasks:
-
     - name: clean up the home folder
       file:
         path: /home/vagrant/{{ item }}
@@ -24,25 +23,23 @@
 
     - name: installing dependencies
       apt:
-        name: apt-transport-https,ca-certificates,python-pip,tmux
+        name: apt-transport-https,ca-certificates,python3-pip,tmux
         state: present
         update_cache: true
 
     - name: fetching docker repo key
       apt_key:
-        keyserver: hkp://p80.pool.sks-keyservers.net:80
-        id: 58118E89F3A912897C070ADBF76221572C52609D
-
-    - name: adding package repos
-      apt_repository:
-        repo: "{{ item }}"
+        url: https://download.docker.com/linux/ubuntu/gpg
         state: present
-      with_items:
-        - deb https://apt.dockerproject.org/repo ubuntu-trusty main
+
+    - name: adding docker repo
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
 
     - name: installing docker
       apt:
-        name: docker-engine
+        name: docker-ce,docker-ce-cli,containerd.io,docker-compose-plugin
         state: present
         update_cache: true
 
@@ -56,7 +53,7 @@
       lineinfile:
         dest: /etc/default/docker
         line: DOCKER_OPTS="--host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:55555"
-        regexp: '^#?DOCKER_OPTS=.*$'
+        regexp: "^#?DOCKER_OPTS=.*$"
         state: present
       register: docker_opts
 
@@ -66,22 +63,14 @@
         state: restarted
       when: docker_opts is defined and docker_opts.changed
 
-    - name: performing pip autoupgrade
-      pip:
-        name: pip
-        state: latest
-
-    - name: installing virtualenv
-      pip:
-        name: virtualenv
-        state: latest
-
-    - name: Install Docker Compose via PIP
-      pip: name=docker-compose
+    - name: install docker-compose from official github repo
+      get_url:
+        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: "u+x,g+x"
 
     - name:
-      file:
-        path="/usr/local/bin/docker-compose"
+      file: path="/usr/local/bin/docker-compose"
         state=file
         mode=0755
         owner=vagrant
@@ -128,5 +117,3 @@
           line: "127.0.0.1 localhost {{ inventory_hostname }}"
         - regexp: '^127\.0\.1\.1'
           line: "127.0.1.1 {{ inventory_hostname }}"
-
-
