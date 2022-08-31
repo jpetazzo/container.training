@@ -40,7 +40,9 @@
 
 - Each person gets their own private set of VMs
 
-- Each person should have a printed card with connection information
+- The connection information is on a shared spreadsheet
+
+  (URL to be shared through portal and chat)
 
 - We will connect to these VMs with SSH
 

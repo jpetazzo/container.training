@@ -203,11 +203,11 @@ What does that mean?
 
 ## Let's experiment a bit!
 
-- For this section, connect to the first node of the `test` cluster
+- The examples in this section require a Kubernetes cluster
+
+  (any local development cluster will suffice)
 
 .lab[
-
-- SSH to the first node of the test cluster
 
 - Check that the cluster is operational:
   ```bash
