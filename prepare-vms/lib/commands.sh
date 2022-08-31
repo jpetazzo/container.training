@@ -492,12 +492,13 @@ _cmd_kubetools() {
     # Install kube-ps1
     pssh "
     set -e
-    if ! [ -f /etc/profile.d/kube-ps1.sh ]; then
+    if ! [ -f /opt/kube-ps1 ]; then
       cd /tmp
       git clone https://github.com/jonmosco/kube-ps1
-      sudo cp kube-ps1/kube-ps1.sh /etc/profile.d/kube-ps1.sh
+      sudo mv kube-ps1 /opt/kube-ps1
       sudo -u $USER_LOGIN sed -i s/docker-prompt/kube_ps1/ /home/$USER_LOGIN/.bashrc &&
       sudo -u $USER_LOGIN tee -a /home/$USER_LOGIN/.bashrc <<EOF
+. /opt/kube-ps1/kube-ps1.sh
 KUBE_PS1_PREFIX=""
 KUBE_PS1_SUFFIX=""
 KUBE_PS1_SYMBOL_ENABLE="false"
