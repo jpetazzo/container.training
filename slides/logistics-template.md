@@ -1,60 +1,34 @@
-## Introductions
+## Intros & disclaimers
 
-⚠️ This slide should be customized by the tutorial instructor(s).
+- Hello! I'm Jérôme Petazzoni ([@jpetazzo])
 
-<!--
+- I have ...
 
-- Hello! We are:
+  - extensive experience running *containers* in production
+  - limited experience running *Kubernetes* in production
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
+  - taught Docker and Kubernetes many times, to large audiences
+  - less frequently taught operators and API internals
 
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
+  - written a lot of Python code during my career; but much less Go
 
-   - 🐳 Jérôme ([@jpetazzo], Ardan Labs)
+  - learned way more than I expected just by writing some chapters of this course (!)
 
-   - 🐳 Jérôme ([@jpetazzo], Enix SAS)
+---
 
-   - 🐳 Jérôme ([@jpetazzo], Tiny Shell Script LLC)
+## Logistics
 
--->
+- The training will from ... to ..., Monday to Friday
 
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
+- There will be short breaks every hour, and a longer break in the middle
 
 - Feel free to interrupt for questions at any time
 
 - *Especially when you see full screen container pictures!*
 
+  (I will watch them in silence while I wait for your questions)
+
 - Live feedback, questions, help: @@CHAT@@
-
--->
-
-<!--
-
-- You ~~should~~ must ask questions! Lots of questions!
-
-  (especially when you see full screen container pictures)
-
-- Use @@CHAT@@ to ask questions, get help, etc.
-
--->
 
 <!-- -->
 
