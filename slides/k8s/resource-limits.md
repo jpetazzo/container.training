@@ -14,29 +14,17 @@
 
 - CPU is a *compressible resource*
 
-  (it can be preempted immediately without adverse effect)
+  - it can be preempted immediately without adverse effect
+
+  - if we have N CPU and need 2N, we run at 50% speed
 
 - Memory is an *incompressible resource*
 
-  (it needs to be swapped out to be reclaimed; and this is costly)
+  - it needs to be swapped out to be reclaimed; and this is costly
+
+  - if we have N GB RAM and need 2N, we might run at... 0.1% speed!
 
 - As a result, exceeding limits will have different consequences for CPU and memory
-
----
-
-## Exceeding CPU limits
-
-- CPU can be reclaimed instantaneously
-
-  (in fact, it is preempted hundreds of times per second, at each context switch)
-
-- If a container uses too much CPU, it can be throttled
-
-  (it will be scheduled less often)
-
-- The processes in that container will run slower
-
-  (or rather: they will not run faster)
 
 ---
 
@@ -146,39 +134,59 @@ For more details, check [this blog post](https://erickhun.com/posts/kubernetes-f
 
 ---
 
-## Exceeding memory limits
+## Running low on memory
 
-- Memory needs to be swapped out before being reclaimed
+- When the system runs low on memory, it starts to reclaim used memory
 
-- "Swapping" means writing memory pages to disk, which is very slow
+  (we talk about "memory pressure")
 
-- On a classic system, a process that swaps can get 1000x slower
+- Option 1: free up some buffers and caches
 
-  (because disk I/O is 1000x slower than memory I/O)
+  (fastest option; might affect performance if cache memory runs very low)
 
-- Exceeding the memory limit (even by a small amount) can reduce performance *a lot*
+- Option 2: swap, i.e. write to disk some memory of one process to give it to another
 
-- Kubernetes *does not support swap* (more on that later!)
+  (can have a huge negative impact on performance because disks are slow)
 
-- Exceeding the memory limit will cause the container to be killed
+- Option 3: terminate a process and reclaim all its memory
+
+  (OOM or Out Of Memory Killer on Linux)
 
 ---
 
-## Limits vs requests
+## Memory limits on Kubernetes
 
-- Limits are "hard limits" (they can't be exceeded)
+- Kubernetes *does not support swap*
+
+  (but it may support it in the future, thanks to [KEP 2400])
+
+- If a container exceeds its memory *limit*, it gets killed immediately
+
+- If a node is overcommitted and under memory pressure, it will terminate some pods
+
+  (see next slide for some details about what "overcommit" means here!)
+
+[KEP 2400]: https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/2400-node-swap/README.md#implementation-history
+
+---
+
+## Overcommitting resources
+
+- *Limits* are "hard limits" (a container *cannot* exceed its limits)
 
   - a container exceeding its memory limit is killed
 
   - a container exceeding its CPU limit is throttled
 
-- Requests are used for scheduling purposes
+- On a given node, the sum of pod *limits* can be higher than the node size
 
-  - a container using *less* than what it requested will never be killed or throttled
+- *Requests* are used for scheduling purposes
 
-  - the scheduler uses the requested sizes to determine placement
+  - a container can use more than its requested CPU or RAM amounts
 
-  - the resources requested by all pods on a node will never exceed the node size
+  - a container using *less* than what it requested should never be killed or throttled
+
+- On a given node, the sum of pod *requests* cannot be higher than the node size
 
 ---
 
@@ -222,9 +230,31 @@ Each pod is assigned a QoS class (visible in `status.qosClass`).
 
 ---
 
-## Where is my swap?
+class: extra-details
 
-- The semantics of memory and swap limits on Linux cgroups are complex
+## CPU and RAM reservation
+
+- Kubernetes passes resources requests and limits to the container engine
+
+- The container engine applies these requests and limits with specific mechanisms
+
+- Example: on Linux, this is typically done with control groups aka cgroups
+
+- Most systems use cgroups v1, but cgroups v2 are slowly being rolled out
+
+  (e.g. available in Ubuntu 22.04 LTS)
+
+- Cgroups v2 have new, interesting features for memory control:
+
+  - ability to set "minimum" memory amounts (to effectively reserve memory)
+
+  - better control on the amount of swap used by a container
+
+---
+
+class: extra-details
+
+## What's the deal with swap?
 
 - With cgroups v1, it's not possible to disable swap for a cgroup
 
@@ -237,6 +267,8 @@ Each pod is assigned a QoS class (visible in `status.qosClass`).
 - The architects of Kubernetes wanted to ensure that Guaranteed pods never swap
 
 - The simplest solution was to disable swap entirely
+
+- Kubelet will refuse to start if it detects that swap is enabled!
 
 ---
 
@@ -268,7 +300,7 @@ Each pod is assigned a QoS class (visible in `status.qosClass`).
 
 - You will need to add the flag `--fail-swap-on=false` to kubelet
 
-  (otherwise, it won't start!)
+  (remember: it won't otherwise start if it detects that swap is enabled)
 
 ---
 
@@ -663,6 +695,18 @@ class: extra-details
   (with `kubectl describe resourcequota ...`)
 
 - Rinse and repeat regularly
+
+---
+
+## Underutilization
+
+- Remember: when assigning a pod to a node, the scheduler looks at *requests*
+
+  (not at current utilization on the node)
+
+- If pods request resources but don't use them, this can lead to underutilization
+
+  (because the scheduler will consider that the node is full and can't fit new pods)
 
 ---
 
