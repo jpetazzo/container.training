@@ -4,6 +4,6 @@
 
   (we will use the `rng` service in the dockercoins app)
 
-- See what happens when the load increses
+- See what happens when the load increases
 
   (spoiler alert: it involves timeouts!)

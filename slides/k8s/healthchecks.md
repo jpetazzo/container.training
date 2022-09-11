@@ -1,46 +1,62 @@
 # Healthchecks
 
-- Containers can have *healthchecks*
+- Containers can have *healthchecks* (also called "probes")
 
-- There are three kinds of healthchecks, corresponding to very different use-cases:
+- There are three kinds of healthchecks, corresponding to different use-cases:
 
-  - liveness  = detect when a container is "dead" and needs to be restarted
-
-  - readiness = detect when a container is ready to serve traffic
-
-  - startup = detect if a container has finished to boot
+  `startupProbe`, `readinessProbe`, `livenessProbe`
 
 - These healthchecks are optional (we can use none, all, or some of them)
 
-- Different probes are available (HTTP request, TCP connection, program execution)
+- Different probes are available:
 
-- Let's see the difference and how to use them!
+  HTTP GET, TCP connection, arbitrary program execution, GRPC
+
+- All these probes have a binary result (success/failure)
+
+- Probes that aren't defined will default to a "success" result
 
 ---
 
-## Liveness probe
+## Use-cases in brief
+
+*My container takes a long time to boot before being able to serve traffic.*
+
+→ use a `startupProbe` (but often a `readinessProbe` can also do the job)
+
+*Sometimes, my container is unavailable or overloaded, and needs to e.g. be taken temporarily out of load balancer rotation.*
+
+→ use a `readinessProbe`
+
+*Sometimes, my container enters a broken state which can only be fixed by a restart.*
+
+→ use a `livenessProbe`
+
+---
+
+## Liveness probes
 
 *This container is dead, we don't know how to fix it, other than restarting it.*
 
-- Indicates if the container is dead or alive
+- Check if the container is dead or alive
 
-- A dead container cannot come back to life
+- If Kubernetes determines that the container is dead:
 
-- If the liveness probe fails, the container is killed (destroyed)
+  - it terminates the container gracefully
 
-  (to make really sure that it's really dead; no zombies or undeads!)
+  - it restarts the container (unless the Pod's `restartPolicy` is `Never`)
 
-- What happens next depends on the pod's `restartPolicy`:
+- With the default parameters, it takes:
 
-  - `Never`: the container is not restarted
+  - up to 30 seconds to determine that the container is dead
 
-  - `OnFailure` or `Always`: the container is restarted
+  - up to 30 seconds to terminate it
 
 ---
 
 ## When to use a liveness probe
 
-- To indicate failures that can't be recovered
+- To detect failures that can't be recovered
 
   - deadlocks (causing all requests to time out)
 
@@ -48,47 +64,45 @@
 
 - Anything where our incident response would be "just restart/reboot it"
 
+---
+
+## Liveness probes gotchas
+
 .warning[**Do not** use liveness probes for problems that can't be fixed by a restart]
 
 - Otherwise we just restart our pods for no reason, creating useless load
 
----
+.warning[**Do not** depend on other services within a liveness probe]
 
-## Readiness probe (1)
+- Otherwise we can experience cascading failures
 
-*Make sure that a container is ready before continuing a rolling update.*
+  (example: web server liveness probe that makes a requests to a database)
 
-- Indicates if the container is ready to handle traffic
+.warning[**Make sure** that liveness probes respond quickly]
 
-- When doing a rolling update, the Deployment controller waits for Pods to be ready
+- The default probe timeout is 1 second (this can be tuned!)
 
-  (a Pod is ready when all the containers in the Pod are ready)
-
-- Improves reliability and safety of rolling updates:
-
-  - don't roll out a broken version (that doesn't pass readiness checks)
-
-  - don't lose processing capacity during a rolling update
+- If the probe takes longer than that, it will eventually cause a restart
 
 ---
 
-## Readiness probe (2)
+## Readiness probes
 
-*Temporarily remove a container (overloaded or otherwise) from a Service load balancer.*
+*Sometimes, my container "needs a break".*
 
-- A container can mark itself "not ready" temporarily
+- Check if the container is ready or not
 
-  (e.g. if it's overloaded or needs to reload/restart/garbage collect...)
+- If the container is not ready, its Pod is not ready
 
-- If a container becomes "unready" it might be ready again soon
+- If the Pod belongs to a Service, it is removed from its Endpoints
 
-- If the readiness probe fails:
+  (it stops receiving new connections but existing ones are not affected)
 
-  - the container is *not* killed
+- If there is a rolling update in progress, it might pause
 
-  - if the pod is a member of a service, it is temporarily removed
+  (Kubernetes will try to respect the MaxUnavailable parameter)
 
-  - it is re-added as soon as the readiness probe passes again
+- As soon as the readiness probe suceeds again, everything goes back to normal
 
 ---
 
@@ -102,67 +116,31 @@
 
 - To indicate temporary failure or unavailability
 
+  - runtime is busy doing garbage collection or (re)loading data
+
   - application can only service *N* parallel connections
 
-  - runtime is busy doing garbage collection or initial data load
-
-- To redirect new connections to other Pods
-
-  (e.g. fail the readiness probe when the Pod's load is too high)
+  - new connections will be directed to other Pods
 
 ---
 
-## Dependencies
+## Startup probes
 
-- If a web server depends on a database to function, and the database is down:
+*My container takes a long time to boot before being able to serve traffic.*
 
-  - the web server's liveness probe should succeed
+- After creating a container, Kubernetes runs its startup probe
 
-  - the web server's readiness probe should fail
+- The container will be considered "unhealthy" until the probe succeeds
 
-- Same thing for any hard dependency (without which the container can't work)
+- As long as the container is "unhealthy", its Pod...:
 
-.warning[**Do not** fail liveness probes for problems that are external to the container]
+  - is not added to Services' endpoints
 
----
+  - is not considered as "available" for rolling update purposes
 
-## Timing and thresholds
+- Readiness and liveness probes are enabled *after* startup probe reports success
 
-- Probes are executed at intervals of `periodSeconds` (default: 10)
-
-- The timeout for a probe is set with `timeoutSeconds` (default: 1)
-
-.warning[If a probe takes longer than that, it is considered as a FAIL]
-
-- A probe is considered successful after `successThreshold` successes (default: 1)
-
-- A probe is considered failing after `failureThreshold` failures (default: 3)
-
-- A probe can have an `initialDelaySeconds` parameter (default: 0)
-
-- Kubernetes will wait that amount of time before running the probe for the first time
-
-  (this is important to avoid killing services that take a long time to start)
-
----
-
-## Startup probe
-
-*The container takes too long to start, and is killed by the liveness probe!*
-
-- By default, probes (including liveness) start immediately
-
-- With the default probe interval and failure threshold:
-
-  *a container must respond in less than 30 seconds, or it will be killed!*
-
-- There are two ways to avoid that:
-
-  - set `initialDelaySeconds` (a fixed, rigid delay)
-
-  - use a `startupProbe`
-
-- Kubernetes will run only the startup probe, and when it succeeds, run the other probes
+  (if there is no startup probe, readiness and liveness probes are enabled right away)
 
 ---
 
@@ -178,121 +156,296 @@
 
 ---
 
+## Startup probes gotchas
+
+- When defining a `startupProbe`, we almost always want to adjust its parameters
+
+  (specifically, its `failureThreshold` - this is explained in next slide)
+
+- Otherwise, if the container fails to start within 30 seconds...
+
+  *Kubernetes terminates the container and restarts it!*
+
+- Sometimes, it's easier/simpler to use a `readinessProbe` instead
+
+  (except when also using a `livenessProbe`)
+
+---
+
+## Timing and thresholds
+
+- Probes are executed at intervals of `periodSeconds` (default: 10)
+
+- The timeout for a probe is set with `timeoutSeconds` (default: 1)
+
+.warning[If a probe takes longer than that, it is considered as a FAIL]
+
+.warning[For liveness probes **and startup probes** this terminates and restarts the container]
+
+- A probe is considered successful after `successThreshold` successes (default: 1)
+
+- A probe is considered failing after `failureThreshold` failures (default: 3)
+
+- All these parameters can be set independently for each probe
+
+---
+
+class: extra-details
+
+## `initialDelaySeconds`
+
+- A probe can have an `initialDelaySeconds` parameter (default: 0)
+
+- Kubernetes will wait that amount of time before running the probe for the first time
+
+- It is generally better to use a `startupProbe` instead
+
+  (but this parameter did exist before startup probes were implemented)
+
+---
+
+class: extra-details
+
+## `readinessProbe` vs `startupProbe`
+
+- A lot of blog posts / documentations / tutorials recommend readiness probes...
+
+- ...even in scenarios where a startup probe would seem more appropriate!
+
+- This is because startup probes are relatively recent
+
+  (they reached GA status in Kubernetes 1.20)
+
+- When there is no `livenessProbe`, using a `readinessProbe` is simpler:
+
+  - a `startupProbe` generally requires to change the `failureThreshold`
+
+  - a `startupProbe` generally also requires a `readinessProbe`
+
+  - a single `readinessProbe` can fulfill both roles
+
+---
+
 ## Different types of probes
 
-- HTTP request
+- Kubernetes supports the following mechanisms:
 
-  - specify URL of the request (and optional headers)
+  - `exec` (arbitrary program execution)
 
-  - any status code between 200 and 399 indicates success
+  - `httpGet` (HTTP GET request)
 
-- TCP connection
+  - `tcpSocket` (check if a TCP port is accepting connections)
 
-  - the probe succeeds if the TCP port is open
+  - `grpc` (standard [GRPC Health Checking Protocol][grpc])
 
-- arbitrary exec
+- All probes give binary results ("it works" or "it doesn't")
 
-  - a command is executed in the container
+- Let's see the specific details for each of them!
 
-  - exit status of zero indicates success
-
----
-
-## Benefits of using probes
-
-- Rolling updates proceed when containers are *actually ready*
-
-  (as opposed to merely started)
-
-- Containers in a broken state get killed and restarted
-
-  (instead of serving errors or timeouts)
-
-- Unavailable backends get removed from load balancer rotation
-
-  (thus improving response times across the board)
-
-- If a probe is not defined, it's as if there was an "always successful" probe
+[grpc]: https://grpc.github.io/grpc/core/md_doc_health-checking.html
 
 ---
 
-## Example: HTTP probe
+## `exec`
 
-Here is a pod template for the `rng` web service of the DockerCoins app:
+- Runs an arbitrary program *inside* the container
+
+  (like with `kubectl exec` or `docker exec`)
+
+- The program must be available in the container image
+
+- Kubernetes uses the exit status of the program
+
+  (standard UNIX convention: 0 = success, anything else = failure)
+
+---
+
+## `exec` example
+
+When the worker is ready, it should create `/tmp/ready`.
+<br/>
+The following probe will give it 5 minutes to do so.
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: healthy-app
+  name: queueworker
 spec:
   containers:
-  - name: myapp
-    image: myregistry.io/myapp:v1.0
+  - name: worker
+    image: myregistry.../worker:v1.0
+    startupProbe:
+      exec:
+        command:
+        - test
+        - -f
+        - /tmp/ready
+      failureThreshold: 30
+```
+
+---
+
+## Using shell constructs
+
+- If we want to use pipes, conditionals, etc. we should invoke a shell
+
+- Example:
+  ```yaml
+    exec:
+      command:
+      - sh
+      - -c
+      - "curl http://localhost:5000/status | jq .ready | grep true"
+  ```
+
+---
+
+## `httpGet`
+
+- Make an HTTP GET request to the container
+
+- The request will be made by Kubelet
+
+  (doesn't require extra binaries in the container image)
+
+- `port` must be specified
+
+- `path` and extra `httpHeaders` can be specified optionally
+
+- Kubernetes uses HTTP status code of the response:
+
+  - 200-399 = success
+
+  - anything else = failure
+
+---
+
+## `httpGet` example
+
+The following liveness probe restarts the container if it stops responding on `/healthz`:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend
+spec:
+  containers:
+  - name: frontend
+    image: myregistry.../frontend:v1.0
     livenessProbe:
       httpGet:
-        path: /health
         port: 80
-      periodSeconds: 5
+        path: /healthz
 ```
 
-If the backend serves an error, or takes longer than 1s, 3 times in a row, it gets killed.
+---
+
+## `tcpSocket`
+
+- Kubernetes checks if the indicated TCP port accepts connections
+
+- There is no additional check
+
+.warning[It's quite possible for a process to be broken, but still accept TCP connections!]
 
 ---
 
-## Example: exec probe
+## `grpc`
 
-Here is a pod template for a Redis server:
+<!-- ##VERSION## -->
 
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: redis-with-liveness
-spec:
-  containers:
-  - name: redis
-    image: redis
-    livenessProbe:
-      exec:
-        command: ["redis-cli", "ping"]
-```
+- Available in beta since Kubernetes 1.24
 
-If the Redis process becomes unresponsive, it will be killed.
+- Leverages standard [GRPC Health Checking Protocol][grpc]
+
+[grpc]: https://grpc.github.io/grpc/core/md_doc_health-checking.html
 
 ---
 
-## Questions to ask before adding healthchecks
+## Best practices for healthchecks
 
-- Do we want liveness, readiness, both?
+- Readiness probes are almost always beneficial
 
-  (sometimes, we can use the same check, but with different failure thresholds)
+  - don't hesitate to add them early!
 
-- Do we have existing HTTP endpoints that we can use?
+  - we can even make them *mandatory*
 
-- Do we need to add new endpoints, or perhaps use something else?
+- Be more careful with liveness and startup probes
 
-- Are our healthchecks likely to use resources and/or slow down the app?
+  - they aren't always necessary
 
-- Do they depend on additional services?
-
-  (this can be particularly tricky, see next slide)
+  - they can even cause harm
 
 ---
 
-## Healthchecks and dependencies
+## Readiness probes
 
-- Liveness checks should not be influenced by the state of external services
+- Almost always beneficial
 
-- All checks should reply quickly (by default, less than 1 second)
+- Exceptions:
 
-- Otherwise, they are considered to fail
+  - web service that doesn't have a dedicated "health" or "ping" route
 
-- This might require to check the health of dependencies asynchronously
+  - ...and all requests are "expensive" (e.g. lots of external calls)
 
-  (e.g. if a database or API might be healthy but still take more than
-  1 second to reply, we should check the status asynchronously and report
-  a cached status)
+---
+
+## Liveness probes
+
+- If we're not careful, we end up restarting containers for no reason
+
+  (which can cause additional load on the cluster, cascading failures, data loss, etc.)
+
+- Suggestion:
+
+  - don't add liveness probes immediately
+
+  - wait until you have a bit of production experience with that code
+
+  - then add narrow-scoped healthchecks to detect specific failure modes
+
+- Readiness and liveness probes should be different
+
+  (different check *or* different timeouts *or* different thresholds)
+
+---
+
+## Startup probes
+
+- Only beneficial for containers that need a long time to start
+
+  (more than 30 seconds)
+
+- If there is no liveness probe, it's simpler to just use a readiness probe
+
+  (since we probably want to have a readiness probe anyway)
+
+- In other words, startup probes are useful in one situation:
+
+  *we have a liveness probe, AND the container needs a lot of time to start*
+
+- Don't forget to change the `failureThreshold`
+
+  (otherwise the container will fail to start and be killed)
+
+---
+
+## Recap of the gotchas
+
+- The default timeout is 1 second
+
+  - if a probe takes longer than 1 second to reply, Kubernetes considers that it fails
+
+  - this can be changed by setting the `timeoutSeconds` parameter
+    <br/>(or refactoring the probe)
+
+- Liveness probes should not be influenced by the state of external services
+
+- Liveness probes and readiness probes should have different paramters
+
+- For startup probes, remember to increase the `failureThreshold`
 
 ---
 
@@ -300,21 +453,21 @@ If the Redis process becomes unresponsive, it will be killed.
 
 (In that context, worker = process that doesn't accept connections)
 
-- Readiness is useful mostly for rolling updates
+- A relatively easy solution is to use files
 
-  (because workers aren't backends for a service)
+- For a startup or readiness probe:
 
-- Liveness may help us restart a broken worker, but how can we check it?
+  - worker creates `/tmp/ready` when it's ready
+  - probe checks the existence of `/tmp/ready`
 
-- Embedding an HTTP server is a (potentially expensive) option
+- For a liveness probe:
 
-- Using a "lease" file can be relatively easy:
+  - worker touches `/tmp/alive` regularly
+    <br/>(e.g. just before starting to work on a job)
+  - probe checks that the timestamp on `/tmp/alive` is recent
+  - if the timestamp is old, it means that the worker is stuck
 
-  - touch a file during each iteration of the main loop
-
-  - check the timestamp of that file from an exec probe
-
-- Writing logs (and checking them from the probe) also works
+- Sometimes it can also make sense to embed a web server in the worker
 
 ???
 
