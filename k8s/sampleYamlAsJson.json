@@ -1,0 +1,26 @@
+{
+  "name": "gerry",
+  "citizenship": "US",
+  "height-in-cm": 197,
+  "coder": true,
+  "friends": [
+    "Moe",
+    "Larry",
+    "Curly"
+  ],
+  "employees": [
+    {
+      "name": "Moe",
+      "position": "dev"
+    },
+    {
+      "name": "Larry",
+      "position": "ops"
+    },
+    {
+      "name": "Curly",
+      "position": "devOps"
+    }
+  ],
+  "poem": "Mary had a little lamb\nIt was very cute\n"
+}

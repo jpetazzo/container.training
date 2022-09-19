@@ -86,6 +86,24 @@ class: extra-details
 
 ---
 
+## kubectl is an API Server Client
+
+- kubectl verbose (-v)
+  
+  - --v=6	Display requested resources.
+  
+  - --v=7	Display HTTP request headers.
+  
+  - --v=8	Display HTTP request contents.
+  
+  - --v=9	Display HTTP request contents without truncation of contents.
+
+  ```bash
+  kubectl get nodes --v=8
+  ```
+
+---
+
 ## Obtaining machine-readable output
 
 - `kubectl get` can output JSON, YAML, or be directly formatted

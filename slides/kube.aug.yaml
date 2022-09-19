@@ -21,8 +21,12 @@ content:
 - shared/about-slides.md
 #- shared/chat-room-im.md
 # - shared/chat-room-slack.md
-- shared/chat-room-zoom-meeting.md
-# - shared/chat-room-zoom-webinar.md
+#- shared/chat-room-zoom-meeting.md
+- shared/chat-room-zoom-webinar.md
+- shared/prereqs.md
+- shared/webssh.md
+- shared/connecting.md
+
 - shared/toc.md
 - exercises/k8sfundamentals-brief.md
 - exercises/localcluster-brief.md
@@ -31,25 +35,19 @@ content:
 - exercises/appconfig-brief.md
 - 
 # DAY 1 
-  - shared/prereqs.md
-  - shared/webssh.md
-  - shared/connecting.md
   - containers/Macro_View.md
   #- shared/webssh.md
   #- k8s/versions-k8s.md
   #- shared/composescale.md
-  - k8s/concepts-k8s-intro.md
+  - k8s/concepts-k8s.md
+  - k8s/deploymentslideshow.md
   - shared/declarative.md
   - k8s/declarative.md
-  - k8s/yaml-in-5-min.md
-  - k8s/concepts-k8s-arch.md
-  - k8s/deploymentslideshow.md
   #- shared/hastyconclusions.md
   # - k8s/shippingimages.md
 
   - k8s/kubectl-first.md
-  - k8s/kubectl-run-pod.md
-  # - k8s/authoring-yaml.md
+  - k8s/authoring-yaml.md
   #- k8s/buildshiprun-selfhosted.md
   - k8s/alias-and-references.md
 
@@ -57,7 +55,7 @@ content:
   - k8s/labels-annotations.md
   - k8s/kubectl-logs.md
   - k8s/logs-cli.md
-  - k8s/kubectl-run-deployment.md
+  - k8s/kubectl-run.md
   - k8s/kubectl-more.md
   - k8s/kubectlexpose.md
   - k8s/rollout.md

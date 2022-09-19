@@ -1,9 +1,11 @@
 ## While We are Waiting To Get Started ...
 
-- If you have not already done so, please complete this survey:   [https://tinyurl.com/mrx6fsrh
-](https://docs.google.com/forms/d/1w6wmnvbzyBPbt6f-k0B1ueA-pnkY_zmvROoeRj-vdFU)
+This Side is at [https://github.com/jpetazzo/container.training/blob/2022-08-nr1#2](https://github.com/jpetazzo/container.training/blob/2022-08-nr#2)
 
-- Your lab computers are assigned on this Google Sheet: [https://tinyurl.com/53dm9b66](https://docs.google.com/spreadsheets/d/1aXF46q5jtQUOEQGniPffljmrPX0PmYRc0x7XKogFmQU/edit)
+- If you have not already done so, please complete this survey:   [https://docs.google.com/forms/d/1TEQylRtwZ7M_6fx0Zo9ErBYDeJlASAxSSgExHgafHKM
+](https://docs.google.com/forms/d/1TEQylRtwZ7M_6fx0Zo9ErBYDeJlASAxSSgExHgafHKM)
+
+- Your lab computers are assigned on this Google Sheet: [https://docs.google.com/spreadsheets/d/1s8CboVoTOg9mWPZaRkLXJwRwEqNhceoPuTIKq6K3r7Q](https://docs.google.com/spreadsheets/d/1s8CboVoTOg9mWPZaRkLXJwRwEqNhceoPuTIKq6K3r7Q)
 
   - Enter your name in column 1 in one of the unclaimed rows
 
@@ -15,7 +17,7 @@
 
   - Verify all is good with the command:  **  kubectl version --short **
 
-- Class Starts at 9AM PST / 11AM EST each day  
+- Class Starts at 8AM EST / 12PM EST each day  
 
 ---
 
