@@ -1,6 +1,6 @@
 ## While We are Waiting To Get Started ...
 
-This Side is at [https://github.com/jpetazzo/container.training/blob/2022-08-nr1#2](https://github.com/jpetazzo/container.training/blob/2022-08-nr#2)
+This Side is at [https://2022-09-nr1.container.training/#2](hhttps://2022-09-nr1.container.training/#2)
 
 - If you have not already done so, please complete this survey:   [https://docs.google.com/forms/d/1TEQylRtwZ7M_6fx0Zo9ErBYDeJlASAxSSgExHgafHKM
 ](https://docs.google.com/forms/d/1TEQylRtwZ7M_6fx0Zo9ErBYDeJlASAxSSgExHgafHKM)
