@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: initty
+spec:
+  volumes:
+  - name: preFetched
+    emptyDir: {}
+    
+  containers:
+  - name: main
+    image: main
+    volumeMounts:
+    - name: preFetched
+      mountPath: /usr/share/nginx/html/
+  initContainers:
+  - name: git-cloner
+    image: alpine
+    command: [ "sh", "-c", "apk add git && sleep 5 && git clone https://github.com/octocat/Spoon-Knife /preFetched" ]
+    volumeMounts:
+    - name: preFetched
+      mountPath: /preFetched/

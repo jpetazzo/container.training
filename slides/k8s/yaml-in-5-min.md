@@ -1,5 +1,5 @@
 
-# YAML in 10 min or less
+# YAML in 5 minutes or less
 
 - YAML == Yet Another Markup Language
 

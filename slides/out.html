@@ -29,23 +29,24 @@ Kubernetes<br/>Intermediate<br/>Training<br/>
 
 .debug[
 ```
- M slides/k8s/kubectl-first.md
+ M slides/k8s/alias-and-references.md
+ M slides/k8s/kubectl-run-deployment.md
+ M slides/k8s/yaml-in-5-min.md
  M slides/kube.yml
  M slides/logistics-gerry.md
-?? k8s/sampleYaml.yaml
-?? k8s/sampleYamlAsJson.json
-?? slides/k8s/concepts-k8s-arch.md
-?? slides/k8s/concepts-k8s-intro.md
-?? slides/k8s/kubectl-run-deployment.md
-?? slides/k8s/kubectl-run-pod.md
-?? slides/k8s/yaml-in-5-min.md
-?? slides/kube-jerome.yml
-?? slides/kube.aug.yaml
-?? slides/out.html
+ M slides/out.html
+?? k8s/init-container.yaml
+?? k8s/k8s-nr-kubeconfig.yaml
+?? k8s/multiLine.yaml
+?? k8s/multiLine2.yaml
+?? k8s/nginx-git.yaml
+?? k8s/nginx-init.yaml
+?? k8s/nginx.yaml
+?? k8s/ping.yaml
 
 ```
 
-These slides have been built from commit: d983592d
+These slides have been built from commit: dda21fee
 
 
 [shared/title.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/shared/title.md)]
@@ -56,7 +57,7 @@ class: title, in-person
 Kubernetes<br/>Intermediate<br/>Training<br/><br/></br>
 
 .footnote[
-**Slides[:](https://www.youtube.com/watch?v=h16zyxiwDLY) https://2022-08-nr.container.training/**
+**Slides[:](https://www.youtube.com/watch?v=h16zyxiwDLY) https://2022-09-nr1.container.training/**
 ]
 
 <!--
@@ -74,7 +75,7 @@ Password: **Something**
 ---
 ## While We are Waiting To Get Started ...
 
-This Side is at [https://github.com/jpetazzo/container.training/blob/2022-08-nr1#2](https://github.com/jpetazzo/container.training/blob/2022-08-nr#2)
+This Side is at [https://2022-09-nr1.container.training/#2](https://2022-09-nr1.container.training/#2)
 
 - If you have not already done so, please complete this survey:   [https://docs.google.com/forms/d/1TEQylRtwZ7M_6fx0Zo9ErBYDeJlASAxSSgExHgafHKM
 ](https://docs.google.com/forms/d/1TEQylRtwZ7M_6fx0Zo9ErBYDeJlASAxSSgExHgafHKM)
@@ -184,7 +185,7 @@ class: self-paced
 
 - We recommend that you open these slides in your browser:
 
-  https://2022-08-nr.container.training/
+  https://2022-09-nr1.container.training/
 
 - Use arrows to move to next/previous slide
 
@@ -207,7 +208,7 @@ class: self-paced
 
 - You can download the slides using that URL:
 
-  https://2022-08-nr.container.training/slides.zip
+  https://2022-09-nr1.container.training/slides.zip
 
   (then open the file `kube.yml.html`)
 
@@ -341,21 +342,15 @@ name: toc-part-1
 ## Part 1
 
 - [A Macroscopic View](#toc-a-macroscopic-view)
-
 - [Kubernetes concepts](#toc-kubernetes-concepts)
-
 - [Declarative vs imperative](#toc-declarative-vs-imperative)
-
-- [YAML in 10 min or less](#toc-yaml-in--min-or-less)
-
+- [YAML in 5 minutes or less](#toc-yaml-in--minutes-or-less)
 - [Kubernetes Architecture](#toc-kubernetes-architecture)
-
 - [First contact with `kubectl`](#toc-first-contact-with-kubectl)
-
 - [Running our first containers on Kubernetes](#toc-running-our-first-containers-on-kubernetes)
-
 - [External References && kubectl Aliases](#toc-external-references--kubectl-aliases)
-
+- [alias kx='kubectl exec -it $1 -- /bin/sh'](#toc-alias-kxkubectl-exec--it-----binsh)
+- [`CMD` and `ENTRYPOINT`](#toc-cmd-and-entrypoint)
 
 .debug[(auto-generated TOC)]
 ---
@@ -368,6 +363,8 @@ name: toc-part-2
 - [Revisiting `kubectl logs`](#toc-revisiting-kubectl-logs)
 
 - [Accessing logs from the CLI](#toc-accessing-logs-from-the-cli)
+
+- [Scaling our application](#toc-scaling-our-application)
 
 - [More contact with `kubectl`](#toc-more-contact-with-kubectl)
 
@@ -601,9 +598,9 @@ Misattributed to Benjamin Franklin
 
 - This is the stuff you're supposed to do!
 
-- Go to https://2022-08-nr.container.training/ to view these slides
+- Go to https://2022-09-nr1.container.training/ to view these slides
 
-<!-- ```open https://2022-08-nr.container.training/``` -->
+<!-- ```open https://2022-09-nr1.container.training/``` -->
 
 ]
 
@@ -1453,7 +1450,7 @@ class: title
 |
 [Back to table of contents](#toc-part-1)
 |
-[Next part](#toc-yaml-in--min-or-less)
+[Next part](#toc-yaml-in--minutes-or-less)
 ]
 
 .debug[(automatically generated title slide)]
@@ -1571,10 +1568,10 @@ class: pic
 
 ---
 
-name: toc-yaml-in--min-or-less
+name: toc-yaml-in--minutes-or-less
 class: title
 
- YAML in 10 min or less
+ YAML in 5 minutes or less
 
 .nav[
 [Previous part](#toc-declarative-vs-imperative)
@@ -1588,7 +1585,7 @@ class: title
 
 ---
 
-# YAML in 10 min or less
+# YAML in 5 minutes or less
 
 - YAML == Yet Another Markup Language
 
@@ -1636,7 +1633,7 @@ class: title
  Kubernetes Architecture
 
 .nav[
-[Previous part](#toc-yaml-in--min-or-less)
+[Previous part](#toc-yaml-in--minutes-or-less)
 |
 [Back to table of contents](#toc-part-1)
 |
@@ -2848,7 +2845,7 @@ class: title
 |
 [Back to table of contents](#toc-part-1)
 |
-[Next part](#toc-labels-and-annotations)
+[Next part](#toc-alias-kxkubectl-exec--it-----binsh)
 ]
 
 .debug[(automatically generated title slide)]
@@ -2858,7 +2855,7 @@ class: title
 
 # External References && kubectl Aliases
 
-Class Slides:    https://2022-08-nr.container.training/
+Class Slides:    https://2022-09-nr1.container.training/
     
 Kubectl Cheat Sheet:    https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 
@@ -2880,19 +2877,42 @@ Gerry Seidman’s Info
 .debug[[k8s/alias-and-references.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/alias-and-references.md)]
 ---
 
+class: pic
+
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/distillery-containers.jpg)]
+
+---
+
+name: toc-alias-kxkubectl-exec--it-----binsh
+class: title
+
+ alias kx='kubectl exec -it $1 -- /bin/sh'
+
+.nav[
+[Previous part](#toc-external-references--kubectl-aliases)
+|
+[Back to table of contents](#toc-part-1)
+|
+[Next part](#toc-cmd-and-entrypoint)
+]
+
+.debug[(automatically generated title slide)]
+
+---
+
 ## Kubectl Aliases
 
 ```bash
 alias k='kubectl'
 alias kg='kubectl get'
-alias kl='kubctl logs'
+alias kl='kubectl logs'
 alias ka='kubectl apply -f'
 alias kd='kubectl delete'
 alias kdf='kubectl delete -f'
 alias kb='kubectl describe'
 alias kex='kubectl explain'
 alias ke='kubectl edit'
-alias kx='kubectl exec -it $1 -- /bin/sh'
+# alias kx='kubectl exec -it $1 -- /bin/sh'
 ```
 Note the below is only because of a quirk in how the lab VMs were installed:
 ```bash
@@ -2906,7 +2926,366 @@ sudo mv kx /usr/local/bin/kx
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/distillery-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/lots-of-containers.jpg)]
+
+---
+
+name: toc-cmd-and-entrypoint
+class: title
+
+ `CMD` and `ENTRYPOINT`
+
+.nav[
+[Previous part](#toc-alias-kxkubectl-exec--it-----binsh)
+|
+[Back to table of contents](#toc-part-1)
+|
+[Next part](#toc-labels-and-annotations)
+]
+
+.debug[(automatically generated title slide)]
+
+---
+
+class: title
+
+# `CMD` and `ENTRYPOINT`
+
+![Container entry doors](images/entrypoint.jpg)
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## Objectives
+
+In this lesson, we will learn about two important
+Dockerfile commands:
+
+`CMD` and `ENTRYPOINT`.
+
+These commands allow us to set the default command
+to run in a container.
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## Defining a default command
+
+When people run our container, we want to greet them with a nice hello message, and using a custom font.
+
+For that, we will execute:
+
+```bash
+figlet -f script hello
+```
+
+* `-f script` tells figlet to use a fancy font.
+
+* `hello` is the message that we want it to display.
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## Adding `CMD` to our Dockerfile
+
+Our new Dockerfile will look like this:
+
+```dockerfile
+FROM ubuntu
+RUN apt-get update
+RUN ["apt-get", "install", "figlet"]
+CMD figlet -f script hello
+```
+
+* `CMD` defines a default command to run when none is given.
+
+* It can appear at any point in the file.
+
+* Each `CMD` will replace and override the previous one.
+
+* As a result, while you can have multiple `CMD` lines, it is useless.
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## Build and test our image
+
+Let's build it:
+
+```bash
+$ docker build -t figlet .
+...
+Successfully built 042dff3b4a8d
+Successfully tagged figlet:latest
+```
+
+And run it:
+
+```bash
+$ docker run figlet
+ _          _   _       
+| |        | | | |      
+| |     _  | | | |  __  
+|/ \   |/  |/  |/  /  \_
+|   |_/|__/|__/|__/\__/ 
+```
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## Overriding `CMD`
+
+If we want to get a shell into our container (instead of running
+`figlet`), we just have to specify a different program to run:
+
+```bash
+$ docker run -it figlet bash
+root@7ac86a641116:/# 
+```
+
+* We specified `bash`.
+
+* It replaced the value of `CMD`.
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## Using `ENTRYPOINT`
+
+We want to be able to specify a different message on the command line,
+while retaining `figlet` and some default parameters.
+
+In other words, we would like to be able to do this:
+
+```bash
+$ docker run figlet salut
+           _            
+          | |           
+ ,   __,  | |       _|_ 
+/ \_/  |  |/  |   |  |  
+ \/ \_/|_/|__/ \_/|_/|_/
+```
+
+
+We will use the `ENTRYPOINT` verb in Dockerfile.
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## Adding `ENTRYPOINT` to our Dockerfile
+
+Our new Dockerfile will look like this:
+
+```dockerfile
+FROM ubuntu
+RUN apt-get update
+RUN ["apt-get", "install", "figlet"]
+ENTRYPOINT ["figlet", "-f", "script"]
+```
+
+* `ENTRYPOINT` defines a base command (and its parameters) for the container.
+
+* The command line arguments are appended to those parameters.
+
+* Like `CMD`, `ENTRYPOINT` can appear anywhere, and replaces the previous value.
+
+Why did we use JSON syntax for our `ENTRYPOINT`?
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## Implications of JSON vs string syntax
+
+* When CMD or ENTRYPOINT use string syntax, they get wrapped in `sh -c`.
+
+* To avoid this wrapping, we can use JSON syntax.
+
+What if we used `ENTRYPOINT` with string syntax?
+
+```bash
+$ docker run figlet salut
+```
+
+This would run the following command in the `figlet` image:
+
+```bash
+sh -c "figlet -f script" salut
+```
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## Build and test our image
+
+Let's build it:
+
+```bash
+$ docker build -t figlet .
+...
+Successfully built 36f588918d73
+Successfully tagged figlet:latest
+```
+
+And run it:
+
+```bash
+$ docker run figlet salut
+           _            
+          | |           
+ ,   __,  | |       _|_ 
+/ \_/  |  |/  |   |  |  
+ \/ \_/|_/|__/ \_/|_/|_/
+```
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## Using `CMD` and `ENTRYPOINT` together
+
+What if we want to define a default message for our container?
+
+Then we will use `ENTRYPOINT` and `CMD` together.
+
+* `ENTRYPOINT` will define the base command for our container.
+
+* `CMD` will define the default parameter(s) for this command.
+
+* They *both* have to use JSON syntax.
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## `CMD` and `ENTRYPOINT` together
+
+Our new Dockerfile will look like this:
+
+```dockerfile
+FROM ubuntu
+RUN apt-get update
+RUN ["apt-get", "install", "figlet"]
+ENTRYPOINT ["figlet", "-f", "script"]
+CMD ["hello world"]
+```
+
+* `ENTRYPOINT` defines a base command (and its parameters) for the container.
+
+* If we don't specify extra command-line arguments when starting the container,
+  the value of `CMD` is appended.
+
+* Otherwise, our extra command-line arguments are used instead of `CMD`.
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## Build and test our image
+
+Let's build it:
+
+```bash
+$ docker build -t myfiglet .
+...
+Successfully built 6e0b6a048a07
+Successfully tagged myfiglet:latest
+```
+
+Run it without parameters:
+
+```bash
+$ docker run myfiglet
+ _          _   _                             _        
+| |        | | | |                           | |    |  
+| |     _  | | | |  __             __   ,_   | |  __|  
+|/ \   |/  |/  |/  /  \_  |  |  |_/  \_/  |  |/  /  |  
+|   |_/|__/|__/|__/\__/    \/ \/  \__/    |_/|__/\_/|_/
+```
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## Overriding the image default parameters
+
+Now let's pass extra arguments to the image.
+
+```bash
+$ docker run myfiglet hola mundo
+ _           _                                               
+| |         | |                                      |       
+| |     __  | |  __,     _  _  _           _  _    __|   __  
+|/ \   /  \_|/  /  |    / |/ |/ |  |   |  / |/ |  /  |  /  \_
+|   |_/\__/ |__/\_/|_/    |  |  |_/ \_/|_/  |  |_/\_/|_/\__/ 
+```
+
+We overrode `CMD` but still used `ENTRYPOINT`.
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## Overriding `ENTRYPOINT`
+
+What if we want to run a shell in our container?
+
+We cannot just do `docker run myfiglet bash` because
+that would just tell figlet to display the word "bash."
+
+We use the `--entrypoint` parameter:
+
+```bash
+$ docker run -it --entrypoint bash myfiglet
+root@6027e44e2955:/# 
+```
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## `CMD` and `ENTRYPOINT` recap
+
+- `docker run myimage` executes `ENTRYPOINT` + `CMD`
+
+- `docker run myimage args` executes `ENTRYPOINT` + `args` (overriding `CMD`)
+
+- `docker run --entrypoint prog myimage` executes `prog` (overriding both)
+
+.small[
+| Command                         | `ENTRYPOINT`       | `CMD`   | Result
+|---------------------------------|--------------------|---------|-------
+| `docker run figlet`             | none               | none    | Use values from base image (`bash`)
+| `docker run figlet hola`        | none               | none    | Error (executable `hola` not found)
+| `docker run figlet`             | `figlet -f script` | none    | `figlet -f script`
+| `docker run figlet hola`        | `figlet -f script` | none    | `figlet -f script hola`
+| `docker run figlet`             | none    | `figlet -f script` | `figlet -f script`
+| `docker run figlet hola`        | none    | `figlet -f script` | Error (executable `hola` not found)
+| `docker run figlet`             | `figlet -f script` | `hello` | `figlet -f script hello`
+| `docker run figlet hola`        | `figlet -f script` | `hello` | `figlet -f script hola`
+]
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+## When to use `ENTRYPOINT` vs `CMD`
+
+`ENTRYPOINT` is great for "containerized binaries".
+
+Example: `docker run consul --help`
+
+(Pretend that the `docker run` part isn't there!)
+
+`CMD` is great for images with multiple binaries.
+
+Example: `docker run busybox ifconfig`
+
+(It makes sense to indicate *which* program we want to run!)
+
+???
+
+:EN:- CMD and ENTRYPOINT
+:FR:- CMD et ENTRYPOINT
+
+.debug[[containers/Cmd_And_Entrypoint.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/containers/Cmd_And_Entrypoint.md)]
+---
+
+class: pic
+
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/plastic-containers.JPG)]
 
 ---
 
@@ -2916,7 +3295,7 @@ class: title
  Labels and annotations
 
 .nav[
-[Previous part](#toc-external-references--kubectl-aliases)
+[Previous part](#toc-cmd-and-entrypoint)
 |
 [Back to table of contents](#toc-part-2)
 |
@@ -3168,7 +3547,7 @@ class: extra-details
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/lots-of-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-1.jpg)]
 
 ---
 
@@ -3368,7 +3747,7 @@ class: extra-details
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/plastic-containers.JPG)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-2.jpg)]
 
 ---
 
@@ -3382,7 +3761,7 @@ class: title
 |
 [Back to table of contents](#toc-part-2)
 |
-[Next part](#toc-more-contact-with-kubectl)
+[Next part](#toc-scaling-our-application)
 ]
 
 .debug[(automatically generated title slide)]
@@ -3560,7 +3939,30 @@ Exactly what we need!
 .debug[[k8s/logs-cli.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/logs-cli.md)]
 ---
 
-## Scaling our application
+class: pic
+
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/two-containers-on-a-truck.jpg)]
+
+---
+
+name: toc-scaling-our-application
+class: title
+
+ Scaling our application
+
+.nav[
+[Previous part](#toc-accessing-logs-from-the-cli)
+|
+[Back to table of contents](#toc-part-2)
+|
+[Next part](#toc-more-contact-with-kubectl)
+]
+
+.debug[(automatically generated title slide)]
+
+---
+
+# Scaling our application
 
 - `kubectl` gives us a simple command to scale a workload:
 
@@ -3978,10 +4380,99 @@ class: extra-details
 
 .debug[[k8s/kubectl-run-deployment.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/kubectl-run-deployment.md)]
 ---
+## 19,000 words
+
+They say, "a picture is worth one thousand words."
+
+The following 19 slides show what really happens when we run:
+
+```bash
+kubectl create deployment web --image=nginx
+```
+
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/01.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/02.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/03.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/04.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/05.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/06.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/07.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/08.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/09.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/10.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/11.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/12.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/13.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/14.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/15.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/16.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/17.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/18.svg)
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
+class: pic
+![](images/kubectl-create-deployment-slideshow/19.svg)
+
+.debug[[k8s/deploymentslideshow.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/deploymentslideshow.md)]
+---
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-1.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/wall-of-containers.jpeg)]
 
 ---
 
@@ -3991,7 +4482,7 @@ class: title
  More contact with `kubectl`
 
 .nav[
-[Previous part](#toc-accessing-logs-from-the-cli)
+[Previous part](#toc-scaling-our-application)
 |
 [Back to table of contents](#toc-part-2)
 |
@@ -4363,7 +4854,7 @@ $ curl -k https://10.96.0.1
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-2.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/Container-Ship-Freighter-Navigation-Elbe-Romance-1782991.jpg)]
 
 ---
 
@@ -4996,7 +5487,7 @@ class: pic
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/two-containers-on-a-truck.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/ShippingContainerSFBay.jpg)]
 
 ---
 
@@ -5491,7 +5982,7 @@ class: extra-details
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/wall-of-containers.jpeg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/aerial-view-of-containers.jpg)]
 
 ---
 
@@ -5696,7 +6187,7 @@ class: extra-details
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/Container-Ship-Freighter-Navigation-Elbe-Romance-1782991.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/blue-containers.jpg)]
 
 ---
 
@@ -6015,7 +6506,7 @@ The master node has [taints](https://kubernetes.io/docs/concepts/configuration/t
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/ShippingContainerSFBay.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/chinook-helicopter-container.jpg)]
 
 ---
 
@@ -6571,7 +7062,7 @@ class: extra-details
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/aerial-view-of-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-cranes.jpg)]
 
 ---
 
@@ -6987,7 +7478,7 @@ Note: we could have used `--namespace=default` for the same result.
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/blue-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-housing.jpg)]
 
 ---
 
@@ -7351,7 +7842,7 @@ If the Redis process becomes unresponsive, it will be killed.
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/chinook-helicopter-container.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/containers-by-the-water.jpg)]
 
 ---
 
@@ -7570,7 +8061,7 @@ class: extra-details
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-cranes.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/distillery-containers.jpg)]
 
 ---
 
@@ -7687,7 +8178,7 @@ a significant difference behind the scenes. What is it?)*
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-housing.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/lots-of-containers.jpg)]
 
 ---
 
@@ -8201,7 +8692,7 @@ troubleshoot easily, without having to poke holes in our firewall.
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/containers-by-the-water.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/plastic-containers.JPG)]
 
 ---
 
@@ -8382,7 +8873,7 @@ installed and set up `kubectl` to communicate with your cluster.
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/distillery-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-1.jpg)]
 
 ---
 
@@ -9246,7 +9737,7 @@ For inspiration, check [flagger by Weave](https://github.com/weaveworks/flagger)
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/lots-of-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-2.jpg)]
 
 ---
 
@@ -9409,7 +9900,7 @@ class: pic
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/plastic-containers.JPG)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/two-containers-on-a-truck.jpg)]
 
 ---
 
@@ -9936,7 +10427,7 @@ spec:
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-1.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/wall-of-containers.jpeg)]
 
 ---
 
@@ -10609,7 +11100,7 @@ spec:
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-2.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/Container-Ship-Freighter-Navigation-Elbe-Romance-1782991.jpg)]
 
 ---
 
@@ -11269,7 +11760,7 @@ These are the steps when dynamic provisioning happens:
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/two-containers-on-a-truck.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/ShippingContainerSFBay.jpg)]
 
 ---
 
@@ -11346,7 +11837,7 @@ class: title
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/wall-of-containers.jpeg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/aerial-view-of-containers.jpg)]
 
 ---
 
@@ -11464,7 +11955,7 @@ class: title
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/Container-Ship-Freighter-Navigation-Elbe-Romance-1782991.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/blue-containers.jpg)]
 
 ---
 
@@ -11729,7 +12220,7 @@ consul agent -data-dir=/consul/data -client=0.0.0.0 -server -ui \
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/ShippingContainerSFBay.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/chinook-helicopter-container.jpg)]
 
 ---
 
@@ -11975,7 +12466,7 @@ spec:
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/aerial-view-of-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-cranes.jpg)]
 
 ---
 
@@ -12362,7 +12853,7 @@ kubectl get pv,pvc
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/blue-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-housing.jpg)]
 
 ---
 
@@ -13437,7 +13928,7 @@ class: extra-details
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/chinook-helicopter-container.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/containers-by-the-water.jpg)]
 
 ---
 
@@ -13833,7 +14324,7 @@ This set of resources makes sure that this service won't be killed (as long as i
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-cranes.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/distillery-containers.jpg)]
 
 ---
 
@@ -13933,7 +14424,7 @@ per Pod, but it's not [officially documented yet](https://github.com/kubernetes/
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-housing.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/lots-of-containers.jpg)]
 
 ---
 
@@ -14133,7 +14624,7 @@ class: extra-details
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/containers-by-the-water.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/plastic-containers.JPG)]
 
 ---
 
@@ -14287,7 +14778,7 @@ class: title
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/distillery-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-1.jpg)]
 
 ---
 
@@ -14527,7 +15018,7 @@ Pros:
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/lots-of-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-2.jpg)]
 
 ---
 
@@ -14790,7 +15281,7 @@ class: title
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/plastic-containers.JPG)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/two-containers-on-a-truck.jpg)]
 
 ---
 
@@ -14982,7 +15473,7 @@ class: title
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-1.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/wall-of-containers.jpeg)]
 
 ---
 
@@ -15193,7 +15684,7 @@ Check [this blog post](http://jpetazzo.github.io/2019/02/13/running-kubernetes-w
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-2.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/Container-Ship-Freighter-Navigation-Elbe-Romance-1782991.jpg)]
 
 ---
 
@@ -15428,7 +15919,7 @@ We can now utilize the cluster exactly as if we're logged into a node, except th
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/two-containers-on-a-truck.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/ShippingContainerSFBay.jpg)]
 
 ---
 
@@ -15604,7 +16095,7 @@ Try it out, and see if it makes you more productive!
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/wall-of-containers.jpeg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/aerial-view-of-containers.jpg)]
 
 ---
 
@@ -16041,7 +16532,7 @@ class: extra-details
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/Container-Ship-Freighter-Navigation-Elbe-Romance-1782991.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/blue-containers.jpg)]
 
 ---
 
@@ -16128,7 +16619,7 @@ That's all, folks! <br/> Questions?
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/ShippingContainerSFBay.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/chinook-helicopter-container.jpg)]
 
 ---
 
@@ -16155,7 +16646,7 @@ class: title
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/aerial-view-of-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-cranes.jpg)]
 
 ---
 
@@ -16588,7 +17079,7 @@ The containers that do not handle `SIGTERM` end up being killed after a 10s time
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/blue-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-housing.jpg)]
 
 ---
 
@@ -16734,7 +17225,7 @@ class: title
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/chinook-helicopter-container.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/containers-by-the-water.jpg)]
 
 ---
 
@@ -16823,7 +17314,7 @@ class: pic
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-cranes.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/distillery-containers.jpg)]
 
 ---
 
@@ -17024,7 +17515,7 @@ Yes, this may take a little while to update. *(Narrator: it was DNS.)*
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-housing.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/lots-of-containers.jpg)]
 
 ---
 
@@ -17282,7 +17773,7 @@ Note: this is a fiction! We have enough entropy. But we need a pretext to scale 
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/containers-by-the-water.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/plastic-containers.JPG)]
 
 ---
 
@@ -17309,7 +17800,7 @@ class: title
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/distillery-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-1.jpg)]
 
 ---
 
@@ -17660,7 +18151,7 @@ This can also be set with `--cpu-percent=`.
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/lots-of-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-2.jpg)]
 
 ---
 
@@ -17945,7 +18436,7 @@ The dashboard will then ask you which authentication you want to use.
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/plastic-containers.JPG)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/two-containers-on-a-truck.jpg)]
 
 ---
 
@@ -18029,7 +18520,7 @@ class: title
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-1.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/wall-of-containers.jpeg)]
 
 ---
 
@@ -18236,7 +18727,7 @@ class: extra-details
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-2.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/Container-Ship-Freighter-Navigation-Elbe-Romance-1782991.jpg)]
 
 ---
 
@@ -18850,7 +19341,7 @@ All unspecified values will take the default values defined in the chart.
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/two-containers-on-a-truck.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/ShippingContainerSFBay.jpg)]
 
 ---
 
@@ -19147,7 +19638,7 @@ We see the components mentioned above: `Chart.yaml`, `templates/`, `values.yaml`
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/wall-of-containers.jpeg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/aerial-view-of-containers.jpg)]
 
 ---
 
@@ -19420,7 +19911,7 @@ The result is not a valid YAML manifest, but this is a great debugging tool!
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/Container-Ship-Freighter-Navigation-Elbe-Romance-1782991.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/blue-containers.jpg)]
 
 ---
 

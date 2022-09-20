@@ -7,7 +7,7 @@ chat: "`Zoom Chat`"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: https://2022-08-nr.container.training/
+slides: https://2022-09-nr1.container.training/
 
 #slidenumberprefix: "#SomeHashTag &mdash; "
 
@@ -52,12 +52,14 @@ content:
   # - k8s/authoring-yaml.md
   #- k8s/buildshiprun-selfhosted.md
   - k8s/alias-and-references.md
+  - containers/Cmd_And_Entrypoint.md
 
 - # DAY 2
   - k8s/labels-annotations.md
   - k8s/kubectl-logs.md
   - k8s/logs-cli.md
   - k8s/kubectl-run-deployment.md
+  - k8s/deploymentslideshow.md
   - k8s/kubectl-more.md
   - k8s/kubectlexpose.md
   - k8s/rollout.md

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: ping
+  name: ping
+spec:
+  terminationGracePeriodSeconds: 0
+  containers:
+  - command:
+    - ping
+    args:
+    - 127.0.0.1
+    image: alpine
+    name: ping
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

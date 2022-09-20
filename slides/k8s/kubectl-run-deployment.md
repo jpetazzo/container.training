@@ -1,5 +1,5 @@
 
-## Scaling our application
+# Scaling our application
 
 - `kubectl` gives us a simple command to scale a workload:
 

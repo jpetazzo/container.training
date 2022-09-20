@@ -2,7 +2,7 @@
 
 # External References && kubectl Aliases
 
-Class Slides:    https://2022-08-nr.container.training/
+Class Slides:    https://2022-09-nr1.container.training/
     
 Kubectl Cheat Sheet:    https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 
@@ -28,14 +28,14 @@ Gerry Seidman’s Info
 ```bash
 alias k='kubectl'
 alias kg='kubectl get'
-alias kl='kubctl logs'
+alias kl='kubectl logs'
 alias ka='kubectl apply -f'
 alias kd='kubectl delete'
 alias kdf='kubectl delete -f'
 alias kb='kubectl describe'
 alias kex='kubectl explain'
 alias ke='kubectl edit'
-alias kx='kubectl exec -it $1 -- /bin/sh'
+# alias kx='kubectl exec -it $1 -- /bin/sh'
 ```
 Note the below is only because of a quirk in how the lab VMs were installed:
 ```bash
