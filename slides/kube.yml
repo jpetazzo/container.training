@@ -62,25 +62,25 @@ content:
   - k8s/deploymentslideshow.md
   - k8s/kubectl-more.md
   - k8s/kubectlexpose.md
+
+- # DAY  3 
   - k8s/rollout.md
   - k8s/yamldeploy.md  
-
-- # DAY  3  (Started with 2 hour's lab and discussion)
   - k8s/daemonset.md
   - k8s/namespaces.md
   - k8s/healthchecks.md
-  - k8s/kubenet.md
+  - k8s/volumes.md
+  - k8s/configuration.md
+  - k8s/secrets.md
   - exercises/healthchecks-details.md
 
 - # DAY 4
+  - k8s/volume-claim-templates.md  
+  - k8s/kubenet.md
   - k8s/netpol.md
   - k8s/accessinternal.md
   - k8s/ingress.md
   - containers/software-deployment.md
-  - k8s/volumes.md
-  - k8s/configuration.md
-  - k8s/secrets.md
-  - k8s/volume-claim-templates.md  
   - exercises/ingress-details.md
   - exercises/appconfig-details.md
 

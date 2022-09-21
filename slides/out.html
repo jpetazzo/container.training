@@ -29,24 +29,12 @@ Kubernetes<br/>Intermediate<br/>Training<br/>
 
 .debug[
 ```
- M slides/k8s/alias-and-references.md
- M slides/k8s/kubectl-run-deployment.md
- M slides/k8s/yaml-in-5-min.md
  M slides/kube.yml
- M slides/logistics-gerry.md
  M slides/out.html
-?? k8s/init-container.yaml
-?? k8s/k8s-nr-kubeconfig.yaml
-?? k8s/multiLine.yaml
-?? k8s/multiLine2.yaml
-?? k8s/nginx-git.yaml
-?? k8s/nginx-init.yaml
-?? k8s/nginx.yaml
-?? k8s/ping.yaml
 
 ```
 
-These slides have been built from commit: dda21fee
+These slides have been built from commit: b4d837bb
 
 
 [shared/title.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/shared/title.md)]
@@ -370,10 +358,6 @@ name: toc-part-2
 
 - [Exposing containers](#toc-exposing-containers)
 
-- [Rolling updates](#toc-rolling-updates)
-
-- [Deploying with YAML](#toc-deploying-with-yaml)
-
 
 .debug[(auto-generated TOC)]
 ---
@@ -381,24 +365,24 @@ name: toc-part-3
 
 ## Part 3
 
+- [Rolling updates](#toc-rolling-updates)
+- [Deploying with YAML](#toc-deploying-with-yaml)
 - [Daemon sets](#toc-daemon-sets)
-
 - [Labels and selectors](#toc-labels-and-selectors)
-
 - [Namespaces](#toc-namespaces)
-
 - [Healthchecks](#toc-healthchecks)
-
-- [Kubernetes network model](#toc-kubernetes-network-model)
-
+- [Volumes](#toc-volumes)
+- [Managing configuration](#toc-managing-configuration)
+- [Managing secrets](#toc-managing-secrets)
 - [Exercise — Healthchecks](#toc-exercise--healthchecks)
-
 
 .debug[(auto-generated TOC)]
 ---
 name: toc-part-4
 
 ## Part 4
+
+- [Kubernetes network model](#toc-kubernetes-network-model)
 
 - [Network policies](#toc-network-policies)
 
@@ -407,12 +391,6 @@ name: toc-part-4
 - [Exposing HTTP services with Ingress resources](#toc-exposing-http-services-with-ingress-resources)
 
 - [Container Based Software Deployment](#toc-container-based-software-deployment)
-
-- [Volumes](#toc-volumes)
-
-- [Managing configuration](#toc-managing-configuration)
-
-- [Managing secrets](#toc-managing-secrets)
 
 - [Exercise — Ingress](#toc-exercise--ingress)
 
@@ -5499,7 +5477,7 @@ class: title
 .nav[
 [Previous part](#toc-exposing-containers)
 |
-[Back to table of contents](#toc-part-2)
+[Back to table of contents](#toc-part-3)
 |
 [Next part](#toc-deploying-with-yaml)
 ]
@@ -5994,7 +5972,7 @@ class: title
 .nav[
 [Previous part](#toc-rolling-updates)
 |
-[Back to table of contents](#toc-part-2)
+[Back to table of contents](#toc-part-3)
 |
 [Next part](#toc-daemon-sets)
 ]
@@ -7492,7 +7470,7 @@ class: title
 |
 [Back to table of contents](#toc-part-3)
 |
-[Next part](#toc-kubernetes-network-model)
+[Next part](#toc-volumes)
 ]
 
 .debug[(automatically generated title slide)]
@@ -7846,17 +7824,1994 @@ class: pic
 
 ---
 
-name: toc-kubernetes-network-model
+name: toc-volumes
 class: title
 
- Kubernetes network model
+ Volumes
 
 .nav[
 [Previous part](#toc-healthchecks)
 |
 [Back to table of contents](#toc-part-3)
 |
+[Next part](#toc-managing-configuration)
+]
+
+.debug[(automatically generated title slide)]
+
+---
+# Volumes
+
+- Volumes are special directories that are mounted in containers
+
+- Volumes can have many different purposes:
+
+  - share files and directories between containers running on the same machine
+
+  - share files and directories between containers and their host
+
+  - centralize configuration information in Kubernetes and expose it to containers
+
+  - manage credentials and secrets and expose them securely to containers
+
+  - store persistent data for stateful services
+
+  - access storage systems (like Ceph, EBS, NFS, Portworx, and many others)
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+class: extra-details
+
+## Kubernetes volumes vs. Docker volumes
+
+- Kubernetes and Docker volumes are very similar
+
+  (the [Kubernetes documentation](https://kubernetes.io/docs/concepts/storage/volumes/) says otherwise ...
+  <br/>
+  but it refers to Docker 1.7, which was released in 2015!)
+
+- Docker volumes allow us to share data between containers running on the same host
+
+- Kubernetes volumes allow us to share data between containers in the same pod
+
+- Both Docker and Kubernetes volumes enable access to storage systems
+
+- Kubernetes volumes are also used to expose configuration and secrets
+
+- Docker has specific concepts for configuration and secrets
+  <br/>
+  (but under the hood, the technical implementation is similar)
+
+- If you're not familiar with Docker volumes, you can safely ignore this slide!
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Volumes ≠ Persistent Volumes
+
+- Volumes and Persistent Volumes are related, but very different!
+
+- *Volumes*:
+
+  - appear in Pod specifications (we'll see that in a few slides)
+
+  - do not exist as API resources (**cannot** do `kubectl get volumes`)
+
+- *Persistent Volumes*:
+
+  - are API resources (**can** do `kubectl get persistentvolumes`)
+
+  - correspond to concrete volumes (e.g. on a SAN, EBS, etc.)
+
+  - cannot be associated with a Pod directly; but through a Persistent Volume Claim
+
+  - won't be discussed further in this section
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Adding a volume to a Pod
+
+- We will start with the simplest Pod manifest we can find
+
+- We will add a volume to that Pod manifest
+
+- We will mount that volume in a container in the Pod
+
+- By default, this volume will be an `emptyDir`
+
+  (an empty directory)
+
+- It will "shadow" the directory where it's mounted
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Our basic Pod
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-without-volume
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+```
+
+This is a MVP! (Minimum Viable Pod😉)
+
+It runs a single NGINX container.
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Trying the basic pod
+
+.lab[
+
+- Create the Pod:
+  ```bash
+  kubectl create -f ~/container.training/k8s/nginx-1-without-volume.yaml
+  ```
+
+<!-- ```bash kubectl wait pod/nginx-without-volume --for condition=ready ``` -->
+
+- Get its IP address:
+  ```bash
+  IPADDR=$(kubectl get pod nginx-without-volume -o jsonpath={.status.podIP})
+  ```
+
+- Send a request with curl:
+  ```bash
+  curl $IPADDR
+  ```
+
+]
+
+(We should see the "Welcome to NGINX" page.)
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Adding a volume
+
+- We need to add the volume in two places:
+
+  - at the Pod level (to declare the volume)
+
+  - at the container level (to mount the volume)
+
+- We will declare a volume named `www`
+
+- No type is specified, so it will default to `emptyDir`
+
+  (as the name implies, it will be initialized as an empty directory at pod creation)
+
+- In that pod, there is also a container named `nginx`
+
+- That container mounts the volume `www` to path `/usr/share/nginx/html/`
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## The Pod with a volume
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-with-volume
+spec:
+  volumes:
+  - name: www
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - name: www
+      mountPath: /usr/share/nginx/html/
+```
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Trying the Pod with a volume
+
+.lab[
+
+- Create the Pod:
+  ```bash
+  kubectl create -f ~/container.training/k8s/nginx-2-with-volume.yaml
+  ```
+
+<!-- ```bash kubectl wait pod/nginx-with-volume --for condition=ready ``` -->
+
+- Get its IP address:
+  ```bash
+  IPADDR=$(kubectl get pod nginx-with-volume -o jsonpath={.status.podIP})
+  ```
+
+- Send a request with curl:
+  ```bash
+  curl $IPADDR
+  ```
+
+]
+
+(We should now see a "403 Forbidden" error page.)
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Populating the volume with another container
+
+- Let's add another container to the Pod
+
+- Let's mount the volume in *both* containers
+
+- That container will populate the volume with static files
+
+- NGINX will then serve these static files
+
+- To populate the volume, we will clone the Spoon-Knife repository
+
+  - this repository is https://github.com/octocat/Spoon-Knife
+
+  - it's very popular (more than 100K stars!)
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Sharing a volume between two containers
+
+.small[
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-with-git
+spec:
+  volumes:
+  - name: www
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - name: www
+      mountPath: /usr/share/nginx/html/
+  - name: git
+    image: alpine
+    command: [ "sh", "-c", "apk add git && git clone https://github.com/octocat/Spoon-Knife /www" ]
+    volumeMounts:
+    - name: www
+      mountPath: /www/
+  restartPolicy: OnFailure
+```
+]
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Sharing a volume, explained
+
+- We added another container to the pod
+
+- That container mounts the `www` volume on a different path (`/www`)
+
+- It uses the `alpine` image
+
+- When started, it installs `git` and clones the `octocat/Spoon-Knife` repository
+
+  (that repository contains a tiny HTML website)
+
+- As a result, NGINX now serves this website
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Trying the shared volume
+
+- This one will be time-sensitive!
+
+- We need to catch the Pod IP address *as soon as it's created*
+
+- Then send a request to it *as fast as possible*
+
+.lab[
+
+- Watch the pods (so that we can catch the Pod IP address)
+  ```bash
+  kubectl get pods -o wide --watch
+  ```
+
+<!--
+```wait NAME```
+```tmux split-pane -v```
+-->
+
+]
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Shared volume in action
+
+.lab[
+
+- Create the pod:
+  ```bash
+  kubectl create -f ~/container.training/k8s/nginx-3-with-git.yaml
+  ```
+
+<!--
+```bash kubectl wait pod/nginx-with-git --for condition=initialized```
+```bash IP=$(kubectl get pod nginx-with-git -o jsonpath={.status.podIP})```
+-->
+
+- As soon as we see its IP address, access it:
+  ```bash
+  curl `$IP`
+  ```
+
+<!-- ```bash /bin/sleep 5``` -->
+
+- A few seconds later, the state of the pod will change; access it again:
+  ```bash
+  curl `$IP`
+  ```
+
+]
+
+The first time, we should see "403 Forbidden".
+
+The second time, we should see the HTML file from the Spoon-Knife repository.
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Explanations
+
+- Both containers are started at the same time
+
+- NGINX starts very quickly
+
+  (it can serve requests immediately)
+
+- But at this point, the volume is empty
+
+  (NGINX serves "403 Forbidden")
+
+- The other containers installs git and clones the repository
+
+  (this takes a bit longer)
+
+- When the other container is done, the volume holds the repository
+
+  (NGINX serves the HTML file)
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## The devil is in the details
+
+- The default `restartPolicy` is `Always`
+
+- This would cause our `git` container to run again ... and again ... and again
+
+  (with an exponential back-off delay, as explained [in the documentation](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy))
+
+- That's why we specified `restartPolicy: OnFailure`
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Inconsistencies
+
+- There is a short period of time during which the website is not available
+
+  (because the `git` container hasn't done its job yet)
+
+- With a bigger website, we could get inconsistent results
+
+  (where only a part of the content is ready)
+
+- In real applications, this could cause incorrect results
+
+- How can we avoid that?
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Init Containers
+
+- We can define containers that should execute *before* the main ones
+
+- They will be executed in order
+
+  (instead of in parallel)
+
+- They must all succeed before the main containers are started
+
+- This is *exactly* what we need here!
+
+- Let's see one in action
+
+.footnote[See [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) documentation for all the details.]
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Defining Init Containers
+
+.small[
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-with-init
+spec:
+  volumes:
+  - name: www
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - name: www
+      mountPath: /usr/share/nginx/html/
+  initContainers:
+  - name: git
+    image: alpine
+    command: [ "sh", "-c", "apk add git && git clone https://github.com/octocat/Spoon-Knife /www" ]
+    volumeMounts:
+    - name: www
+      mountPath: /www/
+```
+]
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Trying the init container
+
+.lab[
+
+- Create the pod:
+  ```bash
+  kubectl create -f ~/container.training/k8s/nginx-4-with-init.yaml
+  ```
+
+- Try to send HTTP requests as soon as the pod comes up
+
+<!--
+```key ^D```
+```key ^C```
+-->
+
+]
+
+- This time, instead of "403 Forbidden" we get a "connection refused"
+
+- NGINX doesn't start until the git container has done its job
+
+- We never get inconsistent results
+
+  (a "half-ready" container)
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Other uses of init containers
+
+- Load content
+
+- Generate configuration (or certificates)
+
+- Database migrations
+
+- Waiting for other services to be up
+
+  (to avoid flurry of connection errors in main container)
+
+- etc.
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Volume lifecycle
+
+- The lifecycle of a volume is linked to the pod's lifecycle
+
+- This means that a volume is created when the pod is created
+
+- This is mostly relevant for `emptyDir` volumes
+
+  (other volumes, like remote storage, are not "created" but rather "attached" )
+
+- A volume survives across container restarts
+
+- A volume is destroyed (or, for remote storage, detached) when the pod is destroyed
+
+???
+
+:EN:- Sharing data between containers with volumes
+:EN:- When and how to use Init Containers
+
+:FR:- Partager des données grâce aux volumes
+:FR:- Quand et comment utiliser un *Init Container*
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+class: pic
+
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/distillery-containers.jpg)]
+
+---
+
+name: toc-managing-configuration
+class: title
+
+ Managing configuration
+
+.nav[
+[Previous part](#toc-volumes)
+|
+[Back to table of contents](#toc-part-3)
+|
+[Next part](#toc-managing-secrets)
+]
+
+.debug[(automatically generated title slide)]
+
+---
+# Managing configuration
+
+- Some applications need to be configured (obviously!)
+
+- There are many ways for our code to pick up configuration:
+
+  - command-line arguments
+
+  - environment variables
+
+  - configuration files
+
+  - configuration servers (getting configuration from a database, an API...)
+
+  - ... and more (because programmers can be very creative!)
+
+- How can we do these things with containers and Kubernetes?
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Passing configuration to containers
+
+- There are many ways to pass configuration to code running in a container:
+
+  - baking it into a custom image
+
+  - command-line arguments
+
+  - environment variables
+
+  - injecting configuration files
+
+  - exposing it over the Kubernetes API
+
+  - configuration servers
+
+- Let's review these different strategies!
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Baking custom images
+
+- Put the configuration in the image
+
+  (it can be in a configuration file, but also `ENV` or `CMD` actions)
+
+- It's easy! It's simple!
+
+- Unfortunately, it also has downsides:
+
+  - multiplication of images
+
+  - different images for dev, staging, prod ...
+
+  - minor reconfigurations require a whole build/push/pull cycle
+
+- Avoid doing it unless you don't have the time to figure out other options
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Command-line arguments
+
+- Indicate what should run in the container
+
+- Pass `command` and/or `args` in the container options in a Pod's template
+
+- Both `command` and `args` are arrays
+
+- Example ([source](https://github.com/jpetazzo/container.training/blob/main/k8s/consul-1.yaml#L70)):
+  ```yaml
+    args:
+    - "agent"
+    - "-bootstrap-expect=3"
+    - "-retry-join=provider=k8s label_selector=\"app=consul\" namespace=\"$(NS)\""
+    - "-client=0.0.0.0"
+    - "-data-dir=/consul/data"
+    - "-server"
+    - "-ui"
+  ```
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## `args` or `command`?
+
+- Use `command` to override the `ENTRYPOINT` defined in the image
+
+- Use `args` to keep the `ENTRYPOINT` defined in the image
+
+  (the parameters specified in `args` are added to the `ENTRYPOINT`)
+
+- In doubt, use `command`
+
+- It is also possible to use *both* `command` and `args`
+
+  (they will be strung together, just like `ENTRYPOINT` and `CMD`)
+
+- See the [docs](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#notes) to see how they interact together
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Command-line arguments, pros & cons
+
+- Works great when options are passed directly to the running program
+
+  (otherwise, a wrapper script can work around the issue)
+
+- Works great when there aren't too many parameters
+
+  (to avoid a 20-lines `args` array)
+
+- Requires documentation and/or understanding of the underlying program
+
+  ("which parameters and flags do I need, again?")
+
+- Well-suited for mandatory parameters (without default values)
+
+- Not ideal when we need to pass a real configuration file anyway
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Environment variables
+
+- Pass options through the `env` map in the container specification
+
+- Example:
+  ```yaml
+      env:
+      - name: ADMIN_PORT
+        value: "8080"
+      - name: ADMIN_AUTH
+        value: Basic
+      - name: ADMIN_CRED
+        value: "admin:0pensesame!"
+  ```
+
+.warning[`value` must be a string! Make sure that numbers and fancy strings are quoted.]
+
+🤔 Why this weird `{name: xxx, value: yyy}` scheme? It will be revealed soon!
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## The downward API
+
+- In the previous example, environment variables have fixed values
+
+- We can also use a mechanism called the *downward API*
+
+- The downward API allows exposing pod or container information
+
+  - either through special files (we won't show that for now)
+
+  - or through environment variables
+
+- The value of these environment variables is computed when the container is started
+
+- Remember: environment variables won't (can't) change after container start
+
+- Let's see a few concrete examples!
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Exposing the pod's namespace
+
+```yaml
+    - name: MY_POD_NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+```
+
+- Useful to generate FQDN of services
+
+  (in some contexts, a short name is not enough)
+
+- For instance, the two commands should be equivalent:
+  ```
+  curl api-backend
+  curl api-backend.$MY_POD_NAMESPACE.svc.cluster.local
+  ```
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Exposing the pod's IP address
+
+```yaml
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+```
+
+- Useful if we need to know our IP address
+
+  (we could also read it from `eth0`, but this is more solid)
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Exposing the container's resource limits
+
+```yaml
+    - name: MY_MEM_LIMIT
+      valueFrom:
+        resourceFieldRef:
+          containerName: test-container
+          resource: limits.memory
+```
+
+- Useful for runtimes where memory is garbage collected
+
+- Example: the JVM
+
+  (the memory available to the JVM should be set with the `-Xmx ` flag)
+
+- Best practice: set a memory limit, and pass it to the runtime
+
+- Note: recent versions of the JVM can do this automatically
+
+  (see [JDK-8146115](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8146115))
+  and
+  [this blog post](https://very-serio.us/2017/12/05/running-jvms-in-kubernetes/)
+  for detailed examples)
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## More about the downward API
+
+- [This documentation page](https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/) tells more about these environment variables
+
+- And [this one](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/) explains the other way to use the downward API
+
+  (through files that get created in the container filesystem)
+
+- That second link also includes a list of all the fields that can be used with the downward API
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Environment variables, pros and cons
+
+- Works great when the running program expects these variables
+
+- Works great for optional parameters with reasonable defaults
+
+  (since the container image can provide these defaults)
+
+- Sort of auto-documented
+
+  (we can see which environment variables are defined in the image, and their values)
+
+- Can be (ab)used with longer values ...
+
+- ... You *can* put an entire Tomcat configuration file in an environment ...
+
+- ... But *should* you?
+
+(Do it if you really need to, we're not judging! But we'll see better ways.)
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Injecting configuration files
+
+- Sometimes, there is no way around it: we need to inject a full config file
+
+- Kubernetes provides a mechanism for that purpose: `configmaps`
+
+- A configmap is a Kubernetes resource that exists in a namespace
+
+- Conceptually, it's a key/value map
+
+  (values are arbitrary strings)
+
+- We can think about them in (at least) two different ways:
+
+  - as holding entire configuration file(s)
+
+  - as holding individual configuration parameters
+
+*Note: to hold sensitive information, we can use "Secrets", which
+are another type of resource behaving very much like configmaps.
+We'll cover them just after!*
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Configmaps storing entire files
+
+- In this case, each key/value pair corresponds to a configuration file
+
+- Key = name of the file
+
+- Value = content of the file
+
+- There can be one key/value pair, or as many as necessary
+
+  (for complex apps with multiple configuration files)
+
+- Examples:
+  ```
+  # Create a configmap with a single key, "app.conf"
+  kubectl create configmap my-app-config --from-file=app.conf
+  # Create a configmap with a single key, "app.conf" but another file
+  kubectl create configmap my-app-config --from-file=app.conf=app-prod.conf
+  # Create a configmap with multiple keys (one per file in the config.d directory)
+  kubectl create configmap my-app-config --from-file=config.d/
+  ```
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Configmaps storing individual parameters
+
+- In this case, each key/value pair corresponds to a parameter
+
+- Key = name of the parameter
+
+- Value = value of the parameter
+
+- Examples:
+  ```
+  # Create a configmap with two keys
+  kubectl create cm my-app-config \
+      --from-literal=foreground=red \
+      --from-literal=background=blue
+  
+  # Create a configmap from a file containing key=val pairs
+  kubectl create cm my-app-config \
+      --from-env-file=app.conf
+  ```
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Exposing configmaps to containers
+
+- Configmaps can be exposed as plain files in the filesystem of a container
+
+  - this is achieved by declaring a volume and mounting it in the container
+
+  - this is particularly effective for configmaps containing whole files
+
+- Configmaps can be exposed as environment variables in the container
+
+  - this is achieved with the downward API
+
+  - this is particularly effective for configmaps containing individual parameters
+
+- Let's see how to do both!
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Example: HAProxy configuration
+
+- We are going to deploy HAProxy, a popular load balancer
+
+- It expects to find its configuration in a specific place:
+
+  `/usr/local/etc/haproxy/haproxy.cfg`
+
+- We will create a ConfigMap holding the configuration file
+
+- Then we will mount that ConfigMap in a Pod running HAProxy
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Blue/green load balancing
+
+- In this example, we will deploy two versions of our app:
+
+  - the "blue" version in the `blue` namespace
+
+  - the "green" version in the `green` namespace
+
+- In both namespaces, we will have a Deployment and a Service
+
+  (both named `color`)
+
+- We want to load balance traffic between both namespaces
+
+  (we can't do that with a simple service selector: these don't cross namespaces)
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Deploying the app
+
+- We're going to use the image `jpetazzo/color`
+
+  (it is a simple "HTTP echo" server showing which pod served the request)
+
+- We can create each Namespace, Deployment, and Service by hand, or...
+
+.lab[
+
+- We can deploy the app with a YAML manifest:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/rainbow.yaml
+  ```
+
+]
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Testing the app
+
+- Reminder: Service `x` in Namespace `y` is available through:
+
+  `x.y`, `x.y.svc`, `x.y.svc.cluster.local`
+
+- Since the `cluster.local` suffix can change, we'll use `x.y.svc`
+
+.lab[
+
+- Check that the app is up and running:
+  ```bash
+    kubectl run --rm -it --restart=Never --image=nixery.dev/curl my-test-pod \
+            curl color.blue.svc
+  ```
+
+]
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Creating the HAProxy configuration
+
+Here is the file that we will use, [k8s/haproxy.cfg](https://github.com/jpetazzo/container.training/tree/master/k8s/haproxy.cfg):
+
+```
+global
+  daemon
+
+defaults
+  mode tcp
+  timeout connect 5s
+  timeout client 50s
+  timeout server 50s
+
+listen very-basic-load-balancer
+  bind *:80
+  server blue color.blue.svc:80
+  server green color.green.svc:80
+
+# Note: the services above must exist,
+# otherwise HAproxy won't start.
+
+```
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Creating the ConfigMap
+
+.lab[
+
+- Create a ConfigMap named `haproxy` and holding the configuration file:
+  ```bash
+  kubectl create configmap haproxy --from-file=~/container.training/k8s/haproxy.cfg
+  ```
+
+- Check what our configmap looks like:
+  ```bash
+  kubectl get configmap haproxy -o yaml
+  ```
+
+]
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Using the ConfigMap
+
+Here is [k8s/haproxy.yaml](https://github.com/jpetazzo/container.training/tree/master/k8s/haproxy.yaml), a Pod manifest using that ConfigMap:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: haproxy
+spec:
+  volumes:
+  - name: config
+    configMap:
+      name: haproxy
+  containers:
+  - name: haproxy
+    image: haproxy:1
+    volumeMounts:
+    - name: config
+      mountPath: /usr/local/etc/haproxy/
+
+
+```
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Creating the Pod
+
+.lab[
+
+- Create the HAProxy Pod:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/haproxy.yaml
+  ```
+
+<!-- ```hide kubectl wait pod haproxy --for condition=ready``` -->
+
+- Check the IP address allocated to the pod:
+  ```bash
+  kubectl get pod haproxy -o wide
+  IP=$(kubectl get pod haproxy -o json | jq -r .status.podIP)
+  ```
+
+]
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Testing our load balancer
+
+- If everything went well, when we should see a perfect round robin
+
+  (one request to `blue`, one request to `green`, one request to `blue`, etc.)
+
+.lab[
+
+- Send a few requests:
+  ```bash
+  for i in $(seq 10); do
+  curl $IP
+  done
+  ```
+
+]
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Exposing configmaps with the downward API
+
+- We are going to run a Docker registry on a custom port
+
+- By default, the registry listens on port 5000
+
+- This can be changed by setting environment variable `REGISTRY_HTTP_ADDR`
+
+- We are going to store the port number in a configmap
+
+- Then we will expose that configmap as a container environment variable
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Creating the configmap
+
+.lab[
+
+- Our configmap will have a single key, `http.addr`:
+  ```bash
+  kubectl create configmap registry --from-literal=http.addr=0.0.0.0:80
+  ```
+
+- Check our configmap:
+  ```bash
+  kubectl get configmap registry -o yaml
+  ```
+
+]
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Using the configmap
+
+We are going to use the following pod definition:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: registry
+spec:
+  containers:
+  - name: registry
+    image: registry
+    env:
+    - name: REGISTRY_HTTP_ADDR
+      valueFrom:
+        configMapKeyRef:
+          name: registry
+          key: http.addr
+
+
+```
+
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+## Using the configmap
+
+- The resource definition from the previous slide is in [k8s/registry.yaml](https://github.com/jpetazzo/container.training/tree/master/k8s/registry.yaml)
+
+.lab[
+
+- Create the registry pod:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/registry.yaml
+  ```
+
+<!-- ```hide kubectl wait pod registry --for condition=ready``` -->
+
+- Check the IP address allocated to the pod:
+  ```bash
+  kubectl get pod registry -o wide
+  IP=$(kubectl get pod registry -o json | jq -r .status.podIP)
+  ```
+
+- Confirm that the registry is available on port 80:
+  ```bash
+  curl $IP/v2/_catalog
+  ```
+
+]
+
+???
+
+:EN:- Managing application configuration
+:EN:- Exposing configuration with the downward API
+:EN:- Exposing configuration with Config Maps
+
+:FR:- Gérer la configuration des applications
+:FR:- Configuration au travers de la *downward API*
+:FR:- Configurer les applications avec des *Config Maps*
+.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
+---
+
+class: pic
+
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/lots-of-containers.jpg)]
+
+---
+
+name: toc-managing-secrets
+class: title
+
+ Managing secrets
+
+.nav[
+[Previous part](#toc-managing-configuration)
+|
+[Back to table of contents](#toc-part-3)
+|
 [Next part](#toc-exercise--healthchecks)
+]
+
+.debug[(automatically generated title slide)]
+
+---
+# Managing secrets
+
+- Sometimes our code needs sensitive information:
+
+  - passwords
+
+  - API tokens
+
+  - TLS keys
+
+  - ...
+
+- *Secrets* can be used for that purpose
+
+- Secrets and ConfigMaps are very similar
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+## Similarities between ConfigMap and Secrets
+
+- ConfigMap and Secrets are key-value maps
+
+  (a Secret can contain zero, one, or many key-value pairs)
+
+- They can both be exposed with the downward API or volumes
+
+- They can both be created with YAML or with a CLI command
+
+  (`kubectl create configmap` / `kubectl create secret`)
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+## ConfigMap and Secrets are different resources
+
+- They can have different RBAC permissions
+
+  (e.g. the default `view` role can read ConfigMaps but not Secrets)
+
+- They indicate a different *intent*:
+
+  *"You should use secrets for things which are actually secret like API keys, 
+  credentials, etc., and use config map for not-secret configuration data."*
+
+  *"In the future there will likely be some differentiators for secrets like rotation or support for backing the secret API w/ HSMs, etc."*
+
+  (Source: [the author of both features](https://stackoverflow.com/a/36925553/580281
+))
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+## Secrets have an optional *type*
+
+- The type indicates which keys must exist in the secrets, for instance:
+
+  `kubernetes.io/tls` requires `tls.crt` and `tls.key`
+
+  `kubernetes.io/basic-auth` requires `username` and `password`
+
+  `kubernetes.io/ssh-auth` requires `ssh-privatekey`
+
+  `kubernetes.io/dockerconfigjson` requires `.dockerconfigjson`
+
+  `kubernetes.io/service-account-token` requires `token`, `namespace`, `ca.crt`
+
+  (the whole list is in [the documentation](https://kubernetes.io/docs/concepts/configuration/secret/#secret-types))
+
+- This is merely for our (human) convenience:
+
+  “Ah yes, this secret is a ...”
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+## Accessing private repositories
+
+- Let's see how to access an image on a private registry!
+
+- These images are protected by a username + password
+
+  (on some registries, it's token + password, but it's the same thing)
+
+- To access a private image, we need to:
+
+  - create a secret
+
+  - reference that secret in a Pod template
+
+  - or reference that secret in a ServiceAccount used by a Pod
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+## In practice
+
+- Let's try to access an image on a private registry!
+
+  - image = docker-registry.enix.io/jpetazzo/private:latest
+  - user = reader
+  - password = VmQvqdtXFwXfyy4Jb5DR
+
+.lab[
+
+- Create a Deployment using that image:
+  ```bash
+    kubectl create deployment priv \
+            --image=docker-registry.enix.io/jpetazzo/private
+  ```
+
+- Check that the Pod won't start:
+  ```bash
+  kubectl get pods --selector=app=priv
+  ```
+
+]
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+## Creating a secret
+
+- Let's create a secret with the information provided earlier
+
+.lab[
+
+- Create the registry secret:
+  ```bash
+    kubectl create secret docker-registry enix \
+            --docker-server=docker-registry.enix.io \
+            --docker-username=reader \
+            --docker-password=VmQvqdtXFwXfyy4Jb5DR
+  ```
+
+]
+
+Why do we have to specify the registry address?
+
+If we use multiple sets of credentials for different registries, it prevents leaking the credentials of one registry to *another* registry.
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+## Using the secret
+
+- The first way to use a secret is to add it to `imagePullSecrets`
+
+  (in the `spec` section of a Pod template)
+
+.lab[
+
+- Patch the `priv` Deployment that we created earlier:
+  ```bash
+    kubectl patch deploy priv --patch='
+    spec:
+      template:
+        spec:
+          imagePullSecrets:
+          - name: enix
+    '
+  ```
+
+]
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+## Checking the results
+
+.lab[
+
+- Confirm that our Pod can now start correctly:
+  ```bash
+  kubectl get pods --selector=app=priv
+  ```
+
+]
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+## Another way to use the secret
+
+- We can add the secret to the ServiceAccount
+
+- This is convenient to automatically use credentials for *all* pods
+
+  (as long as they're using a specific ServiceAccount, of course)
+
+.lab[
+
+- Add the secret to the ServiceAccount:
+  ```bash
+    kubectl patch serviceaccount default --patch='
+    imagePullSecrets:
+    - name: enix
+    '
+  ```
+
+]
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+## Secrets are displayed with base64 encoding
+
+- When shown with e.g. `kubectl get secrets -o yaml`, secrets are base64-encoded
+
+- Likewise, when defining it with YAML, `data` values are base64-encoded
+
+- Example:
+  ```yaml
+    kind: Secret
+    apiVersion: v1
+    metadata:
+      name: pin-codes
+    data:
+      onetwothreefour: MTIzNA==
+      zerozerozerozero: MDAwMA==
+  ```
+
+- Keep in mind that this is just *encoding*, not *encryption*
+
+- It is very easy to [automatically extract and decode secrets](https://medium.com/@mveritym/decoding-kubernetes-secrets-60deed7a96a3)
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+class: extra-details
+
+## Using `stringData`
+
+- When creating a Secret, it is possible to bypass base64
+
+- Just use `stringData` instead of `data`:
+  ```yaml
+    kind: Secret
+    apiVersion: v1
+    metadata:
+      name: pin-codes
+    stringData:
+      onetwothreefour: 1234
+      zerozerozerozero: 0000
+  ```
+
+- It will show up as base64 if you `kubectl get -o yaml`
+
+- No `type` was specified, so it defaults to `Opaque`
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+class: extra-details
+
+## Encryption at rest
+
+- It is possible to [encrypt secrets at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/)
+
+- This means that secrets will be safe if someone ...
+
+  - steals our etcd servers
+
+  - steals our backups
+
+  - snoops the e.g. iSCSI link between our etcd servers and SAN
+
+- However, starting the API server will now require human intervention
+
+  (to provide the decryption keys)
+
+- This is only for extremely regulated environments (military, nation states...)
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+class: extra-details
+
+## Immutable ConfigMaps and Secrets
+
+- Since Kubernetes 1.19, it is possible to mark a ConfigMap or Secret as *immutable*
+
+  ```bash
+  kubectl patch configmap xyz --patch='{"immutable": true}'
+  ```
+
+- This brings performance improvements when using lots of ConfigMaps and Secrets
+
+  (lots = tens of thousands)
+
+- Once a ConfigMap or Secret has been marked as immutable:
+
+  - its content cannot be changed anymore
+  - the `immutable` field can't be changed back either
+  - the only way to change it is to delete and re-create it
+  - Pods using it will have to be re-created as well
+
+???
+
+:EN:- Handling passwords and tokens safely
+
+:FR:- Manipulation de mots de passe, clés API etc.
+
+.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
+---
+
+class: pic
+
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/plastic-containers.JPG)]
+
+---
+
+name: toc-exercise--healthchecks
+class: title
+
+ Exercise — Healthchecks
+
+.nav[
+[Previous part](#toc-managing-secrets)
+|
+[Back to table of contents](#toc-part-3)
+|
+[Next part](#toc-kubernetes-network-model)
+]
+
+.debug[(automatically generated title slide)]
+
+---
+# Exercise — Healthchecks
+
+- We want to add healthchecks to the `rng` service in dockercoins
+
+- The `rng` service exhibits an interesting behavior under load:
+
+  *its latency increases (which will cause probes to time out!)*
+
+- We want to see:
+
+  - what happens when the readiness probe fails
+
+  - what happens when the liveness probe fails
+
+  - how to set "appropriate" probes and probe parameters
+
+.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+---
+
+## Setup
+
+- First, deploy a new copy of dockercoins
+
+  (for instance, in a brand new namespace)
+
+- Pro tip #1: ping (e.g. with `httping`) the `rng` service at all times
+
+  - it should initially show a few milliseconds latency
+
+  - that will increase when we scale up
+
+  - it will also let us detect when the service goes "boom"
+
+- Pro tip #2: also keep an eye on the web UI
+
+.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+---
+
+## Readiness
+
+- Add a readiness probe to `rng`
+
+  - this requires editing the pod template in the Deployment manifest
+
+  - use a simple HTTP check on the `/` route of the service
+
+  - keep all other parameters (timeouts, thresholds...) at their default values
+
+- Check what happens when deploying an invalid image for `rng` (e.g. `alpine`)
+
+*(If the probe was set up correctly, the app will continue to work,
+because Kubernetes won't switch over the traffic to the `alpine` containers,
+because they don't pass the readiness probe.)*
+
+.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+---
+
+## Readiness under load
+
+- Then roll back `rng` to the original image
+
+- Check what happens when we scale up the `worker` Deployment to 15+ workers
+
+  (get the latency above 1 second)
+
+*(We should now observe intermittent unavailability of the service, i.e. every
+30 seconds it will be unreachable for a bit, then come back, then go away again, etc.)*
+
+.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+---
+
+## Liveness
+
+- Now replace the readiness probe with a liveness probe
+
+- What happens now?
+
+*(At first the behavior looks the same as with the readiness probe:
+service becomes unreachable, then reachable again, etc.; but there is
+a significant difference behind the scenes. What is it?)*
+
+.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+---
+
+## Readiness and liveness
+
+- Bonus questions!
+
+- What happens if we enable both probes at the same time?
+
+- What strategies can we use so that both probes are useful?
+
+.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+---
+## Putting it all together
+
+- We want to run that Consul cluster *and* actually persist data
+
+- We'll use a StatefulSet that will leverage PV and PVC
+
+- If we have a dynamic provisioner:
+
+  *the cluster will come up right away*
+
+- If we don't have a dynamic provisioner:
+
+  *we will need to create Persistent Volumes manually*
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## Persistent Volume Claims and Stateful sets
+
+- A Stateful set can define one (or more) `volumeClaimTemplate`
+
+- Each `volumeClaimTemplate` will create one Persistent Volume Claim per Pod
+
+- Each Pod will therefore have its own individual volume
+
+- These volumes are numbered (like the Pods)
+
+- Example:
+
+  - a Stateful set is named `consul`
+  - it is scaled to replicas
+  - it has a `volumeClaimTemplate` named `data`
+  - then it will create pods `consul-0`, `consul-1`, `consul-2`
+  - these pods will have volumes named `data`, referencing PersistentVolumeClaims
+    named `data-consul-0`, `data-consul-1`, `data-consul-2`
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## Persistent Volume Claims are sticky
+
+- When updating the stateful set (e.g. image upgrade), each pod keeps its volume
+
+- When pods get rescheduled (e.g. node failure), they keep their volume
+
+  (this requires a storage system that is not node-local)
+
+- These volumes are not automatically deleted
+
+  (when the stateful set is scaled down or deleted)
+
+- If a stateful set is scaled back up later, the pods get their data back
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## Deploying Consul
+
+- Let's use a new manifest for our Consul cluster
+
+- The only differences between that file and the previous one are:
+
+  - `volumeClaimTemplate` defined in the Stateful Set spec
+
+  - the corresponding `volumeMounts` in the Pod spec
+
+.lab[
+
+- Apply the persistent Consul YAML file:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/consul-3.yaml
+  ```
+
+]
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## No dynamic provisioner
+
+- If we don't have a dynamic provisioner, we need to create the PVs
+
+- We are going to use local volumes
+
+  (similar conceptually to `hostPath` volumes)
+
+- We can use local volumes without installing extra plugins
+
+- However, they are tied to a node
+
+- If that node goes down, the volume becomes unavailable
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## Observing the situation
+
+- Let's look at Persistent Volume Claims and Pods
+
+.lab[
+
+- Check that we now have an unbound Persistent Volume Claim:
+  ```bash
+  kubectl get pvc
+  ```
+
+- We don't have any Persistent Volume:
+  ```bash
+  kubectl get pv
+  ```
+
+- The Pod `consul-0` is not scheduled yet:
+  ```bash
+  kubectl get pods -o wide
+  ```
+
+]
+
+*Hint: leave these commands running with `-w` in different windows.*
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## Explanations
+
+- In a Stateful Set, the Pods are started one by one
+
+- `consul-1` won't be created until `consul-0` is running
+
+- `consul-0` has a dependency on an unbound Persistent Volume Claim
+
+- The scheduler won't schedule the Pod until the PVC is bound
+
+  (because the PVC might be bound to a volume that is only available on a subset of nodes; for instance EBS are tied to an availability zone)
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## Creating Persistent Volumes
+
+- Let's create 3 local directories (`/mnt/consul`) on node2, node3, node4
+
+- Then create 3 Persistent Volumes corresponding to these directories
+
+.lab[
+
+- Create the local directories:
+  ```bash
+    for NODE in node2 node3 node4; do
+      ssh $NODE sudo mkdir -p /mnt/consul
+    done
+  ```
+
+- Create the PV objects:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/volumes-for-consul.yaml
+  ```
+
+]
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## Check our Consul cluster
+
+- The PVs that we created will be automatically matched with the PVCs
+
+- Once a PVC is bound, its pod can start normally
+
+- Once the pod `consul-0` has started, `consul-1` can be created, etc.
+
+- Eventually, our Consul cluster is up, and backend by "persistent" volumes
+
+.lab[
+
+- Check that our Consul clusters has 3 members indeed:
+  ```bash
+  kubectl exec consul-0 -- consul members
+  ```
+
+]
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## Devil is in the details (1/2)
+
+- The size of the Persistent Volumes is bogus
+
+  (it is used when matching PVs and PVCs together, but there is no actual quota or limit)
+
+- The Pod might end up using more than the requested size
+
+- The PV may or may not have the capacity that it's advertising
+
+- It works well with dynamically provisioned block volumes
+
+- ...Less so in other scenarios!
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## Devil is in the details (2/2)
+
+- This specific example worked because we had exactly 1 free PV per node:
+
+  - if we had created multiple PVs per node ...
+
+  - we could have ended with two PVCs bound to PVs on the same node ...
+
+  - which would have required two pods to be on the same node ...
+
+  - which is forbidden by the anti-affinity constraints in the StatefulSet
+
+- To avoid that, we need to associated the PVs with a Storage Class that has:
+  ```yaml
+  volumeBindingMode: WaitForFirstConsumer
+  ```
+  (this means that a PVC will be bound to a PV only after being used by a Pod)
+
+- See [this blog post](https://kubernetes.io/blog/2018/04/13/local-persistent-volumes-beta/) for more details
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## If we have a dynamic provisioner
+
+These are the steps when dynamic provisioning happens:
+
+1. The Stateful Set creates PVCs according to the `volumeClaimTemplate`.
+
+2. The Stateful Set creates Pods using these PVCs.
+
+3. The PVCs are automatically annotated with our Storage Class.
+
+4. The dynamic provisioner provisions volumes and creates the corresponding PVs.
+
+5. The PersistentVolumeClaimBinder associates the PVs and the PVCs together.
+
+6. PVCs are now bound, the Pods can start.
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## Validating persistence (1)
+
+- When the StatefulSet is deleted, the PVC and PV still exist
+
+- And if we recreate an identical StatefulSet, the PVC and PV are reused
+
+- Let's see that!
+
+.lab[
+
+- Put some data in Consul:
+  ```bash
+  kubectl exec consul-0 -- consul kv put answer 42
+  ```
+
+- Delete the Consul cluster:
+  ```bash
+  kubectl delete -f ~/container.training/k8s/consul-3.yaml
+  ```
+
+]
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## Validating persistence (2)
+
+.lab[
+
+- Wait until the last Pod is deleted:
+  ```bash
+  kubectl wait pod consul-0 --for=delete
+  ```
+
+- Check that PV and PVC are still here:
+  ```bash
+  kubectl get pv,pvc
+  ```
+
+]
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## Validating persistence (3)
+
+.lab[
+
+- Re-create the cluster:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/consul-3.yaml
+  ```
+
+- Wait until it's up
+
+- Then access the key that we set earlier:
+  ```bash
+  kubectl exec consul-0 -- consul kv get answer
+  ```
+
+]
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+## Cleaning up
+
+- PV and PVC don't get deleted automatically
+
+- This is great (less risk of accidental data loss)
+
+- This is not great (storage usage increases)
+
+- Managing PVC lifecycle:
+
+  - remove them manually
+
+  - add their StatefulSet to their `ownerReferences`
+
+  - delete the Namespace that they belong to
+
+???
+
+:EN:- Defining volumeClaimTemplates
+:FR:- Définir des volumeClaimTemplates
+
+.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
+---
+
+class: pic
+
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-1.jpg)]
+
+---
+
+name: toc-kubernetes-network-model
+class: title
+
+ Kubernetes network model
+
+.nav[
+[Previous part](#toc-exercise--healthchecks)
+|
+[Back to table of contents](#toc-part-4)
+|
+[Next part](#toc-network-policies)
 ]
 
 .debug[(automatically generated title slide)]
@@ -8061,124 +10016,7 @@ class: extra-details
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/distillery-containers.jpg)]
-
----
-
-name: toc-exercise--healthchecks
-class: title
-
- Exercise — Healthchecks
-
-.nav[
-[Previous part](#toc-kubernetes-network-model)
-|
-[Back to table of contents](#toc-part-3)
-|
-[Next part](#toc-network-policies)
-]
-
-.debug[(automatically generated title slide)]
-
----
-# Exercise — Healthchecks
-
-- We want to add healthchecks to the `rng` service in dockercoins
-
-- The `rng` service exhibits an interesting behavior under load:
-
-  *its latency increases (which will cause probes to time out!)*
-
-- We want to see:
-
-  - what happens when the readiness probe fails
-
-  - what happens when the liveness probe fails
-
-  - how to set "appropriate" probes and probe parameters
-
-.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
----
-
-## Setup
-
-- First, deploy a new copy of dockercoins
-
-  (for instance, in a brand new namespace)
-
-- Pro tip #1: ping (e.g. with `httping`) the `rng` service at all times
-
-  - it should initially show a few milliseconds latency
-
-  - that will increase when we scale up
-
-  - it will also let us detect when the service goes "boom"
-
-- Pro tip #2: also keep an eye on the web UI
-
-.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
----
-
-## Readiness
-
-- Add a readiness probe to `rng`
-
-  - this requires editing the pod template in the Deployment manifest
-
-  - use a simple HTTP check on the `/` route of the service
-
-  - keep all other parameters (timeouts, thresholds...) at their default values
-
-- Check what happens when deploying an invalid image for `rng` (e.g. `alpine`)
-
-*(If the probe was set up correctly, the app will continue to work,
-because Kubernetes won't switch over the traffic to the `alpine` containers,
-because they don't pass the readiness probe.)*
-
-.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
----
-
-## Readiness under load
-
-- Then roll back `rng` to the original image
-
-- Check what happens when we scale up the `worker` Deployment to 15+ workers
-
-  (get the latency above 1 second)
-
-*(We should now observe intermittent unavailability of the service, i.e. every
-30 seconds it will be unreachable for a bit, then come back, then go away again, etc.)*
-
-.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
----
-
-## Liveness
-
-- Now replace the readiness probe with a liveness probe
-
-- What happens now?
-
-*(At first the behavior looks the same as with the readiness probe:
-service becomes unreachable, then reachable again, etc.; but there is
-a significant difference behind the scenes. What is it?)*
-
-.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
----
-
-## Readiness and liveness
-
-- Bonus questions!
-
-- What happens if we enable both probes at the same time?
-
-- What strategies can we use so that both probes are useful?
-
-.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
----
-
-class: pic
-
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/lots-of-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-2.jpg)]
 
 ---
 
@@ -8188,7 +10026,7 @@ class: title
  Network policies
 
 .nav[
-[Previous part](#toc-exercise--healthchecks)
+[Previous part](#toc-kubernetes-network-model)
 |
 [Back to table of contents](#toc-part-4)
 |
@@ -8692,7 +10530,7 @@ troubleshoot easily, without having to poke holes in our firewall.
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/plastic-containers.JPG)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/two-containers-on-a-truck.jpg)]
 
 ---
 
@@ -8873,7 +10711,7 @@ installed and set up `kubectl` to communicate with your cluster.
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-1.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/wall-of-containers.jpeg)]
 
 ---
 
@@ -9737,7 +11575,7 @@ For inspiration, check [flagger by Weave](https://github.com/weaveworks/flagger)
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-2.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/Container-Ship-Freighter-Navigation-Elbe-Romance-1782991.jpg)]
 
 ---
 
@@ -9751,7 +11589,7 @@ class: title
 |
 [Back to table of contents](#toc-part-4)
 |
-[Next part](#toc-volumes)
+[Next part](#toc-exercise--ingress)
 ]
 
 .debug[(automatically generated title slide)]
@@ -9900,1866 +11738,6 @@ class: pic
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/two-containers-on-a-truck.jpg)]
-
----
-
-name: toc-volumes
-class: title
-
- Volumes
-
-.nav[
-[Previous part](#toc-container-based-software-deployment)
-|
-[Back to table of contents](#toc-part-4)
-|
-[Next part](#toc-managing-configuration)
-]
-
-.debug[(automatically generated title slide)]
-
----
-# Volumes
-
-- Volumes are special directories that are mounted in containers
-
-- Volumes can have many different purposes:
-
-  - share files and directories between containers running on the same machine
-
-  - share files and directories between containers and their host
-
-  - centralize configuration information in Kubernetes and expose it to containers
-
-  - manage credentials and secrets and expose them securely to containers
-
-  - store persistent data for stateful services
-
-  - access storage systems (like Ceph, EBS, NFS, Portworx, and many others)
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-class: extra-details
-
-## Kubernetes volumes vs. Docker volumes
-
-- Kubernetes and Docker volumes are very similar
-
-  (the [Kubernetes documentation](https://kubernetes.io/docs/concepts/storage/volumes/) says otherwise ...
-  <br/>
-  but it refers to Docker 1.7, which was released in 2015!)
-
-- Docker volumes allow us to share data between containers running on the same host
-
-- Kubernetes volumes allow us to share data between containers in the same pod
-
-- Both Docker and Kubernetes volumes enable access to storage systems
-
-- Kubernetes volumes are also used to expose configuration and secrets
-
-- Docker has specific concepts for configuration and secrets
-  <br/>
-  (but under the hood, the technical implementation is similar)
-
-- If you're not familiar with Docker volumes, you can safely ignore this slide!
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Volumes ≠ Persistent Volumes
-
-- Volumes and Persistent Volumes are related, but very different!
-
-- *Volumes*:
-
-  - appear in Pod specifications (we'll see that in a few slides)
-
-  - do not exist as API resources (**cannot** do `kubectl get volumes`)
-
-- *Persistent Volumes*:
-
-  - are API resources (**can** do `kubectl get persistentvolumes`)
-
-  - correspond to concrete volumes (e.g. on a SAN, EBS, etc.)
-
-  - cannot be associated with a Pod directly; but through a Persistent Volume Claim
-
-  - won't be discussed further in this section
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Adding a volume to a Pod
-
-- We will start with the simplest Pod manifest we can find
-
-- We will add a volume to that Pod manifest
-
-- We will mount that volume in a container in the Pod
-
-- By default, this volume will be an `emptyDir`
-
-  (an empty directory)
-
-- It will "shadow" the directory where it's mounted
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Our basic Pod
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx-without-volume
-spec:
-  containers:
-  - name: nginx
-    image: nginx
-```
-
-This is a MVP! (Minimum Viable Pod😉)
-
-It runs a single NGINX container.
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Trying the basic pod
-
-.lab[
-
-- Create the Pod:
-  ```bash
-  kubectl create -f ~/container.training/k8s/nginx-1-without-volume.yaml
-  ```
-
-<!-- ```bash kubectl wait pod/nginx-without-volume --for condition=ready ``` -->
-
-- Get its IP address:
-  ```bash
-  IPADDR=$(kubectl get pod nginx-without-volume -o jsonpath={.status.podIP})
-  ```
-
-- Send a request with curl:
-  ```bash
-  curl $IPADDR
-  ```
-
-]
-
-(We should see the "Welcome to NGINX" page.)
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Adding a volume
-
-- We need to add the volume in two places:
-
-  - at the Pod level (to declare the volume)
-
-  - at the container level (to mount the volume)
-
-- We will declare a volume named `www`
-
-- No type is specified, so it will default to `emptyDir`
-
-  (as the name implies, it will be initialized as an empty directory at pod creation)
-
-- In that pod, there is also a container named `nginx`
-
-- That container mounts the volume `www` to path `/usr/share/nginx/html/`
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## The Pod with a volume
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx-with-volume
-spec:
-  volumes:
-  - name: www
-  containers:
-  - name: nginx
-    image: nginx
-    volumeMounts:
-    - name: www
-      mountPath: /usr/share/nginx/html/
-```
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Trying the Pod with a volume
-
-.lab[
-
-- Create the Pod:
-  ```bash
-  kubectl create -f ~/container.training/k8s/nginx-2-with-volume.yaml
-  ```
-
-<!-- ```bash kubectl wait pod/nginx-with-volume --for condition=ready ``` -->
-
-- Get its IP address:
-  ```bash
-  IPADDR=$(kubectl get pod nginx-with-volume -o jsonpath={.status.podIP})
-  ```
-
-- Send a request with curl:
-  ```bash
-  curl $IPADDR
-  ```
-
-]
-
-(We should now see a "403 Forbidden" error page.)
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Populating the volume with another container
-
-- Let's add another container to the Pod
-
-- Let's mount the volume in *both* containers
-
-- That container will populate the volume with static files
-
-- NGINX will then serve these static files
-
-- To populate the volume, we will clone the Spoon-Knife repository
-
-  - this repository is https://github.com/octocat/Spoon-Knife
-
-  - it's very popular (more than 100K stars!)
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Sharing a volume between two containers
-
-.small[
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx-with-git
-spec:
-  volumes:
-  - name: www
-  containers:
-  - name: nginx
-    image: nginx
-    volumeMounts:
-    - name: www
-      mountPath: /usr/share/nginx/html/
-  - name: git
-    image: alpine
-    command: [ "sh", "-c", "apk add git && git clone https://github.com/octocat/Spoon-Knife /www" ]
-    volumeMounts:
-    - name: www
-      mountPath: /www/
-  restartPolicy: OnFailure
-```
-]
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Sharing a volume, explained
-
-- We added another container to the pod
-
-- That container mounts the `www` volume on a different path (`/www`)
-
-- It uses the `alpine` image
-
-- When started, it installs `git` and clones the `octocat/Spoon-Knife` repository
-
-  (that repository contains a tiny HTML website)
-
-- As a result, NGINX now serves this website
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Trying the shared volume
-
-- This one will be time-sensitive!
-
-- We need to catch the Pod IP address *as soon as it's created*
-
-- Then send a request to it *as fast as possible*
-
-.lab[
-
-- Watch the pods (so that we can catch the Pod IP address)
-  ```bash
-  kubectl get pods -o wide --watch
-  ```
-
-<!--
-```wait NAME```
-```tmux split-pane -v```
--->
-
-]
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Shared volume in action
-
-.lab[
-
-- Create the pod:
-  ```bash
-  kubectl create -f ~/container.training/k8s/nginx-3-with-git.yaml
-  ```
-
-<!--
-```bash kubectl wait pod/nginx-with-git --for condition=initialized```
-```bash IP=$(kubectl get pod nginx-with-git -o jsonpath={.status.podIP})```
--->
-
-- As soon as we see its IP address, access it:
-  ```bash
-  curl `$IP`
-  ```
-
-<!-- ```bash /bin/sleep 5``` -->
-
-- A few seconds later, the state of the pod will change; access it again:
-  ```bash
-  curl `$IP`
-  ```
-
-]
-
-The first time, we should see "403 Forbidden".
-
-The second time, we should see the HTML file from the Spoon-Knife repository.
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Explanations
-
-- Both containers are started at the same time
-
-- NGINX starts very quickly
-
-  (it can serve requests immediately)
-
-- But at this point, the volume is empty
-
-  (NGINX serves "403 Forbidden")
-
-- The other containers installs git and clones the repository
-
-  (this takes a bit longer)
-
-- When the other container is done, the volume holds the repository
-
-  (NGINX serves the HTML file)
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## The devil is in the details
-
-- The default `restartPolicy` is `Always`
-
-- This would cause our `git` container to run again ... and again ... and again
-
-  (with an exponential back-off delay, as explained [in the documentation](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy))
-
-- That's why we specified `restartPolicy: OnFailure`
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Inconsistencies
-
-- There is a short period of time during which the website is not available
-
-  (because the `git` container hasn't done its job yet)
-
-- With a bigger website, we could get inconsistent results
-
-  (where only a part of the content is ready)
-
-- In real applications, this could cause incorrect results
-
-- How can we avoid that?
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Init Containers
-
-- We can define containers that should execute *before* the main ones
-
-- They will be executed in order
-
-  (instead of in parallel)
-
-- They must all succeed before the main containers are started
-
-- This is *exactly* what we need here!
-
-- Let's see one in action
-
-.footnote[See [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) documentation for all the details.]
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Defining Init Containers
-
-.small[
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx-with-init
-spec:
-  volumes:
-  - name: www
-  containers:
-  - name: nginx
-    image: nginx
-    volumeMounts:
-    - name: www
-      mountPath: /usr/share/nginx/html/
-  initContainers:
-  - name: git
-    image: alpine
-    command: [ "sh", "-c", "apk add git && git clone https://github.com/octocat/Spoon-Knife /www" ]
-    volumeMounts:
-    - name: www
-      mountPath: /www/
-```
-]
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Trying the init container
-
-.lab[
-
-- Create the pod:
-  ```bash
-  kubectl create -f ~/container.training/k8s/nginx-4-with-init.yaml
-  ```
-
-- Try to send HTTP requests as soon as the pod comes up
-
-<!--
-```key ^D```
-```key ^C```
--->
-
-]
-
-- This time, instead of "403 Forbidden" we get a "connection refused"
-
-- NGINX doesn't start until the git container has done its job
-
-- We never get inconsistent results
-
-  (a "half-ready" container)
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Other uses of init containers
-
-- Load content
-
-- Generate configuration (or certificates)
-
-- Database migrations
-
-- Waiting for other services to be up
-
-  (to avoid flurry of connection errors in main container)
-
-- etc.
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Volume lifecycle
-
-- The lifecycle of a volume is linked to the pod's lifecycle
-
-- This means that a volume is created when the pod is created
-
-- This is mostly relevant for `emptyDir` volumes
-
-  (other volumes, like remote storage, are not "created" but rather "attached" )
-
-- A volume survives across container restarts
-
-- A volume is destroyed (or, for remote storage, detached) when the pod is destroyed
-
-???
-
-:EN:- Sharing data between containers with volumes
-:EN:- When and how to use Init Containers
-
-:FR:- Partager des données grâce aux volumes
-:FR:- Quand et comment utiliser un *Init Container*
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-class: pic
-
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/wall-of-containers.jpeg)]
-
----
-
-name: toc-managing-configuration
-class: title
-
- Managing configuration
-
-.nav[
-[Previous part](#toc-volumes)
-|
-[Back to table of contents](#toc-part-4)
-|
-[Next part](#toc-managing-secrets)
-]
-
-.debug[(automatically generated title slide)]
-
----
-# Managing configuration
-
-- Some applications need to be configured (obviously!)
-
-- There are many ways for our code to pick up configuration:
-
-  - command-line arguments
-
-  - environment variables
-
-  - configuration files
-
-  - configuration servers (getting configuration from a database, an API...)
-
-  - ... and more (because programmers can be very creative!)
-
-- How can we do these things with containers and Kubernetes?
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Passing configuration to containers
-
-- There are many ways to pass configuration to code running in a container:
-
-  - baking it into a custom image
-
-  - command-line arguments
-
-  - environment variables
-
-  - injecting configuration files
-
-  - exposing it over the Kubernetes API
-
-  - configuration servers
-
-- Let's review these different strategies!
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Baking custom images
-
-- Put the configuration in the image
-
-  (it can be in a configuration file, but also `ENV` or `CMD` actions)
-
-- It's easy! It's simple!
-
-- Unfortunately, it also has downsides:
-
-  - multiplication of images
-
-  - different images for dev, staging, prod ...
-
-  - minor reconfigurations require a whole build/push/pull cycle
-
-- Avoid doing it unless you don't have the time to figure out other options
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Command-line arguments
-
-- Indicate what should run in the container
-
-- Pass `command` and/or `args` in the container options in a Pod's template
-
-- Both `command` and `args` are arrays
-
-- Example ([source](https://github.com/jpetazzo/container.training/blob/main/k8s/consul-1.yaml#L70)):
-  ```yaml
-    args:
-    - "agent"
-    - "-bootstrap-expect=3"
-    - "-retry-join=provider=k8s label_selector=\"app=consul\" namespace=\"$(NS)\""
-    - "-client=0.0.0.0"
-    - "-data-dir=/consul/data"
-    - "-server"
-    - "-ui"
-  ```
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## `args` or `command`?
-
-- Use `command` to override the `ENTRYPOINT` defined in the image
-
-- Use `args` to keep the `ENTRYPOINT` defined in the image
-
-  (the parameters specified in `args` are added to the `ENTRYPOINT`)
-
-- In doubt, use `command`
-
-- It is also possible to use *both* `command` and `args`
-
-  (they will be strung together, just like `ENTRYPOINT` and `CMD`)
-
-- See the [docs](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#notes) to see how they interact together
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Command-line arguments, pros & cons
-
-- Works great when options are passed directly to the running program
-
-  (otherwise, a wrapper script can work around the issue)
-
-- Works great when there aren't too many parameters
-
-  (to avoid a 20-lines `args` array)
-
-- Requires documentation and/or understanding of the underlying program
-
-  ("which parameters and flags do I need, again?")
-
-- Well-suited for mandatory parameters (without default values)
-
-- Not ideal when we need to pass a real configuration file anyway
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Environment variables
-
-- Pass options through the `env` map in the container specification
-
-- Example:
-  ```yaml
-      env:
-      - name: ADMIN_PORT
-        value: "8080"
-      - name: ADMIN_AUTH
-        value: Basic
-      - name: ADMIN_CRED
-        value: "admin:0pensesame!"
-  ```
-
-.warning[`value` must be a string! Make sure that numbers and fancy strings are quoted.]
-
-🤔 Why this weird `{name: xxx, value: yyy}` scheme? It will be revealed soon!
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## The downward API
-
-- In the previous example, environment variables have fixed values
-
-- We can also use a mechanism called the *downward API*
-
-- The downward API allows exposing pod or container information
-
-  - either through special files (we won't show that for now)
-
-  - or through environment variables
-
-- The value of these environment variables is computed when the container is started
-
-- Remember: environment variables won't (can't) change after container start
-
-- Let's see a few concrete examples!
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Exposing the pod's namespace
-
-```yaml
-    - name: MY_POD_NAMESPACE
-      valueFrom:
-        fieldRef:
-          fieldPath: metadata.namespace
-```
-
-- Useful to generate FQDN of services
-
-  (in some contexts, a short name is not enough)
-
-- For instance, the two commands should be equivalent:
-  ```
-  curl api-backend
-  curl api-backend.$MY_POD_NAMESPACE.svc.cluster.local
-  ```
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Exposing the pod's IP address
-
-```yaml
-    - name: MY_POD_IP
-      valueFrom:
-        fieldRef:
-          fieldPath: status.podIP
-```
-
-- Useful if we need to know our IP address
-
-  (we could also read it from `eth0`, but this is more solid)
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Exposing the container's resource limits
-
-```yaml
-    - name: MY_MEM_LIMIT
-      valueFrom:
-        resourceFieldRef:
-          containerName: test-container
-          resource: limits.memory
-```
-
-- Useful for runtimes where memory is garbage collected
-
-- Example: the JVM
-
-  (the memory available to the JVM should be set with the `-Xmx ` flag)
-
-- Best practice: set a memory limit, and pass it to the runtime
-
-- Note: recent versions of the JVM can do this automatically
-
-  (see [JDK-8146115](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8146115))
-  and
-  [this blog post](https://very-serio.us/2017/12/05/running-jvms-in-kubernetes/)
-  for detailed examples)
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## More about the downward API
-
-- [This documentation page](https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/) tells more about these environment variables
-
-- And [this one](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/) explains the other way to use the downward API
-
-  (through files that get created in the container filesystem)
-
-- That second link also includes a list of all the fields that can be used with the downward API
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Environment variables, pros and cons
-
-- Works great when the running program expects these variables
-
-- Works great for optional parameters with reasonable defaults
-
-  (since the container image can provide these defaults)
-
-- Sort of auto-documented
-
-  (we can see which environment variables are defined in the image, and their values)
-
-- Can be (ab)used with longer values ...
-
-- ... You *can* put an entire Tomcat configuration file in an environment ...
-
-- ... But *should* you?
-
-(Do it if you really need to, we're not judging! But we'll see better ways.)
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Injecting configuration files
-
-- Sometimes, there is no way around it: we need to inject a full config file
-
-- Kubernetes provides a mechanism for that purpose: `configmaps`
-
-- A configmap is a Kubernetes resource that exists in a namespace
-
-- Conceptually, it's a key/value map
-
-  (values are arbitrary strings)
-
-- We can think about them in (at least) two different ways:
-
-  - as holding entire configuration file(s)
-
-  - as holding individual configuration parameters
-
-*Note: to hold sensitive information, we can use "Secrets", which
-are another type of resource behaving very much like configmaps.
-We'll cover them just after!*
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Configmaps storing entire files
-
-- In this case, each key/value pair corresponds to a configuration file
-
-- Key = name of the file
-
-- Value = content of the file
-
-- There can be one key/value pair, or as many as necessary
-
-  (for complex apps with multiple configuration files)
-
-- Examples:
-  ```
-  # Create a configmap with a single key, "app.conf"
-  kubectl create configmap my-app-config --from-file=app.conf
-  # Create a configmap with a single key, "app.conf" but another file
-  kubectl create configmap my-app-config --from-file=app.conf=app-prod.conf
-  # Create a configmap with multiple keys (one per file in the config.d directory)
-  kubectl create configmap my-app-config --from-file=config.d/
-  ```
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Configmaps storing individual parameters
-
-- In this case, each key/value pair corresponds to a parameter
-
-- Key = name of the parameter
-
-- Value = value of the parameter
-
-- Examples:
-  ```
-  # Create a configmap with two keys
-  kubectl create cm my-app-config \
-      --from-literal=foreground=red \
-      --from-literal=background=blue
-  
-  # Create a configmap from a file containing key=val pairs
-  kubectl create cm my-app-config \
-      --from-env-file=app.conf
-  ```
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Exposing configmaps to containers
-
-- Configmaps can be exposed as plain files in the filesystem of a container
-
-  - this is achieved by declaring a volume and mounting it in the container
-
-  - this is particularly effective for configmaps containing whole files
-
-- Configmaps can be exposed as environment variables in the container
-
-  - this is achieved with the downward API
-
-  - this is particularly effective for configmaps containing individual parameters
-
-- Let's see how to do both!
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Example: HAProxy configuration
-
-- We are going to deploy HAProxy, a popular load balancer
-
-- It expects to find its configuration in a specific place:
-
-  `/usr/local/etc/haproxy/haproxy.cfg`
-
-- We will create a ConfigMap holding the configuration file
-
-- Then we will mount that ConfigMap in a Pod running HAProxy
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Blue/green load balancing
-
-- In this example, we will deploy two versions of our app:
-
-  - the "blue" version in the `blue` namespace
-
-  - the "green" version in the `green` namespace
-
-- In both namespaces, we will have a Deployment and a Service
-
-  (both named `color`)
-
-- We want to load balance traffic between both namespaces
-
-  (we can't do that with a simple service selector: these don't cross namespaces)
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Deploying the app
-
-- We're going to use the image `jpetazzo/color`
-
-  (it is a simple "HTTP echo" server showing which pod served the request)
-
-- We can create each Namespace, Deployment, and Service by hand, or...
-
-.lab[
-
-- We can deploy the app with a YAML manifest:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/rainbow.yaml
-  ```
-
-]
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Testing the app
-
-- Reminder: Service `x` in Namespace `y` is available through:
-
-  `x.y`, `x.y.svc`, `x.y.svc.cluster.local`
-
-- Since the `cluster.local` suffix can change, we'll use `x.y.svc`
-
-.lab[
-
-- Check that the app is up and running:
-  ```bash
-    kubectl run --rm -it --restart=Never --image=nixery.dev/curl my-test-pod \
-            curl color.blue.svc
-  ```
-
-]
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Creating the HAProxy configuration
-
-Here is the file that we will use, [k8s/haproxy.cfg](https://github.com/jpetazzo/container.training/tree/master/k8s/haproxy.cfg):
-
-```
-global
-  daemon
-
-defaults
-  mode tcp
-  timeout connect 5s
-  timeout client 50s
-  timeout server 50s
-
-listen very-basic-load-balancer
-  bind *:80
-  server blue color.blue.svc:80
-  server green color.green.svc:80
-
-# Note: the services above must exist,
-# otherwise HAproxy won't start.
-
-```
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Creating the ConfigMap
-
-.lab[
-
-- Create a ConfigMap named `haproxy` and holding the configuration file:
-  ```bash
-  kubectl create configmap haproxy --from-file=~/container.training/k8s/haproxy.cfg
-  ```
-
-- Check what our configmap looks like:
-  ```bash
-  kubectl get configmap haproxy -o yaml
-  ```
-
-]
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Using the ConfigMap
-
-Here is [k8s/haproxy.yaml](https://github.com/jpetazzo/container.training/tree/master/k8s/haproxy.yaml), a Pod manifest using that ConfigMap:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: haproxy
-spec:
-  volumes:
-  - name: config
-    configMap:
-      name: haproxy
-  containers:
-  - name: haproxy
-    image: haproxy:1
-    volumeMounts:
-    - name: config
-      mountPath: /usr/local/etc/haproxy/
-
-
-```
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Creating the Pod
-
-.lab[
-
-- Create the HAProxy Pod:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/haproxy.yaml
-  ```
-
-<!-- ```hide kubectl wait pod haproxy --for condition=ready``` -->
-
-- Check the IP address allocated to the pod:
-  ```bash
-  kubectl get pod haproxy -o wide
-  IP=$(kubectl get pod haproxy -o json | jq -r .status.podIP)
-  ```
-
-]
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Testing our load balancer
-
-- If everything went well, when we should see a perfect round robin
-
-  (one request to `blue`, one request to `green`, one request to `blue`, etc.)
-
-.lab[
-
-- Send a few requests:
-  ```bash
-  for i in $(seq 10); do
-  curl $IP
-  done
-  ```
-
-]
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Exposing configmaps with the downward API
-
-- We are going to run a Docker registry on a custom port
-
-- By default, the registry listens on port 5000
-
-- This can be changed by setting environment variable `REGISTRY_HTTP_ADDR`
-
-- We are going to store the port number in a configmap
-
-- Then we will expose that configmap as a container environment variable
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Creating the configmap
-
-.lab[
-
-- Our configmap will have a single key, `http.addr`:
-  ```bash
-  kubectl create configmap registry --from-literal=http.addr=0.0.0.0:80
-  ```
-
-- Check our configmap:
-  ```bash
-  kubectl get configmap registry -o yaml
-  ```
-
-]
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Using the configmap
-
-We are going to use the following pod definition:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: registry
-spec:
-  containers:
-  - name: registry
-    image: registry
-    env:
-    - name: REGISTRY_HTTP_ADDR
-      valueFrom:
-        configMapKeyRef:
-          name: registry
-          key: http.addr
-
-
-```
-
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-## Using the configmap
-
-- The resource definition from the previous slide is in [k8s/registry.yaml](https://github.com/jpetazzo/container.training/tree/master/k8s/registry.yaml)
-
-.lab[
-
-- Create the registry pod:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/registry.yaml
-  ```
-
-<!-- ```hide kubectl wait pod registry --for condition=ready``` -->
-
-- Check the IP address allocated to the pod:
-  ```bash
-  kubectl get pod registry -o wide
-  IP=$(kubectl get pod registry -o json | jq -r .status.podIP)
-  ```
-
-- Confirm that the registry is available on port 80:
-  ```bash
-  curl $IP/v2/_catalog
-  ```
-
-]
-
-???
-
-:EN:- Managing application configuration
-:EN:- Exposing configuration with the downward API
-:EN:- Exposing configuration with Config Maps
-
-:FR:- Gérer la configuration des applications
-:FR:- Configuration au travers de la *downward API*
-:FR:- Configurer les applications avec des *Config Maps*
-.debug[[k8s/configuration.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/configuration.md)]
----
-
-class: pic
-
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/Container-Ship-Freighter-Navigation-Elbe-Romance-1782991.jpg)]
-
----
-
-name: toc-managing-secrets
-class: title
-
- Managing secrets
-
-.nav[
-[Previous part](#toc-managing-configuration)
-|
-[Back to table of contents](#toc-part-4)
-|
-[Next part](#toc-exercise--ingress)
-]
-
-.debug[(automatically generated title slide)]
-
----
-# Managing secrets
-
-- Sometimes our code needs sensitive information:
-
-  - passwords
-
-  - API tokens
-
-  - TLS keys
-
-  - ...
-
-- *Secrets* can be used for that purpose
-
-- Secrets and ConfigMaps are very similar
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-
-## Similarities between ConfigMap and Secrets
-
-- ConfigMap and Secrets are key-value maps
-
-  (a Secret can contain zero, one, or many key-value pairs)
-
-- They can both be exposed with the downward API or volumes
-
-- They can both be created with YAML or with a CLI command
-
-  (`kubectl create configmap` / `kubectl create secret`)
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-
-## ConfigMap and Secrets are different resources
-
-- They can have different RBAC permissions
-
-  (e.g. the default `view` role can read ConfigMaps but not Secrets)
-
-- They indicate a different *intent*:
-
-  *"You should use secrets for things which are actually secret like API keys, 
-  credentials, etc., and use config map for not-secret configuration data."*
-
-  *"In the future there will likely be some differentiators for secrets like rotation or support for backing the secret API w/ HSMs, etc."*
-
-  (Source: [the author of both features](https://stackoverflow.com/a/36925553/580281
-))
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-
-## Secrets have an optional *type*
-
-- The type indicates which keys must exist in the secrets, for instance:
-
-  `kubernetes.io/tls` requires `tls.crt` and `tls.key`
-
-  `kubernetes.io/basic-auth` requires `username` and `password`
-
-  `kubernetes.io/ssh-auth` requires `ssh-privatekey`
-
-  `kubernetes.io/dockerconfigjson` requires `.dockerconfigjson`
-
-  `kubernetes.io/service-account-token` requires `token`, `namespace`, `ca.crt`
-
-  (the whole list is in [the documentation](https://kubernetes.io/docs/concepts/configuration/secret/#secret-types))
-
-- This is merely for our (human) convenience:
-
-  “Ah yes, this secret is a ...”
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-
-## Accessing private repositories
-
-- Let's see how to access an image on a private registry!
-
-- These images are protected by a username + password
-
-  (on some registries, it's token + password, but it's the same thing)
-
-- To access a private image, we need to:
-
-  - create a secret
-
-  - reference that secret in a Pod template
-
-  - or reference that secret in a ServiceAccount used by a Pod
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-
-## In practice
-
-- Let's try to access an image on a private registry!
-
-  - image = docker-registry.enix.io/jpetazzo/private:latest
-  - user = reader
-  - password = VmQvqdtXFwXfyy4Jb5DR
-
-.lab[
-
-- Create a Deployment using that image:
-  ```bash
-    kubectl create deployment priv \
-            --image=docker-registry.enix.io/jpetazzo/private
-  ```
-
-- Check that the Pod won't start:
-  ```bash
-  kubectl get pods --selector=app=priv
-  ```
-
-]
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-
-## Creating a secret
-
-- Let's create a secret with the information provided earlier
-
-.lab[
-
-- Create the registry secret:
-  ```bash
-    kubectl create secret docker-registry enix \
-            --docker-server=docker-registry.enix.io \
-            --docker-username=reader \
-            --docker-password=VmQvqdtXFwXfyy4Jb5DR
-  ```
-
-]
-
-Why do we have to specify the registry address?
-
-If we use multiple sets of credentials for different registries, it prevents leaking the credentials of one registry to *another* registry.
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-
-## Using the secret
-
-- The first way to use a secret is to add it to `imagePullSecrets`
-
-  (in the `spec` section of a Pod template)
-
-.lab[
-
-- Patch the `priv` Deployment that we created earlier:
-  ```bash
-    kubectl patch deploy priv --patch='
-    spec:
-      template:
-        spec:
-          imagePullSecrets:
-          - name: enix
-    '
-  ```
-
-]
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-
-## Checking the results
-
-.lab[
-
-- Confirm that our Pod can now start correctly:
-  ```bash
-  kubectl get pods --selector=app=priv
-  ```
-
-]
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-
-## Another way to use the secret
-
-- We can add the secret to the ServiceAccount
-
-- This is convenient to automatically use credentials for *all* pods
-
-  (as long as they're using a specific ServiceAccount, of course)
-
-.lab[
-
-- Add the secret to the ServiceAccount:
-  ```bash
-    kubectl patch serviceaccount default --patch='
-    imagePullSecrets:
-    - name: enix
-    '
-  ```
-
-]
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-
-## Secrets are displayed with base64 encoding
-
-- When shown with e.g. `kubectl get secrets -o yaml`, secrets are base64-encoded
-
-- Likewise, when defining it with YAML, `data` values are base64-encoded
-
-- Example:
-  ```yaml
-    kind: Secret
-    apiVersion: v1
-    metadata:
-      name: pin-codes
-    data:
-      onetwothreefour: MTIzNA==
-      zerozerozerozero: MDAwMA==
-  ```
-
-- Keep in mind that this is just *encoding*, not *encryption*
-
-- It is very easy to [automatically extract and decode secrets](https://medium.com/@mveritym/decoding-kubernetes-secrets-60deed7a96a3)
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-
-class: extra-details
-
-## Using `stringData`
-
-- When creating a Secret, it is possible to bypass base64
-
-- Just use `stringData` instead of `data`:
-  ```yaml
-    kind: Secret
-    apiVersion: v1
-    metadata:
-      name: pin-codes
-    stringData:
-      onetwothreefour: 1234
-      zerozerozerozero: 0000
-  ```
-
-- It will show up as base64 if you `kubectl get -o yaml`
-
-- No `type` was specified, so it defaults to `Opaque`
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-
-class: extra-details
-
-## Encryption at rest
-
-- It is possible to [encrypt secrets at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/)
-
-- This means that secrets will be safe if someone ...
-
-  - steals our etcd servers
-
-  - steals our backups
-
-  - snoops the e.g. iSCSI link between our etcd servers and SAN
-
-- However, starting the API server will now require human intervention
-
-  (to provide the decryption keys)
-
-- This is only for extremely regulated environments (military, nation states...)
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-
-class: extra-details
-
-## Immutable ConfigMaps and Secrets
-
-- Since Kubernetes 1.19, it is possible to mark a ConfigMap or Secret as *immutable*
-
-  ```bash
-  kubectl patch configmap xyz --patch='{"immutable": true}'
-  ```
-
-- This brings performance improvements when using lots of ConfigMaps and Secrets
-
-  (lots = tens of thousands)
-
-- Once a ConfigMap or Secret has been marked as immutable:
-
-  - its content cannot be changed anymore
-  - the `immutable` field can't be changed back either
-  - the only way to change it is to delete and re-create it
-  - Pods using it will have to be re-created as well
-
-???
-
-:EN:- Handling passwords and tokens safely
-
-:FR:- Manipulation de mots de passe, clés API etc.
-
-.debug[[k8s/secrets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/secrets.md)]
----
-## Putting it all together
-
-- We want to run that Consul cluster *and* actually persist data
-
-- We'll use a StatefulSet that will leverage PV and PVC
-
-- If we have a dynamic provisioner:
-
-  *the cluster will come up right away*
-
-- If we don't have a dynamic provisioner:
-
-  *we will need to create Persistent Volumes manually*
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## Persistent Volume Claims and Stateful sets
-
-- A Stateful set can define one (or more) `volumeClaimTemplate`
-
-- Each `volumeClaimTemplate` will create one Persistent Volume Claim per Pod
-
-- Each Pod will therefore have its own individual volume
-
-- These volumes are numbered (like the Pods)
-
-- Example:
-
-  - a Stateful set is named `consul`
-  - it is scaled to replicas
-  - it has a `volumeClaimTemplate` named `data`
-  - then it will create pods `consul-0`, `consul-1`, `consul-2`
-  - these pods will have volumes named `data`, referencing PersistentVolumeClaims
-    named `data-consul-0`, `data-consul-1`, `data-consul-2`
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## Persistent Volume Claims are sticky
-
-- When updating the stateful set (e.g. image upgrade), each pod keeps its volume
-
-- When pods get rescheduled (e.g. node failure), they keep their volume
-
-  (this requires a storage system that is not node-local)
-
-- These volumes are not automatically deleted
-
-  (when the stateful set is scaled down or deleted)
-
-- If a stateful set is scaled back up later, the pods get their data back
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## Deploying Consul
-
-- Let's use a new manifest for our Consul cluster
-
-- The only differences between that file and the previous one are:
-
-  - `volumeClaimTemplate` defined in the Stateful Set spec
-
-  - the corresponding `volumeMounts` in the Pod spec
-
-.lab[
-
-- Apply the persistent Consul YAML file:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/consul-3.yaml
-  ```
-
-]
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## No dynamic provisioner
-
-- If we don't have a dynamic provisioner, we need to create the PVs
-
-- We are going to use local volumes
-
-  (similar conceptually to `hostPath` volumes)
-
-- We can use local volumes without installing extra plugins
-
-- However, they are tied to a node
-
-- If that node goes down, the volume becomes unavailable
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## Observing the situation
-
-- Let's look at Persistent Volume Claims and Pods
-
-.lab[
-
-- Check that we now have an unbound Persistent Volume Claim:
-  ```bash
-  kubectl get pvc
-  ```
-
-- We don't have any Persistent Volume:
-  ```bash
-  kubectl get pv
-  ```
-
-- The Pod `consul-0` is not scheduled yet:
-  ```bash
-  kubectl get pods -o wide
-  ```
-
-]
-
-*Hint: leave these commands running with `-w` in different windows.*
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## Explanations
-
-- In a Stateful Set, the Pods are started one by one
-
-- `consul-1` won't be created until `consul-0` is running
-
-- `consul-0` has a dependency on an unbound Persistent Volume Claim
-
-- The scheduler won't schedule the Pod until the PVC is bound
-
-  (because the PVC might be bound to a volume that is only available on a subset of nodes; for instance EBS are tied to an availability zone)
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## Creating Persistent Volumes
-
-- Let's create 3 local directories (`/mnt/consul`) on node2, node3, node4
-
-- Then create 3 Persistent Volumes corresponding to these directories
-
-.lab[
-
-- Create the local directories:
-  ```bash
-    for NODE in node2 node3 node4; do
-      ssh $NODE sudo mkdir -p /mnt/consul
-    done
-  ```
-
-- Create the PV objects:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/volumes-for-consul.yaml
-  ```
-
-]
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## Check our Consul cluster
-
-- The PVs that we created will be automatically matched with the PVCs
-
-- Once a PVC is bound, its pod can start normally
-
-- Once the pod `consul-0` has started, `consul-1` can be created, etc.
-
-- Eventually, our Consul cluster is up, and backend by "persistent" volumes
-
-.lab[
-
-- Check that our Consul clusters has 3 members indeed:
-  ```bash
-  kubectl exec consul-0 -- consul members
-  ```
-
-]
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## Devil is in the details (1/2)
-
-- The size of the Persistent Volumes is bogus
-
-  (it is used when matching PVs and PVCs together, but there is no actual quota or limit)
-
-- The Pod might end up using more than the requested size
-
-- The PV may or may not have the capacity that it's advertising
-
-- It works well with dynamically provisioned block volumes
-
-- ...Less so in other scenarios!
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## Devil is in the details (2/2)
-
-- This specific example worked because we had exactly 1 free PV per node:
-
-  - if we had created multiple PVs per node ...
-
-  - we could have ended with two PVCs bound to PVs on the same node ...
-
-  - which would have required two pods to be on the same node ...
-
-  - which is forbidden by the anti-affinity constraints in the StatefulSet
-
-- To avoid that, we need to associated the PVs with a Storage Class that has:
-  ```yaml
-  volumeBindingMode: WaitForFirstConsumer
-  ```
-  (this means that a PVC will be bound to a PV only after being used by a Pod)
-
-- See [this blog post](https://kubernetes.io/blog/2018/04/13/local-persistent-volumes-beta/) for more details
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## If we have a dynamic provisioner
-
-These are the steps when dynamic provisioning happens:
-
-1. The Stateful Set creates PVCs according to the `volumeClaimTemplate`.
-
-2. The Stateful Set creates Pods using these PVCs.
-
-3. The PVCs are automatically annotated with our Storage Class.
-
-4. The dynamic provisioner provisions volumes and creates the corresponding PVs.
-
-5. The PersistentVolumeClaimBinder associates the PVs and the PVCs together.
-
-6. PVCs are now bound, the Pods can start.
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## Validating persistence (1)
-
-- When the StatefulSet is deleted, the PVC and PV still exist
-
-- And if we recreate an identical StatefulSet, the PVC and PV are reused
-
-- Let's see that!
-
-.lab[
-
-- Put some data in Consul:
-  ```bash
-  kubectl exec consul-0 -- consul kv put answer 42
-  ```
-
-- Delete the Consul cluster:
-  ```bash
-  kubectl delete -f ~/container.training/k8s/consul-3.yaml
-  ```
-
-]
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## Validating persistence (2)
-
-.lab[
-
-- Wait until the last Pod is deleted:
-  ```bash
-  kubectl wait pod consul-0 --for=delete
-  ```
-
-- Check that PV and PVC are still here:
-  ```bash
-  kubectl get pv,pvc
-  ```
-
-]
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## Validating persistence (3)
-
-.lab[
-
-- Re-create the cluster:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/consul-3.yaml
-  ```
-
-- Wait until it's up
-
-- Then access the key that we set earlier:
-  ```bash
-  kubectl exec consul-0 -- consul kv get answer
-  ```
-
-]
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-## Cleaning up
-
-- PV and PVC don't get deleted automatically
-
-- This is great (less risk of accidental data loss)
-
-- This is not great (storage usage increases)
-
-- Managing PVC lifecycle:
-
-  - remove them manually
-
-  - add their StatefulSet to their `ownerReferences`
-
-  - delete the Namespace that they belong to
-
-???
-
-:EN:- Defining volumeClaimTemplates
-:FR:- Définir des volumeClaimTemplates
-
-.debug[[k8s/volume-claim-templates.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volume-claim-templates.md)]
----
-
-class: pic
-
 .interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/ShippingContainerSFBay.jpg)]
 
 ---
@@ -11770,7 +11748,7 @@ class: title
  Exercise — Ingress
 
 .nav[
-[Previous part](#toc-managing-secrets)
+[Previous part](#toc-container-based-software-deployment)
 |
 [Back to table of contents](#toc-part-4)
 |
