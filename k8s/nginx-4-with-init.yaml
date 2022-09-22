@@ -3,14 +3,8 @@ kind: Pod
 metadata:
   name: nginx-with-init
 spec:
-  volumes:
-  - name: www
-  containers:
-  - name: nginx
-    image: nginx
-    volumeMounts:
-    - name: www
-      mountPath: /usr/share/nginx/html/
+  terminationGracePeriodSeconds: 0
+  
   initContainers:
   - name: git
     image: alpine
@@ -18,3 +12,15 @@ spec:
     volumeMounts:
     - name: www
       mountPath: /www/
+ 
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - name: www
+      mountPath: /usr/share/nginx/html/
+
+  volumes:
+  - name: www
+    emptyDir: {}
+

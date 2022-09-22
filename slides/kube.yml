@@ -69,27 +69,27 @@ content:
   - k8s/daemonset.md
   - k8s/namespaces.md
   - k8s/healthchecks.md
-  - k8s/volumes.md
   - k8s/configuration.md
   - k8s/secrets.md
-  - exercises/healthchecks-details.md
+  - k8s/volumes.md
 
 - # DAY 4
   - k8s/volume-claim-templates.md  
+  - k8s/statefulsets.md
   - k8s/kubenet.md
   - k8s/netpol.md
   - k8s/accessinternal.md
   - k8s/ingress.md
   - containers/software-deployment.md
+  - exercises/healthchecks-details.md
   - exercises/ingress-details.md
   - exercises/appconfig-details.md
 
 - # DAY 5
   # - k8s/kubectlproxy.md
-  - k8s/consul.md
-  - k8s/statefulsets.md
   - k8s/pv-pvc-sc.md
   - k8s/authn-authz.md
+  - k8s/consul.md
   - k8s/resource-limits.md
   - k8s/metrics-server.md
   - k8s/setup-overview.md

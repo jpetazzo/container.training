@@ -29,12 +29,16 @@ Kubernetes<br/>Intermediate<br/>Training<br/>
 
 .debug[
 ```
+ M k8s/nginx-3-with-git.yaml
+ M k8s/nginx-4-with-init.yaml
  M slides/kube.yml
  M slides/out.html
+?? k8s/affinity-pod.yaml
+?? k8s/nginx-5-with-hostpath.yaml
 
 ```
 
-These slides have been built from commit: b4d837bb
+These slides have been built from commit: b112c1fa
 
 
 [shared/title.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/shared/title.md)]
@@ -366,21 +370,31 @@ name: toc-part-3
 ## Part 3
 
 - [Rolling updates](#toc-rolling-updates)
+
 - [Deploying with YAML](#toc-deploying-with-yaml)
+
 - [Daemon sets](#toc-daemon-sets)
+
 - [Labels and selectors](#toc-labels-and-selectors)
+
 - [Namespaces](#toc-namespaces)
+
 - [Healthchecks](#toc-healthchecks)
-- [Volumes](#toc-volumes)
+
 - [Managing configuration](#toc-managing-configuration)
+
 - [Managing secrets](#toc-managing-secrets)
-- [Exercise — Healthchecks](#toc-exercise--healthchecks)
+
+- [Volumes](#toc-volumes)
+
 
 .debug[(auto-generated TOC)]
 ---
 name: toc-part-4
 
 ## Part 4
+
+- [Stateful sets](#toc-stateful-sets)
 
 - [Kubernetes network model](#toc-kubernetes-network-model)
 
@@ -391,6 +405,8 @@ name: toc-part-4
 - [Exposing HTTP services with Ingress resources](#toc-exposing-http-services-with-ingress-resources)
 
 - [Container Based Software Deployment](#toc-container-based-software-deployment)
+
+- [Exercise — Healthchecks](#toc-exercise--healthchecks)
 
 - [Exercise — Ingress](#toc-exercise--ingress)
 
@@ -403,10 +419,9 @@ name: toc-part-5
 
 ## Part 5
 
-- [Running a Consul cluster](#toc-running-a-consul-cluster)
-- [Stateful sets](#toc-stateful-sets)
 - [PV, PVC, and Storage Classes](#toc-pv-pvc-and-storage-classes)
 - [Authentication and authorization](#toc-authentication-and-authorization)
+- [Running a Consul cluster](#toc-running-a-consul-cluster)
 - [Resource Limits](#toc-resource-limits)
 - [Defining min, max, and default resources](#toc-defining-min-max-and-default-resources)
 - [Namespace quotas](#toc-namespace-quotas)
@@ -7470,7 +7485,7 @@ class: title
 |
 [Back to table of contents](#toc-part-3)
 |
-[Next part](#toc-volumes)
+[Next part](#toc-managing-configuration)
 ]
 
 .debug[(automatically generated title slide)]
@@ -7824,540 +7839,13 @@ class: pic
 
 ---
 
-name: toc-volumes
-class: title
-
- Volumes
-
-.nav[
-[Previous part](#toc-healthchecks)
-|
-[Back to table of contents](#toc-part-3)
-|
-[Next part](#toc-managing-configuration)
-]
-
-.debug[(automatically generated title slide)]
-
----
-# Volumes
-
-- Volumes are special directories that are mounted in containers
-
-- Volumes can have many different purposes:
-
-  - share files and directories between containers running on the same machine
-
-  - share files and directories between containers and their host
-
-  - centralize configuration information in Kubernetes and expose it to containers
-
-  - manage credentials and secrets and expose them securely to containers
-
-  - store persistent data for stateful services
-
-  - access storage systems (like Ceph, EBS, NFS, Portworx, and many others)
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-class: extra-details
-
-## Kubernetes volumes vs. Docker volumes
-
-- Kubernetes and Docker volumes are very similar
-
-  (the [Kubernetes documentation](https://kubernetes.io/docs/concepts/storage/volumes/) says otherwise ...
-  <br/>
-  but it refers to Docker 1.7, which was released in 2015!)
-
-- Docker volumes allow us to share data between containers running on the same host
-
-- Kubernetes volumes allow us to share data between containers in the same pod
-
-- Both Docker and Kubernetes volumes enable access to storage systems
-
-- Kubernetes volumes are also used to expose configuration and secrets
-
-- Docker has specific concepts for configuration and secrets
-  <br/>
-  (but under the hood, the technical implementation is similar)
-
-- If you're not familiar with Docker volumes, you can safely ignore this slide!
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Volumes ≠ Persistent Volumes
-
-- Volumes and Persistent Volumes are related, but very different!
-
-- *Volumes*:
-
-  - appear in Pod specifications (we'll see that in a few slides)
-
-  - do not exist as API resources (**cannot** do `kubectl get volumes`)
-
-- *Persistent Volumes*:
-
-  - are API resources (**can** do `kubectl get persistentvolumes`)
-
-  - correspond to concrete volumes (e.g. on a SAN, EBS, etc.)
-
-  - cannot be associated with a Pod directly; but through a Persistent Volume Claim
-
-  - won't be discussed further in this section
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Adding a volume to a Pod
-
-- We will start with the simplest Pod manifest we can find
-
-- We will add a volume to that Pod manifest
-
-- We will mount that volume in a container in the Pod
-
-- By default, this volume will be an `emptyDir`
-
-  (an empty directory)
-
-- It will "shadow" the directory where it's mounted
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Our basic Pod
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx-without-volume
-spec:
-  containers:
-  - name: nginx
-    image: nginx
-```
-
-This is a MVP! (Minimum Viable Pod😉)
-
-It runs a single NGINX container.
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Trying the basic pod
-
-.lab[
-
-- Create the Pod:
-  ```bash
-  kubectl create -f ~/container.training/k8s/nginx-1-without-volume.yaml
-  ```
-
-<!-- ```bash kubectl wait pod/nginx-without-volume --for condition=ready ``` -->
-
-- Get its IP address:
-  ```bash
-  IPADDR=$(kubectl get pod nginx-without-volume -o jsonpath={.status.podIP})
-  ```
-
-- Send a request with curl:
-  ```bash
-  curl $IPADDR
-  ```
-
-]
-
-(We should see the "Welcome to NGINX" page.)
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Adding a volume
-
-- We need to add the volume in two places:
-
-  - at the Pod level (to declare the volume)
-
-  - at the container level (to mount the volume)
-
-- We will declare a volume named `www`
-
-- No type is specified, so it will default to `emptyDir`
-
-  (as the name implies, it will be initialized as an empty directory at pod creation)
-
-- In that pod, there is also a container named `nginx`
-
-- That container mounts the volume `www` to path `/usr/share/nginx/html/`
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## The Pod with a volume
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx-with-volume
-spec:
-  volumes:
-  - name: www
-  containers:
-  - name: nginx
-    image: nginx
-    volumeMounts:
-    - name: www
-      mountPath: /usr/share/nginx/html/
-```
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Trying the Pod with a volume
-
-.lab[
-
-- Create the Pod:
-  ```bash
-  kubectl create -f ~/container.training/k8s/nginx-2-with-volume.yaml
-  ```
-
-<!-- ```bash kubectl wait pod/nginx-with-volume --for condition=ready ``` -->
-
-- Get its IP address:
-  ```bash
-  IPADDR=$(kubectl get pod nginx-with-volume -o jsonpath={.status.podIP})
-  ```
-
-- Send a request with curl:
-  ```bash
-  curl $IPADDR
-  ```
-
-]
-
-(We should now see a "403 Forbidden" error page.)
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Populating the volume with another container
-
-- Let's add another container to the Pod
-
-- Let's mount the volume in *both* containers
-
-- That container will populate the volume with static files
-
-- NGINX will then serve these static files
-
-- To populate the volume, we will clone the Spoon-Knife repository
-
-  - this repository is https://github.com/octocat/Spoon-Knife
-
-  - it's very popular (more than 100K stars!)
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Sharing a volume between two containers
-
-.small[
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx-with-git
-spec:
-  volumes:
-  - name: www
-  containers:
-  - name: nginx
-    image: nginx
-    volumeMounts:
-    - name: www
-      mountPath: /usr/share/nginx/html/
-  - name: git
-    image: alpine
-    command: [ "sh", "-c", "apk add git && git clone https://github.com/octocat/Spoon-Knife /www" ]
-    volumeMounts:
-    - name: www
-      mountPath: /www/
-  restartPolicy: OnFailure
-```
-]
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Sharing a volume, explained
-
-- We added another container to the pod
-
-- That container mounts the `www` volume on a different path (`/www`)
-
-- It uses the `alpine` image
-
-- When started, it installs `git` and clones the `octocat/Spoon-Knife` repository
-
-  (that repository contains a tiny HTML website)
-
-- As a result, NGINX now serves this website
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Trying the shared volume
-
-- This one will be time-sensitive!
-
-- We need to catch the Pod IP address *as soon as it's created*
-
-- Then send a request to it *as fast as possible*
-
-.lab[
-
-- Watch the pods (so that we can catch the Pod IP address)
-  ```bash
-  kubectl get pods -o wide --watch
-  ```
-
-<!--
-```wait NAME```
-```tmux split-pane -v```
--->
-
-]
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Shared volume in action
-
-.lab[
-
-- Create the pod:
-  ```bash
-  kubectl create -f ~/container.training/k8s/nginx-3-with-git.yaml
-  ```
-
-<!--
-```bash kubectl wait pod/nginx-with-git --for condition=initialized```
-```bash IP=$(kubectl get pod nginx-with-git -o jsonpath={.status.podIP})```
--->
-
-- As soon as we see its IP address, access it:
-  ```bash
-  curl `$IP`
-  ```
-
-<!-- ```bash /bin/sleep 5``` -->
-
-- A few seconds later, the state of the pod will change; access it again:
-  ```bash
-  curl `$IP`
-  ```
-
-]
-
-The first time, we should see "403 Forbidden".
-
-The second time, we should see the HTML file from the Spoon-Knife repository.
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Explanations
-
-- Both containers are started at the same time
-
-- NGINX starts very quickly
-
-  (it can serve requests immediately)
-
-- But at this point, the volume is empty
-
-  (NGINX serves "403 Forbidden")
-
-- The other containers installs git and clones the repository
-
-  (this takes a bit longer)
-
-- When the other container is done, the volume holds the repository
-
-  (NGINX serves the HTML file)
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## The devil is in the details
-
-- The default `restartPolicy` is `Always`
-
-- This would cause our `git` container to run again ... and again ... and again
-
-  (with an exponential back-off delay, as explained [in the documentation](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy))
-
-- That's why we specified `restartPolicy: OnFailure`
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Inconsistencies
-
-- There is a short period of time during which the website is not available
-
-  (because the `git` container hasn't done its job yet)
-
-- With a bigger website, we could get inconsistent results
-
-  (where only a part of the content is ready)
-
-- In real applications, this could cause incorrect results
-
-- How can we avoid that?
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Init Containers
-
-- We can define containers that should execute *before* the main ones
-
-- They will be executed in order
-
-  (instead of in parallel)
-
-- They must all succeed before the main containers are started
-
-- This is *exactly* what we need here!
-
-- Let's see one in action
-
-.footnote[See [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) documentation for all the details.]
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Defining Init Containers
-
-.small[
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx-with-init
-spec:
-  volumes:
-  - name: www
-  containers:
-  - name: nginx
-    image: nginx
-    volumeMounts:
-    - name: www
-      mountPath: /usr/share/nginx/html/
-  initContainers:
-  - name: git
-    image: alpine
-    command: [ "sh", "-c", "apk add git && git clone https://github.com/octocat/Spoon-Knife /www" ]
-    volumeMounts:
-    - name: www
-      mountPath: /www/
-```
-]
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Trying the init container
-
-.lab[
-
-- Create the pod:
-  ```bash
-  kubectl create -f ~/container.training/k8s/nginx-4-with-init.yaml
-  ```
-
-- Try to send HTTP requests as soon as the pod comes up
-
-<!--
-```key ^D```
-```key ^C```
--->
-
-]
-
-- This time, instead of "403 Forbidden" we get a "connection refused"
-
-- NGINX doesn't start until the git container has done its job
-
-- We never get inconsistent results
-
-  (a "half-ready" container)
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Other uses of init containers
-
-- Load content
-
-- Generate configuration (or certificates)
-
-- Database migrations
-
-- Waiting for other services to be up
-
-  (to avoid flurry of connection errors in main container)
-
-- etc.
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-## Volume lifecycle
-
-- The lifecycle of a volume is linked to the pod's lifecycle
-
-- This means that a volume is created when the pod is created
-
-- This is mostly relevant for `emptyDir` volumes
-
-  (other volumes, like remote storage, are not "created" but rather "attached" )
-
-- A volume survives across container restarts
-
-- A volume is destroyed (or, for remote storage, detached) when the pod is destroyed
-
-???
-
-:EN:- Sharing data between containers with volumes
-:EN:- When and how to use Init Containers
-
-:FR:- Partager des données grâce aux volumes
-:FR:- Quand et comment utiliser un *Init Container*
-
-.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
----
-
-class: pic
-
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/distillery-containers.jpg)]
-
----
-
 name: toc-managing-configuration
 class: title
 
  Managing configuration
 
 .nav[
-[Previous part](#toc-volumes)
+[Previous part](#toc-healthchecks)
 |
 [Back to table of contents](#toc-part-3)
 |
@@ -9020,7 +8508,7 @@ spec:
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/lots-of-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/distillery-containers.jpg)]
 
 ---
 
@@ -9034,7 +8522,7 @@ class: title
 |
 [Back to table of contents](#toc-part-3)
 |
-[Next part](#toc-exercise--healthchecks)
+[Next part](#toc-volumes)
 ]
 
 .debug[(automatically generated title slide)]
@@ -9348,119 +8836,529 @@ class: extra-details
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/plastic-containers.JPG)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/lots-of-containers.jpg)]
 
 ---
 
-name: toc-exercise--healthchecks
+name: toc-volumes
 class: title
 
- Exercise — Healthchecks
+ Volumes
 
 .nav[
 [Previous part](#toc-managing-secrets)
 |
 [Back to table of contents](#toc-part-3)
 |
-[Next part](#toc-kubernetes-network-model)
+[Next part](#toc-stateful-sets)
 ]
 
 .debug[(automatically generated title slide)]
 
 ---
-# Exercise — Healthchecks
+# Volumes
 
-- We want to add healthchecks to the `rng` service in dockercoins
+- Volumes are special directories that are mounted in containers
 
-- The `rng` service exhibits an interesting behavior under load:
+- Volumes can have many different purposes:
 
-  *its latency increases (which will cause probes to time out!)*
+  - share files and directories between containers running on the same machine
 
-- We want to see:
+  - share files and directories between containers and their host
 
-  - what happens when the readiness probe fails
+  - centralize configuration information in Kubernetes and expose it to containers
 
-  - what happens when the liveness probe fails
+  - manage credentials and secrets and expose them securely to containers
 
-  - how to set "appropriate" probes and probe parameters
+  - store persistent data for stateful services
 
-.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+  - access storage systems (like Ceph, EBS, NFS, Portworx, and many others)
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
 ---
 
-## Setup
+class: extra-details
 
-- First, deploy a new copy of dockercoins
+## Kubernetes volumes vs. Docker volumes
 
-  (for instance, in a brand new namespace)
+- Kubernetes and Docker volumes are very similar
 
-- Pro tip #1: ping (e.g. with `httping`) the `rng` service at all times
+  (the [Kubernetes documentation](https://kubernetes.io/docs/concepts/storage/volumes/) says otherwise ...
+  <br/>
+  but it refers to Docker 1.7, which was released in 2015!)
 
-  - it should initially show a few milliseconds latency
+- Docker volumes allow us to share data between containers running on the same host
 
-  - that will increase when we scale up
+- Kubernetes volumes allow us to share data between containers in the same pod
 
-  - it will also let us detect when the service goes "boom"
+- Both Docker and Kubernetes volumes enable access to storage systems
 
-- Pro tip #2: also keep an eye on the web UI
+- Kubernetes volumes are also used to expose configuration and secrets
 
-.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+- Docker has specific concepts for configuration and secrets
+  <br/>
+  (but under the hood, the technical implementation is similar)
+
+- If you're not familiar with Docker volumes, you can safely ignore this slide!
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
 ---
 
-## Readiness
+## Volumes ≠ Persistent Volumes
 
-- Add a readiness probe to `rng`
+- Volumes and Persistent Volumes are related, but very different!
 
-  - this requires editing the pod template in the Deployment manifest
+- *Volumes*:
 
-  - use a simple HTTP check on the `/` route of the service
+  - appear in Pod specifications (we'll see that in a few slides)
 
-  - keep all other parameters (timeouts, thresholds...) at their default values
+  - do not exist as API resources (**cannot** do `kubectl get volumes`)
 
-- Check what happens when deploying an invalid image for `rng` (e.g. `alpine`)
+- *Persistent Volumes*:
 
-*(If the probe was set up correctly, the app will continue to work,
-because Kubernetes won't switch over the traffic to the `alpine` containers,
-because they don't pass the readiness probe.)*
+  - are API resources (**can** do `kubectl get persistentvolumes`)
 
-.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+  - correspond to concrete volumes (e.g. on a SAN, EBS, etc.)
+
+  - cannot be associated with a Pod directly; but through a Persistent Volume Claim
+
+  - won't be discussed further in this section
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
 ---
 
-## Readiness under load
+## Adding a volume to a Pod
 
-- Then roll back `rng` to the original image
+- We will start with the simplest Pod manifest we can find
 
-- Check what happens when we scale up the `worker` Deployment to 15+ workers
+- We will add a volume to that Pod manifest
 
-  (get the latency above 1 second)
+- We will mount that volume in a container in the Pod
 
-*(We should now observe intermittent unavailability of the service, i.e. every
-30 seconds it will be unreachable for a bit, then come back, then go away again, etc.)*
+- By default, this volume will be an `emptyDir`
 
-.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+  (an empty directory)
+
+- It will "shadow" the directory where it's mounted
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
 ---
 
-## Liveness
+## Our basic Pod
 
-- Now replace the readiness probe with a liveness probe
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-without-volume
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+```
 
-- What happens now?
+This is a MVP! (Minimum Viable Pod😉)
 
-*(At first the behavior looks the same as with the readiness probe:
-service becomes unreachable, then reachable again, etc.; but there is
-a significant difference behind the scenes. What is it?)*
+It runs a single NGINX container.
 
-.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
 ---
 
-## Readiness and liveness
+## Trying the basic pod
 
-- Bonus questions!
+.lab[
 
-- What happens if we enable both probes at the same time?
+- Create the Pod:
+  ```bash
+  kubectl create -f ~/container.training/k8s/nginx-1-without-volume.yaml
+  ```
 
-- What strategies can we use so that both probes are useful?
+<!-- ```bash kubectl wait pod/nginx-without-volume --for condition=ready ``` -->
 
-.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+- Get its IP address:
+  ```bash
+  IPADDR=$(kubectl get pod nginx-without-volume -o jsonpath={.status.podIP})
+  ```
+
+- Send a request with curl:
+  ```bash
+  curl $IPADDR
+  ```
+
+]
+
+(We should see the "Welcome to NGINX" page.)
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Adding a volume
+
+- We need to add the volume in two places:
+
+  - at the Pod level (to declare the volume)
+
+  - at the container level (to mount the volume)
+
+- We will declare a volume named `www`
+
+- No type is specified, so it will default to `emptyDir`
+
+  (as the name implies, it will be initialized as an empty directory at pod creation)
+
+- In that pod, there is also a container named `nginx`
+
+- That container mounts the volume `www` to path `/usr/share/nginx/html/`
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## The Pod with a volume
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-with-volume
+spec:
+  volumes:
+  - name: www
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - name: www
+      mountPath: /usr/share/nginx/html/
+```
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Trying the Pod with a volume
+
+.lab[
+
+- Create the Pod:
+  ```bash
+  kubectl create -f ~/container.training/k8s/nginx-2-with-volume.yaml
+  ```
+
+<!-- ```bash kubectl wait pod/nginx-with-volume --for condition=ready ``` -->
+
+- Get its IP address:
+  ```bash
+  IPADDR=$(kubectl get pod nginx-with-volume -o jsonpath={.status.podIP})
+  ```
+
+- Send a request with curl:
+  ```bash
+  curl $IPADDR
+  ```
+
+]
+
+(We should now see a "403 Forbidden" error page.)
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Populating the volume with another container
+
+- Let's add another container to the Pod
+
+- Let's mount the volume in *both* containers
+
+- That container will populate the volume with static files
+
+- NGINX will then serve these static files
+
+- To populate the volume, we will clone the Spoon-Knife repository
+
+  - this repository is https://github.com/octocat/Spoon-Knife
+
+  - it's very popular (more than 100K stars!)
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Sharing a volume between two containers
+
+.small[
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-with-git
+spec:
+  volumes:
+  - name: www
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - name: www
+      mountPath: /usr/share/nginx/html/
+  - name: git
+    image: alpine
+    command: [ "sh", "-c", "apk add git && git clone https://github.com/octocat/Spoon-Knife /www" ]
+    volumeMounts:
+    - name: www
+      mountPath: /www/
+  restartPolicy: OnFailure
+```
+]
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Sharing a volume, explained
+
+- We added another container to the pod
+
+- That container mounts the `www` volume on a different path (`/www`)
+
+- It uses the `alpine` image
+
+- When started, it installs `git` and clones the `octocat/Spoon-Knife` repository
+
+  (that repository contains a tiny HTML website)
+
+- As a result, NGINX now serves this website
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Trying the shared volume
+
+- This one will be time-sensitive!
+
+- We need to catch the Pod IP address *as soon as it's created*
+
+- Then send a request to it *as fast as possible*
+
+.lab[
+
+- Watch the pods (so that we can catch the Pod IP address)
+  ```bash
+  kubectl get pods -o wide --watch
+  ```
+
+<!--
+```wait NAME```
+```tmux split-pane -v```
+-->
+
+]
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Shared volume in action
+
+.lab[
+
+- Create the pod:
+  ```bash
+  kubectl create -f ~/container.training/k8s/nginx-3-with-git.yaml
+  ```
+
+<!--
+```bash kubectl wait pod/nginx-with-git --for condition=initialized```
+```bash IP=$(kubectl get pod nginx-with-git -o jsonpath={.status.podIP})```
+-->
+
+- As soon as we see its IP address, access it:
+  ```bash
+  curl `$IP`
+  ```
+
+<!-- ```bash /bin/sleep 5``` -->
+
+- A few seconds later, the state of the pod will change; access it again:
+  ```bash
+  curl `$IP`
+  ```
+
+]
+
+The first time, we should see "403 Forbidden".
+
+The second time, we should see the HTML file from the Spoon-Knife repository.
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Explanations
+
+- Both containers are started at the same time
+
+- NGINX starts very quickly
+
+  (it can serve requests immediately)
+
+- But at this point, the volume is empty
+
+  (NGINX serves "403 Forbidden")
+
+- The other containers installs git and clones the repository
+
+  (this takes a bit longer)
+
+- When the other container is done, the volume holds the repository
+
+  (NGINX serves the HTML file)
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## The devil is in the details
+
+- The default `restartPolicy` is `Always`
+
+- This would cause our `git` container to run again ... and again ... and again
+
+  (with an exponential back-off delay, as explained [in the documentation](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy))
+
+- That's why we specified `restartPolicy: OnFailure`
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Inconsistencies
+
+- There is a short period of time during which the website is not available
+
+  (because the `git` container hasn't done its job yet)
+
+- With a bigger website, we could get inconsistent results
+
+  (where only a part of the content is ready)
+
+- In real applications, this could cause incorrect results
+
+- How can we avoid that?
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Init Containers
+
+- We can define containers that should execute *before* the main ones
+
+- They will be executed in order
+
+  (instead of in parallel)
+
+- They must all succeed before the main containers are started
+
+- This is *exactly* what we need here!
+
+- Let's see one in action
+
+.footnote[See [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) documentation for all the details.]
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Defining Init Containers
+
+.small[
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-with-init
+spec:
+  volumes:
+  - name: www
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - name: www
+      mountPath: /usr/share/nginx/html/
+  initContainers:
+  - name: git
+    image: alpine
+    command: [ "sh", "-c", "apk add git && git clone https://github.com/octocat/Spoon-Knife /www" ]
+    volumeMounts:
+    - name: www
+      mountPath: /www/
+```
+]
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Trying the init container
+
+.lab[
+
+- Create the pod:
+  ```bash
+  kubectl create -f ~/container.training/k8s/nginx-4-with-init.yaml
+  ```
+
+- Try to send HTTP requests as soon as the pod comes up
+
+<!--
+```key ^D```
+```key ^C```
+-->
+
+]
+
+- This time, instead of "403 Forbidden" we get a "connection refused"
+
+- NGINX doesn't start until the git container has done its job
+
+- We never get inconsistent results
+
+  (a "half-ready" container)
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Other uses of init containers
+
+- Load content
+
+- Generate configuration (or certificates)
+
+- Database migrations
+
+- Waiting for other services to be up
+
+  (to avoid flurry of connection errors in main container)
+
+- etc.
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
+---
+
+## Volume lifecycle
+
+- The lifecycle of a volume is linked to the pod's lifecycle
+
+- This means that a volume is created when the pod is created
+
+- This is mostly relevant for `emptyDir` volumes
+
+  (other volumes, like remote storage, are not "created" but rather "attached" )
+
+- A volume survives across container restarts
+
+- A volume is destroyed (or, for remote storage, detached) when the pod is destroyed
+
+???
+
+:EN:- Sharing data between containers with volumes
+:EN:- When and how to use Init Containers
+
+:FR:- Partager des données grâce aux volumes
+:FR:- Quand et comment utiliser un *Init Container*
+
+.debug[[k8s/volumes.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/volumes.md)]
 ---
 ## Putting it all together
 
@@ -9797,6 +9695,252 @@ These are the steps when dynamic provisioning happens:
 
 class: pic
 
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/plastic-containers.JPG)]
+
+---
+
+name: toc-stateful-sets
+class: title
+
+ Stateful sets
+
+.nav[
+[Previous part](#toc-volumes)
+|
+[Back to table of contents](#toc-part-4)
+|
+[Next part](#toc-kubernetes-network-model)
+]
+
+.debug[(automatically generated title slide)]
+
+---
+# Stateful sets
+
+- Stateful sets are a type of resource in the Kubernetes API
+
+  (like pods, deployments, services...)
+
+- They offer mechanisms to deploy scaled stateful applications
+
+- At a first glance, they look like Deployments:
+
+  - a stateful set defines a pod spec and a number of replicas *R*
+
+  - it will make sure that *R* copies of the pod are running
+
+  - that number can be changed while the stateful set is running
+
+  - updating the pod spec will cause a rolling update to happen
+
+- But they also have some significant differences
+
+.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
+---
+
+## Stateful sets unique features
+
+- Pods in a stateful set are numbered (from 0 to *R-1*) and ordered
+
+- They are started and updated in order (from 0 to *R-1*)
+
+- A pod is started (or updated) only when the previous one is ready
+
+- They are stopped in reverse order (from *R-1* to 0)
+
+- Each pod knows its identity (i.e. which number it is in the set)
+
+- Each pod can discover the IP address of the others easily
+
+- The pods can persist data on attached volumes
+
+🤔 Wait a minute ... Can't we already attach volumes to pods and deployments?
+
+.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
+---
+
+## Revisiting volumes
+
+- [Volumes](https://kubernetes.io/docs/concepts/storage/volumes/) are used for many purposes:
+
+  - sharing data between containers in a pod
+
+  - exposing configuration information and secrets to containers
+
+  - accessing storage systems
+
+- Let's see examples of the latter usage
+
+.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
+---
+
+## Volumes types
+
+- There are many [types of volumes](https://kubernetes.io/docs/concepts/storage/volumes/#types-of-volumes) available:
+
+  - public cloud storage (GCEPersistentDisk, AWSElasticBlockStore, AzureDisk...)
+
+  - private cloud storage (Cinder, VsphereVolume...)
+
+  - traditional storage systems (NFS, iSCSI, FC...)
+
+  - distributed storage (Ceph, Glusterfs, Portworx...)
+
+- Using a persistent volume requires:
+
+  - creating the volume out-of-band (outside of the Kubernetes API)
+
+  - referencing the volume in the pod description, with all its parameters
+
+.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
+---
+
+## Using a cloud volume
+
+Here is a pod definition using an AWS EBS volume (that has to be created first):
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-using-my-ebs-volume
+spec:
+  containers:
+  - image: ...
+    name: container-using-my-ebs-volume
+    volumeMounts:
+    - mountPath: /my-ebs
+      name: my-ebs-volume
+  volumes:
+  - name: my-ebs-volume
+    awsElasticBlockStore:
+      volumeID: vol-049df61146c4d7901
+      fsType: ext4
+```
+
+.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
+---
+
+## Using an NFS volume
+
+Here is another example using a volume on an NFS server:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-using-my-nfs-volume
+spec:
+  containers:
+  - image: ...
+    name: container-using-my-nfs-volume
+    volumeMounts:
+    - mountPath: /my-nfs
+      name: my-nfs-volume
+  volumes:
+  - name: my-nfs-volume
+    nfs:
+      server: 192.168.0.55
+      path: "/exports/assets"
+```
+
+.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
+---
+
+## Shortcomings of volumes
+
+- Their lifecycle (creation, deletion...) is managed outside of the Kubernetes API
+
+  (we can't just use `kubectl apply/create/delete/...` to manage them)
+
+- If a Deployment uses a volume, all replicas end up using the same volume
+
+- That volume must then support concurrent access
+
+  - some volumes do (e.g. NFS servers support multiple read/write access)
+
+  - some volumes support concurrent reads
+
+  - some volumes support concurrent access for colocated pods
+
+- What we really need is a way for each replica to have its own volume
+
+.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
+---
+
+## Individual volumes
+
+- The Pods of a Stateful set can have individual volumes
+
+  (i.e. in a Stateful set with 3 replicas, there will be 3 volumes)
+
+- These volumes can be either:
+
+  - allocated from a pool of pre-existing volumes (disks, partitions ...)
+
+  - created dynamically using a storage system
+
+- This introduces a bunch of new Kubernetes resource types:
+
+  Persistent Volumes, Persistent Volume Claims, Storage Classes
+
+  (and also `volumeClaimTemplates`, that appear within Stateful Set manifests!)
+
+.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
+---
+
+## Stateful set recap
+
+- A Stateful sets manages a number of identical pods
+
+  (like a Deployment)
+
+- These pods are numbered, and started/upgraded/stopped in a specific order
+
+- These pods are aware of their number
+
+  (e.g., #0 can decide to be the primary, and #1 can be secondary)
+
+- These pods can find the IP addresses of the other pods in the set
+
+  (through a *headless service*)
+
+- These pods can each have their own persistent storage
+
+.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
+---
+
+## Obtaining per-pod storage
+
+- Stateful Sets can have *persistent volume claim templates*
+
+  (declared in `spec.volumeClaimTemplates` in the Stateful set manifest)
+
+- A claim template will create one Persistent Volume Claim per pod
+
+  (the PVC will be named `<claim-name>.<stateful-set-name>.<pod-index>`)
+
+- Persistent Volume Claims are matched 1-to-1 with Persistent Volumes
+
+- Persistent Volume provisioning can be done:
+
+  - automatically (by leveraging *dynamic provisioning* with a Storage Class)
+
+  - manually (human operator creates the volumes ahead of time, or when needed)
+
+???
+
+:EN:- Deploying apps with Stateful Sets
+:EN:- Understanding Persistent Volume Claims and Storage Classes
+:FR:- Déployer une application avec un *Stateful Set*
+:FR:- Comprendre les *Persistent Volume Claims* et *Storage Classes*
+
+
+.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
+---
+
+class: pic
+
 .interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/train-of-containers-1.jpg)]
 
 ---
@@ -9807,7 +9951,7 @@ class: title
  Kubernetes network model
 
 .nav[
-[Previous part](#toc-exercise--healthchecks)
+[Previous part](#toc-stateful-sets)
 |
 [Back to table of contents](#toc-part-4)
 |
@@ -11589,7 +11733,7 @@ class: title
 |
 [Back to table of contents](#toc-part-4)
 |
-[Next part](#toc-exercise--ingress)
+[Next part](#toc-exercise--healthchecks)
 ]
 
 .debug[(automatically generated title slide)]
@@ -11742,13 +11886,130 @@ class: pic
 
 ---
 
+name: toc-exercise--healthchecks
+class: title
+
+ Exercise — Healthchecks
+
+.nav[
+[Previous part](#toc-container-based-software-deployment)
+|
+[Back to table of contents](#toc-part-4)
+|
+[Next part](#toc-exercise--ingress)
+]
+
+.debug[(automatically generated title slide)]
+
+---
+# Exercise — Healthchecks
+
+- We want to add healthchecks to the `rng` service in dockercoins
+
+- The `rng` service exhibits an interesting behavior under load:
+
+  *its latency increases (which will cause probes to time out!)*
+
+- We want to see:
+
+  - what happens when the readiness probe fails
+
+  - what happens when the liveness probe fails
+
+  - how to set "appropriate" probes and probe parameters
+
+.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+---
+
+## Setup
+
+- First, deploy a new copy of dockercoins
+
+  (for instance, in a brand new namespace)
+
+- Pro tip #1: ping (e.g. with `httping`) the `rng` service at all times
+
+  - it should initially show a few milliseconds latency
+
+  - that will increase when we scale up
+
+  - it will also let us detect when the service goes "boom"
+
+- Pro tip #2: also keep an eye on the web UI
+
+.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+---
+
+## Readiness
+
+- Add a readiness probe to `rng`
+
+  - this requires editing the pod template in the Deployment manifest
+
+  - use a simple HTTP check on the `/` route of the service
+
+  - keep all other parameters (timeouts, thresholds...) at their default values
+
+- Check what happens when deploying an invalid image for `rng` (e.g. `alpine`)
+
+*(If the probe was set up correctly, the app will continue to work,
+because Kubernetes won't switch over the traffic to the `alpine` containers,
+because they don't pass the readiness probe.)*
+
+.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+---
+
+## Readiness under load
+
+- Then roll back `rng` to the original image
+
+- Check what happens when we scale up the `worker` Deployment to 15+ workers
+
+  (get the latency above 1 second)
+
+*(We should now observe intermittent unavailability of the service, i.e. every
+30 seconds it will be unreachable for a bit, then come back, then go away again, etc.)*
+
+.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+---
+
+## Liveness
+
+- Now replace the readiness probe with a liveness probe
+
+- What happens now?
+
+*(At first the behavior looks the same as with the readiness probe:
+service becomes unreachable, then reachable again, etc.; but there is
+a significant difference behind the scenes. What is it?)*
+
+.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+---
+
+## Readiness and liveness
+
+- Bonus questions!
+
+- What happens if we enable both probes at the same time?
+
+- What strategies can we use so that both probes are useful?
+
+.debug[[exercises/healthchecks-details.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/exercises/healthchecks-details.md)]
+---
+
+class: pic
+
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/aerial-view-of-containers.jpg)]
+
+---
+
 name: toc-exercise--ingress
 class: title
 
  Exercise — Ingress
 
 .nav[
-[Previous part](#toc-container-based-software-deployment)
+[Previous part](#toc-exercise--healthchecks)
 |
 [Back to table of contents](#toc-part-4)
 |
@@ -11815,7 +12076,7 @@ class: title
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/aerial-view-of-containers.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/blue-containers.jpg)]
 
 ---
 
@@ -11829,7 +12090,7 @@ class: title
 |
 [Back to table of contents](#toc-part-4)
 |
-[Next part](#toc-running-a-consul-cluster)
+[Next part](#toc-pv-pvc-and-storage-classes)
 ]
 
 .debug[(automatically generated title slide)]
@@ -11933,518 +12194,7 @@ class: title
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/blue-containers.jpg)]
-
----
-
-name: toc-running-a-consul-cluster
-class: title
-
- Running a Consul cluster
-
-.nav[
-[Previous part](#toc-exercise--application-configuration)
-|
-[Back to table of contents](#toc-part-5)
-|
-[Next part](#toc-stateful-sets)
-]
-
-.debug[(automatically generated title slide)]
-
----
-# Running a Consul cluster
-
-- Here is a good use-case for Stateful sets!
-
-- We are going to deploy a Consul cluster with 3 nodes
-
-- Consul is a highly-available key/value store
-
-  (like etcd or Zookeeper)
-
-- One easy way to bootstrap a cluster is to tell each node:
-
-  - the addresses of other nodes
-
-  - how many nodes are expected (to know when quorum is reached)
-
-.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
----
-
-## Bootstrapping a Consul cluster
-
-*After reading the Consul documentation carefully (and/or asking around),
-we figure out the minimal command-line to run our Consul cluster.*
-
-```
-consul agent -data-dir=/consul/data -client=0.0.0.0 -server -ui \
-       -bootstrap-expect=3 \
-       -retry-join=`X.X.X.X` \
-       -retry-join=`Y.Y.Y.Y`
-```
-
-- Replace X.X.X.X and Y.Y.Y.Y with the addresses of other nodes
-
-- A node can add its own address (it will work fine)
-
-- ... Which means that we can use the same command-line on all nodes (convenient!)
-
-.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
----
-
-## Cloud Auto-join
-
-- Since version 1.4.0, Consul can use the Kubernetes API to find its peers
-
-- This is called [Cloud Auto-join]
-
-- Instead of passing an IP address, we need to pass a parameter like this:
-
-  ```
-  consul agent -retry-join "provider=k8s label_selector=\"app=consul\""
-  ```
-
-- Consul needs to be able to talk to the Kubernetes API
-
-- We can provide a `kubeconfig` file
-
-- If Consul runs in a pod, it will use the *service account* of the pod
-
-[Cloud Auto-join]: https://www.consul.io/docs/agent/cloud-auto-join.html#kubernetes-k8s-
-
-.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
----
-
-## Setting up Cloud auto-join
-
-- We need to create a service account for Consul
-
-- We need to create a role that can `list` and `get` pods
-
-- We need to bind that role to the service account
-
-- And of course, we need to make sure that Consul pods use that service account
-
-.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
----
-
-## Putting it all together
-
-- The file `k8s/consul-1.yaml` defines the required resources
-
-  (service account, role, role binding, service, stateful set)
-
-- Inspired by this [excellent tutorial](https://github.com/kelseyhightower/consul-on-kubernetes) by Kelsey Hightower
-
-  (many features from the original tutorial were removed for simplicity)
-
-.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
----
-
-## Running our Consul cluster
-
-- We'll use the provided YAML file
-
-.lab[
-
-- Create the stateful set and associated service:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/consul-1.yaml
-  ```
-
-- Check the logs as the pods come up one after another:
-  ```bash
-  stern consul
-  ```
-
-<!--
-```wait Synced node info```
-```key ^C```
--->
-
-- Check the health of the cluster:
-  ```bash
-  kubectl exec consul-0 -- consul members
-  ```
-
-]
-
-.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
----
-
-## Caveats
-
-- The scheduler may place two Consul pods on the same node
-
-  - if that node fails, we lose two Consul pods at the same time
-  - this will cause the cluster to fail
-
-- Scaling down the cluster will cause it to fail
-
-  - when a Consul member leaves the cluster, it needs to inform the others
-  - otherwise, the last remaining node doesn't have quorum and stops functioning
-
-- This Consul cluster doesn't use real persistence yet
-
-  - data is stored in the containers' ephemeral filesystem
-  - if a pod fails, its replacement starts from a blank slate
-
-.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
----
-
-## Improving pod placement
-
-- We need to tell the scheduler:
-
-  *do not put two of these pods on the same node!*
-
-- This is done with an `affinity` section like the following one:
-  ```yaml
-    affinity:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                app: consul
-            topologyKey: kubernetes.io/hostname
-  ```
-
-.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
----
-
-## Using a lifecycle hook
-
-- When a Consul member leaves the cluster, it needs to execute:
-  ```bash
-  consul leave
-  ```
-
-- This is done with a `lifecycle` section like the following one:
-  ```yaml
-    lifecycle:
-      preStop:
-        exec:
-          command: [ "sh", "-c", "consul leave" ]
-  ```
-
-.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
----
-
-## Running a better Consul cluster
-
-- Let's try to add the scheduling constraint and lifecycle hook
-
-- We can do that in the same namespace or another one (as we like)
-
-- If we do that in the same namespace, we will see a rolling update
-
-  (pods will be replaced one by one)
-
-.lab[
-
-- Deploy a better Consul cluster:
-  ```bash
-  kubectl apply -f ~/container.training/k8s/consul-2.yaml
-  ```
-
-]
-
-.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
----
-
-## Still no persistence, though
-
-- We aren't using actual persistence yet
-
-  (no `volumeClaimTemplate`, Persistent Volume, etc.)
-
-- What happens if we lose a pod?
-
-  - a new pod gets rescheduled (with an empty state)
-
-  - the new pod tries to connect to the two others
-
-  - it will be accepted (after 1-2 minutes of instability)
-
-  - and it will retrieve the data from the other pods
-
-.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
----
-
-## Failure modes
-
-- What happens if we lose two pods?
-
-  - manual repair will be required
-
-  - we will need to instruct the remaining one to act solo
-
-  - then rejoin new pods
-
-- What happens if we lose three pods? (aka all of them)
-
-  - we lose all the data (ouch)
-
-???
-
-:EN:- Scheduling pods together or separately
-:EN:- Example: deploying a Consul cluster
-:FR:- Lancer des pods ensemble ou séparément
-:FR:- Example : lancer un cluster Consul
-
-.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
----
-
-class: pic
-
 .interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/chinook-helicopter-container.jpg)]
-
----
-
-name: toc-stateful-sets
-class: title
-
- Stateful sets
-
-.nav[
-[Previous part](#toc-running-a-consul-cluster)
-|
-[Back to table of contents](#toc-part-5)
-|
-[Next part](#toc-pv-pvc-and-storage-classes)
-]
-
-.debug[(automatically generated title slide)]
-
----
-# Stateful sets
-
-- Stateful sets are a type of resource in the Kubernetes API
-
-  (like pods, deployments, services...)
-
-- They offer mechanisms to deploy scaled stateful applications
-
-- At a first glance, they look like Deployments:
-
-  - a stateful set defines a pod spec and a number of replicas *R*
-
-  - it will make sure that *R* copies of the pod are running
-
-  - that number can be changed while the stateful set is running
-
-  - updating the pod spec will cause a rolling update to happen
-
-- But they also have some significant differences
-
-.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
----
-
-## Stateful sets unique features
-
-- Pods in a stateful set are numbered (from 0 to *R-1*) and ordered
-
-- They are started and updated in order (from 0 to *R-1*)
-
-- A pod is started (or updated) only when the previous one is ready
-
-- They are stopped in reverse order (from *R-1* to 0)
-
-- Each pod knows its identity (i.e. which number it is in the set)
-
-- Each pod can discover the IP address of the others easily
-
-- The pods can persist data on attached volumes
-
-🤔 Wait a minute ... Can't we already attach volumes to pods and deployments?
-
-.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
----
-
-## Revisiting volumes
-
-- [Volumes](https://kubernetes.io/docs/concepts/storage/volumes/) are used for many purposes:
-
-  - sharing data between containers in a pod
-
-  - exposing configuration information and secrets to containers
-
-  - accessing storage systems
-
-- Let's see examples of the latter usage
-
-.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
----
-
-## Volumes types
-
-- There are many [types of volumes](https://kubernetes.io/docs/concepts/storage/volumes/#types-of-volumes) available:
-
-  - public cloud storage (GCEPersistentDisk, AWSElasticBlockStore, AzureDisk...)
-
-  - private cloud storage (Cinder, VsphereVolume...)
-
-  - traditional storage systems (NFS, iSCSI, FC...)
-
-  - distributed storage (Ceph, Glusterfs, Portworx...)
-
-- Using a persistent volume requires:
-
-  - creating the volume out-of-band (outside of the Kubernetes API)
-
-  - referencing the volume in the pod description, with all its parameters
-
-.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
----
-
-## Using a cloud volume
-
-Here is a pod definition using an AWS EBS volume (that has to be created first):
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-using-my-ebs-volume
-spec:
-  containers:
-  - image: ...
-    name: container-using-my-ebs-volume
-    volumeMounts:
-    - mountPath: /my-ebs
-      name: my-ebs-volume
-  volumes:
-  - name: my-ebs-volume
-    awsElasticBlockStore:
-      volumeID: vol-049df61146c4d7901
-      fsType: ext4
-```
-
-.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
----
-
-## Using an NFS volume
-
-Here is another example using a volume on an NFS server:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-using-my-nfs-volume
-spec:
-  containers:
-  - image: ...
-    name: container-using-my-nfs-volume
-    volumeMounts:
-    - mountPath: /my-nfs
-      name: my-nfs-volume
-  volumes:
-  - name: my-nfs-volume
-    nfs:
-      server: 192.168.0.55
-      path: "/exports/assets"
-```
-
-.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
----
-
-## Shortcomings of volumes
-
-- Their lifecycle (creation, deletion...) is managed outside of the Kubernetes API
-
-  (we can't just use `kubectl apply/create/delete/...` to manage them)
-
-- If a Deployment uses a volume, all replicas end up using the same volume
-
-- That volume must then support concurrent access
-
-  - some volumes do (e.g. NFS servers support multiple read/write access)
-
-  - some volumes support concurrent reads
-
-  - some volumes support concurrent access for colocated pods
-
-- What we really need is a way for each replica to have its own volume
-
-.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
----
-
-## Individual volumes
-
-- The Pods of a Stateful set can have individual volumes
-
-  (i.e. in a Stateful set with 3 replicas, there will be 3 volumes)
-
-- These volumes can be either:
-
-  - allocated from a pool of pre-existing volumes (disks, partitions ...)
-
-  - created dynamically using a storage system
-
-- This introduces a bunch of new Kubernetes resource types:
-
-  Persistent Volumes, Persistent Volume Claims, Storage Classes
-
-  (and also `volumeClaimTemplates`, that appear within Stateful Set manifests!)
-
-.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
----
-
-## Stateful set recap
-
-- A Stateful sets manages a number of identical pods
-
-  (like a Deployment)
-
-- These pods are numbered, and started/upgraded/stopped in a specific order
-
-- These pods are aware of their number
-
-  (e.g., #0 can decide to be the primary, and #1 can be secondary)
-
-- These pods can find the IP addresses of the other pods in the set
-
-  (through a *headless service*)
-
-- These pods can each have their own persistent storage
-
-.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
----
-
-## Obtaining per-pod storage
-
-- Stateful Sets can have *persistent volume claim templates*
-
-  (declared in `spec.volumeClaimTemplates` in the Stateful set manifest)
-
-- A claim template will create one Persistent Volume Claim per pod
-
-  (the PVC will be named `<claim-name>.<stateful-set-name>.<pod-index>`)
-
-- Persistent Volume Claims are matched 1-to-1 with Persistent Volumes
-
-- Persistent Volume provisioning can be done:
-
-  - automatically (by leveraging *dynamic provisioning* with a Storage Class)
-
-  - manually (human operator creates the volumes ahead of time, or when needed)
-
-???
-
-:EN:- Deploying apps with Stateful Sets
-:EN:- Understanding Persistent Volume Claims and Storage Classes
-:FR:- Déployer une application avec un *Stateful Set*
-:FR:- Comprendre les *Persistent Volume Claims* et *Storage Classes*
-
-
-.debug[[k8s/statefulsets.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/statefulsets.md)]
----
-
-class: pic
-
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-cranes.jpg)]
 
 ---
 
@@ -12454,7 +12204,7 @@ class: title
  PV, PVC, and Storage Classes
 
 .nav[
-[Previous part](#toc-stateful-sets)
+[Previous part](#toc-exercise--application-configuration)
 |
 [Back to table of contents](#toc-part-5)
 |
@@ -12831,7 +12581,7 @@ kubectl get pv,pvc
 
 class: pic
 
-.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-housing.jpg)]
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-cranes.jpg)]
 
 ---
 
@@ -12845,7 +12595,7 @@ class: title
 |
 [Back to table of contents](#toc-part-5)
 |
-[Next part](#toc-resource-limits)
+[Next part](#toc-running-a-consul-cluster)
 ]
 
 .debug[(automatically generated title slide)]
@@ -13906,6 +13656,271 @@ class: extra-details
 
 class: pic
 
+.interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/container-housing.jpg)]
+
+---
+
+name: toc-running-a-consul-cluster
+class: title
+
+ Running a Consul cluster
+
+.nav[
+[Previous part](#toc-authentication-and-authorization)
+|
+[Back to table of contents](#toc-part-5)
+|
+[Next part](#toc-resource-limits)
+]
+
+.debug[(automatically generated title slide)]
+
+---
+# Running a Consul cluster
+
+- Here is a good use-case for Stateful sets!
+
+- We are going to deploy a Consul cluster with 3 nodes
+
+- Consul is a highly-available key/value store
+
+  (like etcd or Zookeeper)
+
+- One easy way to bootstrap a cluster is to tell each node:
+
+  - the addresses of other nodes
+
+  - how many nodes are expected (to know when quorum is reached)
+
+.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
+---
+
+## Bootstrapping a Consul cluster
+
+*After reading the Consul documentation carefully (and/or asking around),
+we figure out the minimal command-line to run our Consul cluster.*
+
+```
+consul agent -data-dir=/consul/data -client=0.0.0.0 -server -ui \
+       -bootstrap-expect=3 \
+       -retry-join=`X.X.X.X` \
+       -retry-join=`Y.Y.Y.Y`
+```
+
+- Replace X.X.X.X and Y.Y.Y.Y with the addresses of other nodes
+
+- A node can add its own address (it will work fine)
+
+- ... Which means that we can use the same command-line on all nodes (convenient!)
+
+.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
+---
+
+## Cloud Auto-join
+
+- Since version 1.4.0, Consul can use the Kubernetes API to find its peers
+
+- This is called [Cloud Auto-join]
+
+- Instead of passing an IP address, we need to pass a parameter like this:
+
+  ```
+  consul agent -retry-join "provider=k8s label_selector=\"app=consul\""
+  ```
+
+- Consul needs to be able to talk to the Kubernetes API
+
+- We can provide a `kubeconfig` file
+
+- If Consul runs in a pod, it will use the *service account* of the pod
+
+[Cloud Auto-join]: https://www.consul.io/docs/agent/cloud-auto-join.html#kubernetes-k8s-
+
+.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
+---
+
+## Setting up Cloud auto-join
+
+- We need to create a service account for Consul
+
+- We need to create a role that can `list` and `get` pods
+
+- We need to bind that role to the service account
+
+- And of course, we need to make sure that Consul pods use that service account
+
+.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
+---
+
+## Putting it all together
+
+- The file `k8s/consul-1.yaml` defines the required resources
+
+  (service account, role, role binding, service, stateful set)
+
+- Inspired by this [excellent tutorial](https://github.com/kelseyhightower/consul-on-kubernetes) by Kelsey Hightower
+
+  (many features from the original tutorial were removed for simplicity)
+
+.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
+---
+
+## Running our Consul cluster
+
+- We'll use the provided YAML file
+
+.lab[
+
+- Create the stateful set and associated service:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/consul-1.yaml
+  ```
+
+- Check the logs as the pods come up one after another:
+  ```bash
+  stern consul
+  ```
+
+<!--
+```wait Synced node info```
+```key ^C```
+-->
+
+- Check the health of the cluster:
+  ```bash
+  kubectl exec consul-0 -- consul members
+  ```
+
+]
+
+.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
+---
+
+## Caveats
+
+- The scheduler may place two Consul pods on the same node
+
+  - if that node fails, we lose two Consul pods at the same time
+  - this will cause the cluster to fail
+
+- Scaling down the cluster will cause it to fail
+
+  - when a Consul member leaves the cluster, it needs to inform the others
+  - otherwise, the last remaining node doesn't have quorum and stops functioning
+
+- This Consul cluster doesn't use real persistence yet
+
+  - data is stored in the containers' ephemeral filesystem
+  - if a pod fails, its replacement starts from a blank slate
+
+.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
+---
+
+## Improving pod placement
+
+- We need to tell the scheduler:
+
+  *do not put two of these pods on the same node!*
+
+- This is done with an `affinity` section like the following one:
+  ```yaml
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: consul
+            topologyKey: kubernetes.io/hostname
+  ```
+
+.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
+---
+
+## Using a lifecycle hook
+
+- When a Consul member leaves the cluster, it needs to execute:
+  ```bash
+  consul leave
+  ```
+
+- This is done with a `lifecycle` section like the following one:
+  ```yaml
+    lifecycle:
+      preStop:
+        exec:
+          command: [ "sh", "-c", "consul leave" ]
+  ```
+
+.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
+---
+
+## Running a better Consul cluster
+
+- Let's try to add the scheduling constraint and lifecycle hook
+
+- We can do that in the same namespace or another one (as we like)
+
+- If we do that in the same namespace, we will see a rolling update
+
+  (pods will be replaced one by one)
+
+.lab[
+
+- Deploy a better Consul cluster:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/consul-2.yaml
+  ```
+
+]
+
+.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
+---
+
+## Still no persistence, though
+
+- We aren't using actual persistence yet
+
+  (no `volumeClaimTemplate`, Persistent Volume, etc.)
+
+- What happens if we lose a pod?
+
+  - a new pod gets rescheduled (with an empty state)
+
+  - the new pod tries to connect to the two others
+
+  - it will be accepted (after 1-2 minutes of instability)
+
+  - and it will retrieve the data from the other pods
+
+.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
+---
+
+## Failure modes
+
+- What happens if we lose two pods?
+
+  - manual repair will be required
+
+  - we will need to instruct the remaining one to act solo
+
+  - then rejoin new pods
+
+- What happens if we lose three pods? (aka all of them)
+
+  - we lose all the data (ouch)
+
+???
+
+:EN:- Scheduling pods together or separately
+:EN:- Example: deploying a Consul cluster
+:FR:- Lancer des pods ensemble ou séparément
+:FR:- Example : lancer un cluster Consul
+
+.debug[[k8s/consul.md](https://github.com/jpetazzo/container.training.git/tree/2022-09-nr1/slides/k8s/consul.md)]
+---
+
+class: pic
+
 .interstitial[![Image separating from the next part](https://gallant-turing-d0d520.netlify.com/containers/containers-by-the-water.jpg)]
 
 ---
@@ -13916,7 +13931,7 @@ class: title
  Resource Limits
 
 .nav[
-[Previous part](#toc-authentication-and-authorization)
+[Previous part](#toc-running-a-consul-cluster)
 |
 [Back to table of contents](#toc-part-5)
 |

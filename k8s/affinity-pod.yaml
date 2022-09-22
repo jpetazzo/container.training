@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: aff-pod
+spec:
+  terminationGracePeriodSeconds: 30
+  affinity:
+  containers:
+  - name: aff-pod
+    image: alpine
+    command:
+    - sleep
+    args:
+    - "1000"
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: cow
+            operator: In
+            values:
+            - elsie

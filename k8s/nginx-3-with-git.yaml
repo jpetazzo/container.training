@@ -3,8 +3,9 @@ kind: Pod
 metadata:
   name: nginx-with-git
 spec:
-  volumes:
-  - name: www
+  terminationGracePeriodSeconds: 0
+  restartPolicy: OnFailure
+  
   containers:
   - name: nginx
     image: nginx
@@ -17,5 +18,9 @@ spec:
     volumeMounts:
     - name: www
       mountPath: /www/
-  restartPolicy: OnFailure
+
+  volumes:
+  - name: www
+    emptyDir: {}
+
 
