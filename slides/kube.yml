@@ -80,7 +80,6 @@ content:
   - k8s/netpol.md
   - k8s/accessinternal.md
   - k8s/ingress.md
-  - containers/software-deployment.md
   - exercises/healthchecks-details.md
   - exercises/ingress-details.md
   - exercises/appconfig-details.md
@@ -115,6 +114,7 @@ content:
 - # Extra
   - |
     # (Extra content)
+  - containers/software-deployment.md
   - k8s/horizontal-pod-autoscaler.md
   - k8s/dashboard.md
   - k8s/batch-jobs.md

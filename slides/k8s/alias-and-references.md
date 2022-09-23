@@ -34,9 +34,10 @@ alias kd='kubectl delete'
 alias kdf='kubectl delete -f'
 alias kb='kubectl describe'
 alias kex='kubectl explain'
+alias kx='kubectl expose'
+alias kr='kubectl run'
 alias ke='kubectl edit'
-# alias kx='kubectl exec -it $1 -- /bin/sh'
-```
+```     
 Note the below is only because of a quirk in how the lab VMs were installed:
 ```bash
 echo 'kubectl exec -it $1 -- /bin/sh'  >kx

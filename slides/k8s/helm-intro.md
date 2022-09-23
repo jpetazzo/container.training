@@ -316,6 +316,7 @@ class: extra-details
 ## How to find charts, the new way
 
 - Go to the [Artifact Hub](https://artifacthub.io/packages/search?kind=0) (https://artifacthub.io)
+https://artifacthub.io/packages/helm/securecodebox/juice-shop
 
 - Or use `helm search hub ...` from the CLI
 
@@ -343,7 +344,8 @@ class: extra-details
 
 ]
 
-Then go to → https://artifacthub.io/packages/helm/seccurecodebox/juice-shop
+Then go to → https://artifacthub.io/packages/helm/securecodebox/juice-shop
+
 
 ---
 
