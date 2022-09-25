@@ -276,13 +276,14 @@ EOF
     "
 
     ##VERSION## https://github.com/docker/compose/releases
-    if [ "$ARCHITECTURE" ]; then
-        COMPOSE_VERSION=v2.2.3
-        COMPOSE_PLATFORM='linux-$(uname -m)'
-    else
-        COMPOSE_VERSION=1.29.2
-        COMPOSE_PLATFORM='Linux-$(uname -m)'
-    fi
+    COMPOSE_VERSION=v2.11.1
+    COMPOSE_PLATFORM='linux-$(uname -m)'
+    
+    # Just in case you need Compose 1.X, you can use the following lines.
+    # (But it will probably only work for x86_64 machines.)
+    #COMPOSE_VERSION=1.29.2
+    #COMPOSE_PLATFORM='Linux-$(uname -m)'
+
     pssh "
     set -e
     ### Install docker-compose.
