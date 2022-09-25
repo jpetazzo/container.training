@@ -1,34 +1,36 @@
 # Exposing HTTP services with Ingress resources
 
-- HTTP services are typically exposed on port 80
+- Service = layer 4 (TCP, UDP, SCTP)
 
-  (and 443 for HTTPS)
+  - works with every TCP/UDP/SCTP protocol
 
-- `NodePort` services are great, but they are *not* on port 80
+  - doesn't "see" or interpret HTTP
 
-  (by default, they use port range 30000-32767)
+- Ingress = layer 7 (HTTP)
 
-- How can we get *many* HTTP services on port 80? 🤔
+  - only for HTTP
+
+  - can route requests depending on URI or host header
+
+  - can handle TLS
 
 ---
 
-## Various ways to expose something on port 80
+## Why should we use Ingress resources?
 
-- Service with `type: LoadBalancer`
+A few use-cases:
 
-  *costs a little bit of money; not always available*
+- URI routing (e.g. for single page apps)
 
-- Service with one (or multiple) `ExternalIP`
+  `/api` → service `api:5000`
 
-  *requires public nodes; limited by number of nodes*
+  everything else → service `static:80`
 
-- Service with `hostPort` or `hostNetwork`
+- Cost optimization
 
-  *same limitations as `ExternalIP`; even harder to manage*
+  (because individual `LoadBalancer` services typically cost money)
 
-- Ingress resources
-
-  *addresses all these limitations, yay!*
+- Automatic handling of TLS certificates
 
 ---
 
@@ -181,19 +183,69 @@ class: extra-details
 
 ---
 
-## Deploying pods listening on port 80
+## Accepting connections on port 80 (and 443)
 
-- We want our ingress load balancer to be available on port 80
+- Web site users don't want to specify port numbers
 
-- The best way to do that would be with a `LoadBalancer` service
+  (e.g. "connect to https://blahblah.whatever:31550")
 
-  ... but it requires support from the underlying infrastructure
+- Our ingress controller needs to actually be exposed on port 80
 
-- Instead, we are going to use the `hostNetwork` mode on the Traefik pods
+  (and 443 if we want to handle HTTPS)
 
-- Let's see what this `hostNetwork` mode is about ...
+- Let's see how we can achieve that!
 
 ---
+
+## Various ways to expose something on port 80
+
+- Service with `type: LoadBalancer`
+
+  *costs a little bit of money; not always available*
+
+- Service with one (or multiple) `ExternalIP`
+
+  *requires public nodes; limited by number of nodes*
+
+- Service with `hostPort` or `hostNetwork`
+
+  *same limitations as `ExternalIP`; even harder to manage*
+
+---
+
+## Deploying pods listening on port 80
+
+- We are going to run Traefik in Pods with `hostNetwork: true`
+
+  (so that our load balancer can use the "real" port 80 of our nodes)
+
+- Traefik Pods will be created by a DaemonSet
+
+  (so that we get one instance of Traefik on every node of the cluster)
+
+- This means that we will be able to connect to any node of the cluster on port 80
+
+.warning[This is not typical of a production setup!]
+
+---
+
+## Doing it in production
+
+- When running "on cloud", the easiest option is a `LoadBalancer` service
+
+- When running "on prem", it depends:
+
+  - [MetalLB] is a good option if a pool of public IP addresses is available
+
+  - otherwise, using `externalIPs` on a few nodes (2-3 for redundancy)
+
+- Many variations/optimizations are possible depending on our exact scenario!
+
+[MetalLB]: https://metallb.org/
+
+---
+
+class: extra-details
 
 ## Without `hostNetwork`
 
@@ -211,6 +263,8 @@ class: extra-details
 
 ---
 
+class: extra-details
+
 ## With `hostNetwork: true`
 
 - No network namespace gets created
@@ -226,26 +280,6 @@ class: extra-details
   - most network policies work at the IP address level
 
   - filtering that pod = filtering traffic from the node
-
----
-
-class: extra-details
-
-## Other techniques to expose port 80
-
-- We could use pods specifying `hostPort: 80` 
-
-  ... but with most CNI plugins, this [doesn't work or requires additional setup](https://github.com/kubernetes/kubernetes/issues/23920)
-
-- We could use a `NodePort` service
-
-  ... but that requires [changing the `--service-node-port-range` flag in the API server](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/)
-
-- We could create a service with an external IP
-
-  ... this would work, but would require a few extra steps
-
-  (figuring out the IP address and adding it to the service)
 
 ---
 
@@ -269,6 +303,8 @@ class: extra-details
 [traefikchart]: https://artifacthub.io/packages/helm/traefik/traefik
 
 ---
+
+class: extra-details
 
 ## Taints and tolerations
 
@@ -496,10 +532,6 @@ This is normal: we haven't provided any ingress rule yet.
 
 ## Creating ingress resources
 
-- Before Kubernetes 1.19, we must use YAML manifests
-
-  (see example on next slide)
-
 - Since Kubernetes 1.19, we can use `kubectl create ingress`
 
   ```bash
@@ -534,7 +566,21 @@ This is normal: we haven't provided any ingress rule yet.
 
 ---
 
-## Ingress resources in YAML
+## Before Kubernetes 1.19
+
+- Before Kubernetes 1.19:
+
+  - `kubectl create ingress` wasn't available
+
+  - `apiVersion: networking.k8s.io/v1` wasn't supported
+
+- It was necessary to use YAML, and `apiVersion: networking.k8s.io/v1beta1`
+
+  (see example on next slide)
+
+---
+
+## YAML for old ingress resources
 
 Here is a minimal host-based ingress resource:
 
@@ -555,23 +601,15 @@ spec:
 
 ```
 
-(It is in `k8s/ingress.yaml`.)
-
 ---
 
-class: extra-details
-
-## Ingress API version
-
-- The YAML on the previous slide uses `apiVersion: networking.k8s.io/v1beta1`
+## YAML for new ingress resources
 
 - Starting with Kubernetes 1.19, `networking.k8s.io/v1` is available
 
-- However, with Kubernetes 1.19 (and later), we can use `kubectl create ingress`
+- And we can use `kubectl create ingress` 🎉
 
-- We chose to keep an "old" (deprecated!) YAML example for folks still using older versions of Kubernetes
-
-- If we want to see "modern" YAML, we can use `-o yaml --dry-run=client`:
+- We can see "modern" YAML with `-o yaml --dry-run=client`:
 
   ```bash
   kubectl create ingress red -o yaml --dry-run=client \
@@ -640,157 +678,6 @@ class: extra-details
  GatewayClass, Gateway, HTTPRoute, TCPRoute...
 
 - It is still in alpha stage
-
----
-
-## Vendor-specific example
-
-- Let's see how to implement *canary releases*
-
-- The example here will use Traefik v1
-
-  (which is obsolete)
-
-- It won't work on your Kubernetes cluster!
-
-  (unless you're running an oooooold version of Kubernetes)
-
-  (and an equally oooooooold version of Traefik)
-
-- We've left it here just as an example!
-
----
-
-## Canary releases
-
-- A *canary release* (or canary launch or canary deployment) is a release that will process only a small fraction of the workload
-
-- After deploying the canary, we compare its metrics to the normal release
-
-- If the metrics look good, the canary will progressively receive more traffic
-
-  (until it gets 100% and becomes the new normal release)
-
-- If the metrics aren't good, the canary is automatically removed
-
-- When we deploy a bad release, only a tiny fraction of traffic is affected
-
----
-
-## Various ways to implement canary
-
-- Example 1: canary for a microservice
-
-  - 1% of all requests (sampled randomly) are sent to the canary
-  - the remaining 99% are sent to the normal release
-
-- Example 2: canary for a web app
-
-  - 1% of users are sent to the canary web site
-  - the remaining 99% are sent to the normal release
-
-- Example 3: canary for shipping physical goods
-
-  - 1% of orders are shipped with the canary process
-  - the remaining 99% are shipped with the normal process
-
-- We're going to implement example 1 (per-request routing)
-
----
-
-## Canary releases with Traefik v1
-
-- We need to deploy the canary and expose it with a separate service
-
-- Then, in the Ingress resource, we need:
-
-  - multiple `paths` entries (one for each service, canary and normal)
-
-  - an extra annotation indicating the weight of each service
-
-- If we want, we can send requests to more than 2 services
-
----
-
-## The Ingress resource
-
-.small[
-```yaml
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: rgb
-  annotations:
-    traefik.ingress.kubernetes.io/service-weights: |
-      red: 50%
-      green: 25%
-      blue: 25%
-spec:
-  rules:
-  - host: rgb.`A.B.C.D`.nip.io
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: red
-          servicePort: 80
-      - path: /
-        backend:
-          serviceName: green
-          servicePort: 80
-      - path: /
-        backend:
-          serviceName: blue
-          servicePort: 80
-```
-]
-
----
-
-class: extra-details
-
-## Other ingress controllers
-
-*Just to illustrate how different things are ...*
-
-- With the NGINX ingress controller:
-
-  - define two ingress ressources
-    <br/>
-    (specifying rules with the same host+path)
-
-  - add `nginx.ingress.kubernetes.io/canary` annotations on each
-
-
-- With Linkerd2:
-
-  - define two services
-
-  - define an extra service for the weighted aggregate of the two
-
-  - define a TrafficSplit (this is a CRD introduced by the SMI spec)
-
----
-
-class: extra-details
-
-## We need more than that
-
-What we saw is just one of the multiple building blocks that we need to achieve a canary release.
-
-We also need:
-
-- metrics (latency, performance ...) for our releases
-
-- automation to alter canary weights
-
-  (increase canary weight if metrics look good; decrease otherwise)
-
-- a mechanism to manage the lifecycle of the canary releases
-
-  (create them, promote them, delete them ...)
-
-For inspiration, check [flagger by Weave](https://github.com/weaveworks/flagger).
 
 ???
 
