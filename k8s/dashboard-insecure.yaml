@@ -17,8 +17,8 @@ metadata:
     app.kubernetes.io/instance: kubernetes-dashboard
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: kubernetes-dashboard
-    app.kubernetes.io/version: 2.5.0
-    helm.sh/chart: kubernetes-dashboard-5.2.0
+    app.kubernetes.io/version: 2.6.1
+    helm.sh/chart: kubernetes-dashboard-5.10.0
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 ---
@@ -30,8 +30,8 @@ metadata:
     app.kubernetes.io/instance: kubernetes-dashboard
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: kubernetes-dashboard
-    app.kubernetes.io/version: 2.5.0
-    helm.sh/chart: kubernetes-dashboard-5.2.0
+    app.kubernetes.io/version: 2.6.1
+    helm.sh/chart: kubernetes-dashboard-5.10.0
   name: kubernetes-dashboard-certs
   namespace: kubernetes-dashboard
 type: Opaque
@@ -43,8 +43,8 @@ metadata:
     app.kubernetes.io/instance: kubernetes-dashboard
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: kubernetes-dashboard
-    app.kubernetes.io/version: 2.5.0
-    helm.sh/chart: kubernetes-dashboard-5.2.0
+    app.kubernetes.io/version: 2.6.1
+    helm.sh/chart: kubernetes-dashboard-5.10.0
   name: kubernetes-dashboard-csrf
   namespace: kubernetes-dashboard
 type: Opaque
@@ -56,8 +56,8 @@ metadata:
     app.kubernetes.io/instance: kubernetes-dashboard
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: kubernetes-dashboard
-    app.kubernetes.io/version: 2.5.0
-    helm.sh/chart: kubernetes-dashboard-5.2.0
+    app.kubernetes.io/version: 2.6.1
+    helm.sh/chart: kubernetes-dashboard-5.10.0
   name: kubernetes-dashboard-key-holder
   namespace: kubernetes-dashboard
 type: Opaque
@@ -71,8 +71,8 @@ metadata:
     app.kubernetes.io/instance: kubernetes-dashboard
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: kubernetes-dashboard
-    app.kubernetes.io/version: 2.5.0
-    helm.sh/chart: kubernetes-dashboard-5.2.0
+    app.kubernetes.io/version: 2.6.1
+    helm.sh/chart: kubernetes-dashboard-5.10.0
   name: kubernetes-dashboard-settings
   namespace: kubernetes-dashboard
 ---
@@ -84,8 +84,8 @@ metadata:
     app.kubernetes.io/instance: kubernetes-dashboard
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: kubernetes-dashboard
-    app.kubernetes.io/version: 2.5.0
-    helm.sh/chart: kubernetes-dashboard-5.2.0
+    app.kubernetes.io/version: 2.6.1
+    helm.sh/chart: kubernetes-dashboard-5.10.0
   name: kubernetes-dashboard-metrics
 rules:
 - apiGroups:
@@ -106,8 +106,8 @@ metadata:
     app.kubernetes.io/instance: kubernetes-dashboard
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: kubernetes-dashboard
-    app.kubernetes.io/version: 2.5.0
-    helm.sh/chart: kubernetes-dashboard-5.2.0
+    app.kubernetes.io/version: 2.6.1
+    helm.sh/chart: kubernetes-dashboard-5.10.0
   name: kubernetes-dashboard-metrics
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -126,8 +126,8 @@ metadata:
     app.kubernetes.io/instance: kubernetes-dashboard
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: kubernetes-dashboard
-    app.kubernetes.io/version: 2.5.0
-    helm.sh/chart: kubernetes-dashboard-5.2.0
+    app.kubernetes.io/version: 2.6.1
+    helm.sh/chart: kubernetes-dashboard-5.10.0
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 rules:
@@ -182,8 +182,8 @@ metadata:
     app.kubernetes.io/instance: kubernetes-dashboard
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: kubernetes-dashboard
-    app.kubernetes.io/version: 2.5.0
-    helm.sh/chart: kubernetes-dashboard-5.2.0
+    app.kubernetes.io/version: 2.6.1
+    helm.sh/chart: kubernetes-dashboard-5.10.0
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 roleRef:
@@ -204,8 +204,8 @@ metadata:
     app.kubernetes.io/instance: kubernetes-dashboard
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: kubernetes-dashboard
-    app.kubernetes.io/version: 2.5.0
-    helm.sh/chart: kubernetes-dashboard-5.2.0
+    app.kubernetes.io/version: 2.6.1
+    helm.sh/chart: kubernetes-dashboard-5.10.0
     kubernetes.io/cluster-service: "true"
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
@@ -229,8 +229,8 @@ metadata:
     app.kubernetes.io/instance: kubernetes-dashboard
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: kubernetes-dashboard
-    app.kubernetes.io/version: 2.5.0
-    helm.sh/chart: kubernetes-dashboard-5.2.0
+    app.kubernetes.io/version: 2.6.1
+    helm.sh/chart: kubernetes-dashboard-5.10.0
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 spec:
@@ -253,8 +253,8 @@ spec:
         app.kubernetes.io/instance: kubernetes-dashboard
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: kubernetes-dashboard
-        app.kubernetes.io/version: 2.5.0
-        helm.sh/chart: kubernetes-dashboard-5.2.0
+        app.kubernetes.io/version: 2.6.1
+        helm.sh/chart: kubernetes-dashboard-5.10.0
     spec:
       containers:
       - args:
@@ -262,7 +262,7 @@ spec:
         - --sidecar-host=http://127.0.0.1:8000
         - --enable-skip-login
         - --enable-insecure-login
-        image: kubernetesui/dashboard:v2.5.0
+        image: kubernetesui/dashboard:v2.6.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -293,7 +293,7 @@ spec:
           name: kubernetes-dashboard-certs
         - mountPath: /tmp
           name: tmp-volume
-      - image: kubernetesui/metrics-scraper:v1.0.7
+      - image: kubernetesui/metrics-scraper:v1.0.8
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
