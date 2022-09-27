@@ -493,7 +493,7 @@ _cmd_kubetools() {
     # Install kube-ps1
     pssh "
     set -e
-    if ! [ -f /opt/kube-ps1 ]; then
+    if ! [ -d /opt/kube-ps1 ]; then
       cd /tmp
       git clone https://github.com/jonmosco/kube-ps1
       sudo mv kube-ps1 /opt/kube-ps1
