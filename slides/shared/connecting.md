@@ -167,5 +167,6 @@ It has been preinstalled on your workshop nodes.*
 - Ctrl-b Alt-1 → rearrange windows in columns
 - Ctrl-b Alt-2 → rearrange windows in rows
 - Ctrl-b arrows → navigate to other windows
+- Ctrl-b , → rename window
 - Ctrl-b d → detach session
 - tmux attach → re-attach to session
