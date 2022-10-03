@@ -142,7 +142,7 @@ configMapGenerator:
 
   - overlays can only *add* resources, not *remove* them
 
-- See the full list of [eschewed features](https://github.com/kubernetes-sigs/kustomize/blob/master/docs/eschewedFeatures.md) for more details
+- See the full list of [eschewed features](https://kubectl.docs.kubernetes.io/faq/kustomize/eschewedfeatures/) for more details
 
 ---
 
