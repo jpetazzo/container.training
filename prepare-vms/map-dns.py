@@ -36,7 +36,7 @@ if os.path.isfile(domain_or_domain_file):
     clusters = [line.split() for line in lines]
   else:
     ips = open(f"tags/{ips_file_or_tag}/ips.txt").read().split()
-    settings_file = f"tags/{tag}/settings.yaml"
+    settings_file = f"tags/{ips_file_or_tag}/settings.yaml"
     clustersize = yaml.safe_load(open(settings_file))["clustersize"]
     clusters = []
     while ips:
