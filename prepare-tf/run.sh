@@ -3,6 +3,14 @@ set -e
 
 TIME=$(which time)
 
+if [ -f ~/.config/doctl/config.yaml ]; then
+  export DIGITALOCEAN_ACCESS_TOKEN=$(grep ^access-token ~/.config/doctl/config.yaml | cut -d: -f2 | tr -d " ")
+fi
+
+if [ -f ~/.config/linode-cli ]; then
+  export LINODE_TOKEN=$(grep ^token ~/.config/linode-cli | cut -d= -f2 | tr -d " ")
+fi
+
 PROVIDER=$1
 [ "$PROVIDER" ] || {
   echo "Please specify a provider as first argument, or 'ALL' for parallel mode."

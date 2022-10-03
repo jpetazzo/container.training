@@ -53,7 +53,7 @@ The value of the `location` variable is provider-specific. Examples:
 | Provider      | Example value     | How to see possible values
 |---------------|-------------------|---------------------------
 | Digital Ocean | `ams3`            | `doctl compute region list`
-| Google Cloud  | `europe-north1-a` | `gcloud  compute zones list`
+| Google Cloud  | `europe-north1-a` | `gcloud compute zones list`
 | Linode        | `eu-central`      | `linode-cli regions list`
 | Oracle Cloud  | `eu-stockholm-1`  | `oci iam region list`
 
@@ -112,7 +112,7 @@ terraform init
 
 See steps above, and add the following extra steps:
 
-- Digital Coean:
+- Digital Ocean:
   ```bash
   export DIGITALOCEAN_ACCESS_TOKEN=$(grep ^access-token ~/.config/doctl/config.yaml | cut -d: -f2 | tr -d " ")
   ```
