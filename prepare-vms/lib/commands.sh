@@ -434,8 +434,9 @@ EOF
     # Install weave as the pod network
     pssh "
     if i_am_first_node; then
-        kubever=\$(kubectl version | base64 | tr -d '\n') &&
-        kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=\$kubever
+        #kubever=\$(kubectl version | base64 | tr -d '\n') &&
+        #kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=\$kubever
+        kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s-1.11.yaml
     fi"
 
     # Join the other nodes to the cluster
@@ -510,13 +511,13 @@ EOF
 
     # Install stern
     ##VERSION## https://github.com/stern/stern/releases
-    STERN_VERSION=1.20.1
+    STERN_VERSION=1.22.0
     FILENAME=stern_${STERN_VERSION}_linux_${ARCH}
     URL=https://github.com/stern/stern/releases/download/v$STERN_VERSION/$FILENAME.tar.gz
     pssh "
     if [ ! -x /usr/local/bin/stern ]; then
         curl -fsSL $URL |
-        sudo tar -C /usr/local/bin -zx --strip-components=1 $FILENAME/stern
+        sudo tar -C /usr/local/bin -zx stern
         sudo chmod +x /usr/local/bin/stern
         stern --completion bash | sudo tee /etc/bash_completion.d/stern
         stern --version
@@ -532,7 +533,7 @@ EOF
 
     # Install kustomize
     ##VERSION## https://github.com/kubernetes-sigs/kustomize/releases
-    KUSTOMIZE_VERSION=v4.4.0
+    KUSTOMIZE_VERSION=v4.5.7
     URL=https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz
     pssh "
     if [ ! -x /usr/local/bin/kustomize ]; then
@@ -551,7 +552,7 @@ EOF
     if [ ! -x /usr/local/bin/ship ]; then
         ##VERSION##
         curl -fsSL https://github.com/replicatedhq/ship/releases/download/v0.51.3/ship_0.51.3_linux_$ARCH.tar.gz |
-             sudo tar -C /usr/local/bin -zx ship
+            sudo tar -C /usr/local/bin -zx ship
     fi"
 
     # Install the AWS IAM authenticator
@@ -559,8 +560,8 @@ EOF
     if [ ! -x /usr/local/bin/aws-iam-authenticator ]; then
         ##VERSION##
         sudo curl -fsSLo /usr/local/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/$ARCH/aws-iam-authenticator
-	sudo chmod +x /usr/local/bin/aws-iam-authenticator
-    aws-iam-authenticator version
+	      sudo chmod +x /usr/local/bin/aws-iam-authenticator
+        aws-iam-authenticator version
     fi"
 
     # Install the krew package manager
@@ -602,6 +603,7 @@ EOF
         FILENAME=tilt.\$TILT_VERSION.linux.$TILT_ARCH.tar.gz
         curl -fsSL https://github.com/tilt-dev/tilt/releases/download/v\$TILT_VERSION/\$FILENAME |
         sudo tar -zxvf- -C /usr/local/bin tilt
+        tilt completion bash | sudo tee /etc/bash_completion.d/tilt
         tilt version
     fi"
 
@@ -610,6 +612,7 @@ EOF
     if [ ! -x /usr/local/bin/skaffold ]; then
         curl -fsSLo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-$ARCH &&
         sudo install skaffold /usr/local/bin/
+        skaffold completion bash | sudo tee /etc/bash_completion.d/skaffold
         skaffold version
     fi"
 
@@ -618,7 +621,26 @@ EOF
     if [ ! -x /usr/local/bin/kompose ]; then
         curl -fsSLo kompose https://github.com/kubernetes/kompose/releases/latest/download/kompose-linux-$ARCH &&
         sudo install kompose /usr/local/bin
+        kompose completion bash | sudo tee /etc/bash_completion.d/kompose
         kompose version
+    fi"
+
+    # Install KinD
+    pssh "
+    if [ ! -x /usr/local/bin/kind ]; then
+        curl -fsSLo kind https://github.com/kubernetes-sigs/kind/releases/latest/download/kind-linux-$ARCH &&
+        sudo install kind /usr/local/bin
+        kind completion bash | sudo tee /etc/bash_completion.d/kind
+        kind version
+    fi"
+
+    # Install YTT
+    pssh "
+    if [ ! -x /usr/local/bin/ytt ]; then
+        curl -fsSLo ytt https://github.com/vmware-tanzu/carvel-ytt/releases/latest/download/ytt-linux-$ARCH &&
+        sudo install ytt /usr/local/bin
+        ytt completion bash | sudo tee /etc/bash_completion.d/ytt
+        ytt version
     fi"
 
     ##VERSION## https://github.com/bitnami-labs/sealed-secrets/releases
