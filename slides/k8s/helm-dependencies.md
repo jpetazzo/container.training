@@ -317,6 +317,22 @@ class: extra-details
 
 class: extra-details
 
+## Determining if we're in a subchart
+
+- `.Chart.IsRoot` indicates if we're in the top-level chart or in a sub-chart
+
+- Useful in charts that are designed to be used standalone or as dependencies
+
+- Example: generic chart
+
+  - when used standalone (`.Chart.IsRoot` is `true`), use `.Release.Name`
+
+  - when used as a subchart e.g. with multiple aliases, use `.Chart.Name`
+
+---
+
+class: extra-details
+
 ## Compatibility with Helm 2
 
 - Chart `apiVersion: v1` is the only version supported by Helm 2
