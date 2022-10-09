@@ -157,6 +157,9 @@ _cmd_clusterize() {
     TAG=$1
     need_tag
 
+    # Disable unattended upgrades so that they don't mess up with the subsequent steps
+    pssh sudo rm -f /etc/apt/apt.conf.d/50unattended-upgrades
+
     # Special case for scaleway since it doesn't come with sudo
     if [ "$INFRACLASS" = "scaleway" ]; then
         pssh -l root "
@@ -361,7 +364,8 @@ EOF"
     pssh --timeout 200 "
     sudo apt-get update -q &&
     sudo apt-get install -qy kubelet kubeadm kubectl &&
-    sudo apt-mark hold kubelet kubeadm kubectl
+    sudo apt-mark hold kubelet kubeadm kubectl &&
+    kubeadm completion bash | sudo tee /etc/bash_completion.d/kubeadm &&
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl &&
     echo 'alias k=kubectl' | sudo tee /etc/bash_completion.d/k &&
     echo 'complete -F __start_kubectl k' | sudo tee -a /etc/bash_completion.d/k"
