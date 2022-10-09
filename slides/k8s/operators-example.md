@@ -1,4 +1,4 @@
-# Writing an tiny operator
+# Writing a tiny operator
 
 - Let's look at a simple operator
 
