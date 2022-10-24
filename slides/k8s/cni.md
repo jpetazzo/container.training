@@ -24,11 +24,11 @@
 
 - Interface parameters (MTU, sysctls) could be tweaked by the `tuning` plugin
 
-The reference plugins are available [here].
+The reference plugins are available [here][cni-reference-plugins].
 
 Look in each plugin's directory for its documentation.
 
-[here]: https://github.com/containernetworking/plugins/tree/master/plugins
+[cni-reference-plugins]: https://github.com/containernetworking/plugins/tree/master/plugins
 
 ---
 

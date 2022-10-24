@@ -256,9 +256,9 @@ class: extra-details
 
   - or stored in the node's `spec.podCIDR` field
 
-.footnote[See [here] for more details about this `kubenet` plugin.]
+.footnote[See [here][kubenet-plugin] for more details about this `kubenet` plugin.]
 
-[here]: https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/#kubenet
+[kubenet-plugin]: https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/#kubenet
 
 ---
 

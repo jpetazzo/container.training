@@ -138,7 +138,7 @@ class: extra-details
 
 - The Cluster Autoscaler only supports a few cloud infrastructures
 
-  (see [here](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider) for a list)
+  (see the [kubernetes/autoscaler repo][kubernetes-autoscaler-repo] for a list)
 
 - The Cluster Autoscaler cannot scale down nodes that have pods using:
 
@@ -147,6 +147,8 @@ class: extra-details
   - affinity/anti-affinity rules preventing them from being rescheduled
 
   - a restrictive PodDisruptionBudget
+
+[kubernetes-autoscaler-repo]: https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider
 
 ---
 

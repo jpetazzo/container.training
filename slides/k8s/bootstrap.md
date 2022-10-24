@@ -202,7 +202,9 @@ class: extra-details
 
 - These are JWS signatures using HMAC-SHA256
 
-  (see [here](https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/#configmap-signing) for more details)
+  (see [the reference documentation][configmap-signing] for more details)
+
+[configmap-signing]: https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/#configmap-signing
 
 ---
 

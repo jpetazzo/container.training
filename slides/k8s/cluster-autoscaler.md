@@ -48,7 +48,7 @@
 
 - We must run nodes on a supported infrastructure
 
-- See [here] for a non-exhaustive list of supported providers
+- Check the [GitHub repo][autoscaler-providers] for a non-exhaustive list of supported providers
 
 - Sometimes, the cluster autoscaler is installed automatically
 
@@ -58,7 +58,7 @@
 
   (which is often non-trivial and highly provider-specific)
 
-[here]: https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider
+[autoscaler-providers]: https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider
 
 ---
 

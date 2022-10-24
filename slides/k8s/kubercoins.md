@@ -170,9 +170,9 @@ def hash_bytes(data):
                       headers={"Content-Type": "application/octet-stream"})
 ```
 
-(Full source code available [here](
-https://@@GITREPO@@/blob/8279a3bce9398f7c1a53bdd95187c53eda4e6435/dockercoins/worker/worker.py#L17
-))
+(Feel free to check the [full source code][dockercoins-worker-code] of the worker!)
+
+[dockercoins-worker-code]: https://@@GITREPO@@/blob/8279a3bce9398f7c1a53bdd95187c53eda4e6435/dockercoins/worker/worker.py#L17
 
 ---
 

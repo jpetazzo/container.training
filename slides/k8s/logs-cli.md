@@ -69,11 +69,13 @@ Exactly what we need!
 
   (no dependencies, extra libraries to install, etc)
 
-- Binary releases are available [here](https://github.com/stern/stern/releases) on GitHub
+- Binary releases are available [on GitHub][stern-releases]
 
 - Stern is also available through most package managers
 
   (e.g. on macOS, we can `brew install stern` or `sudo port install stern`)
+
+[stern-releases]: https://github.com/stern/stern/releases
 
 ---
 
