@@ -156,7 +156,7 @@
 
 - Install Kyverno:
   ```bash
-  kubectl create -f https://raw.githubusercontent.com/kyverno/kyverno/release-1.5/definitions/release/install.yaml
+  kubectl create -f https://raw.githubusercontent.com/kyverno/kyverno/release-1.7/config/release/install.yaml
   ```
 
 ]
@@ -302,23 +302,35 @@
 
 ---
 
-## Invalid references
+## Comparing "old" and "new"
+
+- The fields of the webhook payload are available through `{{ request }}`
+
+- For UPDATE requests, we can access:
+
+  `{{ request.oldObject }}` → the object as it is right now (before the request)
+
+  `{{ request.object }}` → the object with the changes made by the request
+
+---
+
+## Missing labels
 
 - We can access the `color` label through `{{ request.object.metadata.labels.color }}`
 
 - If we reference a label (or any field) that doesn't exist, the policy fails
 
-- Except in *preconditions*: it then evaluates to an empty string
+  (with an error similar to `JMESPAth query failed: Unknown key ... in path`)
 
-- We use a *precondition* to makes sure the label exists in both "old" and "new" objects
+- To work around that, [use an OR expression][non-existence-checks]:
 
-- Then in the *deny* block we can compare the old and new values
+  `{{ requests.object.metadata.labels.color || '' }}`
 
-  (and reject changes)
+- Note that in older versions of Kyverno, this wasn't always necessary
 
-- "Old" and "new" versions of the pod can be referenced through
+  (e.g. in *preconditions*, a missing label would evalute to an empty string)
 
-  `{{ request.oldObject }}` and `{{ request.object }}`
+[non-existence-checks]: https://kyverno.io/docs/writing-policies/jmespath/#non-existence-checks
 
 ---
 
@@ -594,7 +606,7 @@ class: extra-details
 
 ## Footprint
 
-- 7 CRDs
+- 8 CRDs
 
 - 5 webhooks
 

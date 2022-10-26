@@ -15,10 +15,10 @@ spec:
     - key: "{{ request.operation }}"
       operator: Equals
       value: UPDATE
-    - key: "{{ request.oldObject.metadata.labels.color }}"
+    - key: "{{ request.oldObject.metadata.labels.color || '' }}"
       operator: NotEquals
       value: ""
-    - key: "{{ request.object.metadata.labels.color }}"
+    - key: "{{ request.object.metadata.labels.color || '' }}"
       operator: Equals
       value: ""
     validate:
