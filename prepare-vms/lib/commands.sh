@@ -131,7 +131,7 @@ set nowrap
 SQRL
 
     pssh -I "sudo -u $USER_LOGIN tee /home/$USER_LOGIN/.tmux.conf" <<SQRL
-set -g status-style bg=blue
+set -g status-style bg=yellow,bold
 
 bind h select-pane -L
 bind j select-pane -D
