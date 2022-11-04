@@ -389,7 +389,7 @@ class: extra-details
 
 - A replacement Pod is created on another Node
 
-- ... But it doens't start yet!
+- ... But it doesn't start yet!
 
 - Why? 🤔
 
