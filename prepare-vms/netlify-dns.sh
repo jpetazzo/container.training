@@ -17,8 +17,17 @@
   exit 1
 }
 
-NETLIFY_USERID=$(jq .userId < ~/.config/netlify/config.json)
-NETLIFY_TOKEN=$(jq -r .users[$NETLIFY_USERID].auth.token < ~/.config/netlify/config.json)
+NETLIFY_CONFIG_FILE=~/.config/netlify/config.json
+
+if ! [ -f "$NETLIFY_CONFIG_FILE" ]; then
+  echo "Could not find Netlify configuration file ($NETLIFY_CONFIG_FILE)."
+  echo "Try to run the following command, and try again:"
+  echo "npx netlify-cli login"
+  exit 1
+fi
+
+NETLIFY_USERID=$(jq .userId < "$NETLIFY_CONFIG_FILE")
+NETLIFY_TOKEN=$(jq -r .users[$NETLIFY_USERID].auth.token < "$NETLIFY_CONFIG_FILE")
 
 netlify() {
   URI=$1
