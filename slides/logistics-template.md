@@ -1,68 +1,41 @@
 ## Introductions
 
-⚠️ This slide should be customized by the tutorial instructor(s).
-
-<!--
-
 - Hello! We are:
 
    - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
 
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], Ardan Labs)
-
-   - 🐳 Jérôme ([@jpetazzo], Enix SAS)
+   - 👩🏼‍🔬 Dana ([@bigdana])
 
    - 🐳 Jérôme ([@jpetazzo], Tiny Shell Script LLC)
 
--->
-
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
-
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
-
 - Live feedback, questions, help: @@CHAT@@
 
--->
+  (ask questions on the public channel so that AJ & Dana can see them;
+  <br/>they have more production experience than me, especially on k8s :))
 
-<!--
+- Feel free to send questions at any time!
 
-- You ~~should~~ must ask questions! Lots of questions!
+---
 
-  (especially when you see full screen container pictures)
+## Schedule
 
-- Use @@CHAT@@ to ask questions, get help, etc.
+| Pacific   | Eastern   |                   |
+|-----------|-----------|-------------------|
+| 8am-10am  | 11am-1pm  | First period      |
+| 10am-11am | 1pm-2pm   | Long break        |
+| 11am-1pm  | 2pm-4pm   | Second period     |
+| After 1pm | After 4pm | Homework, labs... |
 
--->
+We'll also have short breaks in the middle of each period.
+
 
 <!-- -->
 
-[@alexbuisine]: https://twitter.com/alexbuisine
 [EphemeraSearch]: https://ephemerasearch.com/
-[@jpetazzo]: https://twitter.com/jpetazzo
+[@jpetazzo]: https://mastodon.social/@jpetazzo
 [@s0ulshake]: https://twitter.com/s0ulshake
 [Quantgene]: https://www.quantgene.com/
+[@bigdana]: https://twitter.com/bigdana
 
 ---
 
