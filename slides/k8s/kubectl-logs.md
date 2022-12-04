@@ -141,7 +141,7 @@ class: extra-details
 
 - There are external tools to address these shortcomings
 
-  (e.g.: [Stern](https://github.com/wercker/stern))
+  (e.g.: [Stern](https://github.com/stern/stern))
 
 ---
 
