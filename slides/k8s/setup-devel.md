@@ -18,6 +18,24 @@
 
 ---
 
+### CoLiMa
+
+- Container runtimes for LiMa
+
+  (LiMa = Linux on macOS)
+
+- For macOS only (Intel and ARM architectures)
+
+- CLI-driven (no GUI like Docker/Rancher Desktop)
+
+- Supports containerd, Docker, Kubernetes
+
+- Installable with brew, nix, or ports
+
+- More info: https://github.com/abiosoft/colima
+
+---
+
 ## Docker Desktop
 
 - Available on Linux, Mac, and Windows
@@ -79,6 +97,8 @@
 
 - Requires Docker (obviously!)
 
+- Should also work with Podman and Rootless Docker
+
 - Deploying a single node cluster using the latest version is simple:
   ```bash
   kind create cluster
@@ -89,6 +109,20 @@
   (to define multiple nodes, multiple control plane nodes, set Kubernetes versions ...)
  
 - Can deploy multiple clusters
+
+---
+
+## [MicroK8s](https://microk8s.io/)
+
+- Available on Linux, and since recently, on Mac and Windows as well
+
+- The Linux version is installed through Snap
+
+  (which is pre-installed on all recent versions of Ubuntu)
+
+- Also supports clustering (as in, multiple machines running MicroK8s)
+
+- DNS is not enabled by default; enable it with `microk8s enable dns`
 
 ---
 
@@ -107,20 +141,6 @@
 - Great option if you want a "Kubernetes first" experience
 
   (i.e. if you don't already have Docker and/or don't want/need it)
-
----
-
-## [MicroK8s](https://microk8s.io/)
-
-- Available on Linux, and since recently, on Mac and Windows as well
-
-- The Linux version is installed through Snap
-
-  (which is pre-installed on all recent versions of Ubuntu)
-
-- Also supports clustering (as in, multiple machines running MicroK8s)
-
-- DNS is not enabled by default; enable it with `microk8s enable dns`
 
 ---
 
