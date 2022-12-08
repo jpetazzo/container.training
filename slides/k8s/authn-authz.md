@@ -274,7 +274,7 @@ class: extra-details
 
   - ...or with a Secret with the right [type and annotation][create-token]
 
-[create-token]: https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#to-create-additional-api-tokens
+[create-token]: https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#create-token
 
 ---
 
