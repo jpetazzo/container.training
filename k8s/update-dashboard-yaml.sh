@@ -70,4 +70,15 @@ add_namespace() {
   kubectl create serviceaccount -n kubernetes-dashboard cluster-admin \
           -o yaml --dry-run=client \
           # 
+  echo ---
+  cat <<EOF
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/service-account-token
+metadata:
+  name: cluster-admin-token
+  namespace: kubernetes-dashboard
+  annotations:
+    kubernetes.io/service-account.name: cluster-admin
+EOF
 ) > dashboard-with-token.yaml
