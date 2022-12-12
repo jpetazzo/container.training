@@ -35,7 +35,7 @@ At the end of this section, you will be able to:
 
 ---
 
-## Runing an NGINX server
+## Running an NGINX server
 
 ```bash
 $ docker run -d -P nginx
