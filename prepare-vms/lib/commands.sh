@@ -258,14 +258,6 @@ _cmd_docker() {
       sudo ln -sfn /mnt/docker /var/lib/docker
     fi
 
-    # containerd 1.6 breaks Weave.
-    # See https://github.com/containerd/containerd/issues/6921
-    sudo tee /etc/apt/preferences.d/containerd <<EOF
-Package: containerd.io
-Pin: version 1.5.*
-Pin-Priority: 1000
-EOF
-
     # This will install the latest Docker.
     sudo apt-get -qy install apt-transport-https ca-certificates curl software-properties-common
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
