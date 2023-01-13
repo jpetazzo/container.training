@@ -4,6 +4,8 @@
 
   @@SLIDES@@
 
+- This is a public URL, you're welcome to share it with others!
+
 - Use arrows to move to next/previous slide
 
   (up, down, left, right, page up, page down)
@@ -13,6 +15,28 @@
 - The slide number is also visible in the URL bar
 
   (e.g. .../#123 for slide 123)
+
+---
+
+## These slides are open source
+
+- The sources of these slides are available in a public GitHub repository:
+
+  https://@@GITREPO@@
+
+- These slides are written in Markdown
+
+- You are welcome to share, re-use, re-mix these slides
+
+- Typos? Mistakes? Questions? Feel free to hover over the bottom of the slide ...
+
+.footnote[👇 Try it! The source file will be shown and you can view it on GitHub and fork and edit it.]
+
+<!--
+.lab[
+```open https://@@GITREPO@@/tree/master/slides/common/about-slides.md```
+]
+-->
 
 ---
 
@@ -28,31 +52,23 @@
 
   (then open the file `@@HTML@@`)
 
-- You will find new versions of these slides on:
+- You can also generate a PDF of the slides
 
-  https://container.training/
+  (by printing them to a file; but be patient with your browser!)
 
 ---
 
-## These slides are open source
+## These slides are constantly updated
 
-- You are welcome to use, re-use, share these slides
-
-- These slides are written in Markdown
-
-- The sources of these slides are available in a public GitHub repository:
+- Feel free to check the GitHub repository for updates:
 
   https://@@GITREPO@@
 
-- Typos? Mistakes? Questions? Feel free to hover over the bottom of the slide ...
+- Look for branches named YYYY-MM-...
 
-.footnote[👇 Try it! The source file will be shown and you can view it on GitHub and fork and edit it.]
+- You can also find specific decks and other resources on:
 
-<!--
-.lab[
-```open https://@@GITREPO@@/tree/master/slides/common/about-slides.md```
-]
--->
+  https://container.training/
 
 ---
 
