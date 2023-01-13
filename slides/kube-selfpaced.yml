@@ -46,8 +46,9 @@ content:
   - k8s/declarative.md
   - k8s/deploymentslideshow.md
 -
-  - k8s/kubenet.md
   - k8s/kubectlexpose.md
+  - k8s/service-types.md
+  - k8s/kubenet.md
   - k8s/shippingimages.md
   - k8s/buildshiprun-selfhosted.md
   - k8s/buildshiprun-dockerhub.md

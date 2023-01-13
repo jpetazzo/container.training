@@ -39,7 +39,7 @@ content:
   - k8s/concepts-k8s.md
   - shared/declarative.md
   - k8s/declarative.md
-  - k8s/kubenet.md
+  #- k8s/kubenet.md
   - k8s/kubectlget.md
   - k8s/setup-overview.md
   #- k8s/setup-devel.md
@@ -51,6 +51,7 @@ content:
   - k8s/kubectl-logs.md
   - k8s/deploymentslideshow.md
   - k8s/kubectlexpose.md
+  #- k8s/service-types.md
   - k8s/shippingimages.md
   #- k8s/buildshiprun-selfhosted.md
   - k8s/buildshiprun-dockerhub.md
