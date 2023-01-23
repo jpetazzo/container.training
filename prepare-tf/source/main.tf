@@ -62,9 +62,11 @@ resource "null_resource" "wait_for_nodes" {
       KUBECONFIG = local_file.kubeconfig[each.key].filename
     }
     command = <<-EOT
-      set -e
-      kubectl get nodes --watch | grep --silent --line-buffered .
-      kubectl wait node --for=condition=Ready --all --timeout=10m
+      while sleep 1; do
+        kubectl get nodes --watch | grep --silent --line-buffered . &&
+        kubectl wait node --for=condition=Ready --all --timeout=10m &&
+        break
+      done
       EOT
   }
 }
