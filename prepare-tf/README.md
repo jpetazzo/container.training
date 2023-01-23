@@ -34,28 +34,15 @@ to that directory, then create the clusters using that configuration.
 
 - Scaleway: run `scw init`
 
-2. Optional: set number of clusters, cluster size, and region.
-
-By default, 1 cluster will be configured, with 2 nodes, and auto-scaling up to 5 nodes.
-
-If you want, you can override these parameters, with the following variables.
+2. Run!
 
 ```bash
-export TF_VAR_how_many_clusters=5
-export TF_VAR_min_nodes_per_pool=2
-export TF_VAR_max_nodes_per_pool=4
-export TF_VAR_location=xxx
+./run.sh <providername> <location> [number of clusters] [min nodes] [max nodes]
 ```
 
-The `location` variable is optional. Each provider should have a default value.
-The value of the `location` variable is provider-specific. Examples:
+If you don't specify a provider name, it will list available providers.
 
-| Provider      | Example value     | How to see possible values
-|---------------|-------------------|---------------------------
-| Digital Ocean | `ams3`            | `doctl compute region list`
-| Google Cloud  | `europe-north1-a` | `gcloud compute zones list`
-| Linode        | `eu-central`      | `linode-cli regions list`
-| Oracle Cloud  | `eu-stockholm-1`  | `oci iam region list`
+If you don't specify a location, it will list locations available for this provider.
 
 You can also specify multiple locations, and then they will be
 used in round-robin fashion.
@@ -66,22 +53,15 @@ my requests to increase that quota were denied) you can do the
 following:
 
 ```bash
-export TF_VAR_location=$(gcloud compute zones list --format=json | jq -r .[].name | grep ^europe)
+LOCATIONS=$(gcloud compute zones list --format=json | jq -r .[].name | grep ^europe)
+./run.sh googlecloud "$LOCATIONS"
 ```
 
 Then when you apply, clusters will be created across all available
 zones in Europe. (When I write this, there are 20+ zones in Europe,
 so even with my quota, I can create 40 clusters.)
 
-3. Run!
-
-```bash
-./run.sh <providername>
-```
-
-(If you don't specify a provider name, it will list available providers.)
-
-4. Shutting down
+3. Shutting down
 
 Go to the directory that was created by the previous step (`tag-YYYY-MM...`)
 and run `terraform destroy`.

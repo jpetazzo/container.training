@@ -11,11 +11,29 @@ if [ -f ~/.config/linode-cli ]; then
   export LINODE_TOKEN=$(grep ^token ~/.config/linode-cli | cut -d= -f2 | tr -d " ")
 fi
 
-PROVIDER=$1
-[ "$PROVIDER" ] || {
-  echo "Please specify a provider as first argument, or 'ALL' for parallel mode."
+[ "$1" ] || {
+  echo "Syntax:"
+  echo ""
+  echo "$0 <provider> <region> [how-many-clusters] [min-nodes] [max-nodes]"
+  echo ""
   echo "Available providers:"
   ls -1 source/modules
+  echo ""
+  echo "Leave the region empty to show available regions for this provider."
+  echo "You can also specify ALL as a provider to simultaneously provision"
+  echo "many clusters on *each* provider for benchmarking purposes."
+  echo ""
+  exit 1
+}
+
+PROVIDER="$1"
+export TF_VAR_location="$2"
+export TF_VAR_how_many_clusters="${3-1}"
+export TF_VAR_min_nodes_per_pool="${4-2}"
+export TF_VAR_max_nodes_per_pool="${5-4}"
+
+[ "$TF_VAR_location" ] || {
+  "./source/modules/$PROVIDER/list_locations.sh"
   exit 1
 }
 
