@@ -140,3 +140,21 @@ terraform destroy
 ```bash
 rm stage2/terraform.tfstate*
 ```
+
+10. Clean up leftovers.
+
+Some providers don't clean up properly the resources created by the CCM.
+For instance, when you create a Kubernetes `Service` of type
+`LoadBalancer`, it generally provisions a cloud load balancer.
+On Linode (and possibly other providers, too!) these cloud load balancers
+aren't deleted when the cluster gets deleted, and they keep incurring
+charges. You should check for those, to make sure that you don't
+get charged for resources that you don't use anymore. As I write this
+paragraph, there is specifically one script to remove the Linode
+nodebalancers; but be careful: it deletes **all** the nodebalancers
+whose name starts with `ccm-`, which means that if you still have
+Kubernetes clusters, their load balancers will be deleted as well!
+
+Eventually, I hope to add more scripts for other providers, and make
+them more selective and more robust, but for now, that's better than
+nothing.
