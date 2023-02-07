@@ -267,6 +267,7 @@ _cmd_docker() {
 
     # Add registry mirror configuration.
     if ! [ -f /etc/docker/daemon.json ]; then
+    	sudo mkdir -p /etc/docker
         echo '{\"registry-mirrors\": [\"https://mirror.gcr.io\"]}' | sudo tee /etc/docker/daemon.json
         sudo systemctl restart docker
     fi
