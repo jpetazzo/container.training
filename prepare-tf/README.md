@@ -150,10 +150,19 @@ On Linode (and possibly other providers, too!) these cloud load balancers
 aren't deleted when the cluster gets deleted, and they keep incurring
 charges. You should check for those, to make sure that you don't
 get charged for resources that you don't use anymore. As I write this
-paragraph, there is specifically one script to remove the Linode
-nodebalancers; but be careful: it deletes **all** the nodebalancers
-whose name starts with `ccm-`, which means that if you still have
-Kubernetes clusters, their load balancers will be deleted as well!
+paragraph, there is:
+
+- `linode-delete-ccm-loadbalancers.sh` to delete the Linode
+  nodebalancers; but be careful: it deletes **all** the nodebalancers
+  whose name starts with `ccm-`, which means that if you still have
+  Kubernetes clusters, their load balancers will be deleted as well!
+
+- `linode-delete-pvc-volumes.sh` to delete Linode persistent disks
+  that have been created to satisfy Persistent Volume Claims
+  (these need to be removed manually because the default Storage Class
+  on Linode has a RETAIN policy). Again, be careful, this will wipe
+  out any volume whose label starts with `pvc`. (I don't know if it
+  will remove volumes that are still attached.)
 
 Eventually, I hope to add more scripts for other providers, and make
 them more selective and more robust, but for now, that's better than
