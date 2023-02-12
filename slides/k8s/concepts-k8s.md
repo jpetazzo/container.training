@@ -79,6 +79,20 @@
 
   (blue/green deployment, canary deployment)
 
+--
+
+.footnote[
+On the next page: canary cage with an oxygen bottle, designed to keep the canary alive.
+<br/>
+(See https://post.lurk.org/@zilog/109632335293371919 for details.)
+]
+
+---
+
+class: pic
+
+![Canary cage](images/canary-cage.jpg)
+
 ---
 
 ## More things that Kubernetes can do for us
