@@ -149,7 +149,7 @@ You are welcome to use the method that you feel the most comfortable with.
 
 ---
 
-## Tmux cheat sheet
+## Tmux cheat sheet (basic)
 
 [Tmux](https://en.wikipedia.org/wiki/Tmux) is a terminal multiplexer like `screen`.
 
@@ -159,15 +159,35 @@ But some of us like to use it to switch between terminals.
 <br/>
 It has been preinstalled on your workshop nodes.*
 
-- Ctrl-b c → creates a new window
-- Ctrl-b n → go to next window
-- Ctrl-b p → go to previous window
-- Ctrl-b " → split window top/bottom
-- Ctrl-b % → split window left/right
-- Ctrl-b Alt-1 → rearrange windows in columns
-- Ctrl-b Alt-2 → rearrange windows in rows
-- Ctrl-b arrows → navigate to other windows
-- Ctrl-b , → rename window
-- Ctrl-b Ctrl-o → cycle pane position (e.g. switch top/bottom)
+- You can start a new session with `tmux`
+  <br/>
+  (or resume or share an existing session with `tmux attach`)
+
+- Then use these keyboard shortcuts:
+
+  - Ctrl-b c → creates a new window
+  - Ctrl-b n → go to next window
+  - Ctrl-b p → go to previous window
+  - Ctrl-b " → split window top/bottom
+  - Ctrl-b % → split window left/right
+  - Ctrl-b arrows → navigate within split windows
+
+---
+
+## Tmux cheat sheet (advanced)
+
 - Ctrl-b d → detach session
-- tmux attach → re-attach to session
+  <br/>
+  (resume it later with `tmux attach`)
+
+- Ctrl-b Alt-1 → rearrange windows in columns
+
+- Ctrl-b Alt-2 → rearrange windows in rows
+
+- Ctrl-b , → rename window
+
+- Ctrl-b Ctrl-o → cycle pane position (e.g. switch top/bottom)
+
+- Ctrl-b PageUp → enter scrollback mode
+  <br/>
+  (use PageUp/PageDown to scroll; Ctrl-c or Enter to exit scrollback)
