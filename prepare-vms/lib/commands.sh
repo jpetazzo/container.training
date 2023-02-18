@@ -577,7 +577,7 @@ EOF
     # Install k9s
     pssh "
     if [ ! -x /usr/local/bin/k9s ]; then
-        FILENAME=k9s_Linux_$HERP_DERP_ARCH.tar.gz &&
+        FILENAME=k9s_Linux_$ARCH.tar.gz &&
         curl -fsSL https://github.com/derailed/k9s/releases/latest/download/\$FILENAME |
         sudo tar -zxvf- -C /usr/local/bin k9s
         k9s version
