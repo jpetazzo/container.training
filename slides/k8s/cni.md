@@ -404,17 +404,17 @@ class: extra-details
 
 - Create a Deployment running a web server:
   ```bash
-  kubectl create deployment web --image=jpetazzo/httpenv
+  kubectl create deployment blue --image=jpetazzo/color
   ```
 
 - Scale it so that it spans multiple nodes:
   ```bash
-  kubectl scale deployment web --replicas=5
+  kubectl scale deployment blue --replicas=5
   ```
 
 - Expose it with a Service:
   ```bash
-  kubectl expose deployment web --port=8888
+  kubectl expose deployment blue --port=8888
   ```
 
 ]
