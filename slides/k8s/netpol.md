@@ -413,6 +413,8 @@ troubleshoot easily, without having to poke holes in our firewall.
 
 - [Tufin Network Policy Viewer](https://orca.tufin.io/netpol/)
 
+- [`kubectl np-viewer`](https://github.com/runoncloud/kubectl-np-viewer) (kubectl plugin)
+
 - Two resources by [Ahmet Alp Balkan](https://ahmet.im/):
 
   - a [very good talk about network policies](https://www.youtube.com/watch?list=PLj6h78yzYM2P-3-xqvmWaZbbI1sW-ulZb&v=3gGpMmYeEO8) at KubeCon North America 2017
