@@ -47,6 +47,7 @@ content:
   #- containers/Network_Drivers.md
   - containers/Local_Development_Workflow.md
   - containers/Container_Network_Model.md
+  - shared/yaml.md
   - containers/Compose_For_Dev_Stacks.md
   - containers/Exercise_Composefile.md
 -

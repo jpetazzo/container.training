@@ -66,6 +66,7 @@ content:
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
   - k8s/daemonset.md
+  - shared/yaml.md
   - k8s/authoring-yaml.md
   #- k8s/exercise-yaml.md
 -

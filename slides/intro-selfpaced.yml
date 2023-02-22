@@ -52,6 +52,7 @@ content:
 - - containers/Local_Development_Workflow.md
   - containers/Windows_Containers.md
   - containers/Working_With_Volumes.md
+  - shared/yaml.md
   - containers/Compose_For_Dev_Stacks.md
   - containers/Exercise_Composefile.md
   - containers/Docker_Machine.md
