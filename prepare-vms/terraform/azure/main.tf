@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "_" {
-  name          = var.prefix
+  name     = var.prefix
   location = var.location
 }
 
@@ -8,7 +8,7 @@ resource "azurerm_public_ip" "_" {
   name                = format("%s-%04d", var.prefix, count.index + 1)
   location            = azurerm_resource_group._.location
   resource_group_name = azurerm_resource_group._.name
-  allocation_method = "Dynamic"
+  allocation_method   = "Dynamic"
 }
 
 resource "azurerm_network_interface" "_" {
@@ -21,7 +21,7 @@ resource "azurerm_network_interface" "_" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet._.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip._[count.index].id
+    public_ip_address_id          = azurerm_public_ip._[count.index].id
   }
 }
 
@@ -49,7 +49,7 @@ resource "azurerm_linux_virtual_machine" "_" {
   source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
-    sku       = "18.04-LTS" # FIXME
+    sku       = "22.04-LTS"
     version   = "latest"
   }
 }
@@ -63,7 +63,7 @@ data "azurerm_public_ip" "_" {
   count               = var.how_many_nodes
   name                = format("%s-%04d", var.prefix, count.index + 1)
   resource_group_name = azurerm_resource_group._.name
-  depends_on = [azurerm_linux_virtual_machine._]
+  depends_on          = [azurerm_linux_virtual_machine._]
 }
 
 output "ip_addresses" {

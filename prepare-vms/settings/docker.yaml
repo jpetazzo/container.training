@@ -18,6 +18,7 @@ user_password: training
 
 steps:
   - wait
+  - standardize
   - clusterize
   - tools
   - docker

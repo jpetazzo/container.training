@@ -1,5 +1,5 @@
 resource "openstack_networking_network_v2" "internal" {
-  name           = var.prefix
+  name = var.prefix
 }
 
 resource "openstack_networking_subnet_v2" "internal" {

@@ -18,6 +18,7 @@ user_password: CHANGEME
 
 steps:
   - wait
+  - standardize
   - clusterize
   - tools
   - docker

@@ -16,7 +16,7 @@ data "oci_core_images" "_" {
   compartment_id           = local.compartment_id
   shape                    = var.shape
   operating_system         = "Canonical Ubuntu"
-  operating_system_version = "20.04"
+  operating_system_version = "22.04"
   #operating_system         = "Oracle Linux"
   #operating_system_version = "7.9"
 }

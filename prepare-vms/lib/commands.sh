@@ -67,6 +67,8 @@ _cmd_createuser() {
     set -e
     # Create the user if it doesn't exist yet.
     id $USER_LOGIN || sudo useradd -d /home/$USER_LOGIN -g users -m -s /bin/bash $USER_LOGIN
+    # Make sure there are at least exec permission on their home.
+    sudo chmod a+X /home/$USER_LOGIN
     # Add them to the docker group, if there is one.
     grep ^docker: /etc/group && sudo usermod -aG docker $USER_LOGIN
     # Set their password.
@@ -154,8 +156,8 @@ SQRL
     echo user_ok > tags/$TAG/status
 }
 
-_cmd clusterize "Group VMs in clusters"
-_cmd_clusterize() {
+_cmd standardize "Deal with non-standard Ubuntu cloud images"
+_cmd_standardize() {
     TAG=$1
     need_tag
 
@@ -165,23 +167,10 @@ _cmd_clusterize() {
     # Special case for scaleway since it doesn't come with sudo
     if [ "$INFRACLASS" = "scaleway" ]; then
         pssh -l root "
-    grep DEBIAN_FRONTEND /etc/environment || echo DEBIAN_FRONTEND=noninteractive >> /etc/environment
-    grep cloud-init /etc/sudoers && rm /etc/sudoers
-    apt-get update && apt-get install sudo -y"
+        grep DEBIAN_FRONTEND /etc/environment || echo DEBIAN_FRONTEND=noninteractive >> /etc/environment
+        grep cloud-init /etc/sudoers && rm /etc/sudoers
+        apt-get update && apt-get install sudo -y"
     fi
-
-    # FIXME
-    # Special case for hetzner since it doesn't have an ubuntu user
-    #if [ "$INFRACLASS" = "hetzner" ]; then
-    #    pssh -l root "
-    #[ -d /home/ubuntu ] ||
-    #    useradd ubuntu -m -s /bin/bash
-    #echo 'ubuntu ALL=(ALL:ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
-    #[ -d /home/ubuntu/.ssh ] ||
-    #    install --owner=ubuntu --mode=700 --directory /home/ubuntu/.ssh
-    #[ -f /home/ubuntu/.ssh/authorized_keys ] ||
-    #    install --owner=ubuntu --mode=600 /root/.ssh/authorized_keys --target-directory /home/ubuntu/.ssh"
-    #fi
 
     # Special case for oracle since their iptables blocks everything but SSH
     pssh "
@@ -203,18 +192,18 @@ _cmd_clusterize() {
         sudo snap remove oracle-cloud-agent
         sudo dpkg --remove --force-remove-reinstreq unified-monitoring-agent
     fi"
+}
+
+_cmd clusterize "Group VMs in clusters"
+_cmd_clusterize() {
+    TAG=$1
+    need_tag
 
     # Copy settings and install Python YAML parser
     pssh -I tee /tmp/settings.yaml <tags/$TAG/settings.yaml
     pssh "
     sudo apt-get update &&
-    sudo apt-get install -y python-yaml"
-
-    # If there is no "python" binary, symlink to python3
-    pssh "
-    if ! which python; then
-        sudo ln -s $(which python3) /usr/local/bin/python
-    fi"
+    sudo apt-get install -y python3-yaml python-is-python3"
 
     # Copy postprep.py to the remote machines, and execute it, feeding it the list of IP addresses
     pssh -I tee /tmp/clusterize.py <lib/clusterize.py
@@ -261,7 +250,7 @@ _cmd_docker() {
     # This will install the latest Docker.
     sudo apt-get -qy install apt-transport-https ca-certificates curl software-properties-common
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    sudo add-apt-repository 'deb https://download.docker.com/linux/ubuntu bionic stable'
+    sudo add-apt-repository 'deb https://download.docker.com/linux/ubuntu jammy stable'
     sudo apt-get -q update
     sudo apt-get -qy install docker-ce
 
@@ -372,10 +361,12 @@ EOF"
         sudo swapoff -a"
     fi
 
-    # Re-enable CRI interface in containerd
-    pssh "
-    echo '# Use default parameters for containerd.' | sudo tee /etc/containerd/config.toml
-    sudo systemctl restart containerd"
+    # Install a valid configuration for containerd
+    # (first, the CRI interface needs to be re-enabled;
+    # also, the correct systemd cgroup driver must be selected,
+    # otherwise containerd just restarts containers for no good reason)
+    pssh -I "sudo tee /etc/containerd/config.toml" < lib/containerd-config.toml
+    pssh "sudo systemctl restart containerd"
 
     # Initialize kube control plane
     pssh --timeout 200 "
@@ -387,8 +378,6 @@ apiVersion: kubeadm.k8s.io/v1beta2
 bootstrapTokens:
 - token: \$(cat /tmp/token)
 nodeRegistration:
-  # Comment out the next line to switch back to Docker.
-  criSocket: /run/containerd/containerd.sock
   ignorePreflightErrors:
   - NumCPU
 ---
@@ -400,16 +389,12 @@ discovery:
     token: \$(cat /tmp/token)
     unsafeSkipCAVerification: true
 nodeRegistration:
-  # Comment out the next line to switch back to Docker.
-  criSocket: /run/containerd/containerd.sock
   ignorePreflightErrors:
   - NumCPU
 ---
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
-# The following line is necessary when using Docker.
-# It doesn't seem necessary when using containerd.
-#cgroupDriver: cgroupfs
+failSwapOn: false
 ---
 kind: ClusterConfiguration
 apiVersion: kubeadm.k8s.io/v1beta2
@@ -433,8 +418,6 @@ EOF
     # Install weave as the pod network
     pssh "
     if i_am_first_node; then
-        #kubever=\$(kubectl version | base64 | tr -d '\n') &&
-        #kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=\$kubever
         kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s-1.11.yaml
     fi"
 
@@ -804,8 +787,6 @@ _cmd_tools() {
     sudo apt-get -qy install apache2-utils emacs-nox git httping htop jid joe jq mosh python-setuptools tree unzip
     # This is for VMs with broken PRNG (symptom: running docker-compose randomly hangs)
     sudo apt-get -qy install haveged
-    # I don't remember why we need to remove this
-    sudo apt-get remove -y --purge dnsmasq-base
     "
 }
 
@@ -1060,15 +1041,22 @@ _cmd_passwords() {
     info "Done."
 }
 
-_cmd wait "Wait until VMs are ready (reachable and cloud init is done)"
+_cmd wait "Wait until VMs are ready (reachable, cloud init is done, ubuntu user is up)"
 _cmd_wait() {
     TAG=$1
     need_tag
 
     # Wait until all hosts are reachable.
     info "Trying to reach $TAG instances..."
-    while ! pssh -t 5 true 2>&1 >/dev/null; do
-        >/dev/stderr echo -n "."
+    while >/dev/stderr echo -n "."; do
+        pssh -t 5 true 2>&1 >/dev/null && {
+            SSH_USER=ubuntu
+            break
+        }
+        pssh -l root -t 5 true 2>&1 >/dev/null && {
+            SSH_USER=root
+            break
+        }
         sleep 2
     done
     >/dev/stderr echo ""
@@ -1076,12 +1064,26 @@ _cmd_wait() {
     # If this VM image is using cloud-init,
     # wait for cloud-init to be done
     info "Waiting for cloud-init to be done on $TAG instances..."
-    pssh "
+    pssh -l $SSH_USER "
     if [ -d /var/lib/cloud ]; then
-        while [ ! -f /var/lib/cloud/instance/boot-finished ]; do
-            sleep 1
-        done
+        cloud-init status --wait
     fi"
+
+    if [ "$SSH_USER" = "root" ]; then
+        pssh -l root "
+        getent passwd ubuntu || {
+            useradd ubuntu -m -s /bin/bash
+            echo 'ubuntu ALL=(ALL:ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
+        }
+        [ -d /home/ubuntu/.ssh ] ||
+            install --owner=ubuntu --mode=700 --directory /home/ubuntu/.ssh
+        [ -f /home/ubuntu/.ssh/authorized_keys ] ||
+            install --owner=ubuntu --mode=600 /root/.ssh/authorized_keys --target-directory /home/ubuntu/.ssh
+        "
+    fi
+
+    # Now make sure that we have an ubuntu user
+    pssh true
 }
 
 # Sometimes, weave fails to come up on some nodes.
@@ -1106,7 +1108,6 @@ _cmd_webssh() {
     need_tag
     pssh "
     sudo apt-get update &&
-    sudo apt-get install python-tornado python-paramiko -y ||
     sudo apt-get install python3-tornado python3-paramiko -y"
     pssh "
     cd /opt

@@ -1,8 +1,0 @@
-# Number of VMs per cluster
-clustersize: 5
-
-# The hostname of each node will be clusterprefix + a number
-clusterprefix: node
-
-# Jinja2 template to use to generate ready-to-cut cards
-cards_template: clusters.csv
