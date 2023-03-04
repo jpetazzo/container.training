@@ -90,17 +90,16 @@ terraform init
 
 3. Configure provider authentication.
 
-See steps above, and add the following extra steps:
+Our Terraform configurations try to pick up provider authentication information from
+local configuration files typically used by the CLI tool of each provider. Our goal
+is to make sure that you don't have to set extra environment variables when applying
+the Terraform configurations, as long as the CLI tool of that provider has the relevant
+authentication information.
 
-- Digital Ocean:
-  ```bash
-  export DIGITALOCEAN_ACCESS_TOKEN=$(grep ^access-token ~/.config/doctl/config.yaml | cut -d: -f2 | tr -d " ")
-  ```
+Here are provider-specific instructions:
 
-- Linode:
-  ```bash
-  export LINODE_TOKEN=$(grep ^token ~/.config/linode-cli | cut -d= -f2 | tr -d " ")
-  ```
+- for Digital Ocean, run `doctl auth init`, which will populate `~/.config/doctl/config.yaml`
+- for Linode, run `linode-cli configure`, which will populate `~/.config/linode-cli`
 
 4. Decide how many clusters and how many nodes per clusters you want.
 

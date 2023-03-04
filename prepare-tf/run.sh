@@ -3,14 +3,6 @@ set -e
 
 TIME=$(which time)
 
-if [ -f ~/.config/doctl/config.yaml ]; then
-  export DIGITALOCEAN_ACCESS_TOKEN=$(grep ^access-token ~/.config/doctl/config.yaml | cut -d: -f2 | tr -d " ")
-fi
-
-if [ -f ~/.config/linode-cli ]; then
-  export LINODE_TOKEN=$(grep ^token ~/.config/linode-cli | cut -d= -f2 | tr -d " ")
-fi
-
 [ "$1" ] || {
   echo "Syntax:"
   echo ""
@@ -57,9 +49,6 @@ PROVIDER="$1"
   ls -1 source/modules
   exit 1  
 }
-
-export LINODE_TOKEN=$(grep ^token ~/.config/linode-cli | cut -d= -f2 | tr -d " ")
-export DIGITALOCEAN_ACCESS_TOKEN=$(grep ^access-token ~/.config/doctl/config.yaml | cut -d: -f2 | tr -d " ")
 
 cp -a source $TAG
 cd $TAG
