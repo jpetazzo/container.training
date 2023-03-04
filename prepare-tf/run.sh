@@ -27,12 +27,8 @@ fi
 }
 
 PROVIDER="$1"
-export TF_VAR_location="$2"
-export TF_VAR_how_many_clusters="${3-1}"
-export TF_VAR_min_nodes_per_pool="${4-2}"
-export TF_VAR_max_nodes_per_pool="${5-4}"
 
-[ "$TF_VAR_location" ] || {
+[ "$2" ] || {
   "./source/modules/$PROVIDER/list_locations.sh"
   exit 1
 }
@@ -68,6 +64,12 @@ export DIGITALOCEAN_ACCESS_TOKEN=$(grep ^access-token ~/.config/doctl/config.yam
 cp -a source $TAG
 cd $TAG
 cp -r modules/$PROVIDER modules/PROVIDER
+cat >terraform.tfvars <<EOF
+location = "$2"
+how_many_clusters = ${3-1}
+min_nodes_per_pool = ${4-2}
+max_nodes_per_pool = ${5-4}
+EOF
 $TIME -o time.1.init terraform init
 $TIME -o time.2.stage1 terraform apply -auto-approve
 cd stage2
