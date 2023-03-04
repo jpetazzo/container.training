@@ -1,5 +1,2 @@
-INFRACLASS=hetzner
-if ! [ -f ~/.config/hcloud/cli.toml ]; then
-  warning "~/.config/hcloud/cli.toml not found."
-  warning "Make sure that the Hetzner CLI (hcloud) is installed and configured."
-fi
+INFRACLASS=terraform
+TERRAFORM=hetzner
