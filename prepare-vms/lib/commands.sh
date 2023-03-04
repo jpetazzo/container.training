@@ -98,6 +98,14 @@ _cmd_createuser() {
     fi
     "
 
+    # FIXME this is a gross hack to add the deployment key to our SSH agent,
+    # so that it can be used to bounce from host to host (which is necessary
+    # in the next deployment step). In the long run, we probably want to
+    # generate these keys locally and push them to the machines instead
+    # (once we move everything to Terraform).
+    if [ -f "tags/$TAG/id_rsa" ]; then
+        ssh-add tags/$TAG/id_rsa
+    fi
     pssh "
     set -e
     cd /home/$USER_LOGIN
@@ -107,6 +115,9 @@ _cmd_createuser() {
       sudo -u $USER_LOGIN tar -xf-
     fi
     "
+    if [ -f "tags/$TAG/id_rsa" ]; then
+        ssh-add -d tags/$TAG/id_rsa
+    fi
 
     # FIXME do this only once.
     pssh -I "sudo -u $USER_LOGIN tee -a /home/$USER_LOGIN/.bashrc" <<"SQRL"
@@ -163,6 +174,13 @@ _cmd_standardize() {
 
     # Disable unattended upgrades so that they don't mess up with the subsequent steps
     pssh sudo rm -f /etc/apt/apt.conf.d/50unattended-upgrades
+
+    # Digital Ocean's cloud init disables password authentication; re-enable it.
+    pssh "
+    if [ -f /etc/ssh/sshd_config.d/50-cloud-init.conf ]; then
+        sudo rm /etc/ssh/sshd_config.d/50-cloud-init.conf
+        sudo systemctl restart ssh.service
+    fi"
 
     # Special case for scaleway since it doesn't come with sudo
     if [ "$INFRACLASS" = "scaleway" ]; then
@@ -339,10 +357,14 @@ Pin-Priority: 1000
 EOF"
     fi
 
+    # As of February 27th, 2023, packages.cloud.google.com seems broken
+    # (serves HTTP 500 errors for the GPG key), so let's pre-load that key.
+    pssh -I "sudo apt-key add -" < lib/kubernetes-apt-key.gpg
+
     # Install packages
     pssh --timeout 200 "
-    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg |
-    sudo apt-key add - &&
+    #curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg |
+    #sudo apt-key add - &&
     echo deb http://apt.kubernetes.io/ kubernetes-xenial main |
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
     pssh --timeout 200 "
@@ -421,6 +443,14 @@ EOF
         kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s-1.11.yaml
     fi"
 
+    # FIXME this is a gross hack to add the deployment key to our SSH agent,
+    # so that it can be used to bounce from host to host (which is necessary
+    # in the next deployment step). In the long run, we probably want to
+    # generate these keys locally and push them to the machines instead
+    # (once we move everything to Terraform).
+    if [ -f "tags/$TAG/id_rsa" ]; then
+        ssh-add tags/$TAG/id_rsa
+    fi
     # Join the other nodes to the cluster
     pssh --timeout 200 "
     if ! i_am_first_node && [ ! -f /etc/kubernetes/kubelet.conf ]; then
@@ -428,6 +458,9 @@ EOF
         ssh $SSHOPTS \$FIRSTNODE cat /tmp/kubeadm-config.yaml > /tmp/kubeadm-config.yaml &&
         sudo kubeadm join --config /tmp/kubeadm-config.yaml
     fi"
+    if [ -f "tags/$TAG/id_rsa" ]; then
+        ssh-add -d tags/$TAG/id_rsa
+    fi
 
     # Install metrics server
     pssh "

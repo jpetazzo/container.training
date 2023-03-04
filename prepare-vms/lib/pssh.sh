@@ -24,7 +24,13 @@ pssh() {
         *)       LOGIN=ubuntu ;;
     esac
 
-    $PSSH -h $HOSTFILE -l $LOGIN \
+    if [ -f "tags/$TAG/id_rsa" ]; then
+        KEYFLAG="-O IdentityFile=tags/$TAG/id_rsa"
+    else
+        KEYFLAG=""
+    fi
+
+    $PSSH $KEYFLAG -h $HOSTFILE -l $LOGIN \
         --par 100 \
         --timeout 300 \
         -O LogLevel=ERROR \
