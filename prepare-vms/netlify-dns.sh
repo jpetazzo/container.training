@@ -26,6 +26,12 @@ if ! [ -f "$NETLIFY_CONFIG_FILE" ]; then
   exit 1
 fi
 
+if ! command -v http >/dev/null; then
+  echo "Could not find the 'http' command line tool."
+  echo "Please install it (the package name might be 'httpie')."
+  exit 1
+fi
+
 NETLIFY_USERID=$(jq .userId < "$NETLIFY_CONFIG_FILE")
 NETLIFY_TOKEN=$(jq -r .users[$NETLIFY_USERID].auth.token < "$NETLIFY_CONFIG_FILE")
 
