@@ -12,7 +12,7 @@ resource "openstack_networking_subnet_v2" "internal" {
 
 resource "openstack_networking_router_v2" "router" {
   name                = var.prefix
-  external_network_id = "15f0c299-1f50-42a6-9aff-63ea5b75f3fc"
+  external_network_id = var.external_network_id
 }
 
 resource "openstack_networking_router_interface_v2" "router_internal" {

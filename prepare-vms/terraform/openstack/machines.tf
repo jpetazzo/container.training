@@ -14,8 +14,7 @@ resource "openstack_compute_instance_v2" "machine" {
 
 resource "openstack_compute_floatingip_v2" "machine" {
   count = var.how_many_nodes
-  # This is something provided to us by Enix when our tenant was provisioned.
-  pool = "Public Floating"
+  pool  = var.pool
 }
 
 resource "openstack_compute_floatingip_associate_v2" "machine" {
