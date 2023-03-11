@@ -784,9 +784,11 @@ _cmd_tailhist () {
     ARCH=${ARCHITECTURE-amd64}
     [ "$ARCH" = "aarch64" ] && ARCH=arm64
 
+    # We use "wget -c" here in case the download was aborted
+    # halfway through and we're actually trying to download it again.
     pssh "
     set -e
-    wget https://github.com/joewalnes/websocketd/releases/download/v0.3.0/websocketd-0.3.0-linux_$ARCH.zip
+    wget -c https://github.com/joewalnes/websocketd/releases/download/v0.3.0/websocketd-0.3.0-linux_$ARCH.zip
     unzip websocketd-0.3.0-linux_$ARCH.zip websocketd
     sudo mv websocketd /usr/local/bin/websocketd
     sudo mkdir -p /tmp/tailhist
@@ -1053,6 +1055,7 @@ _cmd passwords "Set individual passwords for each cluster"
 _cmd_passwords() {
     TAG=$1
     need_tag
+    need_login_password
     PASSWORDS_FILE="tags/$TAG/passwords"
     if ! [ -f "$PASSWORDS_FILE" ]; then
         error "File $PASSWORDS_FILE not found. Please create it first."
@@ -1068,7 +1071,7 @@ _cmd_passwords() {
     $0 ips "$TAG" | paste "$PASSWORDS_FILE" - | while read password nodes; do
         info "Setting password for $nodes..."
         for node in $nodes; do
-            echo docker:$password | ssh $SSHOPTS ubuntu@$node sudo chpasswd
+            echo $USER_LOGIN:$password | ssh $SSHOPTS ubuntu@$node sudo chpasswd
         done
     done
     info "Done."
