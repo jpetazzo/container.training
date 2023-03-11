@@ -34,8 +34,15 @@ infra_start() {
                 fi
                 echo prefix = \"$TAG\" >> terraform.tfvars
                 echo how_many_nodes = \"$COUNT\" >> terraform.tfvars
-                terraform apply -auto-approve
-                terraform output -raw ip_addresses > ips.txt
+                for RETRY in 1 2 3; do
+			if terraform apply -auto-approve; then
+				terraform output -raw ip_addresses > ips.txt
+				break
+			fi
+		done
+		if ! [ -f ips.txt ]; then
+			die "Terraform failed."
+		fi
         )
 }
 
