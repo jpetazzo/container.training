@@ -78,6 +78,10 @@
 
 - Comments start with `#`
 
+- A single *file* can have multiple *documents*
+
+  (separated by `---` on a single line)
+
 ---
 
 ## Sequences
@@ -110,7 +114,7 @@
 
 - Example: the same mapping, without the double-quotes
   ```yaml
-  { "france": 68042591, "germany": 84270625, "norway": 5425270 }
+  { france: 68042591, germany: 84270625, norway: 5425270 }
   ```
 
 - Example: the same mapping, in "block collection style"
@@ -190,10 +194,10 @@ codes:
 - It should be quoted instead:
 
   ```yaml
-  codes:
-    france: fr
-    germany: de
-    norway: "no"
+    codes:
+      france: fr
+      germany: de
+      norway: "no"
   ```
 
 ---
@@ -226,9 +230,9 @@ version:
 - These should also be quoted:
 
   ```yaml
-  version:
-    libfoo: "1.10"
-    fooctl: "1.0"
+    version:
+      libfoo: "1.10"
+      fooctl: "1.0"
   ```
 
 ---
@@ -261,6 +265,52 @@ portmap:
 - Thats 22 minutes and 22 seconds = 1342 seconds
 
 - Again, it should be quoted
+
+---
+
+## Document separator
+
+- A single YAML *file* can have multiple *documents* separated by `---`:
+
+  ```yaml
+    This is a document consisting of a single string.
+    --- 💡
+    name: The second document
+    type: This one is a mapping (key→value)
+    --- 💡
+    - Third document
+    - This one is a sequence
+  ```
+
+- Some folks like to add an extra `---` at the beginning and/or at the end
+
+  (it's not mandatory but can help e.g. to `cat` multiple files together)
+
+.footnote[💡 Ignore this; it's here to work around [this issue][remarkyaml].]
+
+[remarkyaml]: https://github.com/gnab/remark/issues/679
+
+---
+
+## Multi-line strings
+
+Try the following block in a YAML parser:
+
+```yaml
+add line breaks: "in double quoted strings\n(like this)"
+preserve line break: |
+  by using
+  a pipe (|)
+  (this is great for embedding shell scripts, configuration files...)
+do not preserve line breaks: >
+  by using
+  a greater-than (>)
+  (this is great for embedding very long lines)
+```
+
+See https://yaml-multiline.info/ for advanced multi-line tips!
+
+(E.g. to strip or keep extra `\n` characters at the end of the block.)
 
 ---
 
