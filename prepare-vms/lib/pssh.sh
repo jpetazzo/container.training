@@ -31,7 +31,7 @@ pssh() {
     fi
 
     $PSSH $KEYFLAG -h $HOSTFILE -l $LOGIN \
-        --par 100 \
+        --par ${PSSH_PARALLEL_CONNECTIONS-100} \
         --timeout 300 \
         -O LogLevel=ERROR \
         -O UserKnownHostsFile=/dev/null \
