@@ -1,0 +1,17 @@
+provider "digitalocean" {
+  token = yamldecode(file("~/.config/doctl/config.yaml"))["access-token"]
+}
+
+variable "node_sizes" {
+  type = map(any)
+  default = {
+    S = "s-1vcpu-2gb"
+    M = "s-2vcpu-4gb"
+    L = "s-4vcpu-8gb"
+  }
+}
+
+variable "location" {
+  type    = string
+  default = "lon1"
+}

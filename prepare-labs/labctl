@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# Get the script's real directory.
+# This should work whether we're being called directly or via a symlink.
+if [ -L "$0" ]; then
+    export SCRIPT_DIR=$(dirname $(readlink "$0"))
+else
+    export SCRIPT_DIR=$(dirname "$0")
+fi
+
+# Load all scriptlets.
+cd "$SCRIPT_DIR"
+for lib in lib/*.sh; do
+    . $lib
+done
+
+DEPENDENCIES="
+    curl
+    fping
+    jq
+    man
+    pssh
+    ssh
+    yq
+    "
+
+UNUSED_DEPENDENCIES="
+    wkhtmltopdf
+"
+
+# Check for missing dependencies, and issue a warning if necessary.
+missing=0
+for dependency in $DEPENDENCIES; do
+    if ! command -v $dependency >/dev/null; then
+        warning "Dependency $dependency could not be found."
+        missing=1
+    fi
+done
+if [ $missing = 1 ]; then
+    warning "At least one dependency is missing. Install it or try the image wrapper."
+fi
+
+# Check if SSH_AUTH_SOCK is set.
+# (If it's not, deployment will almost certainly fail.)
+if [ -z "${SSH_AUTH_SOCK}" ]; then
+    warning "Environment variable SSH_AUTH_SOCK is not set."
+    warning "Hint: run 'eval \$(ssh-agent) ; ssh-add' and try again?"
+fi
+
+# Now check which command was invoked and execute it.
+if [ "$1" ]; then
+    cmd="$1"
+    shift
+else
+    cmd=help
+fi
+fun=_cmd_$cmd
+type -t $fun | grep -q function || die "Invalid command: $cmd"
+$fun "$@"

@@ -2,11 +2,12 @@
 *.swp
 *~
 
-prepare-vms/tags
-prepare-vms/infra
-prepare-vms/www
-
-prepare-tf/tag-*
+**/terraform.tfstate
+**/terraform.tfstate.backup
+prepare-labs/terraform/lab-environments
+prepare-labs/terraform/many-kubernetes/one-kubernetes-config/config.tf
+prepare-labs/terraform/many-kubernetes/one-kubernetes-module/*.tf
+prepare-labs/www
 
 slides/*.yml.html
 slides/autopilot/state.yaml
@@ -26,3 +27,4 @@ node_modules
 Thumbs.db
 ehthumbs.db
 ehthumbs_vista.db
+

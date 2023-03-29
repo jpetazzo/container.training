@@ -1,0 +1,4 @@
+#!/bin/sh
+az account list-locations -o table \
+  --query "sort_by([?metadata.regionType == 'Physical'], &regionalDisplayName)[]
+          .{ displayName: displayName, regionalDisplayName: regionalDisplayName }"
