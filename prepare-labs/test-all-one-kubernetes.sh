@@ -1,4 +1,9 @@
 #!/bin/sh
+
+# Note: if you want to run this multiple times (e.g. to create
+# another set of clusters while a first one is still running)
+# you should set the TF_VAR_cluster_name environment variable.
+
 cd terraform/one-kubernetes
 
 case "$1" in
