@@ -1,7 +1,3 @@
-provider "digitalocean" {
-  token = yamldecode(file("~/.config/doctl/config.yaml"))["access-token"]
-}
-
 variable "node_sizes" {
   type = map(any)
   default = {

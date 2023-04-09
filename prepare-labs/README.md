@@ -120,11 +120,19 @@ Legend:
 │   ├── 📄common.tf
 │   ├── 📁🌍digitalocean
 │   └── ...
-├── 📁provider-config
-│   ├── 📄aws.tf
-│   ├── 📄azure.tf
-│   ├── 📄civo.tf
-│   ├── 📄digitalocean.tf
+├── 📁providers
+│   ├── 📁aws
+│   │   ├── 📄config.tf
+│   │   └── 📄variables.tf
+│   ├── 📁azure
+│   │   ├── 📄config.tf
+│   │   └── 📄variables.tf
+│   ├── 📁civo
+│   │   ├── 📄config.tf
+│   │   └── 📄variables.tf
+│   ├── 📁digitalocean
+│   │   ├── 📄config.tf
+│   │   └── 📄variables.tf
 │   └── ...
 ├── 📁tags
 │   │ (contains Terraform configurations + other files 
@@ -150,7 +158,7 @@ The directory structure can feel a bit overwhelming at first, but it's built wit
 
 **Don't repeat yourself.** As much as possible, common variables, definitions, and logic has been factored in the `common.tf` file that you can see in `one-kubernetes` and `virtual-machines`. That file is then symlinked in each provider-specific directory, to make sure that all providers use the same version of the `common.tf` file.
 
-**Don't repeat yourself (again).** The things that are specific to each provider (e.g. how to obtain the credentials; the size of the VMs to use...) have been placed in the `provider-config` directory, and are shared between the `one-kubernetes` and the `virtual-machines` configurations.
+**Don't repeat yourself (again).** The things that are specific to each provider have been placed in the `providers` directory, and are shared between the `one-kubernetes` and the `virtual-machines` configurations. Specifically, for each provider, there is `config.tf` (which contains provider configuration, e.g. how to obtain the credentials for that provider) and `variables.tf` (which contains default values like which location and which VM size to use).
 
 **Terraform configurations should work in `labctl` or standalone, without extra work.** The Terraform configurations (identified by 🌍 in the directory tree above) can be used directly. Just go to one of these directories, `terraform init`, `terraform apply`, and you're good to go. But they can also be used from `labctl`. `labctl` shouldn't barf out if you did a `terraform apply` in one of these directories (because it will only copy the `*.tf` files, and leave alone the other files, like the Terraform state).
 

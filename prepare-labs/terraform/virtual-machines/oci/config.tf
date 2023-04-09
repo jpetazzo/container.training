@@ -1,1 +1,1 @@
-../../provider-config/oci.tf
+../../providers/oci/config.tf

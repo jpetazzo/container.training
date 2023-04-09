@@ -1,0 +1,1 @@
+../../providers/oci/variables.tf

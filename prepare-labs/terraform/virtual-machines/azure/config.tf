@@ -1,1 +1,1 @@
-../../provider-config/azure.tf
+../../providers/azure/config.tf

@@ -1,14 +1,4 @@
 /*
-Okay, the following is pretty gross - it uses the first token found in the hcloud CLI
-configuration file. We don't use Hetzner much anyway, and when we do, we only have one
-profile ever, and we want this thing to Just Work; so this should do for now, but might
-need to be improved if others actively use Hetzner to provision training labs.
-*/
-provider "hcloud" {
-  token = regex("token = \"([A-Za-z0-9]+)\"", file("~/.config/hcloud/cli.toml"))[0]
-}
-
-/*
 $ hcloud server-type list | grep shared
 1    cx11    1       shared      2.0 GB     20 GB    local
 3    cx21    2       shared      4.0 GB     40 GB    local

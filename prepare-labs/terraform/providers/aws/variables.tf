@@ -1,7 +1,3 @@
-provider "aws" {
-  region = var.location
-}
-
 variable "node_sizes" {
   type = map(any)
   default = {

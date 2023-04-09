@@ -1,0 +1,1 @@
+../../providers/civo/variables.tf

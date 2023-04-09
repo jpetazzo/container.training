@@ -1,7 +1,3 @@
-provider "azurerm" {
-  features {}
-}
-
 /*
 Available sizes:
 "Standard_D11_v2" # CPU=2 RAM=14

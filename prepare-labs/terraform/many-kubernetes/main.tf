@@ -4,7 +4,6 @@ module "clusters" {
   cluster_name       = each.value.cluster_name
   min_nodes_per_pool = local.min_nodes_per_pool
   max_nodes_per_pool = local.max_nodes_per_pool
-  enable_arm_pool    = var.enable_arm_pool
   node_size          = var.node_size
   common_tags        = local.common_tags
   location           = each.value.location

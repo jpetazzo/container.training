@@ -1,1 +1,1 @@
-../../provider-config/googlecloud.tf
+../../providers/googlecloud/config.tf

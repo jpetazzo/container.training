@@ -1,0 +1,1 @@
+../../providers/vcluster/variables.tf

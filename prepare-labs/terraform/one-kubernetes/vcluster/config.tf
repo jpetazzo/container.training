@@ -1,1 +1,1 @@
-../../provider-config/vcluster.tf
+../../providers/vcluster/config.tf

@@ -1,1 +1,1 @@
-../../provider-config/linode.tf
+../../providers/linode/config.tf

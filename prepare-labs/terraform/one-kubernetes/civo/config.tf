@@ -1,1 +1,1 @@
-../../provider-config/civo.tf
+../../providers/civo/config.tf

@@ -1,1 +1,1 @@
-../../provider-config/scaleway.tf
+../../providers/scaleway/config.tf

@@ -17,13 +17,8 @@ variable "node_size" {
   default = "M"
 }
 
-variable "enable_arm_pool" {
-  type    = bool
-  default = false
-}
-
 variable "location" {
-  type    = string
+  type = string
   default = null
 }
 

@@ -1,1 +1,1 @@
-../../provider-config/digitalocean.tf
+../../providers/digitalocean/config.tf

@@ -1,0 +1,1 @@
+../../providers/scaleway/variables.tf

@@ -1,1 +1,1 @@
-../../provider-config/hetzner.tf
+../../providers/hetzner/config.tf

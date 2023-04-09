@@ -1,1 +1,1 @@
-../../provider-config/exoscale.tf
+../../providers/exoscale/config.tf

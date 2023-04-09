@@ -1,1 +1,1 @@
-../../provider-config/aws.tf
+../../providers/aws/config.tf
