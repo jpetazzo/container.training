@@ -82,7 +82,7 @@ CMD ["python", "app.py"]
 
 * Layers cannot represent efficiently when a file is moved either.
 
-* As a result, operations like `chown`, `chown`, `mv` can be expensive.
+* As a result, operations like `chown`, `chmod`, `mv` can be expensive.
 
 * For instance, in the Dockerfile snippet below, each `RUN` line
   creates a layer with an entire copy of `some-file`.
