@@ -45,9 +45,6 @@ These require Python 3. If you are on a Mac, see below for specific instructions
 Python 3 to be the default Python on a Mac. In particular, if you installed `mosh`, Homebrew
 may have changed your default Python to Python 2.
 
-If you don't or can't install these requirements, you
-can also run this script in a Docker image.
-
 You will also need an account with the cloud provider(s) that you want to use to deploy the lab environments.
 
 ## Cloud provider account(s) and credentials

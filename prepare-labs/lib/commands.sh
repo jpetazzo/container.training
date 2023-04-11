@@ -14,16 +14,6 @@ _cmd_help() {
     printf "%s" "$HELP" | sort
 }
 
-_cmd build "Build the Docker image to run this program in a container"
-_cmd_build() {
-    docker-compose build
-}
-
-_cmd wrap "Run this program in a container"
-_cmd_wrap() {
-    docker-compose run --rm labctl "$@"
-}
-
 _cmd cards "Generate ready-to-print cards for a group of VMs"
 _cmd_cards() {
     TAG=$1
