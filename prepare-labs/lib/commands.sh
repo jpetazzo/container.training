@@ -498,7 +498,7 @@ EOF"
         kubeadm token generate > /tmp/token &&
         cat >/tmp/kubeadm-config.yaml <<EOF
 kind: InitConfiguration
-apiVersion: kubeadm.k8s.io/v1beta2
+apiVersion: kubeadm.k8s.io/v1beta3
 bootstrapTokens:
 - token: \$(cat /tmp/token)
 nodeRegistration:
@@ -506,7 +506,7 @@ nodeRegistration:
   - NumCPU
 ---
 kind: JoinConfiguration
-apiVersion: kubeadm.k8s.io/v1beta2
+apiVersion: kubeadm.k8s.io/v1beta3
 discovery:
   bootstrapToken:
     apiServerEndpoint: \$(cat /etc/name_of_first_node):6443
@@ -521,7 +521,7 @@ apiVersion: kubelet.config.k8s.io/v1beta1
 failSwapOn: false
 ---
 kind: ClusterConfiguration
-apiVersion: kubeadm.k8s.io/v1beta2
+apiVersion: kubeadm.k8s.io/v1beta3
 apiServer:
   certSANs:
   - \$(cat /tmp/ipv4)
