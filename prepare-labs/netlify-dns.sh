@@ -18,6 +18,9 @@
 }
 
 NETLIFY_CONFIG_FILE=~/.config/netlify/config.json
+if ! [ "$DOMAIN" ]; then
+  DOMAIN=container.training
+fi
 
 if ! [ -f "$NETLIFY_CONFIG_FILE" ]; then
   echo "Could not find Netlify configuration file ($NETLIFY_CONFIG_FILE)."
@@ -42,7 +45,7 @@ netlify() {
 }
 
 ZONE_ID=$(netlify dns_zones |
-          jq -r '.[] | select ( .name == "container.training" ) | .id')
+          jq -r '.[] | select ( .name == "'$DOMAIN'" ) | .id')
 
 _list() {
   netlify dns_zones/$ZONE_ID/dns_records |
@@ -50,7 +53,7 @@ _list() {
 }
 
 _add() {
-  NAME=$1.container.training
+  NAME=$1.$DOMAIN
   ADDR=$2
 
 
