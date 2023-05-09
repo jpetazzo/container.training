@@ -17,7 +17,7 @@ pssh() {
 
     echo "[parallel-ssh] $@"
 
-    $(which pssh) -h $HOSTFILE -l ubuntu \
+    $(which pssh || which parallel-ssh) -h $HOSTFILE -l ubuntu \
         --par ${PSSH_PARALLEL_CONNECTIONS-100} \
         --timeout 300 \
         -O LogLevel=ERROR \
