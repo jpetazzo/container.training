@@ -348,6 +348,26 @@ It will indicate which executables can be run on your engine.
 
 ---
 
+## Cache directories
+
+```bash
+RUN --mount=type=cache,target=/pipcache pip install --cache-dir /pipcache ...
+```
+
+- The `/pipcache` directory won't be in the final image
+
+- But it will persist across builds
+
+- This can simplify Dockerfiles a lot
+
+  - we no longer need to `download package && install package && rm package`
+
+  - download to a cache directory, and skip `rm` phase
+
+- Subsequent builds will also be faster, thanks to caching
+
+---
+
 ## More than builds
 
 - Buildkit is also used in other systems:

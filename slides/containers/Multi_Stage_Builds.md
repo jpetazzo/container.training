@@ -296,6 +296,8 @@ virtually "free."
 
 ---
 
+class: extra-details
+
 ## Build targets
 
 * We can also tag an intermediary stage with the following command:
@@ -312,6 +314,55 @@ virtually "free."
 * This can also be used to describe multiple images from a single Dockerfile
 
   (instead of using multiple Dockerfiles, which could go out of sync)
+
+--
+
+class: extra-details
+
+## Dealing with download caches
+
+* In some cases, our images contain temporary downloaded files or caches
+
+  (examples: packages downloaded by `pip`, Maven, etc.)
+
+* These can sometimes be disabled
+
+  (e.g. `pip install --no-cache-dir ...`)
+
+* The cache can also be cleaned immediately after installing
+
+  (e.g. `pip install ... && rm -rf ~/.cache/pip`)
+
+---
+
+class: extra-details
+
+## Download caches and multi-stage builds
+
+* Download+install packages in a build stage
+
+* Copy the installed packages to a run stage
+
+* Example: in the specific case of Python, use a virtual env
+
+  (install in the virtual env; then copy the virtual env directory)
+
+---
+
+class: extra-details
+
+## Download caches and BuildKit
+
+* BuildKit has a caching feature for run stages
+
+* It can address download caches elegantly
+
+* Example:
+  ```bash
+  RUN --mount=type=cache,target=/pipcache pip install --cache-dir /pipcache ...
+  ```
+
+* The cache won't be in the final image, but it'll persist across builds
 
 ???
 
