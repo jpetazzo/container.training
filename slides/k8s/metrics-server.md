@@ -111,38 +111,33 @@ Pros:
 
   (derived from the [official installation instructions](https://github.com/kubernetes-sigs/metrics-server#installation))
 
-- We're going to use Helm one more time:
+- We can also use a Helm chart:
   ```bash
-    helm upgrade --install metrics-server bitnami/metrics-server \
+    helm upgrade --install metrics-server metrics-server \
       --create-namespace --namespace metrics-server \
-      --set apiService.create=true \
-      --set extraArgs.kubelet-insecure-tls=true \
-      --set extraArgs.kubelet-preferred-address-types=InternalIP
+      --repo https://kubernetes-sigs.github.io/metrics-server/ \
+      --set args={--kubelet-insecure-tls=true}
   ```
 
-- What are these options for?
+- The `args` flag specified above should be sufficient on most clusters
 
 ---
 
-## Installation options
+class: extra-details
 
-- `apiService.create=true`
+## Kubelet insecure TLS?
 
-  register `metrics-server` with the Kubernetes aggregation layer
+- The metrics-server collects metrics by connecting to kubelet
 
-  (create an entry that will show up in `kubectl get apiservices`)
+- The connection is secured by TLS
 
-- `extraArgs.kubelet-insecure-tls=true`
+- This requires a valid certificate
 
-  when connecting to nodes to collect their metrics, don't check kubelet TLS certs
+- In some cases, the certificate is self-signed
 
-  (because most kubelet certs include the node name, but not its IP address)
+- In other cases, it might be valid, but include only the node name
 
-- `extraArgs.kubelet-preferred-address-types=InternalIP`
-
-  when connecting to nodes, use their internal IP address instead of node name
-
-  (because the latter requires an internal DNS, which is rarely configured)
+  (not its IP address, which is used by default by metrics-server)
 
 ---
 
