@@ -1119,7 +1119,7 @@ _cmd_passwords() {
     $0 ips "$TAG" | paste "$PASSWORDS_FILE" - | while read password nodes; do
         info "Setting password for $nodes..."
         for node in $nodes; do
-            echo $USER_LOGIN:$password | ssh $SSHOPTS ubuntu@$node sudo chpasswd
+            echo $USER_LOGIN:$password | ssh $SSHOPTS -i tags/$TAG/id_rsa ubuntu@$node sudo chpasswd
         done
     done
     info "Done."
