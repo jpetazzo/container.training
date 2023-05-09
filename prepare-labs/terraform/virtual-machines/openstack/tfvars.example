@@ -1,0 +1,20 @@
+# If you want to deploy to an OpenStack cluster, you need to:
+# 1) copy that file to e.g. myopenstackcluster.tfvars
+# 2) customize the copy (you need to replace all the CHANGEME values)
+# 3) deploy with "labctl create --provider openstack/myopenstackcluster ..."
+
+user = "CHANGEME"
+tenant = "CHANGEME"
+domain = "CHANGEME"
+password = "CHANGEME"
+auth_url = "https://identity.api.CHANGEME/v3"
+image = "Ubuntu 22.04"
+pool = "CHANGEME (pool of public IP addresses to use)"
+external_network_id = "CHANGEME-1234-abcd-1234-123456789abc"
+
+# These should correspond to OpenStack "flavors".
+node_sizes = {
+  S = "CHANGEME.1CPU.2GB"
+  M = "CHANGEME.2CPU.4GB"
+  L = "CHANGEME.3CPU.8GB"
+}
