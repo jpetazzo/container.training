@@ -772,6 +772,16 @@ EOF
         sudo tar -zxvf- -C /usr/local/bin kubeseal
         kubeseal --version
     fi"
+
+    ##VERSION## https://github.com/vmware-tanzu/velero/releases
+    VELERO_VERSION=1.11.0
+    pssh "
+    if [ ! -x /usr/local/bin/velero ]; then
+        curl -fsSL https://github.com/vmware-tanzu/velero/releases/download/v$VELERO_VERSION/velero-v$VELERO_VERSION-linux-$ARCH.tar.gz |
+        sudo tar --strip-components=1 --wildcards -zx -C /usr/local/bin '*/velero'
+        velero completion bash | sudo tee /etc/bash_completion.d/velero
+        velero version --client-only
+    fi"
 }
 
 _cmd kubereset "Wipe out Kubernetes configuration on all nodes"
