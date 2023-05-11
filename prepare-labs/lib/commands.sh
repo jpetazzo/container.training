@@ -140,9 +140,11 @@ bind l select-pane -R
 set -g mouse on
 
 # Make scrolling with wheels work
-
 bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'select-pane -t=; copy-mode -e; send-keys -M'"
 bind -n WheelDownPane select-pane -t= \; send-keys -M
+
+# Retain one million lines
+set-option -g history-limit 1000000
 SQRL
 
     # Install docker-prompt script
