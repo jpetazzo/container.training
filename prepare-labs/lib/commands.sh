@@ -1059,8 +1059,7 @@ _cmd tags "List groups of VMs known locally"
 _cmd_tags() {
     (
         cd tags
-        echo "[#] [Status] [Tag] [Mode] [Provider]" \
-           | awk '{ printf "%-7s %-12s %-30s %-10s %-25s\n", $1, $2, $3, $4, $5 }'
+        echo "[#] [Status] [Tag] [Mode] [Provider]"
         for tag in *; do
             if [ -f $tag/ips.txt ]; then
                 count="$(wc -l < $tag/ips.txt)"
@@ -1082,10 +1081,9 @@ _cmd_tags() {
             else
                 provider="?"
             fi
-            echo "$count $status $tag $mode $provider" \
-               | awk '{ printf "%-7s %-12s %-30s %-10s %-25s\n", $1, $2, $3, $4, $5 }'
+            echo "$count $status $tag $mode $provider"
         done
-    )
+    ) | column -t
 }
 
 _cmd test "Run tests (pre-flight checks) on a group of VMs"
