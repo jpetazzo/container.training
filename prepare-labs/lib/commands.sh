@@ -456,7 +456,7 @@ _cmd_kube() {
         pssh "
         sudo tee /etc/apt/preferences.d/kubernetes <<EOF
 Package: kubectl kubeadm kubelet
-Pin: version $KUBEVERSION*
+Pin: version $KUBEVERSION-*
 Pin-Priority: 1000
 EOF"
     fi
