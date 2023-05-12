@@ -1,13 +1,20 @@
 resource "openstack_compute_instance_v2" "_" {
-  for_each        = local.nodes
-  name            = each.value.node_name
-  image_name      = var.image
-  flavor_name     = each.value.node_size
-  security_groups = [openstack_networking_secgroup_v2._.name]
-  key_pair        = openstack_compute_keypair_v2._.name
-
+  for_each    = local.nodes
+  name        = each.value.node_name
+  image_name  = var.image
+  flavor_name = each.value.node_size
+  key_pair = openstack_compute_keypair_v2._.name
   network {
-    name = openstack_networking_network_v2._.name
+    port = openstack_networking_port_v2._[each.key].id
+  }
+}
+
+resource "openstack_networking_port_v2" "_" {
+  for_each              = local.nodes
+  network_id            = openstack_networking_network_v2._.id
+  port_security_enabled = false
+  fixed_ip {
+    subnet_id = openstack_networking_subnet_v2._.id
   }
 }
 

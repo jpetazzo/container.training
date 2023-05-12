@@ -3,9 +3,10 @@ resource "aws_instance" "_" {
   tags = {
     Name = each.value.node_name
   }
-  instance_type = each.value.node_size
-  key_name      = aws_key_pair._.key_name
-  ami           = data.aws_ami._.id
+  instance_type     = each.value.node_size
+  key_name          = aws_key_pair._.key_name
+  ami               = data.aws_ami._.id
+  source_dest_check = false
 }
 
 resource "aws_key_pair" "_" {
