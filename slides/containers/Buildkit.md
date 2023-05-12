@@ -99,13 +99,11 @@
 
 - Other ARM-based embedded systems (ODROID, NVIDIA Jetson...)
 
-- Apple M1
+- Apple M1, M2...
 
 - AWS Graviton
 
-- Ampere Altra (e.g. on Oracle Cloud)
-
-- ...
+- Ampere Altra (e.g. on Hetzner, Oracle Cloud, Scaleway...)
 
 ---
 
