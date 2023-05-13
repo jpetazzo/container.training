@@ -62,7 +62,7 @@ resource "null_resource" "wait_for_nodes" {
     }
     command = <<-EOT
       while sleep 1; do
-        kubectl get nodes --watch | grep --silent --line-buffered . &&
+        kubectl get nodes -o name | grep --silent . &&
         kubectl wait node --for=condition=Ready --all --timeout=10m &&
         break
       done

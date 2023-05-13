@@ -90,7 +90,6 @@ resource "kubernetes_service" "shpod_${index}" {
       name = "ssh"
       port = 22
       target_port = 22
-      node_port = 32222
     }
     type = "NodePort"
   }
@@ -222,7 +221,10 @@ output "ip_addresses_of_nodes" {
   value = join("\n", [
   %{ for index, cluster in clusters ~}
     join("\t", concat(
-      [ random_string.shpod_${index}.result, "ssh -l k8s -p 32222" ],
+      [
+        random_string.shpod_${index}.result,
+        "ssh -l k8s -p $${kubernetes_service.shpod_${index}.spec[0].port[0].node_port}"
+      ],
       split(" ", file("./externalips.${index}"))
     )),
   %{ endfor ~}
