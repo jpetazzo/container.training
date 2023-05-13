@@ -28,7 +28,7 @@ A few use-cases:
 
 - Cost optimization
 
-  (because individual `LoadBalancer` services typically cost money)
+  (using `LoadBalancer` services for everything would be expensive)
 
 - Automatic handling of TLS certificates
 
@@ -109,7 +109,7 @@ A few use-cases:
 
 - Step 1: deploy an *ingress controller*
 
-  (one-time setup)
+  (one-time setup; typically done by cluster admin)
 
 - Step 2: create *Ingress resources*
 
@@ -117,7 +117,7 @@ A few use-cases:
 
   - the controller watches ingress resources and sets up a LB
 
-- Step 3: set up DNS
+- Step 3: set up DNS (optional)
 
   - associate DNS entries with the load balancer address
 
@@ -175,15 +175,50 @@ class: extra-details
 
   - maybe motivated by the fact that Traefik releases are named after cheeses
 
-- For DNS, we will use [nip.io](http://nip.io/)
+- We will create ingress resources for various HTTP services
+
+- For DNS, we can use [nip.io](http://nip.io/)
 
   - `*.1.2.3.4.nip.io` resolves to `1.2.3.4`
 
-- We will create ingress resources for various HTTP services
+---
+
+## Classic ingress controller setup
+
+- Ingress controller runs with a Deployment
+
+  (with at least 2 replicas for redundancy)
+
+- It is exposed with a `LoadBalancer` Service
+
+- Typical for cloud-based clusters
+
+- Also common when running or on-premises with [MetalLB] or [kube-vip]
+
+[MetalLB]: https://metallb.org/
+[kube-vip]: https://kube-vip.io/
 
 ---
 
-## Accepting connections on port 80 (and 443)
+## Alternate ingress controller setup
+
+- Ingress controller runs with a DaemonSet
+
+  (on bigger clusters, this can be coupled with a `nodeSelector`)
+
+- It is exposed with `externalIPs`, `hostPort`, or `hostNetwork`
+
+- Typical for on-premises clusters
+
+  (where at least a set of nodes have a stable IP and high availability)
+
+---
+
+class: extra-details
+
+## Why not a `NodePort` Service?
+
+- Node ports are typically in the 30000-32767 range
 
 - Web site users don't want to specify port numbers
 
@@ -193,93 +228,39 @@ class: extra-details
 
   (and 443 if we want to handle HTTPS)
 
-- Let's see how we can achieve that!
+---
+
+class: extra-details
+
+## Local clusters
+
+- When running a local cluster, some extra steps might be necessary
+
+- When using Docker-based clusters on Linux:
+
+  *connect directly to the node's IP address (172.X.Y.Z)*
+
+- When using Docker-based clusters with Docker Desktop:
+
+  *set up port mapping (then connect to localhost:XYZ)*
+
+- Generic scenario:
+
+  *run `kubectl port-forward 8888:80` to the ingress controller*
+  <br/>
+  *(and then connect to `http://localhost:8888`)*
 
 ---
 
-## Various ways to expose something on port 80
+## Trying it out with Traefik
 
-- Service with `type: LoadBalancer`
+- We are going to run Traefik with a DaemonSet
 
-  *costs a little bit of money; not always available*
+  (there will be one instance of Traefik on every node of the cluster)
 
-- Service with one (or multiple) `ExternalIP`
-
-  *requires public nodes; limited by number of nodes*
-
-- Service with `hostPort` or `hostNetwork`
-
-  *same limitations as `ExternalIP`; even harder to manage*
-
----
-
-## Deploying pods listening on port 80
-
-- We are going to run Traefik in Pods with `hostNetwork: true`
-
-  (so that our load balancer can use the "real" port 80 of our nodes)
-
-- Traefik Pods will be created by a DaemonSet
-
-  (so that we get one instance of Traefik on every node of the cluster)
+- The Pods will use `hostPort: 80`
 
 - This means that we will be able to connect to any node of the cluster on port 80
-
-.warning[This is not typical of a production setup!]
-
----
-
-## Doing it in production
-
-- When running "on cloud", the easiest option is a `LoadBalancer` service
-
-- When running "on prem", it depends:
-
-  - [MetalLB] is a good option if a pool of public IP addresses is available
-
-  - otherwise, using `externalIPs` on a few nodes (2-3 for redundancy)
-
-- Many variations/optimizations are possible depending on our exact scenario!
-
-[MetalLB]: https://metallb.org/
-
----
-
-class: extra-details
-
-## Without `hostNetwork`
-
-- Normally, each pod gets its own *network namespace*
-
-  (sometimes called sandbox or network sandbox)
-
-- An IP address is assigned to the pod
-
-- This IP address is routed/connected to the cluster network
-
-- All containers of that pod are sharing that network namespace
-
-  (and therefore using the same IP address)
-
----
-
-class: extra-details
-
-## With `hostNetwork: true`
-
-- No network namespace gets created
-
-- The pod is using the network namespace of the host
-
-- It "sees" (and can use) the interfaces (and IP addresses) of the host
-
-- The pod can receive outside traffic directly, on any port
-
-- Downside: with most network plugins, network policies won't work for that pod
-
-  - most network policies work at the IP address level
-
-  - filtering that pod = filtering traffic from the node
 
 ---
 
@@ -293,7 +274,7 @@ class: extra-details
 
   - use a Daemon Set so that each node can accept connections
 
-  - enable `hostNetwork`
+  - enable `hostPort: 80`
 
   - add a *toleration* so that Traefik also runs on all nodes
 
@@ -426,11 +407,13 @@ This one is a special case that means "ignore all taints and run anyway."
 
 ## Running Traefik on our cluster
 
-- We provide a YAML file (`k8s/traefik.yaml`) which is essentially the sum of:
+- We provide a YAML file (@@LINK[k8s/traefik.yaml]) which contains:
 
-  - [Traefik's Daemon Set resources](https://github.com/containous/traefik/blob/v1.7/examples/k8s/traefik-ds.yaml) (patched with `hostNetwork` and tolerations)
+  - a `traefik` Namespace
 
-  - [Traefik's RBAC rules](https://github.com/containous/traefik/blob/v1.7/examples/k8s/traefik-rbac.yaml) allowing it to watch necessary API objects
+  - a `traefik` DaemonSet in that Namespace
+
+  - RBAC rules allowing Traefik to watch the necessary API objects
 
 .lab[
 
@@ -462,20 +445,6 @@ This is normal: we haven't provided any ingress rule yet.
 
 ---
 
-## Setting up DNS
-
-- To make our lives easier, we will use [nip.io](http://nip.io)
-
-- Check out `http://red.A.B.C.D.nip.io`
-
-  (replacing A.B.C.D with the IP address of `node1`)
-
-- We should get the same `404 page not found` error
-
-  (meaning that our DNS is "set up properly", so to speak!)
-
----
-
 ## Traefik web UI
 
 - Traefik provides a web dashboard
@@ -492,7 +461,7 @@ This is normal: we haven't provided any ingress rule yet.
 
 ---
 
-## Setting up host-based routing ingress rules
+## Setting up routing ingress rules
 
 - We are going to use the `jpetazzo/color` image
 
@@ -504,7 +473,7 @@ This is normal: we haven't provided any ingress rule yet.
 
 - Then we will create 3 ingress rules (one for each service)
 
-- We will route `<color>.A.B.C.D.nip.io` to the corresponding deployment
+- We will route requests to `/red`, `/green`, `/blue`
 
 ---
 
@@ -534,100 +503,164 @@ This is normal: we haven't provided any ingress rule yet.
 
 - Since Kubernetes 1.19, we can use `kubectl create ingress`
 
+  (if you're running an older version of Kubernetes, **you must upgrade**)
+
+.lab[
+
+- Create the three ingress resources:
   ```bash
-  kubectl create ingress red \
-      --rule=red.`A.B.C.D`.nip.io/*=red:80
+  kubectl create ingress red   --rule=/red=red:80
+  kubectl create ingress green --rule=/green=green:80
+  kubectl create ingress blue  --rule=/blue=blue:80
   ```
 
-- We can specify multiple rules per resource
+]
 
+---
+
+## Testing
+
+- We should now be able to access `localhost/red`, `localhost/green`, etc.
+
+.lab[
+
+- Check that these routes work correctly:
+  ```bash
+  curl http://localhost/red
+  curl http://localhost/green
+  curl http://localhost/blue
+  ```
+
+]
+
+---
+
+## Accessing other URIs
+
+- What happens if we try to access e.g. `/blue/hello`?
+
+.lab[
+
+- Retrieve the `ClusterIP` of Service `blue`:
+  ```bash
+  BLUE=$(kubectl get svc blue -o jsonpath={.spec.clusterIP})
+  ```
+
+- Check that the `blue` app serves `/hello`:
+  ```bash
+  curl $BLUE/hello
+  ```
+
+- See what happens if we try to access it through the Ingress:
+  ```bash
+  curl http://localhost/blue/hello
+  ```
+
+]
+
+---
+
+## Exact or prefix matches
+
+- By default, ingress rules are *exact* matches
+
+  (the request is routed only if the URI is exactly `/blue`)
+
+- We can also ask a *prefix* match by adding a `*` to the rule
+
+.lab[
+
+- Create a prefix match rule for the `blue` service:
+  ```bash
+  kubectl create ingress bluestar --rule=/blue*:blue:80
+  ```
+
+- Check that it works:
+  ```bash
+  curl http://localhost/blue/hello
+  ```
+
+]
+
+---
+
+## Multiple rules per Ingress resource
+
+- It is also possible to have multiple rules in a single resource
+
+.lab[
+
+- Create an Ingress resource with multiple rules:
   ```bash
   kubectl create ingress rgb \
-      --rule=red.`A.B.C.D`.nip.io/*=red:80 \
-      --rule=green.`A.B.C.D`.nip.io/*=green:80 \
-      --rule=blue.`A.B.C.D`.nip.io/*=blue:80
+      --rule=/red*=red:80 \
+      --rule=/green*=green:80 \
+      --rule=/blue*=blue:80
   ```
 
----
+- Check that everything still works after deleting individual rules
 
-## Pay attention to the `*`!
-
-- The `*` is important:
-
-  ```
-  --rule=red.A.B.C.D.nip.io/`*`=red:80
-  ```
-
-- It means "all URIs below that path"
-
-- Without the `*`, it means "only that exact path"
-
-  (if we omit it, requests for e.g. `red.A.B.C.D.nip.io/hello` will 404)
+]
 
 ---
 
-## Before Kubernetes 1.19
+## Using domain-based routing
 
-- Before Kubernetes 1.19:
+- In the previous examples, we didn't use domain names
 
-  - `kubectl create ingress` wasn't available
+  (we routed solely based on the URI of the request)
 
-  - `apiVersion: networking.k8s.io/v1` wasn't supported
+- We are now going to show how to use domain-based routing
 
-- It was necessary to use YAML, and `apiVersion: networking.k8s.io/v1beta1`
+- We are going to assume that we have a domain name
 
-  (see example on next slide)
+  (for instance: `cloudnative.tld`)
 
----
+- That domain name should be set up so that a few subdomains point to the ingress
 
-## YAML for old ingress resources
+  (for instance, `blue.cloudnative.tld`, `green.cloudnative.tld`...)
 
-Here is a minimal host-based ingress resource:
-
-```yaml
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: red
-spec:
-  rules:
-  - host: red.`A.B.C.D`.nip.io
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: red
-          servicePort: 80
-
-```
+- For simplicity or flexibility, we can also use a wildcard record
 
 ---
 
-## YAML for new ingress resources
+## Setting up DNS
 
-- Starting with Kubernetes 1.19, `networking.k8s.io/v1` is available
+- To make our lives easier, we will use [nip.io](http://nip.io)
 
-- And we can use `kubectl create ingress` 🎉
+- Check out `http://red.A.B.C.D.nip.io`
 
-- We can see "modern" YAML with `-o yaml --dry-run=client`:
+  (replacing A.B.C.D with the IP address of `node1`)
 
+- We should get the same `404 page not found` error
+
+  (meaning that our DNS is "set up properly", so to speak!)
+
+---
+
+## Setting up name-based Ingress
+
+.lab[
+
+- Set the `$IPADDR` variable to our ingress controller address:
   ```bash
-  kubectl create ingress red -o yaml --dry-run=client \
-      --rule=red.`A.B.C.D`.nip.io/*=red:80
-
+  IPADDR=`A.B.C.D`
   ```
 
----
+- Create our Ingress resource:
+  ```bash
+  kubectl create ingress rgb-with-domain \
+      --rule=red.$IPADDR.nip.io/*=red:80 \
+      --rule=green.$IPADDR.nip.io/*=green:80 \
+      --rule=blue.$IPADDR.nip.io/*=blue:80
+  ```
 
-## Creating ingress resources
+- Test it out:
+  ```bash
+  curl http://red.$IPADDR.nip.io/hello
+  ```
 
-- Create the ingress resources with `kubectl create ingress`
-
-  (or use the YAML manifests if using Kubernetes 1.18 or older)
-
-- Make sure to update the hostnames!
-
-- Check that you can connect to the exposed web apps
+]
 
 ---
 
@@ -677,7 +710,7 @@ class: extra-details
 
  GatewayClass, Gateway, HTTPRoute, TCPRoute...
 
-- It is still in alpha stage
+- It is now in beta (since v0.5.0, released in 2022)
 
 ???
 

@@ -1,36 +1,44 @@
 ---
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: traefik
+---
+apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: traefik-ingress-controller
-  namespace: kube-system
+  name: traefik
+  namespace: traefik
 ---
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
-  name: traefik-ingress-controller
-  namespace: kube-system
+  name: traefik
+  namespace: traefik
   labels:
-    k8s-app: traefik-ingress-lb
+    app: traefik
 spec:
   selector:
     matchLabels:
-      k8s-app: traefik-ingress-lb
+      app: traefik
   template:
     metadata:
       labels:
-        k8s-app: traefik-ingress-lb
-        name: traefik-ingress-lb
+        app: traefik
+        name: traefik
     spec:
       tolerations:
       - effect: NoSchedule
         operator: Exists
-      hostNetwork: true
-      serviceAccountName: traefik-ingress-controller
+      # If, for some reason, our CNI plugin doesn't support hostPort,
+      # we can enable hostNetwork instead. That should work everywhere
+      # but it doesn't provide the same isolation.
+      #hostNetwork: true
+      serviceAccountName: traefik
       terminationGracePeriodSeconds: 60
       containers:
-      - image: traefik:v2.5
-        name: traefik-ingress-lb
+      - image: traefik:v2.10
+        name: traefik
         ports:
         - name: http
           containerPort: 80
@@ -61,7 +69,7 @@ spec:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: traefik-ingress-controller
+  name: traefik
 rules:
   - apiGroups:
       - ""
@@ -69,14 +77,6 @@ rules:
       - services
       - endpoints
       - secrets
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - extensions
-    resources:
-      - ingresses
     verbs:
       - get
       - list
@@ -94,15 +94,15 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: traefik-ingress-controller
+  name: traefik
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: traefik-ingress-controller
+  name: traefik
 subjects:
 - kind: ServiceAccount
-  name: traefik-ingress-controller
-  namespace: kube-system
+  name: traefik
+  namespace: traefik
 ---
 kind: IngressClass
 apiVersion: networking.k8s.io/v1
