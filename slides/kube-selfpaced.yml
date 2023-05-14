@@ -54,7 +54,9 @@ content:
   - k8s/buildshiprun-dockerhub.md
   - k8s/ourapponkube.md
   #- k8s/exercise-wordsmith.md
+  - shared/yaml.md
   - k8s/yamldeploy.md
+  - k8s/namespaces.md
 -
   - k8s/setup-overview.md
   - k8s/setup-devel.md
@@ -67,8 +69,6 @@ content:
   - k8s/scalingdockercoins.md
   - shared/hastyconclusions.md
   - k8s/daemonset.md
-  - shared/yaml.md
-  - k8s/authoring-yaml.md
   #- k8s/exercise-yaml.md
 -
   - k8s/rollout.md
@@ -76,7 +76,6 @@ content:
   - k8s/healthchecks-more.md
   - k8s/record.md
 -
-  - k8s/namespaces.md
   - k8s/localkubeconfig.md
   #- k8s/access-eks-cluster.md
   - k8s/accessinternal.md

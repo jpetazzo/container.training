@@ -54,8 +54,8 @@ content:
   - k8s/labels-annotations.md
   - k8s/kubectl-logs.md
   - k8s/logs-cli.md
-  - k8s/namespaces.md
   - k8s/yamldeploy.md
+  - k8s/namespaces.md
   - k8s/setup-overview.md
   - k8s/setup-devel.md
   #- k8s/setup-managed.md
@@ -76,7 +76,6 @@ content:
   #- shared/hastyconclusions.md
   #- k8s/daemonset.md
   #- shared/yaml.md
-  #- k8s/authoring-yaml.md
   #- k8s/exercise-yaml.md
   #- k8s/localkubeconfig.md
   #- k8s/access-eks-cluster.md

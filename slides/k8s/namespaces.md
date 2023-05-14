@@ -1,73 +1,38 @@
 # Namespaces
 
-- We would like to deploy another copy of DockerCoins on our cluster
+- Resources like Pods, Deployments, Services... exist in *Namespaces*
 
-- We could rename all our deployments and services:
+- So far, we (probably) have been using the `default` Namespace
 
-  hasher → hasher2, redis → redis2, rng → rng2, etc.
-
-- That would require updating the code
-
-- There has to be a better way!
-
---
-
-- As hinted by the title of this section, we will use *namespaces*
+- We can create other Namespaces to organize our resources
 
 ---
 
-## Identifying a resource
+## Use-cases
 
-- We cannot have two resources with the same name
+- Example: a "dev" cluster where each developer has their own Namespace
 
-  (or can we...?)
+  (and they only have access to their own Namespace, not to other folks' Namespaces)
 
---
+- Example: a cluster with one `production` and one `staging` Namespace
 
-- We cannot have two resources *of the same kind* with the same name
+  (with similar applications running in each of them, but with different sizes)
 
-  (but it's OK to have an `rng` service, an `rng` deployment, and an `rng` daemon set)
+- Example: a "production" cluster with one Namespace per application
 
---
+  (or one Namespace per component of a bigger application)
 
-- We cannot have two resources of the same kind with the same name *in the same namespace*
+- Example: a "production" cluster with many instances of the same application
 
-  (but it's OK to have e.g. two `rng` services in different namespaces)
-
---
-
-- Except for resources that exist at the *cluster scope*
-
-  (these do not belong to a namespace)
+  (e.g. SAAS application with one instance per customer)
 
 ---
 
-## Uniquely identifying a resource
+## Pre-existing Namespaces
 
-- For *namespaced* resources:
+- On a freshly deployed cluster, we typically have the following four Namespaces:
 
-  the tuple *(kind, name, namespace)* needs to be unique
-
-- For resources at the *cluster scope*:
-
-  the tuple *(kind, name)* needs to be unique
-
-.lab[
-
-- List resource types again, and check the NAMESPACED column:
-  ```bash
-  kubectl api-resources
-  ```
-
-]
-
----
-
-## Pre-existing namespaces
-
-- If we deploy a cluster with `kubeadm`, we have three or four namespaces:
-
-  - `default` (for our applications)
+  - `default` (initial Namespace for our applications; also holds the `kubernetes` Service)
 
   - `kube-system` (for the control plane)
 
@@ -75,29 +40,29 @@
 
   - `kube-node-lease` (in Kubernetes 1.14 and later; contains Lease objects)
 
-- If we deploy differently, we may have different namespaces
+- Over time, we will almost certainly create more Namespaces!
 
 ---
 
-## Creating namespaces
+## Creating a Namespace
 
-- Let's see two identical methods to create a namespace
+- Let's see two ways to create a Namespace!
 
 .lab[
 
-- We can use `kubectl create namespace`:
+- First, with `kubectl create namespace`:
   ```bash
   kubectl create namespace blue
   ```
 
-- Or we can construct a very minimal YAML snippet:
+- Then, with a YAML snippet:
   ```bash
-	kubectl apply -f- <<EOF
-	apiVersion: v1
-	kind: Namespace
-	metadata:
-	  name: blue
-	EOF
+    kubectl apply -f- <<EOF
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: green
+    EOF
   ```
 
 ]
@@ -106,37 +71,120 @@
 
 ## Using namespaces
 
-- We can pass a `-n` or `--namespace` flag to most `kubectl` commands:
-  ```bash
-  kubectl -n blue get svc
-  ```
-
-- We can also change our current *context*
-
-- A context is a *(user, cluster, namespace)* tuple
-
-- We can manipulate contexts with the `kubectl config` command
-
----
-
-## Viewing existing contexts
-
-- On our training environments, at this point, there should be only one context
+- We can pass a `-n` or `--namespace` flag to most `kubectl` commands
 
 .lab[
 
-- View existing contexts to see the cluster name and the current user:
+- Create a Deployment in the `blue` Namespace:
   ```bash
-  kubectl config get-contexts
+  kubectl create deployment purple --image jpetazzo/color --namespace blue
+  ```
+
+- Check the Pods that were just created:
+  ```bash
+  kubectl get pods --all-namespaces
+  kubectl get pods --all-namespaces --selector app=purple
   ```
 
 ]
 
-- The current context (the only one!) is tagged with a `*`
+---
 
-- What are NAME, CLUSTER, AUTHINFO, and NAMESPACE?
+## Switching the active Namespace
+
+- We can change the "active" Namespace
+
+- This is useful if we're going to work in a given Namespace for a while
+
+  - it is easier than passing `--namespace ...` all the time
+
+  - it helps to avoid mistakes
+    <br/>
+    (e.g.: `kubectl delete -f foo.yaml` whoops wrong Namespace!)
+
+- We're going to see ~~one~~ ~~two~~ three different methods to switch namespaces!
 
 ---
+
+## Method 1 (kubens/kns)
+
+- To switch to the `blue` Namespace, run:
+  ```bash
+  kubens blue
+  ```
+
+- `kubens` is sometimes renamed or aliased to `kns`
+
+  (even less keystrokes!)
+
+- `kubens -` switches back to the previous Namespace
+
+- Pros: probably the easiest method out there
+
+- Cons: `kubens` is an extra tool that you need to install
+
+---
+
+## Method 2 (edit kubeconfig)
+
+- Edit `~/.kube/config`
+
+- There should be a `namespace:` field somewhere
+
+  - except if we haven't changed Namespace yet!
+
+  - in that case, change Namespace at least once using another method
+
+- We can just edit that file, and `kubectl` will use the new Namespace from now on
+
+- Pros: kind of easy; doesn't require extra tools
+
+- Cons: there can be multiple `namespace:` fields in that file; difficult to automate
+
+---
+
+## Method 3 (kubectl config)
+
+- To switch to the `blue` Namespace, run:
+  ```bash
+  kubectl config set-context --current --namespace blue
+  ```
+
+- This automatically edits the kubeconfig file
+
+- This is exactly what `kubens` does behind the scenes!
+
+- Pros: always works (as long as we have `kubectl`)
+
+- Cons: long and complicated to type
+
+  (but it's a good exercise for our fingers, maybe?)
+
+---
+
+class: extra-details
+
+## What are contexts?
+
+- Context = cluster + user + namespace
+
+- Useful to quickly switch between multiple clusters
+
+  (e.g. dev, prod, or different applications, different customers...)
+
+- Also useful to quickly switch between identities
+
+  (e.g. developer with "regular" access vs. cluster-admin)
+
+- Switch context with `kubectl config set-context` or `kubectx` / `kctx`
+
+- It is also possible to switch the kubeconfig file altogether
+
+  (by specifying `--kubeconfig` or setting the `KUBECONFIG` environment variable)
+
+---
+
+class: extra-details
 
 ## What's in a context
 
@@ -156,100 +204,55 @@
 
 ---
 
-## Switching contexts
+## Namespaces, Services, and DNS
 
-- We want to use a different namespace
+- When a Service is created, a record is added to the Kubernetes DNS
 
-- Solution 1: update the current context
+- For instance, for service `auth` in domain `staging`, this is typically:
 
-  *This is appropriate if we need to change just one thing (e.g. namespace or authentication).*
+  `auth.staging.svc.cluster.local`
 
-- Solution 2: create a new context and switch to it
+- By default, Pods are configured to resolve names in their Namespace's domain
 
-  *This is appropriate if we need to change multiple things and switch back and forth.*
+- For instance, a Pod in Namespace `staging` will have the following "search list":
 
-- Let's go with solution 1!
-
----
-
-## Updating a context
-
-- This is done through `kubectl config set-context`
-
-- We can update a context by passing its name, or the current context with `--current`
-
-.lab[
-
-- Update the current context to use the `blue` namespace:
-  ```bash
-  kubectl config set-context --current --namespace=blue
-  ```
-
-- Check the result:
-  ```bash
-  kubectl config get-contexts
-  ```
-
-]
+  `search staging.svc.cluster.local svc.cluster.local cluster.local`
 
 ---
 
-## Using our new namespace
+## Pods connecting to Services
 
-- Let's check that we are in our new namespace, then deploy a new copy of Dockercoins
+- Let's assume that we are in Namespace `staging`
 
-.lab[
+- ... and there is a Service named `auth`
 
-- Verify that the new context is empty:
-  ```bash
-  kubectl get all
-  ```
+- ... and we have code running in a Pod in that same Namespace
 
-]
+- Our code can:
 
----
+  - connect to Service `auth` in the same Namespace with `http://auth/`
 
-## Deploying DockerCoins with YAML files
+  - connect to Service `auth` in another Namespace (e.g. `prod`) with `http://auth.prod`
 
-- The GitHub repository `jpetazzo/kubercoins` contains everything we need!
-
-.lab[
-
-- Clone the kubercoins repository:
-  ```bash
-  cd ~
-  git clone https://github.com/jpetazzo/kubercoins
-  ```
-
-- Create all the DockerCoins resources:
-  ```bash
-  kubectl create -f kubercoins
-  ```
-
-]
-
-If the argument behind `-f` is a directory, all the files in that directory are processed. 
-
-The subdirectories are *not* processed, unless we also add the `-R` flag.
+  - ... or `http://auth.prod.svc` or `http://auth.prod.svc.cluster.local`
 
 ---
 
-## Viewing the deployed app
+## Deploying multiple instances of a stack
 
-- Let's see if this worked correctly!
+If all the containers in a given stack use DNS for service discovery,
+that stack can be deployed identically in multiple Namespaces.
 
-.lab[
+Each copy of the stack will communicate with the services belonging
+to the stack's Namespace.
 
-- Retrieve the port number allocated to the `webui` service:
-  ```bash
-  kubectl get svc webui
-  ```
+Example: we can deploy multiple copies of DockerCoins, one per
+Namespace, without changing a single line of code in DockerCoins,
+and even without changing a single line of code in our YAML manifests!
 
-- Point our browser to http://X.X.X.X:3xxxx
-
-]
-
-If the graph shows up but stays at zero, give it a minute or two!
+This is similar to what can be achieved e.g. with Docker Compose
+(but with Docker Compose, each stack is deployed in a Docker "network"
+instead of a Kubernetes Namespace).
 
 ---
 
@@ -257,19 +260,7 @@ If the graph shows up but stays at zero, give it a minute or two!
 
 - Namespaces *do not* provide isolation
 
-- A pod in the `green` namespace can communicate with a pod in the `blue` namespace
-
-- A pod in the `default` namespace can communicate with a pod in the `kube-system` namespace
-
-- CoreDNS uses a different subdomain for each namespace
-
-- Example: from any pod in the cluster, you can connect to the Kubernetes API with:
-
-  `https://kubernetes.default.svc.cluster.local:443/`
-
----
-
-## Isolating pods
+- By default, Pods in e.g. `prod` and `staging` Namespaces can communicate
 
 - Actual isolation is implemented with *network policies*
 
@@ -285,47 +276,11 @@ If the graph shows up but stays at zero, give it a minute or two!
 
 ---
 
-## Switch back to the default namespace
-
-- Let's make sure that we don't run future exercises and labs in the `blue` namespace
-
-.lab[
-
-- Switch back to the original context:
-  ```bash
-  kubectl config set-context --current --namespace=
-  ```
-
-]
-
-Note: we could have used `--namespace=default` for the same result.
-
----
-
-## Switching namespaces more easily
-
-- We can also use a little helper tool called `kubens`:
-
-  ```bash
-  # Switch to namespace foo
-  kubens foo
-  # Switch back to the previous namespace
-  kubens -
-  ```
-
-- On our clusters, `kubens` is called `kns` instead
-
-  (so that it's even fewer keystrokes to switch namespaces)
-
----
-
 ##  `kubens` and `kubectx`
 
-- With `kubens`, we can switch quickly between namespaces
+- These tools are available from https://github.com/ahmetb/kubectx
 
-- With `kubectx`, we can switch quickly between contexts
-
-- Both tools are simple shell scripts available from https://github.com/ahmetb/kubectx
+- They were initially simple shell scripts, and are now full-fledged Go programs
 
 - On our clusters, they are installed as `kns` and `kctx`
 
