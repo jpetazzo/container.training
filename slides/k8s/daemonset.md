@@ -52,7 +52,7 @@
 
 <!-- ##VERSION## -->
 
-- Unfortunately, as of Kubernetes 1.19, the CLI cannot create daemon sets
+- Unfortunately, as of Kubernetes 1.27, the CLI cannot create daemon sets
 
 --
 
@@ -81,33 +81,49 @@
 
 ## Creating the YAML file for our daemon set
 
-- Let's start with the YAML file for the current `rng` resource
+- DaemonSets and Deployments should be *pretty similar*
+
+- They both define how to create Pods
+
+- Can we transform a Deployment into a DaemonSet? 🤔
+
+- Let's try!
+
+---
+
+## Generating a Deployment manifest
+
+- Let's use `kubectl create deployment -o yaml --dry-run=client`
 
 .lab[
 
-- Dump the `rng` resource in YAML:
+- Generate the YAML for a Deployment:
   ```bash
-  kubectl get deploy/rng -o yaml >rng.yml
+    kubectl create deployment rng --image=dockercoins/rng:v0.1 \
+            -o yaml --dry-run=client
   ```
-
-- Edit `rng.yml`
-
+  
+- Save it to a file:
+  ```bash
+    kubectl create deployment rng --image=dockercoins/rng:v0.1 \
+            -o yaml --dry-run=client \
+            > rng.yaml
+  ```
+  
 ]
 
 ---
 
-## "Casting" a resource to another
+## Changing the `kind`
 
-- What if we just changed the `kind` field?
-
-  (It can't be that easy, right?)
+- Edit the YAML manifest and replace `Deployment` with `DaemonSet`
 
 .lab[
 
-- Change `kind: Deployment` to `kind: DaemonSet`
+- Edit the YAML file and make the change
 
 <!--
-```bash vim rng.yml```
+```bash vim rng.yaml```
 ```wait kind: Deployment```
 ```keys /Deployment```
 ```key ^J```
@@ -117,20 +133,31 @@
 ```key ^J```
 -->
 
-- Save, quit
-
-- Try to create our new resource:
+- Or, alternatively:
   ```bash
-  kubectl apply -f rng.yml
+  sed -i "s/kind: Deployment/kind: DaemonSet"
   ```
 
-<!-- ```wait error:``` -->
+]
+
+---
+
+## Creating the DaemonSet
+
+- Let's see if our DaemonSet manifest is valid!
+
+.lab[
+
+- Try to `kubectl apply` our new YAML:
+  ```bash
+  kubectl apply -f rng.yaml
+  ```
 
 ]
 
 --
 
-We all knew this couldn't be that easy, right!
+- Unfortunately, that doesn't work!
 
 ---
 
@@ -150,41 +177,26 @@ We all knew this couldn't be that easy, right!
 
 --
 
-- Workaround: fix the YAML
-
-  - remove the `replicas` field
-  - remove the `strategy` field (which defines the rollout mechanism for a deployment)
-  - remove the `progressDeadlineSeconds` field (also used by the rollout mechanism)
-  - remove the `status: {}` line at the end
-
---
-
-- Or, we could also ...
+- Workaround: fix the YAML and remove the `replicas` field
 
 ---
 
-## Use the `--force`, Luke
+## Fixing the problem
 
-- We could also tell Kubernetes to ignore these errors and try anyway
-
-- The `--force` flag's actual name is `--validate=false`
+- Let's remove the `replicas` field and try again
 
 .lab[
 
-- Try to load our YAML file and ignore errors:
+- Edit the `rng.yaml` file and remove the `replicas:` line
+
+- Then try to create the DaemonSet again:
   ```bash
-  kubectl apply -f rng.yml --validate=false
+  kubectl apply -f rng.yaml
   ```
 
 ]
 
---
-
-🎩✨🐇
-
---
-
-Wait ... Now, can it be *that* easy?
+- This time it should work!
 
 ---
 
@@ -255,9 +267,9 @@ daemonset.apps/rng  2        2        2      2           2          <none>      
 
 --
 
-The daemon set created one pod per node, except on the master node.
+The daemon set created one pod per node, except on the control plane node.
 
-The master node has [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) preventing pods from running there.
+The control plane node has [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) preventing pods from running there.
 
 (To schedule a pod on this node anyway, the pod will require appropriate [tolerations](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/).)
 
