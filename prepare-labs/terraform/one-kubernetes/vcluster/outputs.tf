@@ -27,13 +27,22 @@ data "kubernetes_service_v1" "vcluster" {
   }
 }
 
+data "kubernetes_nodes" "_" {
+}
+
+# In the variables below, we use "traditional" virtualization terms, i.e.:
+# host = "real" Kubernetes cluster
+# guest = virtual Kubernetes cluster
+
 locals {
-  kubeconfig_raw        = data.kubernetes_secret_v1.kubeconfig.data.config
-  node_port             = data.kubernetes_service_v1.vcluster.spec[0].port[0].node_port
-  outer_api_server_url  = yamldecode(file("~/kubeconfig")).clusters[0].cluster.server
-  outer_api_server_host = regex("https://([^:]+):", local.outer_api_server_url)[0]
-  inner_api_server_host = local.outer_api_server_host
-  inner_old_server_url  = yamldecode(local.kubeconfig_raw).clusters[0].cluster.server
-  inner_new_server_url  = "https://${local.inner_api_server_host}:${local.node_port}"
-  kubeconfig            = replace(local.kubeconfig_raw, local.inner_old_server_url, local.inner_new_server_url)
+  kubeconfig_raw           = data.kubernetes_secret_v1.kubeconfig.data.config
+  node_external_ip         = data.kubernetes_nodes._.nodes[0].metadata[0].labels.external_ip
+  node_port                = data.kubernetes_service_v1.vcluster.spec[0].port[0].node_port
+  host_api_server_url      = yamldecode(file("~/kubeconfig")).clusters[0].cluster.server
+  host_api_server_host     = regex("https://([^:]+):", local.host_api_server_url)[0]
+  guest_api_server_host    = local.node_external_ip
+  guest_api_server_port    = local.node_port
+  guest_api_server_url_new = "https://${local.guest_api_server_host}:${local.guest_api_server_port}"
+  guest_api_server_url_old = yamldecode(local.kubeconfig_raw).clusters[0].cluster.server
+  kubeconfig               = replace(local.kubeconfig_raw, local.guest_api_server_url_old,  local.guest_api_server_url_new)
 }
