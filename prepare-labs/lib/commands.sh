@@ -453,6 +453,7 @@ _cmd_kube() {
     need_tag
 
     if [ "$KUBEVERSION" ]; then
+        CLUSTER_CONFIGURATION_KUBERNETESVERSION='kubernetesVersion: "v'$KUBEVERSION'"'
         pssh "
         sudo tee /etc/apt/preferences.d/kubernetes <<EOF
 Package: kubectl kubeadm kubelet
@@ -479,13 +480,6 @@ EOF"
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl &&
     echo 'alias k=kubectl' | sudo tee /etc/bash_completion.d/k &&
     echo 'complete -F __start_kubectl k' | sudo tee -a /etc/bash_completion.d/k"
-
-    # Disable swap
-    # (note that this won't survive across node reboots!)
-    if [ "$INFRACLASS" = "linode" ]; then
-        pssh "
-        sudo swapoff -a"
-    fi
 
     # Install a valid configuration for containerd
     # (first, the CRI interface needs to be re-enabled;
@@ -527,6 +521,7 @@ apiVersion: kubeadm.k8s.io/v1beta3
 apiServer:
   certSANs:
   - \$(cat /tmp/ipv4)
+$CLUSTER_CONFIGURATION_KUBERNETESVERSION
 EOF
 	sudo kubeadm init --config=/tmp/kubeadm-config.yaml
     fi"
