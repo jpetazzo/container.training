@@ -208,171 +208,19 @@ class: extra-details
 
 - There are many ways to manage `kustomization.yaml` files, including:
 
-  - web wizards like [Replicated Ship](https://www.replicated.com/ship/)
-
   - the `kustomize` CLI
 
   - opening the file with our favorite text editor
+
+  - *web wizards like [Replicated Ship](https://www.replicated.com/ship/)* (deprecated)
 
 - Let's see these in action!
 
 ---
 
-## An easy way to get started with Kustomize
-
-- We are going to use [Replicated Ship](https://www.replicated.com/ship/) to experiment with Kustomize
-
-- The [Replicated Ship CLI](https://github.com/replicatedhq/ship/releases) has been installed on our clusters
-
-- Replicated Ship has multiple workflows; here is what we will do:
-
-  - initialize a Kustomize overlay from a remote GitHub repository
-
-  - customize some values using the web UI provided by Ship
-
-  - look at the resulting files and apply them to the cluster
-
----
-
-## Getting started with Ship
-
-- We need to run `ship init` in a new directory
-
-- `ship init` requires a URL to a remote repository containing Kubernetes YAML
-
-- It will clone that repository and start a web UI
-
-- Later, it can watch that repository and/or update from it
-
-- We will use the [jpetazzo/kubercoins](https://github.com/jpetazzo/kubercoins) repository
-
-  (it contains all the DockerCoins resources as YAML files)
-
----
-
-## `ship init`
-
-.lab[
-
-- Change to a new directory:
-  ```bash
-  mkdir ~/kustomcoins
-  cd ~/kustomcoins
-  ```
-
-- Run `ship init` with the kustomcoins repository:
-  ```bash
-  ship init https://github.com/jpetazzo/kubercoins
-  ```
-
-<!-- ```wait Open browser``` -->
-
-]
-
----
-
-## Access the web UI
-
-- `ship init` tells us to connect on `localhost:8800`
-
-- We need to replace `localhost` with the address of our node
-
-  (since we run on a remote machine)
-
-- Follow the steps in the web UI, and change one parameter
-
-  (e.g. set the number of replicas in the worker Deployment)
-
-- Complete the web workflow, and go back to the CLI
-
----
-
-## Inspect the results
-
-- Look at the content of our directory
-
-- `base` contains the kubercoins repository + a `kustomization.yaml` file
-
-- `overlays/ship` contains the Kustomize overlay referencing the base + our patch(es)
-
-- `rendered.yaml` is a YAML bundle containing the patched application
-
-- `.ship` contains a state file used by Ship
-
----
-
-## Using the results
-
-- We can `kubectl apply -f rendered.yaml`
-
-  (on any version of Kubernetes)
-
-- Starting with Kubernetes 1.14, we can apply the overlay directly with:
-  ```bash
-  kubectl apply -k overlays/ship
-  ```
-
-- But let's not do that for now!
-
-- We will create a new copy of DockerCoins in another namespace
-
----
-
-## Deploy DockerCoins with Kustomize
-
-.lab[
-
-- Create a new namespace:
-  ```bash
-  kubectl create namespace kustomcoins
-  ```
-
-- Deploy DockerCoins:
-  ```bash
-  kubectl apply -f rendered.yaml --namespace=kustomcoins
-  ```
-
-- Or, with Kubernetes 1.14, we can also do this:
-  ```bash
-  kubectl apply -k overlays/ship --namespace=kustomcoins
-  ```
-
-]
-
----
-
-## Checking our new copy of DockerCoins
-
-- We can check the worker logs, or the web UI
-
-.lab[
-
-- Retrieve the NodePort number of the web UI:
-  ```bash
-  kubectl get service webui --namespace=kustomcoins
-  ```
-
-- Open it in a web browser
-
-- Look at the worker logs:
-  ```bash
-  kubectl logs deploy/worker --tail=10 --follow --namespace=kustomcoins
-  ```
-
-<!--
-```wait units of work done``` 
-```key ^C```
--->
-
-]
-
-Note: it might take a minute or two for the worker to start.
-
----
-
 ## Working with the `kustomize` CLI
 
-- This is another way to get started
+- Editing manually could lead to error or typo, CLI provided a guided way to edit the `kustomization.yaml` file
 
 - General workflow:
 
@@ -386,11 +234,34 @@ Note: it might take a minute or two for the worker to start.
 
 ---
 
+## `kustomize create`
+
+.lab[
+
+- Change to a new directory:
+  ```bash
+  mkdir ~/kustomcoins
+  cd ~/kustomcoins
+  ```
+
+- Run `kustomize create` with the kustomcoins repository:
+  ```bash
+  kustomize create --resources https://github.com/jpetazzo/kubercoins
+  ```
+
+<!-- ```look at the files``` -->
+
+- Run `kustomize build | kubectl apply -f-`
+
+]
+
+---
+
 ## `kubectl` integration
 
 - Kustomize has been integrated in `kubectl` (since Kubernetes 1.14)
 
-  - `kubectl kustomize` can apply a kustomization
+  - `kubectl kustomize` is a equivalent to `kustomize build`
 
   - commands that use `-f` can also use `-k` (`kubectl apply`/`delete`/...)
 
@@ -426,6 +297,41 @@ class: extra-details
 
 ---
 
+## Labels
+
+Addind labels to all manifests can be done via:
+
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+...
+commonLabels:
+  app.kubernetes.io/name: dockercoin
+```
+
+or the CLI equivalent:
+
+```bash
+kustomize edit add label app.kubernetes.io/name:dockercoin
+```
+
+---
+
+## Labels usecase
+
+Particulary useful with `kubectl apply --prune`:
+
+```bash
+kubectl apply -k . --prune -l app.kubernetes.io.name=dockercoin
+```
+
+This will remove `"all"` (a predefined list of resource type) resources that match the selector
+but not present in the kustomization.
+
+- Allow operator to manage the garbage collection of the application's lifecycle.
+
+---
+
 ## Scaling
 
 Instead of using a patch, scaling can be done like this:
@@ -437,6 +343,12 @@ kind: Kustomization
 replicas:
 - name: worker
   count: 5
+```
+
+or the CLI equivalent:
+
+```bash
+kustomize edit set replicas worker=5
 ```
 
 It will automatically work with Deployments, ReplicaSets, StatefulSets.
@@ -464,6 +376,18 @@ images:
 - name: alpine
   digest: sha256:24a0c4b4a4c0eb97a1aabb8e29f18e917d05abfe1b7a7c07857230879ce7d3d3
 ```
+
+
+---
+
+... or via CLI:
+
+```bash
+kustomize edit set image name=[newName][:newTag][@digest]
+```
+
+- `[]` indicate optional parameter as in manpage standard
+- `:` and `@` are the delimiter used to indicate a field
 
 ---
 
