@@ -3,8 +3,8 @@ version: "3"
 services:
 
   ngrok-echo:
-    build: ngrok
-    command: ngrok http --log=stdout localhost:3000
+    image: ngrok/ngrok
+    command: http --log=stdout localhost:3000
     ports:
     - 3000
 
@@ -14,8 +14,8 @@ services:
     command: npx http-echo-server
 
   ngrok-flask:
-    build: ngrok
-    command: ngrok http --log=stdout localhost:5000
+    image: ngrok/ngrok
+    command: http --log=stdout localhost:5000
     ports:
     - 5000
 
