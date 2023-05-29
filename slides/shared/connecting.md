@@ -68,7 +68,7 @@ class: in-person
   Small setup effort; small cost; flexible environments
 
 - Create a bunch of clusters for you and your friends
-    ([instructions](https://@@GITREPO@@/tree/master/prepare-vms))
+    ([instructions](https://@@GITREPO@@/tree/main/prepare-labs))
 
   Bigger setup effort; ideal for group training
 

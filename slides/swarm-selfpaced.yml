@@ -25,6 +25,7 @@ content:
 #- shared/chat-room-zoom-webinar.md
 - shared/toc.md
 - - shared/prereqs.md
+  - shared/handson.md
   - shared/connecting.md
   - swarm/versions.md
   - |

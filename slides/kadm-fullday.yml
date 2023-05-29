@@ -27,7 +27,8 @@ content:
 #- shared/chat-room-zoom-webinar.md
 - shared/toc.md
 -
-  - k8s/prereqs-admin.md
+  - k8s/prereqs-advanced.md
+  - shared/handson.md
   - k8s/architecture.md
   #- k8s/internal-apis.md
   - k8s/deploymentslideshow.md
