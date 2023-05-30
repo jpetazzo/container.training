@@ -65,7 +65,7 @@
 
 - Mercredi: 16h-17h
 
-- Jeudi: 17h-18h
+- Jeudi: 14h-15h
 
 - Sur [Jitsi][jitsi] (lien "visioconf" sur le portail de formation)
 
