@@ -1,0 +1,1 @@
+../../providers/azure/variables.tf
