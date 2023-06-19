@@ -1,5 +1,5 @@
 variable "node_sizes" {
-  type = map(any)
+  type    = map(any)
   default = {}
 }
 

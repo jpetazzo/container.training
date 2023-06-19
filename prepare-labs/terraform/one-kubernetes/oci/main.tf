@@ -11,17 +11,23 @@ data "oci_containerengine_cluster_option" "_" {
 locals {
   compartment_id     = oci_identity_compartment._.id
   kubernetes_version = data.oci_containerengine_cluster_option._.kubernetes_versions[0]
+  images = [
+    for image in data.oci_containerengine_node_pool_option._.sources : image
+    if can(regex("OKE", image.source_name))
+    && can(regex(substr(local.kubernetes_version, 1, -1), image.source_name))
+    && !can(regex("GPU", image.source_name))
+    && !can(regex("aarch64", image.source_name))
+  ]
+
 }
 
 data "oci_identity_availability_domains" "_" {
   compartment_id = local.compartment_id
 }
 
-data "oci_core_images" "_" {
-  compartment_id           = local.compartment_id
-  operating_system         = "Oracle Linux"
-  operating_system_version = "8"
-  shape                    = local.shape
+data "oci_containerengine_node_pool_option" "_" {
+  compartment_id      = local.compartment_id
+  node_pool_option_id = oci_containerengine_cluster._.id
 }
 
 resource "oci_containerengine_cluster" "_" {
@@ -56,7 +62,7 @@ resource "oci_containerengine_node_pool" "_" {
     }
   }
   node_source_details {
-    image_id    = data.oci_core_images._.images[0].id
+    image_id    = local.images[0].image_id
     source_type = "image"
   }
 }

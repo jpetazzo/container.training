@@ -44,5 +44,5 @@ locals {
   guest_api_server_port    = local.node_port
   guest_api_server_url_new = "https://${local.guest_api_server_host}:${local.guest_api_server_port}"
   guest_api_server_url_old = yamldecode(local.kubeconfig_raw).clusters[0].cluster.server
-  kubeconfig               = replace(local.kubeconfig_raw, local.guest_api_server_url_old,  local.guest_api_server_url_new)
+  kubeconfig               = replace(local.kubeconfig_raw, local.guest_api_server_url_old, local.guest_api_server_url_new)
 }
