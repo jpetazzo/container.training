@@ -4,6 +4,11 @@
 # another set of clusters while a first one is still running)
 # you should set the TF_VAR_cluster_name environment variable.
 
+if ! [ "$TF_VAR_cluster_name" ]; then
+  echo "Please set TF_VAR_cluster_name. Thanks."
+  exit 1
+fi
+
 cd terraform/one-kubernetes
 
 case "$1" in
