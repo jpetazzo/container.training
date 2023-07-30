@@ -100,7 +100,7 @@ class: extra-details
 
 - We present 3 methods to obtain a certificate
 
-- We suggest that we use method 1 (self-signed certificate)
+- We suggest that you use method 1 (self-signed certificate)
 
   - it's the simplest and fastest method
 
