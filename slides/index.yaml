@@ -981,10 +981,6 @@
 #  event: LISA
 #  title: Deploying and Scaling Applications with Docker Swarm
 
-#2015-09-24-strangeloop
-
-
-
 - title: Introduction to Docker and Containers
   slides: intro-selfpaced.yml.html
 
