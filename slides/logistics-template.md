@@ -1,62 +1,22 @@
 ## Introductions
 
-⚠️ This slide should be customized by the tutorial instructor(s).
+- Hello! I'm Jérôme ([@jpetazzo@hachyderm.io], Ardan Labs)
 
-<!--
+- Training schedule :
 
-- Hello! We are:
+|           |           |             |
+|-----------|-----------|-------------|
+| Monday    | morning   | 9:30-12:30  |
+| Monday    | afternoon | 14:30-16:30 |
+| Tuesday   | morning   | 9:00-13:00  |
+| Wednesday | morning   | 9:00-13:00  |
+| Thursday  | morning   | 9:00-13:00  |
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
+- We'll have regular breaks as well
 
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Ardan Labs)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Tiny Shell Script LLC)
-
--->
-
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
-
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
+- Feel free to interrupt for questions at any time!
 
 - Live feedback, questions, help: @@CHAT@@
-
--->
-
-<!--
-
-- You ~~should~~ must ask questions! Lots of questions!
-
-  (especially when you see full screen container pictures)
-
-- Use @@CHAT@@ to ask questions, get help, etc.
-
--->
-
-<!-- -->
 
 [@alexbuisine]: https://twitter.com/alexbuisine
 [EphemeraSearch]: https://ephemerasearch.com/
