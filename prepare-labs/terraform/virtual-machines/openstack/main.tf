@@ -1,11 +1,19 @@
 resource "openstack_compute_instance_v2" "_" {
   for_each    = local.nodes
   name        = each.value.node_name
-  image_name  = var.image
+  image_name  = data.openstack_images_image_v2._.name
   flavor_name = each.value.node_size
-  key_pair = openstack_compute_keypair_v2._.name
+  key_pair    = openstack_compute_keypair_v2._.name
   network {
     port = openstack_networking_port_v2._[each.key].id
+  }
+}
+
+data "openstack_images_image_v2" "_" {
+  most_recent = true
+  properties = {
+    os      = "ubuntu"
+    version = "22.04"
   }
 }
 

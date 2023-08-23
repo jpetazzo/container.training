@@ -31,10 +31,6 @@ variable "external_network_id" {
   type = string
 }
 
-variable "image" {
-  type = string
-}
-
 variable "node_sizes" {
   type    = map(any)
   default = {}
