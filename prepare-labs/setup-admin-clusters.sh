@@ -7,7 +7,7 @@ STUDENTS=2
 #export TF_VAR_location=eu-north-1
 export TF_VAR_node_size=S
 
-SETTINGS=admin-dmuc
+SETTINGS=admin-monokube
 TAG=$PREFIX-$SETTINGS
 ./labctl create \
 	--tag $TAG \
@@ -15,15 +15,7 @@ TAG=$PREFIX-$SETTINGS
 	--settings settings/$SETTINGS.env \
 	--students $STUDENTS
 
-SETTINGS=admin-kubenet
-TAG=$PREFIX-$SETTINGS
-./labctl create \
-	--tag $TAG \
-	--provider $PROVIDER \
-	--settings settings/$SETTINGS.env \
-	--students $STUDENTS
-
-SETTINGS=admin-kuberouter
+SETTINGS=admin-polykube
 TAG=$PREFIX-$SETTINGS
 ./labctl create \
 	--tag $TAG \

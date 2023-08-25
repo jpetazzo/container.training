@@ -421,9 +421,22 @@ _cmd_kubebins() {
     need_tag
 
     ##VERSION##
-    ETCD_VERSION=v3.4.13
-    K8SBIN_VERSION=v1.19.11 # Can't go to 1.20 because it requires a serviceaccount signing key.
-    CNI_VERSION=v0.8.7
+    if [ "$KUBEVERSION" = "" ]; then
+        KUBEVERSION="$(curl -fsSL https://cdn.dl.k8s.io/release/stable.txt | sed s/^v//)"
+    fi
+
+    case "$KUBEVERSION" in
+    1.19.*)
+      ETCD_VERSION=v3.4.13
+      CNI_VERSION=v0.8.7
+      ;;
+    *)
+      ETCD_VERSION=v3.5.9
+      CNI_VERSION=v1.3.0
+      ;;
+    esac
+
+    K8SBIN_VERSION="v$KUBEVERSION"
     ARCH=${ARCHITECTURE-amd64}
     pssh --timeout 300 "
     set -e
@@ -447,13 +460,12 @@ _cmd_kubebins() {
     "
 }
 
-_cmd kube "Setup kubernetes clusters with kubeadm (must be run AFTER deploy)"
-_cmd_kube() {
+_cmd kubepkgs "Install Kubernetes packages (kubectl, kubeadm, kubelet)"
+_cmd_kubepkgs() {
     TAG=$1
     need_tag
 
     if [ "$KUBEVERSION" ]; then
-        CLUSTER_CONFIGURATION_KUBERNETESVERSION='kubernetesVersion: "v'$KUBEVERSION'"'
         pssh "
         sudo tee /etc/apt/preferences.d/kubernetes <<EOF
 Package: kubectl kubeadm kubelet
@@ -480,6 +492,18 @@ EOF"
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl &&
     echo 'alias k=kubectl' | sudo tee /etc/bash_completion.d/k &&
     echo 'complete -F __start_kubectl k' | sudo tee -a /etc/bash_completion.d/k"
+}
+
+_cmd kubeadm "Setup kubernetes clusters with kubeadm"
+_cmd_kubeadm() {
+    TAG=$1
+    need_tag
+
+    if [ "$KUBEVERSION" ]; then
+        CLUSTER_CONFIGURATION_KUBERNETESVERSION='kubernetesVersion: "v'$KUBEVERSION'"'
+        IGNORE_SYSTEMVERIFICATION="- SystemVerification"
+        IGNORE_SWAP="- Swap"
+    fi
 
     # Install a valid configuration for containerd
     # (first, the CRI interface needs to be re-enabled;
@@ -500,6 +524,8 @@ bootstrapTokens:
 nodeRegistration:
   ignorePreflightErrors:
   - NumCPU
+  $IGNORE_SYSTEMVERIFICATION
+  $IGNORE_SWAP
 ---
 kind: JoinConfiguration
 apiVersion: kubeadm.k8s.io/v1beta3
@@ -511,6 +537,8 @@ discovery:
 nodeRegistration:
   ignorePreflightErrors:
   - NumCPU
+  $IGNORE_SYSTEMVERIFICATION
+  $IGNORE_SWAP
 ---
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
