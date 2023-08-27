@@ -30,13 +30,15 @@ content:
   - k8s/architecture.md
   - k8s/internal-apis.md
   - k8s/deploymentslideshow.md
-  - k8s/dmuc.md
+  - k8s/dmuc-easy.md
 - #2
-  - k8s/multinode.md
-  - k8s/cni.md
-  - k8s/interco.md
-- #3
+  - k8s/dmuc-medium.md
+  - k8s/dmuc-hard.md
+  #- k8s/multinode.md
+  #- k8s/cni.md
+  #- k8s/interco.md
   - k8s/cni-internals.md
+- #3
   - k8s/apilb.md
   - k8s/control-plane-auth.md
   - |

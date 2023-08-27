@@ -1,4 +1,4 @@
-# Building our own cluster
+# Building our own cluster (easy)
 
 - Let's build our own cluster!
 
@@ -33,10 +33,7 @@
 
 ## Our environment
 
-- We will use the machine indicated as `dmuc1`
-
-  (this stands for "Dessine Moi Un Cluster" or "Draw Me A Sheep",
-  <br/>in homage to Saint-Exupery's "The Little Prince")
+- We will use the machine indicated as `monokube1`
 
 - This machine:
 
@@ -48,13 +45,33 @@
 
 ---
 
+## The fine print
+
+- We're going to use a *very old* version of Kubernetes
+
+  (specifically, 1.19)
+
+- Why?
+
+- It's much easier to set up than recent versions
+
+  - it's compatible with Docker (no need to set up CNI)
+
+  - it doesn't require a ServiceAccount keypair
+
+  - it can be exposed over plain HTTP (insecure but easier)
+
+- We'll do that, and later, move to recent versions of Kubernetes!
+
+---
+
 ## Checking our environment
 
 - Let's make sure we have everything we need first
 
 .lab[
 
-- Log into the `dmuc1` machine
+- Log into the `monokube1` machine
 
 - Get root:
   ```bash
@@ -547,7 +564,7 @@ Success!
 
 Our node should show up.
 
-Its name will be its hostname (it should be `dmuc1`).
+Its name will be its hostname (it should be `monokube1`).
 
 ---
 

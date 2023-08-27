@@ -151,9 +151,11 @@ content:
   - k8s/owners-and-dependents.md
   - k8s/events.md
 -
-  - k8s/dmuc.md
-  - k8s/multinode.md
-  - k8s/cni.md
+  - k8s/dmuc-easy.md
+  - k8s/dmuc-medium.md
+  - k8s/dmuc-hard.md
+  #- k8s/multinode.md
+  #- k8s/cni.md
   - k8s/cni-internals.md
   - k8s/apilb.md
   - k8s/staticpods.md
