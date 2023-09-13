@@ -873,7 +873,7 @@ This time, it should work.
 
 - Enable RBAC, and generate individual certificates for each controller
 
-  (check the [certificate paths][certpath] section in the Kubernetes documentatio
+  (check the [certificate paths][certpath] section in the Kubernetes documentation
   for a detailed list of all the certificates and keys that are used by the
   control plane, and which flags are used by which components to configure them!)
 

@@ -545,7 +545,38 @@ clusters:
 
 ]
 
-Success!
+If it works: great!
+
+If it complains about a "cgroup driver", check the next slide.
+
+---
+
+## Cgroup drivers
+
+- Cgroups ("control groups") are a Linux kernel feature
+
+- They're used to account and limit resources
+
+  (e.g.: memory, CPU, block I/O...)
+
+- There are multiple ways to manipulate cgroups, including:
+
+  - through a pseudo-filesystem (typically mounted in /sys/fs/cgroup)
+
+  - through systemd
+
+- Kubelet and the container engine need to agree on which method to use
+
+---
+
+## Setting the cgroup driver
+
+- If kubelet refused to start, mentioning a cgroup driver issue, try:
+  ```bash
+  kubelet --kubeconfig ~/.kube/config --cgroup-driver=systemd
+  ```
+
+- That *should* do the trick!
 
 ---
 
