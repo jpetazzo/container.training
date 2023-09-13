@@ -126,6 +126,7 @@ set number
 set shiftwidth=2
 set softtabstop=2
 set nowrap
+set laststatus=2
 SQRL
 
     pssh -I "sudo -u $USER_LOGIN tee /home/$USER_LOGIN/.tmux.conf" <<SQRL
