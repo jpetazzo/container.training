@@ -111,34 +111,6 @@
 
 ---
 
-## General guidelines
-
-- To update a component, use whatever was used to install it
-
-- If it's a distro package, update that distro package
-
-- If it's a container or pod, update that container or pod
-
-- If you used configuration management, update with that
-
----
-
-## Know where your binaries come from
-
-- Sometimes, we need to upgrade *quickly*
-
-  (when a vulnerability is announced and patched)
-
-- If we are using an installer, we should:
-
-  - make sure it's using upstream packages
-
-  - or make sure that whatever packages it uses are current
-
-  - make sure we can tell it to pin specific component versions
-
----
-
 ## Important questions
 
 - Should we upgrade the control plane before or after the kubelets?
@@ -203,6 +175,34 @@ and kubectl, which can be one MINOR ahead or behind API server.]
 - ... Which means that MINOR releases are maintained approximately 9 months
 
 - We should expect to upgrade at least every 3 months (on average)
+
+---
+
+## General guidelines
+
+- To update a component, use whatever was used to install it
+
+- If it's a distro package, update that distro package
+
+- If it's a container or pod, update that container or pod
+
+- If you used configuration management, update with that
+
+---
+
+## Know where your binaries come from
+
+- Sometimes, we need to upgrade *quickly*
+
+  (when a vulnerability is announced and patched)
+
+- If we are using an installer, we should:
+
+  - make sure it's using upstream packages
+
+  - or make sure that whatever packages it uses are current
+
+  - make sure we can tell it to pin specific component versions
 
 ---
 

@@ -114,7 +114,7 @@
 
   - plugins (compiled in API server; enabled/disabled by reconfiguration)
 
-  - webhooks (registesred dynamically)
+  - webhooks (registered dynamically)
 
 - Admission control has many other uses
 
