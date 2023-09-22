@@ -21,6 +21,11 @@ digitalocean-pvc)
     jq '.[] | select(.name | startswith("pvc-")) | .id' | 
     xargs -n1 -P10 doctl compute volume delete --force
   ;;
+scaleway-pvc)
+  scw instance volume list --output json |
+    jq '.[] | select(.name | contains("_pvc-")) | .id' |
+    xargs -n1 -P10 scw instance volume delete
+  ;;
 *)
   echo "Unknown combination of provider ('$1') and resource ('$2')."
   ;;
