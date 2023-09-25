@@ -1,60 +1,16 @@
 ## Introductions
 
-⚠️ This slide should be customized by the tutorial instructor(s).
+- Hello! I'm Jérôme Petazzoni ([@jpetazzo], [@jpetazzo@hachyderm.io], Ardan Labs)
 
-<!--
+- The training will run from 7:30am to noon (Shanghai) / 3:30pm to 8pm (Vancouver)
 
-- Hello! We are:
-
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
-
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Ardan Labs)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Tiny Shell Script LLC)
-
--->
-
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
+- We'll have regular breaks
 
 - Feel free to interrupt for questions at any time
 
 - *Especially when you see full screen container pictures!*
 
 - Live feedback, questions, help: @@CHAT@@
-
--->
-
-<!--
-
-- You ~~should~~ must ask questions! Lots of questions!
-
-  (especially when you see full screen container pictures)
-
-- Use @@CHAT@@ to ask questions, get help, etc.
-
--->
 
 <!-- -->
 
@@ -67,9 +23,23 @@
 
 ---
 
+## Scheduling
+
+- The training has 4 parts
+
+  (1 part = 1 day)
+
+- Part 1 will be taught twice:
+
+  - Monday evening (Vancouver time) / **Tuesday morning (Shanghai time)**
+
+  - **Friday evening (Vancouver time)** / Saturday morning (Shanghai time)
+
+---
+
 ## Exercises
 
-- At the end of each day, there is a series of exercises
+- Some days, there will be exercises (at the end of the day)
 
 - To make the most out of the training, please try the exercises!
 

@@ -203,11 +203,9 @@ What does that mean?
 
 ## Let's experiment a bit!
 
-- For this section, connect to the first node of the `test` cluster
+- For this section, we can use any Kubernetes environment (including KinD, minikube...)
 
 .lab[
-
-- SSH to the first node of the test cluster
 
 - Check that the cluster is operational:
   ```bash

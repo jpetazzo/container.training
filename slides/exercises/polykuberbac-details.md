@@ -1,4 +1,4 @@
-# Exercise — Enable RBAC
+# Exercise — Enable RBAC on our custom cluster
 
 - We want to enable RBAC on the "polykube" cluster
 
