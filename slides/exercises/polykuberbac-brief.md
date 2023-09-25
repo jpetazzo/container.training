@@ -1,4 +1,4 @@
-## Exercise — Enable RBAC
+## Exercise — Enable RBAC on our custom cluster
 
 - Enable RBAC on a manually-deployed control plane
 

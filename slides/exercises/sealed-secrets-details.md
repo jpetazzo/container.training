@@ -1,4 +1,4 @@
-# Exercise — Sealed Secrets
+# Exercise — Sealed Secrets (and more RBAC!)
 
 This is a "combo exercise" to practice the following concepts:
 
