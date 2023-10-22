@@ -10,9 +10,18 @@ fi
 . ~/creds/creds.cloudflare.dns
 
 cloudflare() {
+  case "$1" in
+  GET|POST|DELETE)
+    METHOD="$1"
+    shift
+    ;;
+  *)
+    METHOD=""
+    ;;
+  esac
   URI=$1
   shift
-  http https://api.cloudflare.com/client/v4/$URI "$@" "Authorization:Bearer $CLOUDFLARE_TOKEN"
+  http --ignore-stdin $METHOD https://api.cloudflare.com/client/v4/$URI "$@" "Authorization:Bearer $CLOUDFLARE_TOKEN"
 }
 
 _list_zones() {
@@ -29,6 +38,15 @@ _populate_zone() {
   for IPADDR in $*; do
     cloudflare zones/$ZONE_ID/dns_records "name=*" "type=A" "content=$IPADDR"
     cloudflare zones/$ZONE_ID/dns_records "name=\@" "type=A" "content=$IPADDR"
+  done
+}
+
+_clear_zone() {
+  ZONE_ID=$(_get_zone_id $1)
+  for RECORD_ID in $(
+    cloudflare zones/$ZONE_ID/dns_records  | jq -r .result[].id
+  ); do
+    cloudflare DELETE zones/$ZONE_ID/dns_records/$RECORD_ID
   done
 }
 
