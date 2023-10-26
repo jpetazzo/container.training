@@ -109,7 +109,7 @@ class: extra-details
 
 - Install Go
 
-  (on our VMs: `sudo snap install go --classic`)
+  (on our VMs: `sudo snap install go --classic` or `sudo apk add go`)
 
 - Install kubebuilder
 
@@ -250,7 +250,7 @@ spec:
 
 ## Loading an object
 
-Open `controllers/machine_controller.go`.
+Open `internal/controllers/machine_controller.go`.
 
 Add that code in the `Reconcile` method, at the `TODO(user)` location:
 
@@ -505,7 +505,7 @@ if machine.Spec.SwitchPosition != "down" {
 	changeAt := machine.Status.SeenAt.Time.Add(5 * time.Second)
 	if now.Time.After(changeAt) {
 		machine.Spec.SwitchPosition = "down"
-    machine.Status.SeenAt = nil
+		machine.Status.SeenAt = nil
 		if err := r.Update(ctx, &machine); err != nil {
 			logger.Info("error updating switch position")
 			return ctrl.Result{}, client.IgnoreNotFound(err)
@@ -629,17 +629,17 @@ Note: this time, only create a new custom resource; not a new controller.
 - We can retrieve associated switches like this:
 
   ```go
-  var switches uselessv1alpha1.SwitchList
+    var switches uselessv1alpha1.SwitchList
 
-  if err := r.List(ctx, &switches,
-    client.InNamespace(req.Namespace),
-    client.MatchingLabels{"machine": req.Name},
-    ); err != nil {
-    logger.Error(err, "unable to list switches of the machine")
-    return ctrl.Result{}, client.IgnoreNotFound(err)
-  }
+    if err := r.List(ctx, &switches,
+      client.InNamespace(req.Namespace),
+      client.MatchingLabels{"machine": req.Name},
+      ); err != nil {
+      logger.Error(err, "unable to list switches of the machine")
+      return ctrl.Result{}, client.IgnoreNotFound(err)
+    }
 
-  logger.Info("Found switches", "switches", switches)
+    logger.Info("Found switches", "switches", switches)
   ```
 
 ---
@@ -649,13 +649,13 @@ Note: this time, only create a new custom resource; not a new controller.
 - Each time we reconcile a Machine, let's update its status:
 
   ```go
-  status := ""
-  for _, sw := range switches.Items {
-    status += string(sw.Spec.Position[0])
-  }
-  machine.Status.Positions = status
-  if err := r.Status().Update(ctx, &machine); err != nil {
-    ...
+    status := ""
+    for _, sw := range switches.Items {
+      status += string(sw.Spec.Position[0])
+    }
+    machine.Status.Positions = status
+    if err := r.Status().Update(ctx, &machine); err != nil {
+      ...
   ```
 
 - Run the controller and check that POSITIONS gets updated
@@ -721,7 +721,7 @@ if err := r.Create(ctx, &sw); err != nil { ...
 Define the following helper function:
 
 ```go
-func (r *MachineReconciler) machineOfSwitch(obj client.Object) []ctrl.Request {
+func (r *MachineReconciler) machineOfSwitch(ctx context.Context, obj client.Object) []ctrl.Request {
   return []ctrl.Request{
     ctrl.Request{
       NamespacedName: types.NamespacedName{
@@ -746,7 +746,7 @@ func (r *MachineReconciler) SetupWithManager(mgr ctrl.Manager) error {
     For(&uselessv1alpha1.Machine{}).
     Owns(&uselessv1alpha1.Switch{}).
     Watches(
-      &source.Kind{Type: &uselessv1alpha1.Switch{}},
+      &uselessv1alpha1.Switch{},
       handler.EnqueueRequestsFromMapFunc(r.machineOfSwitch),
     ).
     Complete(r)
