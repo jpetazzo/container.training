@@ -339,33 +339,11 @@ class: extra-details
 
 ---
 
-## Service catalog
-
-- *Service catalog* is another extension mechanism
-
-- It's not extending the Kubernetes API strictly speaking
-
-  (but it still provides new features!)
-
-- It doesn't create new types; it uses:
-
-  - ClusterServiceBroker
-  - ClusterServiceClass
-  - ClusterServicePlan
-  - ServiceInstance
-  - ServiceBinding
-
-- It uses the Open service broker API
-
----
-
 ## Documentation
 
 - [Custom Resource Definitions: when to use them](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
 
 - [Custom Resources Definitions: how to use them](https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/)
-
-- [Service Catalog](https://kubernetes.io/docs/concepts/extend-kubernetes/service-catalog/)
 
 - [Built-in Admission Controllers](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/)
 
