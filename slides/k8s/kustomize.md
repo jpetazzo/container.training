@@ -228,7 +228,7 @@ General workflow:
 
 3. `kustomize edit add patch` to add patches to said resources
 
-4. `kustomized edit add ...` or `kustomize edit set ...` (many options!)
+4. `kustomize edit add ...` or `kustomize edit set ...` (many options!)
 
 5. `kustomize build | kubectl apply -f-` or `kubectl apply -k .`
 
@@ -244,7 +244,7 @@ General workflow:
 
   (just add `--help` after any command to see possible options!)
 
-- Make sure to install the completion and try e.g. `kustomize eidt add [TAB][TAB]`
+- Make sure to install the completion and try e.g. `kustomize edit add [TAB][TAB]`
 
 ---
 
