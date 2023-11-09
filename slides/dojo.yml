@@ -1,0 +1,15 @@
+title: |
+  FIXME
+
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+#chat: "[Gitter](https://gitter.im/jpetazzo/training-20180413-paris)"
+chat: "FIXME"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2023-11-dojo.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+content:
+- fixme.md
