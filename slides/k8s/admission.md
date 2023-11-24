@@ -543,6 +543,23 @@ Shell to the rescue!
 
   (it should only allow values of `red`, `green`, `blue`)
 
+---
+
+## Coming soon...
+
+- Kubernetes Validating Admission Policies
+
+- Integrated with the Kubernetes API server
+
+- Lets us define policies using [CEL (Common Expression Language)][cel-spec]
+
+- Available in beta in Kubernetes 1.28 <!-- ##VERSION## -->
+
+- Check this [CNCF Blog Post][cncf-blog-vap] for more details
+
+[cncf-blog-vap]: https://www.cncf.io/blog/2023/09/14/policy-management-in-kubernetes-is-changing/
+[cel-spec]: https://github.com/google/cel-spec
+
 ???
 
 :EN:- Dynamic admission control with webhooks
