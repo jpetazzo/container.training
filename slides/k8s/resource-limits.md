@@ -6,11 +6,53 @@
 
 - We can specify *limits* and/or *requests*
 
-- We can specify quantities of CPU and/or memory
+- We can specify quantities of CPU and/or memory and/or ephemeral storage
 
 ---
 
-## CPU vs memory
+## Requests vs limits
+
+- *Requests* are *guaranteed reservations* of resources
+
+- They are used for scheduling purposes
+
+- Kubelet will use cgroups to e.g. guarantee a minimum amount of CPU time
+
+- A container **can** use more than its requested resources
+
+- A container using *less* than what it requested should never be killed or throttled
+
+- A node **cannot** be overcommitted with requests
+
+  (the sum of all requests **cannot** be higher than resources available on the node)
+
+- A small amount of resources is set aside for system components
+
+  (this explains why there is a difference between "capacity" and "allocatable")
+
+---
+
+## Requests vs limits
+
+- *Limits* are "hard limits" (a container **cannot** exceed its limits)
+
+- They aren't taken into account by the scheduler
+
+- A container exceeding its memory limit is killed instantly
+
+  (by the kernel out-of-memory killer)
+
+- A container exceeding its CPU limit is throttled
+
+- A container exceeding its disk limit is killed
+
+  (usually with a small delay, since this is checked periodically by kubelet)
+
+- On a given node, the sum of all limits **can** be higher than the node size
+
+---
+
+## Compressible vs incompressible resources
 
 - CPU is a *compressible resource*
 
@@ -24,7 +66,29 @@
 
   - if we have N GB RAM and need 2N, we might run at... 0.1% speed!
 
-- As a result, exceeding limits will have different consequences for CPU and memory
+- Disk is also an *incompressible resource*
+
+  - when the disk is full, writes will fail
+
+  - applications may or may not crash but persistent apps will be in trouble
+
+---
+
+## Running low on CPU
+
+- Two ways for a container to "run low" on CPU:
+
+  - it's hitting its CPU limit
+
+  - all CPUs on the node are at 100% utilization
+
+- The app in the container will run slower
+
+  (compared to running without a limit, or if CPU cycles were available)
+
+- No other consequence
+
+  (but this could affect SLA/SLO for latency-sensitive applications!)
 
 ---
 
@@ -136,9 +200,7 @@ For more details, check [this blog post](https://erickhun.com/posts/kubernetes-f
 
 ## Running low on memory
 
-- When the system runs low on memory, it starts to reclaim used memory
-
-  (we talk about "memory pressure")
+- When the kernel runs low on memory, it starts to reclaim used memory
 
 - Option 1: free up some buffers and caches
 
@@ -162,71 +224,91 @@ For more details, check [this blog post](https://erickhun.com/posts/kubernetes-f
 
 - If a container exceeds its memory *limit*, it gets killed immediately
 
-- If a node is overcommitted and under memory pressure, it will terminate some pods
+- If a node memory usage gets too high, it will *evict* some pods
 
-  (see next slide for some details about what "overcommit" means here!)
+  (we say that the node is "under pressure", more on that in a bit!)
 
 [KEP 2400]: https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/2400-node-swap/README.md#implementation-history
 
 ---
 
-## Overcommitting resources
+## Running low on disk
 
-- *Limits* are "hard limits" (a container *cannot* exceed its limits)
+- When the kubelet runs low on disk, it starts to reclaim disk space
 
-  - a container exceeding its memory limit is killed
+  (similarly to what the kernel does, but in different categories)
 
-  - a container exceeding its CPU limit is throttled
+- Option 1: garbage collect dead pods and containers
 
-- On a given node, the sum of pod *limits* can be higher than the node size
+  (no consequence, but their logs will be deleted)
 
-- *Requests* are used for scheduling purposes
+- Option 2: remove unused images
 
-  - a container can use more than its requested CPU or RAM amounts
+  (no consequence, but these images will have to be repulled if we need them later)
 
-  - a container using *less* than what it requested should never be killed or throttled
+- Option 3: evict pods and remove them to reclaim their disk usage
 
-- On a given node, the sum of pod *requests* cannot be higher than the node size
-
----
-
-## Pod quality of service
-
-Each pod is assigned a QoS class (visible in `status.qosClass`).
-
-- If limits = requests:
-
-  - as long as the container uses less than the limit, it won't be affected
-
-  - if all containers in a pod have *(limits=requests)*, QoS is considered "Guaranteed"
-
-- If requests &lt; limits:
-
-  - as long as the container uses less than the request, it won't be affected
-
-  - otherwise, it might be killed/evicted if the node gets overloaded
-
-  - if at least one container has *(requests&lt;limits)*, QoS is considered "Burstable"
-
-- If a pod doesn't have any request nor limit, QoS is considered "BestEffort"
+- Note: this only applies to *ephemeral storage*, not to e.g. Persistent Volumes!
 
 ---
 
-## Quality of service impact
+## Ephemeral storage?
 
-- When a node is overloaded, BestEffort pods are killed first
+- This includes:
 
-- Then, Burstable pods that exceed their requests
+  - the *read-write layer* of the container
+    <br/>
+    (any file creation/modification outside of its volumes)
 
-- Burstable and Guaranteed pods below their requests are never killed
+  - `emptyDir` volumes mounted in the container
 
-  (except if their node fails)
+  - the container logs stored on the node
 
-- If we only use Guaranteed pods, no pod should ever be killed
+- This does not include:
 
-  (as long as they stay within their limits)
+  - the container image
 
-(Pod QoS is also explained in [this page](https://kubernetes.io/docs/tasks/configure-pod-container/quality-service-pod/) of the Kubernetes documentation and in [this blog post](https://medium.com/google-cloud/quality-of-service-class-qos-in-kubernetes-bb76a89eb2c6).)
+  - other types of volumes (e.g. Persistent Volumes, `hostPath`, or `local` volumes)
+
+---
+
+class: extra-details
+
+## Disk limit enforcement
+
+- Disk usage is periodically measured by kubelet
+
+  (with something equivalent to `du`)
+
+- There can be a small delay before pod termination when disk limit is exceeded
+
+- It's also possible to enable filesystem *project quotas*
+
+  (e.g. with EXT4 or XFS)
+
+- Remember that container logs are also accounted for!
+
+  (container log rotation/retention is managed by kubelet)
+
+---
+
+class: extra-details
+
+## `nodefs` and `imagefs`
+
+- `nodefs` is the main filesystem of the node
+
+  (holding, notably, `emptyDir` volumes and container logs)
+
+- Optionally, the container engine can be configured to use an `imagefs`
+
+- `imagefs` will store container images and container writable layers
+
+- When there is a separate `imagefs`, its disk usage is tracked independently
+
+- If `imagefs` usage gets too high, kubelet will remove old images first
+
+  (conversely, if `nodefs` usage gets too high, kubelet won't remove old images)
 
 ---
 
@@ -304,6 +386,46 @@ class: extra-details
 
 ---
 
+## Pod quality of service
+
+Each pod is assigned a QoS class (visible in `status.qosClass`).
+
+- If limits = requests:
+
+  - as long as the container uses less than the limit, it won't be affected
+
+  - if all containers in a pod have *(limits=requests)*, QoS is considered "Guaranteed"
+
+- If requests &lt; limits:
+
+  - as long as the container uses less than the request, it won't be affected
+
+  - otherwise, it might be killed/evicted if the node gets overloaded
+
+  - if at least one container has *(requests&lt;limits)*, QoS is considered "Burstable"
+
+- If a pod doesn't have any request nor limit, QoS is considered "BestEffort"
+
+---
+
+## Quality of service impact
+
+- When a node is overloaded, BestEffort pods are killed first
+
+- Then, Burstable pods that exceed their requests
+
+- Burstable and Guaranteed pods below their requests are never killed
+
+  (except if their node fails)
+
+- If we only use Guaranteed pods, no pod should ever be killed
+
+  (as long as they stay within their limits)
+
+(Pod QoS is also explained in [this page](https://kubernetes.io/docs/tasks/configure-pod-container/quality-service-pod/) of the Kubernetes documentation and in [this blog post](https://medium.com/google-cloud/quality-of-service-class-qos-in-kubernetes-bb76a89eb2c6).)
+
+---
+
 ## Specifying resources
 
 - Resource requests are expressed at the *container* level
@@ -316,9 +438,9 @@ class: extra-details
 
   (so 100m = 0.1)
 
-- Memory is expressed in bytes
+- Memory and ephemeral disk storage are expressed in bytes
 
-- Memory can be expressed with k, M, G, T, ki, Mi, Gi, Ti suffixes
+- These can have k, M, G, T, ki, Mi, Gi, Ti suffixes
 
   (corresponding to 10^3, 10^6, 10^9, 10^12, 2^10, 2^20, 2^30, 2^40)
 
@@ -334,11 +456,13 @@ containers:
   image: jpetazzo/color
   resources:
     limits:
-      memory: "100Mi"
       cpu: "100m"
-    requests:
+      ephemeral-storage: 10M
       memory: "100Mi"
+    requests:
       cpu: "10m"
+      ephemeral-storage: 10M
+      memory: "100Mi"
 ```
 
 This set of resources makes sure that this service won't be killed (as long as it stays below 100 MB of RAM), but allows its CPU usage to be throttled if necessary.
@@ -365,7 +489,7 @@ This set of resources makes sure that this service won't be killed (as long as i
 
 ---
 
-## We need default resource values
+## We need to specify resource values
 
 - If we do not set resource values at all:
 
@@ -379,9 +503,33 @@ This set of resources makes sure that this service won't be killed (as long as i
 
   - if the request is zero, the scheduler can't make a smart placement decision
 
-- To address this, we can set default values for resources
+- This is fine when learning/testing, absolutely not in production!
 
-- This is done with a LimitRange object
+---
+
+## How should we set resources?
+
+- Option 1: manually, for each container
+
+  - simple, effective, but tedious
+
+- Option 2: automatically, with the [Vertical Pod Autoscaler (VPA)][vpa]
+
+  - relatively simple, very minimal involvement beyond initial setup
+
+  - not compatible with HPAv1, can disrupt long-running workloads (see [limitations][vpa-limitations])
+
+- Option 3: semi-automatically, with tools like [Robusta KRR][robusta]
+
+  - good compromise between manual work and automation
+
+- Option 4: by creating LimitRanges in our Namespaces
+
+  - relatively simple, but "one-size-fits-all" approach might not always work
+
+[robusta]: https://github.com/robusta-dev/krr
+[vpa]: https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler
+[vpa-limitations]: https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler#known-limitations
 
 ---
 
@@ -636,7 +784,7 @@ class: extra-details
 
   - ResourceQuota per namespace
 
-- Let's see a simple recommendation to get started with resource limits
+- Let's see one possible strategy to get started with resource limits
 
 ---
 
