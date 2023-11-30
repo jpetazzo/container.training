@@ -507,6 +507,86 @@ kubeadm should now agree to upgrade to 1.23.X.
 
 ---
 
+## And now, was that a good idea?
+
+--
+
+**Almost!**
+
+--
+
+- The official recommendation is to *drain* a node before performing node maintenance
+
+  (migrate all workloads off the node before upgrading it)
+
+- How do we do that?
+
+- Is it really necessary?
+
+- Let's see!
+
+---
+
+## Draining a node
+
+- This can be achieved with the `kubectl drain` command, which will:
+
+  - *cordon* the node (prevent new pods from being scheduled there)
+
+  - *evict* all the pods running on the node (delete them gracefully)
+
+  - the evicted pods will automatically be recreated somewhere else
+
+  - evictions might be blocked in some cases (Pod Disruption Budgets, `emptyDir` volumes)
+
+- Once the node is drained, it can safely be upgraded, restarted...
+
+- Once it's ready, it can be put back in commission with `kubectl uncordon`
+
+---
+
+## Is it necessary?
+
+- When upgrading kubelet from one patch-level version to another:
+
+  - it's *probably fine*
+
+- When upgrading system packages:
+
+  - it's *probably fine*
+
+  - except [when it's not][datadog-systemd-outage]
+
+- When upgrading the kernel:
+
+  - it's *probably fine*
+
+  - ...as long as we can tolerate a restart of the containers on the node
+
+  - ...and that they will be unavailable for a few minutes (during the reboot)
+
+[datadog-systemd-outage]: https://www.datadoghq.com/blog/engineering/2023-03-08-deep-dive-into-platform-level-impact/
+
+---
+
+## Is it necessary?
+
+- When upgrading kubelet from one minor version to another:
+
+  - it *may or may not be fine*
+
+  - in some cases (e.g. migrating from Docker to containerd) it *will not*
+
+- Here's what [the documentation][node-upgrade-docs] says:
+
+  *Draining nodes before upgrading kubelet ensures that pods are re-admitted and containers are re-created, which may be necessary to resolve some security issues or other important bugs.*
+
+- Do it at your own risk, and if you do, test extensively in staging environments!
+
+[node-upgrade-docs]: https://kubernetes.io/docs/tasks/administer-cluster/cluster-upgrade/#manual-deployments
+
+---
+
 class: extra-details
 
 ## Skipping versions
