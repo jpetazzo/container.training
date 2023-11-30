@@ -12,7 +12,7 @@
   echo "$0 del <recordid>"
   echo ""
   echo "Example to create a A record for eu.container.training:"
-  echo "$0 add eu 185.145.250.0"
+  echo "$0 add eu A 185.145.250.0"
   echo ""
   exit 1
 }
@@ -49,27 +49,29 @@ ZONE_ID=$(netlify dns_zones |
 
 _list() {
   netlify dns_zones/$ZONE_ID/dns_records |
-    jq -r '.[] | select(.type=="A") | [.hostname, .type, .value, .id] | @tsv'
+    jq -r '.[] | select(.type=="A" or .type=="AAAA") | [.hostname, .type, .value, .id] | @tsv' |
+    sort |
+    column --table
 }
 
 _add() {
   NAME=$1.$DOMAIN
-  ADDR=$2
-
+  TYPE=$2
+  VALUE=$3
 
   # It looks like if we create two identical records, then delete one of them,
   # Netlify DNS ends up in a weird state (the name doesn't resolve anymore even
   # though it's still visible through the API and the website?)
 
   if netlify dns_zones/$ZONE_ID/dns_records |
-          jq '.[] | select(.hostname=="'$NAME'" and .type=="A" and .value=="'$ADDR'")' |
+          jq '.[] | select(.hostname=="'$NAME'" and .type=="'$TYPE'" and .value=="'$VALUE'")' |
           grep .
   then
     echo "It looks like that record already exists. Refusing to create it."
     exit 1
   fi
 
-  netlify dns_zones/$ZONE_ID/dns_records type=A hostname=$NAME value=$ADDR ttl=300
+  netlify dns_zones/$ZONE_ID/dns_records type=$TYPE hostname=$NAME value=$VALUE ttl=300
 
   netlify dns_zones/$ZONE_ID/dns_records |
           jq '.[] | select(.hostname=="'$NAME'")'
@@ -88,7 +90,7 @@ case "$1" in
     _list
     ;;
   add)
-    _add $2 $3
+    _add $2 $3 $4
     ;;
   del)
     _del $2
