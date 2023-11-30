@@ -131,6 +131,7 @@ content:
   - k8s/resource-limits.md
   - k8s/metrics-server.md
   - k8s/cluster-sizing.md
+  - k8s/disruptions.md
   - k8s/cluster-autoscaler.md
   - k8s/horizontal-pod-autoscaler.md
   - k8s/hpa-v2.md

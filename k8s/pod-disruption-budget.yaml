@@ -1,0 +1,13 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: my-pdb
+spec:
+  #minAvailable: 2
+  #minAvailable: 90%
+  maxUnavailable: 1
+  #maxUnavailable: 10%
+  selector:
+    matchLabels:
+      app: my-app
+
