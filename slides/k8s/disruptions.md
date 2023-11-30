@@ -196,6 +196,8 @@ In the real world...
 
   - eviction typically happens shortly after (when kubelet catches up)
 
+- When relying on disk/memory bursts a lot, using `priorityClasses` might help
+
 ---
 
 ## Memory/disk pressure delays
