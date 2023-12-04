@@ -421,18 +421,18 @@ _cmd_kubebins() {
     TAG=$1
     need_tag
 
-    ##VERSION##
     if [ "$KUBEVERSION" = "" ]; then
         KUBEVERSION="$(curl -fsSL https://cdn.dl.k8s.io/release/stable.txt | sed s/^v//)"
     fi
 
+    ##VERSION##
     case "$KUBEVERSION" in
     1.19.*)
       ETCD_VERSION=v3.4.13
       CNI_VERSION=v0.8.7
       ;;
     *)
-      ETCD_VERSION=v3.5.9
+      ETCD_VERSION=v3.5.10
       CNI_VERSION=v1.3.0
       ;;
     esac
@@ -466,24 +466,36 @@ _cmd_kubepkgs() {
     TAG=$1
     need_tag
 
-    if [ "$KUBEVERSION" ]; then
-        pssh "
-        sudo tee /etc/apt/preferences.d/kubernetes <<EOF
+    # Prior September 2023, there was a single Kubernetes package repo that
+    # contained packages for all versions, so we could just add that repo
+    # and install whatever was the latest version available there.
+    # Things have changed (versions after September 2023, e.g. 1.28.3 are
+    # not in the old repo) and now there is a different repo for each
+    # minor version, so we need to figure out what minor version we are
+    # installing to add the corresponding repo.
+    if [ "$KUBEVERSION" = "" ]; then
+        KUBEVERSION="$(curl -fsSL https://cdn.dl.k8s.io/release/stable.txt | sed s/^v//)"
+    fi
+    KUBEREPOVERSION="$(echo $KUBEVERSION | cut -d. -f1-2)"
+
+    # Since the new repo doesn't have older versions, add a safety check here.
+    MINORVERSION="$(echo $KUBEVERSION | cut -d. -f2)"
+    if [ "$MINORVERSION" -lt 24 ]; then
+        die "Cannot install kubepkgs for versions before 1.24."
+    fi
+
+    pssh "
+    sudo tee /etc/apt/preferences.d/kubernetes <<EOF
 Package: kubectl kubeadm kubelet
 Pin: version $KUBEVERSION-*
 Pin-Priority: 1000
 EOF"
-    fi
-
-    # As of February 27th, 2023, packages.cloud.google.com seems broken
-    # (serves HTTP 500 errors for the GPG key), so let's pre-load that key.
-    pssh -I "sudo apt-key add -" < lib/kubernetes-apt-key.gpg
 
     # Install packages
     pssh --timeout 200 "
-    #curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg |
-    #sudo apt-key add - &&
-    echo deb http://apt.kubernetes.io/ kubernetes-xenial main |
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v$KUBEREPOVERSION/deb/Release.key | 
+    gpg --dearmor | sudo tee /etc/apt/keyrings/kubernetes-apt-keyring.gpg &&
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v$KUBEREPOVERSION/deb/ /' |
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
     pssh --timeout 200 "
     sudo apt-get update -q &&
