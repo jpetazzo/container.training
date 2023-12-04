@@ -856,7 +856,7 @@ class: extra-details
 - To learn more about Kubernetes attacks and threat models around RBAC:
 
   📽️ [Hacking into Kubernetes Security for Beginners](https://www.youtube.com/watch?v=mLsCm9GVIQg)
-  by [Ellen Körbes](https://twitter.com/ellenkorbes)
+  by [V Körbes](https://twitter.com/veekorbes)
   and [Tabitha Sable](https://twitter.com/TabbySable)
 
 ---
