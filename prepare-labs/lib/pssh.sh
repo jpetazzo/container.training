@@ -17,6 +17,12 @@ pssh() {
 
     echo "[parallel-ssh] $@"
 
+    # There are some routers that really struggle with the number of TCP
+    # connections that we open when deploying large fleets of clusters.
+    # We're adding a 1 second delay here, but this can be cranked up if
+    # necessary - or down to zero, too.
+    sleep ${PSSH_DELAY_PRE-1}
+
     $(which pssh || which parallel-ssh) -h $HOSTFILE -l ubuntu \
         --par ${PSSH_PARALLEL_CONNECTIONS-100} \
         --timeout 300 \
