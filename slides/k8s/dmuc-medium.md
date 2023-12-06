@@ -462,7 +462,7 @@ The "context" section references the "cluster" and "credentials" that we defined
 
 ---
 
-## Review the kubeconfig filfe
+## Review the kubeconfig file
 
 The kubeconfig file should look like this:
 
