@@ -536,12 +536,12 @@ Note: the `apiVersion` field appears to be optional.
 - Excerpt:
   ```yaml
       generate: 
-      kind: LimitRange
-      name: default-limitrange
-      namespace: "{{request.object.metadata.name}}" 
-      data:
-        spec:
-          limits:
+        kind: LimitRange
+        name: default-limitrange
+        namespace: "{{request.object.metadata.name}}" 
+        data:
+          spec:
+            limits:
   ```
 
 - Note that we have to specify the `namespace`
