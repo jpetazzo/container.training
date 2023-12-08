@@ -46,11 +46,11 @@ In the real world...
 
 - In Kubernetes, a "disruption" is something that stops the execution of a Pod
 
-- There are **voluntary** and **unvoluntary** disruptions
+- There are **voluntary** and **involuntary** disruptions
 
   - voluntary = directly initiated by humans (including by mistake!)
 
-  - unvoluntary = everything else
+  - involuntary = everything else
 
 - In this section, we're going to see what they are and how to prevent them
 
@@ -64,7 +64,7 @@ In the real world...
 
   (includes kernel bugs, issues affecting underlying hypervisors or infrastructure...)
 
-- **Unvoluntary** disruption (even if it results from human error!)
+- **Involuntary** disruption (even if it results from human error!)
 
 - Consequence: all workloads on that node become unresponsive
 
@@ -116,7 +116,7 @@ In the real world...
 
   (because a pod is using too much memory and no limit was set)
 
-- **Unvoluntary** disruption
+- **Involuntary** disruption
 
 - Consequence: kubelet starts to *evict* some pods
 
@@ -507,7 +507,7 @@ spec:
 
 ???
 
-:EN:- Voluntary and unvoluntary disruptions
+:EN:- Voluntary and involuntary disruptions
 :EN:- Pod Disruption Budgets
 :FR:- "Disruptions" volontaires et involontaires
 :FR:- Pod Disruption Budgets
