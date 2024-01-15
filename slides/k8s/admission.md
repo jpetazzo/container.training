@@ -224,17 +224,29 @@ class: extra-details
 
 - Example: run `ngrok http 1234`
 
-- `ngrok` will display a publicly-available URL (e.g. https://xxxxyyyyzzzz.ngrok.io)
+- `ngrok` will display a publicly-available URL (e.g. https://xxxxyyyyzzzz.ngrok.app)
 
-- Connections to https://xxxxyyyyzzzz.ngrok.io will terminate at `localhost:1234`
+- Connections to https://xxxxyyyyzzzz.ngrok.app will terminate at `localhost:1234`
 
 - Basic product is free; extra features (vanity domains, end-to-end TLS...) for $$$
 
 - Perfect to develop our webhook!
 
-- Probably not for production, though
+---
 
-  (webhook requests and responses now pass through the ngrok platform)
+class: extra-details
+
+## Ngrok in production
+
+- Ngrok was initially known for its local webhook development features
+
+- It now supports production scenarios as well
+
+  (load balancing, WAF, authentication, circuit-breaking...)
+
+- Including some that are very relevant to Kubernetes
+
+  (e.g. [ngrok Ingress Controller](https://github.com/ngrok/kubernetes-ingress-controller)
 
 ---
 
