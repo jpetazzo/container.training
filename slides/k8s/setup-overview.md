@@ -166,17 +166,15 @@
 
 - [Kubernetes The Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way) by Kelsey Hightower
 
-  - step by step guide to install Kubernetes on Google Cloud
-
-  - covers certificates, high availability ...
-
-  - *“Kubernetes The Hard Way is optimized for learning, which means taking the long route to ensure you understand each task required to bootstrap a Kubernetes cluster.”*
+  *step by step guide to install Kubernetes on GCP, with certificates, HA...*
 
 - [Deep Dive into Kubernetes Internals for Builders and Operators](https://www.youtube.com/watch?v=3KtEAa7_duA)
 
-  - conference presentation showing step-by-step control plane setup
+  *conference talk setting up a simplified Kubernetes cluster - no security or HA*
 
-  - emphasis on simplicity, not on security and availability
+- 🇫🇷[Démystifions les composants internes de Kubernetes](https://www.youtube.com/watch?v=OCMNA0dSAzc)
+
+  *improved version of the previous one, with certs and recent k8s versions*
 
 ---
 
