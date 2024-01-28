@@ -13,6 +13,8 @@ TF_VAR_location=fr-par-2 \
 # set kubeconfig file
 cp tags/konk/stage2/kubeconfig.101 ~/kubeconfig
 
+export KUBECONFIG=~/kubeconfig
+
 # set external_ip labels
 kubectl get nodes -o=jsonpath='{range .items[*]}{.metadata.name} {.status.addresses[?(@.type=="ExternalIP")].address}{"\n"}{end}' |
 while read node address; do
