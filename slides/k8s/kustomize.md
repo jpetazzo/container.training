@@ -337,7 +337,7 @@ kustomize edit add label app.kubernetes.io/name:dockercoins
 
 - Assuming that `commonLabels` have been set as shown on the previous slide:
   ```bash
-    kubectl apply -k . --prune --selector app.kubernetes.io.name=dockercoins
+    kubectl apply -k . --prune --selector app.kubernetes.io/name=dockercoins
   ```
 
 - ... This command removes resources that have been removed from the kustomization
