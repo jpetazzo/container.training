@@ -1,7 +1,8 @@
 FROM ruby:alpine
 RUN apk add --update build-base curl
-RUN gem install sinatra
-RUN gem install thin
+RUN gem install bundler
+ADD Gemfile* /
+RUN bundle install
 ADD hasher.rb /
-CMD ["ruby", "hasher.rb"]
+CMD ["bundle", "exec", "ruby", "hasher.rb"]
 EXPOSE 80
