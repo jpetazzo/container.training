@@ -741,7 +741,7 @@ EOF
     # Install popeye
     pssh "
     if [ ! -x /usr/local/bin/popeye ]; then
-        FILENAME=popeye_Linux_$HERP_DERP_ARCH.tar.gz &&
+        FILENAME=popeye_Linux_$ARCH.tar.gz &&
         curl -fsSL https://github.com/derailed/popeye/releases/latest/download/\$FILENAME |
         sudo tar -zxvf- -C /usr/local/bin popeye
         popeye version
