@@ -829,6 +829,14 @@ EOF
         sudo tar -zxvf- -C /usr/local/bin kubent
         kubent --version
     fi"
+
+    # Ngrok. Note that unfortunately, this is the x86_64 binary.
+    # We might have to rethink how to handle this for multi-arch environments.
+    pssh "
+    if [ ! -x /usr/local/bin/ngrok ]; then
+        curl -fsSL https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz |
+        sudo tar -zxvf- -C /usr/local/bin ngrok
+    fi"
 }
 
 _cmd kubereset "Wipe out Kubernetes configuration on all nodes"
