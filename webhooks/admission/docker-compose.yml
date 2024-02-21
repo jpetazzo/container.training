@@ -1,3 +1,11 @@
+# Note: Ngrok doesn't have an "anonymous" mode anymore.
+# This means that it requires an authentication token.
+# That said, all you need is a free account; so if you're
+# doing the labs on admission webhooks and want to try
+# this Compose file, I highly recommend that you create
+# an Ngrok account and set the NGROK_AUTHTOKEN environment
+# variable to your authentication token.
+
 version: "3"
 
 services:
@@ -5,6 +13,8 @@ services:
   ngrok-echo:
     image: ngrok/ngrok
     command: http --log=stdout localhost:3000
+    environment:
+    - NGROK_AUTHTOKEN
     ports:
     - 3000
 
@@ -16,6 +26,8 @@ services:
   ngrok-flask:
     image: ngrok/ngrok
     command: http --log=stdout localhost:5000
+    environment:
+    - NGROK_AUTHTOKEN
     ports:
     - 5000
 

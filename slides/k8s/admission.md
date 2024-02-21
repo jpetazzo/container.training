@@ -198,21 +198,9 @@ Some examples ...
 
   (the Node "echo" app, the Flask app, and one ngrok tunnel for each of them)
 
-.lab[
+- We will need an ngrok account for the tunnels
 
-- Go to the webhook directory:
-  ```bash
-  cd ~/container.training/webhooks/admission
-  ```
-
-- Start the webhook in Docker containers:
-  ```bash
-  docker-compose up
-  ```
-
-]
-
-*Note the URL in `ngrok-echo_1` looking like `url=https://xxxx.ngrok.io`.*
+  (a free account is fine)
 
 ---
 
@@ -247,6 +235,42 @@ class: extra-details
 - Including some that are very relevant to Kubernetes
 
   (e.g. [ngrok Ingress Controller](https://github.com/ngrok/kubernetes-ingress-controller)
+
+---
+
+## Ngrok tokens
+
+- If you're attending a live training, you might have an ngrok token
+
+- Look in `~/ngrok.env` and if that file exists, copy it to the stack:
+
+.lab[
+
+```bash
+cp ~/ngrok.env ~/container.training/webhooks/admission/.env
+```
+
+]
+
+---
+
+## Starting the whole stack
+
+.lab[
+
+- Go to the webhook directory:
+  ```bash
+  cd ~/container.training/webhooks/admission
+  ```
+
+- Start the webhook in Docker containers:
+  ```bash
+  docker-compose up
+  ```
+
+]
+
+*Note the URL in `ngrok-echo_1` looking like `url=https://xxxx.ngrok.io`.*
 
 ---
 
