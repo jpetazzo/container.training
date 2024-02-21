@@ -962,10 +962,17 @@ _cmd_standardize() {
     # Disable unattended upgrades so that they don't mess up with the subsequent steps
     pssh sudo rm -f /etc/apt/apt.conf.d/50unattended-upgrades
 
-    # Digital Ocean's cloud init disables password authentication; re-enable it.
+    # Some cloud providers think that it's smart to disable password authentication.
+    # We need to re-neable it, though.
+    # Digital Ocecan
     pssh "
     if [ -f /etc/ssh/sshd_config.d/50-cloud-init.conf ]; then
         sudo rm /etc/ssh/sshd_config.d/50-cloud-init.conf
+        sudo systemctl restart ssh.service
+    fi"
+    # AWS
+    pssh "if [ -f /etc/ssh/sshd_config.d/60-cloudimg-settings.conf ]; then
+        sudo rm /etc/ssh/sshd_config.d/60-cloudimg-settings.conf
         sudo systemctl restart ssh.service
     fi"
 
