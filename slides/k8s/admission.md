@@ -20,19 +20,21 @@
 
 ## Use cases
 
-Some examples ...
+- Defaulting
 
-- Stand-alone admission controllers
+  *injecting image pull secrets, sidecars, environment variables...*
 
-  *validating:* policy enforcement (e.g. quotas, naming conventions ...)
+- Policy enforcement and best practices
 
-  *mutating:* inject or provide default values (e.g. pod presets)
+  *prevent: `latest` images, deprecated APIs...*
 
-- Admission controllers part of a greater system
+  *require: PDBs, resource requests/limits, labels/annotations, local registry...*
 
-  *validating:* advanced typing for operators
+- Problem mitigation
 
-  *mutating:* inject sidecars for service meshes
+  *block nodes with vulnerable kernels, inject log4j mitigations...*
+
+- Extended validation for operators
 
 ---
 
