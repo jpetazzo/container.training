@@ -572,7 +572,7 @@ This is normal: we haven't provided any ingress rule yet.
 
 - Create a prefix match rule for the `blue` service:
   ```bash
-  kubectl create ingress bluestar --rule=/blue*:blue:80
+  kubectl create ingress bluestar --rule=/blue*=blue:80
   ```
 
 - Check that it works:
