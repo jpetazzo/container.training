@@ -2,7 +2,7 @@
 
 - "New" policies
 
-  (available in alpha since Kubernetes 1.22)
+  (available in alpha since Kubernetes 1.22, and GA since Kubernetes 1.25)
 
 - Easier to use
 
@@ -63,50 +63,6 @@ class: extra-details
 - Some images use CAP_CHOWN (to `chown` files)
 
 - Some programs use CAP_NET_RAW (e.g. `ping`)
-
----
-
-## PSA in practice
-
-- Step 1: enable the PodSecurity admission plugin
-
-- Step 2: label some Namespaces
-
-- Step 3: provide an AdmissionConfiguration (optional)
-
-- Step 4: profit!
-
----
-
-## Enabling PodSecurity
-
-- This requires Kubernetes 1.22 or later
- 
-- This requires the ability to reconfigure the API server
-
-- The following slides assume that we're using `kubeadm`
-
-  (and have write access to `/etc/kubernetes/manifests`)
-
----
-
-## Reconfiguring the API server
-
-- In Kubernetes 1.22, we need to enable the `PodSecurity` feature gate
-
-- In later versions, this might be enabled automatically
-
-.lab[
-
-- Edit `/etc/kubernetes/manifests/kube-apiserver.yaml`
-
-- In the `command` list, add `--feature-gates=PodSecurity=true`
-
-- Save, quit, wait for the API server to be back up again
-
-]
-
-Note: for bonus points, edit the `kubeadm-config` ConfigMap instead!
 
 ---
 
@@ -276,14 +232,6 @@ Let's use @@LINK[k8s/admission-configuration.yaml]:
 - The DaemonSet is created
 
 - But the Pods don't get created
-
----
-
-## Clean up
-
-- We probably want to remove the API server flags that we added
-
-  (the feature gate and the admission configuration)
 
 ???
 

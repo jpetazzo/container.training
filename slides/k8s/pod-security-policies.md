@@ -2,11 +2,15 @@
 
 - "Legacy" policies
 
-  (deprecated since Kubernetes 1.21; will be removed in 1.25)
+  (deprecated since Kubernetes 1.21; removed in 1.25)
 
 - Superseded by Pod Security Standards + Pod Security Admission
 
-  (available in alpha since Kubernetes 1.22)
+  (available in alpha since Kubernetes 1.22; stable since 1.25)
+
+- **Since Kubernetes 1.24 was EOL in July 2023, nobody should use PSPs anymore!**
+
+- This section is here mostly for historical purposes, and can be skipped
 
 ---
 

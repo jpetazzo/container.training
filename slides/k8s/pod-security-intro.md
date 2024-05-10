@@ -124,7 +124,7 @@
 
 ## Admission plugins
 
-- [PodSecurityPolicy](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) (will be removed in Kubernetes 1.25)
+- [PodSecurityPolicy](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) (was removed in Kubernetes 1.25)
 
   - create PodSecurityPolicy resources
 
@@ -132,7 +132,7 @@
 
   - create RoleBinding that grants the Role to a user or ServiceAccount
 
-- [PodSecurityAdmission](https://kubernetes.io/docs/concepts/security/pod-security-admission/) (alpha since Kubernetes 1.22)
+- [PodSecurityAdmission](https://kubernetes.io/docs/concepts/security/pod-security-admission/) (alpha since Kubernetes 1.22, stable since 1.25)
 
   - use pre-defined policies (privileged, baseline, restricted)
 
@@ -162,9 +162,31 @@
 
 ---
 
+## Validating Admission Policies
+
+- Alternative to validating admission webhooks
+
+- Evaluated in the API server
+
+  (don't require an external server; don't add network latency)
+
+- Written in CEL (Common Expression Language)
+
+- alpha in K8S 1.26; beta in K8S 1.28; GA in K8S 1.30
+
+- Can replace validating webhooks at least in simple cases
+
+- Can extend Pod Security Admission
+
+- Check [the documentation][vapdoc] for examples
+
+[vapdoc]: https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/
+
+---
+
 ## Acronym salad
 
-- PSP = Pod Security Policy
+- PSP = Pod Security Policy **(deprecated)**
 
   - an admission plugin called PodSecurityPolicy
 
