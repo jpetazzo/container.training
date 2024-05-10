@@ -321,6 +321,7 @@ _cmd_clusterize() {
     pssh "
     set -e
     grep PSSH_ /etc/ssh/sshd_config || echo 'AcceptEnv PSSH_*' | sudo tee -a /etc/ssh/sshd_config
+    grep KUBECOLOR_ /etc/ssh/sshd_config || echo 'AcceptEnv KUBECOLOR_*' | sudo tee -a /etc/ssh/sshd_config
     sudo systemctl restart ssh.service"
 
     pssh -I < tags/$TAG/clusters.txt "
@@ -392,7 +393,7 @@ _cmd_docker() {
     ##VERSION## https://github.com/docker/compose/releases
     COMPOSE_VERSION=v2.11.1
     COMPOSE_PLATFORM='linux-$(uname -m)'
-    
+
     # Just in case you need Compose 1.X, you can use the following lines.
     # (But it will probably only work for x86_64 machines.)
     #COMPOSE_VERSION=1.29.2
@@ -493,7 +494,7 @@ EOF"
 
     # Install packages
     pssh --timeout 200 "
-    curl -fsSL https://pkgs.k8s.io/core:/stable:/v$KUBEREPOVERSION/deb/Release.key | 
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v$KUBEREPOVERSION/deb/Release.key |
     gpg --dearmor | sudo tee /etc/apt/keyrings/kubernetes-apt-keyring.gpg &&
     echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v$KUBEREPOVERSION/deb/ /' |
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
@@ -503,7 +504,7 @@ EOF"
     sudo apt-mark hold kubelet kubeadm kubectl &&
     kubeadm completion bash | sudo tee /etc/bash_completion.d/kubeadm &&
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl &&
-    echo 'alias k=kubectl' | sudo tee /etc/bash_completion.d/k &&
+    echo 'alias k=kubecolor' | sudo tee /etc/bash_completion.d/k &&
     echo 'complete -F __start_kubectl k' | sudo tee -a /etc/bash_completion.d/k"
 }
 
@@ -665,7 +666,7 @@ EOF
 
     # Install stern
     ##VERSION## https://github.com/stern/stern/releases
-    STERN_VERSION=1.22.0
+    STERN_VERSION=1.29.0
     FILENAME=stern_${STERN_VERSION}_linux_${ARCH}
     URL=https://github.com/stern/stern/releases/download/v$STERN_VERSION/$FILENAME.tar.gz
     pssh "
@@ -687,7 +688,7 @@ EOF
 
     # Install kustomize
     ##VERSION## https://github.com/kubernetes-sigs/kustomize/releases
-    KUSTOMIZE_VERSION=v4.5.7
+    KUSTOMIZE_VERSION=v5.4.1
     URL=https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz
     pssh "
     if [ ! -x /usr/local/bin/kustomize ]; then
@@ -729,12 +730,22 @@ EOF
         echo export PATH=/home/$USER_LOGIN/.krew/bin:\\\$PATH | sudo -u $USER_LOGIN tee -a /home/$USER_LOGIN/.bashrc
     fi"
 
+    # Install kubecolor
+    KUBECOLOR_VERSION=0.3.2
+    URL=https://github.com/kubecolor/kubecolor/releases/download/v${KUBECOLOR_VERSION}/kubecolor_${KUBECOLOR_VERSION}_linux_${ARCH}.tar.gz
+    pssh "
+    if [ ! -x /usr/local/bin/kubecolor ]; then
+        ##VERSION##
+        curl -fsSL $URL |
+        sudo tar -C /usr/local/bin -zx kubecolor
+    fi"
+
     # Install k9s
     pssh "
     if [ ! -x /usr/local/bin/k9s ]; then
         FILENAME=k9s_Linux_$ARCH.tar.gz &&
         curl -fsSL https://github.com/derailed/k9s/releases/latest/download/\$FILENAME |
-        sudo tar -zxvf- -C /usr/local/bin k9s
+        sudo tar -C /usr/local/bin -zx k9s
         k9s version
     fi"
 
@@ -743,7 +754,7 @@ EOF
     if [ ! -x /usr/local/bin/popeye ]; then
         FILENAME=popeye_Linux_$ARCH.tar.gz &&
         curl -fsSL https://github.com/derailed/popeye/releases/latest/download/\$FILENAME |
-        sudo tar -zxvf- -C /usr/local/bin popeye
+        sudo tar -C /usr/local/bin -zx popeye
         popeye version
     fi"
 
@@ -753,10 +764,10 @@ EOF
     # But the install script is not arch-aware (see https://github.com/tilt-dev/tilt/pull/5050).
     pssh "
     if [ ! -x /usr/local/bin/tilt ]; then
-        TILT_VERSION=0.22.15
+        TILT_VERSION=0.33.13
         FILENAME=tilt.\$TILT_VERSION.linux.$TILT_ARCH.tar.gz
         curl -fsSL https://github.com/tilt-dev/tilt/releases/download/v\$TILT_VERSION/\$FILENAME |
-        sudo tar -zxvf- -C /usr/local/bin tilt
+        sudo tar -C /usr/local/bin -zx tilt
         tilt completion bash | sudo tee /etc/bash_completion.d/tilt
         tilt version
     fi"
@@ -798,7 +809,8 @@ EOF
     fi"
 
     ##VERSION## https://github.com/bitnami-labs/sealed-secrets/releases
-    KUBESEAL_VERSION=0.17.4
+    KUBESEAL_VERSION=0.26.2
+    URL=https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-${ARCH}.tar.gz
     #case $ARCH in
     #amd64) FILENAME=kubeseal-linux-amd64;;
     #arm64) FILENAME=kubeseal-arm64;;
@@ -806,13 +818,13 @@ EOF
     #esac
     pssh "
     if [ ! -x /usr/local/bin/kubeseal ]; then
-        curl -fsSL https://github.com/bitnami-labs/sealed-secrets/releases/download/v$KUBESEAL_VERSION/kubeseal-$KUBESEAL_VERSION-linux-$ARCH.tar.gz |
-        sudo tar -zxvf- -C /usr/local/bin kubeseal
+        curl -fsSL $URL |
+        sudo tar -C /usr/local/bin -zx kubeseal
         kubeseal --version
     fi"
 
     ##VERSION## https://github.com/vmware-tanzu/velero/releases
-    VELERO_VERSION=1.11.0
+    VELERO_VERSION=1.13.2
     pssh "
     if [ ! -x /usr/local/bin/velero ]; then
         curl -fsSL https://github.com/vmware-tanzu/velero/releases/download/v$VELERO_VERSION/velero-v$VELERO_VERSION-linux-$ARCH.tar.gz |
@@ -822,7 +834,7 @@ EOF
     fi"
 
     ##VERSION## https://github.com/doitintl/kube-no-trouble/releases
-    KUBENT_VERSION=0.7.0
+    KUBENT_VERSION=0.7.2
     pssh "
     if [ ! -x /usr/local/bin/kubent ]; then
         curl -fsSL https://github.com/doitintl/kube-no-trouble/releases/download/${KUBENT_VERSION}/kubent-${KUBENT_VERSION}-linux-$ARCH.tar.gz |
