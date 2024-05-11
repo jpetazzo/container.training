@@ -51,7 +51,7 @@
   - instructions indicating to users "please tweak this and that in the YAML"
 
 - That's where using something like
-  [CUE](https://github.com/cuelang/cue/blob/v0.3.2/doc/tutorial/kubernetes/README.md),
+  [CUE](https://github.com/cue-labs/cue-by-example/tree/main/003_kubernetes_tutorial),
   [Kustomize](https://kustomize.io/),
   or [Helm](https://helm.sh/) can help!
 
@@ -86,8 +86,6 @@
 
 - On April 30th 2020, Helm was the 10th project to *graduate* within the CNCF
 
-  🎉
-
   (alongside Containerd, Prometheus, and Kubernetes itself)
 
 - This is an acknowledgement by the CNCF for projects that
@@ -98,6 +96,8 @@
 
 - See [CNCF announcement](https://www.cncf.io/announcement/2020/04/30/cloud-native-computing-foundation-announces-helm-graduation/)
   and [Helm announcement](https://helm.sh/blog/celebrating-helms-cncf-graduation/)
+
+- In other words: Helm is here to stay
 
 ---
 
@@ -173,11 +173,13 @@ or `apt` tools).
 
 - Helm 3 doesn't use `tiller` at all, making it simpler (yay!)
 
+- If you see references to `tiller` in a tutorial, documentation... that doc is obsolete!
+
 ---
 
 class: extra-details
 
-## With or without `tiller`
+## What was the problem with `tiller`?
 
 - With Helm 3:
 
@@ -193,9 +195,7 @@ class: extra-details
 
 - This indirect model caused significant permissions headaches
 
-  (`tiller` required very broad permissions to function)
-
-- `tiller` was removed in Helm 3 to simplify the security aspects
+- It also made it more complicated to embed Helm in other tools
 
 ---
 
@@ -222,59 +222,6 @@ class: extra-details
 
 ---
 
-class: extra-details
-
-## Only if using Helm 2 ...
-
-- We need to install Tiller and give it some permissions
-
-- Tiller is composed of a *service* and a *deployment* in the `kube-system` namespace
-
-- They can be managed (installed, upgraded...) with the `helm` CLI
-
-.lab[
-
-- Deploy Tiller:
-  ```bash
-  helm init
-  ```
-
-]
-
-At the end of the install process, you will see:
-
-```
-Happy Helming!
-```
-
----
-
-class: extra-details
-
-## Only if using Helm 2 ...
-
-- Tiller needs permissions to create Kubernetes resources
-
-- In a more realistic deployment, you might create per-user or per-team
-  service accounts, roles, and role bindings
-
-.lab[
-
-- Grant `cluster-admin` role to `kube-system:default` service account:
-  ```bash
-  kubectl create clusterrolebinding add-on-cluster-admin \
-      --clusterrole=cluster-admin --serviceaccount=kube-system:default
-  ```
-
-
-]
-
-(Defining the exact roles and permissions on your cluster requires
-a deeper knowledge of Kubernetes' RBAC model. The command above is
-fine for personal and development clusters.)
-
----
-
 ## Charts and repositories
 
 - A *repository* (or repo in short) is a collection of charts
@@ -293,27 +240,7 @@ fine for personal and development clusters.)
 
 ---
 
-class: extra-details
-
-## How to find charts, the old way
-
-- Helm 2 came with one pre-configured repo, the "stable" repo
-
-  (located at https://charts.helm.sh/stable)
-
-- Helm 3 doesn't have any pre-configured repo
-
-- The "stable" repo mentioned above is now being deprecated
-
-- The new approach is to have fully decentralized repos
-
-- Repos can be indexed in the Artifact Hub
-
-  (which supersedes the Helm Hub)
-
----
-
-## How to find charts, the new way
+## How to find charts
 
 - Go to the [Artifact Hub](https://artifacthub.io/packages/search?kind=0) (https://artifacthub.io)
 
@@ -406,24 +333,6 @@ Note: it is also possible to install directly a chart, with `--repo https://...`
   ```
 
 ]
-
----
-
-class: extra-details
-
-## Searching and installing with Helm 2
-
-- Helm 2 doesn't have support for the Helm Hub
-
-- The `helm search` command only takes a search string argument
-
-  (e.g. `helm search juice-shop`)
-
-- With Helm 2, the name is optional:
-
-  `helm install juice/juice-shop` will automatically generate a name
-
-  `helm install --name my-juice-shop juice/juice-shop` will specify a name
 
 ---
 
@@ -542,11 +451,11 @@ All unspecified values will take the default values defined in the chart.
 
 :EN:- Helm concepts
 :EN:- Installing software with Helm
-:EN:- Helm 2, Helm 3, and the Helm Hub
+:EN:- Finding charts on the Artifact Hub
 
 :FR:- Fonctionnement général de Helm
 :FR:- Installer des composants via Helm
-:FR:- Helm 2, Helm 3, et le *Helm Hub*
+:FR:- Trouver des *charts* sur *Artifact Hub*
 
 :T: Getting started with Helm and its concepts
 
