@@ -26,3 +26,11 @@ done
 
 # vcluster all the things
 ./labctl create --settings settings/mk8s.env --provider vcluster --mode mk8s --students 30
+
+# install prometheus stack because that's cool
+helm upgrade --install --repo https://prometheus-community.github.io/helm-charts \
+  --namespace prom-system --create-namespace \
+  kube-prometheus-stack kube-prometheus-stack
+
+# and also fix sysctl
+kubectl apply -f ../k8s/sysctl.yaml --namespace kube-system
