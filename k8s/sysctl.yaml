@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: sysctl
+spec:
+  selector:
+    matchLabels:
+      app: sysctl
+  template:
+    metadata:
+      labels:
+        app: sysctl
+    spec:
+      tolerations:
+      - operator: Exists
+      initContainers:
+      - name: sysctl
+        image: alpine
+        securityContext:
+          privileged: true
+        command:
+        - sysctl
+        - fs.inotify.max_user_instances=99999
+      containers:
+      - name: pause
+        image: registry.k8s.io/pause:3.8
+
