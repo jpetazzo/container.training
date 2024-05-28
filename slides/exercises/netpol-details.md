@@ -1,6 +1,6 @@
 # Exercise — Network Policies
 
-We want to to implement a generic network security mechanism.
+We want to implement a generic network security mechanism.
 
 Instead of creating one policy per service, we want to
 create a fixed number of policies, and use a single label
