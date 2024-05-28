@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DOMAINS=~/Dropbox/domains.txt
+DOMAINS=domains.txt
 IPS=ips.txt
 
 . ./dns-cloudflare.sh

@@ -25,7 +25,7 @@ cloudflare() {
 }
 
 _list_zones() {
-  cloudflare zones | jq -r .result[].name
+  cloudflare zones?per_page=100 | jq -r .result[].name
 }
 
 _get_zone_id() {
