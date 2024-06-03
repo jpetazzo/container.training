@@ -24,6 +24,32 @@
 
 ---
 
+## A bit of history
+
+Things related to Custom Resource Definitions:
+
+- Kubernetes 1.??: `apiextensions.k8s.io/v1beta1` introduced
+
+- Kubernetes 1.16: `apiextensions.k8s.io/v1` introduced
+
+- Kubernetes 1.22: `apiextensions.k8s.io/v1beta1` [removed][changes-in-122]
+
+- Kubernetes 1.25: [CEL validation rules available in beta][crd-validation-rules-beta]
+
+- Kubernetes 1.28: [validation ratcheting][validation-ratcheting] in [alpha][feature-gates]
+
+- Kubernetes 1.29: [CEL validation rules available in GA][cel-validation-rules]
+
+- Kubernetes 1.30: [validation ratcheting][validation-ratcheting] in [beta][feature-gates]; enabled by default
+
+[crd-validation-rules-beta]: https://kubernetes.io/blog/2022/09/23/crd-validation-rules-beta/
+[cel-validation-rules]: https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/#validation-rules
+[validation-ratcheting]: https://github.com/kubernetes/enhancements/tree/master/keps/sig-api-machinery/4008-crd-ratcheting
+[feature-gates]: https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#feature-gates-for-alpha-or-beta-features
+[changes-in-122]: https://kubernetes.io/blog/2021/07/14/upcoming-changes-in-kubernetes-1-22/
+
+---
+
 ## First slice of pizza
 
 ```yaml
@@ -41,8 +67,6 @@
 - We need to use `apiextensions.k8s.io/v1`, which is a little bit more complex
 
   (a few optional things become mandatory, see [this guide](https://kubernetes.io/docs/reference/using-api/deprecation-guide/#customresourcedefinition-v122) for details)
-
-- `apiextensions.k8s.io/v1beta1` is available since Kubernetes 1.16
 
 ---
 
@@ -96,9 +120,9 @@ The YAML below defines a resource using the CRD that we just created:
 kind: Pizza
 apiVersion: container.training/v1alpha1
 metadata:
-  name: napolitana
+  name: hawaiian
 spec:
-  toppings: [ mozzarella ]
+  toppings: [ cheese, ham, pineapple ]
 ```
 
 .lab[
@@ -114,15 +138,33 @@ spec:
 
 ## Type validation
 
-- Older versions of Kubernetes will accept our pizza definition as is
-
-- Newer versions, however, will issue warnings about unknown fields
-
-  (and if we use `--validate=false`, these fields will simply be dropped)
+- Recent versions of Kubernetes will issue errors about unknown fields
 
 - We need to improve our OpenAPI schema
 
   (to add e.g. the `spec.toppings` field used by our pizza resources)
+
+---
+
+## Creating a bland pizza
+
+- Let's try to create a pizza anyway!
+
+.lab[
+
+- Only provide the most basic YAML manifest:
+  ```bash
+    kubectl create -f- <<EOF
+    kind: Pizza
+    apiVersion: container.training/v1alpha1
+    metadata:
+      name: hawaiian
+    EOF
+  ```
+
+]
+
+- That should work! (As long as we don't try to add pineapple😁)
 
 ---
 
@@ -208,24 +250,42 @@ Note: we can update a CRD without having to re-create the corresponding resource
 
 ---
 
-## Better data validation
+## Validation woes
 
-- Let's change the data schema so that the sauce can only be `red` or `white`
-
-- This will be implemented by @@LINK[k8s/pizza-5.yaml]
+- Let's check what happens if we try to update our pizzas
 
 .lab[
 
-- Update the Pizza CRD:
+- Try to add a label:
   ```bash
-  kubectl apply -f ~/container.training/k8s/pizza-5.yaml
+  kubectl label pizza --all deliciousness=9001
   ```
 
 ]
 
+--
+
+- It works for the pizzas that have `sauce` and `toppings`, but not the other one!
+
+- The other one doesn't pass validation, and *can't be modified*
+
 ---
 
-## Validation *a posteriori*
+## First, let's fix this!
+
+- Option 1: delete the pizza
+
+  *(deletion isn't subject to validation)*
+
+- Option 2: update the pizza to add `sauce` and `toppings`
+
+  *(writing a pizza that passes validation is fine)*
+
+- Option 3: relax the validation rules
+
+---
+
+## Next, explain what's happening
 
 - Some of the pizzas that we defined earlier *do not* pass validation
 
@@ -281,6 +341,8 @@ Note: we can update a CRD without having to re-create the corresponding resource
 
 ---
 
+class: extra-details
+
 ## Migrating database content
 
 - We need to *serve* a version as long as we *store* objects in that version
@@ -292,6 +354,58 @@ Note: we can update a CRD without having to re-create the corresponding resource
 - All we have to do is to read and re-write them
 
   (the [kube-storage-version-migrator](https://github.com/kubernetes-sigs/kube-storage-version-migrator) tool can help)
+
+---
+
+## Validation ratcheting
+
+- Good news: it's not always necessary to introduce new versions
+
+  (and to write the associated conversion webhooks)
+
+- *Validation ratcheting allows updates to custom resources that fail validation to succeed if the validation errors were on unchanged keypaths*
+
+- In other words: allow changes that don't introduce further validation errors
+
+- This was introduced in Kubernetes 1.28 (alpha), enabled by default in 1.30 (beta)
+
+- The rules are actually a bit more complex
+
+- Another (maybe more accurate) explanation: allow to tighten or loosen some field definitions
+
+---
+
+## Validation ratcheting example
+
+- Let's change the data schema so that the sauce can only be `red` or `white`
+
+- This will be implemented by @@LINK[k8s/pizza-5.yaml]
+
+.lab[
+
+- Update the Pizza CRD:
+  ```bash
+  kubectl apply -f ~/container.training/k8s/pizza-5.yaml
+  ```
+
+]
+
+---
+
+## Testing validation ratcheting
+
+- This should work with Kubernetes 1.30 and above
+
+  (but give an error for the `brownie` pizza with previous versions of K8S)
+
+.lab[
+
+- Add another label:
+  ```bash
+  kubectl label pizzas --all food=definitely
+  ```
+
+]
 
 ---
 
