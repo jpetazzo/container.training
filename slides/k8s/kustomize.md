@@ -128,7 +128,9 @@ configMapGenerator:
 
 - A *variant* is the final outcome of applying bases + overlays
 
-(See the [kustomize glossary](https://github.com/kubernetes-sigs/kustomize/blob/master/docs/glossary.md) for more definitions!)
+(See the [kustomize glossary][glossary] for more definitions!)
+
+[glossary]: https://kubectl.docs.kubernetes.io/references/kustomize/glossary/
 
 ---
 
