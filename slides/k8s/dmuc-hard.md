@@ -368,6 +368,30 @@ class: extra-details
 
 [ciliumwithoutkubeproxy]: https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/#kubeproxy-free
 
+---
+
+class: extra-details
+
+## About the API server certificate...
+
+- In the previous sections, we've skipped API server certificate verification
+
+- To generate a proper certificate, we need to include a `subjectAltName` extension
+
+- And make sure that the CA includes the extension in the certificate
+
+```bash
+openssl genrsa -out apiserver.key 4096
+
+openssl req -new -key apiserver.key -subj /CN=kubernetes/ \
+        -addext "subjectAltName = DNS:kubernetes.default.svc, \
+        DNS:kubernetes.default, DNS:kubernetes, \
+        DNS:localhost, DNS:polykube1" -out apiserver.csr
+
+openssl x509 -req -in apiserver.csr -CAkey ca.key -CA ca.cert \
+        -out apiserver.crt -copy_extensions copy
+```
+
 ???
 
 :EN:- Connecting nodes and pods
