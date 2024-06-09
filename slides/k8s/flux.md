@@ -479,7 +479,7 @@ helm upgrade --install --repo https://dl.gitea.io/charts --namespace gitea --cre
   --set gitea.config.cache.ADAPTER=memory \
   #
 
-# Boostrap Flux controllers
+### Boostrap Flux controllers
 
 ```bash
 mkdir -p flux/flux-system/gotk-components.yaml
@@ -487,7 +487,7 @@ flux install --export > flux/flux-system/gotk-components.yaml
 kubectl apply -f flux/flux-system/gotk-components.yaml
 ```
 
-# Bootstrap GitRepository/Kustomization
+### Bootstrap GitRepository/Kustomization
 
 ```bash
 export REPO_URL="<gitlab_url>" DEPLOY_USERNAME="<username>"
