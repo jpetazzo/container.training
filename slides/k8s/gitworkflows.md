@@ -1,4 +1,4 @@
-# Git-based workflows
+# Git-based workflows (GitOps)
 
 - Deploying with `kubectl` has downsides:
 
@@ -40,223 +40,210 @@
 
 ## Enabling git-based workflows
 
-- There are a few tools out there to help us do that
+- There are a many tools out there to help us do that
 
-- We'll see demos of two of them: [Flux] and [Gitkube]
-
-- There are *many* other tools, some of them with even more features
+  (examples: [ArgoCD], [FluxCD]...)
 
 - There are also *many* integrations with popular CI/CD systems
 
-  (e.g.: GitLab, Jenkins, ...)
+  (e.g.: GitHub Actions, GitLab, Jenkins...)
 
-[Flux]: https://www.weave.works/oss/flux/
-[Gitkube]: https://gitkube.sh/
-
----
-
-## Flux overview
-
-- We put our Kubernetes resources as YAML files in a git repository
-
-- Flux polls that repository regularly (every 5 minutes by default)
-
-- The resources described by the YAML files are created/updated automatically
-
-- Changes are made by updating the code in the repository
+[ArgoCD]: https://argoproj.github.io/cd/
+[Flux]: https://fluxcd.io/
 
 ---
 
-## Preparing a repository for Flux
+## The road to production
 
-- We need a repository with Kubernetes YAML files
+In no specific order, we need to at least:
 
-- I have one: https://github.com/jpetazzo/kubercoins
+- Choose a tool
 
-- Fork it to your GitHub account
+- Choose a cluster / app / namespace layout
+  <br/>
+  (one cluster per app, different clusters for prod/staging...)
 
-- Create a new branch in your fork; e.g. `prod`
+- Choose a repository layout
+  <br/>
+  (different repositories, directories, branches per app, env, cluster...)
 
-  (e.g. with "branch" dropdown through the GitHub web UI)
+- Choose an installation / bootstrap method
 
-- This is the branch that we are going to use for deployment
+- Choose how new apps / environments / versions will be deployed
 
----
-
-## Setting up Flux with kustomize
-
-- Clone the Flux repository:
-  ```bash
-  git clone https://github.com/fluxcd/flux
-  cd flux
-  ```
-
-- Edit `deploy/flux-deployment.yaml`
-
-- Change the `--git-url` and `--git-branch` parameters:
-  ```yaml
-  - --git-url=git@github.com:your-git-username/kubercoins
-  - --git-branch=prod
-  ```
-
-- Apply all the YAML:
-  ```bash
-  kubectl apply -k deploy/
-  ```
+- Choose how new images will be built
 
 ---
 
-## Setting up Flux with Helm
+## FluxCD
 
-- Add Flux helm repo:
-  ```bash
-  helm repo add fluxcd https://charts.fluxcd.io
-  ```
+- Nice bootstrap
 
-- Install Flux:
-  ```bash
-  kubectl create namespace flux
-  helm upgrade --install flux \
-    --set git.url=git@github.com:your-git-username/kubercoins \
-    --set git.branch=prod \
-    --namespace flux \
-    fluxcd/flux
-  ```
+  (CLI tool can automatically install, create git repos...)
 
----
+- Self-hosted
 
-## Allowing Flux to access the repository
+  (flux controllers are managed by flux itself)
 
-- When it starts, Flux generates an SSH key
+- Many CRDs
 
-- Display that key:
-  ```bash
-  kubectl -n flux logs deployment/flux | grep identity.pub | cut -d '"' -f2
-  ```
+  (Kustomization, HelmRelease, GitRepository...)
 
-- Then add that key to the repository, giving it **write** access
+- No web UI out of the box
 
-  (some Flux features require write access)
-
-- After a minute or so, DockerCoins will be deployed to the current namespace
+- CLI relies on Kubernetes API access
 
 ---
 
-## Making changes
+## ArgoCD
 
-- Make changes (on the `prod` branch), e.g. change `replicas` in `worker`
+- Simple bootstrap
 
-- After a few minutes, the changes will be picked up by Flux and applied
+  (just apply YAMLs / install Helm chart)
 
----
+- Few CRDs
 
-## Other features
+  (basic workflow can be done with a single "Application" resource)
 
-- Flux can keep a list of all the tags of all the images we're running
+- Comes with a web UI
 
-- The `fluxctl` tool can show us if we're running the latest images
-
-- We can also "automate" a resource (i.e. automatically deploy new images)
-
-- And much more!
+- CLI relies on separate API and authentication system
 
 ---
 
-## Gitkube overview
+## Cluster, app, namespace layout
 
-- We put our Kubernetes resources as YAML files in a git repository
+- One cluster per app, different namespaces for environments?
 
-- Gitkube is a git server (or "git remote")
+- One cluster per environment, different namespaces for apps?
 
-- After making changes to the repository, we push to Gitkube
+- Everything on a single cluster? One cluster per combination?
 
-- Gitkube applies the resources to the cluster
+- Something in between:
 
----
+  - prod cluster, database cluster, dev/staging/etc cluster
 
-## Setting up Gitkube
+  - prod+db cluster per app, shared dev/staging/etc cluster
 
-- Install the CLI:
-  ```bash
-  sudo curl -L -o /usr/local/bin/gitkube \
-       https://github.com/hasura/gitkube/releases/download/v0.2.1/gitkube_linux_amd64
-  sudo chmod +x /usr/local/bin/gitkube
-  ```
+- And more!
 
-- Install Gitkube on the cluster:
-  ```bash
-  gitkube install --expose ClusterIP
-  ```
+Note: this decision isn't really tied to GitOps!
 
 ---
 
-## Creating a Remote
+## Repository layout
 
-- Gitkube provides a new type of API resource: *Remote*
+So many different possibilities!
 
-  (this is using a mechanism called Custom Resource Definitions or CRD)
+- Source repos
 
-- Create and apply a YAML file containing the following manifest:
-  ```yaml
-	apiVersion: gitkube.sh/v1alpha1
-	kind: Remote
-	metadata:
-	  name: example
-	spec:
-	  authorizedKeys:
-	  - `ssh-rsa AAA...`
-	  manifests:
-	    path: "."
-  ```
+- Cluster/infra repos/branches/directories
 
-  (replace the `ssh-rsa AAA...` section with the content of `~/.ssh/id_rsa.pub`)
+- "Deployment" repos (with manifests, charts)
+
+- Different repos/branches/directories for environments
+
+🤔 How to decide?
 
 ---
 
-## Pushing to our remote
+## Permissions
 
-- Get the `gitkubed` IP address:
-  ```bash
-  kubectl -n kube-system get svc gitkubed
-  IP=$(kubectl -n kube-system get svc gitkubed -o json | 
-  	   jq -r .spec.clusterIP)
-  ```
+- Different teams/companies = different repos
 
-- Get ourselves a sample repository with resource YAML files:
-  ```bash
-  git clone git://github.com/jpetazzo/kubercoins
-  cd kubercoins
-  ```
+  - separate platform team → separate "infra" vs "apps" repos
 
-- Add the remote and push to it:
-  ```bash
-  git remote add k8s ssh://default-example@$IP/~/git/default-example
-  git push k8s master
-  ```
+  - teams working on different apps → different repos per app
+
+- Branches can be "protected" (`production`, `main`...)
+
+  (don't need separate repos for separate environments)
+
+- Directories will typically have the same permissions
+
+- Managing directories is easier than branches
+
+- But branches are more "powerful" (cherrypicking, rebasing...)
 
 ---
 
-## Making changes
+## Resource hierarchy
 
-- Edit a local file
+- Git-based deployments are managed by Kubernetes resources
 
-- Commit
+  (e.g. Kustomization, HelmRelease with Flux; Application with ArgoCD)
 
-- Push!
+- These resources need to be managed like any other Kubernetes resource
 
-- Make sure that you push to the `k8s` remote
+  (YAML manifests, Kustomizations, Helm charts)
+
+- They can be managed with Git workflows too!
 
 ---
 
-## Other features
+## Cluster / infra management
 
-- Gitkube can also build container images for us
+- How do we provision clusters?
 
-  (see the [documentation](https://github.com/hasura/gitkube/blob/master/docs/remote.md) for more details)
+- Manual "one-shot" provisioning (CLI, web UI...)
 
-- Gitkube can also deploy Helm charts
+- Automation with Terraform, Ansible...
 
-  (instead of raw YAML files)
+- Kubernetes-driven systems (Crossplane, CAPI)
+
+- Infrastructure can also be managed with GitOps
+
+---
+
+## Example 1
+
+- Managed with YAML/Charts:
+
+  - core components (CNI, CSI, Ingress, logging, monitoring...)
+
+  - GitOps controllers
+
+  - critical application foundations (database operator, databases)
+
+  - GitOps manifests
+
+- Managed with GitOps:
+
+  - applications
+
+  - staging databases
+
+---
+
+## Example 2
+
+- Managed with YAML/Charts:
+
+  - essential components (CNI, CoreDNS)
+
+  - initial installation of GitOps controllers
+
+- Managed with GitOps:
+
+  - upgrades of GitOps controllers
+
+  - core components (CSI, Ingress, logging, monitoring...)
+
+  - operators, databases
+
+  - more GitOps manifests for applications!
+
+---
+
+## Concrete example
+
+- Source code repository (not shown here)
+
+- Infrastructure repository (shown below), single branch
+
+```
+@@INCLUDE[slides/k8s/gitopstree.txt]
+```
 
 ???
 

@@ -1,0 +1,13 @@
+├── charts/                     <--- could also be in separate app repos
+│   ├── dockercoins/
+│   └── color/
+├── apps/                       <--- YAML manifests for GitOps resources
+│   ├── dockercoins/                 (might reference the "charts" above,
+│   ├── blue/                         and/or include environment-specific
+│   ├── green/                        manifests to create e.g. namespaces,
+│   ├── kube-prometheus-stack/        configmaps, secrets...)
+│   ├── cert-manager/
+│   └── traefik/
+└── clusters/                   <--- per-cluster; will typically reference
+    ├── prod/                        the "apps" above, possibly extending 
+    └── dev/                         or adding configuration resources too

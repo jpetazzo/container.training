@@ -125,6 +125,9 @@ content:
   - k8s/openebs.md
   - k8s/stateful-failover.md
 -
+  - k8s/gitworkflows.md
+  - k8s/flux.md
+-
   - k8s/logs-centralized.md
   - k8s/prometheus.md
   - k8s/prometheus-stack.md
@@ -164,7 +167,6 @@ content:
   - k8s/cluster-upgrade.md
   - k8s/cluster-backup.md
   - k8s/cloud-controller-manager.md
-  - k8s/gitworkflows.md
 -
   - k8s/lastwords.md
   - k8s/links.md
