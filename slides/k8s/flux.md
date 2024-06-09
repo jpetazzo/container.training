@@ -163,7 +163,7 @@ class: extra-details
 
 - Create a manifest; for instance `clusters/dev/flux-system/blue.yaml`
 
-- Add that manifest to `cluseters/dev/kustomization.yaml`
+- Add that manifest to `clusters/dev/kustomization.yaml`
 
 - Commit and push both changes to the repository
 
@@ -173,7 +173,7 @@ class: extra-details
 
 ## Waiting for reconciliation
 
-- Compare the git hash that we pushed and the one show with `kubectl get `
+- Compare the git hash that we pushed and the one shown with `kubectl get `
 
 - Option 1: wait for Flux to pick up the changes in the repository
 
@@ -182,6 +182,10 @@ class: extra-details
 - Option 2: use `flux reconcile source git flux-system`
 
   (this puts an annotation on the appropriate resource, triggering an immediate check)
+
+- Option 3: set up receiver webhooks
+
+  (so that git updates trigger immediate reconciliation)
 
 ---
 
@@ -225,7 +229,7 @@ class: extra-details
 
   (with multiple resource manifets)
 
-- We want that to be reusable
+- We want to minimize code repetition
 
   (i.e. easy to add on multiple clusters with minimal changes)
 
@@ -324,7 +328,7 @@ class: extra-details
 
   - installing one of our own charts
     <br/>
-    (e.g. a chart with authored ourselves)
+    (e.g. a chart we authored ourselves)
 
 - The procedures are very similar
 
@@ -403,7 +407,7 @@ class: extra-details
        --export > apps/myapp/flux.yaml
   ```
 
-- Add that manifest to the top-level kustomization
+- Add a reference to that manifest to the top-level kustomization
 
 - `git add` / `git commit` / `git push` the chart, manifest, and kustomization
 
@@ -439,7 +443,7 @@ class: extra-details
 
 - Artifacts are updated only when the Helm chart version changes
 
-- Unless `reoncileStrategy` is set to `Revision` (instead of the default `ChartVersion`)
+- Unless `reconcileStrategy` is set to `Revision` (instead of the default `ChartVersion`)
 
 ---
 

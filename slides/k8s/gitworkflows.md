@@ -22,7 +22,7 @@
 
 - These resources have a perfect YAML representation
 
-- All we do is manipulating these YAML representations
+- All we do is manipulate these YAML representations
 
   (`kubectl run` generates a YAML file that gets applied)
 
@@ -34,19 +34,25 @@
 
   - control who can push to which branches
 
-  - have formal review processes, pull requests ...
+  - have formal review processes, pull requests, test gates...
 
 ---
 
 ## Enabling git-based workflows
 
-- There are a many tools out there to help us do that
+- There are a many tools out there to help us do that; with different approaches
 
-  (examples: [ArgoCD], [FluxCD]...)
+- "Git host centric" approach: GitHub Actions, GitLab...
 
-- There are also *many* integrations with popular CI/CD systems
+  *the workflows/action are directly initiated by the git platform*
 
-  (e.g.: GitHub Actions, GitLab, Jenkins...)
+- "Kubernetes cluster centric" approach: [ArgoCD], [FluxCD]..
+
+  *controllers run on our clusters and trigger on repo updates*
+
+- This is not an exhaustive list (see also: Jenkins)
+
+- We're going to talk mostly about "Kubernetes cluster centric" approaches here
 
 [ArgoCD]: https://argoproj.github.io/cd/
 [Flux]: https://fluxcd.io/
@@ -172,6 +178,8 @@ So many different possibilities!
 - Git-based deployments are managed by Kubernetes resources
 
   (e.g. Kustomization, HelmRelease with Flux; Application with ArgoCD)
+
+- We will call these resources "GitOps resources"
 
 - These resources need to be managed like any other Kubernetes resource
 
