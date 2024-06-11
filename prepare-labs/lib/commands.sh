@@ -1033,8 +1033,8 @@ _cmd_tailhist () {
     wget -c https://github.com/joewalnes/websocketd/releases/download/v0.3.0/websocketd-0.3.0-linux_$ARCH.zip
     unzip websocketd-0.3.0-linux_$ARCH.zip websocketd
     sudo mv websocketd /usr/local/bin/websocketd
-    sudo mkdir -p /tmp/tailhist
-    sudo tee /root/tailhist.service <<EOF
+    sudo mkdir -p /opt/tailhist
+    sudo tee /opt/tailhist.service <<EOF
 [Unit]
 Description=tailhist
 
@@ -1042,16 +1042,16 @@ Description=tailhist
 WantedBy=multi-user.target
 
 [Service]
-WorkingDirectory=/tmp/tailhist
+WorkingDirectory=/opt/tailhist
 ExecStart=/usr/local/bin/websocketd --port=1088 --staticdir=. sh -c \"tail -n +1 -f /home/$USER_LOGIN/.history || echo 'Could not read history file. Perhaps you need to \\\"chmod +r .history\\\"?'\"
 User=nobody
 Group=nogroup
 Restart=always
 EOF
-    sudo systemctl enable /root/tailhist.service --now
+    sudo systemctl enable /opt/tailhist.service --now
     "
 
-    pssh -I sudo tee /tmp/tailhist/index.html <lib/tailhist.html
+    pssh -I sudo tee /opt/tailhist/index.html <lib/tailhist.html
 }
 
 _cmd tools "Install a bunch of useful tools (editors, git, jq...)"
