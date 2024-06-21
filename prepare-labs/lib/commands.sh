@@ -635,6 +635,31 @@ _cmd_kubetools() {
         ;;
     esac
 
+    # Install ArgoCD CLI
+    ##VERSION## https://github.com/argoproj/argo-cd/releases/latest
+    URL=https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-${ARCH}
+    pssh "
+    if [ ! -x /usr/local/bin/argocd ]; then
+        sudo curl -o /usr/local/bin/argocd -fsSL $URL
+        sudo chmod +x /usr/local/bin/argocd
+        argocd completion bash | sudo tee /etc/bash_completion.d/argocd
+        argocd version --client
+    fi"
+
+    # Install Flux CLI
+    ##VERSION## https://github.com/fluxcd/flux2/releases
+    FLUX_VERSION=2.3.0
+    FILENAME=flux_${FLUX_VERSION}_linux_${ARCH}
+    URL=https://github.com/fluxcd/flux2/releases/download/v$FLUX_VERSION/$FILENAME.tar.gz
+    pssh "
+    if [ ! -x /usr/local/bin/flux ]; then
+        curl -fsSL $URL |
+        sudo tar -C /usr/local/bin -zx flux
+        sudo chmod +x /usr/local/bin/flux
+        flux completion bash | sudo tee /etc/bash_completion.d/flux
+        flux --version
+    fi"
+
     # Install kubectx and kubens
     pssh "
     set -e
