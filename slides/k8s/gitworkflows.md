@@ -81,39 +81,47 @@ In no specific order, we need to at least:
 
 ---
 
-## FluxCD
+## Flux vs ArgoCD (1/2)
 
-- Nice bootstrap
+- Flux:
 
-  (CLI tool can automatically install, create git repos...)
+  - fancy setup with an (optional) dedicated `flux bootstrap` command
+    <br/>
+    (with support for specific git providers, repo creation...)
 
-- Self-hosted
+  - deploying an app requires multiple CRDs
+    <br/>
+    (Kustomization, HelmRelease, GitRepository...)
 
-  (flux controllers are managed by flux itself)
+  - supports Helm charts, Kustomize, raw YAML
 
-- Many CRDs
+- ArgoCD:
 
-  (Kustomization, HelmRelease, GitRepository...)
+  - simple setup (just apply YAMLs / install Helm chart)
 
-- No web UI out of the box
+  - fewer CRDs (basic workflow can be implement with a single "Application" resource)
 
-- CLI relies on Kubernetes API access
+  - supports Helm charts, Jsonnet, Kustomize, raw YAML, and arbitrary plugins
 
 ---
 
-## ArgoCD
+## Flux vs ArgoCD (2/2)
 
-- Simple bootstrap
+- Flux:
 
-  (just apply YAMLs / install Helm chart)
+  - sync interval is configurable per app
+  - no web UI out of the box
+  - CLI relies on Kubernetes API access
+  - CLI can easily generate custom resource manifests (with `--export`)
+  - self-hosted (flux controllers are managed by flux itself by default)
+  - one flux instance manages a single cluster
 
-- Few CRDs
+- ArgoCD:
 
-  (basic workflow can be done with a single "Application" resource)
-
-- Comes with a web UI
-
-- CLI relies on separate API and authentication system
+  - sync interval is configured globally
+  - comes with a web UI
+  - CLI can use Kubernetes API or separate API and authentication system
+  - one ArgoCD instance can manage multiple clusters
 
 ---
 

@@ -1,110 +1,152 @@
-# GitOps with ArgoCD
+# ArgoCD
 
-- Resources in our Kubernetes cluster can be described in YAML files
+- We're going to implement a basic GitOps workflow with ArgoCD
 
-- These YAML files can and should be stored in source control - specifically - Git
+- Pushing to the default branch will automatically deploy to our clusters
 
-- YAML manifests from Git can then be used to continuously update our cluster configuration
+- There will be two clusters (`dev` and `prod`)
 
-- When this process is automated - it is now called "GitOps"
-
-- The term was coined by Alexis Richardson of Weaveworks.
-
-- Many tools exist for GitOps automation
-
-- ArgoCD is one of the most popular ones due to its slick WebUI
-
----
-
-## ArgoCD overview
+- The two clusters will have similar (but slightly different) workloads
 
 ![ArgoCD Logo](images/argocdlogo.png)
-- We put our Kubernetes resources as YAML files (or Helm charts) in a git repository
-
-- ArgoCD polls that repository regularly 
-
-- The resources described in git are created/updated automatically
-
-- Changes are made by updating the code in the repository
 
 ---
-## ArgoCD - the Core Concepts
 
-- ArgoCD manages **Applications** by **syncing** their **live state** with their **target state**
+## ArgoCD concepts
 
-- **Application**: A group of Kubernetes resources as defined by a manifest. ArgoCD applies a Custom Resource Definition (CRD) to manage these.
+ArgoCD manages **applications** by **syncing** their **live state** with their **target state**.
 
-- **Application source type**: Which **Tool** is used to build the application. (e.g: Helm. Kustomize, Jsonnette)
+- **Application**: a group of Kubernetes resources managed by ArgoCD.
+  <br/>
+  Also a custom resource (`kind: Application`) managing that group of resources.
 
-- **Target state**: The desired state of an **application**, as represented by files in a Git repository.
-- **Live state**:  The live state of that application. What pods etc are deployed, etc.
+- **Application source type**: the **Tool** used to build the application (Kustomize, Helm...)
 
-- **Sync status**: Whether or not the live state matches the target state. Is the deployed application the same as Git says it should be?
+- **Target state**: the desired state of an **application**, as represented by the git repository.
 
-- **Sync**: The process of making an application move to its target state. E.g. by applying changes to a Kubernetes cluster.
+- **Live state**: the current state of the application on the cluster.
+
+- **Sync status**: whether or not the live state matches the target state.
+
+- **Sync**: the process of making an application move to its target state.
+  <br/>
+  (e.g. by applying changes to a Kubernetes cluster)
+
+(Check [ArgoCD core concepts](https://argo-cd.readthedocs.io/en/stable/core_concepts/) for more definitions!)
+
+---
+
+## Getting ready
+
+- Let's make sure we have two clusters
+
+- It's OK to use local clusters (kind, minikube...)
+
+- We need to install the ArgoCD CLI ([packages], [binaries])
+
+- **Highly recommended:** set up CLI completion!
+
+- Of course we'll need a Git service, too
+
+[packages]: https://argo-cd.readthedocs.io/en/stable/cli_installation/
+[binaries]: https://github.com/argoproj/argo-cd/releases/latest
 
 ---
 
 ## Setting up ArgoCD
 
-- We have a YAML file that installs core ArgoCD components 
+- The easiest way is to use upstream YAML manifests
 
-- Apply the yaml:
+- There is also a [Helm chart][argohelmchart] if we need more customization
 
-```bash
-kubectl create namespace argocd
-kubectl apply ~/container.training/k8s/argocd.yaml
-```
+.lab[
 
-- This will create a new namespace, argocd, where Argo CD services and application resources will live.
+- Create a namespace for ArgoCD and install it there:
+  ```bash
+  kubectl create namespace argocd
+  kubectl apply --namespace argocd -f \
+      https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+  ```
 
----
-
-## Installing the ArgoCD CLI
-
-- ArgoCD features both a WebUI and a CLI
-
-- CLI can be used for automation and some of the configuration not currently available in the WebUI
-
-- Download the CLI:
-
-.exercise[
-```bash
-VERSION=v2.2.1
-curl -sSL -o /usr/local/bin/argocd \ 
-    https://github.com/argoproj/argo-cd/releases/download/$VERSION/argocd-linux-amd64
-chmod +x /usr/local/bin/argocd
-```
 ]
+
+[argohelmchart]: https://artifacthub.io/packages/helm/argo/argocd-apps
+
 ---
+
 ## Logging in with the ArgoCD CLI
 
-Verify we can login to ArgoCD via CLI:
+- The CLI can talk to the ArgoCD API server or to the Kubernetes API server
 
-```bash
-argocd login --core
-```
+- For simplicity, we're going to authenticate and communicate with the Kubernetes API
 
-You should see "Context 'kubernetes' updated"
+.lab[
 
+- Authenticate with the ArgoCD API (that's what the `--core` flag does):
+  ```bash
+  argocd login --core
+  ```
 
+- Check that everything is fine:
+  ```bash
+  argocd version
+  ```
+]
 
-- Note: argocd cli can talk to ArgoCD API server or to Kubernetes API
+--
 
-In the `--core` mode it talks directly to Kubernetes
+🤔 `FATA[0000] error retrieving argocd-cm: configmap "argocd-cm" not found`
 
-- So ArgoCD  has an API server! But what else is there?
+---
 
-- Let's Look at ArgoCD Architecture!
+## ArgoCD CLI shortcomings
+
+- When using "core" authentication, the ArgoCD CLI uses our current Kubernetes context
+
+  (as defined in our kubeconfig file)
+
+- That context need to point to the correct namespace
+
+  (the namespace where we installed ArgoCD)
+
+- In fact, `argocd login --core` doesn't communicate at all with ArgoCD!
+
+  (it only updates a local ArgoCD configuration file)
+
+---
+
+## Trying again in the right namespace
+
+- We will need to run all `argocd` commands in the `argocd` namespace
+
+  (this limitation only applies to "core" authentication; see [issue 14167][issue14167])
+
+.lab[
+
+- Switch to the `argocd` namespace:
+  ```bash
+  kubectl config set-context --current --namespace argocd
+  ```
+
+- Check that we can communicate with the ArgoCD API now:
+  ```bash
+  argocd version
+  ```
+
+]
+
+- Let's have a look at ArgoCD architecture!
+
+[issue14167]: https://github.com/argoproj/argo-cd/issues/14167
 
 ---
 
 class: pic
-## ArgoCD Architecture
 
 ![ArgoCD Architecture](images/argocd_architecture.png)
 
 ---
+
 ## ArgoCD API Server
 
 The API server is a gRPC/REST server which exposes the API consumed by the Web UI, CLI, and CI/CD systems. It has the following responsibilities:
@@ -120,10 +162,12 @@ The API server is a gRPC/REST server which exposes the API consumed by the Web U
 - RBAC enforcement
 
 - listener/forwarder for Git webhook events
+
 ---
+
 ## ArgoCD Repository Server
 
-The repository server is an internal service which maintains a local cache of the Git repository holding the application manifests. It is responsible for generating and returning the Kubernetes manifests when provided the following inputs:
+The repository server is an internal service which maintains a local cache of the Git repositories holding the application manifests. It is responsible for generating and returning the Kubernetes manifests when provided the following inputs:
 
 - repository URL
 
@@ -131,7 +175,7 @@ The repository server is an internal service which maintains a local cache of th
 
 - application path
 
-- template specific settings: parameters, ksonnet environments, helm values.yaml
+- template specific settings: parameters, helm values...
 
 ---
 
@@ -141,319 +185,405 @@ The application controller is a Kubernetes controller which continuously monitor
 
 It detects *OutOfSync* application state and optionally takes corrective action. 
 
-It is responsible for invoking any user-defined hooks for lifecycle events (*PreSync, Sync, PostSync*)
+It is responsible for invoking any user-defined hooks for lifecycle events (*PreSync, Sync, PostSync*).
 
 ---
+
 ## Preparing a repository for ArgoCD
 
-- We need a repository with Kubernetes YAML files
+- We need a repository with Kubernetes YAML manifests
 
-- Let's use **kubercoins**: https://github.com/otomato-gh/kubercoins
+- You can fork [kubercoins] or create a new, empty repository
 
-- Fork it to your GitHub account
+- If you create a new, empty repository, add some manifests to it
 
-- Create a new branch in your fork; e.g. `prod`
-
-  (e.g. by adding a line in the README through the GitHub web UI)
-
-- This is the branch that we are going to use for deployment
+[kubercoins]: https://github.com/jpetazzo/kubercoins
 
 ---
-## Start Managing an Application
 
-- An Application can be added to ArgoCD (and consequently - to our cluster) vi UI or CLI
+## Add an Application
 
-- Adding an Application via CLI:
+- An Application can be added to ArgoCD via the web UI or the CLI
 
-.exercise[
-```bash
-argocd app create kubercoins \ 
---repo https://github.com/<your_user>/kubercoins.git \
---path . --revision prod \
---dest-server https://kubernetes.default.svc \
---dest-namespace kubercoins-prod
-```
-Check what we did:
-```bash
-argocd app list
-```
-The app is there and it is `OutOfSync`!
+  (either way, this will create a custom resource of `kind: Application`)
+
+- The Application should then automatically be deployed to our cluster
+
+  (the application manifests will be "applied" to the cluster)
+
+.lab[
+
+- Let's use the CLI to add an Application:
+  ```bash
+    argocd app create kubercoins \ 
+           --repo https://github.com/`<your_user>/<your_repo>`.git \
+           --path . --revision `<branch>` \
+           --dest-server https://kubernetes.default.svc \
+           --dest-namespace kubercoins-prod
+  ```
+
 ]
+
 ---
 
-## Syncing the Application vi CLI
+## Checking progress
 
-- Let's sync kubercoins into our cluster
+- We can see sync status in the web UI or with the CLI
 
-.exercise[
-```bash
+.lab[
+
+- Let's check app status with the CLI:
+  ```bash
+  argocd app list
+  ```
+
+- We can also check directly with the Kubernetes CLI:
+  ```bash
+  kubectl get applications
+  ```
+
+]
+
+- The app is there and it is `OutOfSync`!
+
+---
+
+## Manual sync with the CLI
+
+- By default the "sync policy" is `manual`
+
+- It can also be set to `auto`, which would check the git repository every 3 minutes
+
+  (this interval can be [configured globally][pollinginterval])
+
+- Manual sync can be triggered with the CLI
+
+.lab[
+
+- Let's force an immediate sync of our app:
+  ```bash
+    argocd app sync kubercoins
+  ```
+]
+
+🤔 We're getting errors!
+
+[pollinginterval]: https://argo-cd.readthedocs.io/en/stable/faq/#how-often-does-argo-cd-check-for-changes-to-my-git-or-helm-repository
+
+---
+
+## Sync failed
+
+We should receive a failure:
+
+`FATA[0000] Operation has completed with phase: Failed`
+
+And in the output, we see more details:
+
+`Message: one or more objects failed to apply,`
+<br/>
+`reason: namespaces "kubercoins-prod" not found`
+
+---
+
+## Creating the namespace
+
+- There are multiple ways to achieve that
+
+- We could generate a YAML manifest for the namespace and add it to the git repository
+
+- Or we could use "Sync Options" so that ArgoCD creates it automatically!
+
+- ArgoCD provides many "Sync Options" to handle various edge cases
+
+- Some [others](https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/) are: `FailOnSharedResource`, `PruneLast`, `PrunePropagationPolicy`...
+
+---
+
+## Editing the app's sync options
+
+- This can be done through the web UI or the CLI
+
+.lab[
+
+- Let's use the CLI once again:
+  ```bash
+  argocd app edit kubercoins
+  ```
+
+- Add the following to the YAML manifest, at the root level:
+  ```yaml
+    syncPolicy:
+      syncOptions:
+        - CreateNamespace=true
+  ```
+
+]
+
+---
+
+## Sync again
+
+.lab[
+
+- Let's retry the sync operation:
+  ```bash
   argocd app sync kubercoins
-```
-]
---
+  ```
 
-We should recieve a failure:
+- And check the application status:
+  ```bash
+  argocd app list
+  kubectl get applications
+  ```
 
-`Operation has completed with phase: Failed`
-
-And the culprit is:
-
-`Message: one or more objects failed to apply, reason: namespaces "kubercoins-prod" not found`
-
-We need to create a namespace!
-
----
-
-## Sync Options
-
-- Syncing is only trivial in theory
-
-- There are a lot of edge cases
-
-- Hence ArgoCD supports "Sync Options"
-
-- One of them is "CreateNamespace"
-
-- Some [others](https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/) are: `FailOnSharedResource`, `PruneLast`, `PrunePropagationPolicy`
-
----
-## Let's edit the sync options of our app
-.exercise[
-```bash
-argocd app edit kubercoins
-```
-Add this to the YAML opened in the console (root level):
-```yaml
-syncPolicy:
-  syncOptions:
-    - CreateNamespace=true
-```
-Now retry sync:
-```bash
-argocd app sync kubercoins
-```
 ]
 
-Looks better now!
+- It should show `Synced` and `Progressing`
+
+- After a while (when all pods are running correctly) it should be `Healthy`
 
 ---
 
 ## Managing Applications via the Web UI
 
-- ArgoCD is popular in large part due to it's browser-based UI
+- ArgoCD is popular in large part due to its browser-based UI
 
-- Let's see how to manage Applications in the UI
+- Let's see how to manage Applications in the web UI
 
-- ArgoCD web dashboard should be available on your lab machine's port 30006
+.lab[
 
-- Alternatively we can run it on port 8080 by executing: `argocd admin dasboard`
+- Expose the web dashboard on a local port:
+  ```bash
+  argocd admin dashboard
+  ```
 
-.exercise[
-  Open the ArgoCD Web UI
+- This command will show the dashboard URL; open it in a browser
+
+- Authentication should be automatic
+
 ]
 
----
+Note: `argocd admin dashboard` is similar to `kubectl port-forward` or `kubectl-proxy`.
 
-## Let's add a Staging environment for our Application
-
-* Create a branch named "stage" in your **kubercoins** fork
-* Back in ArgoCD UI - click "New application"
-
-| Field | Value |
-|-------|-------|
-| Application name: | `kubercoins-stg` |
-| Project: | `default` |
-| Sync policy: | `Manual` |
-| Repository: | `https://github.com/${username}/kubercoins` |
-| Revision: | `stage` |
-| Path: | `.` |
-| Cluster: | `https://kubernetes.default.svc` |
-| Namespace: | `kubercoins-stg` |
-  
----
-## Sync Your Application from the UI
-
-* Click "Sync".
-
-* Click "Synchronize" in the Sliding panel.
-
-* Watch app status become Healthy and Synced
+(The dashboard remains available as long as `argocd admin dashboard` is running.)
 
 ---
-## Making Changes
 
-- Let's see what happens when we change our app
+## Adding a staging Application
 
-- Change the image tag in worker-deployment.yaml to v0.3 (on the `stage` branch)
+- Let's add another Application for a staging environment
 
-- Line 18: 
-`      - image: dockercoins/worker:v0.3`
+- First, create a new branch (e.g. `staging`) in our kubercoins fork
 
-- In a few moments the `kubercoins-stg` application will show OutOfSync in both the UI and when running `argocd app list`
+- Then, in the ArgoCD web UI, click on the "+ NEW APP" button
 
-.exercise[
-  Check the application sync status:
+  (on a narrow display, it might just be "+", right next to buttons looking like 🔄 and ↩️)
+
+- See next slides for details about that form!
+
+---
+
+## Defining the Application
+
+| Field            | Value                                      |
+|------------------|--------------------------------------------|
+| Application Name | `kubercoins-stg`                           |
+| Project Name     | `default`                                  |
+| Sync policy      | `Manual`                                   |
+| Sync options     | check `auto-create namespace`              |
+| Repository URL   | `https://github.com/<username>/<reponame>` |
+| Revision         | `<branchname>`                             |
+| Path             | `.`                                        |
+| Cluster URL      | `https://kubernetes.default.svc`           |
+| Namespace        | `kubercoins-stg`                           |
+
+Then click on the "CREATE" button (top left).
+
+---
+
+## Synchronizing the Application
+
+- After creating the app, it should now show up in the app tiles
+
+  (with a yellow outline to indicate that it's out of sync)
+
+- Click on the "SYNC" button on the app tile to show the sync panel
+
+- In the sync panel, click on "SYNCHRONIZE"
+
+- The app will start to synchronize, and should become healthy after a little while
+
+---
+
+## Making changes
+
+- Let's make changes to our application manifests and see what happens
+
+.lab[
+
+- Make a change to a manifest
+
+  (for instance, change the number of replicas of a Deployment)
+
+- Commit that change and push it to the staging branch
+
+- Check the application sync status:
   ```bash
   argocd app list
   ```
+
 ]
 
----
-
-## Automating the Sync for True CD
-
-- Syncing manually for every change isn't really doing CD
-
-- Argo allows us to automate the sync process
-
-- Note that this requires much more rigorous production testing and observability - in order to make sure that the changes we do in Git don't crash our app and the cluster as a whole.
-
-- Argo project provides a complementary Progressive Delivery controller - Argo Rollouts - that helps us make sure all our deployment roll out safely
-
-- But today we will just turn on automated sync for the staging namespace
+- After a short period of time (a few minutes max) the app should show up "out of sync"
 
 ---
 
-##  Enable AutoSync
+## Automated synchronization
 
-- In Web UI - go to Applications -> kubercoins-stg -> App Details
+- We don't want to manually sync after every change
 
-- Under Sync Policy - click on "ENABLE AUTO-SYNC"
+  (that wouldn't be true continuous deployment!)
 
-- The application goes into sync and the `worker` deployment gets stuck in `progressing`
+- We're going to enable "auto sync"
 
-.exercise[
-  Check the applicationn resource health:
-  ```bash
-  argocd app get kubercoins-stg -ojson | \ 
-  jq ".status.resources[]| {name: .name} + .health"
-  ```
-]
+- Note that this requires much more rigorous testing and observability!
 
-Worker deployment will show "Progressing" for a while until it's marked as "Degraded"
+  (we need to be sure that our changes won't crash our app or even our cluster)
 
-Makes sense - there is no `v0.3` image for worker!
+- Argo project also provides [Argo Rollouts][rollouts]
 
----
+  (a controller and CRDs to provide blue-green, canary deployments...)
 
-## Rolling Back a Bad Deployment
+- Today we'll just turn on automated sync for the staging namespace
 
-- Sometimes we deploy a bad version.
-
-- Or a non-existent one (as we just did with v0.3)
-
-- Depending on our rolling update strategy this can leave our application in a partially degraded state.
-
-- Let's see how to roll back a degraded sync.
+[rollouts]: https://argoproj.github.io/rollouts/
 
 ---
 
-## Emergency Rollback
+## Enabling auto-sync
 
-- The purist way of rolling back would be doing it with GitOps (see next slide)
+- In the web UI, go to *Applications* and click on *kubercoins-stg*
 
-- But sometimes we don't have time to go through the pipeline. We just need to get back to the previous version.
+- Click on the "DETAILS" button (top left, might be just a "i" sign on narrow displays)
 
-- That's when we apply "emergency rollback"
+- Click on "ENABLE AUTO-SYNC" (under "SYNC POLICY")
 
-.exercise[
-
-* On application details page - click "History And Rollback"
-* Click "..." button in the last row
-* Click "Rollback" 
-  * Note that we'll have to disable auto-sync for that
-* Click "Ok" in the modal panel
-]
---
-
-After a while the application goes back to healthy but OutOfSync
+- After a few minutes the changes should show up!
 
 ---
-## GitOps Rollback
+
+## Rolling back
+
+- If we deploy a broken version, how do we recover?
+
+- "The GitOps way": revert the changes in source control
+
+  (see next slide)
+
+- Emergency rollback:
+
+  - disable auto-sync (if it was enabled)
+
+  - on the app page, click on "HISTORY AND ROLLBACK"
+    <br/>
+    (with the clock-with-backward-arrow icon)
+
+  - click on the "..." button next to the button we want to roll back to
+
+  - click "Rollback" and confirm
+
+---
+
+## Rolling back with GitOps
 
 - The correct way to roll back is rolling back the code in source control
 
-.exercise[
 ```bash
-  git checkout stage
-  git revert HEAD
-  git push origin stage
+git checkout staging
+git revert HEAD
+git push origin staging
 ```
-]
---
-
-- Click on 'Refresh' on the application box in the UI
-
-- Watch the application go back to "Synced"
 
 ---
 
 ## Working with Helm
 
-- ArgoCD supports different Kubernetes deployment tools: Kustomize, Jsonnnet, Ksonnet and of course **Helm**
+- ArgoCD supports different tools to process Kubernetes manifests:
 
-- Let's see what features ArgoCD offers for working with Helm Charts
+  Kustomize, Helm, Jsonnet, and [Config Management Plugins][cmp]
 
-- In our `kubercoins` repo there's a branch called `helm`
+- Let's how to deploy Helm charts with ArgoCD!
 
-- It provides a generic helm chart found in the `generic-service` directory
+- In the [kubercoins] repository, there is a branch called [helm]
 
-- And service-specific `values` files in the `values` directory. 
+- It provides a generic Helm chart, in the [generic-service] directory
 
-- We'll create an application for each of our services reusing the same helm chart.
+- There are service-specific values YAML files in the [values] directory
 
-- We have an ArgoCD Application resource manifest ready at `~/container.training/k8s/argocd_app.yaml`
+- Let's create one application for each of the 5 components of our app!
 
+[cmp]: https://argo-cd.readthedocs.io/en/stable/operator-manual/config-management-plugins/
+[kubercoins]: https://github.com/jpetazzo/kubercoins
+[helm]: https://github.com/jpetazzo/kubercoins/tree/helm
+[generic-service]: https://github.com/jpetazzo/kubercoins/tree/helm/generic-service
+[values]: https://github.com/jpetazzo/kubercoins/tree/helm/values
 
 ---
-##  ArgoCD Application Resource
 
-```yaml
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: kc-worker
-spec:
-  destination:
-    namespace: helmcoins
-    server: 'https://kubernetes.default.svc'
-  source:
-    path: generic-service
-    repoURL: 'https://github.com/antweiss/kubercoins.git'
-    targetRevision: helm
-    helm:
-      valueFiles:
-        - values.yaml
-        - ../values/worker.yaml
-...
+## Creating a Helm Application
+
+- The example below uses "upstream" kubercoins
+
+- Feel free to use your own fork instead!
+
+.lab[
+
+- Create an Application for `hasher`:
+  ```bash
+    argocd app create hasher \
+           --repo https://github.com/jpetazzo/kubercoins.git \
+           --path generic-service --revision helm \
+           --dest-server https://kubernetes.default.svc \
+           --dest-namespace kubercoins-helm \
+           --sync-option CreateNamespace=true \
+           --values ../values/hasher.yaml \
+           --sync-policy=auto
   ```
-We can do gitops of gitops!
----
-
-## Create an Application for each Microservice
-
-.exercise[
-
-```bash
-kubectl apply -f ~/container.training/k8s/argocd_app.yaml
-argocd app sync worker
-```
-
-
-Change the ~/container.training/k8s/argocd_app.yaml to deploy `rng`, `hasher`, `redis` and `webui`. 
-
-Apply the application resource for each.
 
 ]
 
 ---
 
-## Additional Considerations for Using ArgoCD
+## Deploying the rest of the application
 
-- When running in production ArgoCD should be integrated with an SSO (Single-Sign On) provider - either with the bundled [Dex](https://argo-cd-docs.readthedocs.io/en/latest/operator-manual/sso/#dex) instance or with an existing OIDC provider (Okta, Auth0, etc)
+- Option 1: repeat the previous command (updating app name and values)
+
+- Option 2: author YAML manifests and apply them
+
+---
+
+## Additional considerations
+
+- When running in production, ArgoCD can be integrated with an [SSO provider][sso]
+
+  - ArgoCD embeds and bundles [Dex] to delegate authentication
+
+  - it can also use an existing OIDC provider (Okta, Keycloak...)
 
 - A single ArgoCD instance can manage multiple clusters 
 
-- Alternatively one can have an ArgoCD per cluster
+  (but it's also fine to have one ArgoCD per cluster)
 
-- ArgoCD can be complemented with [Argo Rollouts](https://argoproj.github.io/argo-rollouts/) for advanced rollout control
+- ArgoCD can be complemented with [Argo Rollouts][rollouts] for advanced rollout control
+
+  (blue/green, canary...)
+
+[sso]: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sso
+[Dex]: https://github.com/dexidp/dex
+[rollouts]: https://argoproj.github.io/argo-rollouts/
+
+???
+
+:EN:- Implementing gitops with ArgoCD
+:FR:- Workflow gitops avec ArgoCD

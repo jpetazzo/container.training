@@ -127,6 +127,7 @@ content:
 -
   - k8s/gitworkflows.md
   - k8s/flux.md
+  - k8s/argocd.md
 -
   - k8s/logs-centralized.md
   - k8s/prometheus.md
