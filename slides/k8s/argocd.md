@@ -583,6 +583,18 @@ git push origin staging
 [Dex]: https://github.com/dexidp/dex
 [rollouts]: https://argoproj.github.io/argo-rollouts/
 
+---
+
+## Acknowledgements
+
+Many thanks to
+Anton (Ant) Weiss ([antweiss.com](https://antweiss.com), [@antweiss](https://twitter.com/antweiss))
+and
+Guilhem Lettron
+for contributing an initial version and suggestions to this ArgoCD chapter.
+
+All remaining typos, mistakes, or approximations are mine (Jérôme Petazzoni). 
+
 ???
 
 :EN:- Implementing gitops with ArgoCD
