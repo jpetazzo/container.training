@@ -13,7 +13,7 @@ data "openstack_images_image_v2" "_" {
   most_recent = true
   properties = {
     os      = "ubuntu"
-    version = "22.04"
+    version = "24.04"
   }
 }
 
