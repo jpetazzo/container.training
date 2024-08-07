@@ -1,7 +1,9 @@
 #!/bin/sh
 
+set -eu
+
 # https://open-api.netlify.com/#tag/dnsZone
-[ "$1" ] || {
+[ "${1-}" ] || {
   echo ""
   echo "Add a record in Netlify DNS."
   echo "This script is hardcoded to add a record to container.training".
@@ -18,7 +20,7 @@
 }
 
 NETLIFY_CONFIG_FILE=~/.config/netlify/config.json
-if ! [ "$DOMAIN" ]; then
+if ! [ "${DOMAIN-}" ]; then
   DOMAIN=container.training
 fi
 
