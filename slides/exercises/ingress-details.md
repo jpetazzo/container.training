@@ -128,4 +128,4 @@ This is similar to the previous scenario, but with two significant changes:
 
 1. We only want to run the ingress controller on nodes that have the role `ingress`.
 
-2. We don't want to use `hostNetwork`, but a list of `externalIPs` instead.
+2. We want to either use `hostPort`, or a list of `externalIPs` (not `hostNetwork`).
