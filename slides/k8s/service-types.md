@@ -352,6 +352,87 @@ class: pic
 class: pic
 ![](images/kubernetes-services/64-ING-nolocal.png)
 
+---
+
+class: extra-details
+
+## Traffic engineering
+
+- By default, connections to a ClusterIP or a NodePort are load balanced
+  across all the backends of their Service
+
+- This can incur extra network hops (which add latency)
+
+- To remove that extra hop, multiple mechanisms are available:
+
+  - `spec.externalTrafficPolicy`
+
+  - `spec.internalTrafficPolicy`
+
+  - [Topology aware routing](https://kubernetes.io/docs/concepts/services-networking/topology-aware-routing/) annotation (beta)
+
+  - `spec.trafficDistribution` (alpha in 1.30, beta in 1.31)
+
+---
+
+## `internal / externalTrafficPolicy`
+
+- Applies respectively to `ClusterIP` and `NodePort` connections
+
+- Can be set to `Cluster` or `Local`
+
+- `Cluster`: load balance connections across all backends (default)
+
+- `Local`: load balance connections to local backends (on the same node)
+
+- With `Local`, if there is no local backend, the connection will fail!
+
+  (the parameter expresses a "hard rule", not a preference)
+
+- Example: `externalTrafficPolicy: Local` for Ingress controllers
+
+  (as shown on earlier diagrams)
+
+---
+
+class: extra-details
+
+## Topology aware routing
+
+- In beta since Kubernetes 1.23
+
+- Enabled with annotation `service.kubernetes.io/topology-mode=Auto` 
+
+- Relies on node annotation `topology.kubernetes.io/zone`
+
+- Kubernetes service proxy will try to keep connections within a zone
+
+  (connections made by a pod in zone `a` will be sent to pods in zone `a`)
+
+- ...Except if there are no pods in the zone (then fallback to all zones)
+
+- This can mess up autoscaling!
+
+---
+
+class: extra-details
+
+## `spec.trafficDistribution`
+
+- [KEP4444, Traffic Distribution for Services][kep4444]
+
+- In alpha since Kubernetes 1.30, beta since Kubernetes 1.31
+
+- Should eventually supersede topology aware routing
+
+- Can be set to `PreferClose` (more values might be supported later)
+
+- The meaning of `PreferClose` is implementation dependent
+
+  (with kube-proxy, it should work like topology aware routing: stay in a zone)
+
+[kep4444]: https://github.com/kubernetes/enhancements/issues/4444
+
 ???
 
 :EN:- Service types: ClusterIP, NodePort, LoadBalancer
