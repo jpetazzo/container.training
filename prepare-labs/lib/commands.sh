@@ -1055,6 +1055,7 @@ _cmd_tailhist () {
     # halfway through and we're actually trying to download it again.
     pssh "
     set -e
+    sudo apt-get install unzip -y
     wget -c https://github.com/joewalnes/websocketd/releases/download/v0.3.0/websocketd-0.3.0-linux_$ARCH.zip
     unzip websocketd-0.3.0-linux_$ARCH.zip websocketd
     sudo mv websocketd /usr/local/bin/websocketd

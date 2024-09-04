@@ -81,7 +81,7 @@
 
 ## What version are we running anyway?
 
-- When I say, "I'm running Kubernetes 1.22", is that the version of:
+- When I say, "I'm running Kubernetes 1.28", is that the version of:
 
   - kubectl
 
@@ -129,15 +129,15 @@
 
 ## Kubernetes uses semantic versioning
 
-- Kubernetes versions look like MAJOR.MINOR.PATCH; e.g. in 1.22.17:
+- Kubernetes versions look like MAJOR.MINOR.PATCH; e.g. in 1.28.9:
 
   - MAJOR = 1
-  - MINOR = 22
-  - PATCH = 17
+  - MINOR = 28
+  - PATCH = 9
 
 - It's always possible to mix and match different PATCH releases
 
-  (e.g. 1.22.17 and 1.22.5 are compatible)
+  (e.g. 1.28.9 and 1.28.13 are compatible)
 
 - It is recommended to run the latest PATCH release
 
@@ -153,9 +153,9 @@
 
 - All components support a difference of one¹ MINOR version
 
-- This allows live upgrades (since we can mix e.g. 1.22 and 1.23)
+- This allows live upgrades (since we can mix e.g. 1.28 and 1.29)
 
-- It also means that going from 1.22 to 1.24 requires going through 1.23
+- It also means that going from 1.28 to 1.30 requires going through 1.29
 
 .footnote[¹Except kubelet, which can be up to two MINOR behind API server,
 and kubectl, which can be one MINOR ahead or behind API server.]
@@ -254,7 +254,7 @@ and kubectl, which can be one MINOR ahead or behind API server.]
   sudo vim /etc/kubernetes/manifests/kube-apiserver.yaml
   ```
 
-- Look for the `image:` line, and update it to e.g. `v1.24.1`
+- Look for the `image:` line, and update it to e.g. `v1.30.1`
 
 ]
 
@@ -320,53 +320,29 @@ Note 2: kubeadm itself is still version 1.22.1..
 
 - First things first: we need to upgrade kubeadm
 
-.lab[
+- The Kubernetes package repositories are now split by minor versions
 
-- Upgrade kubeadm:
-  ```
-  sudo apt install kubeadm=1.27.0-00
-  ```
+  (i.e. there is one repository for 1.28, another for 1.29, etc.)
 
-- Check what kubeadm tells us:
-  ```
-  sudo kubeadm upgrade plan
-  ```
+- This avoids accidentally upgrading from one minor version to another
 
-]
+  (e.g. with unattended upgrades or if packages haven't been held/pinned)
 
-Problem: kubeadm doesn't know know how to handle
-upgrades from version 1.22.
-
-This is because we installed version 1.27.
-
-We need to install kubeadm version 1.23.X.
+- We'll need to add the new package repository and unpin packages!
 
 ---
 
-## Downgrading kubeadm
+## Installing the new packages
 
-- We need to go back to kubeadm version 1.23.X.
+- Edit `/etc/apt/sources.list.d/kubernetes.list`
 
-.lab[
+  (or copy it to e.g. `kubernetes-1.29.list` and edit that)
 
-- View available versions for package `kubeadm`:
-  ```bash
-  apt show kubeadm -a | grep ^Version | grep 1.23
-  ```
+- `apt-get update`
 
-- Downgrade kubeadm:
-  ```
-  sudo apt install kubeadm=1.23.0-00
-  ```
+- Now edit (or remove) `/etc/apt/preferences.d/kubernetes`
 
-- Check what kubeadm tells us:
-  ```
-  sudo kubeadm upgrade plan
-  ```
-
-]
-
-kubeadm should now agree to upgrade to 1.23.X.
+- `apt-get install kubeadm` should now upgrade `kubeadm` correctly! 🎉
 
 ---
 
@@ -385,7 +361,7 @@ kubeadm should now agree to upgrade to 1.23.X.
 
 - Look for the `image:` line, and restore it to the original value
 
-  (e.g. `v1.22.17`)
+  (e.g. `v1.28.9`)
 
 - Wait for the control plane to come back up
 
@@ -399,9 +375,14 @@ kubeadm should now agree to upgrade to 1.23.X.
 
 .lab[
 
+- Check the upgrade plan:
+  ```bash
+  sudo kubeadm upgrade plan
+  ```
+
 - Perform the upgrade:
   ```bash
-  sudo kubeadm upgrade apply v1.23.0
+  sudo kubeadm upgrade apply v1.29.0
   ```
 
 ]
@@ -418,15 +399,9 @@ kubeadm should now agree to upgrade to 1.23.X.
 
 - Log into node `oldversion2`
 
-- View available versions for package `kubelet`:
-  ```bash
-  apt show kubelet -a | grep ^Version
-  ```
+- Update package lists and APT pins like we did before
 
-- Upgrade kubelet:
-  ```bash
-  sudo apt install kubelet=1.23.0-00
-  ```
+- Then upgrade kubelet
 
 ]
 
@@ -479,13 +454,16 @@ kubeadm should now agree to upgrade to 1.23.X.
 
 .lab[
 
-- Download the configuration on each node, and upgrade kubelet:
+- Execute the whole upgrade procedure on each node:
   ```bash
     for N in 1 2 3; do
       ssh oldversion$N "
-        sudo apt install kubeadm=1.23.0-00 &&
+        sudo sed -i s/1.28/1.29/ /etc/apt/sources.list.d/kubernetes.list &&
+        sudo rm /etc/apt/preferences.d/kubernetes &&
+        sudo apt update &&
+        sudo apt install kubeadm -y &&
         sudo kubeadm upgrade node &&
-        sudo apt install kubelet=1.23.0-00"
+        sudo apt install kubelet -y"
     done
   ```
 ]
@@ -494,7 +472,7 @@ kubeadm should now agree to upgrade to 1.23.X.
 
 ## Checking what we've done
 
-- All our nodes should now be updated to version 1.23.0
+- All our nodes should now be updated to version 1.29
 
 .lab[
 
@@ -587,17 +565,35 @@ kubeadm should now agree to upgrade to 1.23.X.
 
 ---
 
+## Database operators to the rescue
+
+- Moving stateful pods (e.g.: database server) can cause downtime
+
+- Database replication can help:
+
+  - if a node contains database servers, we make sure these servers aren't primaries
+
+  - if they are primaries, we execute a *switch over*
+
+- Some database operators (e.g. [CNPG]) will do that switch over automatically
+
+  (when they detect that a node has been *cordoned*)
+
+[CNPG]: https://cloudnative-pg.io/
+
+---
+
 class: extra-details
 
 ## Skipping versions
 
-- This example worked because we went from 1.22 to 1.23
+- This example worked because we went from 1.28 to 1.29
 
-- If you are upgrading from e.g. 1.21, you will have to go through 1.22 first
+- If you are upgrading from e.g. 1.26, you will have to go through 1.27 first
 
-- This means upgrading kubeadm to 1.22.X, then using it to upgrade the cluster
+- This means upgrading kubeadm to 1.27.X, then using it to upgrade the cluster
 
-- Then upgrading kubeadm to 1.23.X, etc.
+- Then upgrading kubeadm to 1.28.X, etc.
 
 - **Make sure to read the release notes before upgrading!**
 
