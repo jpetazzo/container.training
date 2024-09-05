@@ -1,4 +1,4 @@
-## Exercise — Ingress
+## Exercise — Ingress Controller
 
 - Add an ingress controller to a Kubernetes cluster
 

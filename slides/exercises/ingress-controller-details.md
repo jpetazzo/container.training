@@ -1,4 +1,4 @@
-# Exercise — Ingress
+# Exercise — Ingress Controller
 
 - We want to expose a couple of web apps through an ingress controller
 
