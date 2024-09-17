@@ -14,9 +14,9 @@ $ hcloud server-type list | grep shared
 variable "node_sizes" {
   type = map(any)
   default = {
-    S = "cx11"
-    M = "cx21"
-    L = "cx31"
+    S = "cpx11"
+    M = "cpx21"
+    L = "cpx31"
   }
 }
 
