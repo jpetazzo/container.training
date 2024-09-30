@@ -1,4 +1,11 @@
 #!/bin/sh
+#
+# Baseline resource usage per vcluster in our usecase:
+# 500 MB RAM
+# 10% CPU
+# (See https://docs.google.com/document/d/1n0lwp6rQKQUIuo_A5LQ1dgCzrmjkDjmDtNj1Jn92UrI)
+# PRO2-XS = 4 core, 16 gb
+
 PROVIDER=scaleway
 
 case "$PROVIDER" in
@@ -25,7 +32,7 @@ while read node address; do
 done
 
 # vcluster all the things
-./labctl create --settings settings/mk8s.env --provider vcluster --mode mk8s --students 30
+./labctl create --settings settings/mk8s.env --provider vcluster --mode mk8s --students 50
 
 # install prometheus stack because that's cool
 helm upgrade --install --repo https://prometheus-community.github.io/helm-charts \

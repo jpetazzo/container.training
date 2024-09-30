@@ -4,6 +4,7 @@ resource "helm_release" "_" {
   create_namespace = true
   repository       = "https://charts.loft.sh"
   chart            = "vcluster"
+  version          = "0.19.7"
   set {
     name  = "service.type"
     value = "NodePort"
