@@ -744,6 +744,16 @@ EOF
         aws-iam-authenticator version
     fi"
 
+    # Install jless (jless.io)
+    pssh "
+    if [ ! -x /usr/local/bin/jless ]; then
+        ##VERSION##
+        sudo apt-get install -y libxcb-render0 libxcb-shape0 libxcb-xfixes0
+        wget https://github.com/PaulJuliusMartinez/jless/releases/download/v0.9.0/jless-v0.9.0-x86_64-unknown-linux-gnu.zip
+        unzip jless-v0.9.0-x86_64-unknown-linux-gnu
+        sudo mv jless /usr/local/bin
+    fi"
+
     # Install the krew package manager
     pssh "
     if [ ! -d /home/$USER_LOGIN/.krew ]; then
@@ -756,7 +766,7 @@ EOF
     fi"
 
     # Install kubecolor
-    KUBECOLOR_VERSION=0.3.2
+    KUBECOLOR_VERSION=0.4.0
     URL=https://github.com/kubecolor/kubecolor/releases/download/v${KUBECOLOR_VERSION}/kubecolor_${KUBECOLOR_VERSION}_linux_${ARCH}.tar.gz
     pssh "
     if [ ! -x /usr/local/bin/kubecolor ]; then
