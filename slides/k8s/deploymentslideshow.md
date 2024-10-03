@@ -1,4 +1,6 @@
-## 19,000 words
+# kubectl create deployment
+
+... in 19,000 words!
 
 They say, "a picture is worth one thousand words."
 

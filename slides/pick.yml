@@ -1,0 +1,30 @@
+title: |
+  Building a Kubernetes Cluster
+  one piece at a time
+
+
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+chat: "(In Google Meet!)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2024-10-pick.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- shared/toc.md
+-
+  - k8s/deploymentslideshow.md
+  - k8s/dmuc-medium.md
+  - k8s/dmuc-hard.md
+  - k8s/cni-internals.md
+  - k8s/apilb.md
+  - k8s/control-plane-auth.md
+  - shared/thankyou.md

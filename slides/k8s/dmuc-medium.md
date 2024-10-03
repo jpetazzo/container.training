@@ -1,94 +1,16 @@
-# Building our own cluster (medium)
+# Building a 1-node cluster
 
-- This section assumes that you already went through
+- Ingredients: a Linux machine with...
 
-  *“Building our own cluster (easy)”*
+  - Ubuntu LTS
 
-- In that section, we saw how to run each control plane component manually...
+  - Kubernetes, etcd, and CNI binaries installed
 
-  ...but with an older version of Kubernetes (1.19)
-
-- In this section, we're going to do something similar...
-
-  ...but with recent versions of Kubernetes!
-
-- Note: we won't need the lab environment of that previous section
-
-  (we're going to build a new cluster from scratch)
-
----
-
-## What remains the same
-
-- We'll use machines with Kubernetes binaries pre-downloaded
-
-- We'll run individual components by hand
-
-  (etcd, API server, controller manager, scheduler, kubelet)
-
-- We'll run on a single node
-
-  (but we'll be laying the groundwork to add more nodes)
-
-- We'll get the cluster to the point where we can run and expose pods
-
----
-
-## What's different
-
-- We'll need to generate TLS keys and certificates
-
-  (because it's mandatory with recent versions of Kubernetes)
-
-- Things will be *a little bit more* secure
-
-  (but still not 100% secure, far from it!)
-
-- We'll use containerd instead of Docker
-
-  (you could probably try with CRI-O or another CRI engine, too)
-
-- We'll need to set up CNI for networking
-
-- *And we won't do everything as root this time (but we might use `sudo` a lot)*
-
----
-
-## Our environment
-
-- We will use the machine indicated as `polykube1`
-
-- This machine:
-
-  - runs Ubuntu LTS
-
-  - has Kubernetes, etcd, and CNI binaries installed
-
-  - but nothing is running
-
----
-
-## Checking our environment
-
-- Let's make sure we have everything we need first
-
-.lab[
-
-- Log into the `polykube1` machine
-
-- Check available versions:
-  ```bash
-  etcd -version
-  kube-apiserver --version
-  ```
-
-]
+  - nothing is running
 
 ---
 
 ## The plan
-
-We'll follow the same methodology as for the "easy" section
 
 1. Start API server
 
@@ -97,21 +19,6 @@ We'll follow the same methodology as for the "easy" section
 3. See what's broken
 
 4. Fix it and go back to step 2 until it works!
-
----
-
-## Dealing with multiple processes
-
-- Again, we are going to start many processes
-
-- Depending on what you're comfortable with, you can:
-
-  - open multiple windows and multiple SSH connections
-
-  - use a terminal multiplexer like screen or tmux
-
-  - put processes in the background with `&`
-    <br/>(warning: log output might get confusing to read!)
 
 ---
 
@@ -133,7 +40,7 @@ We'll follow the same methodology as for the "easy" section
 
 ]
 
-Just like before, we'll need to start etcd.
+We'll need to start etcd.
 
 But we'll also need some TLS keys!
 

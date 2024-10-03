@@ -1,10 +1,6 @@
-# Building our own cluster (hard)
+# Adding nodes to the cluster
 
-- This section assumes that you already went through
-
-  *“Building our own cluster (medium)”*
-
-- In that previous section, we built a cluster with a single node
+- In the previous section, we built a cluster with a single node
 
 - In this new section, we're going to add more nodes to the cluster
 

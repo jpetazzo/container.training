@@ -1,62 +1,10 @@
 ## Introductions
 
-⚠️ This slide should be customized by the tutorial instructor(s).
+- Hello! I'm Jérôme Petazzoni
 
-<!--
-
-- Hello! We are:
-
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
-
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Ardan Labs)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Tiny Shell Script LLC)
-
--->
-
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
+  ([@jpetazzo@hachyderm.io], Tiny Shell Script LLC)
 
 - Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
-
-- Live feedback, questions, help: @@CHAT@@
-
--->
-
-<!--
-
-- You ~~should~~ must ask questions! Lots of questions!
-
-  (especially when you see full screen container pictures)
-
-- Use @@CHAT@@ to ask questions, get help, etc.
-
--->
-
-<!-- -->
 
 [@alexbuisine]: https://twitter.com/alexbuisine
 [EphemeraSearch]: https://ephemerasearch.com/
@@ -67,16 +15,36 @@
 
 ---
 
-## Exercises
+## Goals today
 
-- At the end of each day, there is a series of exercises
+Prepare for the CKA exam!
 
-- To make the most out of the training, please try the exercises!
+--
 
-  (it will help to practice and memorize the content of the day)
+*How?*
 
-- We recommend to take at least one hour to work on the exercises
+--
 
-  (if you understood the content of the day, it will be much faster)
+Acquire deep understanding of Kubernetes internals!
 
-- Each day will start with a quick review of the exercises of the previous day
+--
+
+*How?*
+
+--
+
+Build a Kubernetes cluster by hand!
+
+---
+
+## History of this talk
+
+- [2018 CKA preparation](https://github.com/jpetazzo/dessine-moi-un-cluster)
+
+- [2019 LISA talk by Jérôme Petazzoni](https://www.youtube.com/watch?v=3KtEAa7_duA)
+
+- Kubernetes admin/ops training classes
+
+- [2023 Devoxx talk by Denis Germain](https://www.youtube.com/watch?v=OCMNA0dSAzc)
+
+- More Kubernetes admin/ops training classes
