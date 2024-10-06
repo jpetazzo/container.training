@@ -144,6 +144,30 @@
 
 ---
 
+## [Orbstack](https://orbstack.dev/)
+
+- Mac only
+
+- Runs Docker containers, Kubernetes, and Linux virtual machines
+
+- Emphasis on speed and energy usage (battery life)
+
+- Great support for `ClusterIP` and `LoadBalancer` services
+
+- Free for personal use; paid product otherwise
+
+---
+
+## [Podman Desktop](https://podman-desktop.io/)
+
+- Available on Linux, Mac, and Windows
+
+- Free and open-source
+
+- Doesn't support Kubernetes directly, but [supports KinD](https://podman-desktop.io/docs/kind)
+
+---
+
 ## [Rancher Desktop](https://rancherdesktop.io/)
 
 - Available on Linux, Mac, and Windows
@@ -157,8 +181,6 @@
   (and change it any time you like)
 
 - Emphasis on ease of use (like Docker Desktop)
-
-- Relatively young product (first release in May 2021)
 
 - Based on k3s and other proven components
 
