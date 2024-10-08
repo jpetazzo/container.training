@@ -517,6 +517,7 @@ _cmd_kubeadm() {
         CLUSTER_CONFIGURATION_KUBERNETESVERSION='kubernetesVersion: "v'$KUBEVERSION'"'
         IGNORE_SYSTEMVERIFICATION="- SystemVerification"
         IGNORE_SWAP="- Swap"
+        IGNORE_IPTABLES="- FileContent--proc-sys-net-bridge-bridge-nf-call-iptables"
     fi
 
     # Install a valid configuration for containerd
@@ -540,6 +541,7 @@ nodeRegistration:
   - NumCPU
   $IGNORE_SYSTEMVERIFICATION
   $IGNORE_SWAP
+  $IGNORE_IPTABLES
 ---
 kind: JoinConfiguration
 apiVersion: kubeadm.k8s.io/v1beta3
@@ -553,6 +555,7 @@ nodeRegistration:
   - NumCPU
   $IGNORE_SYSTEMVERIFICATION
   $IGNORE_SWAP
+  $IGNORE_IPTABLES
 ---
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
