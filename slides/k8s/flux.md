@@ -75,7 +75,7 @@ This is (approximately) what we're going to do:
       --repository=$GITHUB_REPO \
       --branch=main \
       --path=./clusters/$FLUX_CLUSTER \
-      --personal --public
+      --personal --private=false
   ```
 
 ]
