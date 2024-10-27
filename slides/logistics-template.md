@@ -1,62 +1,20 @@
 ## Introductions
 
-⚠️ This slide should be customized by the tutorial instructor(s).
+- Bonjour ! Je suis Jérôme Petazzoni ([@jpetazzo], [@jpetazzo@hachyderm.io], Enix SAS)
 
-<!--
+- Planning :
 
-- Hello! We are:
+  - 9h-12h = matin (avec une pause café)
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
+  - 12h-14h = déj + labs
 
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
+  - 14h-16h = après-midi
 
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Ardan Labs)
+- N'hésitez pas à m'interrompre à tout moment !
 
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Enix SAS)
+- La plateforme de messagerie instantanée : @@CHAT@@
 
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Tiny Shell Script LLC)
-
--->
-
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
-
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
-
-- Live feedback, questions, help: @@CHAT@@
-
--->
-
-<!--
-
-- You ~~should~~ must ask questions! Lots of questions!
-
-  (especially when you see full screen container pictures)
-
-- Use @@CHAT@@ to ask questions, get help, etc.
-
--->
-
-<!-- -->
+- N'hésitez pas à poser un maximum de questions !
 
 [@alexbuisine]: https://twitter.com/alexbuisine
 [EphemeraSearch]: https://ephemerasearch.com/
@@ -67,16 +25,30 @@
 
 ---
 
+## Un petit sondage ...
+
+Sur une échelle de 0 à 5, où vous situez-vous avec Kubernetes ?
+
+0️⃣ Kuberne-quoi ? 😅
+
+1️⃣ J'ai déjà vu quelques présentations, démos ... Mais jamais utilisé
+
+2️⃣ J'ai déjà fait quelques tutos mais je ne connais pas bien les concepts
+
+3️⃣ J'utilise occasionnellement ; j'ai (ou peut avoir) accès à un cluster (local, cloud, n'importe) ; je connais les concepts de Pod, Deployment, Service
+
+4️⃣ Je déploie régulièrement sur un cluster (que ça soit dev en local ou prod) ; je sais écrire / générer et utiliser des manifests YAML
+
+5️⃣ Je connais tout ça et j'ai aussi déjà manipulé au moins un concept avancé comme le RBAC, les Ingress, les requests/limits
+
+---
+
 ## Exercises
 
-- At the end of each day, there is a series of exercises
+- In the middle of each day, there is a series of exercises
 
 - To make the most out of the training, please try the exercises!
 
   (it will help to practice and memorize the content of the day)
 
-- We recommend to take at least one hour to work on the exercises
-
-  (if you understood the content of the day, it will be much faster)
-
-- Each day will start with a quick review of the exercises of the previous day
+- We'll run polls to know how much time to spend on reviewing the exercises
