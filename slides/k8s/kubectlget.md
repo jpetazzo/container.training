@@ -1,4 +1,4 @@
-# First contact with `kubectl`
+# `kubectl`
 
 - `kubectl` is (almost) the only tool we'll need to talk to Kubernetes
 

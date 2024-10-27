@@ -203,11 +203,9 @@ What does that mean?
 
 ## Let's experiment a bit!
 
-- For this section, connect to the first node of the `test` cluster
+- For this section, we can use any cluster
 
 .lab[
-
-- SSH to the first node of the test cluster
 
 - Check that the cluster is operational:
   ```bash
@@ -418,7 +416,7 @@ class: extra-details
 
 ---
 
-# Other control plane components
+## Other control plane components
 
 - API server ✔️
 
@@ -465,6 +463,170 @@ class: extra-details
   - if the pod has special constraints that can't be met
 
   - if the scheduler is not running (!)
+
+---
+
+class: extra-details
+
+## How many nodes should a cluster have?
+
+- There is no particular constraint
+
+  (no need to have an odd number of nodes for quorum)
+
+- A cluster can have zero node
+
+  (but then it won't be able to start any pods)
+
+- For testing and development, having a single node is fine
+
+- For production, make sure that you have extra capacity
+
+  (so that your workload still fits if you lose a node or a group of nodes)
+
+- Kubernetes is tested with [up to 5000 nodes](https://kubernetes.io/docs/setup/best-practices/cluster-large/)
+
+  (however, running a cluster of that size requires a lot of tuning)
+
+---
+
+class: extra-details
+
+## Do we need to run Docker at all?
+
+No!
+
+--
+
+- The Docker Engine used to be the default option to run containers with Kubernetes
+
+- Support for Docker (specifically: dockershim) was removed in Kubernetes 1.24
+
+- We can leverage other pluggable runtimes through the *Container Runtime Interface*
+
+- <del>We could also use `rkt` ("Rocket") from CoreOS</del> (deprecated)
+
+---
+
+class: extra-details
+
+## Some runtimes available through CRI
+
+- [containerd](https://github.com/containerd/containerd/blob/master/README.md)
+
+  - maintained by Docker, IBM, and community
+  - used by Docker Engine, microk8s, k3s, GKE; also standalone
+  - comes with its own CLI, `ctr`
+
+- [CRI-O](https://github.com/cri-o/cri-o/blob/master/README.md):
+
+  - maintained by Red Hat, SUSE, and community
+  - used by OpenShift and Kubic
+  - designed specifically as a minimal runtime for Kubernetes
+
+- [And more](https://kubernetes.io/docs/setup/production-environment/container-runtimes/)
+
+---
+
+class: extra-details
+
+## Do we need to run Docker at all?
+
+Yes!
+
+--
+
+- In this workshop, we run our app on a single node first
+
+- We will need to build images and ship them around
+
+- We can do these things without Docker
+  <br/>
+  (but with some languages/frameworks, it might be much harder)
+
+- Docker is still the most stable container engine today
+  <br/>
+  (but other options are maturing very quickly)
+
+---
+
+class: extra-details
+
+## Do we need to run Docker at all?
+
+- On our Kubernetes clusters:
+
+  *Not anymore*
+
+- On our development environments, CI pipelines ... :
+
+  *Yes, almost certainly*
+
+---
+
+## Interacting with Kubernetes
+
+- We will interact with our Kubernetes cluster through the Kubernetes API
+
+- The Kubernetes API is (mostly) RESTful
+
+- It allows us to create, read, update, delete *resources*
+
+- A few common resource types are:
+
+  - node (a machine — physical or virtual — in our cluster)
+
+  - pod (group of containers running together on a node)
+
+  - service (stable network endpoint to connect to one or multiple containers)
+
+---
+
+class: pic
+
+![Node, pod, container](images/k8s-arch3-thanks-weave.png)
+
+---
+
+## Scaling
+
+- How would we scale the pod shown on the previous slide?
+
+- **Do** create additional pods
+
+  - each pod can be on a different node
+
+  - each pod will have its own IP address
+
+- **Do not** add more NGINX containers in the pod
+
+  - all the NGINX containers would be on the same node
+
+  - they would all have the same IP address
+    <br/>(resulting in `Address alreading in use` errors)
+
+---
+
+## Together or separate
+
+- Should we put e.g. a web application server and a cache together?
+  <br/>
+  ("cache" being something like e.g. Memcached or Redis)
+
+- Putting them **in the same pod** means:
+
+  - they have to be scaled together
+
+  - they can communicate very efficiently over `localhost`
+
+- Putting them **in different pods** means:
+
+  - they can be scaled separately
+
+  - they must communicate over remote IP addresses
+    <br/>(incurring more latency, lower performance)
+
+- Both scenarios can make sense, depending on our goals
 
 ???
 

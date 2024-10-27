@@ -1,0 +1,106 @@
+title: |
+  Kubernetes
+
+chat: "[Teams](FIXME)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2025-03-ubisoft.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+- shared/chat-room-teams.md
+#- shared/chat-room-zoom-meeting.md
+#- shared/chat-room-zoom-webinar.md
+- shared/prereqs.md
+- shared/handson.md
+#- shared/webssh.md
+- shared/connecting.md
+- shared/toc.md
+- # Monday
+  - k8s/concepts-k8s.md
+  - k8s/architecture.md
+  - k8s/kubectlget.md
+  - k8s/kubectl-run.md
+  - k8s/labels-annotations.md
+  #- k8s/shippingimages.md
+  #- k8s/buildshiprun-selfhosted.md
+  #- k8s/buildshiprun-dockerhub.md
+  #- exercises/k8sfundamentals-details.md
+  #- k8s/ourapponkube.md
+  - shared/declarative.md
+  - k8s/declarative.md
+  - k8s/kubectlexpose.md
+  - k8s/service-types.md
+  - k8s/kubenet.md
+  - k8s/yamldeploy.md
+  - exercises/yaml-bluegreen-details.md
+  #- k8s/kubectl-logs.md
+  #- k8s/logs-cli.md
+  #- shared/yaml.md
+  #- k8s/namespaces.md
+  #- exercises/yaml-details.md
+  #- k8s/volumes.md
+  #- k8s/exercise-configmap.md
+  #- k8s/configuration.md
+  #- k8s/secrets.md
+  #- k8s/scalingdockercoins.md
+  # shared/hastyconclusions.md
+  #- k8s/daemonset.md
+  #- k8s/rollout.md
+  #- k8s/healthchecks.md
+  #- exercises/healthchecks-details.md
+  #- k8s/resource-limits.md
+  #- k8s/metrics-server.md
+  #- k8s/cluster-sizing.md
+  #- k8s/horizontal-pod-autoscaler.md
+  #- exercises/reqlim-details.md
+  #- k8s/authn-authz.md
+- # Tuesday 
+  - k8s/extending-api.md
+  - k8s/sealed-secrets.md
+  - k8s/crd.md
+  - k8s/owners-and-dependents.md
+  - k8s/admission.md
+  - k8s/cainjector.md
+  - k8s/kuik.md
+  - k8s/kyverno.md
+  - exercises/sealed-secrets-details.md
+  - exercises/kyverno-ingress-domain-name-details.md
+  #- k8s/aggregation-layer.md
+- # Wednesday
+  - k8s/operators.md
+  - k8s/operators-design.md
+  - k8s/operators-example.md
+  - k8s/events.md
+  - k8s/finalizers.md
+  - k8s/deploymentslideshow.md
+  - k8s/staticpods.md
+  - k8s/dmuc-easy.md
+  - exercises/monokube-details.md
+- # Thursday
+  - k8s/user-cert.md
+  - k8s/csr-api.md
+  - k8s/openid-connect.md
+  - k8s/dmuc-medium.md
+- # Friday (2h)
+  - k8s/dmuc-hard.md
+  #- k8s/multinode.md
+  #- k8s/cni.md
+  - k8s/cni-internals.md
+  - k8s/apilb.md
+  - k8s/control-plane-auth.md
+  - k8s/cluster-upgrade.md
+  - k8s/resource-limits.md
+  #- k8s/cluster-backup.md
+  #- k8s/cloud-controller-manager.md
+  #- k8s/kubebuilder.md
+  #- exercises/rbac-details.md

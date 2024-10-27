@@ -1,4 +1,4 @@
-# Running our first containers on Kubernetes
+# Running containers on Kubernetes
 
 - First things first: we cannot run a container
 
