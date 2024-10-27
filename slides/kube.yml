@@ -1,0 +1,98 @@
+title: |
+  Kubernetes
+
+chat: "[Mattermost](https://training.enix.io/mattermost)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2024-10-boursorama.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- k8s/intro.md
+- shared/about-slides.md
+- shared/chat-room-im.md
+#- shared/chat-room-zoom-meeting.md
+#- shared/chat-room-zoom-webinar.md
+- shared/prereqs.md
+- shared/handson.md
+#- shared/webssh.md
+- shared/connecting.md
+- shared/toc.md
+- # 1 Monday morning
+  - shared/sampleapp.md
+  - shared/composedown.md
+  - k8s/concepts-k8s.md
+  - k8s/kubectlget.md
+  - k8s/kubectl-run.md
+  - k8s/kubectlexpose.md
+  #- k8s/shippingimages.md
+  #- k8s/buildshiprun-selfhosted.md
+  - k8s/buildshiprun-dockerhub.md
+  - exercises/k8sfundamentals-details.md
+  - k8s/ourapponkube.md
+- # 2 Monday afternoon
+  - k8s/service-types.md
+  - k8s/kubenet.md
+  - k8s/labels-annotations.md
+  - k8s/kubectl-logs.md
+  - k8s/logs-cli.md
+- # 3 Tuesday morning
+  - shared/yaml.md
+  - k8s/yamldeploy.md
+  - k8s/namespaces.md
+  - shared/declarative.md
+  - k8s/declarative.md
+  - k8s/deploymentslideshow.md
+  - k8s/ingress.md
+  - k8s/cert-manager.md
+  - exercises/yaml-details.md
+  - exercises/ingress-details.md
+- # 4 Tuesday afternoon
+  - k8s/volumes.md
+  #- k8s/exercise-configmap.md
+  - k8s/configuration.md
+  - k8s/secrets.md
+- # 5 Wednesday morning
+  - k8s/scalingdockercoins.md
+  - shared/hastyconclusions.md
+  - k8s/daemonset.md
+  - k8s/rollout.md
+  - k8s/healthchecks.md
+  - exercises/healthchecks-details.md
+- # 6 Wednesday afternoon
+  - k8s/resource-limits.md
+  - k8s/metrics-server.md
+  - k8s/cluster-sizing.md
+  #- k8s/horizontal-pod-autoscaler.md
+  - exercises/reqlim-details.md
+- # 7 Thursday morning
+  - k8s/authn-authz.md
+  - k8s/admission.md
+  - k8s/cainjector.md
+  - k8s/kyverno.md
+  - exercises/rbac-details.md
+  - exercises/kyverno-ingress-domain-name-details.md
+- # 8 Thursday afternoon
+  - k8s/statefulsets.md
+  - k8s/consul.md
+  - k8s/pv-pvc-sc.md
+  - k8s/volume-claim-templates.md
+  - k8s/stateful-failover.md
+- # 9 Friday morning
+  - k8s/helm-intro.md
+  - k8s/helm-chart-format.md
+  - k8s/helm-create-basic-chart.md
+  - exercises/helm-generic-chart-details.md
+- # 10 Friday afternoon
+  - k8s/helm-create-better-chart.md
+  - k8s/helm-dependencies.md
+  - k8s/helm-values-schema-validation.md
+  - k8s/helm-secrets.md
+  - exercises/helm-umbrella-chart-details.md
