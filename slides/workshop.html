@@ -32,7 +32,19 @@
         excludedClasses: [@@EXCLUDE@@]
       });
     </script>
-    
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: false });
+        slideshow.on('afterShowSlide', function (slide) {
+          mermaid.run({
+            nodes: document.querySelectorAll('div.remark-visible .mermaid'),
+          });
+        });
+        // Reminder, if you want to tinker with mermaid,
+        // you need to export it, for instance like this:
+        // window.mermaid = mermaid;
+    </script>
+
     <!-- 
     These two scripts will be available only when loading the
     content using the pub/sub server. Otherwise, they'll just
