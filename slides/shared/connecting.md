@@ -1,15 +1,16 @@
 class: in-person
 
-## Connecting to our lab environment
+## Testing the connection to our lab environment
 
 .lab[
 
-- Log into the first VM (`node1`) with your SSH client:
+- Connect to your lab environment with your SSH client:
   ```bash
   ssh `user`@`A.B.C.D`
+  ssh -p `32323` `user`@`A.B.C.D`
   ```
 
-  (Replace `user` and `A.B.C.D` with the user and IP address provided to you)
+  (Make sure to replace the highlighted values with the ones provided to you!)
 
 <!--
 ```bash
@@ -27,7 +28,7 @@ done
 
 You should see a prompt looking like this:
 ```
-[A.B.C.D] (...) user@node1 ~
+[A.B.C.D] (...) user@machine ~
 $
 ```
 If anything goes wrong — ask for help!
@@ -40,9 +41,11 @@ class: in-person
 
 - The shell history of the instructor is available online in real time
 
-- Note the IP address of the instructor's virtual machine (A.B.C.D)
+- The instructor will provide you a "magic URL"
 
-- Open http://A.B.C.D:1088 in your browser and you should see the history
+  (typically, the instructor's lab address on port 1088 or 30088)
+
+- Open that URL in your browser and you should see the history
 
 - The history is updated in real time
 
@@ -116,21 +119,17 @@ You will need a Docker ID to use Play-With-Docker.
 
 ---
 
-## We will (mostly) interact with node1 only
+## We don't need to connect to ALL the nodes
 
-*These remarks apply only when using multiple nodes, of course.*
+- If your cluster has multiple nodes (e.g. `node1`, `node2`, ...):
 
-- Unless instructed, **all commands must be run from the first VM, `node1`**
+  unless instructed, **all commands must be run from the first node**
 
-- We will only check out/copy the code on `node1`
+- We don't need to check out/copy code or manifests on other nodes
 
 - During normal operations, we do not need access to the other nodes
 
-- If we had to troubleshoot issues, we would use a combination of:
-
-  - SSH (to access system logs, daemon status...)
-
-  - Docker API (to check running containers and container engine status)
+  (but we could log into these nodes to troubleshoot or examine stuff)
 
 ---
 
