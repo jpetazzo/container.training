@@ -1,7 +1,8 @@
-<table>
-<tr>
-<td style="vertical-align: sub; background: initial;">
-<pre style="padding: 40px; font-size: 16px; line-height: 18px;">
+name: contact
+
+.column-half[
+.center[
+<pre style="padding-top: 0em; font-size: 18px; line-height: 20px;">
 █▀▀▀▀▀█ ▀▀▀█▄▀ ▀▄ ▀▄ ▀▄ ▄█▀ ▄ █▀▀▀▀▀█
 █ ███ █  ▀▄█ ▀▀▄█  ▄▀▀   ██▄▄ █ ███ █
 █ ▀▀▀ █  ▄▀█▀ █▀▀▀█ ▄█▀▄███ ▄ █ ▀▀▀ █
@@ -23,16 +24,18 @@
 ▀▀▀▀▀▀▀ ▀▀ ▀▀   ▀  ▀ ▀ ▀ ▀  ▀    ▀  ▀
 </pre>
 
-.center[
-👆
+Please fill out QCON's feedback form!
 
-Please fill this [feedback form](https://docs.google.com/forms/d/e/1FAIpQLScYloWur4uVhKgVNIdUrfHZ8pk_mBmPcQwmbhjK2FlR9KWDCA/viewform).
+And if you'd like me to send you a copy of the workshop recording and materials,
+please scan the QR code above or go to [that form] to leave me your contact info.
+
+[that form]: https://docs.google.com/forms/d/e/1FAIpQLScYloWur4uVhKgVNIdUrfHZ8pk_mBmPcQwmbhjK2FlR9KWDCA/viewform
 
 Thank you! 🫶
 ]
+]
 
-</td>
-<td style="vertical-align: sub; background: initial;">
+.column-half[
 Contact information:
 
 📛 Jérôme Petazzoni
@@ -48,7 +51,4 @@ I can teach custom courses!<br/>
 → from intro level to "black belt"<br/>
 → on site or remotely<br/>
 Reach out if you're interested!
-
-</td>
-</tr>
-</table>
+]

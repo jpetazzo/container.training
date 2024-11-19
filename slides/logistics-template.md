@@ -1,62 +1,23 @@
 ## Introductions
 
-⚠️ This slide should be customized by the tutorial instructor(s).
+Hello! I'm Jérôme Petazzoni ([@jpetazzo], [@jpetazzo@hachyderm.io])
 
-<!--
+I'm a freelance Docker¹ / Kubernetes / MLops consultant and trainer.
 
-- Hello! We are:
+Today's schedule:
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
+|             |              |
+|-------------|--------------|
+|  9:00-10:30 | Workshop     |
+| 10:30-10:45 | Coffee break |
+| 10:45-12:00 | Workshop     |
+| 12:00-13:00 | Lunch        |
+| 13:00-14:30 | Workshop     |
+| 14:30-14:45 | Coffee break |
+| 14:45-16:00 | Workshop     |
 
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Ardan Labs)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Enix SAS)
-
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Tiny Shell Script LLC)
-
--->
-
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
-
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
-
-- Live feedback, questions, help: @@CHAT@@
-
--->
-
-<!--
-
-- You ~~should~~ must ask questions! Lots of questions!
-
-  (especially when you see full screen container pictures)
-
-- Use @@CHAT@@ to ask questions, get help, etc.
-
--->
-
-<!-- -->
+.footnote[¹I worked at Docker from 2011 to 2018.
+I ran containers in production before it was cool. 😎]
 
 [@alexbuisine]: https://twitter.com/alexbuisine
 [EphemeraSearch]: https://ephemerasearch.com/
@@ -67,16 +28,31 @@
 
 ---
 
-## Exercises
+## Emojis
 
-- At the end of each day, there is a series of exercises
+Here are some emojis that we'll run across today:
 
-- To make the most out of the training, please try the exercises!
+⚠️ Warning! Pay attention to this.
 
-  (it will help to practice and memorize the content of the day)
+💡 This sounds like a good idea!
 
-- We recommend to take at least one hour to work on the exercises
+🙋 Choose your adventure! Pick a side.
 
-  (if you understood the content of the day, it will be much faster)
+🏗️ Let's build something! Lab time.
 
-- Each day will start with a quick review of the exercises of the previous day
+---
+
+## Recording
+
+- I'm going to try and record the workshop
+
+  (on a best effort basis, using whatever equipment I could fit in my carry-on!😅)
+
+- If you would like to receive a copy of the recording:
+
+  *leave your contact info in the feedback form (address on the last slide)!*
+
+- The camera will only record me (not the audience)
+
+- If you want to ask a question "off the record": tell me and I'll pause the recording
+
