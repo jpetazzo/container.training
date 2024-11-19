@@ -57,7 +57,7 @@ need_tag() {
     if [ ! -d "tags/$TAG" ]; then
         die "Tag $TAG not found (directory tags/$TAG does not exist)."
     fi
-    for FILE in settings.env ips.txt; do
+    for FILE in mode provider settings.env status; do
         if [ ! -f "tags/$TAG/$FILE" ]; then
           warning "File tags/$TAG/$FILE not found."
         fi
