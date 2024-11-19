@@ -7,9 +7,14 @@ variable "how_many_clusters" {
   default = 2
 }
 
-variable "nodes_per_cluster" {
+variable "min_nodes_per_cluster" {
   type    = number
   default = 2
+}
+
+variable "max_nodes_per_cluster" {
+  type    = number
+  default = 4
 }
 
 variable "node_size" {

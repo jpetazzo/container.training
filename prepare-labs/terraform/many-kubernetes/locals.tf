@@ -8,8 +8,8 @@ resource "random_string" "_" {
 resource "time_static" "_" {}
 
 locals {
-  min_nodes_per_pool = var.nodes_per_cluster
-  max_nodes_per_pool = var.nodes_per_cluster * 2
+  min_nodes_per_pool = var.min_nodes_per_cluster
+  max_nodes_per_pool = var.max_nodes_per_cluster
   timestamp          = formatdate("YYYY-MM-DD-hh-mm", time_static._.rfc3339)
   tag                = random_string._.result
   # Common tags to be assigned to all resources
