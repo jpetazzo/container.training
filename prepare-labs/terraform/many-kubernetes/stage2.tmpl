@@ -217,7 +217,18 @@ resource "kubernetes_certificate_signing_request_v1" "cluster_admin_${index}" {
 
 %{ endfor ~}
 
-output "ip_addresses_of_nodes" {
+output "ips_txt" {
+  value = join("\n", [
+  %{ for index, cluster in clusters ~}
+    join("\n", concat(
+      split(" ", file("./externalips.${index}"))
+    )),
+  %{ endfor ~}
+  ""
+  ])
+}
+
+output "login_tsv" {
   value = join("\n", [
   %{ for index, cluster in clusters ~}
     join("\t", concat(
@@ -228,5 +239,6 @@ output "ip_addresses_of_nodes" {
       split(" ", file("./externalips.${index}"))
     )),
   %{ endfor ~}
+  ""
   ])
 }

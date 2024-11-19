@@ -21,18 +21,18 @@ _cmd_cards() {
 
     die FIXME
 
-    # This will process ips.txt to generate two files: ips.pdf and ips.html
+    # This will process login.tsv to generate two files: cards.pdf and cards.html
     (
         cd tags/$TAG
-        ../../../lib/ips-txt-to-html.py settings.yaml
+        ../../../lib/make-login-cards.py settings.yaml
     )
 
-    ln -sf ../tags/$TAG/ips.html www/$TAG.html
-    ln -sf ../tags/$TAG/ips.pdf www/$TAG.pdf
+    ln -sf ../tags/$TAG/cards.html www/$TAG.html
+    ln -sf ../tags/$TAG/cards.pdf www/$TAG.pdf
 
     info "Cards created. You can view them with:"
-    info "xdg-open tags/$TAG/ips.html tags/$TAG/ips.pdf (on Linux)"
-    info "open tags/$TAG/ips.html (on macOS)"
+    info "xdg-open tags/$TAG/cards.html tags/$TAG/cards.pdf (on Linux)"
+    info "open tags/$TAG/cards.html (on macOS)"
     info "Or you can start a web server with:"
     info "$0 www"
 }
@@ -257,7 +257,9 @@ _cmd_create() {
         terraform init
         echo tag = \"$TAG\" >> terraform.tfvars
         echo how_many_clusters = $STUDENTS >> terraform.tfvars
-        echo nodes_per_cluster = $CLUSTERSIZE >> terraform.tfvars
+        if [ "$CLUSTERSIZE" ]; then
+            echo nodes_per_cluster = $CLUSTERSIZE >> terraform.tfvars
+        fi
         for RETRY in 1 2 3; do
             if terraform apply -auto-approve; then
                 touch terraform.ok
@@ -324,8 +326,8 @@ _cmd_clusterize() {
     grep KUBECOLOR_ /etc/ssh/sshd_config || echo 'AcceptEnv KUBECOLOR_*' | sudo tee -a /etc/ssh/sshd_config
     sudo systemctl restart ssh.service"
 
-    pssh -I < tags/$TAG/clusters.txt "
-    grep -w \$PSSH_HOST | tr ' ' '\n' > /tmp/cluster"
+    pssh -I < tags/$TAG/clusters.tsv "
+    grep -w \$PSSH_HOST | tr '\t' '\n' > /tmp/cluster"
     pssh "
     echo \$PSSH_HOST > /tmp/ipv4
     head -n 1 /tmp/cluster | sudo tee /etc/ipv4_of_first_node
@@ -345,6 +347,10 @@ _cmd_clusterize() {
         N=\$((\$N+1))
     done < /tmp/cluster
     "
+
+    while read line; do
+        printf "%s\tssh -l %s\t%s\n" "$USER_PASSWORD" "$USER_LOGIN" "$line"
+    done < tags/$TAG/clusters.tsv > tags/$TAG/login.tsv
 
     echo cluster_ok > tags/$TAG/status
 }
@@ -934,6 +940,14 @@ _cmd_inventory() {
     FIXME
 }
 
+_cmd login "Show login information for a group of instances"
+_cmd_login() {
+    TAG=$1
+    need_tag $TAG
+
+    cat tags/$TAG/login.tsv
+}
+
 _cmd maketag "Generate a quasi-unique tag for a group of instances"
 _cmd_maketag() {
     if [ -z $USER ]; then
@@ -984,6 +998,8 @@ _cmd_stage2() {
     cd tags/$TAG/stage2
     terraform init -upgrade
     terraform apply -auto-approve
+    terraform output -raw login_tsv > ../login.tsv
+    terraform output -raw ips_txt > ../ips.txt
 }
 
 _cmd standardize "Deal with non-standard Ubuntu cloud images"
@@ -1163,8 +1179,8 @@ _cmd_tags() {
         cd tags
         echo "[#] [Status] [Tag] [Mode] [Provider]"
         for tag in *; do
-            if [ -f $tag/ips.txt ]; then
-                count="$(wc -l < $tag/ips.txt)"
+            if [ -f $tag/login.tsv ]; then
+                count="$(wc -l < $tag/login.tsv)"
             else
                 count="?"
             fi

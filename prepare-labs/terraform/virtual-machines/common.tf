@@ -71,10 +71,10 @@ resource "local_file" "ip_addresses" {
 resource "local_file" "clusters" {
   content = join("", formatlist("%s\n", [
     for cid in range(1, 1 + var.how_many_clusters) :
-    join(" ",
+    join("\t",
       [for nid in range(1, 1 + var.nodes_per_cluster) :
         local.ip_addresses[format("c%03dn%03d", cid, nid)]
   ])]))
-  filename        = "clusters.txt"
+  filename        = "clusters.tsv"
   file_permission = "0600"
 }
