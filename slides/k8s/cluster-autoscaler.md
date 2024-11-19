@@ -1,4 +1,4 @@
-# Cluster autoscaler
+# Scaling up the cluster
 
 - When the cluster is full, we need to add more nodes
 
@@ -221,7 +221,9 @@ THEN add a Node.
 
 ---
 
-## Scaling down in theory
+# Scaling down the cluster
+
+*In theory:*
 
 IF a Node has less than 50% utilization for 10 minutes,
 

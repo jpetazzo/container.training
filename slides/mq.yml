@@ -7,15 +7,16 @@ chat: "In person!"
 
 gitrepo: github.com/jpetazzo/container.training
 
-slides: https://FIXME.container.training/
+slides: https://2024-12-mq.container.training/
 
 #slidenumberprefix: "#SomeHashTag &mdash; "
 
 exclude:
-- self-paced
+- in-person
 
 content:
 - shared/title.md
+- shared/contact.md
 - logistics.md
 - shared/about-slides.md
 #- shared/chat-room-im.md
@@ -24,7 +25,7 @@ content:
 #- shared/chat-room-zoom-webinar.md
 - k8s/prereqs-advanced.md
 - k8s/handson-mlops.md
-- shared/connecting.md
+#- shared/connecting.md
 - k8s/mlops-headsup.md
 - shared/toc.md
 -
@@ -33,9 +34,11 @@ content:
   - k8s/queue-architecture.md
   - k8s/bento-intro.md
 -
+  - k8s/bento-enrichment.md
   - k8s/resource-limits.md
   - k8s/cluster-autoscaler.md
   - k8s/ollama-reqlim.md
+-
   - k8s/bento-hpa.md
   - k8s/bento-rmq.md
   - k8s/bento-cnpg.md

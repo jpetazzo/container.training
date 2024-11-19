@@ -2,6 +2,7 @@
 #/ /kube-halfday.yml.html 200!
 #/ /kube-fullday.yml.html 200!
 #/ /kube-twodays.yml.html 200!
+/ /mq.yml.html 200!
 
 # And this allows to do "git clone https://container.training".
 /info/refs service=git-upload-pack https://github.com/jpetazzo/container.training/info/refs?service=git-upload-pack
@@ -12,7 +13,7 @@
 #/kubernetesmastery https://www.udemy.com/course/kubernetesmastery/?couponCode=DOCKERALLDAY
 
 # Shortlink for the QRCode
-/q /qrcode.html 200
+/q https://docs.google.com/forms/d/e/1FAIpQLScYloWur4uVhKgVNIdUrfHZ8pk_mBmPcQwmbhjK2FlR9KWDCA/viewform
 
 # Shortlinks for next training in English and French
 #/next https://www.eventbrite.com/e/livestream-intensive-kubernetes-bootcamp-tickets-103262336428
@@ -21,5 +22,3 @@
 /us https://www.ardanlabs.com/live-training-events/deploying-microservices-and-traditional-applications-with-kubernetes-march-28-2022.html
 /uk https://skillsmatter.com/workshops/827-deploying-microservices-and-traditional-applications-with-kubernetes-with-jerome-petazzoni
 
-# Survey form
-/please https://docs.google.com/forms/d/e/1FAIpQLSfIYSgrV7tpfBNm1hOaprjnBHgWKn5n-k5vtNXYJkOX1sRxng/viewform

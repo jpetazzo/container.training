@@ -1,82 +1,44 @@
 ## Introductions
 
-⚠️ This slide should be customized by the tutorial instructor(s).
+Hello! We are:
 
-<!--
+- Jérôme Petazzoni ([@jpetazzo@hachyderm.io], [/in/jpetazzo][jp-linkedin])
 
-- Hello! We are:
+  - freelance Docker¹ / Kubernetes / MLops consultant and trainer
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
+- AJ Bowen ([GitHub: @soulshake][aj-github], [LinkedIn: AJ Bowen][aj-linkedin])
 
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
+  - freelance k8s/IaC/CI/CD/devOps engineer and consultant
 
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Ardan Labs)
+  - founder of [EphemeraSearch]
 
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Enix SAS)
+.footnote[¹I worked at Docker from 2011 to 2018.
+I ran containers in production before it was cool. 😎]
 
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Tiny Shell Script LLC)
-
--->
-
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
-
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
-
-- Live feedback, questions, help: @@CHAT@@
-
--->
-
-<!--
-
-- You ~~should~~ must ask questions! Lots of questions!
-
-  (especially when you see full screen container pictures)
-
-- Use @@CHAT@@ to ask questions, get help, etc.
-
--->
-
-<!-- -->
-
-[@alexbuisine]: https://twitter.com/alexbuisine
 [EphemeraSearch]: https://ephemerasearch.com/
 [@jpetazzo]: https://twitter.com/jpetazzo
+[aj-github]: https://github.com/soulshake
+[aj-linkedin]: https://linkedin.com/in/ajbowen
+[jp-linkedin]: https://linkedin.com/in/jpetazzo
 [@jpetazzo@hachyderm.io]: https://hachyderm.io/@jpetazzo
-[@s0ulshake]: https://twitter.com/s0ulshake
-[Quantgene]: https://www.quantgene.com/
 
 ---
 
-## Exercises
+## Context
 
-- At the end of each day, there is a series of exercises
+- This content was delivered at QCON SF in November 2024
+ 
+  (in-person workshop)
 
-- To make the most out of the training, please try the exercises!
+- I recorded that workshop, but had technical issues
 
-  (it will help to practice and memorize the content of the day)
+- This is a re-recording of the workshop!
 
-- We recommend to take at least one hour to work on the exercises
+- I may or may not cover everything in this video series
 
-  (if you understood the content of the day, it will be much faster)
+- At the conference, I provided everyone with an individual cluster
 
-- Each day will start with a quick review of the exercises of the previous day
+- If you want to follow along the demos and labs, you'll need your own
+
+  (I'll explain how to provision it)
+

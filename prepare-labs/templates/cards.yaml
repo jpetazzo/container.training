@@ -8,12 +8,11 @@ backside: |
     Thanks for attending the Asynchronous Architecture Patterns workshop at QCON!
   </p>
   <p>
-    <b>This QR code will give you my contact info</b> as well as a link to a feedback form.
+    If you'd like me to send you a copy of the recording of the workshop
+    and of the training materials,
+    please scan that QR code to leave me your
+    contact information. Thank you!
   </p>
-  <p>
-    If you liked this workshop, I can train your team, in person or online, with custom
-    courses of any length and any level, on Docker, Kubernetes, and MLops.
-  </p>
-qrcode: https://2024-11-qconsf.container.training/#contact
+qrcode: https://2024-11-qconsf.container.training/q
 thing: Kubernetes cluster
-image: logo-kubernetes.png
+image: logo-bento.svg

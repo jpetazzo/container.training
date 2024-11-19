@@ -110,6 +110,77 @@ class: in-person, pic
 
 ---
 
+## Our recommendation
+
+- Any managed Kubernetes cluster
+
+- Nodes with 8 GB of RAM (or more)
+
+- At least 1 node (obviously!)
+
+- Ideally, cluster autoscaling
+
+  (you can set the maximum number of nodes to 5)
+
+- Alternatively, have a cluster of at least 3 nodes
+
+  (ideally a bit more to see the effect of scaling)
+
+- Local tools: kubectl, Helm, Stern, Bento
+
+- You can also use [shpod] to get a shell on the cluster
+
+[shpod]: https://github.com/jpetazzo/shpod
+
+---
+
+## Example with Linode (create cluster)
+
+- Make sure you have a [Linode account][linode-account]
+
+- Install and configure the [Linode CLI][linode-cli]
+
+- Create a cluster:
+  ```bash
+  lin lke cluster-create --label mlops \
+    --k8s_version=1.31 \
+    --node_pools.type g6-standard-4 \
+    --node_pools.count 1 \
+    --node_pools.autoscaler.enabled true \
+    --node_pools.autoscaler.min 1 \
+    --node_pools.autoscaler.max 5 \
+    #
+  ```
+
+[linode-account]: https://login.linode.com/signup
+[linode-cli]: https://www.linode.com/products/cli/
+
+---
+
+## Example with Linode (retrieve kubeconfig)
+
+- Retrieve the cluster ID:
+  ```bash
+  CLUSTER_ID=$(lin  lke clusters-list --label $CLUSTER_NAME  --json | jq .[].id)
+  ```
+
+- Wait until the cluster is provisioned:
+  ```bash
+    while ! lin lke kubeconfig-view $CLUSTER_ID; do
+      sleep 10
+    done
+  ```
+
+- Retrieve the cluster kubeconfig:
+  ```bash
+    lin lke kubeconfig-view $CLUSTER_ID --json | jq -r .[].kubeconfig | 
+        base64 -d > kubeconfig.$CLUSTER_ID
+  ```
+
+- And set the `KUBECONFIG` environment variable accordingly!
+
+---
+
 class: in-person
 
 ## Why don't we run containers locally?

@@ -244,7 +244,7 @@ spec:
 
 ---
 
-## Improving throughput
+# Improving throughput
 
 We're going to review multiple techniques:
 
