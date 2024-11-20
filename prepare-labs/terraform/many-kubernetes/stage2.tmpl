@@ -228,16 +228,15 @@ output "ips_txt" {
   ])
 }
 
-output "login_tsv" {
+output "logins_jsonl" {
   value = join("\n", [
   %{ for index, cluster in clusters ~}
-    join("\t", concat(
-      [
-        random_string.shpod_${index}.result,
-        "ssh -l k8s -p $${kubernetes_service.shpod_${index}.spec[0].port[0].node_port}"
-      ],
-      split(" ", file("./externalips.${index}"))
-    )),
+    jsonencode({
+      login = "k8s",
+      password = random_string.shpod_${index}.result,
+      port = kubernetes_service.shpod_${index}.spec[0].port[0].node_port,
+      ipaddrs = replace(file("./externalips.${index}"), " ", "\t"),
+    }),
   %{ endfor ~}
   ""
   ])

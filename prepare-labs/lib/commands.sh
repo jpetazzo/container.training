@@ -19,12 +19,14 @@ _cmd_cards() {
     TAG=$1
     need_tag
 
-    die FIXME
+    OPTIONS_FILE=$2
+    [ -f "$OPTIONS_FILE" ] || die "Please specify a YAML options file as 2nd argument."
+    OPTIONS_FILE_PATH="$(readlink -f "$OPTIONS_FILE")"
 
-    # This will process login.tsv to generate two files: cards.pdf and cards.html
+    # This will process logins.jsonl to generate two files: cards.pdf and cards.html
     (
         cd tags/$TAG
-        ../../../lib/make-login-cards.py settings.yaml
+        ../../../lib/make-login-cards.py "$OPTIONS_FILE_PATH"
     )
 
     ln -sf ../tags/$TAG/cards.html www/$TAG.html
@@ -349,8 +351,8 @@ _cmd_clusterize() {
     "
 
     while read line; do
-        printf "%s\tssh -l %s\t%s\n" "$USER_PASSWORD" "$USER_LOGIN" "$line"
-    done < tags/$TAG/clusters.tsv > tags/$TAG/login.tsv
+        printf '{"login": "%s", "password": "%s", "ipaddrs": "%s"}\n' "$USER_LOGIN" "$USER_PASSWORD" "$line"
+    done < tags/$TAG/clusters.tsv > tags/$TAG/logins.jsonl
 
     echo cluster_ok > tags/$TAG/status
 }
@@ -940,12 +942,13 @@ _cmd_inventory() {
     FIXME
 }
 
-_cmd login "Show login information for a group of instances"
-_cmd_login() {
+_cmd logins "Show login information for a group of instances"
+_cmd_logins() {
     TAG=$1
     need_tag $TAG
 
-    cat tags/$TAG/login.tsv
+    cat tags/$TAG/logins.jsonl \
+    | jq -r '"\(.password)\tssh -l \(.login)\(if .port then " -p \(.port)" else "" end)\t\(.ipaddrs)"'
 }
 
 _cmd maketag "Generate a quasi-unique tag for a group of instances"
@@ -998,8 +1001,9 @@ _cmd_stage2() {
     cd tags/$TAG/stage2
     terraform init -upgrade
     terraform apply -auto-approve
-    terraform output -raw login_tsv > ../login.tsv
+    terraform output -raw logins_jsonl > ../logins.jsonl
     terraform output -raw ips_txt > ../ips.txt
+    echo "stage2_ok" > status
 }
 
 _cmd standardize "Deal with non-standard Ubuntu cloud images"
@@ -1179,8 +1183,8 @@ _cmd_tags() {
         cd tags
         echo "[#] [Status] [Tag] [Mode] [Provider]"
         for tag in *; do
-            if [ -f $tag/login.tsv ]; then
-                count="$(wc -l < $tag/login.tsv)"
+            if [ -f $tag/logins.jsonl ]; then
+                count="$(wc -l < $tag/logins.jsonl)"
             else
                 count="?"
             fi
@@ -1343,7 +1347,7 @@ EOF"
 _cmd www "Run a web server to access card HTML and PDF"
 _cmd_www() {
     cd www
-    IPADDR=$(curl -sL canihazip.com/s)
+    IPADDR=$(curl -fsSL canihazip.com/s || echo localhost)
     info "The following files are available:"
     for F in *; do
         echo "http://$IPADDR:8000/$F"
