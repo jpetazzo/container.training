@@ -221,3 +221,10 @@ td {
   padding: 0.1em 0.5em;
   background: #eee;
 }
+
+/* Use this to layout a slide in two columns */
+.column-half {
+  float: left;
+  width: 50%;
+}
+
