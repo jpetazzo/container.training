@@ -1,29 +1,20 @@
 #!/usr/bin/env python3
+import json
 import os
 import sys
 import yaml
 import jinja2
 
-
 # Read settings from user-provided settings file
-context = dict(
-    cards_template = "mlops.html",
-    paper_size = "Letter",
-) # {} # yaml.safe_load(open(sys.argv[1]))
+context = yaml.safe_load(open(sys.argv[1]))
 
-logins = list(open("login.tsv"))
 context["logins"] = []
-for login in logins:	
-    password, command, ipaddr, ipaddrs = login.split("\t", 3)
-    context["logins"].append(dict(
-        password=password,
-        command=command,
-        ipaddr=ipaddr,
-        ipaddrs=ipaddrs,
-    ))
+for line in open("logins.jsonl"):
+    if line.strip():
+        context["logins"].append(json.loads(line))
 
 print("---------------------------------------------")
-print("   Number of cards: {}".format(len(logins)))
+print("   Number of cards: {}".format(len(context["logins"])))
 print("---------------------------------------------")
 
 template_file_name = context["cards_template"]

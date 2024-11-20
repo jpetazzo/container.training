@@ -1,0 +1,19 @@
+cards_template: cards.html
+paper_size: Letter
+url: https://2024-11-qconsf.container.training
+event: workshop
+backside: |
+  <div class="qrcode"></div>
+  <p>
+    Thanks for attending the Asynchronous Architecture Patterns workshop at QCON!
+  </p>
+  <p>
+    <b>This QR code will give you my contact info</b> as well as a link to a feedback form.
+  </p>
+  <p>
+    If you liked this workshop, I can train your team, in person or online, with custom
+    courses of any length and any level, on Docker, Kubernetes, and MLops.
+  </p>
+qrcode: https://2024-11-qconsf.container.training/#contact
+thing: Kubernetes cluster
+image: logo-kubernetes.png

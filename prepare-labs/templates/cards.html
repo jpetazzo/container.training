@@ -7,7 +7,7 @@
 {%- set url = url
     | default("http://FIXME.container.training/") -%}
 {%- set pagesize = pagesize
-    | default(9) -%}
+    | default(10) -%}
 {%- set lang = lang
     | default("en") -%}
 {%- set event = event
@@ -15,79 +15,36 @@
 {%- set backside = backside
     | default(False) -%}
 {%- set image = image
-    | default("kube") -%}
+    | default(False) -%}
 {%- set clusternumber = clusternumber
     | default(None) -%}
-{%- if qrcode == True -%}
-    {%- set qrcode = "https://container.training/q" -%}
-{%- elif qrcode -%}
-    {%- set qrcode = qrcode -%}
-{%- endif -%}
+{%- set thing = thing
+    | default("lab environment") -%}
 
-{# You can also set img_bottom_src instead. #}
-{%- set img_logo_src = {
-	"docker": "https://s3-us-west-2.amazonaws.com/www.breadware.com/integrations/docker.png",
-	"swarm": "https://cdn.wp.nginx.com/wp-content/uploads/2016/07/docker-swarm-hero2.png",
-	"kube": "https://avatars1.githubusercontent.com/u/13629408",
-	"enix": "https://enix.io/static/img/logos/logo-domain-cropped.png",
-    }[image] -%}
-{%- if lang == "en" and clustersize == 1 -%}
-	{%- set intro -%}
-	Here is the connection information to your very own
-	machine for this {{ event }}.
-	You can connect to this VM with any SSH client.
-	{%- endset -%}
-    {%- set listhead -%}
-    Your machine is:
-	{%- endset -%}
-{%- endif -%}
-{%- if lang == "en" and clustersize != 1 -%}
-	{%- set intro -%}
-	Here is the connection information to your very own
-	cluster for this {{ event }}.
-	You can connect to each VM with any SSH client.
-	{%- endset -%}
-    {%- set listhead -%}
-    Your machines are:
-	{%- endset -%}
-{%- endif -%}
-{%- if lang == "fr" and clustersize == 1 -%}
-	{%- set intro -%}
-	Voici les informations permettant de se connecter à votre
-	machine pour cette formation.
-	Vous pouvez vous connecter à cette machine virtuelle
-	avec n'importe quel client SSH.
-	{%- endset -%}
-    {%- set listhead -%}
-    Adresse IP:
-	{%- endset -%}
-{%- endif -%}
-{%- if lang == "en" and clusterprefix != "node" -%}
-	{%- set intro -%}
-    Here is the connection information for the
-    <strong>{{ clusterprefix }}</strong> environment.
-	{%- endset -%}
-{%- endif -%}
-{%- if lang == "fr" and clustersize != 1 -%}
-	{%- set intro -%}
-	Voici les informations permettant de se connecter à votre
-	cluster pour cette formation.
-	Vous pouvez vous connecter à chaque machine virtuelle
-	avec n'importe quel client SSH.
-	{%- endset -%}
-    {%- set listhead -%}
-	Adresses IP:
-	{%- endset -%}
-{%- endif -%}
-{%- if lang == "en"  -%}
-	{%- set slides_are_at -%}
-	You can find the slides at:
-	{%- endset -%}
+{%- if lang == "en" -%}
+    {%- set intro -%}
+    Here is the connection information to your very own
+    {{ thing }} for this {{ event }}.
+    You can connect to it with any SSH client.
+    {%- endset -%}
 {%- endif -%}
 {%- if lang == "fr" -%}
-	{%- set slides_are_at -%}
-  	Le support de formation est à l'adresse suivante :
-	{%- endset -%}
+    {%- set intro -%}
+    Voici les informations permettant de se connecter à votre
+    {{ thing }} pour cette formation.
+    Vous pouvez vous y connecter
+    avec n'importe quel client SSH.
+    {%- endset -%}
+{%- endif -%}
+{%- if lang == "en"  -%}
+    {%- set slides_are_at -%}
+    You can find the slides at:
+    {%- endset -%}
+{%- endif -%}
+{%- if lang == "fr" -%}
+    {%- set slides_are_at -%}
+      Le support de formation est à l'adresse suivante :
+    {%- endset -%}
 {%- endif -%}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -102,25 +59,21 @@
 }
 body {
     /* this is A4 minus 0.5cm margins */
-	width: 20cm;
-	height: 28.7cm;
+    width: 20cm;
+    height: 28.7cm;
 }
 {% elif paper_size == "Letter" %}
 @page {
-	size: Letter;
-	margin: 0.2in;
+    size: Letter; /* 8.5in x 11in */
 }
 body {
-	/* this is Letter minus 0.2in margins */
-	width: 8.6in;
-	heigth: 10.6in;
+    width: 6.75in; /* two cards wide */
+    margin-left: 0.875in; /* (8.5in - 6.75in)/2 */
+    margin-top: 0.1875in; /* (11in - 5 cards)/2 */
 }
 {% endif %}
 
-
 body, table {
-    margin: 0;
-    padding: 0;
     line-height: 1em;
     font-size: 15px;
     font-family: 'Slabo 27px';
@@ -134,47 +87,45 @@ table {
     padding-left: 0.4em;
 }
 
-div {
+td:first-child {
+    width: 10.5em;
+}
+
+div.card {
     float: left;
-    border: 1px dotted black;
-    {% if backside %}
-    height: 33%;
-    {% endif %}
-    /* columns * (width+left+right) < 100% */
+    border: 0.01in dotted black;
     /*
-    width: 24.8%;
+      columns * (width+left+right) < 100% 
+      height: 33%;
+      width: 24.8%;
+      width: 33%;
     */
-    /**/
-    width: 33%;
-    /**/    
+    width: 3.355in; /* 3.375in minus two 0.01in borders */
+    height: 2.105in; /* 2.125in minus two 0.01in borders */
 }
 
 p {
     margin: 0.8em;
 }
 
-div.back {
-	border: 1px dotted grey;
+div.front {
+    {% if image %}
+    background-image: url("{{ image }}");
+    background-repeat: no-repeat;
+    background-size: 1in;
+    background-position-x: 2.8in;
+    background-position-y: center;
+    {% endif %}
 }
 
 span.scale {
-	white-space: nowrap;
-}
-
-img.logo {
-    height: 4.5em;
-    float: right;
- }
-
-img.bottom {
-    height: 2.5em;
-    display: block;
-    margin: 0.5em auto;
+    white-space: nowrap;
 }
 
 .qrcode img {
-    width: 40%;
-    margin: 1em;
+    height: 5.8em;
+    padding: 1em 1em 0.5em 1em;
+    float: left;
 }
 
 .logpass {
@@ -189,101 +140,97 @@ img.bottom {
     height: 0;
 }
 </style>
-<script type="text/javascript" src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script type="text/javascript" src="qrcode.min.js"></script>
 <script type="text/javascript">
 function qrcodes() {
-	[].forEach.call(
-		document.getElementsByClassName("qrcode"),
-		(e, index) => {
-			new QRCode(e, {
-				text: "{{ qrcode }}",
-				correctLevel: QRCode.CorrectLevel.L
-			});
-		}
-	);
+    [].forEach.call(
+        document.getElementsByClassName("qrcode"),
+        (e, index) => {
+            new QRCode(e, {
+                text: "{{ qrcode }}",
+                correctLevel: QRCode.CorrectLevel.L
+            });
+        }
+    );
 }
 
 function scale() {
-	[].forEach.call(
-		document.getElementsByClassName("scale"),
-		(e, index) => {
-			var text_width = e.getBoundingClientRect().width;
-			var box_width = e.parentElement.getBoundingClientRect().width;
-			var percent = 100 * box_width / text_width + "%";
-			e.style.fontSize = percent;
-		}
-	);
+    [].forEach.call(
+        document.getElementsByClassName("scale"),
+        (e, index) => {
+            var text_width = e.getBoundingClientRect().width;
+            var box_width = e.parentElement.getBoundingClientRect().width;
+            var percent = 100 * box_width / text_width + "%";
+            e.style.fontSize = percent;
+        }
+    );
 }
 </script>
 </head>
 <body onload="qrcodes(); scale();">
-{% for cluster in clusters %}
-    <div>
+{% for login in logins %}
+    <div class="card front">
         <p>{{ intro }}</p>
         <p>
-            {% if img_logo_src %}
-            <img class="logo" src="{{ img_logo_src }}" />
-            {% endif %}
             <table>
-            	{% if clusternumber != None %}
-	            <tr><td>cluster:</td></tr>
-	            <tr><td class="logpass">{{ clusternumber + loop.index }}</td></tr>
-            	{% endif %}
-                <tr><td>login:</td></tr>
-                <tr><td class="logpass">{{ user_login }}</td></tr>
-                <tr><td>password:</td></tr>
-                <tr><td class="logpass">{{ user_password }}</td></tr>
-            </table>
-
-        </p>
-        <p>
-            {{ listhead }}
-            <table>
-                {% for node in cluster %}
-                <tr>
-                	<td>{{ clusterprefix }}{{ loop.index }}:</td>
-                	<td>{{ node }}</td>
-                </tr>
-                {% endfor %}
+              <tr>
+                <td>login:</td>
+                <td>password:</td>
+              </tr>
+              <tr>
+                <td class="logpass">{{ login.login }}</td>
+                <td class="logpass">{{ login.password }}</td>
+              </tr>
+              <tr>
+                <td>IP address:</td>
+                {% if login.port %}
+                <td>port:</td>
+                {% endif %}
+              </tr>
+              <tr>
+                <td class="logpass">{{ login.ipaddrs.split("\t")[0] }}</td>
+                {% if login.port %}
+                <td class="logpass">{{ login.port }}</td>
+                {% endif %}
+              </tr>
             </table>
         </p>
-
         <p>
             {% if url %}
-        	{{ slides_are_at }}
+            {{ slides_are_at }}
             <p>
                 <span class="scale">{{ url }}</span>
             </p>
-            {% endif %}
-            {% if img_bottom_src %}
-            <img class="bottom" src="{{ img_bottom_src }}" />
             {% endif %}
         </p>
     </div>
     {% if loop.index%pagesize==0 or loop.last %}
         <span class="pagebreak"></span>
         {% if backside %}
-			{% for x in range(pagesize) %}
-		        <div class="back">
-				<p>Thanks for attending
-				"Getting Started With Kubernetes and Container Orchestration"
-				during CONFERENCE in Month YYYY!</p>
-				<p>If you liked that workshop,
-				I can train your team, in person or
-				online, with custom courses of
-				any length and any level.
-				</p>
-	            {% if qrcode %}
-	            <p>If you're interested, please scan that QR code to contact me:</p>
-				<span class="qrcode"></span>
+            {% for x in range(pagesize) %}
+                <div class="card back">
+                {{ backside }}
+                {#
+                <p>Thanks for attending
+                "Getting Started With Kubernetes and Container Orchestration"
+                during CONFERENCE in Month YYYY!</p>
+                <p>If you liked that workshop,
+                I can train your team, in person or
+                online, with custom courses of
+                any length and any level.
+                </p>
+                {% if qrcode %}
+                <p>If you're interested, please scan that QR code to contact me:</p>
+                <span class="qrcode"></span>
                 {% else %}
-				<p>If you're interested, you can contact me at:</p>
-				{% endif %}
-				<p>jerome.petazzoni@gmail.com</p>
-		        </div>
-			{% endfor %}
-		<span class="pagebreak"></span>
-		{% endif %}
+                <p>If you're interested, you can contact me at:</p>
+                {% endif %}
+                <p>jerome.petazzoni@gmail.com</p>
+                #}
+                </div>
+            {% endfor %}
+        <span class="pagebreak"></span>
+        {% endif %}
     {% endif %}
 {% endfor %}
 </body>
