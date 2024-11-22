@@ -96,7 +96,7 @@ class: extra-details
 
 ---
 
-## Choose your adventure!
+## Choose your own adventure!
 
 - We present 3 methods to obtain a certificate
 

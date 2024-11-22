@@ -34,7 +34,7 @@ Assuming Ollama is installed and running:
 ollama run qwen2:1.5b "What's the solution to global warming?"
 ```
 
-We're going to use that model because it's relatively small.
+We're going to use this model because it's relatively small.
 
 Many others are available (see https://ollama.dev/search).
 
@@ -110,7 +110,7 @@ kubectl wait pod ollama --for=condition=Ready
 (If that command times out, try again and/or specify a higher timeout.)
 
 ```bash
-kubectl exec ollama -- ollama run qwen2:1.5b "What's Bach best piece?"
+kubectl exec ollama -- ollama run qwen2:1.5b "What's Bach's best piece?"
 ```
 
 Shutdown the pod:
@@ -197,7 +197,7 @@ kubectl run httpclient --rm -it --image alpine/httpie -- --ignore-stdin \
 
 ## Potential solutions
 
-- Bake the model in the image
+- Bake the model into the image
 
   🙅 Personal opinion: this is a bad idea (image size, maintenance...)
 
@@ -215,7 +215,7 @@ kubectl run httpclient --rm -it --image alpine/httpie -- --ignore-stdin \
 
 ---
 
-## 🙋 Choose your adventure
+## 🙋 Choose your own adventure
 
 Should we add that lifecycle hook?
 
@@ -273,6 +273,28 @@ There should be two processes:
 - `ollama` itself, relatively small (~100 MB)
 
 - the LLM subprocess, relatively big (~1.4 GB for qwen2:1.5b)
+
+---
+
+class: extra-details
+
+## HTTPie
+
+https://httpie.io/
+
+- CLI client to send requests to web services
+
+- Similar to curl, but made specifically to talk to API backends
+
+```bash
+httpie <URL> [key=value] [key=value] [key:=value]
+```
+
+- The `key=value` pairs get turned into a JSON object
+
+- `key:=value` indicates a parameter to be sent "as-is"
+
+  (ideal for e.g. boolean or numbers)
 
 ---
 

@@ -204,7 +204,7 @@ INFO Pipeline has terminated. Shutting down the service  @service=bento
 ```
 ]
 
-The pipeline should complete in a just a few seconds.
+The pipeline should complete in just a few seconds.
 
 ---
 
@@ -297,7 +297,7 @@ Option 2: [read the docs][output-http-server]
 
 ---
 
-## 🙋 Choose your adventure
+## 🙋 Choose your own adventure
 
 Do you want to try to write that configuration?
 
@@ -329,7 +329,7 @@ It's also possible to batch, stream...
 
 ## Trying it out
 
-- Run Bento with that configuration:
+- Run Bento with this configuration:
   ```bash
   bento --config redis2http.yaml &
   ```
@@ -395,7 +395,7 @@ We get a JSON payload, and we want to use the `response` field.
 
 ## Configure an enrichment workflow
 
-The [documentation][enrichment] is really good!
+The [Bento documentation][enrichment] is really good!
 
 We need to set up:
 
@@ -519,11 +519,11 @@ flowchart LR
   result_map --> OUT
 </pre>
 
-- The `branch` processor allows to do the processing "on the side"
+- The `branch` processor allows doing the processing "on the side"
 
 - `request_map` and `result_map` transform the message before/after processing
 
-- Then, the result if combined with the original message (the `city`)
+- Then, the result is combined with the original message (the `city`)
 
 ---
 
@@ -572,7 +572,7 @@ Post "http://ollama...": context deadline exceeded
 
 ---
 
-## 🙋 Choose your adventure
+## 🙋 Choose your own adventure
 
 How should we address errors?
 

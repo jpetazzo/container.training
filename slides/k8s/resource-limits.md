@@ -194,7 +194,7 @@ class: extra-details
 
   - use [static CPU manager policy](https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/#static-policy)
 
-For more details, check [this blog post](https://erickhun.com/posts/kubernetes-faster-services-no-cpu-limits/) or these ones ([part 1](https://engineering.indeedblog.com/blog/2019/12/unthrottled-fixing-cpu-limits-in-the-cloud/), [part 2](https://engineering.indeedblog.com/blog/2019/12/cpu-throttling-regression-fix/)).
+For more details, check [this blog post](https://erickhun.com/posts/kubernetes-faster-services-no-cpu-limits/) or these: ([part 1](https://engineering.indeedblog.com/blog/2019/12/unthrottled-fixing-cpu-limits-in-the-cloud/), [part 2](https://engineering.indeedblog.com/blog/2019/12/cpu-throttling-regression-fix/)).
 
 ---
 

@@ -98,7 +98,7 @@ class: extra-details
 
 - By default, the Prometheus Operator will only look at \*Monitors with the right labels
 
-- Our extra options mean "use all the Monitors that you will find!"
+- Our extra options mean "use all the Monitors that you find!"
 
 ---
 
@@ -116,7 +116,7 @@ Get the public address of one of our nodes:
 kubectl get nodes -o wide
 ```
 
-Connect to the public address of a node, on the node port.
+In a browser, connect to the public address of any node, on the node port.
 
 The default login and password are `admin` / `prom-operator`.
 
@@ -158,7 +158,7 @@ Select a namespace and see the CPU and RAM usage for the pods in that namespace.
 
 ---
 
-## 🙋 Choose your adventure
+## 🙋 Choose your own adventure
 
 Do we want to...
 
@@ -186,7 +186,7 @@ Do we want to...
 
   (for HAProxy metrics, you can use [Grafana dashboard 12693, HAProxy 2 Full][grafana-12693])
 
-- If you don't want to write the manifests, you can use [these ones][ollama-yaml]
+- If you don't want to write the manifests, you can use [these][ollama-yaml]
 
 [grafana-12693]: https://grafana.com/grafana/dashboards/12693-haproxy-2-full/
 [ollama-yaml]: https://github.com/jpetazzo/beyond-load-balancers/tree/main/ollama
@@ -268,6 +268,6 @@ class: extra-details
 
 - This is because our node is oversubscribed
 
-- This is because we didn't specify of resource requests/limits (yet)
+- This is because we haven't specified resource requests/limits (yet)
 
   (we'll do that later!)

@@ -18,7 +18,7 @@ Misattributed to Benjamin Franklin
 
 - If you are attending a live workshop:
 
-  - follow along the demos, ask questions at any time
+  - follow along with the demos, ask questions at any time
 
   - if you can, try to run some of the examples and demos in your environment
 
@@ -50,7 +50,7 @@ class: in-person, pic
 
 - Your lab environments will be available for the duration of the workshop
 
-  (check with your instructor to know exactly when they'll be shutdown)
+  (check with your instructor to know exactly when they'll be shut down)
 
 - Note that for budget reasons¹, your environment will be fairly modest
 

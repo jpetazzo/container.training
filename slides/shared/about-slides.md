@@ -46,7 +46,7 @@
 
   (let's say we'll keep them online at least 1 year, how about that?)
 
-- You can download the slides using that URL:
+- You can download the slides using this URL:
 
   @@ZIP@@
 
