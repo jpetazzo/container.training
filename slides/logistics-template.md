@@ -1,10 +1,28 @@
 ## Introductions
 
-Hello! I'm Jérôme Petazzoni ([@jpetazzo], [@jpetazzo@hachyderm.io])
+Hello! We are:
 
-I'm a freelance Docker¹ / Kubernetes / MLops consultant and trainer.
+- Jérôme Petazzoni ([@jpetazzo], [@jpetazzo@hachyderm.io])
 
-Today's schedule:
+  - freelance Docker¹ / Kubernetes / MLops consultant and trainer
+
+- AJ Bowen ([GitHub: @soulshake], [LinkedIn: AJ Bowen])
+
+  - freelance k8s/IaC/CI/CD/devOps engineer and consultant
+  - founder of [EphemeraSearch]
+
+.footnote[¹I worked at Docker from 2011 to 2018.
+I ran containers in production before it was cool. 😎]
+
+[EphemeraSearch]: https://ephemerasearch.com/
+[@jpetazzo]: https://twitter.com/jpetazzo
+[@soulshake]: https://github.com/soulshake
+[LinkedIn]: https://linkedin.com/in/ajbowen
+[@jpetazzo@hachyderm.io]: https://hachyderm.io/@jpetazzo
+
+---
+
+## Schedule
 
 |             |              |
 |-------------|--------------|
@@ -15,16 +33,6 @@ Today's schedule:
 | 13:00-14:30 | Workshop     |
 | 14:30-14:45 | Coffee break |
 | 14:45-16:00 | Workshop     |
-
-.footnote[¹I worked at Docker from 2011 to 2018.
-I ran containers in production before it was cool. 😎]
-
-[@alexbuisine]: https://twitter.com/alexbuisine
-[EphemeraSearch]: https://ephemerasearch.com/
-[@jpetazzo]: https://twitter.com/jpetazzo
-[@jpetazzo@hachyderm.io]: https://hachyderm.io/@jpetazzo
-[@s0ulshake]: https://twitter.com/s0ulshake
-[Quantgene]: https://www.quantgene.com/
 
 ---
 
