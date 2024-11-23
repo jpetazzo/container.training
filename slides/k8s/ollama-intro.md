@@ -246,7 +246,7 @@ helm install ollama ollama/ollama --set ollama.models={qwen2:1.5b}
 
 Idempotent¹, single-command method:
 ```bash
-helm ugprade --install --repo https://otwld.github.io/ollama-helm/ \
+helm upgrade --install --repo https://otwld.github.io/ollama-helm/ \
   ollama ollama --set ollama.models={qwen2:1.5b}
 ```
 
