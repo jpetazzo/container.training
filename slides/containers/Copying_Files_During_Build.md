@@ -120,11 +120,11 @@ class: extra-details
 
   (and won't end up in the resulting image)
 
-- See the [documentation] for the little details
+- See the [documentation][dockerignore] for the little details
 
   (exceptions can be made with `!`, multiple directory levels with `**`...)
 
-[documentation]: https://docs.docker.com/engine/reference/builder/#dockerignore-file
+[dockerignore]: https://docs.docker.com/engine/reference/builder/#dockerignore-file
 
 ???
 

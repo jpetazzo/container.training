@@ -40,9 +40,6 @@ class: extra-details
 
 - We're going to use Bento here, but Redpanda Connect should work fine too!
 
-[redpanda-acquires-benthos]: https://www.redpanda.com/press/redpanda-acquires-benthos
-[warpstream-forks-benthos]: https://www.warpstream.com/blog/announcing-bento-the-open-source-fork-of-the-project-formerly-known-as-benthos
-
 ---
 
 ## Bento concepts
@@ -126,7 +123,7 @@ Let's break down the work:
 
 - We need to find which `input` and `output` to use
 
-- Check the list with `bento list` or the [documentation]
+- Check the list with `bento list` or the [documentation][bento-inputs]
 
 - Then run `bento create INPUTNAME/PIPELINENAME/OUTPUTNAME`
 
@@ -138,8 +135,6 @@ Let's break down the work:
 - Edit that configuration file; look for the `(required)` parameters
 
   (Everything else can go away!)
-
-[documentation]: https://warpstreamlabs.github.io/bento/docs/components/inputs/about/
 
 ---
 
@@ -250,9 +245,7 @@ pipeline:
             - mapping: root = deleted()
 ```
 
-(See the [docs][switch-docs] for details about the `switch` processor.)
-
-[switch-docs]: https://warpstreamlabs.github.io/bento/docs/components/processors/switch/
+(See the [docs][bento-switch] for details about the `switch` processor.)
 
 ---
 
@@ -292,8 +285,6 @@ pipeline:
 Option 1: `bento create redis_list//http_server`
 
 Option 2: [read the docs][output-http-server]
-
-[output-http-server]: https://warpstreamlabs.github.io/bento/docs/components/outputs/http_server
 
 ---
 
@@ -359,8 +350,6 @@ It's also possible to batch, stream...
 
 - Finally, we'll configure an [enrichment workflow][enrichment] in Bento
 
-[enrichment]: https://warpstreamlabs.github.io/bento/cookbooks/enrichments/
-
 ---
 
 ## Test our prompt
@@ -408,8 +397,6 @@ We need to set up:
 - an `http` processor to submit the request to Ollama
 
 - a `result_map` to transform the Ollama response
-
-[enrichment]: https://warpstreamlabs.github.io/bento/cookbooks/enrichments/
 
 ---
 
@@ -578,15 +565,11 @@ Post "http://ollama...": context deadline exceeded
 
 How should we address errors?
 
-- Option 1: increase the timeout in the [http][doc-http] processor
+- Option 1: increase the timeout in the [http][bento-http] processor
 
-- Option 2: use a [retry][doc-retry] processor in the pipeline
+- Option 2: use a [retry][bento-retry] processor in the pipeline
 
-- Option 3: use a [reject_errored][doc-reject] output
-
-[doc-http]: https://warpstreamlabs.github.io/bento/docs/components/processors/http/
-[doc-retry]: https://warpstreamlabs.github.io/bento/docs/components/processors/retry
-[doc-reject]: https://warpstreamlabs.github.io/bento/docs/components/outputs/reject_errored
+- Option 3: use a [reject_errored][bento-reject] output
 
 ---
 
@@ -627,4 +610,14 @@ class: title
   → you probably have a bunch of container restarts, due to out-of-memory errors
 
 🤔 What's that about?
+
+[bento-http]: https://warpstreamlabs.github.io/bento/docs/components/processors/http/
+[bento-inputs]: https://warpstreamlabs.github.io/bento/docs/components/inputs/about/
+[bento-reject]: https://warpstreamlabs.github.io/bento/docs/components/outputs/reject_errored
+[bento-retry]: https://warpstreamlabs.github.io/bento/docs/components/processors/retry
+[bento-switch]: https://warpstreamlabs.github.io/bento/docs/components/processors/switch/
+[enrichment]: https://warpstreamlabs.github.io/bento/cookbooks/enrichments/
+[output-http-server]: https://warpstreamlabs.github.io/bento/docs/components/outputs/http_server
+[redpanda-acquires-benthos]: https://www.redpanda.com/press/redpanda-acquires-benthos
+[warpstream-forks-benthos]: https://www.warpstream.com/blog/announcing-bento-the-open-source-fork-of-the-project-formerly-known-as-benthos
 

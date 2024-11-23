@@ -158,8 +158,6 @@
 
 - Let's see the specific details for each of them!
 
-[grpc]: https://grpc.github.io/grpc/core/md_doc_health-checking.html
-
 ---
 
 ## `httpGet`
@@ -295,8 +293,6 @@ class: extra-details
 - Available in beta since Kubernetes 1.24
 
 - Leverages standard [GRPC Health Checking Protocol][grpc]
-
-[grpc]: https://grpc.github.io/grpc/core/md_doc_health-checking.html
 
 ---
 
@@ -513,7 +509,10 @@ class: extra-details
 
 - Sometimes it can also make sense to embed a web server in the worker
 
+[grpc]: https://grpc.github.io/grpc/core/md_doc_health-checking.html
+
 ???
 
 :EN:- Using healthchecks to improve availability
 :FR:- Utiliser des *healthchecks* pour améliorer la disponibilité
+

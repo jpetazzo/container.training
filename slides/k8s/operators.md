@@ -40,7 +40,7 @@ using Kubernetes manifests and tooling.*
 
 - etc.
 
-[ArgoCD]: https://github.com/argoproj/argo-cd
+[ArgoCD]: https://argoproj.github.io/cd/
 [AWS]: https://aws-controllers-k8s.github.io/community/docs/community/services/
 [cert-manager]: https://cert-manager.io/
 [External Secrets Operator]: https://external-secrets.io/

@@ -245,9 +245,9 @@
 
   - command-line flags
 
-- Precedence of the different methods is defined in the [docs]
+- Precedence of the different methods is defined in the [docs][data-values-merge-order]
 
-[docs]: https://carvel.dev/ytt/docs/v0.41.0/ytt-data-values/#data-values-merge-order
+[data-values-merge-order]: https://carvel.dev/ytt/docs/v0.41.0/ytt-data-values/#data-values-merge-order
 
 ---
 
@@ -462,13 +462,13 @@ spec:
 
 - By default, `#@overlay/match` must find *exactly* one match
 
-  (that can be changed by specifying `expects=...`, `missing_ok=True`... see [docs])
+  (that can be changed by specifying `expects=...`, `missing_ok=True`... see [docs][docs-ytt-overlaymatch])
 
 - By default, the specified fields (here, `spec.replicas`) must exist
 
   (that can also be changed by annotating the optional fields)
 
-[docs]: https://carvel.dev/ytt/docs/v0.41.0/lang-ref-ytt-overlay/#overlaymatch
+[docs-ytt-overlaymatch]: https://carvel.dev/ytt/docs/v0.41.0/lang-ref-ytt-overlay/#overlaymatch
 
 ---
 
@@ -573,7 +573,7 @@ metadata:
 
 ## Overlays vs data values
 
-- The documentation has a [detailed discussion][docs] about this question
+- The documentation has a [detailed discussion][data-values-vs-overlays] about this question
 
 - In short:
 
@@ -587,7 +587,7 @@ metadata:
 
   (keeping in mind that overlays are harder to write/understand/maintain)
 
-[docs]: https://carvel.dev/ytt/docs/v0.41.0/data-values-vs-overlays/
+[data-values-vs-overlays]: https://carvel.dev/ytt/docs/v0.41.0/data-values-vs-overlays/
 
 ---
 

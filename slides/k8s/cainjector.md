@@ -55,6 +55,7 @@
 
   `cert-manager.io/allow-direct-injection: "true"`
 
-- See [cert-manager documentation][docs] for details
+- See [cert-manager documentation] for details
 
-[docs]: https://cert-manager.io/docs/concepts/ca-injector/
+[cert-manager documentation]: https://cert-manager.io/docs/concepts/ca-injector/
+

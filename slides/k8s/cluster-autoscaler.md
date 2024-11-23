@@ -272,9 +272,9 @@ This can be overridden by setting the annotation:
 
 - Can express `minAvailable` or `maxUnavailable`
 
-- See [documentation] for details and examples
+- See [documentation][doc-pdb] for details and examples
 
-[documentation]: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+[doc-pdb]: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
 
 ---
 

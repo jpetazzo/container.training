@@ -40,7 +40,7 @@
 
 - In multi-stage builds, all stages can be built in parallel
 
-  (example: https://github.com/jpetazzo/shpod; [before] and [after])
+  (example: https://github.com/jpetazzo/shpod; [before][shpod-before-parallel] and [after][shpod-after-parallel])
 
 - Stages are built only when they are necessary
 
@@ -50,8 +50,8 @@
 
 - Files are cached in the builder
 
-[before]: https://github.com/jpetazzo/shpod/blob/c6efedad6d6c3dc3120dbc0ae0a6915f85862474/Dockerfile
-[after]: https://github.com/jpetazzo/shpod/blob/d20887bbd56b5fcae2d5d9b0ce06cae8887caabf/Dockerfile
+[shpod-before-parallel]: https://github.com/jpetazzo/shpod/blob/c6efedad6d6c3dc3120dbc0ae0a6915f85862474/Dockerfile
+[shpod-after-parallel]: https://github.com/jpetazzo/shpod/blob/d20887bbd56b5fcae2d5d9b0ce06cae8887caabf/Dockerfile
 
 ---
 
@@ -121,10 +121,10 @@ docker buildx build … \
 
 - Must not use binary downloads with hard-coded architectures!
 
-  (streamlining a Dockerfile for multi-arch: [before], [after])
+  (streamlining a Dockerfile for multi-arch: [before][shpod-before-multiarch], [after][shpod-after-multiarch])
 
-[before]: https://github.com/jpetazzo/shpod/blob/d20887bbd56b5fcae2d5d9b0ce06cae8887caabf/Dockerfile
-[after]: https://github.com/jpetazzo/shpod/blob/c50789e662417b34fea6f5e1d893721d66d265b7/Dockerfile
+[shpod-before-multiarch]: https://github.com/jpetazzo/shpod/blob/d20887bbd56b5fcae2d5d9b0ce06cae8887caabf/Dockerfile
+[shpod-after-multiarch]: https://github.com/jpetazzo/shpod/blob/c50789e662417b34fea6f5e1d893721d66d265b7/Dockerfile
 
 ---
 

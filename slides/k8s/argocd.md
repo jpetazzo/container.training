@@ -42,14 +42,11 @@ ArgoCD manages **applications** by **syncing** their **live state** with their *
 
 - It's OK to use local clusters (kind, minikube...)
 
-- We need to install the ArgoCD CLI ([packages], [binaries])
+- We need to install the ArgoCD CLI ([argocd-packages], [argocd-binaries])
 
 - **Highly recommended:** set up CLI completion!
 
 - Of course we'll need a Git service, too
-
-[packages]: https://argo-cd.readthedocs.io/en/stable/cli_installation/
-[binaries]: https://github.com/argoproj/argo-cd/releases/latest
 
 ---
 
@@ -57,7 +54,7 @@ ArgoCD manages **applications** by **syncing** their **live state** with their *
 
 - The easiest way is to use upstream YAML manifests
 
-- There is also a [Helm chart][argohelmchart] if we need more customization
+- There is also a [Helm chart][argocd-helmchart] if we need more customization
 
 .lab[
 
@@ -69,8 +66,6 @@ ArgoCD manages **applications** by **syncing** their **live state** with their *
   ```
 
 ]
-
-[argohelmchart]: https://artifacthub.io/packages/helm/argo/argocd-apps
 
 ---
 
@@ -137,8 +132,6 @@ ArgoCD manages **applications** by **syncing** their **live state** with their *
 
 - Let's have a look at ArgoCD architecture!
 
-[issue14167]: https://github.com/argoproj/argo-cd/issues/14167
-
 ---
 
 class: pic
@@ -196,8 +189,6 @@ It is responsible for invoking any user-defined hooks for lifecycle events (*Pre
 - You can fork [kubercoins] or create a new, empty repository
 
 - If you create a new, empty repository, add some manifests to it
-
-[kubercoins]: https://github.com/jpetazzo/kubercoins
 
 ---
 
@@ -267,8 +258,6 @@ It is responsible for invoking any user-defined hooks for lifecycle events (*Pre
 ]
 
 🤔 We're getting errors!
-
-[pollinginterval]: https://argo-cd.readthedocs.io/en/stable/faq/#how-often-does-argo-cd-check-for-changes-to-my-git-or-helm-repository
 
 ---
 
@@ -457,8 +446,6 @@ Then click on the "CREATE" button (top left).
 
 - Today we'll just turn on automated sync for the staging namespace
 
-[rollouts]: https://argoproj.github.io/rollouts/
-
 ---
 
 ## Enabling auto-sync
@@ -515,19 +502,13 @@ git push origin staging
 
 - Let's how to deploy Helm charts with ArgoCD!
 
-- In the [kubercoins] repository, there is a branch called [helm]
+- In the [kubercoins] repository, there is a branch called [helm-branch]
 
 - It provides a generic Helm chart, in the [generic-service] directory
 
 - There are service-specific values YAML files in the [values] directory
 
 - Let's create one application for each of the 5 components of our app!
-
-[cmp]: https://argo-cd.readthedocs.io/en/stable/operator-manual/config-management-plugins/
-[kubercoins]: https://github.com/jpetazzo/kubercoins
-[helm]: https://github.com/jpetazzo/kubercoins/tree/helm
-[generic-service]: https://github.com/jpetazzo/kubercoins/tree/helm/generic-service
-[values]: https://github.com/jpetazzo/kubercoins/tree/helm/values
 
 ---
 
@@ -579,10 +560,6 @@ git push origin staging
 
   (blue/green, canary...)
 
-[sso]: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sso
-[Dex]: https://github.com/dexidp/dex
-[rollouts]: https://argoproj.github.io/argo-rollouts/
-
 ---
 
 ## Acknowledgements
@@ -594,6 +571,20 @@ Guilhem Lettron
 for contributing an initial version and suggestions to this ArgoCD chapter.
 
 All remaining typos, mistakes, or approximations are mine (Jérôme Petazzoni). 
+
+[argocd-binaries]: https://github.com/argoproj/argo-cd/releases/latest
+[argocd-helmchart]: https://artifacthub.io/packages/helm/argo/argocd-apps
+[argocd-packages]: https://argo-cd.readthedocs.io/en/stable/cli_installation/
+[cmp]: https://argo-cd.readthedocs.io/en/stable/operator-manual/config-management-plugins/
+[Dex]: https://github.com/dexidp/dex
+[generic-service]: https://github.com/jpetazzo/kubercoins/tree/helm/generic-service
+[helm-branch]: https://github.com/jpetazzo/kubercoins/tree/helm
+[issue14167]: https://github.com/argoproj/argo-cd/issues/14167
+[kubercoins]: https://github.com/jpetazzo/kubercoins
+[pollinginterval]: https://argo-cd.readthedocs.io/en/stable/faq/#how-often-does-argo-cd-check-for-changes-to-my-git-or-helm-repository
+[rollouts]: https://argoproj.github.io/rollouts/
+[sso]: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sso
+[values]: https://github.com/jpetazzo/kubercoins/tree/helm/values
 
 ???
 
