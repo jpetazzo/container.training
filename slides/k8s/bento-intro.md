@@ -314,7 +314,7 @@ Or shall we see it right away?
 ```yaml
 input:
   redis_list:
-    url: redis://redis:6379
+    url: redis://redis:`6379`
     key: cities
 output:
   http_server:
@@ -324,6 +324,8 @@ output:
 This will set up an HTTP route to fetch *one* city.
 
 It's also possible to batch, stream...
+
+⚠️ As of November 2024, `bento create` uses port 6397 instead of 6379 for Redis!
 
 ---
 
