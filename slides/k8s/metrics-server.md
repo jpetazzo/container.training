@@ -195,4 +195,4 @@ class: extra-details
 :EN:- Installing metrics-server
 
 :EN:- Le *resource metrics pipeline*
-:FR:- Installtion de metrics-server
+:FR:- Installation de metrics-server

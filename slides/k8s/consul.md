@@ -225,4 +225,4 @@ consul agent -data-dir=/consul/data -client=0.0.0.0 -server -ui \
 :EN:- Scheduling pods together or separately
 :EN:- Example: deploying a Consul cluster
 :FR:- Lancer des pods ensemble ou séparément
-:FR:- Example : lancer un cluster Consul
+:FR:- Exemple : lancer un cluster Consul
