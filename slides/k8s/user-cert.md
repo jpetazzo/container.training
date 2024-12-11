@@ -77,7 +77,7 @@ This is the flag that we're looking for:
 
 - We only need to transfer the CSR (Certificate Signing Request) to the CA
 
-  (we never need to expoes the private key)
+  (we never need to expose the private key)
 
 .lab[
 
