@@ -403,7 +403,7 @@ class: extra-details
 
 - Enabled with annotation `service.kubernetes.io/topology-mode=Auto` 
 
-- Relies on node annotation `topology.kubernetes.io/zone`
+- Relies on node label `topology.kubernetes.io/zone`
 
 - Kubernetes service proxy will try to keep connections within a zone
 
