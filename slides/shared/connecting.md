@@ -60,7 +60,7 @@ class: in-person
 ## Doing or re-doing the workshop on your own?
 
 - Use something like
-  [Play-With-Docker](http://play-with-docker.com/) or
+  [Play-With-Docker](https://labs.play-with-docker.com/) or
   [Play-With-Kubernetes](https://training.play-with-kubernetes.com/)
 
   Zero setup effort; but environment are short-lived and
@@ -103,13 +103,13 @@ class: self-paced
 
 .lab[
 
-- Go to http://www.play-with-docker.com/
+- Go to https://labs.play-with-docker.com/
 
 - Log in
 
 - Create your first node
 
-<!-- ```open http://www.play-with-docker.com/``` -->
+<!-- ```open https://labs.play-with-docker.com/``` -->
 
 ]
 

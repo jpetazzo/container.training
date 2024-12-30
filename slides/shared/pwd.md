@@ -1,6 +1,6 @@
 ## Using Play-With-Docker
 
-- Open a new browser tab to [www.play-with-docker.com](http://www.play-with-docker.com/)
+- Open a new browser tab to [labs.play-with-docker.com](https://labs.play-with-docker.com/)
 
 - Confirm that you're not a robot
 
