@@ -49,6 +49,41 @@ _cmd_clean() {
 	done	
 }
 
+_cmd codeserver "Install code-server on the clusters"
+_cmd_codeserver() {
+    TAG=$1
+    need_tag
+
+    ARCH=${ARCHITECTURE-amd64}
+    CODESERVER_VERSION=4.96.2
+    CODESERVER_URL=https://github.com/coder/code-server/releases/download/v${CODESERVER_VERSION}/code-server-${CODESERVER_VERSION}-linux-${ARCH}.tar.gz
+    pssh "
+    set -e
+    i_am_first_node || exit
+    if ! [ -x /usr/local/bin/code-server ]; then
+        curl -fsSL $CODESERVER_URL | sudo tar zx -C /opt
+        sudo ln -s /opt/code-server-${CODESERVER_VERSION}-linux-${ARCH}/bin/code-server /usr/local/bin/code-server
+        sudo -u $USER_LOGIN -H code-server --install-extension ms-azuretools.vscode-docker
+        sudo -u $USER_LOGIN -H code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools
+        sudo -u $USER_LOGIN -H mkdir -p /home/$USER_LOGIN/.local/share/code-server/User
+        echo '{\"workbench.startupEditor\": \"terminal\"}' | sudo -u $USER_LOGIN tee /home/$USER_LOGIN/.local/share/code-server/User/settings.json
+        sudo -u $USER_LOGIN mkdir -p /home/$USER_LOGIN/.config/systemd/user
+        sudo -u $USER_LOGIN tee /home/$USER_LOGIN/.config/systemd/user/code-server.service <<EOF
+[Unit]
+Description=code-server
+
+[Install]
+WantedBy=default.target
+
+[Service]
+ExecStart=/usr/local/bin/code-server --bind-addr 0:1789
+Restart=always
+EOF
+        sudo systemctl --user -M $USER_LOGIN@ enable code-server.service --now
+        sudo loginctl enable-linger $USER_LOGIN
+    fi"
+}
+
 _cmd createuser "Create the user that students will use"
 _cmd_createuser() {
     TAG=$1
@@ -1120,7 +1155,7 @@ _cmd_tools() {
 
     pssh "
     sudo apt-get -q update
-    sudo apt-get -qy install apache2-utils emacs-nox git httping htop jid joe jq mosh python-setuptools tree unzip
+    sudo apt-get -qy install apache2-utils argon2 emacs-nox git httping htop jid joe jq mosh python-setuptools tree unzip
     # This is for VMs with broken PRNG (symptom: running docker-compose randomly hangs)
     sudo apt-get -qy install haveged
     "
@@ -1260,7 +1295,13 @@ _cmd_passwords() {
     $0 ips "$TAG" | paste "$PASSWORDS_FILE" - | while read password nodes; do
         info "Setting password for $nodes..."
         for node in $nodes; do
-            echo $USER_LOGIN:$password | ssh $SSHOPTS -i tags/$TAG/id_rsa ubuntu@$node sudo chpasswd
+            echo $USER_LOGIN $password | ssh $SSHOPTS -i tags/$TAG/id_rsa ubuntu@$node '
+                read login password
+                echo $login:$password | sudo chpasswd
+                hashedpassword=$(echo -n $password | argon2 saltysalt$RANDOM -e)
+                sudo -u $login mkdir -p /home/$login/.config/code-server
+                echo "hashed-password: \"$hashedpassword\"" | sudo -u $login tee /home/$login/.config/code-server/config.yaml >/dev/null
+                '
         done
     done
     info "Done."
