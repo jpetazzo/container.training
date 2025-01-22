@@ -32,7 +32,7 @@ Compose enables a simple, powerful onboarding workflow:
 
 1. Checkout our code.
 
-2. Run `docker-compose up`.
+2. Run `docker compose up`.
 
 3. Our app is up and running!
 
@@ -66,19 +66,19 @@ class: pic
 
 1. Write Dockerfiles
 
-2. Describe our stack of containers in a YAML file called `docker-compose.yml`
+2. Describe our stack of containers in a YAML file (the "Compose file")
 
-3. `docker-compose up` (or `docker-compose up -d` to run in the background)
+3. `docker compose up` (or `docker compose up -d` to run in the background)
 
 4. Compose pulls and builds the required images, and starts the containers
 
 5. Compose shows the combined logs of all the containers
 
-   (if running in the background, use `docker-compose logs`)
+   (if running in the background, use `docker compose logs`)
 
 6. Hit Ctrl-C to stop the whole stack
 
-   (if running in the background, use `docker-compose stop`)
+   (if running in the background, use `docker compose stop`)
 
 ---
 
@@ -86,11 +86,11 @@ class: pic
 
 After making changes to our source code, we can:
 
-1. `docker-compose build` to rebuild container images
+1. `docker compose build` to rebuild container images
 
-2. `docker-compose up` to restart the stack with the new images
+2. `docker compose up` to restart the stack with the new images
 
-We can also combine both with `docker-compose up --build`
+We can also combine both with `docker compose up --build`
 
 Compose will be smart, and only recreate the containers that have changed.
 
@@ -114,7 +114,7 @@ cd trainingwheels
 Second step: start the app.
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 Watch Compose build and run the app.
@@ -141,7 +141,17 @@ After ten seconds (or if we press `^C` again) it will forcibly kill them.
 
 ---
 
-## The `docker-compose.yml` file
+## The Compose file
+
+* Historically: docker-compose.yml or .yaml
+
+* Recently (kind of): can also be named compose.yml or .yaml
+
+(Since [version 1.28.6, March 2021](https://docs.docker.com/compose/releases/release-notes/#1286))
+
+---
+
+## Example
 
 Here is the file used in the demo:
 
@@ -172,9 +182,9 @@ services:
 
 A Compose file has multiple sections:
 
-* `version` is mandatory. (Typically use "3".)
-
 * `services` is mandatory. Each service corresponds to a container.
+
+* `version` is optional (it used to be mandatory). It can be ignored.
 
 * `networks` is optional and indicates to which networks containers should be connected.
   <br/>(By default, containers will be connected on a private, per-compose-file network.)
@@ -183,24 +193,24 @@ A Compose file has multiple sections:
 
 ---
 
+class: extra-details
+
 ## Compose file versions
 
 * Version 1 is legacy and shouldn't be used.
 
-  (If you see a Compose file without `version` and `services`, it's a legacy v1 file.)
+  (If you see a Compose file without a `services` block, it's a legacy v1 file.)
 
 * Version 2 added support for networks and volumes.
 
 * Version 3 added support for deployment options (scaling, rolling updates, etc).
-
-* Typically use `version: "3"`.
 
 The [Docker documentation](https://docs.docker.com/compose/compose-file/)
 has excellent information about the Compose file format if you need to know more about versions.
 
 ---
 
-## Containers in `docker-compose.yml`
+## Containers in Compose file
 
 Each service in the YAML file must contain either `build`, or `image`.
 
@@ -278,7 +288,7 @@ For the full list, check: https://docs.docker.com/compose/compose-file/
 
   `frontcopy_www`, `frontcopy_www_1`, `frontcopy_db_1`
 
-- Alternatively, use `docker-compose -p frontcopy` 
+- Alternatively, use `docker compose -p frontcopy` 
 
   (to set the `--project-name` of a stack, which default to the dir name)
 
@@ -288,10 +298,10 @@ For the full list, check: https://docs.docker.com/compose/compose-file/
 
 ## Checking stack status
 
-We have `ps`, `docker ps`, and similarly, `docker-compose ps`:
+We have `ps`, `docker ps`, and similarly, `docker compose ps`:
 
 ```bash
-$ docker-compose ps
+$ docker compose ps
 Name                      Command             State           Ports          
 ----------------------------------------------------------------------------
 trainingwheels_redis_1   /entrypoint.sh red   Up      6379/tcp               
@@ -310,13 +320,13 @@ If you have started your application in the background with Compose and
 want to stop it easily, you can use the `kill` command:
 
 ```bash
-$ docker-compose kill
+$ docker compose kill
 ```
 
-Likewise, `docker-compose rm` will let you remove containers (after confirmation):
+Likewise, `docker compose rm` will let you remove containers (after confirmation):
 
 ```bash
-$ docker-compose rm
+$ docker compose rm
 Going to remove trainingwheels_redis_1, trainingwheels_www_1
 Are you sure? [yN] y
 Removing trainingwheels_redis_1...
@@ -327,19 +337,19 @@ Removing trainingwheels_www_1...
 
 ## Cleaning up (2)
 
-Alternatively, `docker-compose down` will stop and remove containers.
+Alternatively, `docker compose down` will stop and remove containers.
 
 It will also remove other resources, like networks that were created for the application.
 
 ```bash
-$ docker-compose down
+$ docker compose down
 Stopping trainingwheels_www_1 ... done
 Stopping trainingwheels_redis_1 ... done
 Removing trainingwheels_www_1 ... done
 Removing trainingwheels_redis_1 ... done
 ```
 
-Use `docker-compose down -v` to remove everything including volumes.
+Use `docker compose down -v` to remove everything including volumes.
 
 ---
 
@@ -369,15 +379,15 @@ Use `docker-compose down -v` to remove everything including volumes.
 
 - If the container is deleted, the volume gets orphaned
 
-- Example: `docker-compose down && docker-compose up`
+- Example: `docker compose down && docker compose up`
 
   - the old volume still exists, detached from its container
 
   - a new volume gets created
 
-- `docker-compose down -v`/`--volumes` deletes volumes
+- `docker compose down -v`/`--volumes` deletes volumes
 
-  (but **not** `docker-compose down && docker-compose down -v`!)
+  (but **not** `docker compose down && docker compose down -v`!)
  
 ---
 
@@ -396,9 +406,9 @@ volumes:
 
 - Volume will be named `<project>_data`
 
-- It won't be orphaned with `docker-compose down`
+- It won't be orphaned with `docker compose down`
 
-- It will correctly be removed with `docker-compose down -v`
+- It will correctly be removed with `docker compose down -v`
 
 ---
 
@@ -417,7 +427,7 @@ services:
 
   (for migration, backups, disk usage accounting...)
 
-- Won't be removed by `docker-compose down -v`
+- Won't be removed by `docker compose down -v`
 
 ---
 
@@ -451,7 +461,7 @@ services:
 
 - This is used when bringing up individual services
 
-  (e.g. `docker-compose up blah` or `docker-compose run foo`)
+  (e.g. `docker compose up blah` or `docker compose run foo`)
 
 ⚠️ It doesn't make a service "wait" for another one to be up!
 
@@ -471,7 +481,9 @@ class: extra-details
 
   - `docker compose` command to deploy Compose stacks to some clouds
 
-  - progressively getting feature parity with `docker-compose`
+  - in Go instead of Python
+
+  - progressively getting feature parity with `docker compose`
 
   - also provides numerous improvements (e.g. leverages BuildKit by default)
 
