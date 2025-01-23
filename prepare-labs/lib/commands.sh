@@ -1154,8 +1154,9 @@ _cmd_tools() {
     need_tag
 
     pssh "
+    set -e
     sudo apt-get -q update
-    sudo apt-get -qy install apache2-utils argon2 emacs-nox git httping htop jid joe jq mosh python-setuptools tree unzip
+    sudo apt-get -qy install apache2-utils argon2 emacs-nox git httping htop jid joe jq mosh tree unzip
     # This is for VMs with broken PRNG (symptom: running docker-compose randomly hangs)
     sudo apt-get -qy install haveged
     "
