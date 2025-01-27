@@ -59,7 +59,7 @@ _cmd_codeserver() {
     CODESERVER_URL=https://github.com/coder/code-server/releases/download/v${CODESERVER_VERSION}/code-server-${CODESERVER_VERSION}-linux-${ARCH}.tar.gz
     pssh "
     set -e
-    i_am_first_node || exit
+    i_am_first_node || exit 0
     if ! [ -x /usr/local/bin/code-server ]; then
         curl -fsSL $CODESERVER_URL | sudo tar zx -C /opt
         sudo ln -s /opt/code-server-${CODESERVER_VERSION}-linux-${ARCH}/bin/code-server /usr/local/bin/code-server
