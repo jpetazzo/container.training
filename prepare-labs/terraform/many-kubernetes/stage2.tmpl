@@ -14,6 +14,20 @@ provider "kubernetes" {
   config_path = "./kubeconfig.${index}"
 }
 
+provider "helm" {
+  alias = "cluster_${index}"
+  kubernetes {
+    config_path = "./kubeconfig.${index}"
+  }
+}
+
+# Password used for SSH and code-server access
+resource "random_string" "shpod_${index}" {
+  length  = 6
+  special = false
+  upper   = false
+}
+
 resource "kubernetes_namespace" "shpod_${index}" {
   provider = kubernetes.cluster_${index}
   metadata {
@@ -21,120 +35,57 @@ resource "kubernetes_namespace" "shpod_${index}" {
   }
 }
 
-resource "kubernetes_deployment" "shpod_${index}" {
+data "kubernetes_service" "shpod_${index}" {
+  depends_on = [ helm_release.shpod_${index} ]
   provider = kubernetes.cluster_${index}
   metadata {
     name = "shpod"
-    namespace = kubernetes_namespace.shpod_${index}.metadata.0.name
-  }
-  spec {
-    selector {
-      match_labels = {
-        app = "shpod"
-      }
-    }
-    template {
-      metadata {
-        labels = {
-          app = "shpod"
-        }
-      }
-      spec {
-        service_account_name = "shpod"
-        container {
-          image = "jpetazzo/shpod"
-          name = "shpod"
-          env {
-            name = "PASSWORD"
-            value = random_string.shpod_${index}.result
-          }
-          lifecycle {
-            post_start {
-              exec {
-                command = [ "sh", "-c", "curl http://myip.enix.org/REMOTE_ADDR > /etc/HOSTIP || true" ]
-              }
-            }
-          }
-          resources {
-            limits = {
-              cpu    = "2"
-              memory = "500M"
-            }
-            requests = {
-              cpu    = "100m"
-              memory = "250M"
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-resource "kubernetes_service" "shpod_${index}" {
-  provider = kubernetes.cluster_${index}
-  lifecycle {
-    # Folks might alter their shpod Service to expose extra ports.
-    # Don't reset their changes.
-    ignore_changes = [ spec ]
-  }
-  metadata {
-    name = "shpod"
-    namespace = kubernetes_namespace.shpod_${index}.metadata.0.name
-  }
-  spec {
-    selector = {
-      app = "shpod"
-    }
-    port {
-      name = "ssh"
-      port = 22
-      target_port = 22
-    }
-    type = "NodePort"
-  }
-}
-
-resource "kubernetes_service_account" "shpod_${index}" {
-  provider = kubernetes.cluster_${index}
-  metadata {
-    name = "shpod"
-    namespace = kubernetes_namespace.shpod_${index}.metadata.0.name
-  }
-}
-
-resource "kubernetes_cluster_role_binding" "shpod_${index}" {
-  provider = kubernetes.cluster_${index}
-  metadata {
-    name = "shpod"
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "cluster-admin"
-  }
-  subject {
-    kind      = "ServiceAccount"
-    name      = "shpod"
     namespace = "shpod"
   }
-  subject {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "Group"
-    name      = "shpod-cluster-admins"
+}
+
+resource "helm_release" "shpod_${index}" {
+  provider = helm.cluster_${index}
+  repository = "https://shpod.in"
+  chart = "shpod"
+  name = "shpod"
+  namespace = "shpod"
+  create_namespace = false
+  set {
+    name = "service.type"
+    value = "NodePort"
   }
-}
-
-resource "random_string" "shpod_${index}" {
-  length  = 6
-  special = false
-  upper   = false
-}
-
-provider "helm" {
-  alias = "cluster_${index}"
-  kubernetes {
-    config_path = "./kubeconfig.${index}"
+  set {
+    name = "resources.requests.cpu"
+    value = "100m"
+  }
+  set {
+    name = "resources.requests.memory"
+    value = "500M"
+  }
+  set {
+    name = "resources.limits.cpu"
+    value = "1"
+  }
+  set {
+    name = "resources.limits.memory"
+    value = "1000M"
+  }
+  set {
+    name = "persistentVolume.enabled"
+    value = "true"
+  }
+  set {
+    name = "ssh.password"
+    value = random_string.shpod_${index}.result
+  }
+  set {
+    name = "rbac.cluster.clusterRoles"
+    value = "{cluster-admin}"
+  }
+  set {
+    name = "codeServer.enabled"
+    value = "true"
   }
 }
 
@@ -234,7 +185,8 @@ output "logins_jsonl" {
     jsonencode({
       login = "k8s",
       password = random_string.shpod_${index}.result,
-      port = kubernetes_service.shpod_${index}.spec[0].port[0].node_port,
+      port = data.kubernetes_service.shpod_${index}.spec[0].port[0].node_port,
+      codeServerPort = data.kubernetes_service.shpod_${index}.spec[0].port[1].node_port,
       ipaddrs = replace(file("./externalips.${index}"), " ", "\t"),
     }),
   %{ endfor ~}

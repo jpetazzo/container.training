@@ -983,7 +983,7 @@ _cmd_logins() {
     need_tag $TAG
 
     cat tags/$TAG/logins.jsonl \
-    | jq -r '"\(.password)\tssh -l \(.login)\(if .port then " -p \(.port)" else "" end)\t\(.ipaddrs)"'
+    | jq -r '"\(if .codeServerPort then "\(.codeServerPort)\t" else "" end )\(.password)\tssh -l \(.login)\(if .port then " -p \(.port)" else "" end)\t\(.ipaddrs)"'
 }
 
 _cmd maketag "Generate a quasi-unique tag for a group of instances"
