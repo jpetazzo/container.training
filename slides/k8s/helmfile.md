@@ -148,6 +148,7 @@ As seen in [this example](https://github.com/jpetazzo/beyond-load-balancers/blob
   (this particular section could be improved by using Bento `${...}`)
 
 [vals]: https://github.com/helmfile/vals
+
 ---
 
 ## 🏗️ Let's build something!
