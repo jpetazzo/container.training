@@ -20,6 +20,45 @@ This is (approximately) what we're going to do:
 
 ---
 
+## Resource graph
+
+<pre class="mermaid">
+flowchart TD
+H/D["charts/dockercoins<br/>(Helm chart)"]
+H/C["charts/color<br/>(Helm chart)"]
+
+A/D["apps/dockercoins/flux.yaml<br/>(HelmRelease)"]
+A/B["apps/blue/flux.yaml<br/>(HelmRelease)"]
+A/G["apps/green/flux.yaml<br/>(HelmRelease)"]
+A/CM["apps/cert-manager/flux.yaml<br/>(HelmRelease)"]
+A/P["apps/kube-prometheus-stack/flux.yaml<br/>(HelmRelease + Kustomization)"]
+A/T["traefik/flux.yaml<br/>(HelmRelease)"]
+
+C/D["clusters/dev/kustomization.yaml<br/>(Kustomization)"]
+C/P["clusters/prod/kustomization.yaml<br/>(Kustomization)"]
+
+C/D --> A/B
+C/D --> A/D
+C/D --> A/G
+
+C/P --> A/D
+C/P --> A/G
+C/P --> A/T
+C/P --> A/CM
+C/P --> A/P
+
+A/D --> H/D
+A/B --> H/C
+A/G --> H/C
+A/P --> CHARTS & PV["apps/kube-prometheus-stack/manifests/configmap.yaml<br/>(Helm values)"]
+A/CM --> CHARTS
+A/T --> CHARTS
+
+CHARTS["Charts on external repos"]
+</pre>
+
+---
+
 ## Getting ready
 
 - Let's make sure we have two clusters
@@ -259,8 +298,8 @@ class: extra-details
 
 - Put application manifests in their directory:
   ```bash
-  mkdir -p apps/dockercoins
-  cp ~/container.training/k8s/dockercoins.yaml apps/dockercoins/
+  mkdir -p apps/dockercoins/manifests
+  cp ~/container.training/k8s/dockercoins.yaml apps/dockercoins/manifests
   ```
 
 - Create kustomization manifest:
@@ -426,6 +465,10 @@ class: extra-details
 - Referencing an existing ConfigMap or Secret with a `values.yaml` key:
 
   `flux create helmrelease ... --values-from=ConfigMap/myapp`
+
+- The ConfigMap or Secret must be in the same Namespace as the HelmRelease
+
+  (not the target namespace of that HelmRelease!)
 
 ---
 
