@@ -56,6 +56,7 @@ locals {
       cluster_name = format("%s-%03d", var.tag, cn[0])
       node_name    = format("%s-%03d-%03d", var.tag, cn[0], cn[1])
       node_size    = lookup(var.node_sizes, var.node_size, var.node_size)
+      node_index   = cn[0] * var.nodes_per_cluster + cn[1]
     }
   }
 }

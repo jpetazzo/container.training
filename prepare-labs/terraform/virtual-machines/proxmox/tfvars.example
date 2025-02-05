@@ -1,0 +1,14 @@
+# If you want to deploy to Proxmox, you need to:
+# 1) copy that file to e.g. myproxmoxcluster.tfvars
+# 2) make sure you have a VM template with QEMU agent pre-installed
+# 3) customize the copy (you need to replace all the CHANGEME values)
+# 4) deploy with "labctl create --provider proxmox/myproxmoxcluster  ..."
+
+proxmox_endpoint = "https://localhost:8006/"
+proxmox_username = "terraform@pve"
+proxmox_password = "CHANGEME"
+
+proxmox_template_node_name = "CHANGEME"
+proxmox_template_vm_id = CHANGEME
+
+

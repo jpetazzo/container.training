@@ -1,0 +1,1 @@
+../../providers/proxmox/variables.tf

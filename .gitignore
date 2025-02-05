@@ -9,6 +9,7 @@ prepare-labs/terraform/many-kubernetes/one-kubernetes-config/config.tf
 prepare-labs/terraform/many-kubernetes/one-kubernetes-module/*.tf
 prepare-labs/terraform/tags
 prepare-labs/terraform/virtual-machines/openstack/*.tfvars
+prepare-labs/terraform/virtual-machines/proxmox/*.tfvars
 prepare-labs/www
 
 slides/*.yml.html
