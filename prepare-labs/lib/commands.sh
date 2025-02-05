@@ -297,20 +297,9 @@ _cmd_create() {
         if [ "$CLUSTERSIZE" ]; then
             echo nodes_per_cluster = $CLUSTERSIZE >> terraform.tfvars
         fi
-        for RETRY in 1 2 3; do
-            if terraform apply -auto-approve; then
-                touch terraform.ok
-                break
-            fi
-        done
-        if ! [ -f terraform.ok ]; then
-            die "Terraform failed."
-        fi
     )
 
     sep
-    info "Successfully created $COUNT instances with tag $TAG"
-    echo create_ok > tags/$TAG/status
 
     # If the settings.env file has a "STEPS" field,
     # automatically execute all the actions listed in that field.
@@ -627,7 +616,9 @@ EOF
     # Install weave as the pod network
     pssh "
     if i_am_first_node; then
-        kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s-1.11.yaml
+        curl -fsSL https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s-1.11.yaml |
+        sed s,weaveworks/weave,quay.io/rackspace/weave, |
+        kubectl apply -f-
     fi"
 
     # FIXME this is a gross hack to add the deployment key to our SSH agent,
@@ -1148,6 +1139,26 @@ EOF
     pssh -I sudo tee /opt/tailhist/index.html <lib/tailhist.html
 }
 
+_cmd terraform "Apply Terraform configuration to provision resources."
+_cmd_terraform() {
+    TAG=$1
+    need_tag
+    echo terraforming > tags/$TAG/status
+    (
+        cd tags/$TAG
+        terraform apply -auto-approve
+        # The Terraform provider for Proxmox has a bug; sometimes it fails
+        # to obtain VM address from the QEMU agent. In that case, we put
+        # ERROR in the ips.txt file (instead of the VM IP address). Detect
+        # that so that we run Terraform again (this typically solves the issue).
+        if grep -q ERROR ips.txt; then
+          die "Couldn't obtain IP address of some machines. Try to re-run terraform."
+        fi
+    )
+    echo terraformed > tags/$TAG/status
+
+}
+
 _cmd tools "Install a bunch of useful tools (editors, git, jq...)"
 _cmd_tools() {
     TAG=$1
@@ -1334,6 +1345,11 @@ _cmd_wait() {
     pssh -l $SSH_USER "
     if [ -d /var/lib/cloud ]; then
         cloud-init status --wait
+        case $? in
+        0) exit 0;; # all is good
+        2) exit 0;; # recoverable error (happens with proxmox deprecated cloud-init payloads)
+        *) exit 1;; # all other problems
+        esac
     fi"
 }
 
