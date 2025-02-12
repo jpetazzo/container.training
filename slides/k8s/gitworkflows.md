@@ -55,7 +55,7 @@
 - We're going to talk mostly about "Kubernetes cluster centric" approaches here
 
 [ArgoCD]: https://argoproj.github.io/cd/
-[Flux]: https://fluxcd.io/
+[FluxCD]: https://fluxcd.io/
 
 ---
 
