@@ -76,7 +76,7 @@ Description=code-server
 WantedBy=default.target
 
 [Service]
-ExecStart=/usr/local/bin/code-server --bind-addr 0:1789
+ExecStart=/usr/local/bin/code-server --bind-addr [::]:1789
 Restart=always
 EOF
         sudo systemctl --user -M $USER_LOGIN@ enable code-server.service --now
