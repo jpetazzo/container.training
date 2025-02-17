@@ -8,6 +8,7 @@ resource "proxmox_virtual_environment_vm" "_" {
   node_name       = local.pve_nodes[each.value.node_index % length(local.pve_nodes)]
   for_each        = local.nodes
   name            = each.value.node_name
+  tags            = ["container.training", var.tag]
   stop_on_destroy = true
   cpu {
     cores = split(" ", each.value.node_size)[0]
@@ -26,6 +27,7 @@ resource "proxmox_virtual_environment_vm" "_" {
   clone {
     vm_id     = var.proxmox_template_vm_id
     node_name = var.proxmox_template_node_name
+    full      = false
   }
   agent {
     enabled = true
