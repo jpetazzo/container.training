@@ -55,7 +55,7 @@ _cmd_codeserver() {
     need_tag
 
     ARCH=${ARCHITECTURE-amd64}
-    CODESERVER_VERSION=4.96.2
+    CODESERVER_VERSION=4.96.4
     CODESERVER_URL=https://github.com/coder/code-server/releases/download/v${CODESERVER_VERSION}/code-server-${CODESERVER_VERSION}-linux-${ARCH}.tar.gz
     pssh "
     set -e
