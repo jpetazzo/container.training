@@ -8,6 +8,9 @@ proxmox_endpoint = "https://localhost:8006/"
 proxmox_username = "terraform@pve"
 proxmox_password = "CHANGEME"
 
+# Which storage to use for VM disks. Defaults to "local".
+#proxmox_storage = "ceph"
+
 proxmox_template_node_name = "CHANGEME"
 proxmox_template_vm_id = CHANGEME
 

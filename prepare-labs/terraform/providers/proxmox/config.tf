@@ -13,6 +13,11 @@ variable "proxmox_password" {
   default = null
 }
 
+variable "proxmox_storage" {
+  type    = string
+  default = "local"
+}
+
 variable "proxmox_template_node_name" {
   type    = string
   default = null

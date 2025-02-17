@@ -18,7 +18,7 @@ resource "proxmox_virtual_environment_vm" "_" {
     dedicated = split(" ", each.value.node_size)[1]
   }
   #disk {
-  #  datastore_id = "ceph"
+  #  datastore_id = var.proxmox_storage
   #  file_id = proxmox_virtual_environment_file._.id
   #  interface = "scsi0"
   #  size = 30
@@ -33,7 +33,7 @@ resource "proxmox_virtual_environment_vm" "_" {
     enabled = true
   }
   initialization {
-    datastore_id = "ceph"
+    datastore_id = var.proxmox_storage
     user_account {
       username = "ubuntu"
       keys     = [trimspace(tls_private_key.ssh.public_key_openssh)]
