@@ -183,49 +183,98 @@
 
 - But we also need to specify:
 
-  - an environment variable to specify that we want etcdctl v3
-
   - the address of the server to back up
 
   - the path to the key, certificate, and CA certificate
     <br/>(if our etcd uses TLS certificates)
 
+  - an environment variable to specify that we want etcdctl v3
+    <br/>(not necessary anymore with recent versions of etcd)
+
 ---
 
-## Snapshotting etcd on kubeadm
+## Snapshotting etcd on kubeadm 
 
-- The following command will work on clusters deployed with kubeadm
+- Here is a strategy that works on clusters deployed with kubeadm
 
   (and maybe others)
 
-- It should be executed on a master node
+- We're going to:
 
-```bash
-docker run --rm --net host -v $PWD:/vol \
-    -v /etc/kubernetes/pki/etcd:/etc/kubernetes/pki/etcd:ro \
-    -e ETCDCTL_API=3 k8s.gcr.io/etcd:3.3.10 \
-    etcdctl --endpoints=https://[127.0.0.1]:2379 \
-            --cacert=/etc/kubernetes/pki/etcd/ca.crt \
-            --cert=/etc/kubernetes/pki/etcd/healthcheck-client.crt \
-            --key=/etc/kubernetes/pki/etcd/healthcheck-client.key \
-            snapshot save /vol/snapshot
-```
+  - identify a node running the control plane
 
-- It will create a file named `snapshot` in the current directory
+  - identify the etcd image
+
+  - execute `etcdctl snapshot` in a *debug container*
+
+  - transfer the resulting snapshot with another *debug container*
 
 ---
 
-## How can we remember all these flags?
+## Finding an etcd node and image
 
-- Older versions of kubeadm did add a healthcheck probe with all these flags
+These commands let us retrieve the node and image automatically.
 
-- That healthcheck probe was calling `etcdctl` with all the right flags 
+.lab[
 
-- With recent versions of kubeadm, we're on our own!
+- Get the name of a control plane node:
+  ```bash
+  NODE=$(kubectl get nodes \
+           --selector=node-role.kubernetes.io/control-plane \
+           -o jsonpath={.items[0].metadata.name})
+  ```
 
-- Exercise: write the YAML for a batch job to perform the backup
+- Get the etcd image:
+  ```bash
+  IMAGE=$(kubectl get pods --namespace kube-system etcd-$NODE \
+            -o jsonpath={..containers[].image})
+  ```
 
-  (how will you access the key and certificate required to connect?)
+]
+
+---
+
+## Making a snapshot
+
+This relies on the fact that in a `node` debug pod:
+
+- the host filesystem is mounted in `/host`,
+- the debug pod is using the host's network.
+
+.lab[
+
+- Execute `etcdctl` in a debug pod:
+  ```bash
+    kubectl debug --attach --profile=general \
+      node/$NODE --image $IMAGE -- \
+      etcdctl --endpoints=https://[127.0.0.1]:2379 \
+              --cacert=/host/etc/kubernetes/pki/etcd/ca.crt \
+              --cert=/host/etc/kubernetes/pki/etcd/healthcheck-client.crt \
+              --key=/host/etc/kubernetes/pki/etcd/healthcheck-client.key \
+              snapshot save /host/tmp/snapshot
+  ```
+
+]
+
+---
+
+## Transfer the snapshot
+
+We're going to use base64 encoding to ensure that the snapshot
+doesn't get corrupted in transit.
+
+.lab[
+
+- Retrieve the snapshot:
+  ```bash
+    kubectl debug --attach --profile=general --quiet \
+      node/$NODE --image $IMAGE -- \
+      base64 /host/tmp/snapshot | base64 -d > snapshot
+  ```
+
+]
+
+We can now work with the `snapshot` file in the current directory!
 
 ---
 
@@ -252,8 +301,7 @@ docker run --rm --net host -v $PWD:/vol \
 1. Create a new data directory from the snapshot:
    ```bash
    sudo rm -rf /var/lib/etcd
-   docker run --rm -v /var/lib:/var/lib -v $PWD:/vol \
-          -e ETCDCTL_API=3 k8s.gcr.io/etcd:3.3.10 \
+   docker run --rm -v /var/lib:/var/lib -v $PWD:/vol $IMAGE \
           etcdctl snapshot restore /vol/snapshot --data-dir=/var/lib/etcd
    ```
 
@@ -278,6 +326,20 @@ docker run --rm --net host -v $PWD:/vol \
 - As a result, our pods might have to be recreated, too
 
 - If we have proper liveness checks, this should happen automatically
+
+---
+
+## Accessing etcd directly
+
+- Data in etcd is encoded in a binary format
+
+- We can retrieve the data with etcdctl, but it's hard to read
+
+- There is a tool to decode that data: `auger`
+
+- Check the [use cases][auger-use-cases] for an example of how to retrieve and modify etcd data!
+
+[auger-use-cases]: https://github.com/etcd-io/auger?tab=readme-ov-file#use-cases
 
 ---
 
