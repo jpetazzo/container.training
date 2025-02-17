@@ -50,7 +50,7 @@
 
 - It's not the only solution!
 
-  (see e.g. [Open Policy Agent](https://www.openpolicyagent.org/docs/v0.12.2/kubernetes-admission-control/))
+  (see e.g. [Open Policy Agent](https://www.openpolicyagent.org/docs/v0.12.2/kubernetes-admission-control/) or [Validating Admission Policies](https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/))
 
 ---
 
@@ -148,18 +148,22 @@
 
 ## Installing Kyverno
 
-- Kyverno can be installed with a (big) YAML manifest
+The recommended [installation method][install-kyverno] is to use Helm charts.
 
-- ... or with Helm charts (which allows to customize a few things)
+(It's also possible to install with a single YAML manifest.)
+
 
 .lab[
 
 - Install Kyverno:
   ```bash
-  kubectl create -f https://raw.githubusercontent.com/kyverno/kyverno/release-1.7/config/release/install.yaml
+    helm upgrade --install --repo https://kyverno.github.io/kyverno/ \
+      --namespace kyverno --create-namespace kyverno kyverno
   ```
 
 ]
+
+[install-kyverno]: https://kyverno.io/docs/installation/methods/
 
 ---
 
@@ -584,7 +588,7 @@ class: extra-details
 
 - See [Linking resources with ownerReferences][ownerref] for an example
 
-[ownerref]: https://kyverno.io/docs/writing-policies/generate/#linking-resources-with-ownerreferences
+[ownerref]: https://kyverno.io/docs/writing-policies/generate/#linking-trigger-with-downstream
 
 ---
 

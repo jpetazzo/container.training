@@ -3,7 +3,7 @@ kind: ClusterPolicy
 metadata:
   name: pod-color-policy-1
 spec:
-  validationFailureAction: enforce
+  validationFailureAction: Enforce
   rules:
   - name: ensure-pod-color-is-valid
     match:
