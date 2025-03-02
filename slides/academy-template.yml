@@ -1,0 +1,17 @@
+title: |
+  Kubernetes Academy
+
+#chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- in-person
+
+content:
+- $MD

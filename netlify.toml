@@ -1,4 +1,4 @@
 [build]
   base = "slides"
   publish = "slides"
-  command = "./build.sh once"
+  command = "./build.sh && ./academy-build.py > index.html"
