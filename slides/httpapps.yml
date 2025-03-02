@@ -1,0 +1,54 @@
+title: |
+  Exposing HTTP apps
+  on Kubernetes:
+  Services, Ingress Controllers,
+  and Gateway API
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://container.training/
+
+content:
+- |
+  ## What are we going to learn?
+
+  - Exposing HTTP apps on Kubernetes
+
+  - Recap on Kubernetes Services and networking model
+
+  - Ingress resources and controllers
+
+  - Gateway API
+
+  - Things that make Ingress and Gateway API better:
+
+    - ExternalDNS
+
+    - cert-manager
+
+    - Kyverno
+
+
+#- shared/about-slides.md
+- k8s/prereqs-advanced.md
+- shared/handson.md
+#- k8s/labs-live.md
+#- shared/connecting.md
+- k8s/labs-async.md
+- |
+  class: title
+  Let's get started!
+- shared/toc.md
+-
+  - k8s/demo-apps.md
+  - k8s/kubectlexpose.md
+  - k8s/service-types.md
+  - k8s/kubenet.md
+  - k8s/ingress.md
+  - k8s/ingress-setup.md
+  - k8s/ingress-advanced.md
+  - k8s/externaldns.md
+  - k8s/kyverno.md
+  - k8s/cert-manager.md
+  - k8s/gateway-api.md
+  - k8s/taints-and-tolerations.md

@@ -1,0 +1,42 @@
+title: "Kubernetes Academy"
+
+exclude:
+- self-paced
+
+content:
+- shared/toc.md
+-
+  - shared/codespaces.md
+  - k8s/concepts-k8s.md
+  - k8s/kubectlget.md
+  - k8s/kubectl-run.md
+  - k8s/deploymentslideshow.md
+  - k8s/kubectlexpose.md
+  - k8s/service-types.md
+  - k8s/accessinternal.md
+  - k8s/kubenet.md
+  - exercises/k8sfundamentals-details.md
+-
+  - k8s/declarative.md
+  - k8s/namespaces.md
+  - shared/yaml.md
+  - k8s/yamldeploy.md
+  - exercises/yaml-dockercoins-details.md
+-
+  - k8s/setup-devel.md
+  - k8s/k9s.md
+
+  - k8s/labels-annotations.md
+  - k8s/kubectl-logs.md
+  - k8s/logs-cli.md
+  - k8s/rollout.md
+  - k8s/healthchecks.md
+  - k8s/healthchecks-more.md
+  - k8s/volumes.md
+  - k8s/configuration.md
+  - k8s/secrets.md
+  - k8s/resource-limits.md
+  - k8s/batch-jobs.md
+  - k8s/ingress.md
+  - k8s/ingress-advanced.md
+  - k8s/gateway-api.md
