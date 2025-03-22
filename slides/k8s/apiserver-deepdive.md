@@ -35,7 +35,7 @@
 
 ## The chain of handlers
 
-- API requests go through a complex chain of filters ([src](https://github.com/kubernetes/apiserver/blob/release-1.19/pkg/server/config.go#L671))
+- API requests go through a complex chain of filters ([src](https://github.com/kubernetes/apiserver/blob/release-1.32/pkg/server/config.go#L1004))
 
   (note when reading that code: requests start at the bottom and go up)
 
