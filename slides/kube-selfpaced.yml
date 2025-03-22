@@ -149,6 +149,7 @@ content:
   - k8s/operators-design.md
   - k8s/operators-example.md
   - k8s/kubebuilder.md
+  - k8s/kuik.md
   - k8s/sealed-secrets.md
   - k8s/kyverno.md
   - k8s/eck.md
