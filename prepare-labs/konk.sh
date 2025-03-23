@@ -8,13 +8,13 @@
 
 set -e
 
-PROVIDER=scaleway
+PROVIDER=linode
 STUDENTS=30
 
 case "$PROVIDER" in
 linode)
   export TF_VAR_node_size=g6-standard-6
-  export TF_VAR_location=eu-west
+  export TF_VAR_location=us-east
   ;;
 scaleway)
   export TF_VAR_node_size=PRO2-XS
@@ -36,7 +36,7 @@ fi
 
 # set external_ip labels
 kubectl get nodes -o=jsonpath='{range .items[*]}{.metadata.name} {.status.addresses[?(@.type=="'$ADDRTYPE'")].address}{"\n"}{end}' |
-while read node address; do
+while read node address ignoredaddresses; do
   kubectl label node $node external_ip=$address
 done
 
