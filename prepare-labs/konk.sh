@@ -8,7 +8,7 @@
 
 set -e
 
-PROVIDER=linode
+PROVIDER=scaleway
 STUDENTS=30
 
 case "$PROVIDER" in
@@ -18,6 +18,8 @@ linode)
   ;;
 scaleway)
   export TF_VAR_node_size=PRO2-XS
+  # For tiny testing purposes, these are okay too:
+  #export TF_VAR_node_size=PLAY2-NANO
   export TF_VAR_location=fr-par-2
   ;;
 esac
