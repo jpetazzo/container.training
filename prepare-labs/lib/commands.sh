@@ -374,9 +374,13 @@ _cmd_clusterize() {
     done < /tmp/cluster
     "
 
-    while read line; do
-        printf '{"login": "%s", "password": "%s", "ipaddrs": "%s"}\n' "$USER_LOGIN" "$USER_PASSWORD" "$line"
-    done < tags/$TAG/clusters.tsv > tags/$TAG/logins.jsonl
+    jq --raw-input --compact-output \
+       --arg USER_LOGIN "$USER_LOGIN" --arg USER_PASSWORD "$USER_PASSWORD" '
+    {
+      "login": $USER_LOGIN,
+      "password": $USER_PASSWORD,
+      "ipaddrs": .
+    }' < tags/$TAG/clusters.tsv > tags/$TAG/logins.jsonl
 
     echo cluster_ok > tags/$TAG/status
 }
