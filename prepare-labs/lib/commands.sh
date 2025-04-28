@@ -1396,7 +1396,7 @@ WantedBy=multi-user.target
 
 [Service]
 WorkingDirectory=/opt/webssh
-ExecStart=/usr/bin/env python run.py --fbidhttp=false --port=1080 --policy=reject
+ExecStart=/usr/bin/env python3 run.py --fbidhttp=false --port=1080 --policy=reject
 User=nobody
 Group=nogroup
 Restart=always
