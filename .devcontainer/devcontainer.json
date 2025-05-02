@@ -1,0 +1,25 @@
+{
+        "name": "container.training environment to get started with Docker and/or Kubernetes",
+        "image": "jpetazzo/shpod",
+        "features": {
+                "ghcr.io/devcontainers/features/common-utils:2": {}
+        },
+
+        // Use 'forwardPorts' to make a list of ports inside the container available locally.
+        "forwardPorts": [],
+
+        //"postCreateCommand": "... install extra packages...",
+        "postStartCommand": "dind.sh",
+
+        // This would let us use "docker-outside-docker".
+        // But minikube, kind, etc. don't work very well that way, alas.
+        // So we're going to use "docker-in-docker" instead.
+        //"mounts": ["source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind"],
+
+        // Docker-in-docker.
+        "privileged": true,
+        "mounts": ["source=dind-var-lib-docker,target=/var/lib/docker,type=volume"],
+
+        // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+        "remoteUser": "k8s"
+}
