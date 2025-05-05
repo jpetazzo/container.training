@@ -1120,7 +1120,7 @@ _cmd_tailhist () {
     set -e
     sudo apt-get install unzip -y
     wget -c https://github.com/joewalnes/websocketd/releases/download/v0.3.0/websocketd-0.3.0-linux_$ARCH.zip
-    unzip websocketd-0.3.0-linux_$ARCH.zip websocketd
+    unzip -o websocketd-0.3.0-linux_$ARCH.zip websocketd
     sudo mv websocketd /usr/local/bin/websocketd
     sudo mkdir -p /opt/tailhist
     sudo tee /opt/tailhist.service <<EOF
