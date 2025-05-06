@@ -189,6 +189,18 @@ class: extra-details
 
   (https://codeberg.org/hjacobs/kube-resource-report)
 
+---
+
+## Going back to Grafana...
+
+- We installed kube-prometheus-stack earlier
+
+- Let's check Grafana again!
+
+- How much resource is Harbor using?
+
+- Can we compare the resource usage in Grafana vs `kubectl top pods`?
+
 ???
 
 :EN:- The resource metrics pipeline
