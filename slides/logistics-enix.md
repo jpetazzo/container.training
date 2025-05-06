@@ -2,17 +2,9 @@
 
 - Bonjour ! 
 
-- Sur scène : Jérôme ([@jpetazzo@hachyderm.io])
+- Sur scène : Jérôme ([@jpetazzo@hachyderm.io]) + Alexandre ([@alexbuisine])
 
-<!--
-- Sur scène lundi+mardi : Jérôme ([@jpetazzo@hachyderm.io])
-
-- Sur scène mercredi+jeudi : Ludovic
--->
-
-- En backstage : Alexandre, Antoine, Aurélien (x2), Baptiste, Benjamin, David, Hadrien, Kostas, Louis, Magalie, Nicolas, Paul, Sébastien, Thibault, Yoann...
-
-- Horaires : tous les jours de 9h à 13h
+- Horaires : de 9h à 13h
 
 - On fera une pause vers (environ) 11h
 
@@ -26,20 +18,6 @@
 [@jpetazzo@hachyderm.io]: https://hachyderm.io/@jpetazzo
 [@s0ulshake]: https://twitter.com/s0ulshake
 [Quantgene]: https://www.quantgene.com/
-
----
-
-## Les 15 minutes du matin
-
-- Chaque jour, on commencera à 9h par une mini-présentation de 15 minutes
-
-  (sur un sujet choisi ensemble, pas forcément en relation avec la formation!)
-
-- L'occasion de s'échauffer les neurones avec 🥐/☕️/🍊
-
-  (avant d'attaquer les choses sérieuses)
-
-- Puis à 9h15 on rentre dans le vif du sujet
 
 ---
 
@@ -59,18 +37,12 @@
 
 - On est là pour vous aider si vous bloquez sur un exercice !
 
-???
+---
 
 ## La hotline
 
-- Chaque après-midi : une heure de questions/réponses ouvertes !
+- Mercredi après-midi : une heure de questions/réponses ouvertes !
 
-  (sauf le dernier jour)
+- Horaire: 15h00-16h00
 
-- Mardi: 16h00-17h00
-
-- Mercredi: 15h30-16h30
-
-- Jeudi: 15h00-16h00
-
-- Sur Jitsi (lien "visioconf" sur le portail de formation)
+- Sur Teams (?)
