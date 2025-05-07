@@ -392,6 +392,18 @@ https://www.scaleway.com/en/pricing/)
 
 - ...
 
+---
+
+## Reminder...
+
+Managed Kubernetes ≠ managed hosting!
+
+- Running an app also involves system upgrades, supervision, on-call, backups...
+
+- "Managed hosting" means that the hosting provider takes care of it
+
+- In "managed Kubernetes", you are responsible for these tasks!
+
 ???
 
 :EN:- Installing a managed cluster

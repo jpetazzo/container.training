@@ -72,6 +72,107 @@
 
 ---
 
+## Managed ≠ managed
+
+- Managed Kubernetes ≠ managed hosting
+
+- Managed hosting typically means that the hosting provider takes care of:
+
+  - installation, upgrades, time-sensitive security patches, backups
+
+  - logging and metrics collection
+
+  - setting up supervision, alerts, and on-call rotation
+
+- Managed Kubernetes typically means that the hosting provider takes care of:
+
+  - installation
+
+  - maybe upgrades (kind of; you typically need to initiate/coordinate them)
+
+  - and that's it!
+
+---
+
+## "Managed" Kubernetes
+
+- "Managed Kubernetes" gives us the equivalent of a raw VM
+
+- We still need to add a lot of things to make it production-ready
+
+  (upgrades, logging, supervision...)
+
+- We also need some almost-essential components that don't always come out of the box
+
+  - ingress controller
+
+  - network policy controller
+
+  - storage class...
+
+📽️[How to make Kubernetes ryhme with production readiness](https://www.youtube.com/watch?v=6G4v-ZE6OHI
+)
+
+---
+
+## Observability
+
+- Logging, metrics, traces...
+
+- Pick a solution (self-hosted, as-a-service?)
+
+- Configure control plane, nodes, various components
+
+- Set up dashboards, track important metrics
+
+  (e.g. on AWS, track inter-AZ and external traffic per app to avoid $$$ surprises)
+
+- Set up supervision, on-call notifications, on-call rotation
+
+---
+
+## Backups
+
+- Full machine backups of the nodes?
+
+  (not very effective)
+
+- Backup of control plane data?
+
+  (important; it's not always possible to obtain etcd backups)
+
+- Backup of persistent volumes?
+
+  (good idea; but not always effective)
+
+- App-level backups, e.g. database dumps, log-shipping?
+
+  (more effective and reliable; more work depending on the app and database)
+
+---
+
+## Upgrades
+
+- Control plane
+
+  *typically automated by the provider; but might cause breakage*
+
+- Nodes
+
+  *best case scenario: can be done in-place; otherwise: requires provisioning new nodes*
+
+- Additional components (ingress controller, operators, etc.)
+
+  *depends wildly of the components!*
+
+---
+
+## It's dangerous to go alone!
+
+Don't hesitate to hire help before going to production with your first K8S app!
+
+---
+
 ## Node management
 
 - Most "Turnkey Solutions" offer fully managed control planes
@@ -138,7 +239,7 @@
 
 - There are too many options to list them all
 
-  (check [this page](https://kubernetes.io/partners/#conformance) for an overview!)
+  (check [this page](https://kubernetes.io/partners/#iframe-landscape-conformance) for an overview!)
 
 ---
 

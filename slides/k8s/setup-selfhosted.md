@@ -10,27 +10,37 @@
 
   (e.g. national security for states that don't have a suitable domestic cloud)
 
-- There are [countless](https://kubernetes.io/docs/setup/pick-right-solution/) distributions available
+- There are countless [distributions and installers][certified-kubernetes] available
 
 - We can't review them all
 
-- We're just going to explore a few options
+[certified-kubernetes]: https://kubernetes.io/partners/#iframe-landscape-conformance
 
 ---
 
-## [kops](https://github.com/kubernetes/kops)
+## Evolution over time
 
-- Deploys Kubernetes using cloud infrastructure
+- 2014 - early days; Kubernetes is installed manually
 
-  (supports AWS, GCE, Digital Ocean ...)
+- 2015 - CoreOS, Rancher
 
-- Leverages special cloud features when possible
+- 2016 - [kops](https://github.com/kubernetes/kops), kubeadm
 
-  (e.g. Auto Scaling Groups ...)
+- 2017 - Kubernetes the hard way, Docker Enterprise
+
+- 2018 - Crossplane, Cluster API, PKS
+
+- 2019 - k3s, Talos
+
+- 2021 - k0s, EKS anywhere
+
+Note: some of these dates might be approximative (should we count
+announcements, first commit, first release, release 1.0...), the
+goal is to get an overall idea of the evolution of the state of the art.
 
 ---
 
-## kubeadm
+## Example - kubeadm
 
 - Provisions Kubernetes nodes on top of existing machines
 
@@ -40,69 +50,51 @@
 
 - Supports HA control plane [with some extra steps](https://kubernetes.io/docs/setup/independent/high-availability/) 
 
----
+- Installing a single cluster is easy
 
-## [kubespray](https://github.com/kubernetes-incubator/kubespray)
+- Upgrading a cluster is possible, but must be done carefully
 
-- Based on Ansible
-
-- Works on bare metal and cloud infrastructure
-
-  (good for hybrid deployments)
-
-- The expert says: ultra flexible; slow; complex
+💡 Great to install a single cluster quickly with a reasonable learning curve.
 
 ---
 
-## RKE (Rancher Kubernetes Engine)
+## Example - Cluster API
 
-- Opinionated installer with low requirements
+- Provision and manage Kubernetes clusters declaratively
 
-- Requires a set of machines with Docker + SSH access
+- Clusters, nodes... are represented by Kubernetes resources
 
-- Supports highly available etcd and control plane
+- Initial setup is more or less complicated
 
-- The expert says: fast; maintenance can be tricky
+  (depending on the infrastructure and bootstrap providers used)
 
----
+- Installing many clusters is then easy
 
-## Terraform + kubeadm
+- Upgrading clusters can be fully automated
 
-- Sometimes it is necessary to build a custom solution
+  (again, depending on infrastructure, bootstrap providers...)
 
-- Example use case: 
-
-  - deploying Kubernetes on OpenStack
-
-  - ... with highly available control plane
-
-  - ... and Cloud Controller Manager integration
-
-- Solution: Terraform + kubeadm (kubeadm driven by remote-exec)
-
-  - [GitHub repository](https://github.com/enix/terraform-openstack-kubernetes)
-
-  - [Blog post (in French)](https://enix.io/fr/blog/deployer-kubernetes-1-13-sur-openstack-grace-a-terraform/)
+💡 Great to manage dozens or hundreds of clusters, with a bigger initial investment.
 
 ---
 
-## And many more ...
+## Example - Talos Linux
 
-- [AKS Engine](https://github.com/Azure/aks-engine)
+- Based on an immutable system
 
-- Docker Enterprise Edition
+  (like CoreOS Linux, Flatcar... but learned a lot from these precursors)
 
-- [Lokomotive](https://github.com/kinvolk/lokomotive), leveraging Terraform and [Flatcar Linux](https://www.flatcar-linux.org/)
+- Control plane and nodes are managed declaratively
 
-- Pivotal Container Service (PKS)
+- Initial setup and upgrades are relatively straightforward
 
-- [Tarmak](https://github.com/jetstack/tarmak), leveraging Puppet and Terraform
+- Some admin tasks require to learn a new way to do things
 
-- Tectonic by CoreOS (now being integrated into Red Hat OpenShift)
+  (e.g. managing storage, troubleshooting nodes...)
 
-- [Typhoon](https://typhoon.psdn.io/), leveraging Terraform
+- Managing fleets of clusters is facilitated by Omni (commercial product)
 
-- VMware Tanzu Kubernetes Grid (TKG)
+💡 As of 2025, Talos Linux popularity has significantly increased among "trendsetters".
 
 ---
 

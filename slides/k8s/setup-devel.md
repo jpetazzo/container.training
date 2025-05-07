@@ -198,6 +198,30 @@
 
 - The only limit is yourself, and the time you are willing to sink in!
 
+---
+
+## GPU support
+
+Some solutions can expose your GPU to your containers.
+
+This can be useful for machine learning inference and training.
+
+It only works for some combinations of hardware and operating system.
+
+For example:
+
+- WSL2 + NVIDIA is supported by Docker Desktop and Podman Desktop
+
+- Linux + NVIDIA is supported by Podman Desktop
+
+- MacOS + Apple silicon is supported by Podman Desktop
+
+See [Docker Deskop][gpu-docker-desktop] and [Podman Desktop][gpu-podman-desktop]
+documentations for more details.
+
+[gpu-docker-desktop]: https://docs.docker.com/desktop/features/gpu/
+[gpu-podman-desktop]: https://podman-desktop.io/docs/podman/gpu
+
 ???
 
 :EN:- Kubernetes options for local development
