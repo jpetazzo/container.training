@@ -6,7 +6,7 @@ We are going to cover:
 
 - Controllers
 
-- Dynamic Admission Webhooks
+- Admission Control
 
 - Custom Resource Definitions (CRDs)
 
@@ -128,23 +128,36 @@ then make or request changes where needed.*
 
 ---
 
-## Admission controllers
+## Admission control
 
-- Admission controllers can vet or transform API requests
+- Validate (approve/deny) or mutate (modify) API requests
 
-- The diagram on the next slide shows the path of an API request
+- In modern Kubernetes, we have at least 3 ways to achieve that:
 
-  (courtesy of Banzai Cloud)
+  - [admission controllers][ac-controllers] (built in the API server)
+
+  - [dynamic admission control][ac-webhooks] (with webhooks)
+
+  - [validating admission policies][ac-vap] (using CEL, Common Expression Language)
+
+- More is coming; e.g. [mutating admission policies][ac-map] (alpha in Kubernetes 1.32)
+
+[ac-controllers]: https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/
+[ac-webhooks]: https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/
+[ac-vap]: https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/
+[ac-map]: https://kubernetes.io/docs/reference/access-authn-authz/mutating-admission-policy/
 
 ---
 
 class: pic
 
-![API request lifecycle](images/api-request-lifecycle.png)
+![API request lifecycle; from Kubernetes documentation](images/admission-control-phases.svg)
 
 ---
 
-## Types of admission controllers
+## Admission controllers
+
+- Built in the API server
 
 - *Validating* admission controllers can accept/reject the API call
 
@@ -156,9 +169,13 @@ class: pic
 
 - There are a number of built-in admission controllers
 
-  (see [documentation](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#what-does-each-admission-controller-do) for a list)
+  ([and a bunch of them are enabled by default][ac-default])
 
-- We can also dynamically define and register our own
+- They can be enabled/disabled with API server command-line flags
+
+  (this is not always possible when using *managed* Kubernetes!)
+
+[ac-default]: https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#which-plugins-are-enabled-by-default
 
 ---
 
@@ -202,6 +219,8 @@ class: extra-details
 
 ---
 
+class: extra-details
+
 ## Webhook Configuration
 
 - A ValidatingWebhookConfiguration or MutatingWebhookConfiguration contains:
@@ -229,15 +248,39 @@ class: extra-details
 
 - Sidecar injection
 
-  (Used by some service meshes)
+  (used by some service meshes)
 
 - Type validation
 
-  (More on this later, in the CRD section)
+  (more on this later, in the CRD section)
+
+- And many other creative + useful scenarios!
+
+  (for example in [kube-image-keeper][kuik], to rewrite image references)
+
+[kuik]: https://github.com/enix/kube-image-keeper
 
 ---
 
-## Kubernetes API types
+## Validating Admission Policies
+
+- Relatively recent (alpha: 1.26, beta: 1.28, GA: 1.30)
+
+- Declare validation rules with Common Expression Language (CEL)
+
+- Validation is done entirely within the API server
+
+  (no external webhook = no latency, no deployment complexity...)
+
+- Not as powerful as full-fledged webhook engines like Kyverno
+
+  (see e.g. [this page of the Kyverno doc][kyverno-vap] for a comparison)
+
+[kyverno-vap]: https://kyverno.io/docs/policy-types/validating-policy/
+
+---
+
+## Kubernetes API resource types
 
 - Almost everything in Kubernetes is materialized by a resource
 
@@ -271,21 +314,21 @@ class: extra-details
 
 ## Examples
 
+- Representing configuration for controllers and operators
+
+  (e.g. Prometheus scrape targets, gitops configuration, certificates...)
+
 - Representing composite resources
 
-  (e.g. clusters like databases, messages queues ...)
+  (e.g. database cluster, message queue...)
 
 - Representing external resources
 
-  (e.g. virtual machines, object store buckets, domain names ...)
-
-- Representing configuration for controllers and operators
-
-  (e.g. custom Ingress resources, certificate issuers, backups ...)
+  (e.g. virtual machines, object store buckets, domain names...)
 
 - Alternate representations of other objects; services and service instances
 
-  (e.g. encrypted secret, git endpoints ...)
+  (e.g. encrypted secret, git endpoints...)
 
 ---
 
@@ -339,17 +382,18 @@ class: extra-details
 
 ---
 
-## Documentation
+## And more...
 
-- [Custom Resource Definitions: when to use them](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
+- Some specifics areas of Kubernetes also have extension points
 
-- [Custom Resources Definitions: how to use them](https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/)
+- Example: scheduler
 
-- [Built-in Admission Controllers](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/)
+  - it's possible to [customize the behavior of the scheduler][sched-config]
 
-- [Dynamic Admission Controllers](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)
+  - or even run [multiple schedulers][sched-multiple]
 
-- [Aggregation Layer](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/)
+[sched-config]: https://kubernetes.io/docs/reference/scheduling/config/
+[sched-multiple]: https://kubernetes.io/docs/tasks/extend-kubernetes/configure-multiple-schedulers/
 
 ???
 

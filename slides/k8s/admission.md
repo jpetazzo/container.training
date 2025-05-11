@@ -32,7 +32,7 @@
 
 - Problem mitigation
 
-  *block nodes with vulnerable kernels, inject log4j mitigations...*
+  *block nodes with vulnerable kernels, inject log4j mitigations, rewrite images...*
 
 - Extended validation for operators
 
@@ -583,19 +583,38 @@ Shell to the rescue!
 
 ---
 
-## Coming soon...
+## Real world examples
+
+- [kube-image-keeper][kuik] rewrites image references to use cached images
+
+  (e.g. `nginx` → `localhost:7439/nginx`)
+
+- [Kyverno] implements very extensive policies
+
+  (validation, generation... it deserves a whole chapter on its own!)
+
+[kuik]: https://github.com/enix/kube-image-keeper
+[kyverno]: https://kyverno.io/
+
+---
+
+## Alternatives
 
 - Kubernetes Validating Admission Policies
 
-- Integrated with the Kubernetes API server
+- Relatively recent (alpha: 1.26, beta: 1.28, GA: 1.30)
 
-- Lets us define policies using [CEL (Common Expression Language)][cel-spec]
+- Declare validation rules with Common Expression Language ([CEL][cel-spec])
 
-- Available in beta in Kubernetes 1.28 <!-- ##VERSION## -->
+- Validation is done entirely within the API server
 
-- Check this [CNCF Blog Post][cncf-blog-vap] for more details
+  (no external webhook = no latency, no deployment complexity...)
 
-[cncf-blog-vap]: https://www.cncf.io/blog/2023/09/14/policy-management-in-kubernetes-is-changing/
+- Not as powerful as full-fledged webhook engines like Kyverno
+
+  (see e.g. [this page of the Kyverno doc][kyverno-vap] for a comparison)
+
+[kyverno-vap]: https://kyverno.io/docs/policy-types/validating-policy/
 [cel-spec]: https://github.com/google/cel-spec
 
 ???

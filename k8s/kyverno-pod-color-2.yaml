@@ -3,7 +3,6 @@ kind: ClusterPolicy
 metadata:
   name: pod-color-policy-2
 spec:
-  validationFailureAction: Enforce
   background: false
   rules:
   - name: prevent-color-change
@@ -22,6 +21,7 @@ spec:
       operator: NotEquals
       value: ""
     validate:
+      failureAction: Enforce
       message: "Once label color has been added, it cannot be changed."
       deny:
         conditions:

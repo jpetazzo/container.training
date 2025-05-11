@@ -3,7 +3,6 @@ kind: ClusterPolicy
 metadata:
   name: pod-color-policy-1
 spec:
-  validationFailureAction: Enforce
   rules:
   - name: ensure-pod-color-is-valid
     match:
@@ -18,5 +17,6 @@ spec:
             operator: NotIn
             values: [ red, green, blue ]
     validate:
+      failureAction: Enforce
       message: "If it exists, the label color must be red, green, or blue."
       deny: {}

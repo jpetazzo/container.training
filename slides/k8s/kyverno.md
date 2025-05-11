@@ -1,44 +1,78 @@
 # Policy Management with Kyverno
 
-- The Kubernetes permission management system is very flexible ...
+- Kyverno is a policy engine for Kubernetes
 
-- ... But it can't express *everything!*
+- It has many use cases, including:
 
-- Examples:
+  - validating resources when they are created/edited
+    <br/>(blocking or logging violations)
 
-  - forbid using `:latest` image tag
+  - preventing some modifications
+    <br/>(e.g. restricting modifications to some fields, labels...)
 
-  - enforce that each Deployment, Service, etc. has an `owner` label
-    <br/>(except in e.g. `kube-system`)
+  - modifying resources automatically
 
-  - enforce that each container has at least a `readinessProbe` healthcheck
+  - generating resources automatically
 
-- How can we address that, and express these more complex *policies?*
-
----
-
-## Admission control
-
-- The Kubernetes API server provides a generic mechanism called *admission control*
-
-- Admission controllers will examine each write request, and can:
-
-  - approve/deny it (for *validating* admission controllers)
-
-  - additionally *update* the object (for *mutating* admission controllers)
-
-- These admission controllers can be:
-
-  - plug-ins built into the Kubernetes API server
-    <br/>(selectively enabled/disabled by e.g. command-line flags)
-
-  - webhooks registered dynamically with the Kubernetes API server
+  - clean up resources automatically
 
 ---
 
-## What's Kyverno?
+## Examples (validation)
 
-- Policy management solution for Kubernetes
+- [Disallow `:latest` tag](https://kyverno.io/policies/best-practices/disallow-latest-tag/disallow-latest-tag/)
+
+- [Disallow secrets in environment variables](https://kyverno.io/policies/other/disallow-secrets-from-env-vars/disallow-secrets-from-env-vars/)
+
+- [Require that containers drop all capabilities](https://kyverno.io/policies/best-practices/require-drop-all/require-drop-all/)
+
+- [Prevent creation of Deployment, ReplicaSet, etc. without an HPA](https://kyverno.io/policies/other/check-hpa-exists/check-hpa-exists/)
+
+- [Forbid CPU limits](https://kyverno.io/policies/other/forbid-cpu-limits/forbid-cpu-limits/)
+
+- [Check that memory requests are equal to limits](https://kyverno.io/policies/other/memory-requests-equal-limits/memory-requests-equal-limits/)
+
+- [Require containers to have healthchecks](https://kyverno.io/policies/best-practices/require-probes/require-probes/)
+
+---
+
+## Examples (mutation)
+
+- [Automatically add environment variables from a ConfigMap](https://kyverno.io/policies/other/add-env-vars-from-cm/add-env-vars-from-cm/)
+
+- [Add image as an environment variable](https://kyverno.io/policies/other/add-image-as-env-var/add-image-as-env-var/)
+
+- [Add image `LABEL` as an environment variable](https://kyverno.io/policies/other/inject-env-var-from-image-label/inject-env-var-from-image-label/)
+
+- [When creating a Deployment, copy some labels from its Namespace](https://kyverno.io/policies/other/copy-namespace-labels/copy-namespace-labels/)
+
+- [Automatically restart a given Deployment when a given ConfigMap changes](https://kyverno.io/policies/other/restart-deployment-on-secret-change/restart-deployment-on-secret-change/)
+
+---
+
+## Examples (generation)
+
+- [Automatically create a PDB when a Deployment is created](https://kyverno.io/policies/other/create-default-pdb/create-default-pdb/)
+
+- [Create an event when an object is deleted (for auditing purposes)](https://kyverno.io/policies/other/audit-event-on-delete/audit-event-on-delete/)
+
+- [Create an audit event when using `kubectl exec`](https://kyverno.io/policies/other/audit-event-on-exec/audit-event-on-exec/)
+
+- [Automatically create a Secret (e.g. for registry auth) when a Namespace is created](https://kyverno.io/policies/other/sync-secrets/sync-secrets/)
+
+---
+
+## Examples (advanced validation)
+
+- [Only allow root user in images coming from a trusted registry](https://kyverno.io/policies/other/only-trustworthy-registries-set-root/only-trustworthy-registries-set-root/)
+
+- [Prevent images that haven't been checked by a vulnerability scanner](https://kyverno.io/policies/other/require-vulnerability-scan/require-vulnerability-scan/)
+
+- [Prevent ingress with the same host and path](https://kyverno.io/policies/other/unique-ingress-host-and-path/unique-ingress-host-and-path/)
+
+---
+
+## More about Kyverno
 
 - Open source (https://github.com/kyverno/kyverno/)
 
@@ -54,49 +88,21 @@
 
 ---
 
-## What can Kyverno do?
-
-- *Validate* resource manifests
-
-  (accept/deny depending on whether they conform to our policies)
-
-- *Mutate* resources when they get created or updated
-
-  (to add/remove/change fields on the fly)
-
-- *Generate* additional resources when a resource gets created
-
-  (e.g. when namespace is created, automatically add quotas and limits)
-
-- *Audit* existing resources
-
-  (warn about resources that violate certain policies)
-
----
-
-## How does it do it?
+## How does it work?
 
 - Kyverno is implemented as a *controller* or *operator*
 
 - It typically runs as a Deployment on our cluster
 
-- Policies are defined as *custom resource definitions*
+- Policies are defined as *custom resources*
 
 - They are implemented with a set of *dynamic admission control webhooks*
-
---
-
-🤔
-
---
-
-- Let's unpack that!
 
 ---
 
 ## Custom resource definitions
 
-- When we install Kyverno, it will register new resource types:
+- When we install Kyverno, it will register new resource types, including:
 
   - Policy and ClusterPolicy (per-namespace and cluster-scope policies)
 
@@ -109,32 +115,6 @@
   (to see policy violations across all namespaces)
 
 - Policies will be defined in YAML and registered/updated with e.g. `kubectl apply`
-
----
-
-## Dynamic admission control webhooks
-
-- When we install Kyverno, it will register a few webhooks for its use
-
-  (by creating ValidatingWebhookConfiguration and MutatingWebhookConfiguration resources)
-
-- All subsequent resource modifications are submitted to these webhooks
-
-  (creations, updates, deletions)
-
----
-
-## Controller
-
-- When we install Kyverno, it creates a Deployment (and therefore, a Pod)
-
-- That Pod runs the server used by the webhooks
-
-- It also runs a controller that will:
-
-  - run checks in the background (and generate PolicyReport objects)
-
-  - process GenerateRequest objects asynchronously
 
 ---
 
@@ -151,7 +131,6 @@
 The recommended [installation method][install-kyverno] is to use Helm charts.
 
 (It's also possible to install with a single YAML manifest.)
-
 
 .lab[
 
@@ -326,6 +305,8 @@ The recommended [installation method][install-kyverno] is to use Helm charts.
 
   (with an error similar to `JMESPAth query failed: Unknown key ... in path`)
 
+- If a precondition fails, the policy will be skipped altogether (and ignored!)
+
 - To work around that, [use an OR expression][non-existence-checks]:
 
   `{{ requests.object.metadata.labels.color || '' }}`
@@ -334,7 +315,7 @@ The recommended [installation method][install-kyverno] is to use Helm charts.
 
   (e.g. in *preconditions*, a missing label would evalute to an empty string)
 
-[non-existence-checks]: https://kyverno.io/docs/writing-policies/jmespath/#non-existence-checks
+[non-existence-checks]: https://kyverno.io/docs/policy-types/cluster-policy/jmespath/#non-existence-checks
 
 ---
 
@@ -363,11 +344,39 @@ The recommended [installation method][install-kyverno] is to use Helm charts.
 
 ---
 
-## `background`
+## `spec.rules.validate.failureAction`
 
-- What is this `background: false` option, and why do we need it?
+- By default, this is set to `Audit`
 
---
+- This means that rule violations are not enforced
+
+- They still generate a warning (at the API level) and a PolicyReport
+
+  (more on that later)
+
+- We need to change the `failureAction` to `Enforce`
+
+---
+
+## `background`, `admission`, `emitWarning`
+
+- Policies have three boolean flags to control what they do and when
+
+- `admission` = run that policy at admission
+
+  (when an object gets created/updated and validation controllers get invoked)
+
+- `background` = run that policy in the background
+
+  (periodically check if existing objects fit the policy)
+
+- `emitWarning` = generate an `Event` of type `Warning` associated to the validated objct
+
+  (visible with e.g. `kubectl describe` on that object)
+
+---
+
+## Background checks
 
 - Admission controllers are only invoked when we change an object
 
@@ -379,17 +388,15 @@ The recommended [installation method][install-kyverno] is to use Helm charts.
 
   (we'll see later how they are reported)
 
-- `background: false` disables that
+- `background: true/false` controls that
 
---
-
-- Alright, but ... *why* do we need it?
+- When would we want to disabled it? 🤔
 
 ---
 
 ## Accessing `AdmissionRequest` context
 
-- In this specific policy, we want to prevent an *update*
+- In some of our policies, we want to prevent an *update*
 
   (as opposed to a mere *create* operation)
 
@@ -403,10 +410,6 @@ The recommended [installation method][install-kyverno] is to use Helm charts.
 
 - We access the `AdmissionRequest` object through `{{ request }}`
 
---
-
-- Alright, but ... what's the link with `background: false`?
-
 ---
 
 ## `{{ request }}`
@@ -418,6 +421,16 @@ The recommended [installation method][install-kyverno] is to use Helm charts.
 - Therefore, a policy that uses `{{ request }}` cannot validate existing objects
 
   (it can only be used when an object is actually created/updated/deleted)
+
+--
+
+- *Well, actually...*
+
+--
+
+- Kyverno exposes `{{ request.object }}` and `{{ request.namespace }}`
+
+  (see [the documentation](https://kyverno.io/docs/policy-reports/background/) for details!)
 
 ---
 
@@ -608,7 +621,19 @@ class: extra-details
 
 ---
 
-## Footprint
+## Footprint (current versions)
+
+- 14 CRDs
+
+- 10 webhooks
+
+- 6 services, 4 Deployments, 2 ConfigMaps
+
+- Internal resources (GenerateRequest) "parked" in a Namespace
+
+---
+
+## Footprint (older versions)
 
 - 8 CRDs
 
@@ -616,17 +641,13 @@ class: extra-details
 
 - 2 Services, 1 Deployment, 2 ConfigMaps
 
-- Internal resources (GenerateRequest) "parked" in a Namespace
-
-- Kyverno packs a lot of features in a small footprint
+*We can see the number of resources increased over time, as Kyverno added features.*
 
 ---
-
+I
 ## Strengths
 
 - Kyverno is very easy to install
-
-  (it's harder to get easier than one `kubectl apply -f`)
 
 - The setup of the webhooks is fully automated
 
@@ -637,6 +658,10 @@ class: extra-details
 - The policy language leverages existing constructs
 
   (e.g. `matchExpressions`)
+
+- It has pretty good documentation, including many examples
+
+- There is also a CLI tool (not discussed here)
 
 ---
 
