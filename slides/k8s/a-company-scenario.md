@@ -139,7 +139,7 @@ We want to have 2 main `Kubernetes` clusters, one for **testing** and one for **
 - each cluster has it's **own lifecycle** (the addition or configuration of extra components/features may be done on one cluster and not the other)
 - yet, configurations of these clusters must be as centralized as possible (to avoid inconsistency and to limit configuration code expansion and maintainance)
 
-> 💻 we'll use `flux` to configure and deploy new resources onto the clusters
+> 💻 we'll use `Flux` to configure and deploy new resources onto the clusters
 
 ---
 
@@ -170,7 +170,7 @@ Both _**🎸ROCKY**_ and _**🎻CLASSY**_ should use a **dedicated _"tenant"_** 
 
 ---
 
-### How to create the _**⚗️PROD**_ cluster
+### How to create the _**🚜PROD**_ cluster
 
 🚧 Second, we will create a _**🚜PROD**_ cluster
 - in the Cloud for availability and scalability purpose (let's say DigitalOcean)
@@ -237,11 +237,7 @@ To do so, the _**🎸ROCKY**_ team requires
 
 - ⚠️ a `kubectl` CLI in a version compatible with both Kubernetes clusters
 
---
-
 - 🔒 if this command is executed by a _CI/CD pipeline_, it will need the same requirements
-
---
 
 💡 There might be a better way. With GitOps! 🍾
 
@@ -252,8 +248,11 @@ To do so, the _**🎸ROCKY**_ team requires
 💡 We'll use `Flux` so that deployments will be directly executed from inside the Kubernetes clusters.
 
 - The _**⚙️OPS**_ team will proceed to configure GitOps
+
   - to configure the Kubernetes clusters
+
   - for the _**🎸ROCKY**_ team, `Flux` will check the app source code Github repository and deploy every time the right git event is triggered
+
   - for the _**🎻CLASSY**_ team, `Flux` will check every time a new Helm Chart release is published in the Helm Charts repository storing the app
 
 ---
@@ -262,9 +261,9 @@ To do so, the _**🎸ROCKY**_ team requires
 
 What the _**⚙️OPS**_ team has to do:
 
-- 🔧 Creating a dedicated `rocky` _tenant_ on `staging` cluster
-- 🔧 Creating the `flux` Github source pointing to the _**rocky**_ app source code repository
-- 🔧 Adding a `kustomize` patch into the global `flux` config to include the `flux` configuration for the _**rocky**_ app
+- 🔧 Create a dedicated `rocky` _tenant_ on _**⚗️TEST**_ cluster
+- 🔧 Create the `Flux` Github source pointing to the _**rocky**_ app source code repository
+- 🔧 Add a `kustomize` patch into the global `Flux` config to include the `Flux` configuration for the _**rocky**_ app
 
 What the _**🎸ROCKY**_ team has to do:
 
@@ -282,20 +281,17 @@ What the _**🎸ROCKY**_ team has to do:
 - Review the deployment manifest:
   ```bash
   
-$ mkdir -p ./tenants/base/dev1
-$ flux create tenant dev1            \
-    --with-namespace=dev1-ns         \
-    --cluster-role=dev1-full-access  \
-    --export > ./tenants/base/dev1/rbac.yaml  ```
+$ mkdir -p ./tenants/base/rocky
+$ flux create tenant rocky            \
+    --with-namespace=rocky-ns         \
+    --cluster-role=rocky-full-access  \
+    --export > ./tenants/base/rocky/rbac.yaml  ```
 
 ]
 
 ---
 
-# The slides of the cinematic
-
----
-
+<!-- Here begins the step-by-step part -->
 # T01- _**⚗️TEST**_ cluster creation
 
 On a Linux server, we do install a single node `k0s` cluster.
@@ -434,15 +430,15 @@ $ export GITHUB_REPO="fleet-infra"
 $ flux bootstrap github         \
     --owner=${GITHUB_USER}      \
     --repository=${GITHUB_REPO} \
-    --team=dev1                 \
-    --team=dev2                 \
+    --team=rocky                 \
+    --team=classy                 \
     --path=clusters/mycluster
 
 ► connecting to github.com
 ✔ repository "https://github.com/one-kubernetes/fleet-infra" created
 ► reconciling repository permissions
-✔ granted "maintain" permissions to "dev1"
-✔ granted "maintain" permissions to "dev2"
+✔ granted "maintain" permissions to "rocky"
+✔ granted "maintain" permissions to "classy"
 ✔ reconciled repository permissions
 ► cloning branch "main" from Git repository "https://github.com/one-kubernetes/fleet-infra.git"
 ✔ cloned repository
@@ -538,7 +534,7 @@ git clone https://github.com/${GITHUB_USER}/${GITHUB_REPO}
 
 ## _**⚗️TEST**_ cluster - creating the Flux config
 
-- **ops** va avoir à gérer 2 clusters : `staging` et `prod`
+- **ops** va avoir à gérer 2 clusters : _**⚗️TEST**_ et _**🚜PROD**_
 - Grace à _Kustomize_, elle va
   1. créer une config. de base
   2. qui sera surchargée par une config. spécifique au _tenant_
@@ -557,7 +553,7 @@ $ cd ./fleet-infra
 $ flux create kustomization tenants    \
     --namespace=flux-system            \
     --source=GitRepository/flux-system \
-    --path ./tenants/staging           \
+    --path ./tenants/test           \
     --prune                            \
     --interval=3m                      \
     --export >> clusters/mycluster/tenants.yaml
@@ -576,7 +572,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m0s
-  path: ./tenants/staging
+  path: ./tenants/test
   prune: true
   sourceRef:
     kind: GitRepository
@@ -598,16 +594,16 @@ spec:
 ## Creating the _tenant_ dedicated to _**🎸ROCKY**_ team on _**⚗️TEST**_ cluster
 
 ```bash
-$ mkdir -p ./tenants/base/dev1
-$ flux create tenant dev1            \
-    --with-namespace=dev1-ns         \
-    --cluster-role=dev1-full-access  \
-    --export > ./tenants/base/dev1/rbac.yaml
+$ mkdir -p ./tenants/base/rocky
+$ flux create tenant rocky            \
+    --with-namespace=rocky-ns         \
+    --cluster-role=rocky-full-access  \
+    --export > ./tenants/base/rocky/rbac.yaml
 ```
 
 ----
 
-### 📄 ./tenants/base/dev1/rbac.yaml
+### 📄 ./tenants/base/rocky/rbac.yaml
 
 ```yaml [1-7|9-16|18-36]
 ---
@@ -615,37 +611,37 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    toolkit.fluxcd.io/tenant: dev1
-  name: dev1-ns
+    toolkit.fluxcd.io/tenant: rocky
+  name: rocky-ns
 
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
-    toolkit.fluxcd.io/tenant: dev1
-  name: dev1
-  namespace: dev1-ns
+    toolkit.fluxcd.io/tenant: rocky
+  name: rocky
+  namespace: rocky-ns
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
-    toolkit.fluxcd.io/tenant: dev1
-  name: dev1-reconciler
-  namespace: dev1-ns
+    toolkit.fluxcd.io/tenant: rocky
+  name: rocky-reconciler
+  namespace: rocky-ns
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: dev1-full-access
+  name: rocky-full-access
 subjects:
 - apiGroup: rbac.authorization.k8s.io
   kind: User
-  name: gotk:dev1-ns:reconciler
+  name: gotk:rocky-ns:reconciler
 - kind: ServiceAccount
-  name: dev1
-  namespace: dev1-ns
+  name: rocky
+  namespace: rocky-ns
 ```
 
 ----
@@ -653,13 +649,13 @@ subjects:
 ## _namespace_ isolation for _**🎸ROCKY**_
 
 ```bash
-$ cat << EOF | tee ./tenants/base/dev1/cluster-role-dev1.yaml
+$ cat << EOF | tee ./tenants/base/rocky/cluster-role-rocky.yaml
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  namespace: dev1-ns
-  name: dev1-full-access
+  namespace: rocky-ns
+  name: rocky-full-access
 rules:
 - apiGroups: ["", "extensions", "apps"]
   resources: ["deployments", "replicasets", "pods", "services", "ingresses"]
@@ -673,23 +669,23 @@ EOF
 
 ```bash [1-5|6-10|11-13]
 $ flux create source git dev1-aspicot                         \
-    --namespace=dev1-ns                                       \
+    --namespace=rocky-ns                                       \
     --url=https://github.com/one-kubernetes/dev1-aspicot-app/ \
     --branch=main                                             \
-    --export > ./tenants/base/dev1/sync.yaml
-$ flux create kustomization dev1        \
-    --namespace=dev1-ns                 \
-    --service-account=dev1              \
+    --export > ./tenants/base/rocky/sync.yaml
+$ flux create kustomization rocky        \
+    --namespace=rocky-ns                 \
+    --service-account=rocky              \
     --source=GitRepository/dev1-aspicot \
-    --path="./" --export >> ./tenants/base/dev1/sync.yaml
-$ cd ./tenants/base/dev1/
+    --path="./" --export >> ./tenants/base/rocky/sync.yaml
+$ cd ./tenants/base/rocky/
 $ kustomize create --autodetect
 $ cd -
 ```
 
 ----
 
-### 📄 ./tenants/base/dev1/sync.yaml
+### 📄 ./tenants/base/rocky/sync.yaml
 
 ```yaml [1-11|13-26]
 ---
@@ -697,7 +693,7 @@ apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: GitRepository
 metadata:
   name: dev1-aspicot
-  namespace: dev1-ns
+  namespace: rocky-ns
 spec:
   interval: 1m0s
   ref:
@@ -708,13 +704,13 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: dev1
-  namespace: dev1-ns
+  name: rocky
+  namespace: rocky-ns
 spec:
   interval: 1m0s
   path: ./
   prune: false
-  serviceAccountName: dev1
+  serviceAccountName: rocky
   sourceRef:
     kind: GitRepository
     name: dev1-aspicot
@@ -722,13 +718,13 @@ spec:
 
 ----
 
-### 📄 ./tenants/base/dev1/kustomization.yaml
+### 📄 ./tenants/base/rocky/kustomization.yaml
 
 ```yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- cluster-role-dev1.yaml
+- cluster-role-rocky.yaml
 - rbac.yaml
 - sync.yaml
 
@@ -740,7 +736,7 @@ resources:
 
 Après git commit && git push, on obtient cette arborescence.
 
-![Dev1 config files](images/dev1_config_files.jpg)
+![rocky config files](images/dev1_config_files.jpg)
 
 ----
 
@@ -749,7 +745,7 @@ Après git commit && git push, on obtient cette arborescence.
 
 
 - `Flux` scrute le dépôt de _**🎸ROCKY**_, mais il s'attend à y trouver un fichier `kustomization.yaml`
-- dev1 doit donc y créer ce fichier
+- _**🎸ROCKY**_ doit donc y créer ce fichier
 
 ```bash
 kustomize create --autodetect
@@ -761,23 +757,23 @@ kustomize create --autodetect
 
 
 ```bash [1|2-10|11-20]
-$ mkdir -p ./tenants/staging/dev1
-$ cat << EOF | tee ./tenants/staging/dev1/dev1-patch.yaml
+$ mkdir -p ./tenants/test/rocky
+$ cat << EOF | tee ./tenants/test/rocky/rocky-patch.yaml
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
 metadata:
-  name: dev1
-  namespace: dev1-ns
+  name: rocky
+  namespace: rocky-ns
 spec:
   path: ./
 EOF
-cat << EOF | tee ./tenants/staging/dev1/kustomization.yaml
+cat << EOF | tee ./tenants/test/rocky/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ../../base/dev1
+  - ../../base/rocky
 patches:
-  - path: dev1-patch.yaml
+  - path: rocky-patch.yaml
     target:
       kind: Kustomization
 EOF
@@ -793,7 +789,7 @@ EOF
 
 ## Rocky app is deployed on _**⚗️TEST**_ cluster
 
-![Dev1 Web site](images/dev1_website001.png)
+![rocky Web site](images/dev1_website001.png)
 
 ----
 
@@ -802,9 +798,9 @@ EOF
 - Pour chaque nouveau dépôt applicatif, **ops** doit ajouter une source `Flux`
 
 - _**🎸ROCKY**_ est celui qui produit le `deployment.yaml`
-    - et donc, **ops** a peu de latitude pour configurer des comportements différents entre `staging` et `prod`
+    - et donc, **ops** a peu de latitude pour configurer des comportements différents entre _**⚗️TEST**_ et _**🚜PROD**_
 
-- ça veut dire aussi que **rocky** team est seule à décider de son architecture technique (service, base de données, etc.) ce qui peut être utile en TEST, moins réaliste en _**🚜PROD**_.
+- ça veut dire aussi que _**🎸ROCKY**_ team est seule à décider de son architecture technique (service, base de données, etc.) ce qui peut être utile en TEST, moins réaliste en _**🚜PROD**_.
 
 ---
 
@@ -818,19 +814,19 @@ For _**🎻CLASSY**_ team, we adopt another strategy that is to deploy with a He
 
 - Because dev can just be working on their app source code
 - And the final packaging (including technical architecture decisions) might be made available by another team
-- And finally, app and stack configuration might be done by the deploying team (meaning either classy or ops depending on the ENV)
+- And finally, app and stack configuration might be done by the deploying team (meaning either _**🎻CLASSY**_ or ops depending on the ENV)
 
 ---
 
-### C01- Creating the Helm chart for **classy** app deployment
+### C01- Creating the Helm chart for _**🎻CLASSY**_ app deployment
 
-🚧 TBD. see: https://github.com/one-kubernetes/dev2-helm-charts/tree/main/charts/dev2-carapuce
+🚧 TBD. see: https://github.com/one-kubernetes/classy-helm-charts/tree/main/charts/dev2-carapuce
 
 ---
 
 ### Publishing Helm chart in an Chart repository
 
-🚧 TBD. see: https://github.com/one-kubernetes/dev2-helm-charts/tree/main/charts/dev2-carapuce
+🚧 TBD. see: https://github.com/one-kubernetes/classy-helm-charts/tree/main/charts/dev2-carapuce
 
 ---
 
@@ -842,7 +838,7 @@ Reference to the `Flux` chapter in High Five M3 module
 
 ## C02- Creating the _tenant_ dedicated to _**🎻CLASSY**_ team on _**⚗️TEST**_ cluster
 
-Créer le tenant dédié à _**🎻CLASSY**_ se fait de la même manière que pour **dev1**
+Créer le tenant dédié à _**🎻CLASSY**_ se fait de la même manière que pour _**🎸ROCKY**_
 
 1. création de l'arborescence de configuration du _tenant_
 2. création du _namespace_
@@ -858,9 +854,9 @@ On ne se source plus depuis un dépôt `git` mais depuis un dépôt de _charts_ 
 
 ```bash [1-4]
 $ flux create source helm charts                            \
-    --url=https://one-kubernetes.github.io/dev2-helm-charts \
+    --url=https://one-kubernetes.github.io/classy-helm-charts \
     --interval=3m                                           \
-    --export > ./tenants/base/dev2/sync.yaml
+    --export > ./tenants/base/classy/sync.yaml
 ```
 
 ----
@@ -869,19 +865,19 @@ $ flux create source helm charts                            \
 
 ```bash [1-7|9]
 $ flux create helmrelease dev2-carapuce        \
-    --namespace=dev2-ns                        \
-    --service-account=dev2                     \
+    --namespace=classy-ns                        \
+    --service-account=classy                     \
     --source=HelmRepository/charts.flux-system \
     --chart=dev2-carapuce-helm                 \
     --chart-version="0.1.0"                    \
-    --export >> ./tenants/base/dev2/sync.yaml
+    --export >> ./tenants/base/classy/sync.yaml
 
-$ cd ./tenants/base/dev2/ && kustomize create --autodetect
+$ cd ./tenants/base/classy/ && kustomize create --autodetect
 ```
 
 ----
 
-### 📄 ./tenants/base/dev2/sync.yaml
+### 📄 ./tenants/base/classy/sync.yaml
 
 ```yaml [1-9|11-16|17-27]
 ---
@@ -889,17 +885,17 @@ apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
 metadata:
   name: charts
-  namespace: dev2-ns
+  namespace: classy-ns
 spec:
   interval: 3m0s
-  url: https://one-kubernetes.github.io/dev2-helm-charts
+  url: https://one-kubernetes.github.io/classy-helm-charts
 
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: dev2-carapuce
-  namespace: dev2-ns
+  namespace: classy-ns
 spec:
   chart:
     spec:
@@ -907,10 +903,10 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: charts
-        namespace: dev2-ns
+        namespace: classy-ns
       version: 0.1.0
   interval: 1m0s
-  serviceAccountName: dev2
+  serviceAccountName: classy
 ```
 
 ----
@@ -919,7 +915,7 @@ spec:
 
 Après `git commit && git push`, on obtient cette arborescence.
 
-![Dev2 config files](images/dev2_config_files.png)
+![classy config files](images/dev2_config_files.png)
 
 ---
 
@@ -927,7 +923,7 @@ Après `git commit && git push`, on obtient cette arborescence.
 
 ---
 
-## **rocky** is trying to deploy a new color version of its app
+## _**🎸ROCKY**_ is trying to deploy a new color version of its app
 
 - New version with new color
 - But introduces a mistake in the deployment.yaml file (wrong NS)
@@ -936,7 +932,7 @@ commit
 
 See what happens…
 
-- it might be great to automatically fix this kind of mistake by enforcing the Namespace and the service account that are configured for deploying **rocky** app.
+- it might be great to automatically fix this kind of mistake by enforcing the Namespace and the service account that are configured for deploying _**🎸ROCKY**_ app.
 
 ---
 
@@ -1072,9 +1068,9 @@ flux create kustomization kyverno-policies --prune true --interval 5m --path ./c
 
 ---
 
-## Add Kyverno dependency for staging tenant
+## Add Kyverno dependency for _**⚗️TEST**_ cluster
 ```bash
-flux create kustomization tenants --prune true --interval 5m --path ./tenants/staging --source GitRepository/flux-system --depends-on kyverno-policies --export > ./clusters/mycluster/tenants.yaml
+flux create kustomization tenants --prune true --interval 5m --path ./tenants/test --source GitRepository/flux-system --depends-on kyverno-policies --export > ./clusters/mycluster/tenants.yaml
 ```
 > :warning: Remember to commit and push your code each time you make a change so that FluxCD can apply the changes.
 
@@ -1082,10 +1078,10 @@ flux create kustomization tenants --prune true --interval 5m --path ./tenants/st
 
 ## Fix Kyverno policy
 ```bash
-flux create source helm charts --url=https://one-kubernetes.github.io/dev2-helm-charts --interval=3m --namespace dev2-ns --export > ./tenants/base/dev2/sync.yaml
+flux create source helm charts --url=https://one-kubernetes.github.io/classy-helm-charts --interval=3m --namespace classy-ns --export > ./tenants/base/classy/sync.yaml
 ```
 ```bash
-flux create helmrelease dev2-carapuce --namespace=dev2-ns --service-account=dev2 --source=HelmRepository/charts.dev2-ns --chart=dev2-carapuce-helm --chart-version="0.1.0" --export >> ./tenants/base/dev2/sync.yaml
+flux create helmrelease dev2-carapuce --namespace=classy-ns --service-account=classy --source=HelmRepository/charts.classy-ns --chart=dev2-carapuce-helm --chart-version="0.1.0" --export >> ./tenants/base/classy/sync.yaml
 ```
 > :warning: Remember to commit and push your code each time you make a change so that FluxCD can apply the changes.
 
@@ -1093,7 +1089,7 @@ flux create helmrelease dev2-carapuce --namespace=dev2-ns --service-account=dev2
 
 # Network leak
 
-🚧 **dev1** upgrades its app and finally create an error because its app is connecting to **dev2** database, running in another namespace.
+🚧 _**🎸ROCKY**_ upgrades its app and finally create an error because its app is connecting to _**🎻CLASSY**_ database, running in another namespace.
 Introducing Pod network policies to avoid such kind of thing.
 
 ___
@@ -1102,7 +1098,7 @@ ___
 
 ---
 
-## Creating the _**🚜PROD**_ cluster in DigitalOcean
+## Creating the _**🚜PROD**_ cluster in Digital Ocean
 
 🚧
 
@@ -1120,14 +1116,14 @@ Adding Kustomize patches so that the cluster is taken into account.
 
 # using CloudNativePG instead of stand-alone PostgreSQL on _**🚜PROD**_ cluster
 
-🚧 Instead of having **dev1** team deploying a stand-alone ephemeral PostgreSQL, we'll introduce CloudNativePG and make it available for dev teams to use it as a PostgreSQL provider.
+🚧 Instead of having _**🎸ROCKY**_ team deploying a stand-alone ephemeral PostgreSQL, we'll introduce CloudNativePG and make it available for dev teams to use it as a PostgreSQL provider.
 
 
 ---
 
 # Install cert-manager on _**🚜PROD**_ cluster
 
-🚧 exposing **dev1** team with HTTPs.
+🚧 exposing _**🎸ROCKY**_ team with HTTPs.
 
 ---
 
