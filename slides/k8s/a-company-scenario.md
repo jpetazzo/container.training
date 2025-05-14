@@ -247,13 +247,14 @@ To do so, the _**🎸ROCKY**_ team requires
 
 ---
 
-# incoming Flux
+# Incoming Flux
 
 💡 We'll use `Flux` so that deployments will be directly executed from inside the Kubernetes clusters.
 
---
-
-The _**⚙️OPS**_ team will proceed to configure GitOps for the _**🎸ROCKY**_ team.
+- The _**⚙️OPS**_ team will proceed to configure GitOps
+  - to configure the Kubernetes clusters
+  - for the _**🎸ROCKY**_ team, `Flux` will check the app source code Github repository and deploy every time the right git event is triggered
+  - for the _**🎻CLASSY**_ team, `Flux` will check every time a new Helm Chart release is published in the Helm Charts repository storing the app
 
 ---
 
@@ -265,13 +266,13 @@ What the _**⚙️OPS**_ team has to do:
 - 🔧 Creating the `flux` Github source pointing to the _**rocky**_ app source code repository
 - 🔧 Adding a `kustomize` patch into the global `flux` config to include the `flux` configuration for the _**rocky**_ app
 
-What the _**🎸rocky**_ team has to do:
+What the _**🎸ROCKY**_ team has to do:
 
-- 👨‍💻 Creating the kustomize file in the _**rocky**_ app source code repository
+- 👨‍💻 Creating the `kustomize` file in the _**🎸ROCKY**_ app source code repository in Github.
 
 ---
 
-## creating the dedicated `rocky` tenant
+## Creating the dedicated `rocky` tenant
 
 - Using the `flux` _CLI_, we create the file configuring the tenant for the _**🎸ROCKY**_ team
 - This is done in the global mutualized `base` configuration for both Kubernetes clusters
@@ -317,13 +318,13 @@ We want to configure our _**⚗️TEST**_ cluster in a *-as-code and reusable wa
 
 ### Flux CLI
 
-* une CLI permet :
+- une CLI permet :
   1. de créer les fichiers `YAML` pour déployer les ressources `Kubernetes` que l'on souhaite
-     * y compris les propres composants `Flux`
+     - y compris les propres composants `Flux`
   1. d'interagir avec le dépôt `git` qui va servir de configuration `Flux`
   1. d'interroger l'état de Flux sur le _cluster_
-     * logs des _operators_
-     * _CRD_
+     - logs des _operators_
+     - _CRD_
 
 ---
 
@@ -335,9 +336,9 @@ We want to configure our _**⚗️TEST**_ cluster in a *-as-code and reusable wa
 
 ### Flux components
 
-* `source controller` pour scruter les sources de configuration depuis des dépôts `git`
-* `helm controller` pour détecter de nouvelles _releases_ depuis des dépôts de _charts_ `Helm`
-* des _CRD_, qui servent de machine à état pour stocker la configuration dans le _cluster_
+- `source controller` pour scruter les sources de configuration depuis des dépôts `git`
+- `helm controller` pour détecter de nouvelles _releases_ depuis des dépôts de _charts_ `Helm`
+- des _CRD_, qui servent de machine à état pour stocker la configuration dans le _cluster_
 
 ---
 
@@ -349,7 +350,7 @@ Reference to the `Flux` chapter in High Five M3 module
 
 ### Flux relies on Kustomize
 
-* `kustomize controller` qui passe la configuration trouvée à `Kustomize`
+- `kustomize controller` qui passe la configuration trouvée à `Kustomize`
     1. `Kustomize` consolide la configuration trouvée
     2. et hydrate les sections template présentes dans la configuration
 
@@ -363,27 +364,26 @@ Reference to the `Kustomize` chapter in High Five M3 module
 
 ## T02- _**⚗️TEST**_ cluster - Installing Flux
 
-* À partir de là, toute la configuration du _cluster_ Kubernetes peut se faire exclusivement en manipulant des dépôts `git`.
-* On est dans le respect du _pattern_ roi dans `Kubernetes` : **la convergence vers un état cible décrit**
+À partir de là, toute la configuration du _cluster_ Kubernetes peut se faire exclusivement en manipulant des dépôts `git`.
+
+On est dans le respect du _pattern_ roi dans `Kubernetes` : **la convergence vers un état cible décrit**
 
 ---
 
-
-
-### Flux CLI
+### Flux CLI 1
 
 1. L'équipe **ops** récupère la _CLI_ `Flux` sur son poste de travail
 1. La _CLI_ va s'appuyer sur la configuration `kubectl` pour interagir avec le _cluster_
-   * connectivité réseau
-   * droits _RBAC_
+   - connectivité réseau
+   - droits _RBAC_
 
 ----
 
 ### Flux install - Checking prerequisites
 
 1. On s'assure que
-   * la CLI se connecte bien
-   * que les versions de `Flux` et de `Kubernetes` sont OK
+   - la CLI se connecte bien
+   - que les versions de `Flux` et de `Kubernetes` sont OK
 
 ```bash
 $ flux check ---pre
@@ -396,8 +396,8 @@ $ flux check ---pre
 
 ### Git repo to host Flux configuration
 
-* La CLI va créer un dépôt `fleet-infra` dans notre organisation `Github` : `one-kubernetes`
-* Elle a besoin d'un _token_ `Github` capable de _CRUD_ sur les dépôts.
+- La CLI va créer un dépôt `fleet-infra` dans notre organisation `Github` : `one-kubernetes`
+- Elle a besoin d'un _token_ `Github` capable de _CRUD_ sur les dépôts.
 
 ----
 
@@ -418,12 +418,13 @@ $ flux check ---pre
 
 ### Disclaimer
 
-* ⚠️ Ici on vous montre pour l'exemple, mais dans le reste du _workshop_ (comme dans la vraie vie) les différentes équipes n'ont pas besoin d'accéder à ce dépôt.  
-* C'est tout l'avantage des sources de configuration multiples.
+- ⚠️ Ici on vous montre pour l'exemple, mais dans le reste du _workshop_ (comme dans la vraie vie) les différentes équipes n'ont pas besoin d'accéder à ce dépôt.
+
+- C'est tout l'avantage des sources de configuration multiples.
 
 ----
 
-### T03- Creating dedicated `Github` repo to host Flux config.
+### T03- Creating dedicated `Github` repo to host Flux config
 
 ```bash [1-3|5-10]
 $ export GITHUB_TOKEN="<insert your Github personal token here>"
@@ -530,18 +531,18 @@ resources:
 ### Cloning the git repo locally
 
 ```bash
-$ git clone https://github.com/${GITHUB_USER}/${GITHUB_REPO}
+git clone https://github.com/${GITHUB_USER}/${GITHUB_REPO}
 ```
 
 ---
 
 ## _**⚗️TEST**_ cluster - creating the Flux config
 
-* **ops** va avoir à gérer 2 clusters : `staging` et `prod`
-* Grace à _Kustomize_, elle va
+- **ops** va avoir à gérer 2 clusters : `staging` et `prod`
+- Grace à _Kustomize_, elle va
   1. créer une config. de base
   2. qui sera surchargée par une config. spécifique au _tenant_
-* 💡Ça paraît compliqué, mais pas d'inquiétude : la _CLI_ `Flux` s'occupe de l'essentiel
+- 💡Ça paraît compliqué, mais pas d'inquiétude : la _CLI_ `Flux` s'occupe de l'essentiel
 
 ----
 
@@ -747,11 +748,11 @@ Après git commit && git push, on obtient cette arborescence.
 
 
 
-* `Flux` scrute le dépôt de _**🎸ROCKY**_, mais il s'attend à y trouver un fichier `kustomization.yaml`
-* dev1 doit donc y créer ce fichier
+- `Flux` scrute le dépôt de _**🎸ROCKY**_, mais il s'attend à y trouver un fichier `kustomization.yaml`
+- dev1 doit donc y créer ce fichier
 
 ```bash
-$ kustomize create --autodetect
+kustomize create --autodetect
 ```
 
 ----
@@ -799,8 +800,10 @@ EOF
 ## ⚠️ Limitations
 
 - Pour chaque nouveau dépôt applicatif, **ops** doit ajouter une source `Flux`
+
 - _**🎸ROCKY**_ est celui qui produit le `deployment.yaml`
-    * et donc, **ops** a peu de latitude pour configurer des comportements différents entre `staging` et `prod`
+    - et donc, **ops** a peu de latitude pour configurer des comportements différents entre `staging` et `prod`
+
 - ça veut dire aussi que **rocky** team est seule à décider de son architecture technique (service, base de données, etc.) ce qui peut être utile en TEST, moins réaliste en _**🚜PROD**_.
 
 ---
@@ -1231,3 +1234,5 @@ kubectl get secret --namespace kube-prometheus-stack kube-prometheus-stack-grafa
 ```
 
 ## And browse…
+
+---
