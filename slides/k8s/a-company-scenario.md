@@ -247,7 +247,7 @@ To do so, the _**🎸ROCKY**_ team requires
 
 ---
 
-## incoming Flux
+# incoming Flux
 
 💡 We'll use `Flux` so that deployments will be directly executed from inside the Kubernetes clusters.
 
