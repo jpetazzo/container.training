@@ -26,7 +26,7 @@
 
   - it should initially show a few milliseconds latency
 
-  - that will increase when we scale up
+  - that will increase when we scale up the number of `worker` Pods
 
   - it will also let us detect when the service goes "boom"
 
