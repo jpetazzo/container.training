@@ -16,4 +16,8 @@ exclude:
 - in-person
 
 content:
-  - k8s/a-company-scenario.md
+  - k8s/M6-START-a-company-scenario.md
+  # - k8s/M6-R01-flux_configure-ROCKY-deployment.md
+  # - k8S/M6-T01-TEST-cluster-creation.md
+  # - k8S/M6-T02-1-flux-overview.md
+  # - k8S/M6-T02-2-flux-install-TEST-cluster.md
