@@ -406,7 +406,7 @@ class: pic
   - all the NGINX containers would be on the same node
 
   - they would all have the same IP address
-    <br/>(resulting in `Address alreading in use` errors)
+    <br/>(resulting in `Address already in use` errors)
 
 ---
 
