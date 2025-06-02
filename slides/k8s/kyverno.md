@@ -644,7 +644,7 @@ class: extra-details
 *We can see the number of resources increased over time, as Kyverno added features.*
 
 ---
-I
+
 ## Strengths
 
 - Kyverno is very easy to install
