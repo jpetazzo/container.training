@@ -26,8 +26,8 @@ When a Service gets created...
 
 - We want to use a Kyverno `generate` ClusterPolicy
 
-- For step 1, check [Generate Resources](https://kyverno.io/docs/writing-policies/generate/) documentation
+- For step 1, check [Generate Resources](https://kyverno.io/docs/policy-types/cluster-policy/generate/) documentation
 
-- For step 2, check [Preconditions](https://kyverno.io/docs/writing-policies/preconditions/) documentation
+- For step 2, check [Preconditions](https://kyverno.io/docs/policy-types/cluster-policy/preconditions/) documentation
 
-- For step 3, check [External Data Sources](https://kyverno.io/docs/writing-policies/external-data-sources/) documentation
+- For step 3, check [External Data Sources](https://kyverno.io/docs/policy-types/cluster-policy/external-data-sources/) documentation
