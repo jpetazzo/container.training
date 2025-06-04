@@ -1,58 +1,56 @@
 # Using Kubernetes in an Enterprise-like scenario
 
-- 💪🏼 Okay. The former training modules explain each subject in-depth, and each feature one at-a-time
+- 💪🏼 Okay. Prior training modules provded detailed explainations of each topic
 
-- 🤯 The 1st tricky thing any `k8s` admin encounters is to choose and configure all these components to build a _Production-ready_ `k8s` cluster
+- 🤯 The 1st challenge any Kubernetes admin faces is choosing all these components to build a _Production-ready_ cluster
 
-- 🎯 This module precisely aims to play a scenario of a day-to-day ordinary workflow in companies and see what we'll have to do to build such a _Prod-ready_ Kubernetes cluster
+- 🎯 This module aims to simulate a day-to-day typical workflow in companies, exploring the steps needed to run containerized apps on such a _Prod-ready_ cluster
 
-- As we've done it before, we'll start to build/provision our cluster and then improve it by **adding features** one after another
+- We'll start by building our cluster and then enhance it by **adding features** one after another
 
 ---
 
 ## The plan
 
-In our company, we have 3 different teams, **_⚙️OPS_**, **_🎸ROCKY_** and **_🎬MOVY_**
+Our company consists of 3 teams: **_⚙️OPS_**, **_🎸ROCKY_** and **_🎬MOVY_**
 
-- **_⚙️OPS_** is the platform engineer building and configuring Kubernetes clusters
+- **_⚙️OPS_** is the platform engineering team responsible for building and configuring Kubernetes clusters
 
-- Both **_🎸ROCKY_** and **_🎬MOVY_** build Web apps that manage 💿 music albums
-    - **_🎸ROCKY_** builds a Web app managing _rock & pop_ albums
-    - **_🎬MOVY_** builds a Web app for _movie soundtrack_ albums
+- Both **_🎸ROCKY_** and **_🎬MOVY_** develop Web apps that manage 💿 music albums
+    - **_🎸ROCKY_** manages _rock & pop_ albums
+    - **_🎬MOVY_** handles _movie soundtrack_ albums
 
-- Each app is stored in its own git repository
+- Each app resides in its own `Git` repository
 
-- Both **_🎸ROCKY_** and **_🎬MOVY_** want to code, build package and deploy their applications onto a `Kubernetes` _cluster_ _in an autonomous way_
+- Both **_🎸ROCKY_** and **_🎬MOVY_** aim to code, build package and deploy their applications _in an autonomous way_
 
 ---
 
 ### Using 2 Kubernetes clusters
 
-**_⚙️OPS_** team will operate 2 `Kubernetes` clusters
+The **_⚙️OPS_** team manages 2 Kubernetes clusters
 
-- **_☁️CLOUDY_** is a managed cluster from a public Cloud provider.
-  - It comes with many features already configured when the cluster is delivered
+- **_☁️CLOUDY_** is a managed cluster from a public Cloud provider
+  - It comes with pre-configured features upon delivery
   - HA control plane
   - 2 dedicated worker nodes
-  - **_⚙️OPS_** will use `Scaleway Kapsule` to deploy it (but many other _KaaS_ are available…)
+  - The **_⚙️OPS_** team uses `Scaleway Kapsule` to deploy it (though other _KaaS_ options are available…)
   
-- **_🤘METAL_** is a cluster we install _from scratch_ on bare Linux servers.
-  - **_⚙️OPS_** team will need to configure many components on its own.
+- **_🤘METAL_** is a custom-built cluster installed on bare Linux servers
+  - The **_⚙️OPS_** team needs to configure many components on its own
   - HA control plane
   - 3 worker nodes (also hosting control plane components)
-  - **_⚙️OPS_** will use `k0s` to install it (but many other distros are available…)
+  - The **_⚙️OPS_** team uses `k0s` to install it (though other distros are available as well…)
 
 ---
 
 ### Using several envs for each dev team
 
-**_⚙️OPS_** team will create 2 environment for each dev team : for **testing** and **production** purpose
+The **_⚙️OPS_** team creates 2 environments for each dev team: **_⚗️TEST_** and **_🏭PROD_**
 
-- it should use tools to **industrialise creation** of both envs and both clusters
+- the setup for each env and cluster should adopt an automated and DRY approach to ensure configurations are consistent and to minimize maintainance
   
-- each cluster and each env has it's **own lifecycle** (the addition or configuration of extra components/features may be done on one env and not the other)
-  
-- configurations must be as DRY as possible (to avoid inconsistency and minimize configuration maintainance)
+- each cluster and each env has it's **own lifecycle** (adding an extra component/feature may be done on one env without impacting the other)
 
 ---
 
@@ -60,24 +58,24 @@ In our company, we have 3 different teams, **_⚙️OPS_**, **_🎸ROCKY_** and 
 
 Both **_🎸ROCKY_** and **_🎬MOVY_** teams should use **dedicated _"tenants"_** on each cluster/env
 
-- **_🎸ROCKY_** should be able to deploy, upgrade and configure its own app in its dedicated **namespace** without anybody else involved
+- the **_🎸ROCKY_** team should be able to deploy, upgrade and configure its app within its dedicated **namespace** without anybody else involved
 
 - and the same for **_🎬MOVY_**
 
-- neither conflict nor collision should be allowed between the 2 apps or the 2 teams.
+- neither team's deployments might interfere with the other, maintaining a clean and conflict-free environment
 
 ---
 
-## The application
+## Application overview
 
-- Both dev teams are developping an app to manage music albums
-  
-- This app is mostly based upon a demo app based upon `Spring` framework: spring-music
-  
+- Both dev teams are working on an app to manage music albums
+
+- This app is mostly based on a `Spring` framework demo called spring-music
+
 - This lab uses a dedicated fork [container.training-spring-music](https://github.com/Musk8teers/container.training-spring-music):
-  -  with 2 branches dedicated to our **_🎸ROCKY_** and **_🎬MOVY_** teams.
+  -  with 2 branches dedicated to the **_🎸ROCKY_** and **_🎬MOVY_** teams
 
-- The app is a 2-tiers app:
+- The app architecture consists of 2 tiers:
   - a `Java/Spring` Web app
   - a `PostgreSQL` database
 
@@ -85,7 +83,7 @@ Both **_🎸ROCKY_** and **_🎬MOVY_** teams should use **dedicated _"tenants"_
 
 ### 📂 specific file: application.yaml
 
-This is where we configure the application to use `PostgreSQL` database.  
+This is where we configure the application to connect to the `PostgreSQL` database.
 
 .lab[
 
@@ -112,26 +110,26 @@ This is where the album collection is initially loaded from the file [`album.jso
 
 ## 🚚 How to deploy?
 
-**_⚙️OPS_** team offers 2 deployment strategies that dev teams may use in an autonomous way:
+The **_⚙️OPS_** team offers 2 deployment strategies that dev teams can use autonomously:
 
-- **_🎸ROCKY_** will use a `Flux` _GitOps_ workflow based upon regular Kubernetes `YAML` resources
+- **_🎸ROCKY_** uses a `Flux` _GitOps_ workflow based on regular Kubernetes `YAML` resources
 
-- **_🎬MOVY_** will use a `Flux` _GitOps_ workflow based upon `Helm` charts
+- **_🎬MOVY_** uses a `Flux` _GitOps_ workflow based on `Helm` charts
 
 ---
 
 ## 🍱 What features?
 
 <!-- TODO: complete this slide when all the modules are there -->
-**_⚙️OPS_** team want its clusters to offers the _"best of breed"_ features to its users:
+The **_⚙️OPS_** team aims to provide clusters offering the following features to its users:
 
-- a network stack that is able to isolate workloads one from another
+- a network stack with efficient workload isolation
 
 - ingress and load-balancing capabilites
 
-- a decent monitoring stack
+- an enterprise-grade monitoring solution for real-time insights
 
-- policy rules automation to control the kind of Kubernetes resources that are requested by dev teams
+- automated policy rule enforcement to control Kubernetes resources requested by dev teams
 
 <!-- - HA PostgreSQL -->
 
@@ -149,7 +147,7 @@ This is where the album collection is initially loaded from the file [`album.jso
 
 - 2 Web apps Java/Spring + PostgreSQL: one for pop and rock albums, another for movie soundtrack albums
 
-- 2 deployment strategies: regular YAML resources + `Kustomize`, `Helm` charts
+- 2 deployment strategies: regular `YAML` resources + `Kustomize`, `Helm` charts
 
 
 > 💻 `Flux` is used both
@@ -177,17 +175,17 @@ gitGraph
     branch CLASSY order:4
 
     checkout OPS
-    commit id:'TEST cluster creation' tag:'T01'
+    commit id:'Flux install on CLOUDY cluster' tag:'T01'
     branch CLOUDY-cluster_TEST-env order:1
-    commit id:'FLUX install on TEST' tag:'T02'
+    commit id:'FLUX install on TEST' tag:'T02' type: HIGHLIGHT
 
     checkout OPS
-    commit id:'TEST cluster config.' tag:'T03'
+    commit id:'ROCKY config.' tag:'T03'
     checkout CLOUDY-cluster_TEST-env
-    merge OPS id:'setup of TEST cluster' tag:'T04'
+    merge OPS id:'ROCKY tenant creation' tag:'T04'
 
     checkout OPS
-    commit id:'FLUX config for ROCKY deployment' tag:'R01'
+    commit id:'ROCKY deploy. config.' tag:'R01'
 
     checkout CLOUDY-cluster_TEST-env
     merge OPS id:'FLUX ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
@@ -258,5 +256,3 @@ gitGraph
     checkout PROD-cluster
     merge OPS type: HIGHLIGHT
 </pre>
-
----
