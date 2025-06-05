@@ -314,6 +314,16 @@ class: extra-details
 
 class: extra-details
 
+## All the details...
+
+- [Documentation about ephemeral local storage](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#local-ephemeral-storage)
+
+- [Blog post about local storage capacity isolation](https://kubernetes.io/blog/2022/09/19/local-storage-capacity-isolation-ga/)
+
+---
+
+class: extra-details
+
 ## CPU and RAM reservation
 
 - Kubernetes passes resources requests and limits to the container engine
