@@ -18,30 +18,42 @@
 
 - The demos in this section require that we have access to our cluster's CA
 
-- This is easy if we are using a cluster deployed with `kubeadm`
+- *On a managed cluster:* the CA is very rarely exposed by the provider
 
-- Otherwise, we may or may not have access to the cluster's CA
+- *On a self-hosted cluster:* the CA should be available somewhere
+
+  (it may or may not be easy to find, though!)
 
 - We may or may not be able to use the CSR API instead
 
 ---
 
-## Check that we have access to the CA
+## Locate the CA key and cert
 
-- Make sure that you are logged on the node hosting the control plane
+- On a cluster deployed with `kubeadm`:
 
-  (if a cluster has been provisioned for you for a training, it's `node1`)
+  *the files will be in `/etc/kubernetes/pki` (on any control plane node)*
 
-.lab[
+- On a cluster deployed with something like k3s or k0s:
 
-- Check that the CA key is here:
+  *Check the docs to know where the CA files are*
+
+  *(and for extra credit, submit a PR to update this slide!)*
+
+- On a cluster deployed manually (like "dessine-moi un cluster"):
+
+  *the files will be wherever you did put them*
+
+---
+
+## Let's set environment variables
+
+- To normalize the commands in the next slides:
+  
   ```bash
-  sudo ls -l /etc/kubernetes/pki
+  CA_KEY=/.../ca.key
+  CA_CRT=/.../ca.crt
   ```
-
-]
-
-The output should include `ca.key` and `ca.crt`.
 
 ---
 
@@ -57,14 +69,14 @@ The output should include `ca.key` and `ca.crt`.
 
 .lab[
 
-- Check which CA is used by the Kubernetes API server:
+- On clusters deployed with `kubeadm`, this will show the location of the CA cert:
   ```bash
-  sudo grep crt /etc/kubernetes/manifests/kube-apiserver.yaml
+  sudo grep client-ca /etc/kubernetes/manifests/kube-apiserver.yaml
   ```
 
 ]
 
-This is the flag that we're looking for:
+This should output a flag like the following one:
 ```
 --client-ca-file=/etc/kubernetes/pki/ca.crt
 ```
@@ -111,7 +123,7 @@ This is the flag that we're looking for:
 - Generate the certificate:
   ```bash
   sudo openssl x509 -req \
-      -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key \
+      -CA $CA_CRT -CAkey $CA_KEY \
       -in user.csr -days 1 -set_serial 1234 > user.crt
   ```
 
@@ -167,11 +179,47 @@ We could also embed the key and certs with the `--embed-certs` option.
 
 ]
 
-Access will be denied, but we should see that were correctly *authenticated* as `jerome`.
+Does it work, or do we get a permission error?
+
+---
+
+## On a normal cluster
+
+- We should get a message like the following one:
+  ```
+  Error from server (Forbidden): pods is forbidden: User "jerome"
+  cannot list resource "pods" in API group "" in the namespace "default"
+  ```
+
+- This means:
+
+  *your user key and cert are valid (`User "jerome"`)...*
+
+  *...but you don't have permission to get pods yet*
+
+- We now need to grant permissions (e.g. with Roles and Rolebindings)
+
+---
+
+## On a cluster deployed manually
+
+- If we haven't enabled RBAC, then it will work
+
+  (because without RBAC, any valid certificate gives full access to the API)
+
+- We could (should?) enable RBAC!
+
+- But then we'll need to generate keys and certs for all API clients
+
+  (including, but not limited to, control plane components and kubelets)
 
 ---
 
 ## Granting permissions
+
+- If RBAC is enabled, we can give some permissions to our new user
+
+- The following example assumes a `kubeadm` cluster
 
 - Let's add some read-only permissions to the `devs` group (for instance)
 
@@ -211,6 +259,16 @@ Access will be denied, but we should see that were correctly *authenticated* as 
   ```
 
 ]
+
+---
+
+## `kubeadm kubeconfig user`
+
+- On `kubeadm` clusters, there is a command to automate key and certificate generation
+
+- `kubeadm kubeconfig user` will issue a key, certificate, and output the kubeconfig file
+
+- It will access CA key and cert in `/etc/kubernetes/pki/` directly
 
 ???
 
