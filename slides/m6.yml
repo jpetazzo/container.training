@@ -1,0 +1,23 @@
+title: |
+  Using Kubernetes
+  in an Enterprise-like scenario
+
+chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+#chat: "[Gitter](https://gitter.im/jpetazzo/workshop-yyyymmdd-city)"
+
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- in-person
+
+content:
+  - k8s/M6-START-a-company-scenario.md
+  - k8S/M6-T02-flux-install.md
+  # - k8s/M6-R01-flux_configure-ROCKY-deployment.md
+  # - k8S/M6-T01-TEST-cluster-creation.md
+  # - k8S/M6-T02-1-flux-overview.md
