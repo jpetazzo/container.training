@@ -1,146 +1,108 @@
 # Static pods
 
-- Hosting the Kubernetes control plane on Kubernetes has advantages:
+Question: can we host the control plane of a cluster *on the cluster itself?*
 
-  - we can use Kubernetes' replication and scaling features for the control plane
+- To create a Pod, we need to communicate with the API server
 
-  - we can leverage rolling updates to upgrade the control plane
+- The API server needs etcd to be up
 
-- However, there is a catch:
+- Then the Pod needs to be bound to a node by the scheduler
 
-  - deploying on Kubernetes requires the API to be available
+- So... all these things need to be running already!
 
-  - the API won't be available until the control plane is deployed
+- Even if the Pod already exists, we still need API server and etcd
 
-- How can we get out of that chicken-and-egg problem?
-
----
-
-## A possible approach
-
-- Since each component of the control plane can be replicated...
-
-- We could set up the control plane outside of the cluster
-
-- Then, once the cluster is fully operational, create replicas running on the cluster
-
-- Finally, remove the replicas that are running outside of the cluster
-
-*What could possibly go wrong?*
+  (so that kubelet can connect to the API server and "know" about the Pod)
 
 ---
 
-## Sawing off the branch you're sitting on
+## Static pods
 
-- What if anything goes wrong?
+Solution: run (parts of) the control plane in *static pods!*
 
-  (During the setup or at a later point)
+- Normally, kubelet queries the API server to know what pods to run
 
-- Worst case scenario, we might need to:
+- Additionally, we can tell kubelet to run pods:
 
-  - set up a new control plane (outside of the cluster)
+  - by storing manifests in a directory (`--pod-manifest-path`)
 
-  - restore a backup from the old control plane
+  - by retrieving manifests from an HTTP server (`--manifest-url`)
 
-  - move the new control plane to the cluster (again)
+- These manifests should be normal pod manifests
 
-- This doesn't sound like a great experience
+  (make sure to include the namespace in the metadata block!)
 
----
-
-## Static pods to the rescue
-
-- Pods are started by kubelet (an agent running on every node)
-
-- To know which pods it should run, the kubelet queries the API server
-
-- The kubelet can also get a list of *static pods* from:
-
-  - a directory containing one (or multiple) *manifests*, and/or
-
-  - a URL (serving a *manifest*)
-
-- These "manifests" are basically YAML definitions
-
-  (As produced by `kubectl get pod my-little-pod -o yaml`)
+- kubelet will append the node name after the pod name
 
 ---
 
-## Static pods are dynamic
+## How and when kubelet runs static pods
 
-- Kubelet will periodically reload the manifests
+- kubelet runs static pods "no matter what"
 
-- It will start/stop pods accordingly
+  (even if it can't connect to the API server, or if no API server is configured)
 
-  (i.e. it is not necessary to restart the kubelet after updating the manifests)
+- When there is no API server configuration, that's called "standalone mode"
 
-- When connected to the Kubernetes API, the kubelet will create *mirror pods*
+- Almost nothing can prevent kubelet from running these pods
 
-- Mirror pods are copies of the static pods
+  (e.g. admission controllers, pod security settings... won't apply)
 
-  (so they can be seen with e.g. `kubectl get pods`)
+- kubelet monitors the manifest path (and/or the manifest URL)
 
----
+- If manifests are deleted: their pods are destroyed
 
-## Bootstrapping a cluster with static pods
-
-- We can run control plane components with these static pods
-
-- They can start without requiring access to the API server
-
-- Once they are up and running, the API becomes available
-
-- These pods are then visible through the API
-
-  (We cannot upgrade them from the API, though)
-
-*This is how kubeadm has initialized our clusters.*
+- If manifests are modified: their pods are destroyed and recreated
 
 ---
 
-## Static pods vs normal pods
+## Mirror pods
 
-- The API only gives us read-only access to static pods
+- Static pods remain running even after API server connection is up
 
-- We can `kubectl delete` a static pod...
+- Once the API server is up, kubelet will create *mirror pods*
 
-  ...But the kubelet will re-mirror it immediately
+- Mirror pods represent the static pods that are running
 
-- Static pods can be selected just like other pods
+.warning[Deleting a mirror pod has no effect on the static pod!]
 
-  (So they can receive service traffic)
+- kubelet will immediately recreate the mirror pod if it is deleted
 
-- A service can select a mixture of static and other pods
+.warning[Admission control can block the mirror pod, but not the static pod!]
 
----
-
-## From static pods to normal pods
-
-- Once the control plane is up and running, it can be used to create normal pods
-
-- We can then set up a copy of the control plane in normal pods
-
-- Then the static pods can be removed
-
-- The scheduler and the controller manager use leader election
-
-  (Only one is active at a time; removing an instance is seamless)
-
-- Each instance of the API server adds itself to the `kubernetes` service
-
-- Etcd will typically require more work!
+- Since kubelet runs the static pod even if there is no connection to the API server
 
 ---
 
-## From normal pods back to static pods
+## Example
 
-- Alright, but what if the control plane is down and we need to fix it?
+- `kubeadm` leverages static pods to run the control plane
 
-- We restart it using static pods!
+  (etcd, API server, controller manager, scheduler)
 
-- This can be done automatically with a “pod checkpointer”
+- It "renders" a number of YAML manifests to `/etc/kubernetes/manifests`
+
+- This is the cluster boot sequence:
+
+  - machine boots
+
+  - kubelet is started (typically by systemd)
+
+  - kubelet reads static pod manifests and run them
+
+  - control plane is up, yay!
+
+---
+
+class: extra-details
+
+## Pod checkpointer
+
+- This pattern isn't used anymore, but perhaps it can provide inspiration
 
 - The pod checkpointer automatically generates manifests of running pods
+
+  (if they have specific labels/annotations)
 
 - The manifests are used to restart these pods if API contact is lost
 
@@ -150,95 +112,6 @@
 
 [openshift/pod-checkpointer-operator]: https://github.com/openshift/pod-checkpointer-operator
 [bootkube checkpointer]: https://github.com/kubernetes-retired/bootkube/blob/master/cmd/checkpoint/README.md
-
----
-
-## Where should the control plane run?
-
-*Is it better to run the control plane in static pods, or normal pods?*
-
-- If I'm a *user* of the cluster: I don't care, it makes no difference to me
-
-- What if I'm an *admin*, i.e. the person who installs, upgrades, repairs... the cluster?
-
-- If I'm using a managed Kubernetes cluster (AKS, EKS, GKE...) it's not my problem
-
-  (I'm not the one setting up and managing the control plane)
-
-- If I already picked a tool (kubeadm, kops...) to set up my cluster, the tool decides for me
-
-- What if I haven't picked a tool yet, or if I'm installing from scratch?
-
-  - static pods = easier to set up, easier to troubleshoot, less risk of outage
-
-  - normal pods = easier to upgrade, easier to move (if nodes need to be shut down)
-
----
-
-## Static pods in action
-
-- On our clusters, the `staticPodPath` is `/etc/kubernetes/manifests`
-
-.lab[
-
-- Have a look at this directory:
-  ```bash
-  ls -l /etc/kubernetes/manifests
-  ```
-
-]
-
-We should see YAML files corresponding to the pods of the control plane.
-
----
-
-class: static-pods-exercise
-
-## Running a static pod
-
-- We are going to add a pod manifest to the directory, and kubelet will run it
-
-.lab[
-
-- Copy a manifest to the directory:
-  ```bash
-  sudo cp ~/container.training/k8s/just-a-pod.yaml /etc/kubernetes/manifests
-  ```
-
-- Check that it's running:
-  ```bash
-  kubectl get pods
-  ```
-
-]
-
-The output should include a pod named `hello-node1`.
-
----
-
-class: static-pods-exercise
-
-## Remarks
-
-In the manifest, the pod was named `hello`.
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: hello
-  namespace: default
-spec:
-  containers:
-  - name: hello
-    image: nginx
-```
-
-The `-node1` suffix was added automatically by kubelet.
-
-If we delete the pod (with `kubectl delete`), it will be recreated immediately.
-
-To delete the pod, we need to delete (or move) the manifest file.
 
 ???
 
