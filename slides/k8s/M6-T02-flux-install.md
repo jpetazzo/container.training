@@ -9,12 +9,21 @@ This managed cluster comes preinstalled with specific features:
 - specific _Storage Classes_ based on Scaleway _IaaS_ block storage offerings
 - a `Cilium` _CNI_ stack already set up
 
+---
+
+## Accessing the managed Kubernetes cluster
+
 To access our cluster, we'll connect via [`shpod`](https://github.com/jpetazzo/shpod)
 
 .lab[
 
+- If you already have a kubectl on your desktop computer
 ```bash
 kubectl run shpod --image=jpetazzo/shpod --overrides='{ "spec": { "serviceAccountName": "" } }'
+```
+- or directly via ssh (see: https://github.com/jpetazzo/shpod)
+```bash
+ssh -p myPort k8s@myShpodSvcIpAddress
 ```
 
 ]
@@ -45,10 +54,10 @@ Before installation, we need to check that:
 .lab[
 
 ```bash
-shpod:~# flux --version
+k8s@shpod:~$ flux --version
 flux version 2.5.1
 
-shpod:~# flux check --pre
+k8s@shpod:~$ flux check --pre
 ► checking prerequisites
 ✔ Kubernetes 1.32.3 >=1.30.0-0
 ✔ prerequisites checks passed
@@ -85,43 +94,45 @@ class: pic
 
 ### Creating dedicated `Github` repo to host Flux config
 
+.lab[
+
 - let's replace the `GITHUB_TOKEN` value by our _Personal Access Token_
 - and the `GITHUB_REPO` value by our specific repository name
 
-.lab[
-
 ```bash
-shpod:~# \
-  export GITHUB_TOKEN="my-token" &&                     \
-  export GITHUB_USER="container-training-fleet" &&      \
-  export GITHUB_REPO="fleet-config-using-flux-XXXXX" && \
-  flux bootstrap github         \
-    --owner=${GITHUB_USER}      \
-    --repository=${GITHUB_REPO} \
-    --team=OPS                  \
-    --team=ROCKY --team=MOVY    \
-    --path=clusters/CLOUDY
+k8s@shpod:~$ export GITHUB_TOKEN="my-token" &&         \
+      export GITHUB_USER="container-training-fleet" && \
+      export GITHUB_REPO="fleet-config-using-flux-XXXXX"
+
+k8s@shpod:~$ flux bootstrap github \
+      --owner=${GITHUB_USER}       \
+      --repository=${GITHUB_REPO}  \
+      --team=OPS                   \
+      --team=ROCKY --team=MOVY     \
+      --path=clusters/CLOUDY
 ```
 ]
 
 ---
 
+class: extra-details
+
 Here is the result
 
 ```bash
-✔ repository "https://github.com/container-training-fleet/fleet-config-using-flux-lpiot" created                                                                                                                                                        
+✔ repository "https://github.com/container-training-fleet/fleet-config-using-flux-XXXXX" created                                                                                                                                                        
 ► reconciling repository permissions
 ✔ granted "maintain" permissions to "OPS"
 ✔ granted "maintain" permissions to "ROCKY"
 ✔ granted "maintain" permissions to "MOVY"
 ► reconciling repository permissions
 ✔ reconciled repository permissions
-► cloning branch "main" from Git repository "https://github.com/container-training-fleet/fleet-config-using-flux-lpiot.git"
+► cloning branch "main" from Git repository "https://github.com/container-training-fleet/fleet-config-using-flux-XXXXX.git"
 ✔ cloned repository
 ► generating component manifests
 ✔ generated component manifests
 ✔ committed component manifests to "main" ("7c97bdeb5b932040fd8d8a65fe1dc84c66664cbf")
-► pushing component manifests to "https://github.com/container-training-fleet/fleet-config-using-flux-lpiot.git"
+► pushing component manifests to "https://github.com/container-training-fleet/fleet-config-using-flux-XXXXX.git"
 ✔ component manifests are up to date
 ► installing components in "flux-system" namespace
 ✔ installed components
@@ -129,13 +140,13 @@ Here is the result
 ► determining if source secret "flux-system/flux-system" exists
 ► generating source secret
 ✔ public key: ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzODQAAABhBFqaT8B8SezU92qoE+bhnv9xONv9oIGuy7yVAznAZfyoWWEVkgP2dYDye5lMbgl6MorG/yjfkyo75ETieAE49/m9D2xvL4esnSx9zsOLdnfS9W99XSfFpC2n6soL+Exodw==
-✔ configured deploy key "flux-system-main-flux-system-./clusters/CLOUDY" for "https://github.com/container-training-fleet/fleet-config-using-flux-lpiot"
+✔ configured deploy key "flux-system-main-flux-system-./clusters/CLOUDY" for "https://github.com/container-training-fleet/fleet-config-using-flux-XXXXX"
 ► applying source secret "flux-system/flux-system"
 ✔ reconciled source secret
 ► generating sync manifests
 ✔ generated sync manifests
 ✔ committed sync manifests to "main" ("11035e19cabd9fd2c7c94f6e93707f22d69a5ff2")
-► pushing sync manifests to "https://github.com/container-training-fleet/fleet-config-using-flux-lpiot.git"
+► pushing sync manifests to "https://github.com/container-training-fleet/fleet-config-using-flux-XXXXX.git"
 ► applying sync manifests
 ✔ reconciled sync configuration
 ◎ waiting for GitRepository "flux-system/flux-system" to be reconciled
@@ -185,17 +196,19 @@ Let's review our `Flux` configuration files we've created and pushed into the `G
 ---
 
 class: pic
-
-![Flux architecture](images/M6-flux-schema.png)
+<!-- FIXME: wrong schema -->
+![Flux architecture](images/M6-flux-controllers.png)
 
 ---
+
+class: extra-details
 
 ### Flux resources 1/2
 
 .lab[
 
 ```bash
-shpod:~# kubectl get all --namespace flux-system
+k8s@shpod:~$ kubectl get all --namespace flux-system
 NAME                                           READY   STATUS    RESTARTS   AGE
 pod/helm-controller-b6767d66-h6qhk             1/1     Running   0          5m
 pod/kustomize-controller-57c7ff5596-94rnd      1/1     Running   0          5m
@@ -213,12 +226,14 @@ service/webhook-receiver          ClusterIP   10.96.28.236     <none>        80/
 
 ---
 
+class: extra-details
+
 ### Flux resources 2/2
 
 .lab[
 
 ```bash
-shpod:~# kubectl get all --namespace flux-system
+k8s@shpod:~$ kubectl get all --namespace flux-system
 (…)
 NAME                                      READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/helm-controller           1/1     1            1           5m
@@ -247,12 +262,14 @@ replicaset.apps/source-controller-6ff87cb475         1         1         1      
 
 ---
 
+class: extra-details
+
 ### Flux resources that have been created
 
 .lab[
 
 ```bash
-shpod:~# flux get all --all-namespaces
+k8s@shpod:~$ flux get all --all-namespaces
 NAMESPACE       NAME                            REVISION                SUSPENDED
       READY   MESSAGE
 flux-system     gitrepository/flux-system       main@sha1:d48291a8      False
@@ -303,6 +320,8 @@ The `Flux` component named `kustomize controller` look for `Kustomize` resources
 
 ---
 
+class: extra-details
+
 ### 2 different kustomization resources
 
 ⚠️ `Flux` uses 2 distinct resources with `kind: kustomization`
@@ -319,7 +338,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1 group
 kind: Kustomization
 ```
 
-describes where `Flux kustomize-controller` look for a `kustomization.yaml` file in a given `Flux` code-based source
+describes where `Flux kustomize-controller` looks for a `kustomization.yaml` file in a given `Flux` code-based source
 
 ---
 
