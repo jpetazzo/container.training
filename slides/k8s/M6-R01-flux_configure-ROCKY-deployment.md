@@ -325,3 +325,72 @@ What happens if the **_🎸ROCKY_** team upgrades its branch to deploy `v1.0.1` 
 ## _tenant_ **_🏭PROD_**
 
 💡 **_🏭PROD_** _tenant_ is still waiting for its `Flux` configuration, but don't bother for it right now.
+
+---
+
+### 🗺️ Where are we in our scenario?
+
+<pre class="mermaid">
+%%{init:
+    {
+      "theme": "default",
+      "gitGraph": {
+        "mainBranchName": "OPS",
+        "mainBranchOrder": 0
+      }
+    }
+}%%
+gitGraph
+    commit id:"0" tag:"start"
+    branch ROCKY order:3
+    branch MOVY order:4
+    branch YouRHere order:5
+
+    checkout OPS
+    commit id:'Flux install on CLOUDY cluster' tag:'T01'
+    branch TEST-env order:1
+    commit id:'FLUX install on TEST' tag:'T02' type: HIGHLIGHT
+
+    checkout OPS
+    commit id:'ROCKY config.' tag:'T03'
+    commit id:'namespace isolation by RBAC'
+    checkout TEST-env
+    merge OPS id:'ROCKY tenant creation' tag:'T04'
+
+    checkout OPS
+    commit id:'ROCKY deploy. config.' tag:'R01'
+
+    checkout TEST-env
+    merge OPS id:'FLUX ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
+
+    checkout ROCKY
+    commit id:'ROCKY' tag:'v1.0.0'
+
+    checkout TEST-env
+    merge ROCKY tag:'ROCKY v1.0.0'
+
+    checkout YouRHere
+    commit id:'x'
+    checkout OPS
+    merge YouRHere id:'YOU ARE HERE'
+
+    checkout OPS
+    commit id:'ROCKY patch for ingress config.' tag:'R03'
+    checkout TEST-env
+    merge OPS id:'ingress config. for ROCKY app'
+
+    checkout OPS
+    commit id:'Ingress-controller config.' tag:'T05'
+    checkout TEST-env
+    merge OPS id:'Ingress-controller install' type: HIGHLIGHT tag:'T06'
+
+    checkout ROCKY
+    commit id:'blue color' tag:'v1.0.1'
+    checkout TEST-env
+    merge ROCKY tag:'ROCKY v1.0.1'
+
+    checkout ROCKY
+    commit id:'pink color' tag:'v1.0.2'
+    checkout TEST-env
+    merge ROCKY tag:'ROCKY v1.0.2'
+</pre>
