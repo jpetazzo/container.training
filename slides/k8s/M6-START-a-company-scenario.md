@@ -1,56 +1,134 @@
-# Using Kubernetes in an Enterprise-like scenario
+# Kubernetes in production — <br/>an end-to-end example
 
-- 💪🏼 Okay. Prior training modules provded detailed explainations of each topic
+- Previous training modules focused on individual topics
 
-- 🤯 The 1st challenge any Kubernetes admin faces is choosing all these components to build a _Production-ready_ cluster
+  (e.g. RBAC, network policies, CRDs, Helm...)
 
-- 🎯 This module aims to simulate a day-to-day typical workflow in companies, exploring the steps needed to run containerized apps on such a _Prod-ready_ cluster
+- We will now show how to put everything together to deploy apps in production
 
-- We'll start by building our cluster and then enhance it by **adding features** one after another
+  (dealing with typical challenges like: multiple apps, multiple teams, multiple clusters...)
 
----
+- Our first challenge will be to pick and choose which components to use
 
-## The plan
+  (among the vast [Cloud Native Landscape](https://landscape.cncf.io/))
 
-Our company consists of 3 teams: **_⚙️OPS_**, **_🎸ROCKY_** and **_🎬MOVY_**
+- We'll start with a basic Kubernetes cluster (on cloud or on premises)
 
-- **_⚙️OPS_** is the platform engineering team responsible for building and configuring Kubernetes clusters
-
-- Both **_🎸ROCKY_** and **_🎬MOVY_** develop Web apps that manage 💿 music albums
-    - **_🎸ROCKY_** manages _rock & pop_ albums
-    - **_🎬MOVY_** handles _movie soundtrack_ albums
-
-- Each app resides in its own `Git` repository
-
-- Both **_🎸ROCKY_** and **_🎬MOVY_** aim to code, build package and deploy their applications _in an autonomous way_
+- We'll and enhance it by adding features one at a time
 
 ---
 
-### Using 2 Kubernetes clusters
+## The cast
 
-The **_⚙️OPS_** team manages 2 Kubernetes clusters
+There are 3 teams in our company:
 
-- **_☁️CLOUDY_** is a managed cluster from a public Cloud provider
-  - It comes with pre-configured features upon delivery
-  - HA control plane
-  - 2 dedicated worker nodes
-  - The **_⚙️OPS_** team uses `Scaleway Kapsule` to deploy it (though other _KaaS_ options are available…)
+- **_⚙️OPS_** is the platform engineering team
+
+  - they're responsible for building and configuring Kubernetes clusters
+
+- the **_🎸ROCKY_** team develops and manages the **_🎸ROCKY_** app
+
+  - that app manages a collection of _rock & pop_ albums
+
+  - it's deployed with plain YAML manifests
+
+- the **_🎬MOVY_** team develops and manages the **_🎬MOVY_** app
+
+  - that app manages a collection of _movie soundtrack_ albums
+
+  - it's deployed with Helm charts
+
+---
+
+## Code and team organization
+
+- **_🎸ROCKY_** and **_🎬MOVY_** reside in separate git repositories
+
+- Each team can write code, build package, and deploy their applications:
+
+  - independently
+    <br/>(= without having to worry about what's happening in the other repo)
+
+  - autonomously
+    <br/>(= without having to synchronize or obtain privileges from another team)
+
+---
+
+## Cluster organization
+
+The **_⚙️OPS_** team manages 2 Kubernetes clusters:
+
+- **_☁️CLOUDY_**: managed cluster from a public cloud provider
+
+- **_🤘METAL_**: custom-built cluster installed on bare Linux servers
+
+Let's see the differences between these clusters.
+
+---
+
+## **_☁️CLOUDY_** cluster
+
+- Managed cluster from a public cloud provider ("Kubernetes-as-a-Service")
+
+- HA control plane deployed and managed by the cloud provider
+
+- Two worker nodes (potentially with cluster autoscaling)
+
+- Usually comes pre-installed with some basic features
+
+  (e.g. metrics-server, CNI, CSI, sometimes an ingress controller)
+
+- Requires extra components to be production-ready
+
+  (e.g. Flux or other gitops pipeline, observability...)
+
+- Example: [Scaleway Kapsule][kapsule] (but many other KaaS options are available)
+
+[kapsule]: https://www.scaleway.com/en/kubernetes-kapsule/
+
+---
+
+## **_🤘METAL_** cluster
+
+- Custom-built cluster installed on bare Linux servers
+
+- HA control plane deployed and managed by the **_⚙️OPS_** team
+
+- 3 nodes
+
+  - in our example, the nodes will run both the control plane and our apps
+
+  - it is more typical to use dedicated control plane nodes
+    <br/>(example: 3 control plane nodes + at least 3 worker nodes)
+
+- Comes with even less pre-installed components than **_☁️CLOUDY_**
+
+  (requiring more work from our **_⚙️OPS_** team)
+
+- Example: we'll use [k0s] (but many other distros are available)
+
+[k0s]: https://k0sproject.io/
+
+---
+
+## **_⚗️TEST_** and **_🏭PROD_** 
+
+- The **_⚙️OPS_** team creates 2 environments for each dev team
+
+  (**_⚗️TEST_** and **_🏭PROD_**)
+
+- These environments exist on both clusters
+
+  (meaning 2 apps × 2 clusters × 2 envs = 8 envs total)
+
+- The setup for each env and cluster should follow DRY principles
+
+  (to ensure configurations are consistent and minimize maintenance)
   
-- **_🤘METAL_** is a custom-built cluster installed on bare Linux servers
-  - The **_⚙️OPS_** team needs to configure many components on its own
-  - HA control plane
-  - 3 worker nodes (also hosting control plane components)
-  - The **_⚙️OPS_** team uses `k0s` to install it (though other distros are available as well…)
+- Each cluster and each env has its own lifecycle
 
----
-
-### Using several envs for each dev team
-
-The **_⚙️OPS_** team creates 2 environments for each dev team: **_⚗️TEST_** and **_🏭PROD_**
-
-- the setup for each env and cluster should adopt an automated and DRY approach to ensure configurations are consistent and to minimize maintainance
-  
-- each cluster and each env has it's **own lifecycle** (adding an extra component/feature may be done on one env without impacting the other)
+  (= it should be possible to deploy, add an extra components/feature...
+  <br/>on one env without impacting the other)
 
 ---
 
