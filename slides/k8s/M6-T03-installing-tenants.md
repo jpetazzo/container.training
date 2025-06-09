@@ -46,13 +46,13 @@ Creating the **_⚗️TEST_** tenant
 
 ```bash
 shpod:~# cd fleet-config-using-flux-XXXXX/
-shpod:~/fleet-config-using-flux-lpiot# flux create kustomization tenants \
-    --namespace=flux-system            \
-    --source=GitRepository/flux-system \
-    --path ./tenants/test              \
-    --prune                            \
-    --interval=1m                      \
-    --export >> clusters/CLOUDY/tenants.yaml
+shpod:~/fleet-config-using-flux-lpiot#  \
+  flux create kustomization tenant-test \
+    --namespace=flux-system             \
+    --source=GitRepository/flux-system  \
+    --path ./tenants/test               \
+    --interval=1m                       \
+    --prune --export >> clusters/CLOUDY/tenants.yaml
 ```
 
 ]
@@ -66,13 +66,13 @@ Then we create the **_🏭PROD_** tenant
 .lab[
 
 ```bash
-shpod:~/fleet-config-using-flux-lpiot# flux create kustomization tenants \
-    --namespace=flux-system            \
-    --source=GitRepository/flux-system \
-    --path ./tenants/prod              \
-    --prune                            \
-    --interval=3m                      \
-    --export >> clusters/CLOUDY/tenants.yaml
+shpod:~/fleet-config-using-flux-lpiot#  \
+  flux create kustomization tenant-prod \
+    --namespace=flux-system             \
+    --source=GitRepository/flux-system  \
+    --path ./tenants/prod               \
+    --interval=3m                       \
+    --prune --export >> clusters/CLOUDY/tenants.yaml
 ```
 
 ]
@@ -104,7 +104,7 @@ flux-system     gitrepository/flux-system       main@sha1:4db19114      False
       True    stored artifact for revision 'main@sha1:4db19114'
 
 NAMESPACE       NAME                            REVISION                SUSPENDED
-      READY   MESSAGE                                 
+      READY   MESSAGE
 flux-system     kustomization/flux-system       main@sha1:d48291a8      False
       False   kustomize build failed: accumulating resources: accumulation err='accumulating resources from './tenants.yaml': may not add resource with an already registered id: Kustomization.v1.kustomize.toolkit.fluxcd.io/tenants.flux-system': must build at directory: '/tmp/kustomization-689086759/clusters/CLOUDY/tenants.yaml': file is not directory
 ```

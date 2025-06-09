@@ -91,10 +91,11 @@ class: pic
 .lab[
 
 ```bash
-shpod:~# export GITHUB_TOKEN="my-token"
-shpod:~# export GITHUB_USER="container-training-fleet"
-shpod:~# export GITHUB_REPO="fleet-config-using-flux-XXXXX"
-shpod:~# flux bootstrap github  \
+shpod:~# \
+  export GITHUB_TOKEN="my-token" &&                     \
+  export GITHUB_USER="container-training-fleet" &&      \
+  export GITHUB_REPO="fleet-config-using-flux-XXXXX" && \
+  flux bootstrap github         \
     --owner=${GITHUB_USER}      \
     --repository=${GITHUB_REPO} \
     --team=OPS                  \
