@@ -294,7 +294,7 @@ flux-system     kustomization/flux-system       main@sha1:d48291a8      False
   - ensuring proper access and permissions
 
 2. It locally generates `YAML` files for desired `Flux` resources so that we just need to `git push` them
-  - tenants
+  - _tenants_
   - sources
   - …
 
