@@ -24,11 +24,11 @@ While basic `Flux` behavior is to use a single configuration directory applied b
 
 Several tenants are created
 - per env
-  - for **_⚗️TEST_**
-  - and **_🏭PROD_**
+    - for **_⚗️TEST_**
+    - and **_🏭PROD_**
 - per team
-  - for **_🎸ROCKY_**
-  - and **_🎬MOVY_**
+    - for **_🎸ROCKY_**
+    - and **_🎬MOVY_**
 
 ---
 
@@ -38,21 +38,32 @@ class: pic
 
 ---
 
+### Flux CLI works locally
+
+First, we have to **locally** clone your `Flux` configuration `Github` repository
+
+- create an ssh key pair
+- add the **public** key to your `Github` repository (**with write access**)
+- and git clone the repository
+
+---
+
 ### The command line 1/2
 
 Creating the **_⚗️TEST_** tenant
 
 .lab[
 
+- ⚠️ Think about renaming the repo with your own suffix
 ```bash
-shpod:~# cd fleet-config-using-flux-XXXXX/
-shpod:~/fleet-config-using-flux-lpiot# flux create kustomization tenants \
-    --namespace=flux-system            \
-    --source=GitRepository/flux-system \
-    --path ./tenants/test              \
-    --prune                            \
-    --interval=1m                      \
-    --export >> clusters/CLOUDY/tenants.yaml
+k8s@shpod:~$ cd fleet-config-using-flux-XXXXX/
+k8s@shpod:~/fleet-config-using-flux-XXXXX$     \
+    flux create kustomization tenant-test      \
+        --namespace=flux-system                \
+        --source=GitRepository/flux-system     \
+        --path ./tenants/test                  \
+        --interval=1m                          \
+        --prune --export >> clusters/CLOUDY/tenants.yaml
 ```
 
 ]
@@ -66,13 +77,13 @@ Then we create the **_🏭PROD_** tenant
 .lab[
 
 ```bash
-shpod:~/fleet-config-using-flux-lpiot# flux create kustomization tenants \
-    --namespace=flux-system            \
-    --source=GitRepository/flux-system \
-    --path ./tenants/prod              \
-    --prune                            \
-    --interval=3m                      \
-    --export >> clusters/CLOUDY/tenants.yaml
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
+    flux create kustomization tenant-prod  \
+        --namespace=flux-system            \
+        --source=GitRepository/flux-system \
+        --path ./tenants/prod              \
+        --interval=3m                      \
+        --prune --export >> clusters/CLOUDY/tenants.yaml
 ```
 
 ]
@@ -97,16 +108,20 @@ Let's review the `fleet-config-using-flux-XXXXX/clusters/CLOUDY/tenants.yaml` fi
 .lab[
 
 ```bash
-shpod:~/fleet-config-using-flux-lpiot# flux get all
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux get all
 NAMESPACE       NAME                            REVISION                SUSPENDED
-      READY   MESSAGE
-flux-system     gitrepository/flux-system       main@sha1:4db19114      False
-      True    stored artifact for revision 'main@sha1:4db19114'
+    READY   MESSAGE
+flux-system     gitrepository/flux-system       main@sha1:0466652e      False
+    True    stored artifact for revision 'main@sha1:0466652e'
 
 NAMESPACE       NAME                            REVISION                SUSPENDED
-      READY   MESSAGE                                 
-flux-system     kustomization/flux-system       main@sha1:d48291a8      False
-      False   kustomize build failed: accumulating resources: accumulation err='accumulating resources from './tenants.yaml': may not add resource with an already registered id: Kustomization.v1.kustomize.toolkit.fluxcd.io/tenants.flux-system': must build at directory: '/tmp/kustomization-689086759/clusters/CLOUDY/tenants.yaml': file is not directory
+    READY   MESSAGE
+kustomization/flux-system       main@sha1:0466652e      False           True
+    Applied revision: main@sha1:0466652e
+kustomization/tenant-prod                               False           False
+    kustomization path not found: stat /tmp/kustomization-417981261/tenants/prod: no such file or directory
+kustomization/tenant-test                               False           False
+    kustomization path not found: stat /tmp/kustomization-2532810750/tenants/test: no such file or directory
 ```
 
 ]
