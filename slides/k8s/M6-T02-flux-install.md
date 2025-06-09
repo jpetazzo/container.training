@@ -19,11 +19,12 @@ To access our cluster, we'll connect via [`shpod`](https://github.com/jpetazzo/s
 
 - If you already have a kubectl on your desktop computer
 ```bash
-kubectl run shpod --image=jpetazzo/shpod --overrides='{ "spec": { "serviceAccountName": "" } }'
+kubectl -n shpod run shpod --image=jpetazzo/shpod
+kubectl -n shpod exec -it shpod -- bash
 ```
-- or directly via ssh (see: https://github.com/jpetazzo/shpod)
+- or directly via ssh
 ```bash
-ssh -p myPort k8s@myShpodSvcIpAddress
+ssh -p myPort k8s@mySHPODSvcIpAddress
 ```
 
 ]
