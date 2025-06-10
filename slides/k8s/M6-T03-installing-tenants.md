@@ -5,7 +5,7 @@
 The **_⚙️OPS_** team uses `Flux` with a _GitOps_ code base to:
 - configure the clusters
 - deploy tools and components to extend the clusters capabilites
-- configure _GitOps_ workflow for dev teams in **dedicated and isolated tenants**
+- configure _GitOps_ workflow for dev teams in **dedicated and isolated _tenants_**
 
 The **_🎸ROCKY_** team uses `Flux` to deploy every new release of its app, by detecting every new `git push` events happening in its app `Github` repository
 
@@ -14,15 +14,15 @@ The **_🎬MOVY_** team uses `Flux` to deploy every new release of its app, pack
 
 ---
 
-## Creating tenants with Flux
+## Creating _tenants_ with Flux
 
 While basic `Flux` behavior is to use a single configuration directory applied by a cluster-wide role…
 
 … it can also enable _multi-tenant_ configuration by:
-- creating dedicated directories for each tenant in its configuration code base
-- and using a dedicated `ServiceAccount` with limited permissions to operate in each tenant
+- creating dedicated directories for each _tenant_ in its configuration code base
+- and using a dedicated `ServiceAccount` with limited permissions to operate in each _tenant_
 
-Several tenants are created
+Several _tenants_ are created
 - per env
     - for **_⚗️TEST_**
     - and **_🏭PROD_**
@@ -50,7 +50,7 @@ First, we have to **locally** clone your `Flux` configuration `Github` repositor
 
 ### The command line 1/2
 
-Creating the **_⚗️TEST_** tenant
+Creating the **_⚗️TEST_** _tenant_
 
 .lab[
 
@@ -72,7 +72,7 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$     \
 
 ### The command line 2/2
 
-Then we create the **_🏭PROD_** tenant
+Then we create the **_🏭PROD_** _tenant_
 
 .lab[
 
@@ -143,3 +143,52 @@ What the **_⚙️OPS_** team has to do:
 What the **_🎸ROCKY_** team has to do:
 
 - 👨‍💻 Create the `kustomization.yaml` file in the **_🎸ROCKY_** app source code repository on `Github`
+
+---
+
+### 🗺️ Where are we in our scenario?
+
+<pre class="mermaid">
+%%{init:
+    {
+      "theme": "default",
+      "gitGraph": {
+        "mainBranchName": "OPS",
+        "mainBranchOrder": 0
+      }
+    }
+}%%
+gitGraph
+    commit id:"0" tag:"start"
+    branch ROCKY order:3
+    branch MOVY order:4
+    branch YouRHere order:5
+
+    checkout OPS
+    commit id:'Flux install on CLOUDY cluster' tag:'T01'
+    branch TEST-env order:1
+    commit id:'FLUX install on TEST' tag:'T02' type: HIGHLIGHT
+
+    checkout OPS
+    commit id:'ROCKY config.' tag:'T03'
+    commit id:'namespace isolation by RBAC'
+    checkout TEST-env
+    merge OPS id:'ROCKY tenant creation' tag:'T04'
+
+    checkout YouRHere
+    commit id:'x'
+    checkout OPS
+    merge YouRHere id:'YOU ARE HERE'
+
+    checkout OPS
+    commit id:'ROCKY deploy. config.' tag:'R01'
+
+    checkout TEST-env
+    merge OPS id:'FLUX ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
+
+    checkout ROCKY
+    commit id:'ROCKY' tag:'v1.0.0'
+
+    checkout TEST-env
+    merge ROCKY tag:'ROCKY v1.0.0'
+</pre>

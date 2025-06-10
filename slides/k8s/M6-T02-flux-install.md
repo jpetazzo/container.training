@@ -294,7 +294,7 @@ flux-system     kustomization/flux-system       main@sha1:d48291a8      False
   - ensuring proper access and permissions
 
 2. It locally generates `YAML` files for desired `Flux` resources so that we just need to `git push` them
-  - tenants
+  - _tenants_
   - sources
   - …
 
@@ -353,3 +353,53 @@ Please, refer to the [`Kustomize` chapter in the High Five M3 module](./3.yml.ht
 
 For more info about how Kubernetes resource natures are identified by their `Group / Version / Kind` triplet…  
 … please, refer to the [`Kubernetes API` chapter in the High Five M5 module](./5.yml.html#toc-the-kubernetes-api)
+
+---
+
+### 🗺️ Where are we in our scenario?
+
+<pre class="mermaid">
+%%{init:
+    {
+      "theme": "default",
+      "gitGraph": {
+        "mainBranchName": "OPS",
+        "mainBranchOrder": 0
+      }
+    }
+}%%
+gitGraph
+    commit id:"0" tag:"start"
+    branch ROCKY order:3
+    branch MOVY order:4
+    branch YouRHere order:5
+
+    checkout OPS
+    commit id:'Flux install on CLOUDY cluster' tag:'T01'
+    branch TEST-env order:1
+    commit id:'FLUX install on TEST' tag:'T02' type: HIGHLIGHT
+
+    checkout YouRHere
+    commit id:'x'
+    checkout OPS
+    merge YouRHere id:'YOU ARE HERE'
+
+
+    checkout OPS
+    commit id:'ROCKY config.' tag:'T03'
+    commit id:'namespace isolation by RBAC'
+    checkout TEST-env
+    merge OPS id:'ROCKY tenant creation' tag:'T04'
+
+    checkout OPS
+    commit id:'ROCKY deploy. config.' tag:'R01'
+
+    checkout TEST-env
+    merge OPS id:'FLUX ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
+
+    checkout ROCKY
+    commit id:'ROCKY' tag:'v1.0.0'
+
+    checkout TEST-env
+    merge ROCKY tag:'ROCKY v1.0.0'
+</pre>
