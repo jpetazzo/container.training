@@ -162,6 +162,21 @@ class: pic
 
 ---
 
+## Upgrading **_🎸ROCKY_** app
+
+**_🎸ROCKY_** team is now fully able to upgrade and deploy its app autonomously.
+
+Just give it a try!
+- In the `deployment.yaml` file
+- in the app repo ([https://github.com/Musk8teers/container.training-spring-music/])
+- you can change the `spec.template.spec.containers.image` to `1.0.1` and then to `1.0.2`
+
+Dont' forget which branch is watched by `Flux` Git source named `rocky`
+
+Don't forget to commit!
+
+---
+
 ## Few considerations
 
 - **_⚙️OPS_** team has to decide how to manage name resolution for public IPs
@@ -223,11 +238,14 @@ gitGraph
     checkout TEST-env
     merge OPS id:'ingress config. for ROCKY app'
 
+<<<<<<< HEAD
     checkout YouRHere
     commit id:'x'
     checkout OPS
     merge YouRHere id:'YOU ARE HERE'
 
+=======
+>>>>>>> a0dc6a2d (📝 Add Ingress chapter)
     checkout ROCKY
     commit id:'blue color' tag:'v1.0.1'
     checkout TEST-env
@@ -237,4 +255,12 @@ gitGraph
     commit id:'pink color' tag:'v1.0.2'
     checkout TEST-env
     merge ROCKY tag:'ROCKY v1.0.2'
+<<<<<<< HEAD
+=======
+
+    checkout YouRHere
+    commit id:'x'
+    checkout OPS
+    merge YouRHere id:'YOU ARE HERE'
+>>>>>>> a0dc6a2d (📝 Add Ingress chapter)
 </pre>
