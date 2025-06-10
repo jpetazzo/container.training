@@ -134,7 +134,7 @@ kustomization/tenant-test                               False           False
 
 What the **_⚙️OPS_** team has to do:
 
-- 🔧 Create a dedicated `rocky` _tenant_ for _**⚗️TEST**_ and **_🏭PROD_** envs on the cluster
+- 🔧 Create a dedicated `rocky` _tenant_ for **_⚗️TEST_** and **_🏭PROD_** envs on the cluster
 
 - 🔧 Create the `Flux` source pointing to the `Github` repository embedding the **_🎸ROCKY_** app source code
 

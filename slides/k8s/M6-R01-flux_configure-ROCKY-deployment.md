@@ -1,17 +1,17 @@
 # R01- Configuring **_🎸ROCKY_** deployment with Flux
 
-The **_⚙️OPS_** team manages 2 distinct envs: _**⚗️TEST**_ et _**🚜PROD**_
+The **_⚙️OPS_** team manages 2 distinct envs: **_⚗️TEST_** et _**🚜PROD**_
 
 Thanks to _Kustomize_
   1. it creates a **_base_** common config
-  2. this common config is overwritten with a _**⚗️TEST**_ _tenant_-specific configuration
+  2. this common config is overwritten with a **_⚗️TEST_** _tenant_-specific configuration
   3. the same applies with a _**🚜PROD**_-specific configuration
 
 > 💡 This seems complex, but no worries: Flux's CLI handles most of it.
 
 ---
 
-## Creating the **_🎸ROCKY_**-dedicated _tenant_ in _**⚗️TEST**_ env
+## Creating the **_🎸ROCKY_**-dedicated _tenant_ in **_⚗️TEST_** env
 
 - Using the `flux` _CLI_, we create the file configuring the **_🎸ROCKY_** team's dedicated _tenant_…
 - … this file takes place in the `base` common configuration for both envs
@@ -128,7 +128,7 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
 
 ---
 
-## Adding a kustomize patch for _**⚗️TEST**_ cluster deployment
+## Adding a kustomize patch for **_⚗️TEST_** cluster deployment
 
 💡 Remember the DRY strategy!
 
