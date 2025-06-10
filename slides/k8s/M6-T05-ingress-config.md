@@ -26,7 +26,7 @@ We'll use `ingress-nginx` (relying on `NGinX`), quite a popular choice.
 - It is able to provision IaaS load-balancer in ScaleWay Cloud services
 - As a reverse-proxy, it is able to balance HTTP connections on an on-premises cluster
 
-**_⚙️OPS_** Team add this new install to its `Flux` config. repo
+The **_⚙️OPS_** Team add this new install to its `Flux` config. repo
 
 ---
 
@@ -179,10 +179,10 @@ Don't forget to commit!
 
 ## Few considerations
 
-- **_⚙️OPS_** team has to decide how to manage name resolution for public IPs
+- The **_⚙️OPS_** team has to decide how to manage name resolution for public IPs
   - Scaleway propose to expose a wildcard domain for its Kubernetes clusters
 
-- Here, we chose that `Ingress-controller` (that makes sense) but `Ingress` as well were managed by **_⚙️OPS_** team.
+- Here, we chose that `Ingress-controller` (that makes sense) but `Ingress` as well were managed by the **_⚙️OPS_** team.
   - It might have been done in many different ways!
 
 ---
