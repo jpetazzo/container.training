@@ -170,7 +170,7 @@ gitGraph
     commit id:'FLUX install on TEST' tag:'T02' type: HIGHLIGHT
 
     checkout OPS
-    commit id:'ROCKY config.' tag:'T03'
+    commit id:'Flux config. for TEST tenant' tag:'T03'
     commit id:'namespace isolation by RBAC'
     checkout TEST-env
     merge OPS id:'ROCKY tenant creation' tag:'T04'
@@ -184,7 +184,7 @@ gitGraph
     commit id:'ROCKY deploy. config.' tag:'R01'
 
     checkout TEST-env
-    merge OPS id:'FLUX ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
+    merge OPS id:'TEST ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
 
     checkout ROCKY
     commit id:'ROCKY' tag:'v1.0.0'
