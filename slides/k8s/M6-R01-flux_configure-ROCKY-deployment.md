@@ -352,7 +352,7 @@ gitGraph
     commit id:'FLUX install on TEST' tag:'T02' type: HIGHLIGHT
 
     checkout OPS
-    commit id:'ROCKY config.' tag:'T03'
+    commit id:'Flux config. for TEST tenant' tag:'T03'
     commit id:'namespace isolation by RBAC'
     checkout TEST-env
     merge OPS id:'ROCKY tenant creation' tag:'T04'
@@ -361,7 +361,7 @@ gitGraph
     commit id:'ROCKY deploy. config.' tag:'R01'
 
     checkout TEST-env
-    merge OPS id:'FLUX ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
+    merge OPS id:'TEST ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
 
     checkout ROCKY
     commit id:'ROCKY' tag:'v1.0.0'
@@ -375,14 +375,14 @@ gitGraph
     merge YouRHere id:'YOU ARE HERE'
 
     checkout OPS
-    commit id:'ROCKY patch for ingress config.' tag:'R03'
-    checkout TEST-env
-    merge OPS id:'ingress config. for ROCKY app'
-
-    checkout OPS
     commit id:'Ingress-controller config.' tag:'T05'
     checkout TEST-env
     merge OPS id:'Ingress-controller install' type: HIGHLIGHT tag:'T06'
+
+    checkout OPS
+    commit id:'ROCKY patch for ingress config.' tag:'R03'
+    checkout TEST-env
+    merge OPS id:'ingress config. for ROCKY app'
 
     checkout ROCKY
     commit id:'blue color' tag:'v1.0.1'
@@ -393,4 +393,19 @@ gitGraph
     commit id:'pink color' tag:'v1.0.2'
     checkout TEST-env
     merge ROCKY tag:'ROCKY v1.0.2'
+
+    checkout OPS
+    commit id:'FLUX config for MOVY deployment' tag:'M01'
+    checkout TEST-env
+    merge OPS id:'FLUX ready to deploy MOVY' type: HIGHLIGHT tag:'M02'
+
+    checkout MOVY
+    commit id:'MOVY' tag:'v1.0.3'
+    checkout TEST-env
+    merge MOVY tag:'MOVY v1.0.3' type: REVERSE
+
+    checkout OPS
+    commit id:'Network policies'
+    checkout TEST-env
+    merge OPS type: HIGHLIGHT
 </pre>
