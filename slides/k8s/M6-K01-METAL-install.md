@@ -347,7 +347,3 @@ No `storage class` is available on this cluster.
 We hadn't the problem on our managed cluster since a default storage class was configured and then associated to our `PersistentVolumeClaim`.
 
 Why is there no problem with the other database?
-
----
-
-## Installing OpenEBS as our CSI
