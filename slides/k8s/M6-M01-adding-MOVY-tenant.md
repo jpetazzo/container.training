@@ -87,6 +87,12 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
 
 ---
 
+class: pic
+
+![Running Mario](images/M6-running-Mario.gif)
+
+---
+
 class: extra-details
 
 ### Another Flux error?
@@ -121,6 +127,16 @@ k8s@shpod:~$ flux reconcile source git movy-app -n movy-test
 ```
 
 ]
+
+---
+
+class: pic
+
+![Running Mario](images/M6-running-Mario.gif)
+
+---
+
+### New branch detected
 
 You now have a second app responding on [http://movy.test.mybestdomain.com]  
 But as of now, it's just the same as the **_🎸ROCKY_** one.  
@@ -173,6 +189,21 @@ Even if our tenants are isolated in how they manage their Kubernetes resources�
 pod network is still full mesh and any connection is authorized.
 
 > The **_⚙️OPS_** team should fix this!
+
+---
+
+## Adding NetworkPolicies to **_🎸ROCKY_** and **_🎬MOVY_** namespaces
+
+`Network policies` may be seen as the firewall feature in the pod network.  
+They rules ingress and egress network connections considering a described subset of pods.
+
+They are not 
+
+---
+
+class: pic
+
+![Running Mario](images/M6-running-Mario.gif)
 
 ---
 
@@ -247,13 +278,34 @@ gitGraph
     checkout TEST-env
     merge MOVY tag:'MOVY v1.0.3' type: REVERSE
 
+    checkout OPS
+    commit id:'Network policies'
+    checkout TEST-env
+    merge OPS type: HIGHLIGHT
+
     checkout YouRHere
     commit id:'x'
     checkout OPS
     merge YouRHere id:'YOU ARE HERE'
 
     checkout OPS
-    commit id:'Network policies'
-    checkout TEST-env
+    commit id:'k0s install on METAL cluster' tag:'K01'
+    commit id:'Flux config. for METAL cluster' tag:'K02'
+    branch METAL_TEST-PROD order:3
+    commit id:'ROCKY/MOVY tenants on METAL' type: HIGHLIGHT
+    checkout OPS
+    commit id:'Flux config. for OpenEBS' tag:'K03'
+    checkout METAL_TEST-PROD
+    merge OPS id:'openEBS on METAL' type: HIGHLIGHT
+
+    checkout OPS
+    commit id:'Prometheus install'
+    checkout METAL_TEST-PROD
+    merge OPS type: HIGHLIGHT
+
+    checkout OPS
+    commit id:'Kyverno install'
+    commit id:'Kyverno rules'
+    checkout METAL_TEST-PROD
     merge OPS type: HIGHLIGHT
 </pre>
