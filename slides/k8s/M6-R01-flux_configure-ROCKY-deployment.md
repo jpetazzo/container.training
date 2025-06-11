@@ -167,6 +167,12 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
 
 class: pic
 
+![Running Mario](images/M6-running-Mario.gif)
+
+---
+
+class: pic
+
 ![rocky config files](images/M6-R01-config-files.png)
 
 ---

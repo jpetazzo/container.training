@@ -1,0 +1,15 @@
+# helm install openebs --namespace openebs openebs/openebs
+#                      --set engines.replicated.mayastor.enabled=false
+#                      --set lvm-localpv.lvmNode.kubeletDir=/var/lib/k0s/kubelet/
+#                      --create-namespace
+engines:
+  replicated:
+    mayastor:
+      enabled: false
+# Needed for k0s install since kubelet install is slightly divergent from vanilla install >:-(
+lvm-localpv:
+  lvmNode:
+    kubeletDir: /var/lib/k0s/kubelet/
+localprovisioner:
+  hostpathClass:
+    isDefaultClass: true

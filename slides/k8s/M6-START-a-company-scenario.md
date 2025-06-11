@@ -249,9 +249,9 @@ The **_⚙️OPS_** team aims to provide clusters offering the following feature
 }%%
 gitGraph
     commit id:"0" tag:"start"
-    branch ROCKY order:3
-    branch MOVY order:4
-    branch YouRHere order:5
+    branch ROCKY order:4
+    branch MOVY order:5
+    branch YouRHere order:6
 
     checkout YouRHere
     commit id:'x'
@@ -314,13 +314,28 @@ gitGraph
     checkout OPS
     commit id:'Network policies'
     checkout TEST-env
+    merge OPS type: HIGHLIGHT tag:'T07'
+
+    checkout OPS
+    commit id:'k0s install on METAL cluster' tag:'K01'
+    commit id:'Flux config. for METAL cluster' tag:'K02'
+    branch METAL_TEST-PROD order:3
+    commit id:'ROCKY/MOVY tenants on METAL' type: HIGHLIGHT
+    checkout OPS
+    commit id:'Flux config. for OpenEBS' tag:'K03'
+    checkout METAL_TEST-PROD
+    merge OPS id:'openEBS on METAL' type: HIGHLIGHT
+
+    checkout OPS
+    commit id:'Prometheus install'
+    checkout METAL_TEST-PROD
     merge OPS type: HIGHLIGHT
 
-    checkout MOVY
-    commit id:'MOVY HELM chart' tag:'M03'
-
-    checkout TEST-env
-    merge MOVY tag:'MOVY v1.0'
+    checkout OPS
+    commit id:'Kyverno install'
+    commit id:'Kyverno rules'
+    checkout METAL_TEST-PROD
+    merge OPS type: HIGHLIGHT
 
     checkout OPS
     commit id:'Flux config. for PROD tenant' tag:'P01'
@@ -333,21 +348,8 @@ gitGraph
     checkout PROD-env
     merge ROCKY tag:'ROCKY v1.0.2'
 
-    checkout OPS
-    commit id:'Prometheus install'
-    checkout PROD-env
-    merge OPS type: HIGHLIGHT
-
-    checkout OPS
-    commit id:'Kyverno install'
-    commit id:'Kyverno rules'
-    checkout PROD-env
-    merge OPS type: HIGHLIGHT
-
-    checkout OPS
-    commit id:'Add OpenEBS'
+    checkout MOVY
+    commit id:'MOVY HELM chart' tag:'M03'
     checkout TEST-env
-    merge OPS id:'patch dedicated to PROD' type: REVERSE
-    checkout PROD-env
-    merge OPS type: HIGHLIGHT
+    merge MOVY tag:'MOVY v1.0'
 </pre>
