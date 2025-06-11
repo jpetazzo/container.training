@@ -1,4 +1,4 @@
-# Installing a Kubernetes cluster from scratch
+# K01- Installing a Kubernetes cluster from scratch
 
 We operated a managed cluster from **Scaleway** `Kapsule`.  
 
