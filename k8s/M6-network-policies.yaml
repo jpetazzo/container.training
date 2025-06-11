@@ -1,0 +1,35 @@
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: deny-from-other-namespaces
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - podSelector: {}
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-webui
+spec:
+  podSelector:
+    matchLabels:
+      app: web
+  ingress:
+  - from: []
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-db
+spec:
+  podSelector:
+    matchLabels:
+      app: db
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: web

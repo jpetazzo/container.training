@@ -197,7 +197,14 @@ pod network is still full mesh and any connection is authorized.
 `Network policies` may be seen as the firewall feature in the pod network.  
 They rules ingress and egress network connections considering a described subset of pods.
 
-They are not 
+Please, refer to the [`Network policies` chapter in the High Five M4 module](./4.yml.html#toc-network-policies)
+
+- In our case, we just add the file `~/container.training/k8s/M6-network-policies.yaml`
+</br>in our `./tenants/base/movy` folder
+
+- without forgetting to update our `kustomization.yaml` file
+
+- and without forgetting to commit 😁
 
 ---
 
