@@ -22,3 +22,4 @@ content:
   - k8s/M6-R01-flux_configure-ROCKY-deployment.md
   - k8s/M6-T05-ingress-config.md
   - k8s/M6-M01-adding-MOVY-tenant.md
+  - k8s/M6-k0s-install.md
