@@ -353,6 +353,8 @@ We can now work with the `snapshot` file in the current directory!
 
 - [Another good blog post by consol labs](https://labs.consol.de/kubernetes/2018/05/25/kubeadm-backup.html) on the same topic
 
+- [auger](https://github.com/etcd-io/auger), a tool to directly access Kubernetes objects stored in etcd
+
 ---
 
 ## Don't forget ...
@@ -408,25 +410,25 @@ We can now work with the `snapshot` file in the current directory!
 
 ## More backup tools
 
-- [Stash](https://appscode.com/products/stash/)
+- [Stash](https://stash.run/)
 
   back up Kubernetes persistent volumes
 
-- [ReShifter](https://github.com/mhausenblas/reshifter)
-
-  cluster state management
-
-- ~~Heptio Ark~~ [Velero](https://github.com/heptio/velero)
+- ~~Heptio Ark~~ [Velero](https://velero.io/)
 
   full cluster backup
 
-- [kube-backup](https://github.com/pieterlange/kube-backup)
+- [kube-backup](https://github.com/pieterlange/kube-backup) (unmaintained)
 
   simple scripts to save resource YAML to a git repository
   
 - [bivac](https://github.com/camptocamp/bivac) 
 
   Backup Interface for Volumes Attached to Containers 
+
+- [Veeam Kasten](https://www.veeam.com/products/cloud/kubernetes-data-protection.html)
+
+  commercial product; compares to Velero
 
 ???
 
