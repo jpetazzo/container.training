@@ -88,6 +88,12 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
 
 class: pic
 
+![Running Mario](images/M6-running-Mario.gif)
+
+---
+
+class: pic
+
 ![Ingress-nginx provisionned a IaaS load-balancer in Scaleway Cloud services](images/M6-ingress-nginx-scaleway-lb.png)
 
 ---
@@ -128,6 +134,12 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
 ```
 
 ]
+
+---
+
+class: pic
+
+![Running Mario](images/M6-running-Mario.gif)
 
 ---
 
