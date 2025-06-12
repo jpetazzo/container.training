@@ -192,6 +192,8 @@ pod network is still full mesh and any connection is authorized.
 
 ---
 
+class: extra-details
+
 ## Adding NetworkPolicies to **_🎸ROCKY_** and **_🎬MOVY_** namespaces
 
 `Network policies` may be seen as the firewall feature in the pod network.  

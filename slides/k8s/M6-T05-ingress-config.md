@@ -13,7 +13,9 @@ The regular way to do it in Kubernetes is to configure an `Ingress` resource.
 
 ---
 
-## 🔍 Ingress -- for more info
+class: extra-details
+
+## Ingress -- for more info
 
 Please, refer to the [`Ingress` chapter in the High Five M2 module](./2.yml.html#toc-exposing-http-services-with-ingress-resources)
 
@@ -143,7 +145,7 @@ class: pic
 
 ---
 
-### Here is the result!
+### Here is the result
 
 After Flux reconciled the whole bunch of sources and kustomizations, you should see
 

@@ -305,7 +305,9 @@ flux-system     kustomization/flux-system       main@sha1:d48291a8      False
 
 ---
 
-### 🔍 Flux -- for more info
+class: extra-details
+
+### Flux -- for more info
 
 Please, refer to the [`Flux` chapter in the High Five M3 module](./3.yml.html#toc-helm-chart-format)
 
@@ -343,13 +345,17 @@ describes where `Flux kustomize-controller` looks for a `kustomization.yaml` fil
 
 ---
 
-### 🔍 Kustomize -- for more info
+class: extra-details
+
+### Kustomize -- for more info
 
 Please, refer to the [`Kustomize` chapter in the High Five M3 module](./3.yml.html#toc-kustomize)
 
 ---
 
-### 🔍 Group / Version / Kind -- for more info
+class: extra-details
+
+### Group / Version / Kind -- for more info
 
 For more info about how Kubernetes resource natures are identified by their `Group / Version / Kind` triplet…  
 … please, refer to the [`Kubernetes API` chapter in the High Five M5 module](./5.yml.html#toc-the-kubernetes-api)
