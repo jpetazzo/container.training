@@ -7,7 +7,7 @@ Note:
 
 ---
 
-## Install Monitoring components
+## Creating `Github` source in Flux for monitoring components install repository
 
 .lab[
 
@@ -24,7 +24,7 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create source git monitoring \
 
 ---
 
-## Creating `kustomization` in Flux for monitoring stack
+### Creating `kustomization` in Flux for monitoring stack
 
 .lab[
 
@@ -40,7 +40,7 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization monitoring 
 
 ---
 
-## Install Flux Grafana dashboards
+### Install Flux Grafana dashboards
 
 .lab[
 
@@ -57,6 +57,46 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$        \
     kustomize create --autodetect &&              \
     cd -
 ```
+
+]
+
+---
+
+class: pic
+
+![Running Mario](images/M6-running-Mario.gif)
+
+---
+
+## Flux repository synchro is broken😅
+
+It seems that `Flux` on **_☁️CLOUDY_** cluster is not able to authenticate with `ssh` on its `Github` config repository!  
+
+What happened?
+When we install `Flux` on **_🤘METAL_** cluster, it generates a new `ssh` keypair and override the one used by **_☁️CLOUDY_** among the "deployment keys" of the `Github` repository.
+
+⚠️ Beware of flux bootstrap command!
+
+We have to
+- generate a new keypair (or reuse an already existing one)
+- add the private key to the Flux-dedicated secrets in **_☁️CLOUDY_** cluster
+- add it to the "deployment keys" of the `Github` repository
+
+---
+
+### the command
+
+.lab[
+
+- `Flux` _CLI_ helps to recreate the secret holding the `ssh` **private** key.
+
+```bash
+flux create secret git flux-system \
+  --url=ssh://git@github.com/container-training-fleet/fleet-config-using-flux-XXXXX \
+  --private-key-file=/home/k8s/.ssh/id_ed25519
+```
+
+- copy the **public** key into the deployment keys of the `Github` repository
 
 ]
 

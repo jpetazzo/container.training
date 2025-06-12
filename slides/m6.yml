@@ -17,10 +17,11 @@ exclude:
 
 content:
   - k8s/M6-START-a-company-scenario.md
-  - k8S/M6-T02-flux-install.md
+  - k8s/M6-T02-flux-install.md
   - k8s/M6-T03-installing-tenants.md
   - k8s/M6-R01-flux_configure-ROCKY-deployment.md
   - k8s/M6-T05-ingress-config.md
   - k8s/M6-M01-adding-MOVY-tenant.md
   - k8s/M6-K01-METAL-install.md
   - k8s/M6-K03-openebs-install.md
+  - k8s/M6-monitoring-stack-install.md
