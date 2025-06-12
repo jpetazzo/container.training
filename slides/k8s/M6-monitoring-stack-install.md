@@ -50,12 +50,6 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization dashboards 
     --source=GitRepository/monitoring                                           \
     --path="./monitoring/configs/"                                              \
     --export >> ./clusters/CLOUDY/kube-prometheus-stack/sync.yaml
-
-
-k8s@shpod:~/fleet-config-using-flux-XXXXX$        \
-    cd ./clusters/CLOUDY/kube-prometheus-stack/ && \
-    kustomize create --autodetect &&              \
-    cd -
 ```
 
 ]
@@ -91,7 +85,7 @@ We have to
 - `Flux` _CLI_ helps to recreate the secret holding the `ssh` **private** key.
 
 ```bash
-flux create secret git flux-system \
+k8s@shpod:~$ flux create secret git flux-system \
   --url=ssh://git@github.com/container-training-fleet/fleet-config-using-flux-XXXXX \
   --private-key-file=/home/k8s/.ssh/id_ed25519
 ```
@@ -123,7 +117,8 @@ grafana   nginx   grafana.test.metal.mybestdomain.com   62.210.39.83   80      6
 - Get the `Grafana` admin password
 
 ```bash
-k get secret kube-prometheus-stack-grafana -n monitoring -o jsonpath='{.data.admin-password}' | base64 -d
+k8s@shpod:~$ k get secret kube-prometheus-stack-grafana -n monitoring \
+                -o jsonpath='{.data.admin-password}' | base64 -d
 ```
 
 ]
