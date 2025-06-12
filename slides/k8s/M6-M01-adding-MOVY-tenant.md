@@ -307,12 +307,12 @@ gitGraph
 
     checkout OPS
     commit id:'Prometheus install'
-    checkout METAL_TEST-PROD
+    checkout TEST-env
     merge OPS type: HIGHLIGHT
 
     checkout OPS
     commit id:'Kyverno install'
     commit id:'Kyverno rules'
-    checkout METAL_TEST-PROD
+    checkout TEST-env
     merge OPS type: HIGHLIGHT
 </pre>
