@@ -109,6 +109,15 @@ class: pic
 
 ![Running Mario](images/M6-running-Mario.gif)
 
+---
+
+### Debugging
+
+`Kyverno-policies` `Kustomization` failed because `spec.dependsOn` property can only target a resource from the same `Kind`.
+
+- Let's suppress the `spec.dependsOn` property.
+
+Now `Kustomizations` for **_🎸ROCKY_** and **_🎬MOVY_** tenants failed because of our policies.
 
 ---
 
