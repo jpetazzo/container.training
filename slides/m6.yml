@@ -25,3 +25,4 @@ content:
   - k8s/M6-K01-METAL-install.md
   - k8s/M6-K03-openebs-install.md
   - k8s/M6-monitoring-stack-install.md
+  - k8s/M6-kyverno-install.md

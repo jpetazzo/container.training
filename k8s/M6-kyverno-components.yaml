@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/instance: flux-system
+    app.kubernetes.io/part-of: flux
+    app.kubernetes.io/version: v2.5.1
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/warn-version: latest
+  name: kyverno
