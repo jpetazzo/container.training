@@ -236,7 +236,6 @@ The **_⚙️OPS_** team aims to provide clusters offering the following feature
 
 ### What our scenario might look like…
 
-<!-- TODO: to upgrade according to the actual scenario that is eventually build -->
 <pre class="mermaid">
 %%{init:
     {
@@ -328,13 +327,13 @@ gitGraph
 
     checkout OPS
     commit id:'Prometheus install'
-    checkout METAL_TEST-PROD
+    checkout TEST-env
     merge OPS type: HIGHLIGHT
 
     checkout OPS
     commit id:'Kyverno install'
     commit id:'Kyverno rules'
-    checkout METAL_TEST-PROD
+    checkout TEST-env
     merge OPS type: HIGHLIGHT
 
     checkout OPS

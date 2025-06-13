@@ -4,7 +4,7 @@ metadata:
   name: rocky
   namespace: rocky-test
 spec:
-  ingressClassName: "nginx"
+  ingressClassName: nginx
   rules:
     - host: rocky.test.mybestdomain.com
       http:
