@@ -2,6 +2,17 @@ var express = require('express');
 var app = express();
 var redis = require('redis');
 
+const signals = ["SIGTERM", "SIGINT"];
+
+const shutdown = async => {
+    console.log("Until we meet again...");
+    process.exit(0);
+};
+
+signals.forEach((signal) => {
+    process.on(signal, shutdown);
+});
+
 var client = redis.createClient(6379, 'redis');
 client.on("error", function (err) {
     console.error("Redis error", err);
@@ -15,7 +26,7 @@ app.get('/json', function (req, res) {
     client.hlen('wallet', function (err, coins) {
         client.get('hashes', function (err, hashes) {
             var now = Date.now() / 1000;
-            res.json( {
+            res.json({
                 coins: coins,
                 hashes: hashes,
                 now: now
@@ -29,4 +40,3 @@ app.use(express.static('files'));
 var server = app.listen(80, function () {
     console.log('WEBUI running on port 80');
 });
-
