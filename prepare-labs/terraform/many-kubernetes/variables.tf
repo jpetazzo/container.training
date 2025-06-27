@@ -23,7 +23,7 @@ variable "node_size" {
 }
 
 variable "location" {
-  type = string
+  type    = string
   default = null
 }
 

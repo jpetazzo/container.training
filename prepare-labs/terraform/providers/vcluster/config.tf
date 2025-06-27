@@ -1,5 +1,5 @@
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     config_path = "~/kubeconfig"
   }
 }

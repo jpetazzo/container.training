@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "2.16.1"
     }
+    helm = {
+      source = "hashicorp/helm"
+      version = "~> 3.0"
+    }
   }
 }
 
@@ -16,7 +20,7 @@ provider "kubernetes" {
 
 provider "helm" {
   alias = "cluster_${index}"
-  kubernetes {
+  kubernetes = {
     config_path = "./kubeconfig.${index}"
   }
 }
@@ -51,42 +55,37 @@ resource "helm_release" "shpod_${index}" {
   name = "shpod"
   namespace = "shpod"
   create_namespace = false
-  set {
-    name = "service.type"
-    value = "NodePort"
-  }
-  set {
-    name = "resources.requests.cpu"
-    value = "100m"
-  }
-  set {
-    name = "resources.requests.memory"
-    value = "500M"
-  }
-  set {
-    name = "resources.limits.cpu"
-    value = "1"
-  }
-  set {
-    name = "resources.limits.memory"
-    value = "1000M"
-  }
-  set {
-    name = "persistentVolume.enabled"
-    value = "true"
-  }
-  set {
-    name = "ssh.password"
-    value = random_string.shpod_${index}.result
-  }
-  set {
-    name = "rbac.cluster.clusterRoles"
-    value = "{cluster-admin}"
-  }
-  set {
-    name = "codeServer.enabled"
-    value = "true"
-  }
+  values = [
+    yamlencode({
+      service = {
+        type = "NodePort"
+      }
+      resources = {
+        requests = {
+          cpu = "100m"
+          memory = "500M"
+        }
+        limits = {
+          cpu = "1"
+          memory = "1000M"
+        }
+      }
+      persistentVolume = {
+        enabled = true
+      }
+      ssh = {
+        password = random_string.shpod_${index}.result
+      }
+      rbac = {
+        cluster = {
+          clusterRoles = [ "cluster-admin" ]
+        }
+      }
+      codeServer = {
+        enabled = true
+      }
+    })
+  ]
 }
 
 resource "helm_release" "metrics_server_${index}" {
@@ -101,10 +100,11 @@ resource "helm_release" "metrics_server_${index}" {
   name = "metrics-server"
   namespace = "metrics-server"
   create_namespace = true
-  set {
-    name = "args"
-    value = "{--kubelet-insecure-tls}"
-  }
+  values = [
+    yamlencode({
+      args = [ "--kubelet-insecure-tls" ]
+    })
+  ]
 }
 
 # This section here deserves a little explanation.

@@ -30,7 +30,7 @@ resource "scaleway_k8s_pool" "_" {
   max_size    = var.max_nodes_per_pool
   autoscaling = var.max_nodes_per_pool > var.min_nodes_per_pool
   autohealing = true
-  depends_on = [ scaleway_instance_security_group._ ]
+  depends_on  = [scaleway_instance_security_group._]
 }
 
 data "scaleway_k8s_version" "_" {
