@@ -164,3 +164,8 @@ As seen in [this example](https://github.com/jpetazzo/beyond-load-balancers/blob
   - one helmfile for the application stack
     <br/>
     (Bento, PostgreSQL cluster, RabbitMQ)
+
+???
+
+:EN:- Deploying with Helmfile
+:FR:- Déployer avec Helmfile
