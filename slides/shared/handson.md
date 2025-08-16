@@ -110,7 +110,7 @@ class: in-person
 
 - On Windows, get one of these:
 
-  - [putty](http://www.putty.org/)
+  - [putty](https://putty.software/)
   - Microsoft [Win32 OpenSSH](https://github.com/PowerShell/Win32-OpenSSH/wiki/Install-Win32-OpenSSH)
   - [Git BASH](https://git-for-windows.github.io/)
   - [MobaXterm](http://mobaxterm.mobatek.net/)
