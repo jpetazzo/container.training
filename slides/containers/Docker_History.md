@@ -141,3 +141,13 @@ class: pic
   * etc.
 
 * Docker Inc. launches commercial offers.
+
+---
+
+## Standardization of container runtimes
+
+- Docker 1.11 (2016) introduces containerd and runc
+
+- [Kubernetes 1.5 (2016)](https://kubernetes.io/blog/2016/12/kubernetes-1-5-supporting-production-workloads/) introduces the CRI
+
+- First releases of CRI-O (2017), kata containers...

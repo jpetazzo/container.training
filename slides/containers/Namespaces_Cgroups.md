@@ -36,21 +36,15 @@ The last item should be done for educational purposes only!
 
 - Control groups provide resource *metering* and *limiting*.
 
-- This covers a number of "usual suspects" like:
+- This covers:
 
-  - memory
+  - "classic" compute resources like memory, CPU, I/O
 
-  - CPU
+  - system resources like number of processes (PID)
 
-  - block I/O
+  - "exotic" resources like GPU VRAM, huge pages, RDMA
 
-  - network (with cooperation from iptables/tc)
-
-- And a few exotic ones:
-
-  - huge pages (a special way to allocate memory)
-
-  - RDMA (resources specific to InfiniBand / remote memory transfer)
+  - other things like device node access (`/dev`) and perf events
 
 ---
 
@@ -58,41 +52,92 @@ The last item should be done for educational purposes only!
 
 - Control groups also allow to group processes for special operations:
 
-  - freezer (conceptually similar to a "mass-SIGSTOP/SIGCONT")
+  - freeze (conceptually similar to a "mass-SIGSTOP/SIGCONT")
 
-  - perf_event (gather performance events on multiple processes)
-
-  - cpuset (limit or pin processes to specific CPUs)
-
-- There is a "pids" cgroup to limit the number of processes in a given group.
-
-- There is also a "devices" cgroup to control access to device nodes.
-
-  (i.e. everything in `/dev`.)
+  - kill (safe mass-SIGKILL)
 
 ---
 
 ## Generalities
 
-- Cgroups form a hierarchy (a tree).
+- Cgroups form a hierarchy (a tree)
 
-- We can create nodes in that hierarchy.
+- We can create nodes in that hierarchy
 
-- We can associate limits to a node.
+- We can associate limits to a node
 
-- We can move a process (or multiple processes) to a node.
+- We can move a process (or multiple processes) to a leaf
 
-- The process (or processes) will then respect these limits.
+- The process (or processes) will then respect these limits
 
-- We can check the current usage of each node.
+- We can check the current usage of each node
 
-- In other words: limits are optional (if we only want accounting).
+- In other words: limits are optional (if we only want accounting)
 
-- When a process is created, it is placed in its parent's groups.
+- When a process is created, it is placed in its parent's groups
+
+- The main interface is a pseudo-filesystem (typically mounted on `/sys/fs/cgroup`)
 
 ---
 
 ## Example
+
+.small[
+```bash
+$ tree /sys/fs/cgroup/  -d
+/sys/fs/cgroup/
+├── init.scope
+├── machine.slice
+├── system.slice
+│   ├── avahi-daemon.service
+│   ├── ...
+│   ├── docker-de3ee38bc8d90b7da218523004cae504a2fa821224fd49f53521d862db583fef.scope
+│   ├── docker-e9e55ba69f0a4639793464972a8645cdb23ae9f60567384479a175e3226776b4.scope
+│   ├── docker.service
+│   ├── docker.socket
+│   ├── ...
+│   └── wpa_supplicant.service
+└── user.slice
+    └── user-1000.slice
+        ├── session-1.scope
+        └── user@1000.service
+            ├── app.slice
+            │   └── ...
+            ├── init.scope
+            └── session.slice
+                └── ...
+```
+]
+
+---
+
+class: extra-details, deep-dive
+
+## Cgroups v1 vs v2
+
+- Cgroups v1 were the original implementation
+
+  (back when Docker was created)
+
+- Cgroups v2 are a huge refactor
+
+  (development started in Linux 3.10, released in 4.5.)
+
+- Cgroups v2 have a number of differences:
+
+  - single hierarchy (instead of one tree per controller)
+
+  - processes can only be on leaf nodes (not inner nodes)
+
+  - and of course many improvements / refactorings
+
+- Cgroups v2 should be the default on all modern distros!
+
+---
+
+class: extra-details, deep-dive
+
+## Example of cgroup v1 hierarchy
 
 The numbers are PIDs.
 
@@ -121,25 +166,106 @@ cpu                      memory
 
 ---
 
-class: extra-details, deep-dive
+## CPU cgroup
 
-## Cgroups v1 vs v2
+- Keeps track of CPU time used by a group of processes
 
-- Cgroups v1 are available on all systems (and widely used).
+  (this is easier and more accurate than `getrusage` and `/proc`)
 
-- Cgroups v2 are a huge refactor.
+- Allows setting relative weights used by the scheduler
 
-  (Development started in Linux 3.10, released in 4.5.)
+- Allows setting maximum time usage per time period
 
-- Cgroups v2 have a number of differences:
+  (e.g. "50ms every 100ms", which would cap the group to 50% of one CPU core)
 
-  - single hierarchy (instead of one tree per controller),
+- Allows setting reservations and caps ("utilization clamping")
 
-  - processes can only be on leaf nodes (not inner nodes),
+  (particularly relevant for realtime processes)
 
-  - and of course many improvements / refactorings.
+---
 
-- Cgroups v2 enabled by default on Fedora 31 (2019), Ubuntu 21.10...
+## Checking current CPU limits
+
+- Getting the cgroup for the current user session:
+  ```bash
+  cat /proc/$$/cgroup
+  ```
+  (it should start with `/user.slice/...`)
+
+- Checking the current CPU limit:
+  ```bash
+  cat /sys/fs/cgroup/user.slice/.../cpu.max
+  ```
+  (it should look like `max 100000`)
+
+- `max` means unlimited; `100000` means "over a period of 100000 microseconds"
+
+  (unless specified, all cgroup time durations are in microseconds)
+
+---
+
+## Setting a CPU limit
+
+- Run `top` in a terminal to view CPU usage
+
+- In a separate terminal, burn CPU cycles with e.g.:
+  ```bash
+  while : ; do : ; done
+  ```
+
+- Set a 50% CPU limit for that user or session:
+  ```bash
+  echo 50000 > /sys/fs/cgroup/user.slice/.../cpu.max
+  ```
+
+- Notice that CPU usage goes down
+
+  (probably to *less* than 50% since this is a limit for the whole user/session!)
+
+---
+
+## Removing the CPU limit
+
+- Remember to remove the limit when you're done:
+  ```bash
+  echo max > /sys/fs/cgroup/user.slice/.../cpu.max
+  ```
+
+---
+
+## Cpuset cgroup
+
+- Pin groups to specific CPU(s)
+
+- Features:
+
+  - limit apps to specific CPUs (`cpuset.cpus`)
+
+  - reserve CPUs for exclusive use (`cpuset.cpus.exclusive`)
+
+  - assign apps to specific NUMA memory nodes (`cpuset.mems`)
+
+- Use-cases:
+
+  - dedicate CPUs to avoid performance loss due to cache flushes
+
+  - improve memory performance in NUMA systems
+
+---
+
+## Cpuset concepts
+
+- `cpuset.cpus` / `cpuset.mems`
+
+  *express what we allow the cgroup to use (can be empty to allow everything)*
+
+- `cpuset.cpus.effective` / `cpusets.mems.effective`
+
+  *express what the cgroup can actually use after accounting for other restrictions*
+
+- `cpuset.cpus.exclusive` / `cpuset.cpus.partition`
+
+  *used to create "partitions" = sets of CPU(s) exclusively reserved for a cgroup*
 
 ---
 
@@ -147,322 +273,254 @@ class: extra-details, deep-dive
 
 - Keeps track of pages used by each group:
 
-  - file (read/write/mmap from block devices),
-  - anonymous (stack, heap, anonymous mmap),
-  - active (recently accessed),
-  - inactive (candidate for eviction).
+  - file (read/write/mmap from block devices)
+  - anonymous (stack, heap, anonymous mmap)
+  - active (recently accessed)
+  - inactive (candidate for eviction)
+  - ...many other categories!
 
-- Each page is "charged" to a group.
+- Each page is "charged" to a single group
 
-- Pages can be shared across multiple groups.
-
-  (Example: multiple processes reading from the same files.)
+  (this can result in non-deterministic "charges" for shared pages, e.g. mapped files)
 
 - To view all the counters kept by this cgroup:
 
   ```bash
-  $ cat /sys/fs/cgroup/memory/memory.stat
+  $ cat /sys/fs/cgroup/memory.stat
   ```
 
 ---
 
-## Memory cgroup v1: limits
+## Memory cgroup: limits and reservations
 
-- Each group can have (optional) hard and soft limits.
+- Cgroups v1 allowed to set soft and hard limits
 
-- Limits can be set for different kinds of memory:
+  (soft limits influenced reclaim but it wasn't straightforward to use)
 
-  - physical memory,
+- Cgroups v2 are way more sophisticated:
 
-  - kernel memory,
+  - hard limits (`.max`)
 
-  - total memory (including swap).
+  - thresholds triggering more evictions (`.high`)
 
----
+  - thresholds triggering less evictions (`.low`)
 
-## Soft limits and hard limits
+  - reservations (`.min`)
 
-- Soft limits are not enforced.
-
-  (But they influence reclaim under memory pressure.)
-
-- Hard limits *cannot* be exceeded:
-
-  - if a group of processes exceeds a hard limit,
-
-  - and if the kernel cannot reclaim any memory,
-
-  - then the OOM (out-of-memory) killer is triggered,
-
-  - and processes are killed until memory gets below the limit again.
+- Also limits for swap and zswap 
 
 ---
 
-class: extra-details, deep-dive
+## Hard limits
 
-## Avoiding the OOM killer
+- A cgroup can *never* exceed its hard limits
 
-- For some workloads (databases and stateful systems), killing
-  processes because we run out of memory is not acceptable.
+- When a cgroup tries to use more than the hard limit:
 
-- The "oom-notifier" mechanism helps with that.
+  - the kernel tries to reclaim memory (buffers, mapped files...)
 
-- When "oom-notifier" is enabled and a hard limit is exceeded:
+  - when there is nothing to reclaim, the OOM killer is invoked
 
-  - all processes in the cgroup are frozen,
+- There is a `memory.oom.group` flag to alter OOM behavior:
 
-  - a notification is sent to user space (instead of killing processes),
+  - `0` (default) = kill processes one by one
 
-  - user space can then raise limits, migrate containers, etc.,
-
-  - once the memory usage is below the hard limit, unfreeze the cgroup.
+  - `1` = consider the cgroup as a unit; OOM will kill it entirely
 
 ---
 
-class: extra-details, deep-dive
+## Also...
 
-## Overhead of the memory cgroup
+- A `.peak` value is also exposed for each tracked amount
 
-- Each time a process grabs or releases a page, the kernel update counters.
+  (memory, swap, zswap)
 
-- This adds some overhead.
+- Write an amount to `memory.reclaim` to trigger reclaim
 
-- Unfortunately, this cannot be enabled/disabled per process.
+  (=ask the kernel to recover memory from the cgroup)
 
-- It has to be done system-wide, at boot time.
+- Check memory stats per NUMA nopde (`memory.numa_stat`)
 
-- Also, when multiple groups use the same page:
-
-  - only the first group gets "charged",
-
-  - but if it stops using it, the "charge" is moved to another group.
+- And more!
 
 ---
 
-class: extra-details, deep-dive
+## Block I/O cgroup
 
-## Setting up a limit with the memory cgroup
-
-Create a new memory cgroup:
-
-```bash
-$ CG=/sys/fs/cgroup/memory/onehundredmegs
-$ sudo mkdir $CG
-```
-
-Limit it to approximately 100MB of memory usage:
-
-```bash
-$ sudo tee $CG/memory.memsw.limit_in_bytes <<< 100000000
-```
-
-Move the current process to that cgroup:
-
-```bash
-$ sudo tee $CG/tasks <<< $$
-```
-
-The current process *and all its future children* are now limited.
-
-(Confused about `<<<`? Look at the next slide!)
-
----
-
-class: extra-details, deep-dive
-
-## What's `<<<`?
-
-- This is a "here string". (It is a non-POSIX shell extension.)
-
-- The following commands are equivalent:
-
-  ```bash
-  foo <<< hello
-  ```
-
-  ```bash
-  echo hello | foo
-  ```
-
-  ```bash
-  foo <<EOF
-  hello
-  EOF
-  ```
-
-- Why did we use that?
-
----
-
-class: extra-details, deep-dive
-
-## Writing to cgroups pseudo-files requires root
-
-Instead of:
-
-```bash
-sudo tee $CG/tasks <<< $$
-```
-
-We could have done:
-
-```bash
-sudo sh -c "echo $$ > $CG/tasks"
-```
-
-The following commands, however, would be invalid:
-
-```bash
-sudo echo $$ > $CG/tasks
-```
-
-```bash
-sudo -i # (or su)
-echo $$ > $CG/tasks
-```
-
----
-
-class: extra-details, deep-dive
-
-## Testing the memory limit
-
-Start the Python interpreter:
-
-```bash
-$ python
-Python 3.6.4 (default, Jan  5 2018, 02:35:40)
-[GCC 7.2.1 20171224] on linux
-Type "help", "copyright", "credits" or "license" for more information.
->>>
-```
-
-Allocate 80 megabytes:
-
-```python
->>> s = "!" * 1000000 * 80
-```
-
-Add 20 megabytes more:
-
-```python
->>> t = "!" * 1000000 * 20
-Killed
-```
-
----
-
-## Memory cgroup v2: limits
-
-- `memory.min` = hard reservation (guaranteed memory for this cgroup)
-
-- `memory.low` = soft reservation ("*try* not to reclaim memory if we're below this")
-
-- `memory.high` = soft limit (aggressively reclaim memory; don't trigger OOMK)
-
-- `memory.max` = hard limit (triggers OOMK)
-
-- `memory.swap.high` = aggressively reclaim memory when using that much swap
-
-- `memory.swap.max` = prevent using more swap than this
-
----
-
-## CPU cgroup
-
-- Keeps track of CPU time used by a group of processes.
-
-  (This is easier and more accurate than `getrusage` and `/proc`.)
-
-- Keeps track of usage per CPU as well.
-
-  (i.e., "this group of process used X seconds of CPU0 and Y seconds of CPU1".)
-
-- Allows setting relative weights used by the scheduler.
-
----
-
-## Cpuset cgroup
-
-- Pin groups to specific CPU(s).
-
-- Use-case: reserve CPUs for specific apps.
-
-- Warning: make sure that "default" processes aren't using all CPUs!
-
-- CPU pinning can also avoid performance loss due to cache flushes.
-
-- This is also relevant for NUMA systems.
-
-- Provides extra dials and knobs.
-
-  (Per zone memory pressure, process migration costs...)
-
----
-
-## Blkio cgroup
-
-- Keeps track of I/Os for each group:
+- Keep track of I/Os for each group:
 
   - per block device
-  - read vs write
-  - sync vs async
 
-- Set throttle (limits) for each group:
+  - read, write, and discard
 
-  - per block device
-  - read vs write
-  - ops vs bytes
+  - in bytes and in operations
 
-- Set relative weights for each group.
+- Set hard limits for each counter
 
-- Note: most writes go through the page cache.
-  <br/>(So classic writes will appear to be unthrottled at first.)
+- Set relative weights and latency targets
 
 ---
 
-## Net_cls and net_prio cgroup
+## `io.max`
 
-- Only works for egress (outgoing) traffic.
+- Enforce hard limits
 
-- Automatically set traffic class or priority
-  for traffic generated by processes in the group.
+  (set max number of operations, of bytes read/written...)
 
-- Net_cls will assign traffic to a class.
+- Each limit is per-device
 
-- Classes have to be matched with tc or iptables, otherwise traffic just flows normally.
+- Doesn't offer performance guarantees
 
-- Net_prio will assign traffic to a priority.
-
-- Priorities are used by queuing disciplines.
+  (once a device is saturated, performance will degrade for everyone)
 
 ---
 
-## Devices cgroup
+## `io.cost.qos`
 
-- Controls what the group can do on device nodes
+- Try to offer latency guarantees
 
-- Permissions include read/write/mknod
+- Define per-device thresholds to throttle operations
 
-- Typical use:
+  "if the 95% percentile latency of read operations on this device
+  is above 100ms...
 
-  - allow `/dev/{tty,zero,random,null}` ...
-  - deny everything else
+  ...throttle operations on this device (queue them)"
 
-- A few interesting nodes:
+- Can also define `io.weight` for relative priorities between cgroups
 
-  - `/dev/net/tun` (network interface manipulation)
-  - `/dev/fuse` (filesystems in user space)
-  - `/dev/kvm` (VMs in containers, yay inception!)
-  - `/dev/dri` (GPU)
+- Check [this document](https://facebookmicrosites.github.io/resctl-demo-website/docs/demo_docs/setting_benchmarks/iocost/) for some details and hints
+
+---
+
+## Network I/O
+
+- Cgroups v1 had net_cls and net_prio controllers
+
+- These have been deprecated in cgroups v2:
+
+       *There is no direct equivalent of the net_cls and net_prio
+       controllers from cgroups version 1.  Instead, support has been
+       added to iptables(8) to allow eBPF filters that hook on cgroup v2
+       pathnames to make decisions about network traffic on a per-cgroup
+       basis.*
+
+---
+
+## Pid
+
+- Limit (and count) number of processes in a cgroup
+
+- Protects against e.g. fork bombs
+
+---
+
+## Devices
+
+- We need to limit access to device nodes
+
+- Containers should not be able to open e.g. disks and partitions directly
+
+  (/dev/sda\*, /dev/nvme\*...)
+
+- However, some devices are expected to be available at all times:
+
+  /dev/tty, /dev/zero, /dev/null, /dev/random...
+
+---
+
+## Cgroups v1
+
+- There used to be a special "devices" control group
+
+- It made it easy to grand read/write/mknod permissions
+
+  (individually for each device and each container)
+
+- Access could be granted/revoked/viewed through a pseudo-file:
+  ```bash
+  echo 'c 1:3 mr' > /sys/fs/cgroup/.../devices.allow
+  ```
+
+- This file doesn't exist anymore in cgroups v2!
+
+---
+
+## Cgroups v2
+
+- Device access is controlled with eBPF programs
+
+  (there is a special program type, [`cgroup_device`][bpf-cgroup-device], for that purpose)
+
+- This requires writing and compiling eBPF programs (😰)
+
+- Viewing permissions requires disassembling eBPF programs (😱)
+
+[bpf-cgroup-device]: https://docs.ebpf.io/linux/program-type/BPF_PROG_TYPE_CGROUP_DEVICE/
+
+---
+
+## Viewing eBPF programs
+
+- Install bpf tools (package name `bpftool` or `bpf`)
+
+- View all eBPF programs attached to cgroups:
+  ```bash
+  sudo bpftool cgroup tree
+  ```
+
+- View eBPF programs attached to a Docker container:
+  ```bash
+  sudo bpftool cgroup list /sys/fs/cgroup/system.slice/docker-<CONTAINER_ID>.scope
+  ```
+
+- Disassemble an eBPF program:
+  ```bash
+  sudo bpftool prog dump xlated id <ID>
+  ```
+
+- *Bon chance* 😬
+
+---
+
+## Some interesting nodes
+
+- `/dev/net/tun` (network interface manipulation)
+
+- `/dev/fuse` (filesystems in user space)
+
+- `/dev/kvm` (run VMs in containers)
+
+- `/dev/dri` (GPU)
+
+- `/dev/ttyUSB*`, `/dev/ttyACM*` (serial devices)
+
+- `/dev/snd/*` (sound cards)
+
+---
+
+## And the exotic ones...
+
+- `rdma`: remote memory access, infiniband
+
+- `dmem`: device memory (VRAM), relatively new
+
+  (kernel 6.14, January 2025; only Intel and AMD GPU for now)
+
+- `hugetlb`: huge pages
+
+- `perf_event`: [performance profiling](https://perfwiki.github.io/main/)
+
+- `misc`: generic cgroup for other discrete resources
+
+  (extension point to plug even more exotic resources)
 
 ---
 
 # Namespaces
 
-- Provide processes with their own view of the system.
+- Provide processes with their own view of the system
 
-- Namespaces limit what you can see (and therefore, what you can use).
+- Namespaces limit what you can see (and therefore, what you can use)
 
 - These namespaces are available in modern kernels:
 
@@ -475,15 +533,15 @@ Killed
   - time
   - cgroup
 
-  (We are going to detail them individually.)
+  (we are going to detail them individually)
 
-- Each process belongs to one namespace of each type.
+- Each process belongs to one namespace of each type
 
 ---
 
 ## Namespaces are always active
 
-- Namespaces exist even when you don't use containers.
+- Namespaces exist even when you don't use containers
 
 - This is a bit similar to the UID field in UNIX processes:
 
@@ -500,7 +558,7 @@ Killed
 - You can replace "UID field" with "namespace" above and it still works!
 
 - In other words: even when you don't use containers,
-  <br/>there is one namespace of each type, containing all the processes on the system.
+  <br/>there is one namespace of each type, containing all the processes on the system
 
 ---
 
@@ -510,17 +568,17 @@ class: extra-details, deep-dive
 
 - Namespaces are created with two methods:
 
-  - the `clone()` system call (used when creating new threads and processes),
+  - the `clone()` system call (used when creating new threads and processes)
 
-  - the `unshare()` system call.
+  - the `unshare()` system call
 
-- The Linux tool `unshare` allows doing that from a shell.
+- The Linux tool `unshare` allows doing that from a shell
 
-- A new process can re-use none / all / some of the namespaces of its parent.
+- A new process can re-use none / all / some of the namespaces of its parent
 
-- It is possible to "enter" a namespace with the `setns()` system call.
+- It is possible to "enter" a namespace with the `setns()` system call
 
-- The Linux tool `nsenter` allows doing that from a shell.
+- The Linux tool `nsenter` allows doing that from a shell
 
 ---
 
@@ -528,9 +586,9 @@ class: extra-details, deep-dive
 
 ## Namespaces lifecycle
 
-- When the last process of a namespace exits, the namespace is destroyed.
+- When the last process of a namespace exits, the namespace is destroyed
 
-- All the associated resources are then removed.
+- All the associated resources are then removed
 
 - Namespaces are materialized by pseudo-files in `/proc/<pid>/ns`.
 
@@ -538,11 +596,11 @@ class: extra-details, deep-dive
   ls -l /proc/self/ns
   ```
 
-- It is possible to compare namespaces by checking these files.
+- It is possible to compare namespaces by checking these files
 
-  (This helps to answer the question, "are these two processes in the same namespace?")
+  (this helps to answer the question, "are these two processes in the same namespace?")
 
-- It is possible to preserve a namespace by bind-mounting its pseudo-file.
+- It is possible to preserve a namespace by bind-mounting its pseudo-file
 
 ---
 
@@ -552,13 +610,17 @@ class: extra-details, deep-dive
 
 - As mentioned in the previous slides:
 
-  *A new process can re-use none / all / some of the namespaces of its parent.*
+  *a new process can re-use none / all / some of the namespaces of its parent*
 
-- We are going to use that property in the examples in the next slides.
+- It's possible to create e.g.:
 
-- We are going to present each type of namespace.
+  - mount namespaces to have "private" `/tmp` for each user / app
 
-- For each type, we will provide an example using only that namespace.
+  - network namespaces to isolate apps or give them a special network access
+
+- It's possible to use namespaces without cgroups
+
+  (and totally outside of container contexts)
 
 ---
 
@@ -566,21 +628,21 @@ class: extra-details, deep-dive
 
 - gethostname / sethostname
 
-- Allows setting a custom hostname for a container.
+- Allows setting a custom hostname for a container
 
 - That's (mostly) it!
 
-- Also allows setting the NIS domain.
+- Also allows setting the NIS domain
 
-  (If you don't know what a NIS domain is, you don't have to worry about it!)
+  (if you don't know what a NIS domain is, you don't have to worry about it!)
 
-- If you're wondering: UTS = UNIX time sharing.
+- If you're wondering: UTS = UNIX time sharing
 
 - This namespace was named like this because of the `struct utsname`,
   <br/>
   which is commonly used to obtain the machine's hostname, architecture, etc.
 
-  (The more you know!)
+  (the more you know!)
 
 ---
 
@@ -594,11 +656,11 @@ Let's use `unshare` to create a new process that will have its own UTS namespace
 $ sudo unshare --uts
 ```
 
-- We have to use `sudo` for most `unshare` operations.
+- We have to use `sudo` for most `unshare` operations
 
-- We indicate that we want a new uts namespace, and nothing else.
+- We indicate that we want a new uts namespace, and nothing else
 
-- If we don't specify a program to run, a `$SHELL` is started.
+- If we don't specify a program to run, a `$SHELL` is started
 
 ---
 
@@ -629,17 +691,17 @@ Exit the "container" with `exit` or `Ctrl-D`.
 
 ## Net namespace overview
 
-- Each network namespace has its own private network stack.
+- Each network namespace has its own private network stack
 
 - The network stack includes:
 
-  - network interfaces (including `lo`),
+  - network interfaces (including `lo`)
 
-  - routing table**s** (as in `ip rule` etc.),
+  - routing table**s** (as in `ip rule` etc.)
 
-  - iptables chains and rules,
+  - iptables chains and rules
 
-  - sockets (as seen by `ss`, `netstat`).
+  - sockets (as seen by `ss`, `netstat`)
 
 - You can move a network interface from a network namespace to another:
   ```bash
@@ -650,15 +712,15 @@ Exit the "container" with `exit` or `Ctrl-D`.
 
 ## Net namespace typical use
 
-- Each container is given its own network namespace.
+- Each container is given its own network namespace
 
-- For each network namespace (i.e. each container), a `veth` pair is created.
+- For each network namespace (i.e. each container), a `veth` pair is created
 
-  (Two `veth` interfaces act as if they were connected with a cross-over cable.)
+  (two `veth` interfaces act as if they were connected with a cross-over cable)
 
-- One `veth` is moved to the container network namespace (and renamed `eth0`).
+- One `veth` is moved to the container network namespace (and renamed `eth0`)
 
-- The other `veth` is moved to a bridge on the host (e.g. the `docker0` bridge).
+- The other `veth` is moved to a bridge on the host (e.g. the `docker0` bridge)
 
 ---
 
@@ -698,7 +760,8 @@ $ sudo ip link add name in_host type veth peer name in_netns
 Configure the host side (`in_host`):
 
 ```bash
-$ sudo ip link set in_host master docker0 up
+$ sudo ip link set in_host up
+$ sudo ip addr add 172.22.0.1/24 dev in_host
 ```
 
 ---
@@ -746,41 +809,36 @@ class: extra-details
 
 ## Allocating IP address and default route
 
-*On the host*, check the address of the Docker bridge:
-
-```bash
-$ ip addr ls dev docker0
-```
-
-(It could be something like `172.17.0.1`.)
-
-Pick an IP address in the middle of the same subnet, e.g. `172.17.0.99`.
-
 *In the process created by `unshare`,* configure the interface:
 
 ```bash
- # ip addr add 172.17.0.99/24 dev eth0
- # ip route add default via 172.17.0.1
+ # ip addr add 172.22.0.2/24 dev eth0
+ # ip route add default via 172.22.0.1
 ```
 
 (Make sure to update the IP addresses if necessary.)
+
+Check that we can ping the host:
+
+```bash
+ # ping 172.22.0.1
+```
 
 ---
 
 class: extra-details
 
-## Validating the setup
+## Reaching the outside world
 
-Check that we now have connectivity:
+This requires to:
 
-```bash
- # ping 1.1
-```
+- enable forwarding on the host
 
-Note: we were able to take a shortcut, because Docker is running,
-and provides us with a `docker0` bridge and a valid `iptables` setup.
+- add a masquerading (SNAT) rule for traffic coming from the namespace
 
-If Docker is not running, you will need to take care of this!
+If Docker is running on the host, we can also add the `in_host` interface
+to the Docker bridge, and configure the `in_netns` interface with an
+IP address belonging to the subnet of the Docker bridge!
 
 ---
 
@@ -800,27 +858,27 @@ class: extra-details
 
 ---
 
-## Other ways to use network namespaces
+## Docker options leveraging network namespaces
 
-- `--net none` gives an empty network namespace to a container.
+- `--net none` gives an empty network namespace to a container
 
-  (Effectively isolating it completely from the network.)
+  (effectively isolating it completely from the network)
 
-- `--net host` means "do not containerize the network".
+- `--net host` means "do not containerize the network"
 
-  (No network namespace is created; the container uses the host network stack.)
+  (no network namespace is created; the container uses the host network stack)
 
-- `--net container` means "reuse the network namespace of another container".
+- `--net container` means "reuse the network namespace of another container"
 
-  (As a result, both containers share the same interfaces, routes, etc.)
+  (as a result, both containers share the same interfaces, routes, etc.)
 
 ---
 
 ## Mnt namespace
 
-- Processes can have their own root fs (à la chroot).
+- Processes can have their own root fs (à la chroot)
 
-- Processes can also have "private" mounts. This allows:
+- Processes can also have "private" mounts; this allows:
 
   - isolating `/tmp` (per user, per service...)
 
@@ -829,10 +887,11 @@ class: extra-details
   - mounting remote filesystems or sensitive data,
     <br/>but make it visible only for allowed processes
 
-- Mounts can be totally private, or shared.
+- Mounts can be totally private, or shared
 
-- At this point, there is no easy way to pass along a mount
-  from a namespace to another.
+- For a long time, there was no easy way to "move" a mount to another namespace
+
+- It's now possible; see [justincormack/addmount](https://github.com/justincormack/addmount) for a simple example
 
 ---
 
@@ -861,17 +920,17 @@ The mount is automatically cleaned up when you exit the process.
 ## PID namespace
 
 - Processes within a PID namespace only "see" processes
-  in the same PID namespace.
+  in the same PID namespace
 
-- Each PID namespace has its own numbering (starting at 1).
+- Each PID namespace has its own numbering (starting at 1)
 
-- When PID 1 goes away, the whole namespace is killed.
+- When PID 1 goes away, the whole namespace is killed
 
-  (When PID 1 goes away on a normal UNIX system, the kernel panics!)
+  (when PID 1 goes away on a normal UNIX system, the kernel panics!)
 
-- Those namespaces can be nested.
+- Those namespaces can be nested
 
-- A process ends up having multiple PIDs (one per namespace in which it is nested).
+- A process ends up having multiple PIDs (one per namespace in which it is nested)
 
 ---
 
@@ -905,15 +964,15 @@ class: extra-details, deep-dive
 
 ## PID namespaces and `/proc`
 
-- Tools like `ps` rely on the `/proc` pseudo-filesystem.
+- Tools like `ps` rely on the `/proc` pseudo-filesystem
 
-- Our new namespace still has access to the original `/proc`.
+- Our new namespace still has access to the original `/proc`
 
-- Therefore, it still sees host processes.
+- Therefore, it still sees host processes
 
-- But it cannot affect them.
+- But it cannot affect them
 
-  (Try to `kill` a process: you will get `No such process`.)
+  (try to `kill` a process: you will get `No such process`)
 
 ---
 
@@ -921,13 +980,13 @@ class: extra-details, deep-dive
 
 ## PID namespaces, take 2
 
-- This can be solved by mounting `/proc` in the namespace.
+- This can be solved by mounting `/proc` in the namespace
 
-- The `unshare` utility provides a convenience flag, `--mount-proc`.
+- The `unshare` utility provides a convenience flag, `--mount-proc`
 
-- This flag will mount `/proc` in the namespace.
+- This flag will mount `/proc` in the namespace
 
-- It will also unshare the mount namespace, so that this mount is local.
+- It will also unshare the mount namespace, so that this mount is local
 
 Try it:
 
@@ -1004,17 +1063,17 @@ Check `man 2 unshare` and `man pid_namespaces` if you want more details.
   - UID 0→1999 in container C2 is mapped to UID 12000→13999 on host
   - etc.
 
-- UID 0 in the container can still perform privileged operations in the container.
+- UID 0 in the container can still perform privileged operations in the container
 
-  (For instance: setting up network interfaces.)
+  (for instance: setting up network interfaces)
 
-- But outside of the container, it is a non-privileged user.
+- But outside of the container, it is a non-privileged user
 
-- It also means that the UID in containers becomes unimportant.
+- It also means that the UID in containers becomes unimportant
 
-  (Just use UID 0 in the container, since it gets squashed to a non-privileged user outside.)
+  (just use UID 0 in the container, since it gets squashed to a non-privileged user outside)
 
-- Ultimately enables better privilege separation in container engines.
+- Ultimately enables better privilege separation in container engines
 
 ---
 
@@ -1022,12 +1081,12 @@ class: extra-details, deep-dive
 
 ## User namespace challenges
 
-- UID needs to be mapped when passed between processes or kernel subsystems.
+- UID needs to be mapped when passed between processes or kernel subsystems
 
-- Filesystem permissions and file ownership are more complicated.
+- Filesystem permissions and file ownership are more complicated
 
-  .small[(E.g. when the same root filesystem is shared by multiple containers
-  running with different UIDs.)]
+  .small[(e.g. when the same root filesystem is shared by multiple containers
+  running with different UIDs)]
 
 - With the Docker Engine:
 
@@ -1071,23 +1130,23 @@ class: extra-details, deep-dive
 
 # Security features
 
-- Namespaces and cgroups are not enough to ensure strong security.
+- Namespaces and cgroups are not enough to ensure strong security
 
-- We need extra mechanisms: capabilities, seccomp, LSMs.
+- We need extra mechanisms: capabilities, seccomp, LSMs
 
-- These mechanisms were already used before containers to harden security.
+- These mechanisms were already used before containers to harden security
 
-- They can be used together with containers.
+- They can be used together with containers
 
 - Good container engines will automatically leverage these features.
 
-  (So that you don't have to worry about it.)
+  (so that you don't have to worry about it)
 
 ---
 
 ## Capabilities
 
-- In traditional UNIX, many operations are possible if and only if UID=0 (root).
+- In traditional UNIX, many operations are possible if and only if UID=0 (root)
 
 - Some of these operations are very powerful:
 
@@ -1101,37 +1160,81 @@ class: extra-details, deep-dive
 
   - binding to a port below 1024.
 
-- Capabilities are per-process flags to allow these operations individually.
+- Capabilities are per-process flags to allow these operations individually
 
 ---
 
 ## Some capabilities
 
-- `CAP_CHOWN`: arbitrarily change file ownership and permissions.
+- `CAP_CHOWN`: arbitrarily change file ownership and permissions
 
-- `CAP_DAC_OVERRIDE`: arbitrarily bypass file ownership and permissions.
+- `CAP_DAC_OVERRIDE`: arbitrarily bypass file ownership and permissions
 
 - `CAP_NET_ADMIN`: configure network interfaces, iptables rules, etc.
 
-- `CAP_NET_BIND_SERVICE`: bind a port below 1024.
+- `CAP_NET_BIND_SERVICE`: bind a port below 1024
 
-See `man capabilities` for the full list and details.
+See `man capabilities` for the full list and details
 
 ---
 
 ## Using capabilities
 
-- Container engines will typically drop all "dangerous" capabilities.
+- Container engines will typically drop all "dangerous" capabilities
 
-- You can then re-enable capabilities on a per-container basis, as needed.
+- You can then re-enable capabilities on a per-container basis, as needed
 
 - With the Docker engine: `docker run --cap-add ...`
 
-- If you write your own code to manage capabilities:
+- From the shell:
 
-  - make sure that you understand what each capability does,
+  `capsh --drop=cap_net_admin --`
 
-  - read about *ambient* capabilities as well.
+  `capsh --drop=all --`
+
+---
+
+## File capabilities
+
+- It is also possible to give capabilities to executable files
+
+- This is comparable to the SUID bit, but with finer grain
+
+  (e.g., `setcap cap_net_raw+ep /bin/ping`)
+
+- There are differences between *permitted* and *inheritable* capabilities...
+
+  🤔
+
+---
+
+class: extra-details
+
+## Capability sets
+
+- Permitted set (=what a process could use, provided the file has the cap)
+
+- Effective set (=what a process can actually use)
+
+- Inheritable set (=capabilities preserved across exexcve calls)
+
+- Bounding set (=system-wide limit over what can be acquired through execve / capset)
+
+- Ambient set (=capabilities retained across execve for non-privileged users)
+
+- Files can have *permitted*, *effective*, *inheritable* capability sets
+
+---
+
+## More about capabilities
+
+- Capabilities manpage:
+
+  https://man7.org/linux/man-pages/man7/capabilities.7.html
+
+- Subtleties about `capsh`:
+
+  https://sites.google.com/site/fullycapable/why-didnt-that-work
 
 ---
 
