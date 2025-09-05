@@ -2,7 +2,7 @@
   "name": "container-training-pub-sub-server",
   "version": "0.0.1",
   "dependencies": {
-    "express": "^4.21.1",
+    "express": "^4.21.2",
     "socket.io": "^4.8.0",
     "socket.io-client": "^4.7.5"
   }
