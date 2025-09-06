@@ -327,9 +327,7 @@ class: extra-details
 
 ## Which one is the best?
 
-- Eventually, overlay2 should be the best option.
-
-- It is available on all modern systems.
+- In modern (2015+) systems, overlay2 should be the best option.
 
 - Its memory usage is better than Device Mapper, BTRFS, or ZFS.
 
