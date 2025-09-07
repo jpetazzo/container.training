@@ -1,4 +1,4 @@
-# Exercise — writing better Dockerfiles
+# Exercise — multi-stage builds
 
 Let's update our Dockerfiles to leverage multi-stage builds!
 
