@@ -54,10 +54,11 @@ content:
   - containers/Multi_Stage_Builds.md
   #- containers/Publishing_To_Docker_Hub.md
   - containers/Dockerfile_Tips.md
-  - containers/Exercise_Dockerfile_Advanced.md
+  - containers/Exercise_Dockerfile_Multistage.md
   #- containers/Docker_Machine.md
   #- containers/Advanced_Dockerfiles.md
   #- containers/Buildkit.md
+  #- containers/Exercise_Dockerfile_Buildkit.md
   #- containers/Init_Systems.md
   #- containers/Application_Configuration.md
   #- containers/Logging.md
