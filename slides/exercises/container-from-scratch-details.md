@@ -26,27 +26,7 @@ Make sure to automate / script things as much as possible!
 
 5. Cgroups
 
-6. Run as non-root
-
-7. ...But on port 80 anyways
-
----
-
-## Bonus steps
-
-In no specific order...
-
-- Try to escape the container
-
-  (it's OK to modify the container filesystem from outside!)
-
-- Try to prevent container escapes by:
-
-  - enabling user namespaces
-
-  - dropping capabilities
-
-  - locking down device access
+6. Non-root
 
 ---
 
@@ -54,7 +34,7 @@ In no specific order...
 
 - Obtain a root filesystem with one of the following methods:
 
-  - download an Alpine root fs
+  - download an Alpine mini root fs
 
   - export an Alpine or NGINX container image with Docker
 
@@ -65,6 +45,46 @@ In no specific order...
   - ...anything you want! (Nix, anyone?)
 
 - Enter the root filesystem with `chroot`
+
+---
+
+## Help, network does not work!
+
+- Check that you have external connectivity from the chroot:
+  ```bash
+  ping 1.1.1.1
+  ```
+  (that *should* work; if it doesn't, we have a serious problem!)
+
+- Check that DNS resolution works:
+  ```bash
+  ping enix.io
+  ```
+
+- If you're having a DNS resolution error, configure DNS in the container:
+  ```bash
+  echo nameserver 1.1.1.1 > /etc/resolv.conf
+  ```
+
+---
+
+## Running a web server
+
+Here are a few possibilities...
+
+- Install the NGINX package and run it with `nginx`
+
+  (note: by default it will start in the background)
+
+- Run NGINX in the foreground with `nginx -g "daemon off;"`
+
+- Install the package Caddy and run `caddy file-server -ab`
+
+  (it will remain in the foreground and show logs; **RECOMMENDED**)
+
+- Download and/or build https://github.com/jpetazzo/color
+
+  (if you're familiar with the Go ecosystem!)
 
 ---
 
@@ -137,15 +157,3 @@ In no specific order...
 - Adjust the web server configuration so that it starts
 
   (non-privileged users cannot bind to ports below 1024)
-
----
-
-## Non-root, port 80
-
-- We want to run as a non-privileged user **and** bind to port 80
-
-- We'll need to have the correct capability to do that
-
-- Identify the capability needed to do that
-
-- Add that capability to the web server
