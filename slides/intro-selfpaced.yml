@@ -66,6 +66,8 @@ content:
 - - containers/Namespaces_Cgroups.md
   - containers/Copy_On_Write.md
   - containers/Containers_From_Scratch.md
+  - containers/Security.md
+  - containers/Rootless_Networking.md
   - containers/Images_Deep_Dive.md
 - - containers/Container_Engines.md
   - containers/Pods_Anatomy.md
