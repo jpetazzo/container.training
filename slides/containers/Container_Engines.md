@@ -84,9 +84,9 @@ like Windows, macOS, Solaris, FreeBSD ...
 
 * Each `lxc-start` process exposes a custom API over a local UNIX socket, allowing to interact with the container.
 
-* No notion of image (container filesystems have to be managed manually).
+* No notion of image (container filesystems had be managed manually).
 
-* Networking has to be set up manually.
+* Networking had to be set up manually.
 
 ---
 
@@ -98,9 +98,21 @@ like Windows, macOS, Solaris, FreeBSD ...
 
 * Daemon exposing a REST API.
 
+* Can run containers and virtual machines.
+
 * Can manage images, snapshots, migrations, networking, storage.
 
 * "offers a user experience similar to virtual machines but using Linux containers instead."
+
+* Driven by Canonical.
+
+---
+
+## Incus
+
+* Community-driven fork of LXD.
+
+* Relatively recent [announced in August 2023](https://linuxcontainers.org/incus/announcement/) so time will tell what the notable differences will be.
 
 ---
 
@@ -140,7 +152,7 @@ We're not aware of anyone using it directly (i.e. outside of Kubernetes).
 
 ---
 
-## Kata containers
+## [Kata containers](https://katacontainers.io/)
 
 * OCI-compliant runtime.
 
@@ -152,7 +164,7 @@ We're not aware of anyone using it directly (i.e. outside of Kubernetes).
 
 ---
 
-## gVisor
+## [gVisor](https://gvisor.dev/)
 
 * OCI-compliant runtime.
 
@@ -170,7 +182,17 @@ We're not aware of anyone using it directly (i.e. outside of Kubernetes).
 
 ---
 
-## Overall ...
+## Others
+
+- Micro VMs: Firecracker, Edera...
+
+- [crun](https://github.com/containers/crun) (runc rewritten in C)
+
+- [youki](https://youki-dev.github.io/youki/) (runc rewritten in Rust)
+
+---
+
+## To Docker Or Not To Docker
 
 * The Docker Engine is very developer-centric:
 
@@ -184,8 +206,6 @@ We're not aware of anyone using it directly (i.e. outside of Kubernetes).
 
 * As a result, it is a fantastic tool in development environments.
 
-* On servers:
+* On Kubernetes clusters, containerd or CRI-O are better choices.
 
-  - Docker is a good default choice
-
-  - If you use Kubernetes, the engine doesn't matter
+* On Kubernetes clusters, the container engine is an implementation detail.
