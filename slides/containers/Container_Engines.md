@@ -209,3 +209,23 @@ We're not aware of anyone using it directly (i.e. outside of Kubernetes).
 * On Kubernetes clusters, containerd or CRI-O are better choices.
 
 * On Kubernetes clusters, the container engine is an implementation detail.
+
+---
+
+## Different levels
+
+- Directly use namespaces, cgroups, capabilities with custom code or scripts
+
+  *useful for troubleshooting/debugging and for educative purposes; e.g. pipework*
+
+- Use low-level engines like runc, crun, youki
+
+  *useful when building custom architectures; e.g. a brand new orchestrator*
+
+- Use low-level APIs like CRI or containerd grpc API
+
+  *useful to achieve high-level features like Docker, but without Docker; e.g. ctr, nerdctl*
+
+- Use high-level APIs like Docker and Kubernetes
+
+  *that's what most people will do*
