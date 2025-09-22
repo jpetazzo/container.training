@@ -157,6 +157,18 @@ Exactly what we need!
 
 ]
 
+---
+
+## Other useful tools
+
+- `kl` (https://github.com/robinovitch61/kl)
+
+  *select containers interactively , navigate/view/search logs*
+
+- `gonzo` (https://github.com/control-theory/gonzo)
+
+  *real-time stream analysis, statistics, etc.*
+
 ???
 
 :EN:- Viewing pod logs from the CLI
