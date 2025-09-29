@@ -18,7 +18,7 @@
 
   - API backend
 
-  - database (that we will keep out of Kubernetes for now)
+  - database
 
 - We have built images for our frontend and backend components
 
@@ -33,7 +33,15 @@
 ---
 
 
-## Basic things we can ask Kubernetes to do
+## Kubernetes, level 1
+
+--
+
+- Leave our database outside of Kubernetes (because database be scary🥺)
+
+--
+
+- Deploy a managed Kubernetes cluster (cloud or [professional services][enix-k8s-expert])
 
 --
 
@@ -63,17 +71,23 @@
 
 - Keep processing requests during the upgrade; update my containers one at a time
 
+[enix-k8s-expert]: https://enix.io/en/kubernetes-expert/
+
 ---
 
-## Other things that Kubernetes can do for us
+## Kubernetes, level 2
+
+- Deploy a pre-production environment
+
+  (still using our external database, for now)
+
+- Resource management and scheduling
+
+  (reserve CPU/RAM for containers; placement constraints; priorities)
 
 - Autoscaling
 
   (straightforward on CPU; more complex on other metrics)
-
-- Resource management and scheduling
-
-  (reserve CPU/RAM for containers; placement constraints)
 
 - Advanced rollout patterns
 
@@ -95,23 +109,73 @@ class: pic
 
 ---
 
-## More things that Kubernetes can do for us
+## Kubernetes, level 3
 
-- Batch jobs
+- Run staging databases on the cluster
 
-  (one-off; parallel; also cron-style periodic execution)
+  (no replication, no backups, no scaling)
+
+- Automatic or semi-automatic deployment of feature branches
+
+  (each with its own database)
 
 - Fine-grained access control
 
   (defining *what* can be done by *whom* on *which* resources)
 
-- Stateful services
+- Batch jobs
+
+  (one-off; parallel; also cron-style periodic execution)
+
+- Package applications with e.g. Helm charts
+
+---
+
+## Kubernetes, level 4
+
+- Stateful services with persistence, replication, backups
 
   (databases, message queues, etc.)
 
-- Automating complex tasks with *operators*
+- Automate complex tasks with *operators*
 
   (e.g. database replication, failover, etc.)
+
+- Combine the two previous points with database operators like [CloudNativePG][cnpg]
+
+  (learn more about database operators: [FR][pirates-video-fr], [EN][pirates-video-en])
+
+- Leverage advanced storage with e.g. local ZFS volumes
+
+  (learn more about ZFS and databases on k8s: [FR][zfs-video-fr], [EN][zfs-video-en])
+
+- Deploy and manage clusters in-house
+
+[cnpg]: https://cloudnative-pg.io/
+[pirates-video-fr]: https://www.youtube.com/watch?v=d_ka7PlWo1I
+[pirates-video-en]: https://www.youtube.com/watch?v=ojUdBjbiKWk&t=5s
+[zfs-video-fr]: https://www.youtube.com/watch?v=XN9YL93f8tI
+[zfs-video-en]: https://www.youtube.com/watch?v=3sJIYiDnod4
+
+---
+
+## Kubernetes, level 5
+
+- Deploying and managing clusters at scale
+
+  (hundreds of clusters, thousands of nodes...)
+
+- Writing custom operators
+
+- Hybrid deployments
+
+---
+
+## Disclaimer
+
+The levels mentioned in the previous slides are not necessarily linear.
+
+They aren't exhaustive either (we didn't mention e.g. observability and alerting).
 
 ---
 
