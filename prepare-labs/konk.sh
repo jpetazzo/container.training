@@ -5,16 +5,22 @@
 # 10% CPU
 # (See https://docs.google.com/document/d/1n0lwp6rQKQUIuo_A5LQ1dgCzrmjkDjmDtNj1Jn92UrI)
 # PRO2-XS = 4 core, 16 gb
+#
+# With vspod:
+# 800 MB RAM
+# 33% CPU
+#
 
 set -e
 
-PROVIDER=scaleway
-STUDENTS=30
+KONKTAG=konk
+PROVIDER=linode
+STUDENTS=5
 
 case "$PROVIDER" in
 linode)
   export TF_VAR_node_size=g6-standard-6
-  export TF_VAR_location=us-east
+  export TF_VAR_location=fr-par
   ;;
 scaleway)
   export TF_VAR_node_size=PRO2-XS
@@ -28,11 +34,13 @@ esac
 export KUBECONFIG=~/kubeconfig
 
 if [ "$PROVIDER" = "kind" ]; then
-  kind create cluster --name konk
+  kind create cluster --name $KONKTAG
   ADDRTYPE=InternalIP
 else
-  ./labctl create --mode mk8s --settings settings/konk.env --provider $PROVIDER --tag konk
-  cp tags/konk/stage2/kubeconfig.101 $KUBECONFIG
+  if ! [ -f tags/$KONKTAG/stage2/kubeconfig.101 ]; then
+    ./labctl create --mode mk8s --settings settings/konk.env --provider $PROVIDER --tag $KONKTAG
+  fi
+  cp tags/$KONKTAG/stage2/kubeconfig.101 $KUBECONFIG
   ADDRTYPE=ExternalIP
 fi
 
