@@ -270,7 +270,7 @@ class: extra-details
 
 ]
 
-Then go to → https://artifacthub.io/packages/helm/seccurecodebox/juice-shop
+Then go to → https://artifacthub.io/packages/helm/securecodebox/juice-shop
 
 ---
 

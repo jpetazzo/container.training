@@ -171,9 +171,11 @@ Note: it might take a minute or two for the worker to start.
 
   - save successive revisions, allowing us to rollback
 
-[Helm docs](https://helm.sh/docs/topics/chart_best_practices/labels/)
-and [Kubernetes docs](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/)
+[Helm docs][helm-labels] and [Kubernetes docs][k8s-labels]
 have details about recommended annotations and labels.
+
+[helm-labels]: https://helm.sh/docs/chart_best_practices/labels/
+[k8s-labels]: https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
 
 ---
 
