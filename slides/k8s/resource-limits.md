@@ -200,35 +200,167 @@ For more details, check [this blog post](https://erickhun.com/posts/kubernetes-f
 
 ## Running low on memory
 
-- When the kernel runs low on memory, it starts to reclaim used memory
+- When the kernel runs low on memory, it starts to *reclaim* used memory
 
-- Option 1: free up some buffers and caches
+- Option 1: free up some *clean* file pages (e.g. disk cache, mmap...)
 
-  (fastest option; might affect performance if cache memory runs very low)
+  → minimal performance impact, except when these pages get very scarce
 
-- Option 2: swap, i.e. write to disk some memory of one process to give it to another
+- Option 2: write and free up some *dirty* file pages (that have been modified)
 
-  (can have a huge negative impact on performance because disks are slow)
+  → slower as it requires to write things to disk first
 
-- Option 3: terminate a process and reclaim all its memory
+- Option 3: write some *anonymous* memory pages to swap so they can be freed up
 
-  (OOM or Out Of Memory Killer on Linux)
+  → similar to option 2, but that memory might be more likely ot be used later
+
+- Option 4: terminate a process and reclaim all its memory
+
+  → fast, effective, but kills processes (with the OOM / Out Of Memory Killer)
 
 ---
 
 ## Memory limits on Kubernetes
 
-- Kubernetes *does not support swap*
-
-  (but it may support it in the future, thanks to [KEP 2400])
-
 - If a container exceeds its memory *limit*, it gets killed immediately
 
-- If a node memory usage gets too high, it will *evict* some pods
+  - we're only counting *anonymous* memory here; not *file* pages
 
-  (we say that the node is "under pressure", more on that in a bit!)
+  - the "kill" is enforced by cgroups + OOM killer (`memory.max` in cgroups v2)
+
+- If a node memory usage gets too high, kubelet will *evict* some pods
+
+  - kubelet continuously monitors available memory
+
+  - it reacts when a (configurable) threshold is reached
+
+  - more on that later!
+
+---
+
+## Kubernetes and swap
+
+- Kubernetes did not support swap initially
+
+- If kubelet detects that swap is enabled, it refuses to start
+
+  (unless we use the `failSwapOn` configuration option)
+
+- [KEP 2400] introduces "Node memory swap support"
+
+  (alpha in 1.22, beta in 1.28, GA in 1.34 🎉)
+
+- We can now set the `memorySwap.swapBehavior` kubelet configuration option:
+
+  - `NoSwap` (default) = containers will not use any swap
+
+  - `LimitedSwap` = containers can use *some* amount of swap
 
 [KEP 2400]: https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/2400-node-swap/README.md#implementation-history
+
+---
+
+class: extra-details
+
+## `LimitedSwap` policy
+
+The exact formula is given in the [Kubernetes documentation][limited-swap-formula].
+
+A container can use the following quantity of swap:
+
+`total node swap * container memory request / total node memory`
+
+Example:
+
+- node has 10 GB of RAM
+
+- container has requested 1 GB of memory
+
+- therefore, the container can use 10% of the node's swap
+
+- if the node has 4 GB of swap, the container can use 400 MB of swap
+
+This ensures fair, deterministic access to swap.
+
+[limited-swap-formula]: https://kubernetes.io/docs/concepts/cluster-administration/swap-memory-management/#how-is-the-swap-limit-being-determined-with-limitedswap
+
+---
+
+class: extra-details
+
+## Why did it take so long to support swap?
+
+- With cgroups v1, it wasn't possible to disable swap for a cgroup
+
+  (the closest option is to [reduce "swappiness"](https://unix.stackexchange.com/questions/77939/turning-off-swapping-for-only-one-process-with-cgroups))
+
+- It is possible with cgroups v2 (see the [kernel docs](https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html) and the [fbatx docs](https://facebookmicrosites.github.io/cgroup2/docs/memory-controller.html#using-swap))
+
+- Cgroups v2 were merged in Linux kernel 4.5, in 2016
+
+  (i.e. after Kubernetes came out)
+
+- It took a long time for distros to move to cgroups v2
+
+- It took a long time for Kubernetes to adopt / adapt to cgroups v2
+
+---
+
+class: extra-details
+
+## One point of view...
+
+- The architects of Kubernetes wanted to ensure that Guaranteed pods never swap
+
+- The simplest solution was to disable swap entirely
+
+- Kubelet will refuse to start if it detects that swap is enabled!
+
+---
+
+class: extra-details
+
+## Another point of view...
+
+- Swap enables paging¹ of anonymous² memory
+
+- Even when swap is disabled, Linux will still page memory for:
+
+  - executables, libraries
+
+  - mapped files
+
+- Disabling swap *will reduce performance and available resources*
+
+¹Paging: reading/writing memory pages from/to disk to reclaim physical memory
+
+²Anonymous memory: memory that is not backed by files or blocks
+
+---
+
+class: extra-details
+
+## Do you want to know more?
+
+- 🍿 GitHub issue [kubernetes/kubernetes#53533](https://github.com/kubernetes/kubernetes/issues/53533)
+
+- 💡 [Swapping, memory limits, and cgroups](https://jvns.ca/blog/2017/02/17/mystery-swap/)
+
+  *excellent technical introduction by [Julia Evans](https://jvns.ca/)*
+
+- 📚️ [In defence of swap: common misconceptions](https://chrisdown.name/2018/01/02/in-defence-of-swap.html)
+
+  *another excellent technical article by [Chris Down](https://chrisdown.name/)*
+
+---
+
+## Enabling swap anyway
+
+- If you want to run Kubernetes on machines that have swap...
+
+- ...And can't/won't disable swap...
+
+- ...You will need to add the flag `--fail-swap-on=false` to kubelet
 
 ---
 
@@ -341,58 +473,6 @@ class: extra-details
   - ability to set "minimum" memory amounts (to effectively reserve memory)
 
   - better control on the amount of swap used by a container
-
----
-
-class: extra-details
-
-## What's the deal with swap?
-
-- With cgroups v1, it's not possible to disable swap for a cgroup
-
-  (the closest option is to [reduce "swappiness"](https://unix.stackexchange.com/questions/77939/turning-off-swapping-for-only-one-process-with-cgroups))
-
-- It is possible with cgroups v2 (see the [kernel docs](https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html) and the [fbatx docs](https://facebookmicrosites.github.io/cgroup2/docs/memory-controller.html#using-swap))
-
-- Cgroups v2 aren't widely deployed yet
-
-- The architects of Kubernetes wanted to ensure that Guaranteed pods never swap
-
-- The simplest solution was to disable swap entirely
-
-- Kubelet will refuse to start if it detects that swap is enabled!
-
----
-
-## Alternative point of view
-
-- Swap enables paging¹ of anonymous² memory
-
-- Even when swap is disabled, Linux will still page memory for:
-
-  - executables, libraries
-
-  - mapped files
-
-- Disabling swap *will reduce performance and available resources*
-
-- For a good time, read [kubernetes/kubernetes#53533](https://github.com/kubernetes/kubernetes/issues/53533)
-
-- Also read this [excellent blog post about swap](https://jvns.ca/blog/2017/02/17/mystery-swap/)
-
-¹Paging: reading/writing memory pages from/to disk to reclaim physical memory
-
-²Anonymous memory: memory that is not backed by files or blocks
-
----
-
-## Enabling swap anyway
-
-- If you don't care that pods are swapping, you can enable swap
-
-- You will need to add the flag `--fail-swap-on=false` to kubelet
-
-  (remember: it won't otherwise start if it detects that swap is enabled)
 
 ---
 
