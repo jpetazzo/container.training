@@ -140,7 +140,9 @@ then make or request changes where needed.*
 
   - [validating admission policies][ac-vap] (using CEL, Common Expression Language)
 
-- More is coming; e.g. [mutating admission policies][ac-map] (alpha in Kubernetes 1.32)
+- More is coming; e.g. [mutating admission policies][ac-map]
+
+  (alpha in Kubernetes 1.32, beta in Kubernetes 1.34)
 
 [ac-controllers]: https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/
 [ac-webhooks]: https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/
