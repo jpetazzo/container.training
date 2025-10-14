@@ -2,7 +2,7 @@
 
 - We can attach resource indications to our pods
 
-  (or rather: to the *containers* in our pods)
+  (or rather: to the *containers* in our pods; but [KEP 2837](https://kep.k8s.io/2837) is coming!)
 
 - We can specify *limits* and/or *requests*
 
@@ -464,9 +464,11 @@ class: extra-details
 
 - Example: on Linux, this is typically done with control groups aka cgroups
 
-- Most systems use cgroups v1, but cgroups v2 are slowly being rolled out
+- When Kubernetes came out, Linux was using cgroups v1
 
-  (e.g. available in Ubuntu 22.04 LTS)
+- Cgroups v2 were merged into the kernel later; and then were slowly rolled out
+
+  (e.g. in Ubuntu, they became the default in Ubuntu 22.04 LTS)
 
 - Cgroups v2 have new, interesting features for memory control:
 
@@ -620,6 +622,106 @@ This set of resources makes sure that this service won't be killed (as long as i
 [robusta]: https://github.com/robusta-dev/krr
 [vpa]: https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler
 [vpa-limitations]: https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler#known-limitations
+
+---
+
+class: extra-details
+
+## In-place Pod Resize
+
+- New feature (alpha in 1.27, beta and enabled by default in 1.33)
+
+- Lets us change CPU and memory requests and limits for existing Pods
+
+- Can resize up and down
+
+- Resize up can be deferred if there aren't enough resources on the node
+
+  (but may complete at a later point if resources become available)
+
+- Memory resize down can be deferred if it would trigger OOM killer
+
+  (but there is no guarantee that the container won't be killed by a race condition!)
+
+---
+
+class: extra-details
+
+## Limitations
+
+- Cannot change Pod QoS:
+
+  - can't add resources to a BestEffort Pod
+
+  - can't remove requests from a Burstable / Guaranteed Pod
+
+  - can't set request==limit unless the Pod was already Guaranteed
+
+- Not integrated with controllers in the `apps` API group at this point
+
+  (=Pods must be resized manually or by custom controllers)
+
+- Containers using swap need to be restarted
+
+---
+
+class: extra-details
+
+## More info about in-place resize
+
+- [Kubernetes 1.33 blog announcement](https://kubernetes.io/blog/2025/05/16/kubernetes-v1-33-in-place-pod-resize-beta/)
+
+- [Kubernetes documentation](https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/)
+
+- [KEP 1287: In-place Update of Pod Resources ](https://github.com/kubernetes/enhancements/tree/master/keps/sig-node/1287-in-place-update-pod-resources)
+
+---
+
+class: extra-details
+
+## Extended resources aka [Device Plugins](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/)
+
+- GA since Kubernetes 1.26
+
+- Plugins can register arbitrary custom resources to kubelet
+
+  (e.g.: "this node has 4 GPUs of class K2000!")
+
+- Containers can request custom resources
+
+  (e.g.: "I want 2 GPUs of class K2000!")
+
+- Scheduler will make it happen and keep track of available resources
+
+- Resources are discrete, exclusive, atomic units
+
+  (can't ask a specific amount of VRAM, or a GPU "at least of class X", etc.)
+
+- That last limitation can be partially worked around thanks to [NFD](https://github.com/kubernetes-sigs/node-feature-discovery) and node selectors
+
+---
+
+class: extra-details
+
+## [Dynamic Resource Allocation](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/)
+
+- GA since Kubernetes 1.34
+
+- More powerful than Device Plugins:
+
+  - devices can have e.g. quantity of VRAM or other features
+
+  - pods can ask for e.g. a specific amount of VRAM
+  
+  - devices can be shared across multiple pods
+
+- More complex concepts:
+
+  - drivers create ResourceSlices representing available thingies
+
+  - users create ResourceClaims or ResourceClaimTemplates
+
+  - users create Pods referencing ReosurceClaims or ResourceClaimTemplates
 
 ---
 
