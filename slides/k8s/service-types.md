@@ -421,15 +421,21 @@ class: extra-details
 
 - [KEP4444, Traffic Distribution for Services][kep4444]
 
-- In alpha since Kubernetes 1.30, beta since Kubernetes 1.31
+- Supersedes topology aware routing
 
-- Should eventually supersede topology aware routing
+- Multiple values are supported
 
-- Can be set to `PreferClose` (more values might be supported later)
+- `PreferClose` (alpha since K8S 1.30, beta since K8S 1.31, stable since K8S 1.33)
 
-- The meaning of `PreferClose` is implementation dependent
+  "try to route traffic to endpoints in the same zone as the client"
 
-  (with kube-proxy, it should work like topology aware routing: stay in a zone)
+- `PreferSameZone` (beta since K8S 1.34)
+
+  "same as `PreferClose` but clearer about the intended semantics"
+
+- `PreferSameNode` (beta since K8S 1.34)
+
+  "try to route traffic to endpoints on the same node as the client"
 
 [kep4444]: https://github.com/kubernetes/enhancements/issues/4444
 
