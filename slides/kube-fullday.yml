@@ -66,6 +66,7 @@ content:
   - k8s/rollout.md
   - k8s/healthchecks.md
   - k8s/ingress.md
+  #- k8s/gateway-api.md
   #- k8s/volumes.md
   - k8s/configuration.md
   - k8s/secrets.md
