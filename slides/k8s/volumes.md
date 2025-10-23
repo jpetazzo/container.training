@@ -441,22 +441,6 @@ spec:
 
 ---
 
-## Other uses of init containers
-
-- Load content
-
-- Generate configuration (or certificates)
-
-- Database migrations
-
-- Waiting for other services to be up
-
-  (to avoid flurry of connection errors in main container)
-
-- etc.
-
----
-
 ## Volume lifecycle
 
 - The lifecycle of a volume is linked to the pod's lifecycle
@@ -470,6 +454,65 @@ spec:
 - A volume survives across container restarts
 
 - A volume is destroyed (or, for remote storage, detached) when the pod is destroyed
+
+---
+
+## Other uses of init containers
+
+- Load content, data sets...
+
+- Generate configuration (or certificates)
+
+- Database migrations
+
+- Wait for other services to be up
+
+  (to avoid flurry of connection errors in main container)
+
+- etc.
+
+---
+
+## Init containers vs sidecars
+
+- Init containers run *before* the main container(s)
+
+- Sidecars run *in parallel* to the main container(s)
+
+- What's the difference between a sidecar and a "main container"?
+
+--
+
+  - sidecar might need to start *before* the main container(s)
+    <br/>(e.g. if it provides "ambassador"-style connectivity service)
+
+  - sidecar might need to stop *after* the main container(s)
+    <br/>(ditto)
+
+  - sidecar might need to be stopped automatically when main container(s) complete
+    <br/>(e.g. for batch jobs)
+
+- Kubernetes has special support for sidecars!
+
+---
+
+## Sidecars
+
+- Introduced as an alpha feature in K8S 1.28; GA in K8S 1.33
+
+- A sidecar is an `initContainer` with a `restartPolicy: Always`
+
+- Sidecars are started in the order defined by the `initContainers` list
+
+- They can have healthchecks
+
+- Kubernetes doesn't wait for them to complete
+
+  (they run asynchronously)
+
+- When all the main containers have completed, sidecars are shutdown automatically
+
+  (they don't prevent jobs from completing!)
 
 ???
 
