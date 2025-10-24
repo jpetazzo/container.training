@@ -314,52 +314,6 @@ class: extra-details
 
 ---
 
-## Trash your servers and burn your code
-
-*(This is the title of a
-[2013 blog post][immutable-deployments]
-by Chad Fowler, where he explains the concept of immutable infrastructure.)*
-
-[immutable-deployments]: https://web.archive.org/web/20160305073617/http://chadfowler.com/blog/2013/06/23/immutable-deployments/
-
---
-
-* Let's majorly mess up our container.
-
-  (Remove files or whatever.)
-
-* Now, how can we fix this?
-
---
-
-* Our old container (with the blue version of the code) is still running.
-
-* See on which port it is exposed:
-  ```bash
-  docker ps
-  ```
-
-* Point our browser to it to confirm that it still works fine.
-
----
-
-## Immutable infrastructure in a nutshell
-
-* Instead of *updating* a server, we deploy a new one.
-
-* This might be challenging with classical servers, but it's trivial with containers.
-
-* In fact, with Docker, the most logical workflow is to build a new image and run it.
-
-* If something goes wrong with the new image, we can always restart the old one.
-
-* We can even keep both versions running side by side.
-
-If this pattern sounds interesting, you might want to read about *blue/green deployment*
-and *canary deployments*.
-
----
-
 ## Recap of the development workflow
 
 1. Write a Dockerfile to build an image containing our development environment.
@@ -382,35 +336,6 @@ and *canary deployments*.
 5. Iterate and repeat steps 3 and 4 until satisfied.
 
 6. When done, commit+push source code changes.
-
----
-
-class: extra-details
-
-## Debugging inside the container
-
-Docker has a command called `docker exec`.
-
-It allows users to run a new process in a container which is already running.
-
-If sometimes you find yourself wishing you could SSH into a container: you can use `docker exec` instead.
-
-You can get a shell prompt inside an existing container this way, or run an arbitrary process for automation.
-
----
-
-class: extra-details
-
-## `docker exec` example
-
-```bash
-$ # You can run ruby commands in the area the app is running and more!
-$ docker exec -it <yourContainerId> bash
-root@5ca27cf74c2e:/opt/namer# irb
-irb(main):001:0> [0, 1, 2, 3, 4].map {|x| x ** 2}.compact
-=> [0, 1, 4, 9, 16]
-irb(main):002:0> exit
-```
 
 ---
 

@@ -76,6 +76,8 @@ CMD ["python", "app.py"]
 
 ---
 
+class: extra-details
+
 ## Be careful with `chown`, `chmod`, `mv`
 
 * Layers cannot store efficiently changes in permissions or ownership.
@@ -117,6 +119,8 @@ CMD ["python", "app.py"]
 
 ---
 
+class: extra-details
+
 ## Use `COPY --chown`
 
 * The Dockerfile instruction `COPY` can take a `--chown` parameter.
@@ -140,34 +144,13 @@ CMD ["python", "app.py"]
 
 ---
 
+class: extra-details
+
 ## Set correct permissions locally
 
 * Instead of using `chmod`, set the right file permissions locally.
 
 * When files are copied with `COPY`, permissions are preserved.
-
----
-
-## Embedding unit tests in the build process
-
-```dockerfile
-FROM <baseimage>
-RUN <install dependencies>
-COPY <code>
-RUN <build code>
-RUN <install test dependencies>
-COPY <test data sets and fixtures>
-RUN <unit tests>
-FROM <baseimage>
-RUN <install dependencies>
-COPY <code>
-RUN <build code>
-CMD, EXPOSE ...
-```
-
-* The build fails as soon as an instruction fails
-* If `RUN <unit tests>` fails, the build doesn't produce an image
-* If it succeeds, it produces a clean image (without test libraries and data)
 
 ---
 
@@ -286,6 +269,8 @@ ENV PIP=9.0.3 \
 
 ---
 
+class: extra-details
+
 ## Entrypoints and wrappers
 
 It is very common to define a custom entrypoint.
@@ -302,6 +287,8 @@ That entrypoint will generally be a script, performing any combination of:
 - and more.
 
 ---
+
+class: extra-details
 
 ## A typical entrypoint script
 
@@ -354,67 +341,6 @@ RUN ...
 ]
 
 (Source: [Nodejs official image](https://github.com/nodejs/docker-node/blob/master/10/alpine/Dockerfile))
-
----
-
-## Overrides
-
-In theory, development and production images should be the same.
-
-In practice, we often need to enable specific behaviors in development (e.g. debug statements).
-
-One way to reconcile both needs is to use Compose to enable these behaviors.
-
-Let's look at the [trainingwheels](https://github.com/jpetazzo/trainingwheels) demo app for an example.
-
----
-
-## Production image
-
-This Dockerfile builds an image leveraging gunicorn:
-
-```dockerfile
-FROM python
-RUN pip install flask
-RUN pip install gunicorn
-RUN pip install redis
-COPY . /src
-WORKDIR /src
-CMD gunicorn --bind 0.0.0.0:5000 --workers 10 counter:app
-EXPOSE 5000
-```
-
-(Source: [trainingwheels Dockerfile](https://github.com/jpetazzo/trainingwheels/blob/master/www/Dockerfile))
-
----
-
-## Development Compose file
-
-This Compose file uses the same image, but with a few overrides for development:
-
-- the Flask development server is used (overriding `CMD`),
-
-- the `DEBUG` environment variable is set,
-
-- a volume is used to provide a faster local development workflow.
-
-.small[
-```yaml
-services:
-  www:
-    build: www
-    ports:
-      - 8000:5000
-    user: nobody
-    environment:
-      DEBUG: 1
-    command: python counter.py
-    volumes:
-      - ./www:/src
-```
-]
-
-(Source: [trainingwheels Compose file](https://github.com/jpetazzo/trainingwheels/blob/master/docker-compose.yml))
 
 ---
 

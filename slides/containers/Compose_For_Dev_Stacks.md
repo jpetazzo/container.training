@@ -278,6 +278,8 @@ For the full list, check: https://docs.docker.com/compose/compose-file/
 
 ---
 
+class: extra-details
+
 ## Running multiple copies of a stack
 
 - Copy the stack in two different directories, e.g. `front` and `frontcopy`
@@ -353,6 +355,8 @@ Use `docker compose down -v` to remove everything including volumes.
 
 ---
 
+class: extra-details
+
 ## Special handling of volumes
 
 - When an image gets updated, Compose automatically creates a new container
@@ -370,6 +374,8 @@ Use `docker compose down -v` to remove everything including volumes.
   (e.g. all official images)
 
 ---
+
+class: extra-details
 
 ## Gotchas with volumes
 
@@ -390,6 +396,8 @@ Use `docker compose down -v` to remove everything including volumes.
   (but **not** `docker compose down && docker compose down -v`!)
  
 ---
+
+class: extra-details
 
 ## Managing volumes explicitly
 
@@ -412,6 +420,8 @@ volumes:
 
 ---
 
+class: extra-details
+
 ## Managing volumes explicitly
 
 Option 2: *relative paths*
@@ -430,6 +440,8 @@ services:
 - Won't be removed by `docker compose down -v`
 
 ---
+
+class: extra-details
 
 ## Managing complex stacks
 
@@ -453,6 +465,8 @@ services:
 
 ---
 
+class: extra-details
+
 ## Dependencies
 
 - A service can have a `depends_on` section
@@ -464,28 +478,6 @@ services:
   (e.g. `docker compose up blah` or `docker compose run foo`)
 
 ⚠️ It doesn't make a service "wait" for another one to be up!
-
----
-
-class: extra-details
-
-## A bit of history and trivia
-
-- Compose was initially named "Fig"
-
-- Compose is one of the only components of Docker written in Python
-
-  (almost everything else is in Go)
-
-- In 2020, Docker introduced "Compose CLI":
-
-  - `docker compose` command to deploy Compose stacks to some clouds
-
-  - in Go instead of Python
-
-  - progressively getting feature parity with `docker compose`
-
-  - also provides numerous improvements (e.g. leverages BuildKit by default)
 
 ???
 

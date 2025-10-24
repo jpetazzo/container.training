@@ -115,46 +115,7 @@ If an image is read-only, how do we change it?
 
 * A new image is created by stacking the new layer on top of the old image.
 
----
-
-## A chicken-and-egg problem
-
-* The only way to create an image is by "freezing" a container.
-
-* The only way to create a container is by instantiating an image.
-
-* Help!
-
----
-
-## Creating the first images
-
-There is a special empty image called `scratch`.
-
-* It allows to *build from scratch*.
-
-The `docker import` command loads a tarball into Docker.
-
-* The imported tarball becomes a standalone image.
-* That new image has a single layer.
-
-Note: you will probably never have to do this yourself.
-
----
-
-## Creating other images
-
-`docker commit`
-
-* Saves all the changes made to a container into a new layer.
-* Creates a new image (effectively a copy of the container).
-
-`docker build` **(used 99% of the time)**
-
-* Performs a repeatable build sequence.
-* This is the preferred method!
-
-We will explain both methods in a moment.
+* This can be automated by writing a `Dockerfile` and then running `docker build`.
 
 ---
 
@@ -162,15 +123,15 @@ We will explain both methods in a moment.
 
 There are three namespaces:
 
-* Official images
+* Official images on the Docker Hub
 
     e.g. `ubuntu`, `busybox` ...
 
-* User (and organizations) images
+* User (and organizations) images on the Docker Hub
 
     e.g. `jpetazzo/clock`
 
-* Self-hosted images
+* Images on registries that are NOT the Docker Hub
 
     e.g. `registry.example.com:5000/my-private/image`
 
@@ -280,30 +241,6 @@ busybox          latest    3240943c9ea3   2 weeks ago     1.114 MB
 training/namer   latest    902673acc741   9 months ago    289.3 MB
 jpetazzo/clock   latest    12068b93616f   12 months ago   2.433 MB
 ```
-
----
-
-## Searching for images
-
-We cannot list *all* images on a remote registry, but
-we can search for a specific keyword:
-
-```bash
-$ docker search marathon
-NAME                     DESCRIPTION                     STARS  OFFICIAL  AUTOMATED
-mesosphere/marathon      A cluster-wide init and co...   105              [OK]
-mesoscloud/marathon      Marathon                        31               [OK]
-mesosphere/marathon-lb   Script to update haproxy b...   22               [OK]
-tobilg/mongodb-marathon  A Docker image to start a ...   4                [OK]
-```
-
-
-* "Stars" indicate the popularity of the image.
-
-* "Official" images are those in the root namespace.
-
-* "Automated" images are built automatically by the Docker Hub.
-  <br/>(This means that their build recipe is always available.)
 
 ---
 

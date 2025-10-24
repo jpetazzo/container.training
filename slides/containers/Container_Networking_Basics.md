@@ -235,6 +235,8 @@ communication across hosts, and publishing/load balancing for inbound traffic.
 
 ---
 
+class: extra-details
+
 ## Finding the container's IP address
 
 We can use the `docker inspect` command to find the IP address of the
@@ -252,6 +254,8 @@ $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' <yourContainerID>
   private IP address of the container.
 
 ---
+
+class: extra-details
 
 ## Pinging our container
 

@@ -87,119 +87,7 @@ To keep things simple for now: this is the directory where our Dockerfile is loc
 
 ---
 
-## What happens when we build the image?
-
-It depends if we're using BuildKit or not!
-
-If there are lots of blue lines and the first line looks like this:
-```
-[+] Building 1.8s (4/6)
-```
-... then we're using BuildKit.
-
-If the output is mostly black-and-white and the first line looks like this:
-```
-Sending build context to Docker daemon  2.048kB
-```
-... then we're using the "classic" or "old-style" builder.
-
----
-
-## To BuildKit or Not To BuildKit
-
-Classic builder:
-
-- copies the whole "build context" to the Docker Engine
-
-- linear (processes lines one after the other)
-
-- requires a full Docker Engine
-
-BuildKit:
-
-- only transfers parts of the "build context" when needed
-
-- will parallelize operations (when possible)
-
-- can run in non-privileged containers (e.g. on Kubernetes)
-
----
-
-## With the classic builder
-
-The output of `docker build` looks like this:
-
-.small[
-```bash
-docker build -t figlet .
-Sending build context to Docker daemon  2.048kB
-Step 1/3 : FROM ubuntu
- ---> f975c5035748
-Step 2/3 : RUN apt-get update
- ---> Running in e01b294dbffd
-(...output of the RUN command...)
-Removing intermediate container e01b294dbffd
- ---> eb8d9b561b37
-Step 3/3 : RUN apt-get install figlet
- ---> Running in c29230d70f9b
-(...output of the RUN command...)
-Removing intermediate container c29230d70f9b
- ---> 0dfd7a253f21
-Successfully built 0dfd7a253f21
-Successfully tagged figlet:latest
-```
-]
-
-* The output of the `RUN` commands has been omitted.
-* Let's explain what this output means.
-
----
-
-## Sending the build context to Docker
-
-```bash
-Sending build context to Docker daemon 2.048 kB
-```
-
-* The build context is the `.` directory given to `docker build`.
-
-* It is sent (as an archive) by the Docker client to the Docker daemon.
-
-* This allows to use a remote machine to build using local files.
-
-* Be careful (or patient) if that directory is big and your link is slow.
-
-* You can speed up the process with a [`.dockerignore`](https://docs.docker.com/engine/reference/builder/#dockerignore-file) file
-
-  * It tells docker to ignore specific files in the directory
-
-  * Only ignore files that you won't need in the build context!
-
----
-
-## Executing each step
-
-```bash
-Step 2/3 : RUN apt-get update
- ---> Running in e01b294dbffd
-(...output of the RUN command...)
-Removing intermediate container e01b294dbffd
- ---> eb8d9b561b37
-```
-
-* A container (`e01b294dbffd`) is created from the base image.
-
-* The `RUN` command is executed in this container.
-
-* The container is committed into an image (`eb8d9b561b37`).
-
-* The build container (`e01b294dbffd`) is removed.
-
-* The output of this step will be the base image for the next one.
-
----
-
-## With BuildKit
+## Build output
 
 .small[
 ```bash
@@ -231,7 +119,7 @@ Removing intermediate container e01b294dbffd
 
 ---
 
-## Understanding BuildKit output
+## Understanding builder output
 
 - BuildKit transfers the Dockerfile and the *build context*
 
@@ -249,9 +137,9 @@ Removing intermediate container e01b294dbffd
 
 class: extra-details
 
-## BuildKit plain output
+## Builder plain output
 
-- When running BuildKit in e.g. a CI pipeline, its output will be different
+- When running builds in e.g. a CI pipeline, its output will be different
 
 - We can see the same output format by using `--progress=plain`
 
@@ -360,6 +248,8 @@ class: extra-details
 
 ---
 
+class: extra-details
+
 ## Shell syntax vs exec syntax
 
 Dockerfile commands that execute something can have two forms:
@@ -373,6 +263,8 @@ Dockerfile commands that execute something can have two forms:
 We are going to change our Dockerfile to see how it affects the resulting image.
 
 ---
+
+class: extra-details
 
 ## Using exec syntax in our Dockerfile
 
@@ -391,6 +283,8 @@ $ docker build -t figlet .
 ```
 
 ---
+
+class: extra-details
 
 ## History with exec syntax
 
@@ -413,6 +307,8 @@ IMAGE         CREATED            CREATED BY                     SIZE
 
 ---
 
+class: extra-details
+
 ## When to use exec syntax and shell syntax
 
 * shell syntax:
@@ -431,6 +327,8 @@ IMAGE         CREATED            CREATED BY                     SIZE
 
 ---
 
+class: extra-details
+
 ## Pro-tip: the `exec` shell built-in
 
 POSIX shells have a built-in command named `exec`.
@@ -446,6 +344,8 @@ From a user perspective:
 - or rather, the shell gets *replaced* by the command.
 
 ---
+
+class: extra-details
 
 ## Example using `exec`
 

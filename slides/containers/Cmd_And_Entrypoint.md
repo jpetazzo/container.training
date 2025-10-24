@@ -42,7 +42,7 @@ Our new Dockerfile will look like this:
 ```dockerfile
 FROM ubuntu
 RUN apt-get update
-RUN ["apt-get", "install", "figlet"]
+RUN apt-get install figlet
 CMD figlet -f script hello
 ```
 
@@ -96,6 +96,8 @@ root@7ac86a641116:/#
 
 ---
 
+class: extra-details
+
 ## Using `ENTRYPOINT`
 
 We want to be able to specify a different message on the command line,
@@ -117,6 +119,8 @@ We will use the `ENTRYPOINT` verb in Dockerfile.
 
 ---
 
+class: extra-details
+
 ## Adding `ENTRYPOINT` to our Dockerfile
 
 Our new Dockerfile will look like this:
@@ -124,7 +128,7 @@ Our new Dockerfile will look like this:
 ```dockerfile
 FROM ubuntu
 RUN apt-get update
-RUN ["apt-get", "install", "figlet"]
+RUN apt-get install figlet
 ENTRYPOINT ["figlet", "-f", "script"]
 ```
 
@@ -137,6 +141,8 @@ ENTRYPOINT ["figlet", "-f", "script"]
 Why did we use JSON syntax for our `ENTRYPOINT`?
 
 ---
+
+class: extra-details
 
 ## Implications of JSON vs string syntax
 
@@ -157,6 +163,8 @@ sh -c "figlet -f script" salut
 ```
 
 ---
+
+class: extra-details
 
 ## Build and test our image
 
@@ -182,6 +190,8 @@ $ docker run figlet salut
 
 ---
 
+class: extra-details
+
 ## Using `CMD` and `ENTRYPOINT` together
 
 What if we want to define a default message for our container?
@@ -196,6 +206,8 @@ Then we will use `ENTRYPOINT` and `CMD` together.
 
 ---
 
+class: extra-details
+
 ## `CMD` and `ENTRYPOINT` together
 
 Our new Dockerfile will look like this:
@@ -203,7 +215,7 @@ Our new Dockerfile will look like this:
 ```dockerfile
 FROM ubuntu
 RUN apt-get update
-RUN ["apt-get", "install", "figlet"]
+RUN apt-get install figlet
 ENTRYPOINT ["figlet", "-f", "script"]
 CMD ["hello world"]
 ```
@@ -216,6 +228,8 @@ CMD ["hello world"]
 * Otherwise, our extra command-line arguments are used instead of `CMD`.
 
 ---
+
+class: extra-details
 
 ## Build and test our image
 
@@ -241,6 +255,8 @@ $ docker run myfiglet
 
 ---
 
+class: extra-details
+
 ## Overriding the image default parameters
 
 Now let's pass extra arguments to the image.
@@ -258,6 +274,8 @@ We overrode `CMD` but still used `ENTRYPOINT`.
 
 ---
 
+class: extra-details
+
 ## Overriding `ENTRYPOINT`
 
 What if we want to run a shell in our container?
@@ -273,6 +291,8 @@ root@6027e44e2955:/#
 ```
 
 ---
+
+class: extra-details
 
 ## `CMD` and `ENTRYPOINT` recap
 
@@ -296,6 +316,8 @@ root@6027e44e2955:/#
 ]
 
 ---
+
+class: extra-details
 
 ## When to use `ENTRYPOINT` vs `CMD`
 
