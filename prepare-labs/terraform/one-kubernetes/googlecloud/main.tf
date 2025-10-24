@@ -1,7 +1,7 @@
 resource "google_container_cluster" "_" {
-  name     = var.cluster_name
-  project  = local.project
-  location = local.location
+  name                = var.cluster_name
+  location            = local.location
+  deletion_protection = false
   #min_master_version = var.k8s_version
 
   # To deploy private clusters, uncomment the section below,
@@ -42,7 +42,7 @@ resource "google_container_cluster" "_" {
   node_pool {
     name = "x86"
     node_config {
-      tags         = var.common_tags
+      tags         = ["lab-${var.cluster_name}"]
       machine_type = local.node_size
     }
     initial_node_count = var.min_nodes_per_pool
@@ -61,4 +61,26 @@ resource "google_container_cluster" "_" {
       issue_client_certificate = true
     }
   }
+}
+
+resource "google_compute_firewall" "_" {
+  name    = "lab-${var.cluster_name}"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["0-65535"]
+  }
+
+  allow {
+    protocol = "udp"
+    ports    = ["0-65535"]
+  }
+
+  allow {
+    protocol = "icmp"
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+  target_tags   = ["lab-${var.cluster_name}"]
 }

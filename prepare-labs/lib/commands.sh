@@ -270,7 +270,27 @@ _cmd_create() {
 
     ln -s ../../$SETTINGS tags/$TAG/settings.env.orig
     cp $SETTINGS tags/$TAG/settings.env
-    . $SETTINGS
+
+    # For Google Cloud, it is necessary to specify which "project" to use.
+    # Unfortunately, the Terraform provider doesn't seem to have a way
+    # to detect which Google Cloud project you want to use; it has to be
+    # specified one way or another. Let's decide that it should be set with
+    # the GOOGLE_PROJECT env var; and if that var is not set, we'll try to
+    # figure it out from gcloud.
+    # (See https://github.com/hashicorp/terraform-provider-google/issues/10907#issuecomment-1015721600)
+    # Since we need that variable to be set each time we'll call Terraform
+    # (e.g. when destroying the environment), let's save it to the settings.env
+    # file.
+    if [ "$PROVIDER" = "googlecloud" ]; then
+        if ! [ "$GOOGLE_PROJECT" ]; then
+            info "PROVIDER=googlecloud but GOOGLE_PROJECT is not set. Detecting it."
+            GOOGLE_PROJECT=$(gcloud config get project)
+            info "GOOGLE_PROJECT will be set to '$GOOGLE_PROJECT'."
+        fi
+        echo "export GOOGLE_PROJECT=$GOOGLE_PROJECT" >> tags/$TAG/settings.env
+    fi
+
+    . tags/$TAG/settings.env
 
     echo $MODE > tags/$TAG/mode
     echo $PROVIDER > tags/$TAG/provider
@@ -1218,14 +1238,17 @@ fi
     "
 }
 
-_cmd ssh "Open an SSH session to the first node of a tag"
+_cmd ssh "Open an SSH session to a node (first one by default)"
 _cmd_ssh() {
     TAG=$1
     need_tag
-    IP=$(head -1 tags/$TAG/ips.txt)
-    info "Logging into $IP (default password: $USER_PASSWORD)"
-    ssh $SSHOPTS $USER_LOGIN@$IP
-
+    if [ "$2" ]; then
+        ssh -l ubuntu -i tags/$TAG/id_rsa $2
+    else
+        IP=$(head -1 tags/$TAG/ips.txt)
+        info "Logging into $IP (default password: $USER_PASSWORD)"
+        ssh $SSHOPTS $USER_LOGIN@$IP
+    fi
 }
 
 _cmd tags "List groups of VMs known locally"

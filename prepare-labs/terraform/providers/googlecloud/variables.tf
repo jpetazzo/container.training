@@ -9,5 +9,9 @@ variable "node_sizes" {
 
 variable "location" {
   type    = string
-  default = null
+  default = "europe-north1-a"
+}
+
+locals {
+  location = (var.location != "" && var.location != null) ? var.location : "europe-north1-a"
 }

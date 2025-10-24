@@ -66,7 +66,7 @@ Here is where we look for credentials for each provider:
 - Civo: CLI configuration file (`~/.civo.json`)
 - Digital Ocean: CLI configuration file (`~/.config/doctl/config.yaml`)
 - Exoscale: CLI configuration file (`~/.config/exoscale/exoscale.toml`)
-- Google Cloud: FIXME, note that the project name is currently hard-coded to `prepare-tf`
+- Google Cloud: we're using "Application Default Credentials (ADC)"; run `gcloud auth application-default login`; note that we'll use the default "project" set in `gcloud` unless you set the `GOOGLE_PROJECT` environment variable
 - Hetzner: CLI configuration file (`~/.config/hcloud/cli.toml`)
 - Linode: CLI configuration file (`~/.config/linode-cli`)
 - OpenStack: you will need to write a tfvars file (check [that exemple](terraform/virtual-machines/openstack/tfvars.example))

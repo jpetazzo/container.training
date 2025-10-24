@@ -23,6 +23,14 @@ pssh() {
     # necessary - or down to zero, too.
     sleep ${PSSH_DELAY_PRE-1}
 
+    # When things go wrong, it's convenient to ask pssh to show the output
+    # of the failed command. Let's make that easy with a DEBUG env var.
+    if [ "$DEBUG" ]; then
+        PSSH_I=-i
+    else
+        PSSH_I=""
+    fi
+
     $(which pssh || which parallel-ssh) -h $HOSTFILE -l ubuntu \
         --par ${PSSH_PARALLEL_CONNECTIONS-100} \
         --timeout 300 \
@@ -31,5 +39,6 @@ pssh() {
         -O UserKnownHostsFile=/dev/null \
         -O StrictHostKeyChecking=no \
         -O ForwardAgent=yes \
+        $PSSH_I \
         "$@"
 }
