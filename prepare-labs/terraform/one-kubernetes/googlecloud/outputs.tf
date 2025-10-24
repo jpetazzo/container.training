@@ -6,6 +6,8 @@ output "has_metrics_server" {
   value = true
 }
 
+data "google_client_config" "_" {}
+
 output "kubeconfig" {
   sensitive = true
   value     = <<-EOT
