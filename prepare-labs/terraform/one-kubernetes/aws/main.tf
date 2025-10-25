@@ -1,60 +1,45 @@
-# Taken from:
-# https://github.com/hashicorp/learn-terraform-provision-eks-cluster/blob/main/main.tf
-
-data "aws_availability_zones" "available" {}
-
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "3.19.0"
-
-  name = var.cluster_name
-
-  cidr = "10.0.0.0/16"
-  azs  = slice(data.aws_availability_zones.available.names, 0, 3)
-
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
-
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
-  enable_dns_hostnames = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                    = 1
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"           = 1
-  }
+data "aws_eks_cluster_versions" "_" {
+  default_only = true
 }
 
 module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "19.5.1"
+  source                                   = "terraform-aws-modules/eks/aws"
+  version                                  = "~> 21.0"
+  name                                     = var.cluster_name
+  kubernetes_version                       = data.aws_eks_cluster_versions._.cluster_versions[0].cluster_version
+  vpc_id                                   = local.vpc_id
+  subnet_ids                               = local.subnet_ids
+  endpoint_public_access                   = true
+  enable_cluster_creator_admin_permissions = true
+  upgrade_policy = {
+    # The default policy is EXTENDED, which incurs additional costs
+    # when running an old control plane. We don't advise to run old
+    # control planes, but we also don't want to incur costs if an
+    # old version is chosen accidentally.
+    support_type = "STANDARD"
+  }
 
-  cluster_name    = var.cluster_name
-  cluster_version = "1.24"
-
-  vpc_id                         = module.vpc.vpc_id
-  subnet_ids                     = module.vpc.private_subnets
-  cluster_endpoint_public_access = true
-
-  eks_managed_node_group_defaults = {
-    ami_type = "AL2_x86_64"
-
+  addons = {
+    coredns = {}
+    eks-pod-identity-agent = {
+      before_compute = true
+    }
+    kube-proxy = {}
+    vpc-cni = {
+      before_compute = true
+    }
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
+    }
   }
 
   eks_managed_node_groups = {
-    one = {
-      name = "node-group-one"
-
+    x86 = {
+      name           = "x86"
       instance_types = [local.node_size]
-
-      min_size     = var.min_nodes_per_pool
-      max_size     = var.max_nodes_per_pool
-      desired_size = var.min_nodes_per_pool
+      min_size       = var.min_nodes_per_pool
+      max_size       = var.max_nodes_per_pool
+      desired_size   = var.min_nodes_per_pool
     }
   }
 }
@@ -66,7 +51,7 @@ data "aws_iam_policy" "ebs_csi_policy" {
 
 module "irsa-ebs-csi" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version = "4.7.0"
+  version = "~> 5.39.0"
 
   create_role                   = true
   role_name                     = "AmazonEKSTFEBSCSIRole-${module.eks.cluster_name}"
@@ -75,13 +60,9 @@ module "irsa-ebs-csi" {
   oidc_fully_qualified_subjects = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
 }
 
-resource "aws_eks_addon" "ebs-csi" {
-  cluster_name             = module.eks.cluster_name
-  addon_name               = "aws-ebs-csi-driver"
-  addon_version            = "v1.5.2-eksbuild.1"
-  service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
-  tags = {
-    "eks_addon" = "ebs-csi"
-    "terraform" = "true"
-  }
+resource "aws_vpc_security_group_ingress_rule" "_" {
+  security_group_id = module.eks.node_security_group_id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = -1
+  description       = "Allow all traffic to Kubernetes nodes (so that we can use NodePorts, hostPorts, etc.)"
 }

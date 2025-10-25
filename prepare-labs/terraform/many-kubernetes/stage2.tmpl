@@ -2,7 +2,7 @@ terraform {
   required_providers {
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.16.1"
+      version = "~> 2.38.0"
     }
     helm = {
       source = "hashicorp/helm"
@@ -107,6 +107,31 @@ resource "helm_release" "metrics_server_${index}" {
   ]
 }
 
+# As of October 2025, the ebs-csi-driver addon (which is used on EKS
+# to provision persistent volumes) doesn't automatically create a
+# StorageClass. Here, we're trying to detect the DaemonSet created
+# by the ebs-csi-driver; and if we find it, we create the corresponding
+# StorageClass.
+data "kubernetes_resources" "ebs_csi_node_${index}" {
+  provider = kubernetes.cluster_${index}
+  api_version = "apps/v1"
+  kind = "DaemonSet"
+  label_selector = "app.kubernetes.io/name=aws-ebs-csi-driver"
+  namespace = "kube-system"
+}
+
+resource "kubernetes_storage_class" "ebs_csi_${index}" {
+  count =  (length(data.kubernetes_resources.ebs_csi_node_${index}.objects) > 0) ? 1 : 0
+  provider = kubernetes.cluster_${index}
+  metadata {
+    name = "ebs-csi"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
+  }
+  storage_provisioner = "ebs.csi.aws.com"
+}
+
 # This section here deserves a little explanation.
 #
 # When we access a cluster with shpod (either through SSH or code-server)
@@ -136,8 +161,14 @@ resource "helm_release" "metrics_server_${index}" {
 # Lastly - in the ConfigMap we actually put both the original kubeconfig,
 # and the one where we injected our new user (just in case we want to
 # use or look at the original for any reason).
+#
+# One more thing: the kubernetes.io/kube-apiserver-client signer is
+# disabled on EKS, so... we don't generate that ConfigMap on EKS.
+# To detect if we're on EKS, we're looking for the ebs-csi-node DaemonSet.
+# (Which means that the detection will break if the ebs-csi addon is missing.)
 
 resource "kubernetes_config_map" "kubeconfig_${index}" {
+  count =  (length(data.kubernetes_resources.ebs_csi_node_${index}.objects) > 0) ? 0 : 1
   provider = kubernetes.cluster_${index}
   metadata {
     name = "kubeconfig"
@@ -163,7 +194,7 @@ resource "kubernetes_config_map" "kubeconfig_${index}" {
       - name: cluster-admin
         user:
           client-key-data: $${base64encode(tls_private_key.cluster_admin_${index}.private_key_pem)}
-          client-certificate-data: $${base64encode(kubernetes_certificate_signing_request_v1.cluster_admin_${index}.certificate)}
+          client-certificate-data: $${base64encode(kubernetes_certificate_signing_request_v1.cluster_admin_${index}[0].certificate)}
     EOT
   }
 }
@@ -201,6 +232,7 @@ resource "kubernetes_cluster_role_binding" "shpod_cluster_admin_${index}" {
 }
 
 resource "kubernetes_certificate_signing_request_v1" "cluster_admin_${index}" {
+  count =  (length(data.kubernetes_resources.ebs_csi_node_${index}.objects) > 0) ? 0 : 1
   provider = kubernetes.cluster_${index}
   metadata {
     name = "cluster-admin"
