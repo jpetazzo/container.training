@@ -89,6 +89,7 @@ content:
   - k8s/gateway-api.md
   - k8s/cert-manager.md
   - k8s/cainjector.md
+  - k8s/templating.md
   - k8s/kustomize.md
   - k8s/helm-intro.md
   - k8s/helm-chart-format.md

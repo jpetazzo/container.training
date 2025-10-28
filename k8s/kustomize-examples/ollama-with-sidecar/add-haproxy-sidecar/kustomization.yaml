@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+# Within a Kustomization, it is not possible to specify in which
+# order transformations (patches, replacements, etc) should be
+# executed. If we want to execute transformations in a specific
+# order, one possibility is to put them in individual components,
+# and then invoke these components in the order we want.
+# It works, but it creates an extra level of indirection, which
+# reduces readability and complicates maintenance.
+
+components:
+- setup
+- cleanup

@@ -46,6 +46,7 @@ content:
   - k8s/staticpods.md
   - k8s/cluster-upgrade.md
 - #4
+  - k8s/templating.md
   - k8s/kustomize.md
   - k8s/helm-intro.md
   - k8s/helm-chart-format.md
