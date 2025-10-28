@@ -1,0 +1,75 @@
+# This adds a sidecar to the ollama Deployment, by taking
+# the pod template and volumes from the haproxy Deployment.
+# The idea is to allow to run ollama+haproxy in two modes:
+# - separately (each with their own Deployment),
+# - together in the same Pod, sidecar-style.
+# The YAML files define how to run them separetely, and this
+# "replacements" directive fetches a specific volume and
+# a specific container from the haproxy Deployment, to add
+# them to the ollama Deployment.
+#
+# This would be simpler if kustomize allowed to append or
+# merge lists in "replacements"; but it doesn't seem to be
+# possible at the moment.
+#
+# It would be even better if kustomize allowed to perform
+# a strategic merge using a fieldPath as the source, because
+# we could merge both the containers and the volumes in a
+# single operation.
+#
+# Note that technically, it might be possible to layer
+# multiple kustomizations so that one generates the patch
+# to be used in another; but it wouldn't be very readable
+# or maintainable so we decided to not do that right now.
+#
+# However, the current approach (fetching fields one by one)
+# has an advantage: it could let us transform the haproxy
+# container into a real sidecar (i.e. an initContainer with
+# a restartPolicy=Always).
+
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+resources:
+- haproxy.yaml
+
+configMapGenerator:
+- name: haproxy
+  files:
+  - haproxy.cfg
+
+replacements:
+- source:
+    kind: Deployment
+    name: haproxy
+    fieldPath: spec.template.spec.volumes.[name=haproxy]
+  targets:
+  - select:
+      kind: Deployment
+      name: ollama
+    fieldPaths:
+    - spec.template.spec.volumes.[name=haproxy]
+    options:
+      create: true
+- source:
+    kind: Deployment
+    name: haproxy
+    fieldPath: spec.template.spec.containers.[name=haproxy]
+  targets:
+  - select:
+      kind: Deployment
+      name: ollama
+    fieldPaths:
+    - spec.template.spec.containers.[name=haproxy]
+    options:
+      create: true
+- source:
+    kind: Deployment
+    name: haproxy
+    fieldPath: spec.template.spec.containers.[name=haproxy].ports.[name=haproxy].containerPort
+  targets:
+  - select:
+      kind: Service
+      name: ollama
+    fieldPaths:
+    - spec.ports.[name=11434].targetPort

@@ -18,51 +18,7 @@
 
 ---
 
-## From `kubectl run` to YAML
-
-- We can create resources with one-line commands
-
-  (`kubectl run`, `kubectl create deployment`, `kubectl expose`...)
-
-- We can also create resources by loading YAML files
-
-  (with `kubectl apply -f`, `kubectl create -f`...)
-
-- There can be multiple resources in a single YAML files
-
-  (making them convenient to deploy entire stacks)
-
-- However, these YAML bundles often need to be customized
-
-  (e.g.: number of replicas, image version to use, features to enable...)
-
----
-
-## Beyond YAML
-
-- Very often, after putting together our first `app.yaml`, we end up with:
-
-  - `app-prod.yaml`
-
-  - `app-staging.yaml`
-
-  - `app-dev.yaml`
-
-  - instructions indicating to users "please tweak this and that in the YAML"
-
-- That's where using something like
-  [CUE](https://github.com/cue-labs/cue-by-example/tree/main/003_kubernetes_tutorial),
-  [Kustomize](https://kustomize.io/),
-  or [Helm](https://helm.sh/) can help!
-
-- Now we can do something like this:
-  ```bash
-  helm install app ... --set this.parameter=that.value
-  ```
-
----
-
-## Other features of Helm
+## Helm features
 
 - With Helm, we create "charts"
 

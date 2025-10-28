@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ollama
+  name: ollama
+spec:
+  selector:
+    matchLabels:
+      app: ollama
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      volumes:
+      - name: ollama
+        hostPath:
+          path: /opt/ollama
+          type: DirectoryOrCreate
+      containers:
+      - image: ollama/ollama
+        name: ollama
+        env:
+        - name: OLLAMA_MAX_QUEUE
+          valueFrom:
+            configMapKeyRef:
+              name: ollama
+              key: queue
+        - name: MODEL
+          valueFrom:
+            configMapKeyRef:
+              name: ollama
+              key: model
+        volumeMounts:
+        - name: ollama
+          mountPath: /root/.ollama
+        lifecycle:
+          postStart:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - ollama pull $MODEL
+        livenessProbe:
+          httpGet:
+            port: 11434
+        readinessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - ollama show $MODEL
+        ports:
+        - name: ollama
+          containerPort: 11434
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ollama
+  name: ollama
+spec:
+  ports:
+  - name: "11434"
+    port: 11434
+    protocol: TCP
+    targetPort: 11434
+  selector:
+    app: ollama
+  type: ClusterIP
