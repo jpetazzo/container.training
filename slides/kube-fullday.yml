@@ -86,6 +86,7 @@ content:
   #- k8s/healthchecks-more.md
   #- k8s/record.md
   #- k8s/ingress-tls.md
+  #- k8s/templating.md
   #- k8s/kustomize.md
   #- k8s/helm-intro.md
   #- k8s/helm-chart-format.md

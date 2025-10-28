@@ -28,13 +28,13 @@
 
   (or other *kustomizations*)
 
-- Somewhat integrated with `kubectl`
-
-  (but only "somewhat" because of version discrepancies)
-
-- Less complex than e.g. Helm, but also less powerful
+- Integrated with `kubectl`
 
 - No central index like the Artifact Hub (but is there a need for it?)
+
+- *Some* modifications will be difficult to make
+
+- 100% file-based (won't use command-line flags, environment variables...)
 
 ---
 
@@ -48,7 +48,7 @@
 
   - reference other kustomizations
 
-  - add some *patches*
+  - add some *patches* and other *transformations*
 
   - ...
 
@@ -67,13 +67,13 @@ used in the Ingress).
 ```yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-patchesStrategicMerge:
-- scale-deployment.yaml
-- ingress-hostname.yaml
 resources:
 - deployment.yaml
 - service.yaml
 - ingress.yaml
+patches:
+- path: scale-deployment.yaml
+- path: ingress-hostname.yaml
 ```
 
 On the next slide, let's see a more complex example ...
@@ -87,28 +87,45 @@ On the next slide, let's see a more complex example ...
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 commonAnnotations:
-  mood: 😎
-commonLabels:
-  add-this-to-all-my-resources: please
-namePrefix: prod-
-patchesStrategicMerge:
-- prod-scaling.yaml
-- prod-healthchecks.yaml
-bases:
-- api/
-- frontend/
-- db/
-- github.com/example/app?ref=tag-or-branch
+  last-commit-message: "Bump libfoo to version 1.2.3"
+labels:
+- pairs:
+    last-commit-hash: "39bc2d"
 resources:
+- github.com/example/front?ref=tag-or-branch
+- github.com/example/api?ref=tag-or-branch
+- db/
+- workers/
 - ingress.yaml
-- permissions.yaml
+- rbac.yaml
 configMapGenerator:
 - name: appconfig
   files:
   - global.conf
   - local.conf=prod.conf
+patches:
+- path: healthchecks.yaml
+- path: resources-requests-and-limits.yaml
 ```
 ]
+
+---
+
+## Architecture
+
+- Internally, Kustomize has three phases:
+
+  - generators (=produce a bunch of YAML, e.g. by reading manifest files)
+
+  - transformers (=transform/patch that YAML in various ways)
+
+  - validators (=has the ability to stop the process is something's wrong)
+
+- In the previous examples:
+
+  - `resources` and `configMapGenerator` are generators
+
+  - `commonAnnotations`, `labels`, `patches` are transformers
 
 ---
 
@@ -122,29 +139,11 @@ configMapGenerator:
 
   (a kustomization can refer to another, which can refer to a third)
 
-- A *patch* describes how to alter an existing resource
-
-  (e.g. to change the image in a Deployment; or scaling parameters; etc.)
-
 - A *variant* is the final outcome of applying bases + overlays
 
 (See the [kustomize glossary][glossary] for more definitions!)
 
 [glossary]: https://kubectl.docs.kubernetes.io/references/kustomize/glossary/
-
----
-
-## What Kustomize *cannot* do
-
-- By design, there are a number of things that Kustomize won't do
-
-- For instance:
-
-  - using command-line arguments or environment variables to generate a variant
-
-  - overlays can only *add* resources, not *remove* them
-
-- See the full list of [eschewed features](https://kubectl.docs.kubernetes.io/faq/kustomize/eschewedfeatures/) for more details
 
 ---
 
@@ -166,43 +165,7 @@ configMapGenerator:
 
   - we may regularly update the base, or use a remote base
 
----
-
-## Remote bases
-
-- Kustomize can also use bases that are remote git repositories
-
-- Examples:
-
-  github.com/jpetazzo/kubercoins (remote git repository)
-
-  github.com/jpetazzo/kubercoins?ref=kustomize (specific tag or branch)
-
-- Note that this only works for kustomizations, not individual resources
-
-  (the specified repository or directory must contain a `kustomization.yaml` file)
-
----
-
-class: extra-details
-
-## Hashicorp go-getter
-
-- Some versions of Kustomize support additional forms for remote resources
-
-- Examples:
-
-  https://releases.hello.io/k/1.0.zip (remote archive)
-
-  https://releases.hello.io/k/1.0.zip//some-subdir (subdirectory in archive)
-
-- This relies on [hashicorp/go-getter](https://github.com/hashicorp/go-getter#url-format)
-
-- ... But it prevents Kustomize inclusion in `kubectl`
-
-- Avoid them!
-
-- See [kustomize#3578](https://github.com/kubernetes-sigs/kustomize/issues/3578) for details
+- No technical difference; these are just different use-cases!
 
 ---
 
@@ -287,99 +250,184 @@ General workflow:
 
 - Kubernetes 1.21 jumps to Kustomize 4.1.2
 
-- Future versions should track Kustomize updates more closely
+- Kustomize is now officially part of [sig-cli]
+
+- `kubectl` is usually in sync with recent versions of Kustomize
+
+  (but it can still lag behind a bit, so some features might not be available!)
+
+[sig-cli]: https://github.com/kubernetes/community/blob/master/sig-cli/README.md
 
 ---
 
-class: extra-details
+## Kustomize features
 
-## Differences between 2.0.3 and later
+- A good starting point for Kustomize features is [the Kustomization File reference](https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/)
 
-- Kustomize 2.1 / 3.0 deprecates `bases` (they should be listed in `resources`)
+- Unfortunately, the Kustomize documentation is far from perfect
 
-  (this means that "modern" `kustomize edit add resource` won't work with "old" `kubectl apply -k`)
+- Some features are undocumented
 
-- Kustomize 2.1 introduces `replicas` and `envs`
+- Some features are deprecated / replaced by others
 
-- Kustomize 3.1 introduces multipatches
+  (but that's not well indicated in the docs; e.g. `commonLabels`)
 
-- Kustomize 3.2 introduce inline patches in `kustomization.yaml`
+- Some features are documented but not released yet
 
-- Kustomize 3.3 to 3.10 is mostly internal refactoring
-
-- Kustomize 4.0 drops go-getter again
-
-- Kustomize 4.1 allows patching kind and name
+  (e.g. regex selectors in `replacements` as of October 2025)
 
 ---
 
-## Adding labels
+## Kustomization basics
 
-Labels can be added to all resources liks this:
+- `bases` (deprecated), `resources`
 
-```yaml
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-...
-commonLabels:
-  app.kubernetes.io/name: dockercoins
-```
+  *include YAML manifests*
 
-Or with the equivalent CLI command:
+- `buildMetadata`
+
+  *automatically generate interesting labels / annotations*
+
+- `commonAnnotations`, `commonLabels`, `labels`
+
+  *add custom labels / annotations to all resources*
+
+- `configMapGenerator`, `secretGenerator`, `generatorOptions`
+
+  *generate ConfigMaps and Secrets; appending a hash suffix to their name*
+
+---
+
+## Transforming resources
+
+- `patches` `patchesJson6902`, `patchesStrategicMerge`
+
+  - perform (almost) arbitrary modifications to resources
+
+  - can be used to remove fields or even entire resources
+
+  - patches can be in separate files, or inlined within Kustomization file
+
+  - patches can apply to a specific resource, or to selected resources
+
+- `images`, `namePrefix`, `namespace`, `nameSuffix`, `replicas`
+
+  - helpers for basic modifications; concise and easy to use, but limited
+
+---
+
+## More transformations
+
+- `replacements`
+
+  - update individual fields (a bit like patches)
+
+  - can also do substring updates (e.g. replace an image registry)
+
+  - can copy a field from a place to another (e.g. a whole container spec)
+
+  - can apply to individual resources or to selected resources
+
+  - resources can also be *filtered out* (to be excluded from replacement)
+
+---
+
+## Teach Kustomize new tricks
+
+- `crds` = make Kustomize aware of e.g. ConfigMap fields in CRDs
+
+- `openapi` = give a schema to teach Kustomize about merge keys etc.
+
+- `sortOptions` = output resources in a specific order
+
+- `helmCharts` = evaluate a Helm chart template
+
+  (only available with `--enable-helm` flag; not standard / GA yet!)
+
+- `vars` = define variables and reuse them elsewhere
+
+  (limited to some specific fields; ...actually, it's being deprecated already!)
+
+- `components` = somewhat similar to an "include"
+
+  (points to a "component" and invoke all its generators and transformers)
+
+---
+
+## Remote bases
+
+- Kustomize can also use bases that are remote git repositories
+
+- Example:
+
+  https://github.com/kubernetes-sigs/kustomize//examples/multibases/?ref=v3.3.1
+
+- See [remoteBuild.md](https://github.com/kubernetes-sigs/kustomize/blob/master/examples/remoteBuild.md) for details about remote targets URL format
+
+- Note that this only works for kustomizations, not individual resources
+
+  (the specified repository or directory must contain a `kustomization.yaml` file)
+
+---
+
+## What Kustomize *cannot* do
+
+- By design, there are a number of things that Kustomize won't do
+
+- For instance:
+
+  - using command-line arguments or environment variables to generate a variant
+
+  - overlays can only *add* resources, not *remove* them¹
+
+- See the full list of [eschewed features](https://kubectl.docs.kubernetes.io/faq/kustomize/eschewedfeatures/) for more details
+
+.footnote[¹That's actually not true; patches can remove resources.]
+
+---
+
+## Changing image references
+
+- We're going to see a few different ways to change image references
+
+- Let's assume that our app uses multiple images:
+
+  `redis`, `dockercoins/hasher`, `dockercoins/worker`...
+
+- We want to update the `dockercoins/*` images to use a registry mirror
+
+  (e.g. `ghcr.io/dockercoins/*`)
+
+- We don't want to touch the other images
+
+---
+
+## Changing images with the CLI
+
+We can use the following CLI command:
 
 ```bash
-kustomize edit add label app.kubernetes.io/name:dockercoins
+kustomize edit set image name=[newName][:newTag][@digest]
 ```
 
----
+- `[]` denote optional parameters
 
-## Use cases for labels
+- `:` and `@` are the delimiters used to indicate a field
 
-- Example: clean up components that have been removed from the kustomization
-
-- Assuming that `commonLabels` have been set as shown on the previous slide:
-  ```bash
-    kubectl apply -k . --prune --selector app.kubernetes.io/name=dockercoins
-  ```
-
-- ... This command removes resources that have been removed from the kustomization
-
-- Technically, resources with:
-
-  - a `kubectl.kubernetes.io/last-applied-configuration` annotation
-
-  - labels matching the given selector
-
----
-
-## Scaling
-
-Instead of using a patch, scaling can be done like this:
-
-```yaml
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-...
-replicas:
-- name: worker
-  count: 5
-```
-
-or the CLI equivalent:
-
+Examples:
 ```bash
-kustomize edit set replicas worker=5
+kustomize edit set image dockercoins/worker=ghcr.io/dockercoins/worker
+kustomize edit set image dockercoins/worker=ghcr.io/dockercoins/worker:v0.2
+kustomize edit set image dockercoins/worker=:v0.2
 ```
 
-It will automatically work with Deployments, ReplicaSets, StatefulSets.
-
-(For other resource types, fall back to a patch.)
+This will add entries in the `images:` section of the kustomization.
 
 ---
 
-## Updating images
+## Changing images with `images:`
 
-Instead of using patches, images can be changed like this:
+Here are a few examples of the `images:` Kustomization directive:
 
 ```yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
@@ -397,31 +445,28 @@ images:
   digest: sha256:24a0c4b4a4c0eb97a1aabb8e29f18e917d05abfe1b7a7c07857230879ce7d3d3
 ```
 
+---
+
+## `images:` in practice
+
+This is what we would need for our app:
+
+```yaml
+- name: dockercoins/hasher
+  newName: ghcr.io/dockercoins/hasher
+- name: dockercoins/rng
+  newName: ghcr.io/dockercoins/rng
+- name: dockercoins/webui
+  newName: ghcr.io/dockercoins/webui
+- name: dockercoins/worker
+  newName: ghcr.io/dockercoins/worker
+```
+
+It works, but requires two lines per image. Can we do better? 🤔
 
 ---
 
-## Updating images with the CLI
-
-To add an entry in the `images:` section of the kustomization:
-
-```bash
-kustomize edit set image name=[newName][:newTag][@digest]
-```
-
-- `[]` denote optional parameters
-
-- `:` and `@` are the delimiters used to indicate a field
-
-Examples:
-```bash
-kustomize edit set image dockercoins/worker=ghcr.io/dockercoins/worker
-kustomize edit set image dockercoins/worker=ghcr.io/dockercoins/worker:v0.2
-kustomize edit set image dockercoins/worker=:v0.2
-```
-
----
-
-## Updating images, pros and cons
+## `images:`, pros and cons
 
 - Very convenient when the same image appears multiple times
 
@@ -435,70 +480,143 @@ kustomize edit set image dockercoins/worker=:v0.2
 
 - Only patches "well-known" image fields (won't work with CRDs referencing images)
 
-- Helm can deal with these scenarios, for instance:
-  ```yaml
-  image: {{ .Values.registry }}/worker:{{ .Values.version }}
-  ```
+- If our app uses 4 images, we'll need 4 `images:` section in the Kustomization file
 
 ---
 
-## Advanced resource patching
+## `PrefixSuffixTransformer`
 
-The example below shows how to:
+- Internally, the `namePrefix` directive relies on a `PrefixSuffixTransformer`
 
-- patch multiple resources with a selector (new in Kustomize 3.1)
-- use an inline patch instead of a separate patch file (new in Kustomize 3.2)
+- By default, that transformer acts on `metadata.name`
+
+- It can be invoked manually and configured to act on other fields
+
+  (for instance, `spec.template.spec.containers.image` in a Deployment manifest)
+
+---
+
+## `PrefixSuffixTransformer` in action
+
+```yaml
+@@INCLUDE[k8s/kustomize-examples/registry-with-prefix-transformer/microservices/kustomization.yaml]
+```
+
+- However, this will transform **all** Deployments!
+
+- Or rather, all resources with a `spec.template.spec.containers.image` field
+
+---
+
+## Limiting `PrefixSuffixTransformer`
+
+<!-- ##VERSION## -->
+
+- `PrefixSuffixTransformer` applies to *all* resources
+
+  (as of Kustomize 5.7 (October 2025), there is no way to specify a filter)
+
+- One workaround:
+
+  - break down the app in multiple Kustomizations
+
+  - in one Kustomization, put the components that need to be transformed
+
+  - put the other components in another Kustomization
+
+- Not great if multiple transformations need to be applied on different resources
+
+---
+
+## `replacements`
+
+- Allows to entirely replace a field
+
+- Can also replace *part* of a field (using some delimiter, e.g. `/` for images)
+
+- Replacements can apply to *selected* resources
+
+- Let's see an example!
+
+---
+
+## `replacements` in action
 
 ```yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-...
-patches:
-- patch: |-
-    - op: replace
-      path: /spec/template/spec/containers/0/image
-      value: alpine
-  target:
-    kind: Deployment
-    labelSelector: "app"
+resources:
+- dockercoins.yaml
+replacements:
+- sourceValue: ghcr.io/dockercoins
+  targets:
+  - select:
+      kind: Deployment
+      labelSelector: "app in (hasher,rng,webui,worker)"
+    fieldPaths:
+    - spec.template.spec.containers.*.image
+    options:
+      delimiter: "/"
+      index: 0
 ```
 
-(This replaces all images of Deployments matching the `app` selector with `alpine`.)
+(Note the different `fieldPath` format, compared to the earlier transformer!)
 
 ---
 
-## Advanced resource patching, pros and cons
+## Discussion
 
-- Very convenient to patch an arbitrary number of resources
+- There are multiple ways to rewrite image references to use a registry mirror
 
-- Very convenient to patch any kind of resource, including CRDs
+- They all have pros and cons
 
-- Doesn't support "fine-grained" patching (e.g. image registry or tag)
+- Main problem: they require to enumerate the resources that we want to transform
 
-- Once again, Helm can do it:
-  ```yaml
-  image: {{ .Values.registry }}/worker:{{ .Values.version }}
-  ```
+  (or to split them in a separate Kustomization)
+
+- No (easy?) way to do something like:
+
+  "Replace all images starting by `dockercoins/` with `ghcr.io/dockercoins/`"
 
 ---
 
-## Differences with Helm
+## Inconsistencies
 
-- Helm charts generally require more upfront work
+- Sometimes it's possible to filter / select resources, sometimes not
 
-  (while kustomize "bases" are standard Kubernetes YAML)
+- When it's possible, it's not always done the same way
 
-- ... But Helm charts are also more powerful; their templating language can:
+- Field paths are also different in different places:
 
-  - conditionally include/exclude resources or blocks within resources
+  `/spec/template/spec/containers/0/image` in JSON patches
 
-  - generate values by concatenating, hashing, transforming parameters
+  `spec.template.spec.containers.0.image` in replacements' `fieldPaths`
 
-  - generate values or resources by iteration (`{{ range ... }}`)
+  `spec/template/spec/containers/image` in transformers' `fieldSpecs`
 
-  - access the Kubernetes API during template evaluation
+  `.spec.template.spec.containers[].image` with tools like `jq`
 
-  - [and much more](https://helm.sh/docs/chart_template_guide/)
+- `fieldPaths` also have interesting extensions, like:
+
+  `spec.template.spec.containers.[name=hello].image`
+
+---
+
+## Conclusions
+
+- It's possible to do a lot of transformations with Kustomize
+
+- In complex scenarios, it can quickly becomes a maintenance nightmare
+
+- One possible strategy:
+
+  - keep each Kustomization as simple as possible
+
+  - compose multiple Kustomizations together
+
+- See [this kustomization][ollama-with-sidecar] for a creative example with sidecars and more!
+
+[ollama-with-sidecar]: https://github.com/jpetazzo/container.training/blob/main/k8s/admission-configuration.yaml
 
 ???
 

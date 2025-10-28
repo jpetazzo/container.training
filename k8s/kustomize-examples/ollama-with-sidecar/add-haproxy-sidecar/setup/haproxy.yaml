@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: haproxy
+  name: haproxy
+spec:
+  selector:
+    matchLabels:
+      app: haproxy
+  template:
+    metadata:
+      labels:
+        app: haproxy
+    spec:
+      volumes:
+      - name: haproxy
+        configMap:
+          name: haproxy
+      containers:
+      - image: haproxy:3.0
+        name: haproxy
+        volumeMounts:
+        - name: haproxy
+          mountPath: /usr/local/etc/haproxy
+        readinessProbe:
+          httpGet:
+            port: 9000
+        ports:
+        - name: haproxy
+          containerPort: 8000
+        - name: metrics
+          containerPort: 9000
+        resources:
+          requests:
+            cpu: 0.05
+          limits:
+            cpu: 1

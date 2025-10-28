@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- dockercoins.yaml
+replacements:
+- sourceValue: ghcr.io/dockercoins
+  targets:
+  - select:
+      kind: Deployment
+      labelSelector: "app in (hasher,rng,webui,worker)"
+      # It will soon be possible to use regexes in replacement selectors,
+      # meaning that the "labelSelector:" above can be replaced with the
+      # following "name:" selector which is a tiny bit simpler:
+      #name: hasher|rng|webui|worker
+      # Regex support in replacement selectors was added by this PR:
+      # https://github.com/kubernetes-sigs/kustomize/pull/5863
+      # This PR was merged in August 2025, but as of October 2025, the
+      # latest release of Kustomize is 5.7.1, which was released in July.
+      # Hopefully the feature will be available in the next release :)
+    # Another possibility would be to select all Deployments, and then
+    # reject the one(s) for which we don't want to update the registry;
+    # for instance:
+    #reject:
+    #  kind: Deployment
+    #  name: redis
+    fieldPaths:
+    - spec.template.spec.containers.*.image
+    options:
+      delimiter: "/"
+      index: 0

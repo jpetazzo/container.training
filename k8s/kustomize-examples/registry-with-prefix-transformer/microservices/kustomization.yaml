@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- microservices.yaml
+transformers:
+- |
+  apiVersion: builtin
+  kind: PrefixSuffixTransformer
+  metadata:
+    name: use-ghcr-io
+  prefix: ghcr.io/
+  fieldSpecs:
+  - path: spec/template/spec/containers/image
