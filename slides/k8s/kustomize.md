@@ -614,9 +614,12 @@ replacements:
 
   - compose multiple Kustomizations together
 
-- See [this kustomization][ollama-with-sidecar] for a creative example with sidecars and more!
+- See [this kustomization][ollama-with-sidecar] for a creative example with sidecars and more
+
+- See [that kustomization][flux-kustomization] for an example adding command line flags to controllers
 
 [ollama-with-sidecar]: https://github.com/jpetazzo/container.training/blob/main/k8s/admission-configuration.yaml
+[flux-kustomization]: https://github.com/fluxcd/flux2-multi-tenancy/blob/main/clusters/production/flux-system/kustomization.yaml
 
 ???
 
