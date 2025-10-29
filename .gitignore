@@ -17,6 +17,7 @@ slides/autopilot/state.yaml
 slides/index.html
 slides/past.html
 slides/slides.zip
+slides/_academy_*
 node_modules
 
 ### macOS ###

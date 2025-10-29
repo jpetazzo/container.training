@@ -228,3 +228,6 @@ td {
   width: 50%;
 }
 
+.hide {
+  display: none;
+}
