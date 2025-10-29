@@ -50,8 +50,6 @@
 
 .lab[
 
-```bash
-
 - Create a Kubernetes cluster with KinD:
   ```bash
   kind create cluster
