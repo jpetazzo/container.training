@@ -9,7 +9,7 @@
         "forwardPorts": [],
 
         //"postCreateCommand": "... install extra packages...",
-        "postStartCommand": "dind.sh",
+        "postStartCommand": "dind.sh ; kind.sh",
 
         // This lets us use "docker-outside-docker".
         // Unfortunately, minikube, kind, etc. don't work very well that way;
