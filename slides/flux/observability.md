@@ -58,7 +58,7 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization dashboards 
 
 class: pic
 
-![Running Mario](images/M6-running-Mario.gif)
+![Running Mario](images/running-mario.gif)
 
 ---
 
@@ -98,7 +98,7 @@ k8s@shpod:~$ flux create secret git flux-system \
 
 class: pic
 
-![Running Mario](images/M6-running-Mario.gif)
+![Running Mario](images/running-mario.gif)
 
 ---
 
@@ -127,7 +127,7 @@ k8s@shpod:~$ k get secret kube-prometheus-stack-grafana -n monitoring \
 
 class: pic
 
-![Grafana dashboard screenshot](images/M6-grafana-dashboard.png)
+![Grafana dashboard screenshot](images/flux/grafana-dashboard.png)
 
 ---
 

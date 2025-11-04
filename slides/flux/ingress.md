@@ -90,13 +90,13 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
 
 class: pic
 
-![Running Mario](images/M6-running-Mario.gif)
+![Running Mario](images/running-mario.gif)
 
 ---
 
 class: pic
 
-![Ingress-nginx provisionned a IaaS load-balancer in Scaleway Cloud services](images/M6-ingress-nginx-scaleway-lb.png)
+![Ingress-nginx provisionned a IaaS load-balancer in Scaleway Cloud services](images/flux/ingress-nginx-scaleway-lb.png)
 
 ---
 
@@ -141,7 +141,7 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
 
 class: pic
 
-![Running Mario](images/M6-running-Mario.gif)
+![Running Mario](images/running-mario.gif)
 
 ---
 
@@ -172,7 +172,7 @@ k8s@shpod:~$ \
 
 class: pic
 
-![Rocky application screenshot](images/M6-rocky-app-screenshot.png)
+![Rocky application screenshot](images/flux/rocky-app-screenshot.png)
 
 ---
 

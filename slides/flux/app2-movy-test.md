@@ -9,7 +9,7 @@ but let's see if we can succeed by just adding manifests in our `Flux` configura
 
 class: pic
 
-![Flux configuration waterfall](images/M6-flux-config-dependencies.png)
+![Flux configuration waterfall](images/flux/flux-config-dependencies.png)
 
 ---
 
@@ -89,7 +89,7 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
 
 class: pic
 
-![Running Mario](images/M6-running-Mario.gif)
+![Running Mario](images/running-mario.gif)
 
 ---
 
@@ -132,7 +132,7 @@ k8s@shpod:~$ flux reconcile source git movy-app -n movy-test
 
 class: pic
 
-![Running Mario](images/M6-running-Mario.gif)
+![Running Mario](images/running-mario.gif)
 
 ---
 
@@ -170,13 +170,13 @@ And push the modifications…
 
 class: pic
 
-![MOVY app has an incorrect dataset](images/M6-incorrect-dataset-in-MOVY-app.png)
+![MOVY app has an incorrect dataset](images/flux/incorrect-dataset-in-MOVY-app.png)
 
 ---
 
 class: pic
 
-![ROCKY app has an incorrect dataset](images/M6-incorrect-dataset-in-ROCKY-app.png)
+![ROCKY app has an incorrect dataset](images/flux/incorrect-dataset-in-ROCKY-app.png)
 
 ---
 
@@ -212,7 +212,7 @@ Please, refer to the [`Network policies` chapter in the High Five M4 module](./4
 
 class: pic
 
-![Running Mario](images/M6-running-Mario.gif)
+![Running Mario](images/running-mario.gif)
 
 ---
 

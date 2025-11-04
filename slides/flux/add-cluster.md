@@ -48,7 +48,7 @@ k8s@shpod:~$ flux bootstrap github \
 
 class: pic
 
-![Running Mario](images/M6-running-Mario.gif)
+![Running Mario](images/running-mario.gif)
 
 ---
 
@@ -83,7 +83,7 @@ We don't have such kind of things here.😕
 
 class: pic
 
-![Running Mario](images/M6-running-Mario.gif)
+![Running Mario](images/running-mario.gif)
 
 ---
 

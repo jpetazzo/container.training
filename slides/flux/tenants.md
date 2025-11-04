@@ -34,7 +34,7 @@ Several _tenants_ are created
 
 class: pic
 
-![Multi-tenants clusters](images/M6-cluster-multi-tenants.png )
+![Multi-tenants clusters](images/flux/cluster-multi-tenants.png )
 
 ---
 
@@ -105,7 +105,7 @@ Let's review the `fleet-config-using-flux-XXXXX/clusters/CLOUDY/tenants.yaml` fi
 
 class: pic
 
-![Running Mario](images/M6-running-Mario.gif)
+![Running Mario](images/running-mario.gif)
 
 ---
 
