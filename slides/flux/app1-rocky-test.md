@@ -167,13 +167,13 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
 
 class: pic
 
-![Running Mario](images/M6-running-Mario.gif)
+![Running Mario](images/running-mario.gif)
 
 ---
 
 class: pic
 
-![rocky config files](images/M6-R01-config-files.png)
+![rocky config files](images/flux/R01-config-files.png)
 
 ---
 
@@ -300,7 +300,7 @@ class: extra-details
 
 💡 This managed cluster comes with custom `StorageClasses` leveraging on Cloud _IaaS_ capabilities (i.e. block devices)
 
-![Flux configuration waterfall](images/M6-persistentvolumes.png)
+![Flux configuration waterfall](images/flux/persistentvolumes.png)
 
 - a default `StorageClass` is applied if none is specified (like here)
 - for **_🏭PROD_** purpose, ops team might enforce a more performant `StorageClass`
@@ -310,7 +310,7 @@ class: extra-details
 
 class: pic
 
-![Flux configuration waterfall](images/M6-flux-config-dependencies.png)
+![Flux configuration waterfall](images/flux/flux-config-dependencies.png)
 
 ---
 

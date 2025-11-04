@@ -89,7 +89,7 @@ Prerequisites are:
 
 class: pic
 
-![Generating a Github personal access token](images/M6-github-add-token.jpg)
+![Generating a Github personal access token](images/flux/github-add-token.jpg)
 
 ---
 
@@ -169,7 +169,7 @@ Here is the result
 - `Flux` sets up permissions that allow teams within our organization to **access** the `Github` repository as maintainers
 - Teams need to exist before `Flux` proceeds to this configuration
 
-![Teams in Github](images/M6-github-teams.png)
+![Teams in Github](images/flux/github-teams.png)
 
 ---
 
@@ -192,13 +192,13 @@ Its configuration is managed through a _Gitops_ workflow sourced directly from o
 Let's review our `Flux` configuration files we've created and pushed into the `Github` repository…  
 … as well as the corresponding components running in our Kubernetes cluster
 
-![Flux config files](images/M6-flux-config-files.png)
+![Flux config files](images/flux/flux-config-files.png)
 
 ---
 
 class: pic
 <!-- FIXME: wrong schema -->
-![Flux architecture](images/M6-flux-controllers.png)
+![Flux architecture](images/flux/flux-controllers.png)
 
 ---
 
