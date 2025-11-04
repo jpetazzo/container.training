@@ -503,7 +503,7 @@ _cmd_kubebins() {
         curl -L https://github.com/etcd-io/etcd/releases/download/$ETCD_VERSION/etcd-$ETCD_VERSION-linux-$ARCH.tar.gz \
         | sudo tar --strip-components=1 --wildcards -zx '*/etcd' '*/etcdctl'
     fi
-    if ! [ -x hyperkube ]; then
+    if ! [ -x kube-apiserver ]; then
         ##VERSION##
         curl -L https://dl.k8s.io/$K8SBIN_VERSION/kubernetes-server-linux-$ARCH.tar.gz \
         | sudo tar --strip-components=3 -zx \
