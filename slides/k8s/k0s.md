@@ -362,7 +362,7 @@ class: extra-details
 
 To stop the running cluster:
 ```bash
-sudo k0s start
+sudo k0s stop
 ```
 
 Reset and wipe its state:
