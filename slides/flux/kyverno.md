@@ -13,7 +13,7 @@ Please, refer to the [`Setting up Kubernetes` chapter in the High Five M4 module
 
 ---
 
-## Creating an `Helm` source in Flux for OpenEBS Helm chart
+## Creating an `Helm` source in Flux for Kyverno Helm chart
 
 .lab[
 
