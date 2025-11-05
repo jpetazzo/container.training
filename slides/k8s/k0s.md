@@ -228,7 +228,7 @@ class: pic
   k0sctl init  \
           --controller-count 3 \
           --user docker        \
-          --k0s m621 m622 m623 > k0sctl.yaml
+          --k0s flusk1 flusk2 flusk3 > k0sctl.yaml
   ```
 
 - Edit the following field so that controller nodes also run kubelet:
@@ -304,8 +304,8 @@ class: pic
 
 - The result should look like this:
   ```
-  {"members":{"m621":"https://10.10.3.190:2380","m622":"https://10.10.2.92:2380",
-  "m623":"https://10.10.2.110:2380"}}
+  {"members":{"flusk1":"https://10.10.3.190:2380","flusk2":"https://10.10.2.92:2380",
+  "flusk3":"https://10.10.2.110:2380"}}
   ```
 
 ---
@@ -326,9 +326,9 @@ class: pic
 - The result should look like this:
   ```
   NAME   STATUS   ROLES           AGE   VERSION
-  m621   Ready    control-plane   66m   v1.33.1+k0s
-  m622   Ready    control-plane   66m   v1.33.1+k0s
-  m623   Ready    control-plane   66m   v1.33.1+k0s
+  flusk1 Ready    control-plane   66m   v1.33.1+k0s
+  flusk2 Ready    control-plane   66m   v1.33.1+k0s
+  flusk3 Ready    control-plane   66m   v1.33.1+k0s
   ```
 
 ---
