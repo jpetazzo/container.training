@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+  annotations:
+    service.beta.kubernetes.io/scw-loadbalancer-proxy-protocol-v2: true
+    service.beta.kubernetes.io/scw-loadbalancer-use-hostname: true
