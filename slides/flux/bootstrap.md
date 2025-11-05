@@ -116,6 +116,32 @@ k8s@shpod:~$ flux bootstrap github \
 
 class: extra-details
 
+### Creating a personnal dedicated `Github` repo
+
+You don't need to rely onto a Github organization: any `Github` personnal repository is OK.
+
+.lab[
+
+- let's replace the `GITHUB_TOKEN` value by our _Personal Access Token_
+- and the `GITHUB_REPO` value by our specific repository name
+
+```bash
+k8s@shpod:~$ export GITHUB_TOKEN="my-token" &&         \
+      export GITHUB_USER="lpiot" && \
+      export GITHUB_REPO="fleet-config-using-flux-XXXXX"
+
+k8s@shpod:~$ flux bootstrap github \
+      --owner=${GITHUB_USER}       \
+      --personal                   \
+      --repository=${GITHUB_REPO}  \
+      --path=clusters/CLOUDY
+```
+]
+
+---
+
+class: extra-details
+
 Here is the result
 
 ```bash
