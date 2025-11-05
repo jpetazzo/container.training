@@ -78,7 +78,7 @@ Prerequisites are:
   - `Flux` _CLI_ needs a `Github` personal access token (_PAT_)
       - to create and/or access the `Github` repository
       - to give permissions to existing teams in our `Github` organization
-  - The PAT needs _CRUD_ permissions on our `Github` organization
+  - The _PAT_ needs _CRUD_ permissions on our `Github` organization
     - repositories
 
 - As **_⚙️OPS_** team, let's creates a `Github` personal access token…
@@ -178,6 +178,22 @@ Here is the result
 - But there is no need for dev teams to have access to this `Github` repository
 
 - One advantage of _GitOps_ lies in its ability to easily set up 💪🏼 **Separation of concerns** by using multiple `Flux` sources
+
+---
+
+### The PAT is not needed anymore!
+
+- During the install process, `Flux` creates an `ssh` key pair so that it is able to contribute to the `Github` repository.
+
+```bash
+► generating source secret
+✔ public key: ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzODQAAABhBFqaT8B8SezU92qoE+bhnv9xONv9oIGuy7yVAznAZfyoWWEVkgP2dYDye5lMbgl6MorG/yjfkyo75ETieAE49/m9D2xvL4esnSx9zsOLdnfS9W99XSfFpC2n6soL+Exodw==
+✔ configured deploy key "flux-system-main-flux-system-./clusters/CLOUDY" for "https://github.com/container-training-fleet/fleet-config-using-flux-XXXXX"
+► applying source secret "flux-system/flux-system"
+✔ reconciled source secret
+```
+
+- You can now delete the formerly created _Personal Access Token_: `Flux` won't use it anymore.
 
 ---
 
