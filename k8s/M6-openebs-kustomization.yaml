@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: openebs
+resources:
+  - M6-openebs-components.yaml
+  - sync.yaml
+configMapGenerator:
+  - name: openebs-values
+    files:
+      - values.yaml=M6-openebs-values.yaml
+configurations:
+  - M6-openebs-kustomizeconfig.yaml
