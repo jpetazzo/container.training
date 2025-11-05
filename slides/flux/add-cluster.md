@@ -74,7 +74,7 @@ We don't have such kind of things here.😕
 
 - We could bind our `ingress-controller` to a `NodePort`.
 `ingress-nginx` install manifests propose it here:
-</br>https://github.com/kubernetes/ingress-nginx/deploy/static/provider/baremetal
+</br>https://github.com/kubernetes/ingress-nginx/tree/release-1.14/deploy/static/provider/baremetal
 
 - In the 📄file `./clusters/METAL/ingress-nginx/sync.yaml`,
   </br>change the `Kustomization` value `spec.path: ./deploy/static/provider/baremetal`
