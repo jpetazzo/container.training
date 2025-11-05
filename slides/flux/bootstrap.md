@@ -80,8 +80,6 @@ Prerequisites are:
       - to give permissions to existing teams in our `Github` organization
   - The PAT needs _CRUD_ permissions on our `Github` organization
     - repositories
-    - admin:public_key
-    - users
 
 - As **_⚙️OPS_** team, let's creates a `Github` personal access token…
 
