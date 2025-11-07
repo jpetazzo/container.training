@@ -39,7 +39,7 @@ the **_⚙️OPS_** team exclusively operates its clusters by updating a code ba
 _GitOps_ and `Flux` enable the **_⚙️OPS_** team to rely on the _first-class citizen pattern_ in Kubernetes' world through these steps:
 
 - describe the **desired target state**
-- and let the **automated convergence** happens
+- and let the **automated convergence** happen
 
 ---
 
