@@ -63,7 +63,8 @@ locals {
 
 resource "local_file" "ip_addresses" {
   content = join("", formatlist("%s\n", [
-    for key, value in local.ip_addresses : value
+    for key, value in local.ip_addresses :
+    strcontains(value, ".") ? value : "[${value}]"
   ]))
   filename        = "ips.txt"
   file_permission = "0600"
