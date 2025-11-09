@@ -230,7 +230,7 @@ _cmd_create() {
             ;;
         *) die "Invalid mode: $MODE (supported modes: mk8s, pssh)." ;;
     esac
-    
+
     if ! [ -f "$SETTINGS" ]; then
         die "Settings file ($SETTINGS) not found."
     fi
@@ -562,6 +562,15 @@ EOF"
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl &&
     echo 'alias k=kubecolor' | sudo tee /etc/bash_completion.d/k &&
     echo 'complete -F __start_kubectl k' | sudo tee -a /etc/bash_completion.d/k"
+
+    # Install helm early
+    # (so that we can use it to install e.g. Cilium etc.)
+    pssh "
+    if [ ! -x /usr/local/bin/helm ]; then
+        curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get-helm-3 | sudo bash &&
+        helm completion bash | sudo tee /etc/bash_completion.d/helm
+        helm version
+    fi"
 }
 
 _cmd kubeadm "Setup kubernetes clusters with kubeadm"
@@ -585,6 +594,17 @@ _cmd_kubeadm() {
 
     # Initialize kube control plane
     pssh --timeout 200 "
+    IPV6=\$(ip -json a | jq -r '.[].addr_info[] | select(.scope==\"global\" and .family==\"inet6\") | .local' | head -n1)
+    if [ \"\$IPV6\" ]; then
+      ADVERTISE=\"advertiseAddress: \$IPV6\"
+      SERVICE_SUBNET=\"serviceSubnet: fdff::/112\"
+      touch /tmp/install-cilium-ipv6-only
+    else
+      ADVERTISE=
+      SERVICE_SUBNET=
+      touch /tmp/install-weave
+    fi
+    echo IPV6=\$IPV6 ADVERTISE=\$ADVERTISE
     if i_am_first_node && [ ! -f /etc/kubernetes/admin.conf ]; then
         kubeadm token generate > /tmp/token &&
         cat >/tmp/kubeadm-config.yaml <<EOF
@@ -592,9 +612,12 @@ kind: InitConfiguration
 apiVersion: kubeadm.k8s.io/v1beta3
 bootstrapTokens:
 - token: \$(cat /tmp/token)
+localAPIEndpoint:
+  \$ADVERTISE
 nodeRegistration:
   ignorePreflightErrors:
   - NumCPU
+  - FileContent--proc-sys-net-ipv6-conf-default-forwarding
   $IGNORE_SYSTEMVERIFICATION
   $IGNORE_SWAP
   $IGNORE_IPTABLES
@@ -622,6 +645,8 @@ apiVersion: kubeadm.k8s.io/v1beta3
 apiServer:
   certSANs:
   - \$(cat /tmp/ipv4)
+networking:
+  \$SERVICE_SUBNET
 $CLUSTER_CONFIGURATION_KUBERNETESVERSION
 EOF
 	sudo kubeadm init --config=/tmp/kubeadm-config.yaml
@@ -640,9 +665,19 @@ EOF
     # Install weave as the pod network
     pssh "
     if i_am_first_node; then
-        curl -fsSL https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s-1.11.yaml |
-        sed s,weaveworks/weave,quay.io/rackspace/weave, |
-        kubectl apply -f-
+        if [ -f /tmp/install-weave ]; then
+            curl -fsSL https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s-1.11.yaml |
+            sed s,weaveworks/weave,quay.io/rackspace/weave, |
+            kubectl apply -f-
+        fi
+        if [ -f /tmp/install-cilium-ipv6-only ]; then
+            helm upgrade -i cilium cilium --repo https://helm.cilium.io/ \
+            --namespace kube-system \
+            --set ipv6.enabled=true \
+            --set ipv4.enabled=false \
+            --set underlayProtocol=ipv6 \
+            --version 1.18.3
+        fi
     fi"
 
     # FIXME this is a gross hack to add the deployment key to our SSH agent,
@@ -1040,7 +1075,9 @@ _cmd_ping() {
     TAG=$1
     need_tag
 
-    fping < tags/$TAG/ips.txt
+    # If we connect to our VMs over IPv6, the IP address is between brackets.
+    # Unfortunately, fping doesn't support that; so let's strip brackets here.
+    tr -d [] < tags/$TAG/ips.txt | fping
 }
 
 _cmd stage2 "Finalize the setup of managed Kubernetes clusters"
