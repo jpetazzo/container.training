@@ -1,12 +1,34 @@
 data "proxmox_virtual_environment_nodes" "_" {}
 
+data "proxmox_virtual_environment_vms" "_" {
+  filter {
+    name   = "template"
+    values = [true]
+  }
+}
+
+data "proxmox_virtual_environment_vms" "templates" {
+  for_each = toset(data.proxmox_virtual_environment_nodes._.names)
+  tags     = ["ubuntu"]
+  filter {
+    name   = "node_name"
+    values = [each.value]
+  }
+  filter {
+    name   = "template"
+    values = [true]
+  }
+}
+
 locals {
-  pve_nodes = data.proxmox_virtual_environment_nodes._.names
+  pve_nodes       = data.proxmox_virtual_environment_nodes._.names
+  pve_node        = { for k, v in local.nodes : k => local.pve_nodes[v.node_index % length(local.pve_nodes)] }
+  pve_template_id = { for k, v in local.nodes : k => data.proxmox_virtual_environment_vms.templates[local.pve_node[k]].vms[0].vm_id }
 }
 
 resource "proxmox_virtual_environment_vm" "_" {
-  node_name       = local.pve_nodes[each.value.node_index % length(local.pve_nodes)]
   for_each        = local.nodes
+  node_name       = local.pve_node[each.key]
   name            = each.value.node_name
   tags            = ["container.training", var.tag]
   stop_on_destroy = true
@@ -24,9 +46,17 @@ resource "proxmox_virtual_environment_vm" "_" {
   #  size = 30
   #  discard = "on"
   #}
+  ### Strategy 1: clone from shared storage
+  #clone {
+  #  vm_id     = var.proxmox_template_vm_id
+  #  node_name = var.proxmox_template_node_name
+  #  full      = false
+  #}
+  ### Strategy 2: clone from local storage
+  ### (requires that the template exists on each node)
   clone {
-    vm_id     = var.proxmox_template_vm_id
-    node_name = var.proxmox_template_node_name
+    vm_id     = local.pve_template_id[each.key]
+    node_name = local.pve_node[each.key]
     full      = false
   }
   agent {
@@ -41,7 +71,9 @@ resource "proxmox_virtual_environment_vm" "_" {
     ip_config {
       ipv4 {
         address = "dhcp"
-        #gateway =
+      }
+      ipv6 {
+        address = "dhcp"
       }
     }
   }
@@ -72,8 +104,11 @@ resource "proxmox_virtual_environment_vm" "_" {
 locals {
   ip_addresses = {
     for key, value in local.nodes :
-    key => [for addr in flatten(concat(proxmox_virtual_environment_vm._[key].ipv4_addresses, ["ERROR"])) :
-    addr if addr != "127.0.0.1"][0]
+    key => [for addr in flatten(concat(
+      proxmox_virtual_environment_vm._[key].ipv6_addresses,
+      proxmox_virtual_environment_vm._[key].ipv4_addresses,
+      ["ERROR"])) :
+    addr if addr != "127.0.0.1" && addr != "::1"][0]
   }
 }
 
