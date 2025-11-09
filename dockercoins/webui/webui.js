@@ -1,26 +1,34 @@
-var express = require('express');
-var app = express();
-var redis = require('redis');
+import express from 'express';
+import morgan from 'morgan';
+import { createClient } from 'redis';
 
-var client = redis.createClient(6379, 'redis');
-client.on("error", function (err) {
-    console.error("Redis error", err);
-});
+var client = await createClient({
+  url: "redis://redis",
+  socket: {
+    family: 0
+  }
+})
+    .on("error", function (err) {
+        console.error("Redis error", err);
+    })
+    .connect();
+
+var app = express();
+
+app.use(morgan('common'));
 
 app.get('/', function (req, res) {
     res.redirect('/index.html');
 });
 
-app.get('/json', function (req, res) {
-    client.hlen('wallet', function (err, coins) {
-        client.get('hashes', function (err, hashes) {
-            var now = Date.now() / 1000;
-            res.json( {
-                coins: coins,
-                hashes: hashes,
-                now: now
-            });
-        });
+app.get('/json', async(req, res) => {
+    var coins = await client.hLen('wallet');
+    var hashes = await client.get('hashes');
+    var now = Date.now() / 1000;
+    res.json({
+        coins: coins,
+        hashes: hashes,
+        now: now
     });
 });
 
