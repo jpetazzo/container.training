@@ -36,8 +36,12 @@ _populate_zone() {
   ZONE_ID=$(_get_zone_id $1)
   shift
   for IPADDR in $*; do
-    cloudflare zones/$ZONE_ID/dns_records "name=*" "type=A" "content=$IPADDR"
-    cloudflare zones/$ZONE_ID/dns_records "name=\@" "type=A" "content=$IPADDR"
+    case "$IPADDR" in
+    *.*) TYPE=A;;
+    *:*) TYPE=AAAA;;
+    esac
+    cloudflare zones/$ZONE_ID/dns_records "name=*" "type=$TYPE" "content=$IPADDR"
+    cloudflare zones/$ZONE_ID/dns_records "name=\@" "type=$TYPE" "content=$IPADDR"
   done
 }
 
