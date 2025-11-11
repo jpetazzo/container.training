@@ -673,6 +673,7 @@ EOF
         if [ -f /tmp/install-cilium-ipv6-only ]; then
             helm upgrade -i cilium cilium --repo https://helm.cilium.io/ \
             --namespace kube-system \
+            --set cni.chainingMode=portmap \
             --set ipv6.enabled=true \
             --set ipv4.enabled=false \
             --set underlayProtocol=ipv6 \
