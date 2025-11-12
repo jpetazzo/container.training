@@ -71,24 +71,25 @@ class: pic
 
 ---
 
+## Can we run Docker locally?
 
-## Why don't we run Docker locally?
+- If you already have Docker (or Podman) installed, you can use it!
 
-- We are going to download container images and distribution packages.
+- The VMs can be convenient if:
 
-- This could put a bit of stress on the local WiFi and slow us down.
+  - you can't/won't install Docker or Podman on your machine,
 
-- Instead, we use a remote VM that has a good connectivity
+  - your local internet connection is slow.
 
-- In some rare cases, installing Docker locally is challenging:
+- We're going to download many container iamges and distribution packages.
 
-  - no administrator/root access (computer managed by strict corp IT)
+- If the class takes place in a venue with slow WiFi, this can slow us down.
 
-  - 32-bit CPU or OS
+- The remote VMs have good connectivity and downloads will be fast there.
 
-  - old OS version (e.g. CentOS 6, OSX pre-Yosemite, Windows 7)
-
-- It's better to spend time learning containers than fiddling with the installer!
+(Initially, we provided VMs to make sure that nobody would waste time
+with installers, or because they didn't have the right permissions
+on their machine, etc.)
 
 ---
 
