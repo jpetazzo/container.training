@@ -22,10 +22,10 @@ content:
 #- shared/chat-room-zoom-webinar.md
 - shared/toc.md
 - # MORNING
-  #- containers/Docker_Overview.md
   #- containers/Docker_History.md
   - containers/Training_Environment.md
   #- containers/Installing_Docker.md
+  - containers/Docker_Overview.md
   - containers/First_Containers.md
   - containers/Background_Containers.md
   - containers/Initial_Images.md
