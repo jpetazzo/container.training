@@ -5,6 +5,16 @@ name: contact
 .column-half[
 Instructor:
 
+📛 Marinka Egorov Fassi
+<br/>
+📩 marinka.egorov@gmail.com
+<br/>
+🔗 https://linkedin.com/in/marinka-egorov
+]
+
+.column-half[
+Assistant:
+
 📛 Jérôme Petazzoni
 <br/>
 📩 jerome.petazzoni@gmail.com
@@ -20,26 +30,5 @@ I can teach custom courses:
 - on site or remotely
 
 Reach out if you're interested!
-]
-
-.column-half[
-Assistant:
-
-📛 AJ Bowen
-<br/>
-📩 aj@soulshake.net
-<br/>
-🔗 https://linkedin.com/in/ajbowen
-<br/>
-📃 https://github.com/soulshake
-
-
-I can consult on the following topics:
-
-- Kubernetes
-- CI/CD
-- Terraform & Infra-as-code
-- Docker
-- AWS
 ]
 
