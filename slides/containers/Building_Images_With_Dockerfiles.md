@@ -29,6 +29,20 @@ At the end of this lesson, you will be able to:
 
 ---
 
+## `Dockerfile` example
+
+```
+FROM python:alpine
+WORKDIR /app
+RUN pip install Flask
+COPY rng.py .
+ENV FLASK_APP=rng FLASK_RUN_HOST=:: FLASK_RUN_PORT=80
+CMD ["flask", "run"]
+EXPOSE 80
+```
+
+---
+
 ## Writing our first `Dockerfile`
 
 Our Dockerfile must be in a **new, empty directory**.
