@@ -157,8 +157,6 @@ Here is the file used in the demo:
 
 .small[
 ```yaml
-version: "3"
-
 services:
   www:
     build: www
