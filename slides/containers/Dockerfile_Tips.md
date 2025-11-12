@@ -6,8 +6,6 @@ We will see how to:
 
 * Leverage the build cache so that builds can be faster.
 
-* Embed unit testing in the build process.
-
 ---
 
 ## Reducing the number of layers
