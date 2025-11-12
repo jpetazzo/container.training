@@ -65,6 +65,13 @@ individual Docker VM.*
 
 ---
 
+class: pic
+
+![Docker Architecture](images/docker-engine-architecture.svg)
+
+---
+
+
 ## Why don't we run Docker locally?
 
 - We are going to download container images and distribution packages.
