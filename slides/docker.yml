@@ -1,6 +1,11 @@
 title: |
-  Docker Workshop @ Ecosia
-  <img width=500 src="https://gist.githubusercontent.com/jpetazzo/dcecd53a111f1fbe65c29ee15b9143e4/raw/fe18ea3aa66d1dc16964d4223bf6cf8f6a51d40a/pyladies.png" ><img width=500 style="margin-top: -1em;" src="https://gist.githubusercontent.com/jpetazzo/dcecd53a111f1fbe65c29ee15b9143e4/raw/fe18ea3aa66d1dc16964d4223bf6cf8f6a51d40a/empowered.png">
+  Docker Fundamentals
+  & Optimizations
+  <div style="display:flex; justify-content:center; align-items:center; gap:70px;">
+  <img src="https://images.seeklogo.com/logo-png/44/1/ecosia-logo-png_seeklogo-440094.png" width="250">
+  <img src="https://gist.githubusercontent.com/jpetazzo/dcecd53a111f1fbe65c29ee15b9143e4/raw/fe18ea3aa66d1dc16964d4223bf6cf8f6a51d40a/empowered.png" width="200">
+  <img src="https://gist.githubusercontent.com/jpetazzo/dcecd53a111f1fbe65c29ee15b9143e4/raw/fe18ea3aa66d1dc16964d4223bf6cf8f6a51d40a/pyladies.png" width="300">
+  </div>
 
 
 #chat: "[Mattermost](https://training.enix.io/mattermost)"
