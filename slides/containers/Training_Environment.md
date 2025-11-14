@@ -49,50 +49,6 @@ individual Docker VM.*
 
 ---
 
-## What *is* Docker?
-
-- "Installing Docker" really means "Installing the Docker Engine and CLI".
-
-- The Docker Engine is a daemon (a service running in the background).
-
-- This daemon manages containers, the same way that a hypervisor manages VMs.
-
-- We interact with the Docker Engine by using the Docker CLI.
-
-- The Docker CLI and the Docker Engine communicate through an API.
-
-- There are many other programs and client libraries which use that API.
-
----
-
-class: pic
-
-![Docker Architecture](images/docker-engine-architecture.svg)
-
----
-
-## Can we run Docker locally?
-
-- If you already have Docker (or Podman) installed, you can use it!
-
-- The VMs can be convenient if:
-
-  - you can't/won't install Docker or Podman on your machine,
-
-  - your local internet connection is slow.
-
-- We're going to download many container images and distribution packages.
-
-- If the class takes place in a venue with slow WiFi, this can slow us down.
-
-- The remote VMs have good connectivity and downloads will be fast there.
-
-(Initially, we provided VMs to make sure that nobody would waste time
-with installers, or because they didn't have the right permissions
-on their machine, etc.)
-
----
-
 ## Connecting to your Virtual Machine
 
 You need an SSH client.
@@ -110,6 +66,7 @@ $ ssh <login>@<ip-address>
   * Git BASH (https://git-for-windows.github.io/)
 
   * MobaXterm (https://mobaxterm.mobatek.net/)
+
 
 ---
 
@@ -144,10 +101,47 @@ Server:
 
 If this doesn't work, raise your hand so that an instructor can assist you!
 
-???
+---
 
-:EN:Container concepts
-:FR:Premier contact avec les conteneurs
+## Installing Docker
 
-:EN:- What's a container engine?
-:FR:- Qu'est-ce qu'un *container engine* ?
+- "Installing Docker" really means "Installing the **Docker Engine** and **CLI**".
+
+- The Docker Engine is a **daemon** (a service running in the background) —— it manages containers, the same way that a hypervisor manages VMs.
+
+- We interact with the Docker Engine by using the Docker CLI.
+
+- The Docker CLI and the Docker Engine communicate through an API.
+
+- There are many other programs and client libraries which use that API.
+
+---
+
+class: pic
+
+![Docker Architecture](images/docker-engine-architecture.svg)
+
+
+
+---
+
+## Can we run Docker locally?
+
+- If you already have Docker (or Podman) installed, you can use it!
+
+- The VMs can be convenient if:
+
+  - you can't/won't install Docker or Podman on your machine,
+
+  - your local internet connection is slow.
+
+- We're going to download many container images and distribution packages.
+
+- If the class takes place in a venue with slow WiFi, this can slow us down.
+
+- The remote VMs have good connectivity and downloads will be fast there.
+
+(Initially, we provided VMs to make sure that nobody would waste time
+with installers, or because they didn't have the right permissions
+on their machine, etc.)
+
