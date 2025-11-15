@@ -1,15 +1,44 @@
-# Why Docker?
+# Docker? Containers?
 
-The original "Docker pitch" (back in 2013!) made a lot of comparisons
-with the shipping industry, and its transformation thanks to
-the *intermodal shipping container.*
+- **Docker:** open-source platform that runs containers.
 
-More than a decade later... Why is Docker still relevant, and
-what are we using it for?
+- **Container:** unit of software/deployment that contains everything needed for the code to run.
+
+- Docker containers can run (almost) everywhere.
+
+- Containers typically use less resources than VMs.
+
+- Can be easily copied and deployed. Make development faster.
+
+- Isolated from each other and from the host.
+
 
 ---
 
-## Escape dependency hell
+## Container vs VM
+
+**Virtual Machine**
+
+- Heavier and slower to boot.
+- Include a full guest OS.
+- Better for running multiple OS types on one host.
+
+**Container**
+- Lightweight and fast to start.
+- Share the host OS kernel.
+- Use fewer resources (CPU, RAM, storage).
+- Ideal for microservices and scalable applications.
+
+
+---
+
+class: pic
+
+![Container vs CM](images/cont_vs_vm.png)
+
+---
+
+## Basic workflow
 
 1. Write installation instructions into an `INSTALL.txt` file
 
@@ -120,3 +149,71 @@ class: extra-details
 
 * Devs can be empowered to make releases themselves
   more easily.
+
+---
+
+## Pets vs. Cattle
+
+* In the "pets vs. cattle" metaphor, there are two kinds of servers.
+
+* Pets:
+
+  * have distinctive names and unique configurations
+
+  * when they have an outage, we do everything we can to fix them
+
+* Cattle:
+
+  * have generic names (e.g. with numbers) and generic configuration
+
+  * configuration is enforced by configuration management, golden images ...
+
+  * when they have an outage, we can replace them immediately with a new server
+
+* What's the connection with Docker and containers?
+
+
+---
+
+## Local development environments
+
+* When we use local VMs (with e.g. VirtualBox or VMware), our workflow looks like this:
+
+  * create VM from base template (Ubuntu, CentOS...)
+
+  * install packages, set up environment
+
+  * work on project
+
+  * when done, shut down VM
+
+  * next time we need to work on project, restart VM as we left it
+
+  * if we need to tweak the environment, we do it live
+
+* Over time, the VM configuration evolves, diverges.
+
+* We don't have a clean, reliable, deterministic way to provision that environment.
+
+
+---
+
+## Local development with Docker
+
+* With Docker, the workflow looks like this:
+
+  * create container image with our dev environment
+
+  * run container with that image
+
+  * work on project
+
+  * when done, shut down container
+
+  * next time we need to work on project, start a new container
+
+  * if we need to tweak the environment, we create a new image
+
+* We have a clear definition of our environment, and can share it reliably with others.
+
+* Let's see in the next chapters how to bake a custom image with `figlet`!
