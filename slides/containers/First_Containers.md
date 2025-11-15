@@ -147,6 +147,9 @@ Now, try to:
 
 * run `figlet`. Does that work?
 
+???
+On macOS: brew list | wc -l
+
 ---
 
 class: self-paced
@@ -225,73 +228,3 @@ bash: figlet: command not found
 
   *This puts a strong emphasis on automation and repeatability. Let's see why ...*
 
----
-
-## Pets vs. Cattle
-
-* In the "pets vs. cattle" metaphor, there are two kinds of servers.
-
-* Pets:
-
-  * have distinctive names and unique configurations
-
-  * when they have an outage, we do everything we can to fix them
-
-* Cattle:
-
-  * have generic names (e.g. with numbers) and generic configuration
-
-  * configuration is enforced by configuration management, golden images ...
-
-  * when they have an outage, we can replace them immediately with a new server
-
-* What's the connection with Docker and containers?
-
----
-
-## Local development environments
-
-* When we use local VMs (with e.g. VirtualBox or VMware), our workflow looks like this:
-
-  * create VM from base template (Ubuntu, CentOS...)
-
-  * install packages, set up environment
-
-  * work on project
-
-  * when done, shut down VM
-
-  * next time we need to work on project, restart VM as we left it
-
-  * if we need to tweak the environment, we do it live
-
-* Over time, the VM configuration evolves, diverges.
-
-* We don't have a clean, reliable, deterministic way to provision that environment.
-
----
-
-## Local development with Docker
-
-* With Docker, the workflow looks like this:
-
-  * create container image with our dev environment
-
-  * run container with that image
-
-  * work on project
-
-  * when done, shut down container
-
-  * next time we need to work on project, start a new container
-
-  * if we need to tweak the environment, we create a new image
-
-* We have a clear definition of our environment, and can share it reliably with others.
-
-* Let's see in the next chapters how to bake a custom image with `figlet`!
-
-???
-
-:EN:- Running our first container
-:FR:- Lancer nos premiers conteneurs
