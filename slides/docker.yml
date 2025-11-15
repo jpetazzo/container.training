@@ -14,7 +14,7 @@ gitrepo: github.com/jpetazzo/container.training
 
 slides: https://2025-11-docker.container.training/
 
-#slidenumberprefix: "#SomeHashTag &mdash; "
+slidenumberprefix: "workshop.container.training &mdash; login = firstname@ &mdash; password = where we are :) &mdash; "
 
 exclude:
 - self-paced
