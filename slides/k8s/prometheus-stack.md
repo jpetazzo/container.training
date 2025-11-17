@@ -38,7 +38,7 @@
 
   (without doing `helm repo add` first)
 
-- Otherwise, keep the same naming strategy:
+- Let's use the same name for the release, the namespace...:
   ```bash
     helm upgrade --install kube-prometheus-stack kube-prometheus-stack \
       --namespace kube-prometheus-stack --create-namespace \
@@ -56,17 +56,39 @@
 
 ## Exposing Grafana
 
-- Let's create an Ingress for Grafana
+- Let's do this only if we have an ingress controller and a domain name!
+
+  (we can also skip this and come back to it later)
+
+- Create an Ingress for Grafana:
   ```bash
     kubectl create ingress --namespace kube-prometheus-stack grafana \
       --rule=grafana.`cloudnative.party`/*=kube-prometheus-stack-grafana:80
   ```
 
-  (as usual, make sure to use *your* domain name above)
+  (make sure to use *your* domain name above)
 
 - Connect to Grafana
 
-  (remember that the DNS record might take a few minutes to come up)
+---
+
+## Exposing Grafana without Ingress
+
+- What if we don't have an ingress controller?
+
+- We can use a `NodePort` service instead
+
+- Option 1: `kubectl edit` or `kubectl patch` the service
+
+  (it's `kube-prometheus-stack-grafana`)
+
+- Option 2: pass the correct value to `helm upgrade --install`
+
+  (check the [chart values][kps-values] to find the right one!)
+
+- We can also use `kubectl port-forward`, or a `LoadBalacner` service!
+
+[kps-value]: https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack?modal=values
 
 ---
 
@@ -108,6 +130,8 @@
 - This gives us a breakdown of resource usage by Namespace
 
 - Feel free to explore the other dashboards!
+
+- There won't be much data right now, but there will be more later
 
 ???
 
