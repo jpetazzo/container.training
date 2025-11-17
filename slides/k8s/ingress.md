@@ -704,13 +704,19 @@ class: extra-details
 
 ## Ingress in the future
 
-- The [Gateway API SIG](https://gateway-api.sigs.k8s.io/) might be the future of Ingress
+- The [Gateway API SIG](https://gateway-api.sigs.k8s.io/) is probably be the future of Ingress
 
 - It proposes new resources:
 
  GatewayClass, Gateway, HTTPRoute, TCPRoute...
 
-- It is now in beta (since v0.5.0, released in 2022)
+- It now has feature parity with Ingress
+
+  (=it can be used instead of Ingress resources; or in addition to them)
+
+- It is, however, more complex to set up and operate
+
+  (at least for now!)
 
 ???
 
