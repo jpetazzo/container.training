@@ -10,8 +10,11 @@ proxmox_password = "CHANGEME"
 
 # Which storage to use for VM disks. Defaults to "local".
 #proxmox_storage = "ceph"
+#proxmox_storage = "local-zfs"
 
-proxmox_template_node_name = "CHANGEME"
-proxmox_template_vm_id = CHANGEME
+# We recently rewrote the Proxmox configurations to automatically
+# detect which template to use; so these variables aren't used anymore.
+#proxmox_template_node_name = "CHANGEME"
+#proxmox_template_vm_id = CHANGEME
 
 
