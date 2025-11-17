@@ -180,7 +180,7 @@ An Ingress Controller! 😅
 
 - Install an Ingress Controller:
   ```bash
-  kubectl apply -f ~/container.training/k8s/traefik-v2.yaml
+  kubectl apply -f ~/container.training/k8s/traefik.yaml
   ```
 
 - Wait a little bit, and check that we now have a `kubernetes.io/tls` Secret:
