@@ -81,7 +81,7 @@ class: pic
 
   - your local internet connection is slow.
 
-- We're going to download many container iamges and distribution packages.
+- We're going to download many container images and distribution packages.
 
 - If the class takes place in a venue with slow WiFi, this can slow us down.
 
