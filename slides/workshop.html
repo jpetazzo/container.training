@@ -1,43 +1,60 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>@@TITLE@@</title>
+    <title>Training Materials</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="workshop.css">
   </head>
   <body>
-    <!--
-    <div style="position: absolute; left: 20%; right: 20%; top: 30%;">
-      <h1 style="font-size: 3em;">Loading ...</h1>
-      The slides should show up here. If they don't, it might be
-      because you are accessing this file directly from your filesystem.
-      It needs to be served from a web server. You can try this:
-      <pre>
-        docker-compose up -d
-        open http://localhost:8888/workshop.html # on MacOS
-        xdg-open http://localhost:8888/workshop.html # on Linux
-      </pre>
-      Once the slides are loaded, this notice disappears when you
-      go full screen (e.g. by hitting "f").
-    </div>
-    -->
-    <textarea id="source">@@MARKDOWN@@</textarea>
     <script src="remark.min.js" type="text/javascript">
     </script>
-    <script type="text/javascript">
+    <div id="loading">⏳️ Loading...</div>
+    <textarea id="source" style="display: none;">@@MARKDOWN@@</textarea>
+    <script type="module">
+      if (window.location.search[0] === '?') {
+        const contentName = window.location.search.substr(1);
+        let contentText = "⚠️ Failed to load content!"
+        for (const url of [
+          `fragments/${contentName}.md`,
+          `${contentName}.md`
+        ]) {
+          const contentResponse = await fetch(url);
+          if (contentResponse.ok) {
+            contentText = await contentResponse.text();
+            break;
+          }
+        }
+        document.querySelector('#source').textContent = contentText;
+      }
+      /*
+      This tmpl() function helps us to use the same HTML file for entire
+      decks (used for live classes and pre-processed by markmaker.py to
+      replace @@-strings) and to display individual chapters (used for
+      video recording and not pre-processed by markmarker.py, so we still
+      have @@-strings in this HTML file in that case).
+      */
+      function tmpl(atString, templateValue, defaultValue) {
+        if (atString[0] === "@") {
+          return defaultValue;
+        }
+        return JSON.parse(templateValue);
+      }
+      var tmplEXCLUDE = tmpl('@@EXCLUDE@@', '[@@EXCLUDE@@]', []);
+      var tmplTITLE = tmpl('@@TITLE@@', '"@@TITLE@@"', document.title);
+      var tmplSLIDENUMBERPREFIX = tmpl('@@SLIDENUMBERPREFIX@@', '"@@SLIDENUMBERPREFIX@@"', "");
+      document.title = tmplTITLE;
       var slideshow = remark.create({
         ratio: '16:9',
         highlightSpans: true,
-        slideNumberFormat: '@@SLIDENUMBERPREFIX@@%current%/%total%',
-        excludedClasses: [@@EXCLUDE@@]
+        slideNumberFormat: `${tmplSLIDENUMBERPREFIX}%current%/%total%`,
+        excludedClasses: tmplEXCLUDE
       });
-    </script>
-    <script type="module">
+      document.querySelector('#loading').style.display = 'none';
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ startOnLoad: false });
         slideshow.on('afterShowSlide', function (slide) {
           mermaid.run({
-            nodes: document.querySelectorAll('div.remark-visible .mermaid'),
+            nodes: document.querySelectorAll('div.remark-visible.mermaid'),
           });
         });
         // Reminder, if you want to tinker with mermaid,

@@ -87,26 +87,6 @@ def flatten(titles):
 
 
 def generatefromyaml(manifest, filename):
-    manifest = yaml.safe_load(manifest)
-
-    for k in manifest:
-        override = os.environ.get("OVERRIDE_"+k)
-        if override:
-            manifest[k] = override
-
-    for k in ["chat", "gitrepo", "slides", "title"]:
-        if k not in manifest:
-            manifest[k] = ""
-
-    if "zip" not in manifest:
-        if manifest["slides"].endswith('/'):
-            manifest["zip"] = manifest["slides"] + "slides.zip"
-        else:
-            manifest["zip"] = manifest["slides"] + "/slides.zip"
-
-    if "html" not in manifest:
-        manifest["html"] = filename + ".html"
-
     markdown, titles = processcontent(manifest["content"], filename)
     logging.debug("Found {} titles.".format(len(titles)))
     toc = gentoc(titles)
@@ -121,39 +101,39 @@ def generatefromyaml(manifest, filename):
     exclude = ",".join('"{}"'.format(c) for c in exclude)
 
     # Insert build info. This is super hackish.
-
     markdown = markdown.replace(
         ".debug[",
         ".debug[\n```\n{}\n```\n\nThese slides have been built from commit: {}\n\n".format(dirtyfiles, commit),
         1)
 
-    markdown = markdown.replace("@@TITLE@@", manifest["title"].replace("\n", "<br/>"))
-
     html = open("workshop.html").read()
+    html = html.replace("@@TITLE@@", manifest["title"].replace("\n", " "))
     html = html.replace("@@MARKDOWN@@", markdown)
     html = html.replace("@@EXCLUDE@@", exclude)
-    html = html.replace("@@CHAT@@", manifest["chat"])
-    html = html.replace("@@GITREPO@@", manifest["gitrepo"])
-    html = html.replace("@@SLIDES@@", manifest["slides"])
-    html = html.replace("@@ZIP@@", manifest["zip"])
-    html = html.replace("@@HTML@@", manifest["html"])
-    html = html.replace("@@TITLE@@", manifest["title"].replace("\n", " "))
     html = html.replace("@@SLIDENUMBERPREFIX@@", manifest.get("slidenumberprefix", ""))
+    return html
 
+def processAtAtStrings(text):
+    text = text.replace("@@CHAT@@", manifest["chat"])
+    text = text.replace("@@GITREPO@@", manifest["gitrepo"])
+    text = text.replace("@@SLIDES@@", manifest["slides"])
+    text = text.replace("@@ZIP@@", manifest["zip"])
+    text = text.replace("@@HTML@@", manifest["html"])
+    text = text.replace("@@TITLE@@", manifest["title"].replace("\n", "<br/>"))
     # Process @@LINK[file] and @@INCLUDE[file] directives
     local_anchor_path = ".."
     # FIXME use dynamic repo and branch?
-    online_anchor_path = "https://github.com/jpetazzo/container.training/tree/master"
-    for atatlink in re.findall(r"@@LINK\[[^]]*\]", html):
+    online_anchor_path = "https://github.com/jpetazzo/container.training/tree/main"
+    for atatlink in re.findall(r"@@LINK\[[^]]*\]", text):
         logging.debug("Processing {}".format(atatlink))
         file_name = atatlink[len("@@LINK["):-1]
-        html = html.replace(atatlink, "[{}]({}/{})".format(file_name, online_anchor_path, file_name ))
-    for atatinclude in re.findall(r"@@INCLUDE\[[^]]*\]", html):
+        text = text.replace(atatlink, "[{}]({}/{})".format(file_name, online_anchor_path, file_name ))
+    for atatinclude in re.findall(r"@@INCLUDE\[[^]]*\]", text):
         logging.debug("Processing {}".format(atatinclude))
         file_name = atatinclude[len("@@INCLUDE["):-1]
         file_path = os.path.join(local_anchor_path, file_name)
-        html = html.replace(atatinclude, open(file_path).read())
-    return html
+        text = text.replace(atatinclude, open(file_path).read())
+    return text
 
 
 # Maps a title (the string just after "^# ") to its position in the TOC
@@ -213,7 +193,14 @@ def processcontent(content, filename):
             content += "\n" + slidefooter
             return (content, titles)
         if os.path.isfile(content):
-            return processcontent(open(content).read(), content)
+            markdown = open(content).read()
+            markdown = processAtAtStrings(markdown)
+            fragmentfile = os.path.join("fragments", content)
+            fragmentdir = os.path.dirname(fragmentfile)
+            os.makedirs(fragmentdir, exist_ok=True)
+            with open(fragmentfile, "w") as f:
+                f.write(markdown)
+            return processcontent(markdown, content)
         logging.warning("Content spans only one line (it's probably a file name) but no file found: {}".format(content))
     if isinstance(content, list):
         subparts = [processcontent(c, filename) for c in content]
@@ -271,5 +258,22 @@ else:
     else:
         manifest = open(filename)
     logging.info("Processing {}...".format(filename))
+
+    manifest = yaml.safe_load(manifest)
+    for k in manifest:
+        override = os.environ.get("OVERRIDE_"+k)
+        if override:
+            manifest[k] = override
+    for k in ["chat", "gitrepo", "slides", "title"]:
+        if k not in manifest:
+            manifest[k] = ""
+    if "zip" not in manifest:
+        if manifest["slides"].endswith('/'):
+            manifest["zip"] = manifest["slides"] + "slides.zip"
+        else:
+            manifest["zip"] = manifest["slides"] + "/slides.zip"
+    if "html" not in manifest:
+        manifest["html"] = filename + ".html"
+
     sys.stdout.write(generatefromyaml(manifest, filename))
     logging.info("Processed {}.".format(filename))

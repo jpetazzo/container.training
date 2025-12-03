@@ -23,3 +23,10 @@
 
 # Survey form
 /please https://docs.google.com/forms/d/e/1FAIpQLSfIYSgrV7tpfBNm1hOaprjnBHgWKn5n-k5vtNXYJkOX1sRxng/viewform
+
+# Serve individual lessons with special URLs:
+# - access http://container.training/k8s/ingress
+# - ...redirects to http://container.training/view?k8s/ingress
+# - ...proxies to http://container.training/workshop.html?k8s/ingress
+/view /workshop.html 200
+/* /view?:splat
