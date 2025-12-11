@@ -1,13 +1,17 @@
-# Pre-requirements
+## Pre-requirements
 
-- Kubernetes concepts
+- Familiarity with the UNIX command-line
 
-  (pods, deployments, services, labels, selectors)
+  (navigating directories, editing files, using `kubectl`)
 
 - Hands-on experience working with containers
 
   (building images, running them; doesn't matter how exactly)
 
-- Familiarity with the UNIX command-line
+- Kubernetes concepts
 
-  (navigating directories, editing files, using `kubectl`)
+  (pods, deployments, services, labels, selectors)
+
+- Ideally, you already have access to a Kubernetes cluster
+
+  (even if it's just a local one with KinD, minikube, etc.)

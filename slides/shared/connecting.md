@@ -1,6 +1,25 @@
-class: in-person
+## Connecting to our lab environment
 
-## Testing the connection to our lab environment
+- We need an SSH client
+
+- On Linux, OS X, FreeBSD... you are probably all set; just use `ssh`
+
+- On Windows, get one of these:
+
+  - [putty](https://putty.software/)
+  - Microsoft [Win32 OpenSSH](https://github.com/PowerShell/Win32-OpenSSH/wiki/Install-Win32-OpenSSH)
+  - [Git BASH](https://git-for-windows.github.io/)
+  - [MobaXterm](http://mobaxterm.mobatek.net/)
+
+- On Android, [JuiceSSH](https://juicessh.com/)
+  ([Play Store](https://play.google.com/store/apps/details?id=com.sonelli.juicessh))
+  works pretty well
+
+---
+
+## Testing the connection
+
+- Your instructor will tell you where to find the IP address, login, and password
 
 .lab[
 
@@ -31,17 +50,69 @@ You should see a prompt looking like this:
 [A.B.C.D] (...) user@machine ~
 $
 ```
-If anything goes wrong — ask for help!
 
 ---
 
-class: in-person
+## Checking the lab environment
+
+In Docker classes, run `docker version`.
+
+The output should look like this:
+
+.small[
+```bash
+Client:
+ Version:           29.1.1
+ API version:       1.52
+ Go version:        go1.25.4 X:nodwarf5
+ Git commit:        0aedba58c2
+ Built:             Fri Nov 28 14:28:26 2025
+ OS/Arch:           linux/amd64
+ Context:           default
+
+Server:
+ Engine:
+  Version:          29.1.1
+  API version:      1.52 (minimum version 1.44)
+  Go version:       go1.25.4 X:nodwarf5
+  Git commit:       9a84135d52
+  Built:            Fri Nov 28 14:28:26 2025
+  OS/Arch:          linux/amd64
+  Experimental:     false
+  ...
+```
+]
+
+---
+
+## Checking the lab environment
+
+In Kubernetes classes, run `kubectl get nodes`.
+
+The output should look like this:
+
+```bash
+$ k get nodes
+NAME    STATUS   ROLES           AGE    VERSION
+node1   Ready    control-plane   7d6h   v1.34.0
+node2   Ready    <none>          7d6h   v1.34.0
+node3   Ready    <none>          7d6h   v1.34.0
+node4   Ready    <none>          7d6h   v1.34.0
+```
+
+---
+
+## If it doesn't work...
+
+Ask an instructor or assistant to help you!
+
+---
 
 ## `tailhist`
 
 - The shell history of the instructor is available online in real time
 
-- The instructor will provide you a "magic URL"
+- The instructor will share a special URL with you
 
   (typically, the instructor's lab address on port 1088 or 30088)
 
@@ -54,82 +125,6 @@ class: in-person
 - It should be green when the WebSocket is connected
 
   (if it turns red, reloading the page should fix it)
-
----
-
-## Doing or re-doing the workshop on your own?
-
-- Use something like
-  [Play-With-Docker](https://labs.play-with-docker.com/) or
-  [Play-With-Kubernetes](https://training.play-with-kubernetes.com/)
-
-  Zero setup effort; but environment are short-lived and
-  might have limited resources
-
-- Create your own cluster (local or cloud VMs)
-
-  Small setup effort; small cost; flexible environments
-
-- Create a bunch of clusters for you and your friends
-    ([instructions](https://@@GITREPO@@/tree/main/prepare-labs))
-
-  Bigger setup effort; ideal for group training
-
----
-
-## For a consistent Kubernetes experience ...
-
-- If you are using your own Kubernetes cluster, you can use [jpetazzo/shpod](https://github.com/jpetazzo/shpod)
-
-- `shpod` provides a shell running in a pod on your own cluster
-
-- It comes with many tools pre-installed (helm, stern...)
-
-- These tools are used in many demos and exercises in these slides
-
-- `shpod` also gives you completion and a fancy prompt
-
-- It can also be used as an SSH server if needed
-
----
-
-class: self-paced
-
-## Get your own Docker nodes
-
-- If you already have some Docker nodes: great!
-
-- If not: let's get some thanks to Play-With-Docker
-
-.lab[
-
-- Go to https://labs.play-with-docker.com/
-
-- Log in
-
-- Create your first node
-
-<!-- ```open https://labs.play-with-docker.com/``` -->
-
-]
-
-You will need a Docker ID to use Play-With-Docker.
-
-(Creating a Docker ID is free.)
-
----
-
-## We don't need to connect to ALL the nodes
-
-- If your cluster has multiple nodes (e.g. `node1`, `node2`, ...):
-
-  unless instructed, **all commands must be run from the first node**
-
-- We don't need to check out/copy code or manifests on other nodes
-
-- During normal operations, we do not need access to the other nodes
-
-  (but we could log into these nodes to troubleshoot or examine stuff)
 
 ---
 

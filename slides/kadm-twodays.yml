@@ -19,17 +19,19 @@ exclude:
 content:
 - shared/title.md
 - logistics.md
-- k8s/intro.md
-- shared/about-slides.md
 - shared/chat-room-im.md
 #- shared/chat-room-slack.md
 #- shared/chat-room-zoom-meeting.md
 #- shared/chat-room-zoom-webinar.md
+- shared/about-slides.md
+- k8s/prereqs-advanced.md
+- shared/handson.md
+- k8s/labs-live.md
+- shared/connecting.md
+- k8s/labs-async.md
 - shared/toc.md
 # DAY 1
-- - k8s/prereqs-advanced.md
-  - shared/handson.md
-  - k8s/architecture.md
+- - k8s/architecture.md
   - k8s/internal-apis.md
   - k8s/deploymentslideshow.md
   - k8s/dmuc-easy.md

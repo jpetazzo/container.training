@@ -23,6 +23,9 @@ content:
 #- shared/chat-room-zoom-meeting.md
 #- shared/chat-room-zoom-webinar.md
 - k8s/prereqs-advanced.md
+# Note: if we work on this later, we should refactor it
+# to follow the same pattern as the other classes
+# (i.e. use the k8s/labs-*.md files)
 - k8s/handson-mlops.md
 - shared/connecting.md
 - k8s/mlops-headsup.md

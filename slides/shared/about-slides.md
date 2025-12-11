@@ -60,6 +60,8 @@
 
 ## These slides are constantly updated
 
+- They are maintained by [Jérôme Petazzoni](https://hachyderm.io/@jpetazzo/) and [multiple contributors](https://@@GITREPO@@/graphs/contributors)
+
 - Feel free to check the GitHub repository for updates:
 
   https://@@GITREPO@@
@@ -89,3 +91,27 @@ class: extra-details
   - you want only the most essential information
 
 - You can review these slides another time if you want, they'll be waiting for you ☺
+
+---
+
+## Slides ≠ documentation
+
+- We tried to include a lot of information in these slides
+
+- But they don't replace or compete with the documentation!
+
+- Treat these slides as yet another pillar to support your learning experience
+
+- Don't hesitate to frequently read the documentations
+
+  ([Docker documentation][docker-docs], [Kubernetes documentation][k8s-docs])
+
+- And online communities
+
+  (e.g.: [Docker forums][docker-forums], [Docker on StackOverflow][docker-so], [Kubernetes on StackOverflow][k8s-so])
+
+[docker-docs]: https://docs.docker.com/
+[k8s-docs]: https://kubernetes.io/docs/
+[docker-forums]: https://forums.docker.com/
+[docker-so]: http://stackoverflow.com/questions/tagged/docker
+[k8s-so]: http://stackoverflow.com/questions/tagged/kubernetes
