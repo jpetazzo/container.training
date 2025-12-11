@@ -1,11 +1,3 @@
-class: title
-
-# Our training environment
-
-![SSH terminal](images/title-our-training-environment.jpg)
-
----
-
 ## Our training environment
 
 - If you are attending a live class, a VM has been provisioned for you!
