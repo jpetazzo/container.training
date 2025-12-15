@@ -67,6 +67,7 @@ content:
   - k8s/crd.md
 - #6
   - k8s/ingress-tls.md
+  #- k8s/ingress-setup.md
   #- k8s/ingress-advanced.md
   #- k8s/ingress-canary.md
   - k8s/gateway-api.md

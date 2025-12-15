@@ -80,6 +80,7 @@ content:
 -
   - k8s/namespaces.md
   - k8s/ingress.md
+  #- k8s/ingress-setup.md
   #- k8s/ingress-advanced.md
   #- k8s/ingress-canary.md
   #- k8s/ingress-tls.md
