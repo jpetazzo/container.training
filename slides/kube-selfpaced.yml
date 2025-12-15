@@ -70,6 +70,7 @@ content:
   - shared/hastyconclusions.md
   - k8s/daemonset.md
   #- k8s/exercise-yaml.md
+  - k8s/taints-and-tolerations.md
 -
   - k8s/rollout.md
   - k8s/healthchecks.md
