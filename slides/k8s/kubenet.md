@@ -8,17 +8,17 @@
 
 - In detail:
 
- - all nodes must be able to reach each other, without NAT
+ - all nodes can reach each other directly (without NAT)
 
- - all pods must be able to reach each other, without NAT
+ - all pods can reach each other directly (without NAT)
 
- - pods and nodes must be able to reach each other, without NAT
+ - pods and nodes can reach each other directly (without NAT)
 
- - each pod is aware of its IP address (no NAT)
+ - each pod is aware of its IP address (again: no NAT)
 
- - pod IP addresses are assigned by the network implementation
+- Most Kubernetes clusters rely on the CNI to configure Pod networking
 
-- Kubernetes doesn't mandate any particular implementation
+  (allocate IP addresses, create and configure network interfaces, routing...)
 
 ---
 
@@ -32,13 +32,15 @@
 
 - No new protocol
 
-- The network implementation can decide how to allocate addresses
+- IP addresses are allocated by the network stack, not by the users
 
-- IP addresses don't have to be "portable" from a node to another
+  (this avoids complex constraints associated with address portability)
 
-  (We can use e.g. a subnet per node and use a simple routed topology)
+- CNI is very flexible and lends itself to many different models
 
-- The specification is simple enough to allow many various implementations
+  (switching, routing, tunneling... virtually anything is possible!)
+
+- Example: we could have one subnet per node and use a simple routed topology
 
 ---
 
@@ -46,11 +48,11 @@
 
 - Everything can reach everything
 
-  - if you want security, you need to add network policies
+  - if we want network isolation, we need to add network policies
 
-  - the network implementation that you use needs to support them
+  - some clusters (like AWS EKS) don't include a network policy controller out of the box
 
-- There are literally dozens of implementations out there
+- There are literally dozens of Kubernetes network implementations out there
 
   (https://github.com/containernetworking/cni/ lists more than 25 plugins)
 
@@ -58,67 +60,73 @@
 
   (Services map to a single UDP or TCP port; no port ranges or arbitrary IP packets)
 
-- `kube-proxy` is on the data path when connecting to a pod or container,
-  <br/>and it's not particularly fast (relies on userland proxying or iptables)
+- The default Kubernetes service proxy, `kube-proxy`, doesn't scale very well
+
+  (although this is improved considerably in [recent versions of kube-proxy][tables-have-turned])
+
+[tables-have-turned]: https://www.youtube.com/watch?v=yOGHb2HjslY
 
 ---
 
 ## Kubernetes network model: in practice
 
-- The nodes that we are using have been set up to use [Weave](https://github.com/weaveworks/weave)
+- We don't need to worry about networking in local development clusters
 
-- We don't endorse Weave in a particular way, it just Works For Us
+  (it's set up automatically for us and we almost never need to change anything)
 
-- Don't worry about the warning about `kube-proxy` performance
+- We also don't need to worry about it in managed clusters
 
-- Unless you:
+  (except if we want to reconfigure or replace whatever was installed automatically)
 
-  - routinely saturate 10G network interfaces
-  - count packet rates in millions per second
-  - run high-traffic VOIP or gaming platforms
-  - do weird things that involve millions of simultaneous connections
-    <br/>(in which case you're already familiar with kernel tuning)
+- We *do* need to pick a network stack in all other scenarios:
 
-- If necessary, there are alternatives to `kube-proxy`; e.g.
-  [`kube-router`](https://www.kube-router.io)
+  - installing Kubernetes on bare metal or on "raw" virtual machines
+
+  - when we manage the control plane ourselves
 
 ---
 
-class: extra-details
+## Which network stack should we use?
 
-## The Container Network Interface (CNI)
+*It depends!*
 
-- Most Kubernetes clusters use CNI "plugins" to implement networking
+- [Weave] = super easy to install, no config needed, low footprint...
+  
+  *but it's not maintained anymore, alas!*
 
-- When a pod is created, Kubernetes delegates the network setup to these plugins
+- [Cilium] = very powerful and flexible, some consider it "best in class"...
 
-  (it can be a single plugin, or a combination of plugins, each doing one task)
+  *but it's based on eBPF, which might make troubleshooting challenging!*
 
-- Typically, CNI plugins will:
+- Other solid choices include [Calico], [Flannel], [kube-router]
 
-  - allocate an IP address (by calling an IPAM plugin)
+- And of course, some cloud providers / network vendors have their own solutions
 
-  - add a network interface into the pod's network namespace
+  (which may or may not be appropriate for your use-case!)
 
-  - configure the interface as well as required routes etc.
+- Do you want speed? Reliability? Security? Observability?
+
+[Weave]: https://github.com/weaveworks/weave
+[Cilium]: https://cilium.io/
+[Calico]: https://docs.tigera.io/calico/latest/about/
+[Flannel]: https://github.com/flannel-io/flannel
+[kube-router]: https://www.kube-router.io/
 
 ---
-
-class: extra-details
 
 ## Multiple moving parts
 
-- The "pod-to-pod network" or "pod network":
+- The "pod-to-pod network" or "pod network" or "CNI":
 
   - provides communication between pods and nodes
 
   - is generally implemented with CNI plugins
 
-- The "pod-to-service network":
+- The "pod-to-service network" or "Kubernetes service proxy":
 
   - provides internal communication and load balancing
 
-  - is generally implemented with kube-proxy (or e.g. kube-router)
+  - implemented with kube-proxy by default
 
 - Network policies:
 

@@ -18,9 +18,52 @@
 
 ---
 
+## ⚠️ Heads up!
+
+- We're going to connect directly to pods and services, using internal addresses
+
+- This will only work:
+
+  - if you're attending a live class with our special lab environment
+
+  - or if you're using our dev containers within codespaces
+
+- If you're using a "normal" Kubernetes cluster (including minikube, KinD, etc):
+
+  *you will not be able to access these internal addresses directly!*
+
+- In that case, we suggest that you run an interactive container, e.g.:
+  ```bash
+  kubectl run --rm -ti --image=archlinux myshell
+  ```
+
+- ...And each time you see a `curl` or `ping` command run it in that container instead
+
+---
+
+class: extra-details
+
+## But, why?
+
+- Internal addresses are only reachable from within the cluster
+
+  (=from a pod, or when logged directly inside a node)
+
+- Our special lab environments and our dev containers let us do it anyways
+
+  (because it's nice and convenient when learning Kubernetes)
+
+- But that doesn't work on "normal" Kubernetes clusters
+
+- Instead, we can use [`kubectl port-forward`][kubectl-port-forward] on these clusters
+
+[kubectl-port-forward]: https://kubernetes.io/docs/reference/kubectl/generated/kubectl_port-forward/
+
+---
+
 ## Running containers with open ports
 
-- Since `ping` doesn't have anything to connect to, we'll have to run something else
+- Let's run a small web server in a container
 
 - We are going to use `jpetazzo/color`, a tiny HTTP server written in Go
 
@@ -68,31 +111,12 @@
 
 - Send an HTTP request to the Pod:
   ```bash
-  curl http://`IP-ADDRESSS`
+  curl http://`IP-ADDRESS`
   ```
 
 ]
 
 You should see a response from the Pod.
-
----
-
-class: extra-details
-
-## Running with a local cluster
-
-If you're running with a local cluster (Docker Desktop, KinD, minikube...),
-you might get a connection timeout (or a message like "no route to host")
-because the Pod isn't reachable directly from your local machine.
-
-In that case, you can test the connection to the Pod by running a shell
-*inside* the cluster:
-
-```bash
-kubectl run -it --rm my-test-pod --image=fedora
-```
-
-Then run `curl` in that Pod.
 
 ---
 
@@ -171,7 +195,7 @@ class: extra-details
   (i.e. a service is not just an IP address; it's an IP address + protocol + port)
 
 - As a result: you *have to* indicate the port number for your service
-    
+
   (with some exceptions, like `ExternalName` or headless services, covered later)
 
 ---
@@ -210,7 +234,7 @@ class: extra-details
 
 - Keep sending requests to the Service address:
   ```bash
-  while sleep 0.3; do curl http://$CLUSTER_IP; done
+  while sleep 0.3; do curl -m1 http://$CLUSTER_IP; done
   ```
 
 - Meanwhile, delete the Pod:
@@ -223,6 +247,8 @@ class: extra-details
 - There might be a short interruption when we delete the pod...
 
 - ...But requests will keep flowing after that (without requiring a manual intervention)
+
+- The `-m1` option is here to specify a 1-second timeout
 
 ---
 
@@ -262,7 +288,7 @@ class: extra-details
 
 - Get a shell in a Pod:
   ```bash
-  kubectl run --rm -it --image=fedora test-dns-integration
+  kubectl run --rm -it --image=archlinux test-dns-integration
   ```
 
 - Try to resolve the `blue` Service from the Pod:
@@ -278,21 +304,73 @@ class: extra-details
 
 ## Under the hood...
 
-- Check the content of `/etc/resolv.conf` inside a Pod
+- Let's check the content of `/etc/resolv.conf` inside a Pod
 
-- It will have `nameserver X.X.X.X` (e.g. 10.96.0.10)
+- It should look approximately like this:
+  ```
+  search default.svc.cluster.local svc.cluster.local cluster.local ...
+  nameserver 10.96.0.10
+  options ndots:5
+  ```
 
-- Now check `kubectl get service kube-dns --namespace=kube-system`
+- Let's break down what these lines mean...
 
-- ...It's the same address! 😉
+---
 
-- The FQDN of a service is actually:
+class: extra-details
 
-  `<service-name>.<namespace>.svc.<cluster-domain>`
+## `nameserver 10.96.0.10`
 
-- `<cluster-domain>` defaults to `cluster.local`
+- This is the address of the DNS server used by programs running in the Pod
 
-- And the `search` includes `<namespace>.svc.<cluster-domain>`
+- The exact address might be different
+
+  (this one is the default one when setting up a cluster with `kubeadm`)
+
+- This address will correspond to a Service on our cluster
+
+- Check what we have in `kube-system`:
+  ```bash
+  kubectl get services --namespace=kube-system
+  ```
+
+- There will typically be a service named `kube-dns` with that exact address
+
+  (that's Kubernetes' internal DNS service!)
+
+---
+
+class: extra-details
+
+## `search default.svc.cluster.local ...`
+
+- This is the "search list"
+
+- When a program tries to resolve `foo`, the resolver will try to resolve:
+
+  `foo.default.svc.cluster.local` (if the Pod is in the `default` Namespace)
+
+  `foo.svc.cluster.local`
+
+  `foo.cluster.local`
+
+  ...(the other entries in the search list)...
+
+  `foo`
+
+- As a result, if there is Service named `foo` in the Pod's Namespace, we obtain its address!
+
+---
+
+class: extra-details
+
+## Do You Want To Know More?
+
+- If you want even more details about DNS resolution on Kubernetes and Linux...
+
+  check [this blog post][dnsblog]!
+
+[dnsblog]: https://jpetazzo.github.io/2024/05/12/understanding-kubernetes-dns-hostnetwork-dnspolicy-dnsconfigforming/
 
 ---
 
