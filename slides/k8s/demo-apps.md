@@ -8,6 +8,8 @@
 
 ## The `color` app
 
+- Source code: https://github.com/jpetazzo/color
+
 - Image name: `jpetazzo/color`, `ghcr.io/jpetazzo/color`
 
 - Available for linux/amd64, linux/arm64, linux/arm/v7 platforms
