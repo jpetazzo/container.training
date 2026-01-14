@@ -77,6 +77,8 @@ content:
 - #7
   - k8s/admission.md
   - k8s/kyverno.md
+  - k8s/kyverno-colors.md
+  - k8s/kyverno-ingress.md
 - #8
   - k8s/aggregation-layer.md
   - k8s/metrics-server.md
