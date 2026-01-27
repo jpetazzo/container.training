@@ -5,6 +5,9 @@
 # 10% CPU
 # (See https://docs.google.com/document/d/1n0lwp6rQKQUIuo_A5LQ1dgCzrmjkDjmDtNj1Jn92UrI)
 # PRO2-XS = 4 core, 16 gb
+# Note that we also need 2 volumes per vcluster (one for vcluster itself, one for shpod),
+# so we might hit the maximum number of volumes per node!
+# (TODO: check what that limit is on Scaleway and Linode)
 #
 # With vspod:
 # 800 MB RAM
@@ -15,7 +18,7 @@ set -e
 
 KONKTAG=konk
 PROVIDER=linode
-STUDENTS=5
+STUDENTS=2
 
 case "$PROVIDER" in
 linode)
