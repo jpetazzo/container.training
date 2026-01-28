@@ -729,8 +729,8 @@ class: extra-details
 
 - Relevant documentation:
 
-  [Service spec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#servicespec-v1-core),
-  [LabelSelector spec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#labelselector-v1-meta),
+  [Service spec](https://kubernetes.io/docs/reference/kubernetes-api/service-resources/service-v1/#ServiceSpec),
+  [LabelSelector spec](https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/label-selector/),
   [label selector doc](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors)
 
 ---
