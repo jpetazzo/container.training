@@ -16,7 +16,7 @@ Merci !
 
   (mais pas les clusters cloud ; eux on les éteint très vite)
 
-- N'oubliez pas de remplier les formulaires d'évaluation
+- N'oubliez pas de remplir les formulaires d'évaluation
 
   (c'est pas pour nous, c'est une obligation légale😅)
 
