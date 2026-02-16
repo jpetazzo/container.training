@@ -238,7 +238,7 @@ Let's review our `Flux` configuration files we've created and pushed into the `G
 ---
 
 class: pic
-<!-- FIXME: wrong schema -->
+
 ![Flux architecture](images/flux/flux-controllers.png)
 
 ---
@@ -402,6 +402,45 @@ For more info about how Kubernetes resource natures are identified by their `Gro
 … please, refer to the [`Kubernetes API` chapter in the High Five M5 module](./5.yml.html#toc-the-kubernetes-api)
 
 ---
+
+### 💡 A standard components catalog : the power of Kustomization
+
+Flux Kustomization resource is made to target remote pieces of installation and configuration
+
+We will create a folder with primitives to deploy any component…
+
+… and Kustomizations into the folder where our cluster install is configured
+
+- to target every components we want to deploy
+
+![Flux components catalog](images/flux/flux-components-catalog.png)
+
+---
+
+## Creating `Github` source in Flux for components catalog repository
+
+.lab[
+
+- Let's create the `Flux` Source to target our component catalog
+
+```bash
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ mkdir -p clusters/CLOUDY/install-components
+
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create source git catalog \
+    --namespace=flux-system                                               \
+    --url=https://github.com/jpetazzo/container.training.git              \
+    --branch=main  --export > ./clusters/CLOUDY/sync.yaml
+
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
+    cd ./clusters/CLOUDY/ &&               \
+    kustomize create --autodetect &&       \
+    cd -
+
+```
+]
+
+---
+
 
 ### 🗺️ Where are we in our scenario?
 
