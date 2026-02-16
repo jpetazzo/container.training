@@ -819,7 +819,7 @@ EOF
 
     # Install kustomize
     ##VERSION## https://github.com/kubernetes-sigs/kustomize/releases
-    KUSTOMIZE_VERSION=v5.4.1
+    KUSTOMIZE_VERSION=v5.8.1
     URL=\$GITHUB/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz
     pssh "
     if [ ! -x /usr/local/bin/kustomize ]; then
