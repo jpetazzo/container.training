@@ -30,13 +30,11 @@ There are 3 teams in our company:
 
   - that app manages a collection of _rock & pop_ albums
 
-  - it's deployed with plain YAML manifests
-
 - the **_🎬MOVY_** team develops and manages the **_🎬MOVY_** app
 
   - that app manages a collection of _movie soundtrack_ albums
 
-  - it's deployed with Helm charts
+Both apps are deployed with plain YAML manifests
 
 ---
 
@@ -190,9 +188,9 @@ This is where the album collection is initially loaded from the file [`album.jso
 
 The **_⚙️OPS_** team offers 2 deployment strategies that dev teams can use autonomously:
 
-- **_🎸ROCKY_** uses a `Flux` _GitOps_ workflow based on regular Kubernetes `YAML` resources
+- Both **_🎸ROCKY_** and **_🎬MOVY_** use a `Flux` _GitOps_ workflow based on regular Kubernetes `YAML` resources
 
-- **_🎬MOVY_** uses a `Flux` _GitOps_ workflow based on `Helm` charts
+- Another `Flux` _GitOps_ workflow based on `Helm` charts might be proposed as well
 
 ---
 
@@ -205,13 +203,13 @@ The **_⚙️OPS_** team aims to provide clusters offering the following feature
 
 - ingress and load-balancing capabilites
 
-- an enterprise-grade monitoring solution for real-time insights
+- an enterprise-grade monitoring solution for real-time insights et log browsing
 
 - automated policy rule enforcement to control Kubernetes resources requested by dev teams
 
-<!-- - HA PostgreSQL -->
+- a semi-managed PostgreSQL including automated failover and backups
 
-<!-- - HTTPs certificates to expose the applications -->
+- automated generation of HTTPs certificates to expose the applications
 
 ---
 
@@ -236,6 +234,7 @@ The **_⚙️OPS_** team aims to provide clusters offering the following feature
 
 ### What our scenario might look like…
 
+<!-- TODO: review the Mermaid diagram -->
 <pre class="mermaid">
 %%{init:
     {
