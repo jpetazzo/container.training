@@ -7,10 +7,7 @@ The **_⚙️OPS_** team uses `Flux` with a _GitOps_ code base to:
 - deploy tools and components to extend the clusters capabilites
 - configure _GitOps_ workflow for dev teams in **dedicated and isolated _tenants_**
 
-The **_🎸ROCKY_** team uses `Flux` to deploy every new release of its app, by detecting every new `git push` events happening in its app `Github` repository
-
-
-The **_🎬MOVY_** team uses `Flux` to deploy every new release of its app, packaged and published in a new `Helm` chart release
+Both **_🎸ROCKY_** and **_🎬MOVY_** teams use `Flux` to deploy every new release of their apps, by detecting every new `git push` events happening in their app `Github` repositories.
 
 ---
 
@@ -35,16 +32,6 @@ Several _tenants_ are created
 class: pic
 
 ![Multi-tenants clusters](images/flux/cluster-multi-tenants.png )
-
----
-
-### Flux CLI works locally
-
-First, we have to **locally** clone your `Flux` configuration `Github` repository
-
-- create an ssh key pair
-- add the **public** key to your `Github` repository (**with write access**)
-- and git clone the repository
 
 ---
 
@@ -153,6 +140,8 @@ What the **_🎸ROCKY_** team has to do:
 ---
 
 ### 🗺️ Where are we in our scenario?
+
+<!-- TODO: review the Mermaid diagram -->
 
 <pre class="mermaid">
 %%{init:
