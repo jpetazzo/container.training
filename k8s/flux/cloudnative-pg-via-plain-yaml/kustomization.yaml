@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+    - M6-cnpg-components.yaml
+    - M6-cnpg-release-1.28.1.yaml
+configMapGenerator:
+    - name: flux-grafana-dashboards
+      namespace: cnpg-system
+      files:
+          - M6-cnpg-grafana-dashboard.json
+      options:
+          labels:
+              grafana_dashboard: "1"
+              app.kubernetes.io/part-of: flux
+              app.kubernetes.io/component: monitoring
+              kustomize.toolkit.fluxcd.io/substitute: disabled
+patches:
+    - path: M6-cnpg-kustomization-patch.yaml
+      target:
+          kind: Namespace
