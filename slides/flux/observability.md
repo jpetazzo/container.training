@@ -1,26 +1,26 @@
 # Install monitoring stack
 
 The **_⚙️OPS_** team wants to have a real monitoring stack for its clusters.  
-Let's deploy `Prometheus` and `Grafana` onto the clusters.  
 
-Note: 
+- `Prometheus` and `Grafana` to collect and request metrics
+
+- `Loki` to gather and search into the logs
 
 ---
 
-## Creating `Github` source in Flux for monitoring components install repository
+## Reviewing our monitoring components in our Flux components catalog
 
-.lab[
+2 directories are available in our Flux folder:
 
-```bash
-k8s@shpod:~/fleet-config-using-flux-XXXXX$ mkdir -p clusters/CLOUDY/kube-prometheus-stack
+- kube-prometheus-stack
+    - install Prometheus and Grafana _via_ Helm charts
+    - install Grafana dashboards dedicated to Flux insights
+    - configure an Ingress to publicly expose the Web interfaces 
 
-k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create source git monitoring \
-    --namespace=monitoring                                                   \
-    --url=https://github.com/fluxcd/flux2-monitoring-example.git             \
-    --branch=main  --export > ./clusters/CLOUDY/kube-prometheus-stack/sync.yaml
-```
+- loki
+    - install Loki and Promtail _via_ Helm charts
 
-]
+Both are heavily inspired from [Flux2-monitoring example](https://github.com/fluxcd/flux2-monitoring-example/tree/main/monitoring)
 
 ---
 
@@ -30,27 +30,13 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create source git monitoring \
 
 ```bash
 k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization monitoring \
-    --namespace=monitoring                                                      \
-    --source=GitRepository/monitoring                                           \
-    --path="./monitoring/controllers/kube-prometheus-stack/"                    \
-    --export >> ./clusters/CLOUDY/kube-prometheus-stack/sync.yaml
+    --namespace=flux-system                                                     \
+    --source=GitRepository/catalog                                              \
+    --path="./k8s/flux/kube-prometheus-stack/"                                  \
+    --export >> ./clusters/CLOUDY/install-components/sync-monitoring.yaml
 ```
 
-]
-
----
-
-### Install Flux Grafana dashboards
-
-.lab[
-
-```bash
-k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization dashboards \
-    --namespace=monitoring                                                      \
-    --source=GitRepository/monitoring                                           \
-    --path="./monitoring/configs/"                                              \
-    --export >> ./clusters/CLOUDY/kube-prometheus-stack/sync.yaml
-```
+⚠ Don't forget to add this entry into the `kustomization.yaml` file
 
 ]
 
@@ -59,6 +45,8 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization dashboards 
 class: pic
 
 ![Running Mario](images/running-mario.gif)
+
+<!-- TODO: See where we can have these slides now!
 
 ---
 
@@ -99,7 +87,7 @@ k8s@shpod:~$ flux create secret git flux-system \
 class: pic
 
 ![Running Mario](images/running-mario.gif)
-
+ -->
 ---
 
 ## Access the Grafana dashboard
@@ -110,8 +98,8 @@ class: pic
 
 ```bash
 k8s@shpod:~$ kubectl -n monitoring get ingress
-NAME      CLASS   HOSTS                                 ADDRESS        PORTS   AGE
-grafana   nginx   grafana.test.metal.mybestdomain.com   62.210.39.83   80      6m30s
+NAME      CLASS   HOSTS                                           ADDRESS        PORTS   AGE
+grafana   nginx   grafana.test.cloudy.enix.thegaragebandofit.com  62.210.39.83   80      6m30s
 ```
 
 - Get the `Grafana` admin password
@@ -123,7 +111,12 @@ k8s@shpod:~$ k get secret kube-prometheus-stack-grafana -n monitoring \
 
 ]
 
-## And browse…
+⚠️ As of now, Ingress doesn't have public address. Something we have to work on!  
+Meanwhile, we can use `kubectl port-forward`…
+
+---
+
+### And browse…
 
 class: pic
 
@@ -131,7 +124,37 @@ class: pic
 
 ---
 
+## Adding Loki to our obeervability stack
+
+As of now, the 3rd dashboard is not available: no log aggregator is set up.
+
+Loki is available in our component catalog. Let's add it!
+
+.lab[
+
+```bash
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization loki \
+    --namespace=flux-system                                               \
+    --source=GitRepository/catalog                                        \
+    --path="./k8s/flux/loki/"                                             \
+    --export >> ./clusters/CLOUDY/install-components/sync-loki.yaml
+```
+
+⚠ Don't forget to add this entry into the `kustomization.yaml` file
+
+]
+
+---
+
+class: pic
+
+![Running Mario](images/running-mario.gif)
+
+---
+
 ### 🗺️ Where are we in our scenario?
+
+<!-- TODO: review the Mermaid diagram -->
 
 <pre class="mermaid">
 %%{init:
