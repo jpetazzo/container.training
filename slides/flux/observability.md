@@ -46,6 +46,22 @@ class: pic
 
 ![Running Mario](images/running-mario.gif)
 
+---
+
+class: extra-details
+
+### Using external Git source
+
+💡 Note that you can directly use public `Github` repository (not maintained by your company).  
+
+- If you have to alter the configuration, `Kustomize` patching capabilities might help.
+
+- Depending on the _gitflow_ this repository uses, updates will be deployed automatically to your cluster (here we're using the `main` branch).
+
+- This repo exposes a `kustomization.yaml`. Well done!
+
+---
+
 <!-- TODO: See where we can have these slides now!
 
 ---
@@ -98,8 +114,8 @@ class: pic
 
 ```bash
 k8s@shpod:~$ kubectl -n monitoring get ingress
-NAME      CLASS   HOSTS                                           ADDRESS        PORTS   AGE
-grafana   nginx   grafana.test.cloudy.enix.thegaragebandofit.com  62.210.39.83   80      6m30s
+NAME      CLASS   HOSTS                              ADDRESS  PORTS   AGE
+grafana   nginx   grafana.enix.thegaragebandofit.com          80      6m30s
 ```
 
 - Get the `Grafana` admin password
