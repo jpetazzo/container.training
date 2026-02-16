@@ -10,7 +10,9 @@ The **_⚙️OPS_** team wants to have a real monitoring stack for its clusters.
 
 ## Reviewing our monitoring components in our Flux components catalog
 
-2 directories are available in our Flux folder:
+You'll find in https://github.com/jpetazzo/k8s/flux/ a "catalog of components" ready to deploy with Flux.
+
+Let's review 2  specific folders:
 
 - kube-prometheus-stack
     - install Prometheus and Grafana _via_ Helm charts
@@ -21,6 +23,18 @@ The **_⚙️OPS_** team wants to have a real monitoring stack for its clusters.
     - install Loki and Promtail _via_ Helm charts
 
 Both are heavily inspired from [Flux2-monitoring example](https://github.com/fluxcd/flux2-monitoring-example/tree/main/monitoring)
+
+---
+
+### Flux CLI works locally
+
+First, we have to **locally** clone your `Flux` configuration `Github` repository
+
+- create an ssh key pair
+- add the **public** key to your `Github` repository (**with write access**)
+- and git clone the repository
+
+⚠️ For Flux to take into account this configuration update you have to push your commits to Github.
 
 ---
 
