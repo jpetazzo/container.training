@@ -54,7 +54,7 @@
         mermaid.initialize({ startOnLoad: false });
         slideshow.on('afterShowSlide', function (slide) {
           mermaid.run({
-            nodes: document.querySelectorAll('div.remark-visible.mermaid'),
+            nodes: document.querySelectorAll('div.remark-visible pre.mermaid'),
           });
         });
         // Reminder, if you want to tinker with mermaid,
