@@ -1,0 +1,37 @@
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: ensure-security-label
+spec:
+  # What to do if an error happens when evaluating that policy? (Fail or Ignore)
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+      scope:       Namespaced # "Cluster", "Namespaced", or "*"
+  validations:
+    - expression: |
+        'security' in object.metadata.labels
+        &&
+        object.metadata.labels.security in [ "public", "private", "namespace" ]
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: ensure-security-label
+spec:
+  policyName: ensure-security-label
+  # What to do when a policy doesn't validate: Deny, Warn, Audit.
+  # (Note: it doesn't make sense to put Deny and Warn together.)
+  validationActions: [ Deny ]
+  matchResources:
+    namespaceSelector:
+      matchExpressions:
+      - key: kubernetes.io/metadata.name
+        operator: NotIn
+        values: [ kube-system, local-path-storage, kyverno ]
+

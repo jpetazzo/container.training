@@ -1,0 +1,56 @@
+# This is a Kyverno policy to automatically generate an Ingress resource,
+# similar to the other ones in this directory; but instead of using the
+# "old-style" policies (ClusterPolicy with spec.rules.generate), it is
+# using the new CR GeneratingPolicy and CEL.
+apiVersion: policies.kyverno.io/v1
+kind: GeneratingPolicy
+metadata:
+  name: generate-ingress-for-service
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ['']
+        apiVersions: ['v1']
+        operations: ['CREATE']
+        resources: ['services']
+  variables:
+    - name: host
+      expression: |
+        object.metadata.name + "." + object.metadata.namespace + ".example.com"
+    - name: ingress
+      expression: >-
+        [
+          {
+            "kind": dyn("Ingress"),
+            "apiVersion": dyn("networking.k8s.io/v1"),
+            "metadata": dyn({
+              "name": object.metadata.name,
+              "namespace": object.metadata.namespace,
+            }),
+            "spec": dyn({
+              "rules": [
+                {
+                  "host": dyn(variables.host),
+                  "http": dyn({
+                    "paths": [
+                      {
+                        "path": dyn("/"),
+                        "pathType": dyn("Prefix"),
+                        "backend": dyn({
+                          "service": {
+                            "name": dyn(object.metadata.name),
+                            "port": dyn({
+                              "number": 80
+                            })
+                          }
+                        })
+                      }
+                    ]
+                  })
+                }
+              ]
+            })
+          }
+        ]
+  generate:
+    - expression: generator.Apply(object.metadata.namespace, variables.ingress)
