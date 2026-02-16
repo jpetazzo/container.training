@@ -479,7 +479,7 @@ _cmd_kubebins() {
     need_tag
 
     if [ "$KUBEVERSION" = "" ]; then
-        KUBEVERSION="$(curl -fsSL https://cdn.dl.k8s.io/release/stable.txt | sed s/^v//)"
+        KUBEVERSION="$(curl -fsSL https://dl.k8s.io/release/stable.txt | sed s/^v//)"
     fi
 
     ##VERSION##
@@ -531,7 +531,7 @@ _cmd_kubepkgs() {
     # minor version, so we need to figure out what minor version we are
     # installing to add the corresponding repo.
     if [ "$KUBEVERSION" = "" ]; then
-        KUBEVERSION="$(curl -fsSL https://cdn.dl.k8s.io/release/stable.txt | sed s/^v//)"
+        KUBEVERSION="$(curl -fsSL https://dl.k8s.io/release/stable.txt | sed s/^v//)"
     fi
     KUBEREPOVERSION="$(echo $KUBEVERSION | cut -d. -f1-2)"
 
