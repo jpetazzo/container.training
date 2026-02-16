@@ -61,7 +61,7 @@ ArgoCD manages **applications** by **syncing** their **live state** with their *
 - Create a namespace for ArgoCD and install it there:
   ```bash
   kubectl create namespace argocd
-  kubectl apply --namespace argocd -f \
+  kubectl create --namespace argocd -f \
       https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
   ```
 
