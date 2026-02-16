@@ -107,7 +107,8 @@ k8s@shpod:~$ flux bootstrap github \
       --owner=${GITHUB_USER}       \
       --repository=${GITHUB_REPO}  \
       --team=OPS                   \
-      --team=ROCKY --team=MOVY     \
+      --team=STORAGE-ADMINS        \
+      --team=NETWORK-ADMINS        \
       --path=clusters/CLOUDY
 ```
 ]
@@ -148,8 +149,8 @@ Here is the result
 ✔ repository "https://github.com/container-training-fleet/fleet-config-using-flux-XXXXX" created                                                                                                                                                        
 ► reconciling repository permissions
 ✔ granted "maintain" permissions to "OPS"
-✔ granted "maintain" permissions to "ROCKY"
-✔ granted "maintain" permissions to "MOVY"
+✔ granted "maintain" permissions to "STORAGE-ADMINS"
+✔ granted "maintain" permissions to "NETWORK-ADMINS"
 ► reconciling repository permissions
 ✔ reconciled repository permissions
 ► cloning branch "main" from Git repository "https://github.com/container-training-fleet/fleet-config-using-flux-XXXXX.git"
@@ -404,6 +405,7 @@ For more info about how Kubernetes resource natures are identified by their `Gro
 
 ### 🗺️ Where are we in our scenario?
 
+<!-- TODO: review the Mermaid diagram -->
 <pre class="mermaid">
 %%{init:
     {
