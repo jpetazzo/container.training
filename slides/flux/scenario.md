@@ -2,11 +2,11 @@
 
 - Previous training modules focused on individual topics
 
-  (e.g. RBAC, network policies, CRDs, Helm...)
+  (e.g. RBAC, network policies, CRDs, Helm…)
 
 - We will now show how to put everything together to deploy apps in production
 
-  (dealing with typical challenges like: multiple apps, multiple teams, multiple clusters...)
+  (dealing with typical challenges like: multiple apps, multiple teams, multiple clusters…)
 
 - Our first challenge will be to pick and choose which components to use
 
@@ -78,7 +78,7 @@ Let's see the differences between these clusters.
 
 - Requires extra components to be production-ready
 
-  (e.g. Flux or other gitops pipeline, observability...)
+  (e.g. Flux or other gitops pipeline, observability…)
 
 - Example: [Scaleway Kapsule][kapsule] (but many other KaaS options are available)
 
@@ -125,7 +125,7 @@ Let's see the differences between these clusters.
   
 - Each cluster and each env has its own lifecycle
 
-  (= it should be possible to deploy, add an extra components/feature...
+  (= it should be possible to deploy, add an extra components/feature…
   <br/>on one env without impacting the other)
 
 ---
