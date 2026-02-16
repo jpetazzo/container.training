@@ -1,0 +1,8 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: movy
+  namespace: movy-test
+spec:
+  targetNamespace: movy-test
+  path: ./k8s/plain
