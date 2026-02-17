@@ -56,11 +56,11 @@ Before installation, we need to check that:
 
 ```bash
 k8s@shpod:~$ flux --version
-flux version 2.5.1
+flux version 2.7.5
 
 k8s@shpod:~$ flux check --pre
 ► checking prerequisites
-✔ Kubernetes 1.32.3 >=1.30.0-0
+✔ Kubernetes 1.35.1 >=1.32.0-0
 ✔ prerequisites checks passed
 ```
 
@@ -94,7 +94,6 @@ class: pic
 ### Creating dedicated `Github` repo to host Flux config
 
 .lab[
-
 - let's replace the `GITHUB_TOKEN` value by our _Personal Access Token_
 - and the `GITHUB_REPO` value by our specific repository name
 
@@ -429,13 +428,14 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ mkdir -p clusters/CLOUDY/install-comp
 k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create source git catalog \
     --namespace=flux-system                                               \
     --url=https://github.com/jpetazzo/container.training.git              \
-    --branch=main  --export > ./clusters/CLOUDY/sync.yaml
+    --branch=main  --export > ./clusters/CLOUDY/install-components/sync.yaml
 
-k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
-    cd ./clusters/CLOUDY/ &&               \
-    kustomize create --autodetect &&       \
+k8s@shpod:~/fleet-config-using-flux-XXXXX$     \
+    cd ./clusters/CLOUDY/install-components && \
+    kustomize create --autodetect &&           \
     cd -
 
+- and commit & push
 ```
 ]
 

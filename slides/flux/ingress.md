@@ -60,6 +60,26 @@ class: pic
 
 ---
 
+### Result
+
+.lab[
+
+```bash
+k8s@shpod:~/$ flux get all -n traefik
+NAME                    REVISION        SUSPENDED       READY   MESSAGE                                     
+helmrepository/traefik  sha256:92b5b547 False           True    stored artifact: revision 'sha256:92b5b547'
+
+NAME                            REVISION        SUSPENDED       READY   MESSAGE                                      
+helmchart/traefik-traefik       37.2.0          False           True    pulled 'traefik' chart with version '37.2.0'
+
+NAME                    REVISION        SUSPENDED       READY   MESSAGE                                                                         
+helmrelease/traefik     37.2.0          False           True    Helm install succeeded for release traefik/traefik.v1 with chart traefik@37.2.0
+```
+
+]
+
+---
+
 ### Interacting with the IaaS platform
 
 When deploying `Traefik` ingress-controller in Scaleway Cloud platform, Iaas resources are created:

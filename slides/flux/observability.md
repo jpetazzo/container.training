@@ -1,6 +1,6 @@
 # Install monitoring stack
 
-The **_⚙️OPS_** team wants to have a real monitoring stack for its clusters.  
+The **_⚙️OPS_** team wants to have a real monitoring stack for its clusters.
 
 - `Prometheus` and `Grafana` to collect and request metrics
 
@@ -17,7 +17,7 @@ Let's review 2  specific folders:
 - kube-prometheus-stack
     - install Prometheus and Grafana _via_ Helm charts
     - install Grafana dashboards dedicated to Flux insights
-    - configure an Ingress to publicly expose the Web interfaces 
+    - configure an Ingress to publicly expose the Web interfaces
 
 - loki
     - install Loki and Promtail _via_ Helm charts
@@ -62,11 +62,39 @@ class: pic
 
 ---
 
+### Results
+
+.lab[
+
+```bash
+k8s@shpod:~/$ flux get all -A
+NAMESPACE       NAME                                    REVISION                SUSPENDED       READY   MESSAGE
+monitoring      ocirepository/kube-prometheus-stack     69.8.2@sha256:e104d0db  False           True    stored artifact for digest '69.8.2@sha256:e104d0db'
+
+NAMESPACE       NAME                            REVISION                SUSPENDED       READY   MESSAGE
+flux-system     gitrepository/catalog           main@sha1:d8ec150e      False           True    stored artifact for revision 'main@sha1:d8ec150e'
+flux-system     gitrepository/flux-system       main@sha1:cc5a2e80      False           True    stored artifact for revision 'main@sha1:cc5a2e80'
+monitoring      gitrepository/monitoring        main@sha1:82c37257      False           True    stored artifact for revision 'main@sha1:82c37257'
+
+NAMESPACE       NAME                                    REVISION                SUSPENDED       READY   MESSAGE
+monitoring      helmrelease/kube-prometheus-stack       69.8.2+e104d0db587d     False           Unknown Running 'install' action with timeout of 5m0s
+
+NAMESPACE       NAME                            REVISION                SUSPENDED       READY   MESSAGE
+flux-system     kustomization/flux-system       main@sha1:cc5a2e80      False           True    Applied revision: main@sha1:cc5a2e80
+flux-system     kustomization/monitoring        main@sha1:d8ec150e      False           True    Applied revision: main@sha1:d8ec150e
+monitoring      kustomization/dashboards                                False           False   PodMonitor/monitoring/flux-system dry-run failed: no matches for kind "PodMonitor" in version "monitoring.coreos.com/v1"
+
+monitoring      kustomization/monitoring        main@sha1:82c37257      False           True    Applied revision:main@sha1:82c37257
+```
+]
+
+---
+
 class: extra-details
 
 ### Using external Git source
 
-💡 Note that you can directly use public `Github` repository (not maintained by your company).  
+💡 Note that you can directly use public `Github` repository (not maintained by your company).
 
 - If you have to alter the configuration, `Kustomize` patching capabilities might help.
 
@@ -74,50 +102,6 @@ class: extra-details
 
 - This repo exposes a `kustomization.yaml`. Well done!
 
----
-
-<!-- TODO: See where we can have these slides now!
-
----
-
-## Flux repository synchro is broken😅
-
-It seems that `Flux` on **_☁️CLOUDY_** cluster is not able to authenticate with `ssh` on its `Github` config repository!  
-
-What happened?
-When we install `Flux` on **_🤘METAL_** cluster, it generates a new `ssh` keypair and override the one used by **_☁️CLOUDY_** among the "deployment keys" of the `Github` repository.
-
-⚠️ Beware of flux bootstrap command!
-
-We have to
-- generate a new keypair (or reuse an already existing one)
-- add the private key to the Flux-dedicated secrets in **_☁️CLOUDY_** cluster
-- add it to the "deployment keys" of the `Github` repository
-
----
-
-### the command
-
-.lab[
-
-- `Flux` _CLI_ helps to recreate the secret holding the `ssh` **private** key.
-
-```bash
-k8s@shpod:~$ flux create secret git flux-system \
-  --url=ssh://git@github.com/container-training-fleet/fleet-config-using-flux-XXXXX \
-  --private-key-file=/home/k8s/.ssh/id_ed25519
-```
-
-- copy the **public** key into the deployment keys of the `Github` repository
-
-]
-
----
-
-class: pic
-
-![Running Mario](images/running-mario.gif)
- -->
 ---
 
 ## Access the Grafana dashboard
@@ -129,7 +113,7 @@ class: pic
 ```bash
 k8s@shpod:~$ kubectl -n monitoring get ingress
 NAME      CLASS   HOSTS                              ADDRESS  PORTS   AGE
-grafana   nginx   grafana.enix.thegaragebandofit.com          80      6m30s
+grafana   traefik grafana.enix.thegaragebandofit.com          80, 443 6m30s
 ```
 
 - Get the `Grafana` admin password
@@ -141,12 +125,10 @@ k8s@shpod:~$ k get secret kube-prometheus-stack-grafana -n monitoring \
 
 ]
 
-⚠️ As of now, Ingress doesn't have public address. Something we have to work on!  
-Meanwhile, we can use `kubectl port-forward`…
+⚠️ As of now, Ingress doesn't have public address. Something we have to work on!
+Meanwhile, we can use `kubectl port-forward`… and browse!
 
 ---
-
-### And browse…
 
 class: pic
 
@@ -154,7 +136,7 @@ class: pic
 
 ---
 
-## Adding Loki to our obeervability stack
+## Adding Loki to our observability stack
 
 As of now, the 3rd dashboard is not available: no log aggregator is set up.
 
@@ -179,6 +161,37 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization loki \
 class: pic
 
 ![Running Mario](images/running-mario.gif)
+
+---
+
+### Results
+
+
+.lab[
+
+```bash
+k8s@shpod:~/$ k get pods -n monitoring
+NAME                                                        READY   STATUS    RESTARTS   AGE
+kube-prometheus-stack-grafana-6b97659f5b-w8w4b              3/3     Running   0          17m
+kube-prometheus-stack-kube-state-metrics-86d5667ddb-g9htn   1/1     Running   0          17m
+kube-prometheus-stack-operator-7d75f6495-rxjgl              1/1     Running   0          17m
+kube-prometheus-stack-prometheus-node-exporter-2dj7l        1/1     Running   0          17m
+kube-prometheus-stack-prometheus-node-exporter-gv672        1/1     Running   0          17m
+loki-0                                                      1/2     Running   0          53s
+loki-gateway-5d4c56c96f-vzwbv                               1/1     Running   0          53s
+loki-minio-0                                                1/1     Running   0          53s
+prometheus-kube-prometheus-stack-prometheus-0               2/2     Running   0          16m
+promtail-brrq9                                              1/1     Running   0          53s
+promtail-krhzj                                              1/1     Running   0          53s
+```
+
+]
+
+---
+
+class: pic
+
+![Loki dashboard](images/flux/loki-dashboard.png)
 
 ---
 
