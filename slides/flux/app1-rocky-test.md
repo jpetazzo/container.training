@@ -1,4 +1,4 @@
-# R01- Configuring **_🎸ROCKY_** deployment with Flux
+# Configuring **_🎸ROCKY_** deployment with Flux
 
 The **_⚙️OPS_** team manages 2 distinct envs: **_⚗️TEST_** et _**🚜PROD**_
 

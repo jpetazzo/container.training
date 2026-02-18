@@ -1,4 +1,4 @@
-# T02- creating **_⚗️TEST_** env on our **_☁️CLOUDY_** cluster
+# Creating **_⚗️TEST_** env on our **_☁️CLOUDY_** cluster
 
 Let's take a look at our **_☁️CLOUDY_** cluster!
 

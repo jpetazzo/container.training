@@ -1,4 +1,4 @@
-## introducing Kyverno
+## Introducing Kyverno
 
 Kyverno is a tool to extend Kubernetes permission management to express complex policies…
 </br>… and override manifests delivered by client teams.

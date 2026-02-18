@@ -1,4 +1,4 @@
-# K03- Installing OpenEBS as our CSI
+# Installing OpenEBS as our CSI
 
 `OpenEBS` is a _CSI_ solution capable of hyperconvergence, synchronous replication and other extra features.  
 It installs with `Helm` charts.

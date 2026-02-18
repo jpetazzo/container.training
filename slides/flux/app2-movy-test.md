@@ -1,4 +1,4 @@
-# M01- Configuring **_🎬MOVY_** deployment with Flux
+# Configuring **_🎬MOVY_** deployment with Flux
 
 **_🎸ROCKY_** _tenant_ is now fully usable in **_⚗️TEST_** env, let's do the same for another _dev_ team: **_🎬MOVY_**
 
