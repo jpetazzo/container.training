@@ -4,5 +4,6 @@ metadata:
   name: rocky
   namespace: rocky-test
 spec:
+  # needed for Flux to be able to "patch" immutable resources such as StatefulSets
   targetNamespace: rocky-test
   path: ./k8s/plain

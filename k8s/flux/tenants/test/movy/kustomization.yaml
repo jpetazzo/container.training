@@ -3,6 +3,6 @@ kind: Kustomization
 resources:
   - ../../base/movy
 patches:
-  - path: M6-rocky-test-patch.yaml
+  - path: patch.yaml
     target:
       kind: Kustomization
