@@ -351,32 +351,50 @@ What happens if the **_🎸ROCKY_** team upgrades its branch to deploy `v1.0.1` 
 }%%
 gitGraph
     commit id:"0" tag:"start"
-    branch ROCKY order:3
-    branch MOVY order:4
-    branch YouRHere order:5
+    branch ROCKY order:4
+    branch MOVY order:5
+    branch YouRHere order:6
 
     checkout OPS
-    commit id:'Flux install on CLOUDY cluster' tag:'T01'
-    branch TEST-env order:1
-    commit id:'FLUX install on TEST' tag:'T02' type: HIGHLIGHT
-
-    checkout OPS
-    commit id:'Flux config. for TEST tenant' tag:'T03'
+    commit id:'Flux install on CLOUDY cluster' type: HIGHLIGHT
+    commit id:'Prometheus + Grafana config.'
+    commit id:'Prometheus + Grafana install' type: HIGHLIGHT
+    commit id:'Loki config.'
+    commit id:'Loki install' type: HIGHLIGHT
+    commit id:'Traefik Proxy config.'
+    commit id:'Traefik Proxy install' type: HIGHLIGHT
+    commit id:'Flux config. for multitenants'
+    commit id:'Flux config. for TEST tenant'
     commit id:'namespace isolation by RBAC'
-    checkout TEST-env
-    merge OPS id:'ROCKY tenant creation' tag:'T04'
 
+    branch TEST-env order:1
+    commit id:'ROCKY tenant creation'
     checkout OPS
-    commit id:'ROCKY deploy. config.' tag:'R01'
+    commit id:'ROCKY deploy. config.'
 
     checkout TEST-env
-    merge OPS id:'TEST ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
+    merge OPS id:'TEST ready to deploy ROCKY'
 
     checkout ROCKY
     commit id:'ROCKY' tag:'v1.0.0'
 
     checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.0'
+    merge ROCKY tag:'ROCKY v1.0.0' type: HIGHLIGHT
+
+    checkout OPS
+    commit id:'ROCKY patch for ingress config.' tag:'R03'
+    checkout TEST-env
+    merge OPS id:'ingress config. for ROCKY app' type: HIGHLIGHT
+
+    checkout ROCKY
+    commit id:'blue color' tag:'v1.0.1'
+    checkout TEST-env
+    merge ROCKY tag:'ROCKY v1.0.1' type: HIGHLIGHT
+
+    checkout ROCKY
+    commit id:'pink color' tag:'v1.0.2'
+    checkout TEST-env
+    merge ROCKY tag:'ROCKY v1.0.2' type: HIGHLIGHT
 
     checkout YouRHere
     commit id:'x'
@@ -384,37 +402,12 @@ gitGraph
     merge YouRHere id:'YOU ARE HERE'
 
     checkout OPS
-    commit id:'Ingress-controller config.' tag:'T05'
+    commit id:'FLUX config for MOVY deployment'
     checkout TEST-env
-    merge OPS id:'Ingress-controller install' type: HIGHLIGHT tag:'T06'
-
-    checkout OPS
-    commit id:'ROCKY patch for ingress config.' tag:'R03'
-    checkout TEST-env
-    merge OPS id:'ingress config. for ROCKY app'
-
-    checkout ROCKY
-    commit id:'blue color' tag:'v1.0.1'
-    checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.1'
-
-    checkout ROCKY
-    commit id:'pink color' tag:'v1.0.2'
-    checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.2'
-
-    checkout OPS
-    commit id:'FLUX config for MOVY deployment' tag:'M01'
-    checkout TEST-env
-    merge OPS id:'FLUX ready to deploy MOVY' type: HIGHLIGHT tag:'M02'
+    merge OPS id:'FLUX ready to deploy MOVY'
 
     checkout MOVY
     commit id:'MOVY' tag:'v1.0.3'
     checkout TEST-env
     merge MOVY tag:'MOVY v1.0.3' type: REVERSE
-
-    checkout OPS
-    commit id:'Network policies'
-    checkout TEST-env
-    merge OPS type: HIGHLIGHT
 </pre>
