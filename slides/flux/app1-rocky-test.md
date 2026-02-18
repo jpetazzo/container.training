@@ -60,7 +60,7 @@ Let's create these permissions!
 
 ```bash
 k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
-    cp ~/container.training/k8s/M6-rocky-cluster-role.yaml ./tenants/base/rocky/
+    cp ~/container.training/k8s/tenants/base/rocky/cluster-role.yaml ./tenants/base/rocky/
 ```
 
 ]
@@ -141,8 +141,8 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
 ```bash
 k8s@shpod:~/fleet-config-using-flux-XXXXX$ \ 
     mkdir -p ./tenants/test/rocky &&       \
-    cp ~/container.training/k8s/M6-rocky-test-patch.yaml ./tenants/test/rocky/ && \
-    cp ~/container.training/k8s/M6-rocky-test-kustomization.yaml ./tenants/test/rocky/kustomization.yaml
+    cp ~/container.training/k8s/tenants/test/rocky/patch.yaml ./tenants/test/rocky/ && \
+    cp ~/container.training/k8s/tenants/test/rocky/kustomization.yaml ./tenants/test/rocky/kustomization.yaml
 ```
 
 ---
@@ -157,7 +157,7 @@ The **_⚙️OPS_** team has to push it to `Github` for `Flux` controllers to wa
 ```bash
 k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
     git add . && \
-    git commit -m':wrench: :construction_worker: add ROCKY tenant configuration' && \
+    git commit -m':wrench: add ROCKY tenant configuration' && \
     git push
 ```
 
@@ -212,11 +212,14 @@ NAMESPACE       NAME                            REVISION                SUSPENDE
 flux-system     kustomization/flux-system       main@sha1:8ffd72cf      False    
     True    Applied revision: main@sha1:8ffd72cf
 flux-system     kustomization/tenant-prod                               False    
-    False   kustomization path not found: stat /tmp/kustomization-1164119282/tenants/prod: no such file or directory
+    False   kustomization path not found: stat /tmp/kustomization-1164119282
+/tenants/prod: no such file or directory
 flux-system     kustomization/tenant-test       main@sha1:8ffd72cf      False    
     True    Applied revision: main@sha1:8ffd72cf
 rocky-test      kustomization/rocky                                     False    
-    False   StatefulSet/db dry-run failed (Forbidden): statefulsets.apps "db" is forbidden: User "system:serviceaccount:rocky-test:rocky" cannot patch resource "statefulsets" in API group "apps" at the cluster scope
+    False   StatefulSet/db dry-run failed (Forbidden): statefulsets.apps "db"
+is forbidden: User "system:serviceaccount:rocky-test:rocky" cannot patch
+resource "statefulsets" in API group "apps" at the cluster scope
 ```
 
 ]

@@ -79,7 +79,7 @@ The **_⚙️OPS_** team push this new tenant configuration to `Github` for `Flu
 ```bash
 k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
     git add . && \
-    git commit -m':wrench: :construction_worker: add MOVY tenant configuration' && \
+    git commit -m':wrench: add MOVY tenant configuration' && \
     git push
 ```
 
@@ -105,9 +105,11 @@ class: extra-details
 k8s@shpod:~$ flux get kustomization -A
 NAMESPACE    NAME         REVISION   SUSPENDED  MESSAGE
 (…)
-flux-system  tenant-prod  False      False      kustomization path not found: stat /tmp/kustomization-113582828/tenants/prod: no such file or directory
+flux-system  tenant-prod  False      False      kustomization path not found:
+stat /tmp/kustomization-113582828/tenants/prod: no such file or directory
 (…)
-movy-test    movy         False      False      Source artifact not found, retrying in 30s                                                             
+movy-test    movy         False      False      Source artifact not found,
+retrying in 30s                                                             
 ```
 
 ]
@@ -138,10 +140,11 @@ class: pic
 
 ### New branch detected
 
-You now have a second app responding on [http://movy.test.mybestdomain.com]  
-But as of now, it's just the same as the **_🎸ROCKY_** one.  
+- You now have a second app responding on [http://movy.test.enix.thegaragebandofit.com]  
 
-We want a specific (pink-colored) version with a dataset full of movie soundtracks.
+  - But as of now, it's just the same as the **_🎸ROCKY_** one.  
+
+- We want a specific (pink-colored) version with a dataset full of movie soundtracks.
 
 ---
 
@@ -201,8 +204,10 @@ They rules ingress and egress network connections considering a described subset
 
 Please, refer to the [`Network policies` chapter in the High Five M4 module](./4.yml.html#toc-network-policies)
 
-- In our case, we just add the file `~/container.training/k8s/M6-network-policies.yaml`
-</br>in our `./tenants/base/movy` folder
+- In our case, we just add the file `~/container.training/k8s/flux/tenants/base/rocky/network-policies.yaml`
+</br>in our `./tenants/base/rocky` folder
+
+- and the same for `./tenants/base/rocky` folder
 
 - without forgetting to update our `kustomization.yaml` file
 

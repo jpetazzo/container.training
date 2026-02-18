@@ -59,13 +59,13 @@ content:
   - flux/ingress.md
   
   - flux/tenants.md
-  # - flux/app1-rocky-test.md
-  # - flux/app2-movy-test.md
-  # - flux/CNPG.md
-  # - k8s/k0s.md
-  # - flux/add-cluster.md
-  # - flux/openebs.md
-  # - flux/kyverno.md
+  - flux/app1-rocky-test.md
+  - flux/app2-movy-test.md
+  - flux/managed-db.md
+  - k8s/k0s.md
+  - flux/add-cluster.md
+  - flux/openebs.md
+  - flux/kyverno.md
 
   - shared/thankyou.md
 #-

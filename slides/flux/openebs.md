@@ -9,45 +9,14 @@ It installs with `Helm` charts.
 .lab[
 
 ```bash
-k8s@shpod ~$  mkdir -p ./clusters/METAL/openebs/ &&                  \
-              cp -pr ~/container.training/k8s/M6-openebs-*.yaml      \
-                    ./clusters/METAL/openebs/ &&                     \
-              cd ./clusters/METAL/openebs/ &&                        \
-              mv M6-openebs-kustomization.yaml kustomization.yaml && \
-              cd - 
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization openebs \
+    --namespace=flux-system                                                  \
+    --source=GitRepository/catalog                                           \
+    --path="./k8s/flux/openebs/"                                             \
+    --export >> ./clusters/METAL/install-components/openebs.yaml
 ```
 
-]
-
----
-
-## Creating an `Helm` source in Flux for OpenEBS Helm chart
-
-.lab[
-
-```bash
-k8s@shpod ~$ flux create source helm openebs \
-    --url=https://openebs.github.io/openebs  \
-    --interval=3m                            \
-    --export > ./clusters/METAL/openebs/sync.yaml
-```
-
-]
-
----
-
-## Creating the `HelmRelease` in Flux
-
-.lab[
-
-```bash
-k8s@shpod ~$ flux create helmrelease openebs    \
-    --namespace=openebs                         \
-    --source=HelmRepository/openebs.flux-system \
-    --chart=openebs                             \
-    --values-from=ConfigMap/openebs-values     \
-    --export >> ./clusters/METAL/openebs/sync.yaml
-```
+- ⚠️ Don't forget to add this entry into the `kustomization.yaml` file
 
 ]
 
@@ -55,20 +24,20 @@ k8s@shpod ~$ flux create helmrelease openebs    \
 
 ## 📂 Let's review the files
 
-- `M6-openebs-components.yaml`
+- `namespace.yaml`
   </br>To include the `Flux` resources in the same _namespace_ where `Flux` installs the `OpenEBS` resources, we need to create the _namespace_ **before** the installation occurs
 
 - `sync.yaml`
   </br>The resources `Flux` uses to watch and get the `Helm chart`
   
-- `M6-openebs-values.yaml`
+- `values.yaml`
   </br> the `values.yaml` file that will be injected into the `Helm chart`
 
 - `kustomization.yaml`
   </br>This one is a bit special: it includes a [ConfigMap generator](https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/configmapgenerator/)
 
-- `M6-openebs-kustomizeconfig.yaml`
-  </br></br>This one is tricky: in order for `Flux` to trigger an upgrade of the `Helm Release` when the `ConfigMap` is altered, you need to explain to the `Kustomize ConfigMap generator` how the resources are relating with each others. 🤯 
+- `kustomize-config.yaml`
+  </br>This one is tricky: in order for `Flux` to trigger an upgrade of the `Helm Release` when the `ConfigMap` is altered, you need to explain to the `Kustomize ConfigMap generator` how the resources are relating with each others. 🤯 
  
 And here we go!
 

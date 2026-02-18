@@ -50,7 +50,7 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization monitoring 
     --export >> ./clusters/CLOUDY/install-components/sync-monitoring.yaml
 ```
 
-⚠ Don't forget to add this entry into the `kustomization.yaml` file
+- ⚠️ Don't forget to add this entry into the `kustomization.yaml` file
 
 ]
 
@@ -152,7 +152,7 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization loki \
     --export >> ./clusters/CLOUDY/install-components/sync-loki.yaml
 ```
 
-⚠ Don't forget to add this entry into the `kustomization.yaml` file
+- ⚠️ Don't forget to add this entry into the `kustomization.yaml` file
 
 ]
 

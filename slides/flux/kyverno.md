@@ -13,84 +13,42 @@ Please, refer to the [`Setting up Kubernetes` chapter in the High Five M4 module
 
 ---
 
-## Creating an `Helm` source in Flux for Kyverno Helm chart
+### Creating `kustomization` in Flux for Kyverno stack
 
 .lab[
 
 ```bash
-k8s@shpod:~/fleet-config-using-flux-XXXXX$  \
-        mkdir -p clusters/CLOUDY/kyverno && \
-        cp -pr ~/container.training/k8s/
-
-k8s@shpod ~$ flux create source helm kyverno \
-    --namespace=kyverno                         \
-    --url=https://kyverno.github.io/kyverno/ \
-    --interval=3m                            \
-    --export > ./clusters/CLOUDY/kyverno/sync2.yaml
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization kyverno \
+    --namespace=flux-system                                                  \
+    --source=GitRepository/catalog                                           \
+    --path="./k8s/flux/kyverno/"                                             \
+    --export >> ./clusters/CLOUDY/install-components/sync-kyverno.yaml
 ```
+
+- ⚠️ Don't forget to add this entry into the `kustomization.yaml` file
 
 ]
 
 ---
 
-## Creating the `HelmRelease` in Flux
+## Adding Kyverno policies
 
-.lab[
-
-```bash
-k8s@shpod ~$ flux create helmrelease kyverno    \
-    --namespace=kyverno                         \
-    --source=HelmRepository/kyverno.flux-system \
-    --target-namespace=kyverno                  \
-    --create-target-namespace=true              \
-    --chart-version=">=3.4.2"                   \
-    --chart=kyverno                             \
-    --export >> ./clusters/CLOUDY/kyverno/sync.yaml
-```
-
-]
-
----
-
-## Add Kyverno policy
-
-This polivy is just an example.
+This policy is just an example.
 It enforces the use of a `Service Account` in `Flux` configurations
 
-```bash
-k8s@shpod:~/fleet-config-using-flux-XXXXX$           \
-    mkdir -p clusters/CLOUDY/kyverno-policies &&     \
-    cp -pr ~/container.training/k8s/M6-kyverno-enforce-service-account.yaml \
-            ./clusters/CLOUDY/kyverno-policies/
-
----
-
-### Creating `kustomization` in Flux for Kyverno policies
-
 .lab[
 
 ```bash
-k8s@shpod:~/fleet-config-using-flux-XXXXX$           \
-    flux create kustomization kyverno-policies       \
-        --namespace=kyverno                          \
-        --source=GitRepository/flux-system           \
-        --path="./clusters/CLOUDY/kyverno-policies/" \
-        --prune true --interval 5m                   \
-        --depends-on kyverno                         \
-        --export >> ./clusters/CLOUDY/kyverno-policies/sync.yaml
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization kyverno-policies \
+    --namespace=flux-system                                                           \
+    --source=GitRepository/catalog                                                    \
+    --path="./k8s/flux/kyverno-policies/"                                             \
+    --export >> ./clusters/CLOUDY/install-components/sync-kyverno-policies.yaml
 ```
+
+- ⚠️ Don't forget to add this entry into the `kustomization.yaml` file
 
 ]
-
-
-## Apply Kyverno policy
-```bash
-flux create kustomization 
-
---path 
---source GitRepository/
---export > ./clusters/CLOUDY/kyverno-policies/sync.yaml
-```
 
 ---
 
@@ -111,13 +69,13 @@ class: pic
 
 ---
 
+class: extra-details
+
 ### Debugging
 
-`Kyverno-policies` `Kustomization` failed because `spec.dependsOn` property can only target a resource from the same `Kind`.
+- In a former session `Kyverno-policies` `Kustomization` failed because `spec.dependsOn` property can only target a resource from the same `Kind`.  
 
-- Let's suppress the `spec.dependsOn` property.
-
-Now `Kustomizations` for **_🎸ROCKY_** and **_🎬MOVY_** tenants failed because of our policies.
+- And it was targetting `Kyverno` HelmRelease. Now we only have dependency on `Kustomization` with our `install-components` extra step.
 
 ---
 
