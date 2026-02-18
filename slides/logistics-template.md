@@ -1,60 +1,22 @@
 ## Introductions
 
-⚠️ This slide should be customized by the tutorial instructor(s).
+- Bonjour !
 
-<!--
+- Sur scène : Jérôme ([@jpetazzo])
 
-- Hello! We are:
+- En coulisse : Hadrien, AJ, et le reste de l'équipe Enix
 
-   - 👷🏻‍♀️ AJ ([@s0ulshake], [EphemeraSearch], [Quantgene])
+- Horaires :
 
-   - 🚁 Alexandre ([@alexbuisine], Enix SAS)
+  14h-18h (heure de Paris)
 
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Ardan Labs)
+  8h-12h (heure de Montréal)
 
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Enix SAS)
+- On fera une pause à la mi-temps
 
-   - 🐳 Jérôme ([@jpetazzo], [@jpetazzo@hachyderm.io], Tiny Shell Script LLC)
+- N'hésitez pas à poser un maximum de questions!
 
--->
-
-<!--
-
-- The training will run for 4 hours, with a 10 minutes break every hour
-
-  (the middle break will be a bit longer)
-
--->
-
-<!--
-
-- The workshop will run from XXX to YYY
-
-- There will be a lunch break at ZZZ
-
-  (And coffee breaks!)
-
--->
-
-<!--
-
-- Feel free to interrupt for questions at any time
-
-- *Especially when you see full screen container pictures!*
-
-- Live feedback, questions, help: @@CHAT@@
-
--->
-
-<!--
-
-- You ~~should~~ must ask questions! Lots of questions!
-
-  (especially when you see full screen container pictures)
-
-- Use @@CHAT@@ to ask questions, get help, etc.
-
--->
+- Utilisez @@CHAT@@ pour les questions, demander de l'aide, etc.
 
 <!-- -->
 
@@ -67,16 +29,20 @@
 
 ---
 
-## Exercises
+## Travaux pratiques
 
-- At the end of each day, there is a series of exercises
+- À la fin de chaque journée, il y a un exercice pratique concret
 
-- To make the most out of the training, please try the exercises!
+  (pour mettre en œuvre le programme de la journée)
 
-  (it will help to practice and memorize the content of the day)
+- Les exercices font partie de la formation !
 
-- We recommend to take at least one hour to work on the exercises
+- Ils sont prévus pour prendre entre 15 minutes et 2 heures
 
-  (if you understood the content of the day, it will be much faster)
+  (selon les connaissances et l'aisance de chacun·e)
 
-- Each day will start with a quick review of the exercises of the previous day
+- Côté Canada : vous pouvez les faire l'après-midi
+
+- Côté France : vous pouvez les faire le lendemain matin
+
+- Chaque journée commencera avec un passage en revue de l'exercice de la veille
