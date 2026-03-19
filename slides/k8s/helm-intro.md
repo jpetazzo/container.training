@@ -1,4 +1,4 @@
-# Managing stacks with Helm
+# Managing stacks with Helm ⏩
 
 - Helm is a (kind of!) package manager for Kubernetes
 

@@ -1,0 +1,81 @@
+title: |
+  Kubernetes
+
+#chat: "[Mattermost](https://training.enix.io/mattermost)"
+
+gitrepo: github.com/jpetazzo/container.training
+
+slides: https://2026-05-adyen.container.training/
+
+#slidenumberprefix: "#SomeHashTag &mdash; "
+
+exclude:
+- self-paced
+
+content:
+- shared/title.md
+- logistics.md
+- shared/about-slides.md
+#- shared/chat-room-im.md
+- k8s/prereqs-advanced.md
+- shared/handson.md
+- k8s/labs-live.md
+- shared/connecting.md
+- k8s/labs-async.md
+- shared/toc.md
+- # 1A
+  - k8s/demo-apps.md
+  - k8s/kind.md
+  - k8s/helm-intro.md
+  - k8s/ingress.md
+  - k8s/gateway-api.md
+  - exercises/advanced-http-details.md
+  - k8s/helm-chart-format.md
+  - k8s/helm-create-basic-chart.md
+  - k8s/helm-dependencies.md
+  - exercises/helm-generic-chart-details.md
+  - k8s/helm-create-better-chart.md
+  - exercises/helm-umbrella-chart-details.md
+  - k8s/gitworkflows.md
+  - k8s/argocd.md
+  - k8s/argocd-advanced.md
+- # 2A
+  - k8s/resource-limits.md
+  - exercises/reqlim-details.md
+  - k8s/cluster-sizing.md
+  - k8s/horizontal-pod-autoscaler.md
+  - k8s/admission.md
+  - k8s/kyverno.md
+  - k8s/pod-security-admission.md  
+  - exercises/kyverno-ingress-domain-name-details.md
+  - k8s/disruptions.md
+- # 3A
+  - k8s/architecture.md
+  - k8s/kubenet.md
+  - k8s/deploymentslideshow.md
+  - k8s/dmuc-easy.md
+  - k8s/cni-internals.md
+  - k8s/dmuc-medium.md
+  - k8s/staticpods.md
+  - k8s/dmuc-hard.md
+  - exercises/dmuc-networking-details.md
+  - |
+    # CoreDNS 🚧
+
+    (FIXME)
+  - shared/thankyou.md
+-
+  - |
+    # (Content that can be placed anywhere)
+- # EXTRA
+  - |
+    # (Additional materials past this point)
+  - k8s/yamldeploy.md
+  - k8s/volumes.md
+  - k8s/configuration.md
+  - k8s/operators.md
+  - k8s/operators-design.md
+  - k8s/kubebuilder.md
+  - k8s/localkubeconfig.md
+  - k8s/service-types.md
+  - k8s/accessinternal.md
