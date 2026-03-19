@@ -1,4 +1,4 @@
-# Exposing HTTP services with Ingress resources
+# Exposing HTTP services with Ingress resources ⏩
 
 - Service = layer 4 (TCP, UDP, SCTP)
 

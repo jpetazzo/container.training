@@ -1,4 +1,4 @@
-# Resource Limits
+# Resource Limits ⏩
 
 - We can attach resource indications to our pods
 
@@ -725,7 +725,7 @@ class: extra-details
 
 ---
 
-# Defining min, max, and default resources
+# Defining min, max, and default resources ⏩
 
 - We can create LimitRange objects to indicate any combination of:
 
@@ -798,7 +798,7 @@ per Pod, but it's not [officially documented yet](https://github.com/kubernetes/
 
 ---
 
-# Namespace quotas
+# Namespace quotas ⏩
 
 - We can also set quotas per namespace
 
@@ -966,7 +966,7 @@ class: extra-details
 
 ---
 
-# Limiting resources in practice
+# Limiting resources in practice ⏩
 
 - We have at least three mechanisms:
 
@@ -1000,7 +1000,7 @@ class: extra-details
 
 ---
 
-## Set a ResourceQuota
+## Set a ResourceQuota (optional)
 
 - In each namespace, create a ResourceQuota object
 
