@@ -2,6 +2,7 @@
 #/ /kube-halfday.yml.html 200!
 #/ /kube-fullday.yml.html 200!
 #/ /kube-twodays.yml.html 200!
+/ /kube.yml.html 200!
 
 # And this allows to do "git clone https://container.training".
 /info/refs service=git-upload-pack https://github.com/jpetazzo/container.training/info/refs?service=git-upload-pack
