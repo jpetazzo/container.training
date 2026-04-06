@@ -106,6 +106,23 @@
 
 ---
 
+## Who are we?
+
+- We can ask the Kubernetes API who we are
+
+  (or rather: who it thinks we are)
+
+.lab[
+
+- Try the following command on your Kubernetes cluster:
+  ```bash
+  kubectl auth whoami
+  ```
+
+]
+
+---
+
 ## Authentication methods
 
 - TLS client certificates
