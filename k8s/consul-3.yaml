@@ -76,7 +76,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: consul
-          image: "consul:1.11"
+          image: "hashicorp/consul:1.22"
           volumeMounts:
             - name: data
               mountPath: /consul/data
