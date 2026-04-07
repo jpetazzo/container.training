@@ -1,0 +1,15 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: kyverno-policies
+  namespace: kyverno
+spec:
+  dependsOn:
+  - name: kyverno
+  interval: 5m0s
+  path: ./clusters/CLOUDY/kyverno-policies
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system

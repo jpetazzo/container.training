@@ -1,4 +1,4 @@
-## introducing Kyverno
+## Introducing Kyverno
 
 Kyverno is a tool to extend Kubernetes permission management to express complex policies…
 </br>… and override manifests delivered by client teams.
@@ -13,84 +13,42 @@ Please, refer to the [`Setting up Kubernetes` chapter in the High Five M4 module
 
 ---
 
-## Creating an `Helm` source in Flux for Kyverno Helm chart
+### Creating `kustomization` in Flux for Kyverno stack
 
 .lab[
 
 ```bash
-k8s@shpod:~/fleet-config-using-flux-XXXXX$  \
-        mkdir -p clusters/CLOUDY/kyverno && \
-        cp -pr ~/container.training/k8s/
-
-k8s@shpod ~$ flux create source helm kyverno \
-    --namespace=kyverno                         \
-    --url=https://kyverno.github.io/kyverno/ \
-    --interval=3m                            \
-    --export > ./clusters/CLOUDY/kyverno/sync2.yaml
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization kyverno \
+    --namespace=flux-system                                                  \
+    --source=GitRepository/catalog                                           \
+    --path="./k8s/flux/kyverno/"                                             \
+    --export >> ./clusters/CLOUDY/install-components/sync-kyverno.yaml
 ```
+
+- ⚠️ Don't forget to add this entry into the `kustomization.yaml` file
 
 ]
 
 ---
 
-## Creating the `HelmRelease` in Flux
+## Adding Kyverno policies
 
-.lab[
-
-```bash
-k8s@shpod ~$ flux create helmrelease kyverno    \
-    --namespace=kyverno                         \
-    --source=HelmRepository/kyverno.flux-system \
-    --target-namespace=kyverno                  \
-    --create-target-namespace=true              \
-    --chart-version=">=3.4.2"                   \
-    --chart=kyverno                             \
-    --export >> ./clusters/CLOUDY/kyverno/sync.yaml
-```
-
-]
-
----
-
-## Add Kyverno policy
-
-This polivy is just an example.
+This policy is just an example.
 It enforces the use of a `Service Account` in `Flux` configurations
 
-```bash
-k8s@shpod:~/fleet-config-using-flux-XXXXX$           \
-    mkdir -p clusters/CLOUDY/kyverno-policies &&     \
-    cp -pr ~/container.training/k8s/M6-kyverno-enforce-service-account.yaml \
-            ./clusters/CLOUDY/kyverno-policies/
-
----
-
-### Creating `kustomization` in Flux for Kyverno policies
-
 .lab[
 
 ```bash
-k8s@shpod:~/fleet-config-using-flux-XXXXX$           \
-    flux create kustomization kyverno-policies       \
-        --namespace=kyverno                          \
-        --source=GitRepository/flux-system           \
-        --path="./clusters/CLOUDY/kyverno-policies/" \
-        --prune true --interval 5m                   \
-        --depends-on kyverno                         \
-        --export >> ./clusters/CLOUDY/kyverno-policies/sync.yaml
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization kyverno-policies \
+    --namespace=flux-system                                                           \
+    --source=GitRepository/catalog                                                    \
+    --path="./k8s/flux/kyverno-policies/"                                             \
+    --export >> ./clusters/CLOUDY/install-components/sync-kyverno-policies.yaml
 ```
+
+- ⚠️ Don't forget to add this entry into the `kustomization.yaml` file
 
 ]
-
-
-## Apply Kyverno policy
-```bash
-flux create kustomization 
-
---path 
---source GitRepository/
---export > ./clusters/CLOUDY/kyverno-policies/sync.yaml
-```
 
 ---
 
@@ -111,13 +69,13 @@ class: pic
 
 ---
 
+class: extra-details
+
 ### Debugging
 
-`Kyverno-policies` `Kustomization` failed because `spec.dependsOn` property can only target a resource from the same `Kind`.
+- In a former session `Kyverno-policies` `Kustomization` failed because `spec.dependsOn` property can only target a resource from the same `Kind`.  
 
-- Let's suppress the `spec.dependsOn` property.
-
-Now `Kustomizations` for **_🎸ROCKY_** and **_🎬MOVY_** tenants failed because of our policies.
+- And it was targetting `Kyverno` HelmRelease. Now we only have dependency on `Kustomization` with our `install-components` extra step.
 
 ---
 
@@ -140,52 +98,50 @@ gitGraph
     branch YouRHere order:6
 
     checkout OPS
-    commit id:'Flux install on CLOUDY cluster' tag:'T01'
-    branch TEST-env order:1
-    commit id:'FLUX install on TEST' tag:'T02' type: HIGHLIGHT
-
-    checkout OPS
-    commit id:'Flux config. for TEST tenant' tag:'T03'
+    commit id:'Flux install on CLOUDY cluster' type: HIGHLIGHT
+    commit id:'Prometheus + Grafana config.'
+    commit id:'Prometheus + Grafana install' type: HIGHLIGHT
+    commit id:'Loki config.'
+    commit id:'Loki install' type: HIGHLIGHT
+    commit id:'Traefik Proxy config.'
+    commit id:'Traefik Proxy install' type: HIGHLIGHT
+    commit id:'Flux config. for multitenants'
+    commit id:'Flux config. for TEST tenant'
     commit id:'namespace isolation by RBAC'
-    checkout TEST-env
-    merge OPS id:'ROCKY tenant creation' tag:'T04'
 
+    branch TEST-env order:1
+    commit id:'ROCKY tenant creation'
     checkout OPS
-    commit id:'ROCKY deploy. config.' tag:'R01'
+    commit id:'ROCKY deploy. config.'
 
     checkout TEST-env
-    merge OPS id:'TEST ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
+    merge OPS id:'TEST ready to deploy ROCKY'
 
     checkout ROCKY
     commit id:'ROCKY' tag:'v1.0.0'
 
     checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.0'
-
-    checkout OPS
-    commit id:'Ingress-controller config.' tag:'T05'
-    checkout TEST-env
-    merge OPS id:'Ingress-controller install' type: HIGHLIGHT tag:'T06'
+    merge ROCKY tag:'ROCKY v1.0.0' type: HIGHLIGHT
 
     checkout OPS
     commit id:'ROCKY patch for ingress config.' tag:'R03'
     checkout TEST-env
-    merge OPS id:'ingress config. for ROCKY app'
+    merge OPS id:'ingress config. for ROCKY app' type: HIGHLIGHT
 
     checkout ROCKY
     commit id:'blue color' tag:'v1.0.1'
     checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.1'
+    merge ROCKY tag:'ROCKY v1.0.1' type: HIGHLIGHT
 
     checkout ROCKY
     commit id:'pink color' tag:'v1.0.2'
     checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.2'
+    merge ROCKY tag:'ROCKY v1.0.2' type: HIGHLIGHT
 
     checkout OPS
-    commit id:'FLUX config for MOVY deployment' tag:'M01'
+    commit id:'FLUX config for MOVY deployment'
     checkout TEST-env
-    merge OPS id:'FLUX ready to deploy MOVY' type: HIGHLIGHT tag:'M02'
+    merge OPS id:'FLUX ready to deploy MOVY'
 
     checkout MOVY
     commit id:'MOVY' tag:'v1.0.3'
@@ -195,22 +151,31 @@ gitGraph
     checkout OPS
     commit id:'Network policies'
     checkout TEST-env
-    merge OPS type: HIGHLIGHT tag:'T07'
+    merge OPS type: HIGHLIGHT
 
     checkout OPS
-    commit id:'k0s install on METAL cluster' tag:'K01'
-    commit id:'Flux config. for METAL cluster' tag:'K02'
+    commit id:'FLUX config. for OLM deployment'
+    checkout TEST-env
+    merge OPS id:'OLM deployment' type: HIGHLIGHT
+    checkout OPS
+    commit id:'FLUX config. for CloudNative-PG deployment'
+    checkout TEST-env
+    merge OPS id:'CloudNative-PG deployment' type: HIGHLIGHT
+
+    checkout MOVY
+    commit id:'connection to CloudNative-PG cluster'
+    checkout TEST-env
+    merge MOVY tag:'MOVY v1.0.3' type: HIGHLIGHT
+
+    checkout OPS
+    commit id:'k0s install on METAL cluster'
+    commit id:'Flux config. for METAL cluster'
     branch METAL_TEST-PROD order:3
     commit id:'ROCKY/MOVY tenants on METAL' type: HIGHLIGHT
     checkout OPS
-    commit id:'Flux config. for OpenEBS' tag:'K03'
+    commit id:'Flux config. for OpenEBS'
     checkout METAL_TEST-PROD
     merge OPS id:'openEBS on METAL' type: HIGHLIGHT
-
-    checkout OPS
-    commit id:'Prometheus install'
-    checkout TEST-env
-    merge OPS type: HIGHLIGHT
 
     checkout OPS
     commit id:'Kyverno install'
