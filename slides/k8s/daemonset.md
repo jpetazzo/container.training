@@ -171,23 +171,31 @@
   ...
   ```
 
+- or :
+```
+Error from server (BadRequest): error when creating "rng.yaml":
+DaemonSet in version "v1" cannot be handled as a DaemonSet: strict decoding error:
+unknown field "spec.replicas", 
+unknown field "spec.strategy"
+```
+
 --
 
 - *Obviously,* it doesn't make sense to specify a number of replicas for a daemon set
 
 --
 
-- Workaround: fix the YAML and remove the `replicas` field
+- Workaround: fix the YAML and remove the `replicas` and `stategy` fields
 
 ---
 
 ## Fixing the problem
 
-- Let's remove the `replicas` field and try again
+- Let's remove the `replicas` and `strategy` fields and try again
 
 .lab[
 
-- Edit the `rng.yaml` file and remove the `replicas:` line
+- Edit the `rng.yaml` file and remove the `replicas:` and `strategy:` lines
 
 - Then try to create the DaemonSet again:
   ```bash
