@@ -135,7 +135,7 @@
 
 - Or, alternatively:
   ```bash
-  sed -i "s/kind: Deployment/kind: DaemonSet"
+  sed -i "s/kind: Deployment/kind: DaemonSet/" rng.yaml
   ```
 
 ]
