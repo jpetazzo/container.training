@@ -1,8 +1,8 @@
-# T05- Configuring ingress for **_🎸ROCKY_** app
+# Configuring Ingresses
 
-🍾 **_🎸ROCKY_** team has just deployed its `v1.0.0`
+Our observability stack already exposes 2 URLs.  
+But we can't reach them from our workstations.
 
-We would like to reach it from our workstations  
 The regular way to do it in Kubernetes is to configure an `Ingress` resource.
 
 - `Ingress` is an abstract resource that manages how services are exposed outside of the Kubernetes cluster (Layer 7).  
@@ -21,67 +21,33 @@ Please, refer to the [`Ingress` chapter in the High Five M2 module](./2.yml.html
 
 ---
 
-## Installing `ingress-nginx` as our `ingress-controller`
+## Installing `traefik` as our `ingress-controller`
 
-We'll use `ingress-nginx` (relying on `NGinX`), quite a popular choice.
+- Formerly, we used to install `ingress-nginx` (relying on `NGinX`), quite a popular choice.
+  - But it's end-of-support, we'll install `Traefik` as a replacement.
 
-- It is able to provision IaaS load-balancer in ScaleWay Cloud services
-- As a reverse-proxy, it is able to balance HTTP connections on an on-premises cluster
+- `Traefik Proxy` is a full-featured ingress-controller 
+  - It is able to provision IaaS load-balancer in ScaleWay Cloud services
+  - As a reverse-proxy, it is able to balance HTTP connections on an on-premises cluster
+  - and so much more!
 
-The **_⚙️OPS_** Team add this new install to its `Flux` config. repo
+The **_⚙️OPS_** Team add this new component to its `Flux` config. repo
 
 ---
 
-### Creating a `Github` source in Flux for `ingress-nginx`
+### Creating a Kustomization in Flux for `ingress-nginx`
 
 .lab[
 
 ```bash
-k8s@shpod:~/fleet-config-using-flux-XXXXX$             \
-    mkdir -p ./clusters/CLOUDY/ingress-nginx &&        \
-    flux create source git ingress-nginx               \
-    --namespace=ingress-nginx                          \
-    --url=https://github.com/kubernetes/ingress-nginx/ \
-    --branch=release-1.12                              \
-    --export > ./clusters/CLOUDY/ingress-nginx/sync.yaml
-```
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization traefik \
+    --namespace=flux-system                                                  \
+    --source=GitRepository/catalog                                           \
+    --path="./k8s/flux/traefik/"                                             \
+    --export >> ./clusters/CLOUDY/install-components/sync-traefik.yaml
 
-]
-
----
-
-### Creating `kustomization` in Flux for `ingress-nginx`
-
-.lab[
-
-```bash
-k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create kustomization ingress-nginx \
-    --namespace=ingress-nginx                                                      \
-    --source=GitRepository/ingress-nginx                                           \
-    --path="./deploy/static/provider/scw/"                                         \
-    --export >> ./clusters/CLOUDY/ingress-nginx/sync.yaml
-
-k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
-    cp -p ~/container.training/k8s/M6-ingress-nginx-kustomization.yaml    \
-                    ./clusters/CLOUDY/ingress-nginx/kustomization.yaml && \
-    cp -p ~/container.training/k8s/M6-ingress-nginx-components.yaml       \
-          ~/container.training/k8s/M6-ingress-nginx-*-patch.yaml          \
-                    ./clusters/CLOUDY/ingress-nginx/
-```
-
-]
-
----
-
-### Applying the new config
-
-.lab[
-
-```bash
-k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
-    git add ./clusters/CLOUDY/ingress-nginx && \
-    git commit -m':wrench: :rocket: add Ingress-controller' && \
-    git push
+⚠ Don't forget to add this entry into the `kustomization.yaml` file
+… And to commit/push to Github!
 ```
 
 ]
@@ -91,6 +57,35 @@ k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
 class: pic
 
 ![Running Mario](images/running-mario.gif)
+
+---
+
+### Result
+
+.lab[
+
+```bash
+k8s@shpod:~/$ flux get all -n traefik
+NAME                    REVISION        SUSPENDED       READY   MESSAGE                                     
+helmrepository/traefik  sha256:92b5b547 False           True    stored artifact: revision 'sha256:92b5b547'
+
+NAME                            REVISION        SUSPENDED       READY   MESSAGE                                      
+helmchart/traefik-traefik       37.2.0          False           True    pulled 'traefik' chart with version '37.2.0'
+
+NAME                    REVISION        SUSPENDED       READY   MESSAGE                                                                         
+helmrelease/traefik     37.2.0          False           True    Helm install succeeded for release traefik/traefik.v1 with chart traefik@37.2.0
+```
+
+]
+
+---
+
+### Interacting with the IaaS platform
+
+When deploying `Traefik` ingress-controller in Scaleway Cloud platform, Iaas resources are created:
+
+- a "physical" load-balancer
+- public IPs (IPv4 and IPv6)
 
 ---
 
@@ -100,48 +95,24 @@ class: pic
 
 ---
 
-class: extra-details
+## 📂 Let's review the files
 
-### Using external Git source
+- `namespace.yaml`
+  </br>To include the `Flux` resources in the same _namespace_ where `Flux` installs the `traefik` resources, we need to create the _namespace_ **before** the installation occurs
 
-💡 Note that you can directly use pubilc `Github` repository (not maintained by your company).  
+- `sync.yaml`
+  </br>The resources `Flux` uses to watch and get the `Helm chart`
+  
+- `values.yaml`
+  </br> The `values.yaml` file that will be injected into the `Helm chart`
 
-- If you have to alter the configuration, `Kustomize` patching capabilities might help.
+- `kustomization.yaml`
+  </br>This one is a bit special: it includes a [ConfigMap generator](https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/configmapgenerator/)
 
-- Depending on the _gitflow_ this repository uses, updates will be deployed automatically to your cluster (here we're using a `release` branch).
-
-- This repo exposes a `kustomization.yaml`. Well done!
-
----
-
-## Adding the `ingress` resource to ROCKY app
-
-.lab[
-
-- Add the new manifest to our kustomization bunch
-
-```bash
-k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
-    cp -pr ~/container.training/k8s/M6-rocky-ingress.yaml ./tenants/base/rocky && \
-    echo '- M6-rocky-ingress.yaml' >> ./tenants/base/rocky/kustomization.yaml
-```
-
-- Commit and its done
-
-```bash
-k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
-    git add . && \
-    git commit -m':wrench: :rocket: add Ingress' && \
-    git push
-```
-
-]
-
----
-
-class: pic
-
-![Running Mario](images/running-mario.gif)
+- `kustomize-config.yaml`
+  </br>⚠️This one is tricky: in order for `Flux` to trigger an upgrade of the `Helm Release` when the `ConfigMap` is altered, you need to explain to the `Kustomize ConfigMap generator` how the resources are relating with each others. 🤯 
+ 
+And here we go!
 
 ---
 
@@ -149,21 +120,21 @@ class: pic
 
 After Flux reconciled the whole bunch of sources and kustomizations, you should see
 
-- `Ingress-NGinX` controller components in `ingress-nginx` namespace
-- A new `Ingress` in `rocky-test` namespace
+- `Traefik` controller components in `traefik` namespace
+- The monitoring `Ingress` in `monitoring` namespace should have been updated with public IP
 
 .lab[
 
 ```bash
-k8s@shpod:~$ kubectl get all -n ingress-nginx && \
-             kubectl get ingress -n rocky-test
+k8s@shpod:~$ kubectl get all -n traefik && \
+             kubectl get ingress --all-namespaces
 
 k8s@shpod:~$ \
-    PublicIP=$(kubectl get ingress rocky -n rocky-test \
+    PublicIP=$(kubectl get ingress monitoring -n monitoring \
                 -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 k8s@shpod:~$ \
-    curl --header 'rocky.test.mybestdomain.com' http://$PublicIP/
+    curl --header 'grafana.enix.thegaragebandofit.com' http://$PublicIP/
 ```
 
 ]
@@ -172,22 +143,7 @@ k8s@shpod:~$ \
 
 class: pic
 
-![Rocky application screenshot](images/flux/rocky-app-screenshot.png)
-
----
-
-## Upgrading **_🎸ROCKY_** app
-
-**_🎸ROCKY_** team is now fully able to upgrade and deploy its app autonomously.
-
-Just give it a try!
-- In the `deployment.yaml` file
-- in the app repo ([https://github.com/Musk8teers/container.training-spring-music/])
-- you can change the `spec.template.spec.containers.image` to `1.0.1` and then to `1.0.2`
-
-Dont' forget which branch is watched by `Flux` Git source named `rocky`
-
-Don't forget to commit!
+![Grafana dashboard screenshot](images/flux/grafana-dashboard.png)
 
 ---
 
@@ -200,6 +156,8 @@ Don't forget to commit!
   - It might have been done in many different ways!
 
 ---
+
+<!-- TODO: add cert-manager install -->
 
 ### 🗺️ Where are we in our scenario?
 
@@ -215,70 +173,31 @@ Don't forget to commit!
 }%%
 gitGraph
     commit id:"0" tag:"start"
-    branch ROCKY order:3
-    branch MOVY order:4
-    branch YouRHere order:5
+    branch ROCKY order:4
+    branch MOVY order:5
+    branch YouRHere order:6
 
     checkout OPS
-    commit id:'Flux install on CLOUDY cluster' tag:'T01'
-    branch TEST-env order:1
-    commit id:'FLUX install on TEST' tag:'T02' type: HIGHLIGHT
-
-    checkout OPS
-    commit id:'Flux config. for TEST tenant' tag:'T03'
-    commit id:'namespace isolation by RBAC'
-    checkout TEST-env
-    merge OPS id:'ROCKY tenant creation' tag:'T04'
-
-    checkout OPS
-    commit id:'ROCKY deploy. config.' tag:'R01'
-
-    checkout TEST-env
-    merge OPS id:'TEST ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
-
-    checkout ROCKY
-    commit id:'ROCKY' tag:'v1.0.0'
-
-    checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.0'
-
-    checkout OPS
-    commit id:'Ingress-controller config.' tag:'T05'
-    checkout TEST-env
-    merge OPS id:'Ingress-controller install' type: HIGHLIGHT tag:'T06'
-
-    checkout OPS
-    commit id:'ROCKY patch for ingress config.' tag:'R03'
-    checkout TEST-env
-    merge OPS id:'ingress config. for ROCKY app'
-
-    checkout ROCKY
-    commit id:'blue color' tag:'v1.0.1'
-    checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.1'
-
-    checkout ROCKY
-    commit id:'pink color' tag:'v1.0.2'
-    checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.2'
-
+    commit id:'Flux install on CLOUDY cluster' type: HIGHLIGHT
+    commit id:'Prometheus + Grafana config.'
+    commit id:'Prometheus + Grafana install' type: HIGHLIGHT
+    commit id:'Loki config.'
+    commit id:'Loki install' type: HIGHLIGHT
+    commit id:'Traefik Proxy config.'
+    commit id:'Traefik Proxy install' type: HIGHLIGHT
     checkout YouRHere
     commit id:'x'
     checkout OPS
     merge YouRHere id:'YOU ARE HERE'
+    commit id:'Flux config. for multitenants'
+    commit id:'Flux config. for TEST tenant'
+    commit id:'namespace isolation by RBAC'
 
+    branch TEST-env order:1
+    commit id:'ROCKY tenant creation'
     checkout OPS
-    commit id:'FLUX config for MOVY deployment' tag:'M01'
-    checkout TEST-env
-    merge OPS id:'FLUX ready to deploy MOVY' type: HIGHLIGHT tag:'M02'
+    commit id:'ROCKY deploy. config.'
 
-    checkout MOVY
-    commit id:'MOVY' tag:'v1.0.3'
     checkout TEST-env
-    merge MOVY tag:'MOVY v1.0.3' type: REVERSE
-
-    checkout OPS
-    commit id:'Network policies'
-    checkout TEST-env
-    merge OPS type: HIGHLIGHT
+    merge OPS id:'TEST ready to deploy ROCKY'
 </pre>

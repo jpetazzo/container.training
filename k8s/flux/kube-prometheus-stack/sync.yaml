@@ -1,0 +1,37 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: monitoring
+  namespace: monitoring
+spec:
+  interval: 1m0s
+  ref:
+    branch: main
+  url: https://github.com/fluxcd/flux2-monitoring-example.git
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: monitoring
+  namespace: monitoring
+spec:
+  interval: 1m0s
+  path: ./monitoring/controllers/kube-prometheus-stack
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: monitoring
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: dashboards
+  namespace: monitoring
+spec:
+  interval: 1m0s
+  path: ./monitoring/configs
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: monitoring
