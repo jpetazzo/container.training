@@ -44,7 +44,7 @@ Try to complete at least one path; but feel free to experiment with other option
 
 ## Which environment?
 
-- Managed cluster (difficult: low)
+- Managed cluster (difficulty: low)
 
   easier, because it has `LoadBalancer` services
   <br/>
@@ -54,11 +54,29 @@ Try to complete at least one path; but feel free to experiment with other option
 
   requires to switch to a combination of `hostPort` / `DaemonSet`
 
-- Local KinD cluster (difficult: hard)
+- Local KinD cluster (difficulty: hard)
 
   actually not *that* hard, but you need to set up port mapping correctly
 
   only do this if you already have a working KinD install!
+
+---
+
+## Which API?
+
+- Ingress (difficulty: easy)
+
+  legacy (but still supported); much simpler to deploy/operate
+
+- Gateway API HTTPRoute, TLSRoute (difficulty: medium)
+
+  new; hopefully future-proof; support is uneven across products
+
+- Gateway API TCPRoute (difficulty: hard)
+
+  experimental; requires even more tinkering
+
+- Vendor-specific
 
 ---
 
@@ -68,11 +86,13 @@ Try to complete at least one path; but feel free to experiment with other option
 
   better Kubernetes integration (especially for Gateway API!)
 
-- HAProxy (difficulty: hard)
+- HAProxy Ingress (difficulty: hard)
 
-  you'll probably need to [install Gateway API CRDs manually][haproxy-gateway-api-docs]
+  supports Ingress and TCPRoute, but doesn't supportessential Gateway API features
 
-[haproxy-gateway-api-docs]: https://www.haproxy.com/documentation/kubernetes-ingress/gateway-api/enable-gateway-api/#deploy-gateway-api-resources
+- HAProxy Unified Gateway (difficulty: hard)
+
+  supports Gateway API more comprehensively, but doesn't support Ingress
 
 ---
 
@@ -126,7 +146,7 @@ Try to complete at least one path; but feel free to experiment with other option
 
 ## Bonus goals
 
-- Make sure that the web apps have a valid TLS cert
+- Obtain a valid TLS cert for our web apps, with cert-manager + Let's Encrypt
 
   (this requires a real domain name; use the `kubeadm` cluster with the provided domain!)
 
@@ -134,7 +154,11 @@ Try to complete at least one path; but feel free to experiment with other option
 
   - expose webui, rng, hasher, with Ingress / HTTPRoute
 
-  - expose redis with a TCPRoute
+  - expose redis with a TLSRoute
+
+  - try a TCPRoute (experimental!)
+
+Note: for the TLSRoute, you can use a valid cert or a manual, self-signed one.
 
 ---
 
