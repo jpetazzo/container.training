@@ -206,7 +206,7 @@ It is responsible for invoking any user-defined hooks for lifecycle events (*Pre
 
 - Let's use the CLI to add an Application:
   ```bash
-    argocd app create kubercoins \ 
+    argocd app create kubercoins \
            --repo https://github.com/`<your_user>/<your_repo>`.git \
            --path . --revision `<branch>` \
            --dest-server https://kubernetes.default.svc \
