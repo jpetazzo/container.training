@@ -162,13 +162,63 @@ class: extra-details
 
 - If new namespaces are created, they will get default permissions
 
-- We can change that by using an *admission configuration*
+- What can we do about this?
+
+  - make sure that whoever/whatever creates namespaces sets labels correctly?
+
+  - use mutating policies to automatically add labels when namespaces are created?
+
+  - change default permissions with an *admission configuration* file?
+
+  - something else?
+
+- Question: is one of these options better/safer?
+
+---
+
+## Access control
+
+- Kubernetes RBAC has a separate `create` permission
+
+- It is possible to let someone create a Namespace, but not change its labels
+
+  (the latter would require `patch` or `update` permissions)
+
+- However, if someone can create a Namespace, they can set any labels at creation time
+
+- We can't control specific labels with RBAC, but we can do it with admission control
+
+  (CEL policies, Kyverno...)
+
+- Conclusion: it's possible to let users create namespaces, but it requires tight controls
+
+---
+
+## Alternative solution
+
+- Don't let users create namespaces directly
+
+- Delegate that to our CI/CD, gitops, ... and make sure *that* sets labels correctly
+
+- Or use a controller to create namespaces on our behalf
+
+  (Example: https://github.com/jpetazzo/nsplease)
+
+---
+
+## Admission configuration
 
 - Step 1: write an "admission configuration file"
 
-- Step 2: make sure that file is readable by the API server
+- Step 2: make sure that file is available to the API server
 
-- Step 3: add a flag to the API server to read that file
+- Step 3: add a flag to the API server to use that file
+
+*Note: this is done out of the box on some high-end, hardened distribution like Talos.*
+
+*If you are attending a live class, it might also have been done on your clusters.*
+
+*The next slides assume that you're using a vanilla kubeadm cluster.*
 
 ---
 
@@ -190,7 +240,6 @@ Let's use @@LINK[k8s/admission-configuration.yaml]:
 
   (it's definitely not where it *should* be, but that'll do!)
 
-
 .lab[
 
 - Copy the file:
@@ -209,13 +258,15 @@ Let's use @@LINK[k8s/admission-configuration.yaml]:
 
 .lab[
 
-- Edit `/etc/kubernetes/manifests/kube-apiserver.yaml`
+- Make a backup copy of `/etc/kubernetes/manifests/kube-apiserver.yaml`
 
-- In the list of `command` parameters, add:
+  (safety first!)
+
+- Edit the file; in the list of `command` parameters, add:
 
   `--admission-control-config-file=/etc/kubernetes/pki/admission-configuration.yaml`
 
-- Wait until the API server comes back online
+- Save the new file and wait until the API server comes back online
 
 ]
 
@@ -232,6 +283,24 @@ Let's use @@LINK[k8s/admission-configuration.yaml]:
 - The DaemonSet is created
 
 - But the Pods don't get created
+
+---
+
+## So, which solution is the best?
+
+- It depends!
+
+- If namespaces are exclusively created by admins and deployment pipelines:
+
+  *make sure the pipelines set the labels properly*
+
+- If users need to be able to create arbitrary namespaces:
+
+  *enable admission configuration and a validation rule to block security labels*
+
+- If you can't enable admission configuration (e.g. some managed clusters):
+
+  *you can work around it with more complex mutation/validation rules*
 
 ???
 
