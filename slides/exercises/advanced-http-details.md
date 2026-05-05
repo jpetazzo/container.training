@@ -122,25 +122,29 @@ Try to complete at least one path; but feel free to experiment with other option
 
 - Pick a controller (e.g.: Traefik)
 
-- Install controller on cluster
+- Install controller on cluster (with official Helm chart)
 
-- Install a demo app (e.g.: `jpetazzo/color`)
+- Install a demo app (e.g.: `jpetazzo/color` with Deployment+Service)
 
 - Expose demo app on a domain name with Ingress resource
 
 - Script the whole setup
 
-  (make sure script is idempotent!)
+  (or make sure you have accurate notes, we'll need them later!)
 
 ---
 
 ## Where to go next?
 
+*In no specific order...*
+
 - Expose demo app with an HTTPRoute
 
-- Install and expose juice-shop app
+- Install and expose the juice-shop app Helm chart
 
 - Replicate the whole setup on another cluster
+
+  (managed cluster, local KinD cluster...)
 
 ---
 
@@ -152,13 +156,15 @@ Try to complete at least one path; but feel free to experiment with other option
 
 - Deploy the dockercoins app
 
-  - expose webui, rng, hasher, with Ingress / HTTPRoute
+  - expose webui, rng, hasher, with Ingress or HTTPRoute
 
-  - expose redis with a TLSRoute
+  - expose redis with a TLSRoute (e.g. on `redis.<mydomain>`)
 
   - try a TCPRoute (experimental!)
 
 Note: for the TLSRoute, you can use a valid cert or a manual, self-signed one.
+
+Note: to connect to Redis over TLS, you can use `openssl s_client` or `redis --tls`.
 
 ---
 
