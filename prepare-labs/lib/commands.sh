@@ -595,6 +595,10 @@ _cmd_kubeadm() {
     pssh -I "sudo tee /etc/containerd/config.toml" < lib/containerd-config.toml
     pssh "sudo systemctl restart containerd"
 
+    # Copy the AdmissionConfiguration file.
+    pssh "sudo mkdir -p /etc/kubernetes"
+    pssh -I "sudo tee /etc/kubernetes/AdmissionConfiguration.yaml" < lib/AdmissionConfiguration.yaml
+
     # Initialize kube control plane
     pssh --timeout 200 "
     IPV6=\$(ip -json a | jq -r '.[].addr_info[] | select(.scope==\"global\" and .family==\"inet6\") | .local' | head -n1)
@@ -613,7 +617,7 @@ _cmd_kubeadm() {
         kubeadm token generate > /tmp/token &&
         cat >/tmp/kubeadm-config.yaml <<EOF
 kind: InitConfiguration
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/v1beta4
 bootstrapTokens:
 - token: \$(cat /tmp/token)
 localAPIEndpoint:
@@ -627,7 +631,7 @@ nodeRegistration:
   $IGNORE_IPTABLES
 ---
 kind: JoinConfiguration
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/v1beta4
 discovery:
   bootstrapToken:
     apiServerEndpoint: \$(cat /etc/name_of_first_node):6443
@@ -645,10 +649,19 @@ apiVersion: kubelet.config.k8s.io/v1beta1
 failSwapOn: false
 ---
 kind: ClusterConfiguration
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/v1beta4
 apiServer:
   certSANs:
   - \$(cat /tmp/ip_address)
+  extraArgs:
+  - name: admission-control-config-file
+    value: /etc/kubernetes/AdmissionConfiguration.yaml
+  extraVolumes:
+  - name: admission-control-config-file
+    hostPath: /etc/kubernetes/AdmissionConfiguration.yaml
+    mountPath: /etc/kubernetes/AdmissionConfiguration.yaml
+    readOnly: true
+    pathType: File  
 networking:
   \$SERVICE_SUBNET
 $CLUSTER_CONFIGURATION_KUBERNETESVERSION
