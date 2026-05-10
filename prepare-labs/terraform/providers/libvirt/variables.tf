@@ -4,9 +4,9 @@ variable "node_sizes" {
   type = map(any)
   default = {
     XS = "1 512"
-    S = "1 2048"
-    M = "2 4096"
-    L = "4 8192"
+    S  = "1 2048"
+    M  = "2 4096"
+    L  = "4 8192"
   }
 }
 
