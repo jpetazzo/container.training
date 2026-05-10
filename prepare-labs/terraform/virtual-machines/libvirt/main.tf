@@ -76,8 +76,8 @@ resource "libvirt_volume" "cloudinit" {
 
 # Optional dedicated NAT network (created when libvirt_network_name is empty)
 resource "libvirt_network" "_" {
-  count     = var.libvirt_network_name == "" ? 1 : 0
-  name      = var.tag
+  for_each  = local.clusters
+  name      = each.value.cluster_name
   autostart = true
   forward = {
     mode = "nat"
@@ -90,26 +90,18 @@ resource "libvirt_network" "_" {
   }
   ips = [
     {
-      address = var.libvirt_network_ips_address
-      prefix  = var.libvirt_network_ips_prefix
+      address = each.value.network.gateway
+      prefix  = each.value.network.prefix
       dhcp = {
         ranges = [
           {
-            start = var.libvirt_network_ips_dhcp_range_start
-            end   = var.libvirt_network_ips_dhcp_range_end
+            start = each.value.network.dhcp_start
+            end   = each.value.network.dhcp_end
           }
         ]
       }
     }
   ]
-}
-
-locals {
-  network_name = (
-    var.libvirt_network_name != "" ?
-    var.libvirt_network_name :
-    libvirt_network._[0].name
-  )
 }
 
 # Virtual machine definition
@@ -193,7 +185,7 @@ resource "libvirt_domain" "_" {
         }
         source = {
           network = {
-            network = local.network_name
+            network = local.clusters[each.value.cluster_key].cluster_name
           }
         }
         wait_for_ip = {
