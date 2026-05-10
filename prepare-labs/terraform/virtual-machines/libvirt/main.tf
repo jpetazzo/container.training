@@ -1,7 +1,7 @@
 # Base volume used by the vm as a backing_store
 resource "libvirt_volume" "base" {
-  name     = "${var.tag}-base.qcow2"
-  pool     = var.libvirt_volume_pool
+  name = "${var.tag}-base.qcow2"
+  pool = var.libvirt_volume_pool
   target = {
     format = {
       type = "qcow2"
@@ -28,7 +28,7 @@ resource "libvirt_volume" "_" {
   # TODO: make it configurable for all providers
   capacity = 30 * 1024 * 1024 * 1024
   backing_store = {
-    path   = libvirt_volume.base.path
+    path = libvirt_volume.base.path
     format = {
       type = "qcow2"
     }
@@ -37,9 +37,9 @@ resource "libvirt_volume" "_" {
 
 # cloud-init seed ISO per node (user-data + network-config)
 resource "libvirt_cloudinit_disk" "_" {
-  for_each = local.nodes
-  name     = "${each.value.node_name}-cloudinit"
-  user_data = <<-EOF
+  for_each       = local.nodes
+  name           = "${each.value.node_name}-cloudinit"
+  user_data      = <<-EOF
     #cloud-config
     users:
       - name: ubuntu
@@ -49,7 +49,7 @@ resource "libvirt_cloudinit_disk" "_" {
           - ${trimspace(tls_private_key.ssh.public_key_openssh)}
     package_update: false
     EOF
-  meta_data = <<-EOF
+  meta_data      = <<-EOF
     instance-id: ${each.value.node_name}
     local-hostname: ${each.value.node_name}
     EOF
@@ -76,8 +76,8 @@ resource "libvirt_volume" "cloudinit" {
 
 # Optional dedicated NAT network (created when libvirt_network_name is empty)
 resource "libvirt_network" "_" {
-  count = var.libvirt_network_name == "" ? 1 : 0
-  name  = var.tag
+  count     = var.libvirt_network_name == "" ? 1 : 0
+  name      = var.tag
   autostart = true
   forward = {
     mode = "nat"
@@ -85,18 +85,18 @@ resource "libvirt_network" "_" {
   #   bridge = {
   #     name = "virbr-${var.tag}"
   #   }
-  domain    = {
+  domain = {
     name = var.libvirt_network_domain_name
   }
   ips = [
     {
       address = var.libvirt_network_ips_address
-      prefix =  var.libvirt_network_ips_prefix
+      prefix  = var.libvirt_network_ips_prefix
       dhcp = {
         ranges = [
           {
             start = var.libvirt_network_ips_dhcp_range_start
-            end =  var.libvirt_network_ips_dhcp_range_end
+            end   = var.libvirt_network_ips_dhcp_range_end
           }
         ]
       }
@@ -105,7 +105,7 @@ resource "libvirt_network" "_" {
 }
 
 locals {
-  network_name =  (
+  network_name = (
     var.libvirt_network_name != "" ?
     var.libvirt_network_name :
     libvirt_network._[0].name
@@ -116,7 +116,7 @@ locals {
 resource "libvirt_domain" "_" {
   for_each = local.nodes
 
-  name   = each.value.node_name
+  name = each.value.node_name
   # memory is in KiB in the 0.9.x provider (mirrors libvirt XML)
   memory = tonumber(split(" ", each.value.node_size)[1]) * 1024
   vcpu   = tonumber(split(" ", each.value.node_size)[0])
@@ -129,7 +129,7 @@ resource "libvirt_domain" "_" {
   }
 
   os = {
-    type = "hvm"
+    type         = "hvm"
     type_arch    = "x86_64"
     type_machine = "q35"
     boot = {
@@ -144,7 +144,7 @@ resource "libvirt_domain" "_" {
   devices = {
     controllers = [
       {
-        type = "pci"
+        type  = "pci"
         model = "pcie-root"
       }
     ]
@@ -159,9 +159,9 @@ resource "libvirt_domain" "_" {
           }
         }
         driver = {
-          name = "qemu"
-          type = "qcow2"
-          cache = "none"
+          name    = "qemu"
+          type    = "qcow2"
+          cache   = "none"
           discard = "unmap"
         }
         target = {
@@ -187,7 +187,7 @@ resource "libvirt_domain" "_" {
 
     interfaces = [
       {
-        type  = "network"
+        type = "network"
         model = {
           type = "virtio"
         }
@@ -210,7 +210,7 @@ resource "libvirt_domain" "_" {
           type = "isa-serial"
           port = "0"
           model = {
-            name="isa-serial"
+            name = "isa-serial"
           }
         }
       }
@@ -225,15 +225,15 @@ resource "libvirt_domain" "_" {
         }
       }
     ]
-   # Use the host /dev/urandom as vm random generator.
-   rng = {
-     model = "virtio"
-     backend = {
-       model = {
-         random = "/dev/urandom"
-       }
-     }
-   }
+    # Use the host /dev/urandom as vm random generator.
+    rng = {
+      model = "virtio"
+      backend = {
+        model = {
+          random = "/dev/urandom"
+        }
+      }
+    }
   }
 
   running = true
