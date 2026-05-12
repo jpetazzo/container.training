@@ -6,6 +6,9 @@ resource "scaleway_instance_server" "_" {
   name              = each.value.node_name
   enable_dynamic_ip = true
   tags              = [format("AUTHORIZED_KEY=%s", replace(trimspace(tls_private_key.ssh.public_key_openssh), " ", "_"))]
+  root_volume {
+    size_in_gb = 20
+  }
 }
 
 locals {
