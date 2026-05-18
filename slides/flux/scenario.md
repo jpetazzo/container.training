@@ -2,11 +2,11 @@
 
 - Previous training modules focused on individual topics
 
-  (e.g. RBAC, network policies, CRDs, Helm...)
+  (e.g. RBAC, network policies, CRDs, Helm…)
 
 - We will now show how to put everything together to deploy apps in production
 
-  (dealing with typical challenges like: multiple apps, multiple teams, multiple clusters...)
+  (dealing with typical challenges like: multiple apps, multiple teams, multiple clusters…)
 
 - Our first challenge will be to pick and choose which components to use
 
@@ -30,13 +30,11 @@ There are 3 teams in our company:
 
   - that app manages a collection of _rock & pop_ albums
 
-  - it's deployed with plain YAML manifests
-
 - the **_🎬MOVY_** team develops and manages the **_🎬MOVY_** app
 
   - that app manages a collection of _movie soundtrack_ albums
 
-  - it's deployed with Helm charts
+Both apps are deployed with plain YAML manifests
 
 ---
 
@@ -80,7 +78,7 @@ Let's see the differences between these clusters.
 
 - Requires extra components to be production-ready
 
-  (e.g. Flux or other gitops pipeline, observability...)
+  (e.g. Flux or other gitops pipeline, observability…)
 
 - Example: [Scaleway Kapsule][kapsule] (but many other KaaS options are available)
 
@@ -127,7 +125,7 @@ Let's see the differences between these clusters.
   
 - Each cluster and each env has its own lifecycle
 
-  (= it should be possible to deploy, add an extra components/feature...
+  (= it should be possible to deploy, add an extra components/feature…
   <br/>on one env without impacting the other)
 
 ---
@@ -190,9 +188,9 @@ This is where the album collection is initially loaded from the file [`album.jso
 
 The **_⚙️OPS_** team offers 2 deployment strategies that dev teams can use autonomously:
 
-- **_🎸ROCKY_** uses a `Flux` _GitOps_ workflow based on regular Kubernetes `YAML` resources
+- Both **_🎸ROCKY_** and **_🎬MOVY_** use a `Flux` _GitOps_ workflow based on regular Kubernetes `YAML` resources
 
-- **_🎬MOVY_** uses a `Flux` _GitOps_ workflow based on `Helm` charts
+- Another `Flux` _GitOps_ workflow based on `Helm` charts might be proposed as well
 
 ---
 
@@ -205,13 +203,13 @@ The **_⚙️OPS_** team aims to provide clusters offering the following feature
 
 - ingress and load-balancing capabilites
 
-- an enterprise-grade monitoring solution for real-time insights
+- an enterprise-grade monitoring solution for real-time insights et log browsing
 
 - automated policy rule enforcement to control Kubernetes resources requested by dev teams
 
-<!-- - HA PostgreSQL -->
+- a semi-managed PostgreSQL including automated failover and backups
 
-<!-- - HTTPs certificates to expose the applications -->
+- automated generation of HTTPs certificates to expose the applications
 
 ---
 
@@ -257,53 +255,50 @@ gitGraph
     checkout OPS
     merge YouRHere id:'YOU ARE HERE'
 
-    checkout OPS
-    commit id:'Flux install on CLOUDY cluster' tag:'T01'
-    branch TEST-env order:1
-    commit id:'FLUX install on TEST' tag:'T02' type: HIGHLIGHT
-
-    checkout OPS
-    commit id:'Flux config. for TEST tenant' tag:'T03'
+    commit id:'Flux install on CLOUDY cluster' type: HIGHLIGHT
+    commit id:'Prometheus + Grafana config.'
+    commit id:'Prometheus + Grafana install' type: HIGHLIGHT
+    commit id:'Loki config.'
+    commit id:'Loki install' type: HIGHLIGHT
+    commit id:'Traefik Proxy config.'
+    commit id:'Traefik Proxy install' type: HIGHLIGHT
+    commit id:'Flux config. for multitenants'
+    commit id:'Flux config. for TEST tenant'
     commit id:'namespace isolation by RBAC'
-    checkout TEST-env
-    merge OPS id:'ROCKY tenant creation' tag:'T04'
 
+    branch TEST-env order:1
+    commit id:'ROCKY tenant creation'
     checkout OPS
-    commit id:'ROCKY deploy. config.' tag:'R01'
+    commit id:'ROCKY deploy. config.'
 
     checkout TEST-env
-    merge OPS id:'TEST ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
+    merge OPS id:'TEST ready to deploy ROCKY'
 
     checkout ROCKY
     commit id:'ROCKY' tag:'v1.0.0'
 
     checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.0'
-
-    checkout OPS
-    commit id:'Ingress-controller config.' tag:'T05'
-    checkout TEST-env
-    merge OPS id:'Ingress-controller install' type: HIGHLIGHT tag:'T06'
+    merge ROCKY tag:'ROCKY v1.0.0' type: HIGHLIGHT
 
     checkout OPS
     commit id:'ROCKY patch for ingress config.' tag:'R03'
     checkout TEST-env
-    merge OPS id:'ingress config. for ROCKY app'
+    merge OPS id:'ingress config. for ROCKY app' type: HIGHLIGHT
 
     checkout ROCKY
     commit id:'blue color' tag:'v1.0.1'
     checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.1'
+    merge ROCKY tag:'ROCKY v1.0.1' type: HIGHLIGHT
 
     checkout ROCKY
     commit id:'pink color' tag:'v1.0.2'
     checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.2'
+    merge ROCKY tag:'ROCKY v1.0.2' type: HIGHLIGHT
 
     checkout OPS
-    commit id:'FLUX config for MOVY deployment' tag:'M01'
+    commit id:'FLUX config for MOVY deployment'
     checkout TEST-env
-    merge OPS id:'FLUX ready to deploy MOVY' type: HIGHLIGHT tag:'M02'
+    merge OPS id:'FLUX ready to deploy MOVY'
 
     checkout MOVY
     commit id:'MOVY' tag:'v1.0.3'
@@ -313,22 +308,31 @@ gitGraph
     checkout OPS
     commit id:'Network policies'
     checkout TEST-env
-    merge OPS type: HIGHLIGHT tag:'T07'
+    merge OPS type: HIGHLIGHT
 
     checkout OPS
-    commit id:'k0s install on METAL cluster' tag:'K01'
-    commit id:'Flux config. for METAL cluster' tag:'K02'
+    commit id:'FLUX config. for OLM deployment'
+    checkout TEST-env
+    merge OPS id:'OLM deployment' type: HIGHLIGHT
+    checkout OPS
+    commit id:'FLUX config. for CloudNative-PG deployment'
+    checkout TEST-env
+    merge OPS id:'CloudNative-PG deployment' type: HIGHLIGHT
+
+    checkout MOVY
+    commit id:'connection to CloudNative-PG cluster'
+    checkout TEST-env
+    merge MOVY tag:'MOVY v1.0.3' type: HIGHLIGHT
+
+    checkout OPS
+    commit id:'k0s install on METAL cluster'
+    commit id:'Flux config. for METAL cluster'
     branch METAL_TEST-PROD order:3
     commit id:'ROCKY/MOVY tenants on METAL' type: HIGHLIGHT
     checkout OPS
-    commit id:'Flux config. for OpenEBS' tag:'K03'
+    commit id:'Flux config. for OpenEBS'
     checkout METAL_TEST-PROD
     merge OPS id:'openEBS on METAL' type: HIGHLIGHT
-
-    checkout OPS
-    commit id:'Prometheus install'
-    checkout TEST-env
-    merge OPS type: HIGHLIGHT
 
     checkout OPS
     commit id:'Kyverno install'

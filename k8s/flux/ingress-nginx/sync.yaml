@@ -1,0 +1,24 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: ingress-nginx
+  namespace: ingress-nginx
+spec:
+  interval: 1m0s
+  ref:
+    branch: release-1.14
+  url: https://github.com/kubernetes/ingress-nginx/
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ingress-nginx
+  namespace: ingress-nginx
+spec:
+  interval: 1m0s
+  path: ./deploy/static/provider/scw
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: ingress-nginx

@@ -1,4 +1,4 @@
-# T02- creating **_⚗️TEST_** env on our **_☁️CLOUDY_** cluster
+# Creating **_⚗️TEST_** env on our **_☁️CLOUDY_** cluster
 
 Let's take a look at our **_☁️CLOUDY_** cluster!
 
@@ -56,11 +56,11 @@ Before installation, we need to check that:
 
 ```bash
 k8s@shpod:~$ flux --version
-flux version 2.5.1
+flux version 2.7.5
 
 k8s@shpod:~$ flux check --pre
 ► checking prerequisites
-✔ Kubernetes 1.32.3 >=1.30.0-0
+✔ Kubernetes 1.35.1 >=1.32.0-0
 ✔ prerequisites checks passed
 ```
 
@@ -94,7 +94,6 @@ class: pic
 ### Creating dedicated `Github` repo to host Flux config
 
 .lab[
-
 - let's replace the `GITHUB_TOKEN` value by our _Personal Access Token_
 - and the `GITHUB_REPO` value by our specific repository name
 
@@ -107,7 +106,8 @@ k8s@shpod:~$ flux bootstrap github \
       --owner=${GITHUB_USER}       \
       --repository=${GITHUB_REPO}  \
       --team=OPS                   \
-      --team=ROCKY --team=MOVY     \
+      --team=STORAGE-ADMINS        \
+      --team=NETWORK-ADMINS        \
       --path=clusters/CLOUDY
 ```
 ]
@@ -148,8 +148,8 @@ Here is the result
 ✔ repository "https://github.com/container-training-fleet/fleet-config-using-flux-XXXXX" created                                                                                                                                                        
 ► reconciling repository permissions
 ✔ granted "maintain" permissions to "OPS"
-✔ granted "maintain" permissions to "ROCKY"
-✔ granted "maintain" permissions to "MOVY"
+✔ granted "maintain" permissions to "STORAGE-ADMINS"
+✔ granted "maintain" permissions to "NETWORK-ADMINS"
 ► reconciling repository permissions
 ✔ reconciled repository permissions
 ► cloning branch "main" from Git repository "https://github.com/container-training-fleet/fleet-config-using-flux-XXXXX.git"
@@ -237,7 +237,7 @@ Let's review our `Flux` configuration files we've created and pushed into the `G
 ---
 
 class: pic
-<!-- FIXME: wrong schema -->
+
 ![Flux architecture](images/flux/flux-controllers.png)
 
 ---
@@ -402,6 +402,46 @@ For more info about how Kubernetes resource natures are identified by their `Gro
 
 ---
 
+### 💡 A standard components catalog : the power of Kustomization
+
+Flux Kustomization resource is made to target remote pieces of installation and configuration
+
+We will create a folder with primitives to deploy any component…
+
+… and Kustomizations into the folder where our cluster install is configured
+
+- to target every components we want to deploy
+
+![Flux components catalog](images/flux/flux-components-catalog.png)
+
+---
+
+## Creating `Github` source in Flux for components catalog repository
+
+.lab[
+
+- Let's create the `Flux` Source to target our component catalog
+
+```bash
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ mkdir -p clusters/CLOUDY/install-components
+
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create source git catalog \
+    --namespace=flux-system                                               \
+    --url=https://github.com/jpetazzo/container.training.git              \
+    --branch=main  --export > ./clusters/CLOUDY/install-components/sync.yaml
+
+k8s@shpod:~/fleet-config-using-flux-XXXXX$     \
+    cd ./clusters/CLOUDY/install-components && \
+    kustomize create --autodetect &&           \
+    cd -
+
+- and commit & push
+```
+]
+
+---
+
+
 ### 🗺️ Where are we in our scenario?
 
 <pre class="mermaid">
@@ -416,35 +456,14 @@ For more info about how Kubernetes resource natures are identified by their `Gro
 }%%
 gitGraph
     commit id:"0" tag:"start"
-    branch ROCKY order:3
-    branch MOVY order:4
-    branch YouRHere order:5
+    branch ROCKY order:4
+    branch MOVY order:5
+    branch YouRHere order:6
 
     checkout OPS
-    commit id:'Flux install on CLOUDY cluster' tag:'T01'
-    branch TEST-env order:1
-    commit id:'FLUX install on TEST' tag:'T02' type: HIGHLIGHT
-
+    commit id:'Flux install on CLOUDY cluster' type: HIGHLIGHT
     checkout YouRHere
     commit id:'x'
     checkout OPS
     merge YouRHere id:'YOU ARE HERE'
-
-    checkout OPS
-    commit id:'Flux config. for TEST tenant' tag:'T03'
-    commit id:'namespace isolation by RBAC'
-    checkout TEST-env
-    merge OPS id:'ROCKY tenant creation' tag:'T04'
-
-    checkout OPS
-    commit id:'ROCKY deploy. config.' tag:'R01'
-
-    checkout TEST-env
-    merge OPS id:'TEST ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
-
-    checkout ROCKY
-    commit id:'ROCKY' tag:'v1.0.0'
-
-    checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.0'
 </pre>
