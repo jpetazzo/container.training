@@ -1234,6 +1234,22 @@ EOF
     pssh -I sudo tee /opt/tailhist/index.html <lib/tailhist.html
 }
 
+_cmd talos "Add Talos nodes to an OpenStack batch of machines."
+_cmd_talos() {
+    TAG=$1
+    need_tag
+
+    cp terraform/talos/* tags/$TAG
+    cd tags/$TAG
+    terraform apply -auto-approve
+
+    pssh "
+    curl -sL https://talos.dev/install | sh
+    "
+    echo "talos_ok" > status
+
+}
+
 _cmd terraform "Apply Terraform configuration to provision resources."
 _cmd_terraform() {
     TAG=$1
