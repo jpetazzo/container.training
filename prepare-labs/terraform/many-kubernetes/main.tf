@@ -79,10 +79,13 @@ data "external" "externalips" {
     <<-EOT
       set -e
       cat >/dev/null
-      export KUBECONFIG=${local_file.kubeconfig[each.key].filename}
+      # Not quite sure why I was using the guest kubeconfig here,
+      # instead of the host one - because when we tear down the
+      # vclusters, the guest API doesn't respond anymore anyway...
+      #export KUBECONFIG=${local_file.kubeconfig[each.key].filename}
       echo -n '{"externalips": "'
       kubectl get nodes \
-      -o 'jsonpath={.items[*].status.addresses[?(@.type=="ExternalIP")].address}'
+      -o 'jsonpath={.items[*].metadata.labels.external_ip}'
       echo -n '"}'
       EOT
   ]
