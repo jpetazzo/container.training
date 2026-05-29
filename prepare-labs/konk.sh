@@ -18,8 +18,8 @@
 set -e
 
 KONKTAG=konk
-PROVIDER=scaleway
-STUDENTS=2
+PROVIDER=external
+STUDENTS=1
 
 case "$PROVIDER" in
 linode)
@@ -39,6 +39,8 @@ export KUBECONFIG=~/kubeconfig
 
 if [ "$PROVIDER" = "kind" ]; then
   kind create cluster --name $KONKTAG
+  ADDRTYPE=InternalIP
+elif [ "$PROVIDER" = "external" ]; then
   ADDRTYPE=InternalIP
 else
   if ! [ -f tags/$KONKTAG/stage2/kubeconfig.101 ]; then
@@ -61,6 +63,8 @@ done
 helm upgrade --install --repo https://prometheus-community.github.io/helm-charts \
   --namespace prom-system --create-namespace \
   kube-prometheus-stack kube-prometheus-stack
+# if the cluster has strict pod security settings, this will allow node exporter to run
+kubectl label ns prom-system pod-security.kubernetes.io/enforce=privileged
 
 # and also fix sysctl
 kubectl apply -f ../k8s/sysctl.yaml --namespace kube-system
