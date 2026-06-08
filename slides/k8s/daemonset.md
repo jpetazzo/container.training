@@ -34,9 +34,9 @@
 
 - Daemon sets are great for cluster-wide, per-node processes:
 
-  - `kube-proxy`
+  - network components like `kube-proxy`, `calico`, `cilium`...
 
-  - `weave` (our overlay network)
+  - storage components (e.g. CSI plugins)
 
   - monitoring agents
 

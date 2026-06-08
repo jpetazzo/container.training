@@ -602,18 +602,41 @@ _cmd_kubeadm() {
 
     # Initialize kube control plane
     pssh --timeout 200 "
-    IPV6=\$(ip -json a | jq -r '.[].addr_info[] | select(.scope==\"global\" and .family==\"inet6\") | .local' | head -n1)
-    if [ \"\$IPV6\" ]; then
-      ADVERTISE=\"advertiseAddress: \$IPV6\"
-      SERVICE_SUBNET=\"serviceSubnet: fdff::/112\"
-      touch /tmp/install-cilium-ipv6-only
-      touch /tmp/ipv6-only
+    IPV4=\$(ip -json route get 1.1.1.1 | jq -r .[0].prefsrc)
+    IPV6=\$(ip -json route get 2600::  | jq -r .[0].prefsrc)
+    if [ \"\$IPV4\" ] && [ \"\$IPV6\" ]; then
+      KUBEADM_ADVERTISE=
+      SERVICE_SUBNET=10.96.0.0/12,fdff::/112
+      CILIUM_IPV6_ENABLED=true
+      CILIUM_IPV4_ENABLED=true
+      CILIUM_UNDERLAYPROTOCOL=ipv4
+    elif [ \"\$IPV6\" ]; then
+      KUBEADM_ADVERTISE=\"advertiseAddress: \$IPV6\"
+      SERVICE_SUBNET=fdff::/112
+      CILIUM_IPV6_ENABLED=true
+      CILIUM_IPV4_ENABLED=false
+      CILIUM_UNDERLAYPROTOCOL=ipv6
+      # Hack to skip krew and ngrok install
+      # (krew is broken on IPV6-only hosts, as it relies on GitHub)
+      sudo -u $USER_LOGIN mkdir /home/$USER_LOGIN/.krew
+      # (in 2025, Ngrok didn't install cleanly on IPV6-only hosts)
+      sudo ln -s /bin/false /usr/local/bin/ngrok
     else
-      ADVERTISE=
-      SERVICE_SUBNET=
-      touch /tmp/install-weave
+      KUBEADM_ADVERTISE=
+      KUBEADM_SERVICE_SUBNET=10.96.0.0/12
+      CILIUM_IPV6_ENABLED=false
+      CILIUM_IPV4_ENABLED=true
+      CILIUM_UNDERLAYPROTOCOL=ipv4
     fi
-    echo IPV6=\$IPV6 ADVERTISE=\$ADVERTISE
+    cat >/tmp/cilium.yaml <<EOF
+cni:
+  chainingMode: portmap
+ipv4:
+  enabled: \$CILIUM_IPV4_ENABLED
+ipv6:
+  enabled: \$CILIUM_IPV6_ENABLED
+underlayProtocol: \$CILIUM_UNDERLAYPROTOCOL
+EOF
     if i_am_first_node && [ ! -f /etc/kubernetes/admin.conf ]; then
         kubeadm token generate > /tmp/token &&
         cat >/tmp/kubeadm-config.yaml <<EOF
@@ -622,7 +645,7 @@ apiVersion: kubeadm.k8s.io/v1beta4
 bootstrapTokens:
 - token: \$(cat /tmp/token)
 localAPIEndpoint:
-  \$ADVERTISE
+  \$KUBEADM_ADVERTISE
 nodeRegistration:
   ignorePreflightErrors:
   - NumCPU
@@ -664,7 +687,7 @@ apiServer:
     readOnly: true
     pathType: File  
 networking:
-  \$SERVICE_SUBNET
+  serviceSubnet: \$SERVICE_SUBNET
 $CLUSTER_CONFIGURATION_KUBERNETESVERSION
 EOF
 	sudo kubeadm init --config=/tmp/kubeadm-config.yaml
@@ -680,23 +703,13 @@ EOF
         sudo chown -R $USER_LOGIN /home/$USER_LOGIN/.kube
     fi"
 
-    # Install weave as the pod network
+    # Set up CNI
     pssh "
     if i_am_first_node; then
-        if [ -f /tmp/install-weave ]; then
-            curl -fsSL \$GITHUB/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s-1.11.yaml |
-            sed s,weaveworks/weave,quay.io/rackspace/weave, |
-            kubectl apply -f-
-        fi
-        if [ -f /tmp/install-cilium-ipv6-only ]; then
-            helm upgrade -i cilium cilium --repo https://helm.cilium.io/ \
-            --namespace kube-system \
-            --set cni.chainingMode=portmap \
-            --set ipv6.enabled=true \
-            --set ipv4.enabled=false \
-            --set underlayProtocol=ipv6 \
-            --version 1.18.3
-        fi
+        helm upgrade -i cilium cilium --repo https://helm.cilium.io/ \
+        --namespace kube-system \
+        --values /tmp/cilium.yaml \
+        --version 1.18.3
     fi"
 
     # FIXME this is a gross hack to add the deployment key to our SSH agent,
@@ -878,7 +891,7 @@ EOF
 
     # Install the krew package manager
     pssh "
-    if [ ! -d /home/$USER_LOGIN/.krew ] && [ ! -f /tmp/ipv6-only ]; then
+    if [ ! -d /home/$USER_LOGIN/.krew ]; then
         cd /tmp &&
         KREW=krew-linux_$ARCH
         curl -fsSL \$GITHUB/kubernetes-sigs/krew/releases/latest/download/\$KREW.tar.gz |
@@ -997,7 +1010,7 @@ EOF
     # Ngrok. Note that unfortunately, this is the x86_64 binary.
     # We might have to rethink how to handle this for multi-arch environments.
     pssh "
-    if [ ! -x /usr/local/bin/ngrok ] && [ ! -f /tmp/ipv6-only ]; then
+    if [ ! -x /usr/local/bin/ngrok ]; then
         curl -fsSL https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz |
         sudo tar -zxvf- -C /usr/local/bin ngrok
     fi"
