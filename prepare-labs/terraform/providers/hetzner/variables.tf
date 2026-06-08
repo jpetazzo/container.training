@@ -15,7 +15,7 @@ variable "node_sizes" {
   type = map(any)
   default = {
     S = "cx11" # These are actually not available anymore :-)
-    M = "cx23"
+    M = "cx23" # might have to try cpx22 instead
     L = "cx33"
   }
 }
