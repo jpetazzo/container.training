@@ -70,6 +70,8 @@ resource "null_resource" "wait_for_nodes" {
   }
 }
 
+# FIXME: for vcluster setups, instead of using nodes' ExternalIP,
+# we should use the external_ip label set by the konk script.
 data "external" "externalips" {
   for_each   = local.clusters
   depends_on = [null_resource.wait_for_nodes]
@@ -79,13 +81,10 @@ data "external" "externalips" {
     <<-EOT
       set -e
       cat >/dev/null
-      # Not quite sure why I was using the guest kubeconfig here,
-      # instead of the host one - because when we tear down the
-      # vclusters, the guest API doesn't respond anymore anyway...
-      #export KUBECONFIG=${local_file.kubeconfig[each.key].filename}
+      export KUBECONFIG=${local_file.kubeconfig[each.key].filename}
       echo -n '{"externalips": "'
       kubectl get nodes \
-      -o 'jsonpath={.items[*].metadata.labels.external_ip}'
+      -o 'jsonpath={.items[*].status.addresses[?(@.type=="ExternalIP")].address}'
       echo -n '"}'
       EOT
   ]
