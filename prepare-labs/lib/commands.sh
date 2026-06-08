@@ -556,10 +556,11 @@ EOF"
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
     pssh --timeout 200 "
     sudo apt-get update -q &&
-    sudo apt-get install -qy kubelet kubeadm kubectl &&
+    sudo apt-get install -qy kubelet kubeadm kubectl cri-tools &&
     sudo apt-mark hold kubelet kubeadm kubectl &&
     kubeadm completion bash | sudo tee /etc/bash_completion.d/kubeadm &&
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl &&
+    crictl completion bash | sudo tee /etc/bash_completion.d/crictl &&
     echo 'alias k=kubecolor' | sudo tee /etc/bash_completion.d/k &&
     echo 'complete -F __start_kubectl k' | sudo tee -a /etc/bash_completion.d/k"
 
@@ -965,13 +966,8 @@ EOF
     fi"
 
     ##VERSION## https://github.com/bitnami-labs/sealed-secrets/releases
-    KUBESEAL_VERSION=0.26.2
+    KUBESEAL_VERSION=0.37.0
     URL=\$GITHUB/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-${ARCH}.tar.gz
-    #case $ARCH in
-    #amd64) FILENAME=kubeseal-linux-amd64;;
-    #arm64) FILENAME=kubeseal-arm64;;
-    #*)     FILENAME=nope;;
-    #esac
     pssh "
     if [ ! -x /usr/local/bin/kubeseal ]; then
         curl -fsSL $URL |
