@@ -567,7 +567,8 @@ EOF"
     # Install helm early
     # (so that we can use it to install e.g. Cilium etc.)
     ARCH=${ARCHITECTURE-amd64}
-    HELM_VERSION=3.19.1
+    # https://github.com/helm/helm/releases
+    HELM_VERSION=4.2.0
     pssh "
     if [ ! -x /usr/local/bin/helm ]; then
         curl -fsSL https://get.helm.sh/helm-v${HELM_VERSION}-linux-${ARCH}.tar.gz |
@@ -709,8 +710,9 @@ EOF
         helm upgrade -i cilium cilium --repo https://helm.cilium.io/ \
         --namespace kube-system \
         --values /tmp/cilium.yaml \
-        --version 1.18.3
+        --version 1.19.4
     fi"
+    # https://github.com/cilium/cilium/releases
 
     # FIXME this is a gross hack to add the deployment key to our SSH agent,
     # so that it can be used to bounce from host to host (which is necessary
@@ -734,7 +736,9 @@ EOF
     # Install metrics server
     pssh -I <../k8s/metrics-server.yaml "
     if i_am_first_node; then
-	  kubectl apply -f-
+        kubectl apply -f-
+    else
+        cat
     fi"
     # It would be nice to be able to use that helm chart for metrics-server.
     # Unfortunately, the charts themselves are on github.com and we want to
