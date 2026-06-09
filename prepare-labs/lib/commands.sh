@@ -1255,9 +1255,11 @@ _cmd_talos() {
     cp terraform/talos/* tags/$TAG
     cd tags/$TAG
     terraform apply -auto-approve
+    cd ../..
 
     pssh "
     curl -sL https://talos.dev/install | sh
+    talosctl completion bash | sudo tee /etc/bash_completion.d/talosctl
     "
     echo "talos_ok" > status
 
