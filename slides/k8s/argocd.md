@@ -69,6 +69,24 @@ ArgoCD manages **applications** by **syncing** their **live state** with their *
 
 ---
 
+class: extra-details
+
+## In practice...
+
+- This is a simplified ArgoCD install
+
+- A typical install might have:
+
+  - a public URL
+
+  - login/password for users
+
+  - SSO integration
+
+  - multi-cluster configuration
+
+---
+
 ## Logging in with the ArgoCD CLI
 
 - The CLI can talk to the ArgoCD API server or to the Kubernetes API server
@@ -186,9 +204,16 @@ It is responsible for invoking any user-defined hooks for lifecycle events (*Pre
 
 - We need a repository with Kubernetes YAML manifests
 
-- You can fork [kubercoins] or create a new, empty repository
+- You can fork one of these repositories:
 
-- If you create a new, empty repository, add some manifests to it
+  [jpetazzo/color][jpetazzo-color] (in subdirectory [kubernetes/blue][jpetazzo-color-yaml])
+
+  [jpetazzo/kubercoins][kubercoins]
+
+- Or create your own repository and add some manifests to it
+
+[jpetazzo-color]: https://github.com/jpetazzo/color
+[jpetazzo-color-yaml]: https://github.com/jpetazzo/color/tree/main/kubernetes/blue
 
 ---
 
@@ -206,7 +231,7 @@ It is responsible for invoking any user-defined hooks for lifecycle events (*Pre
 
 - Let's use the CLI to add an Application:
   ```bash
-    argocd app create kubercoins \ 
+    argocd app create kubercoins \
            --repo https://github.com/`<your_user>/<your_repo>`.git \
            --path . --revision `<branch>` \
            --dest-server https://kubernetes.default.svc \
@@ -541,6 +566,10 @@ git push origin staging
 - Option 1: repeat the previous command (updating app name and values)
 
 - Option 2: author YAML manifests and apply them
+
+- Option 3: use an ArgoCD Application Set
+
+  (this is a more advanced technique not covered in this section!)
 
 ---
 

@@ -86,8 +86,8 @@ a few other contributors. It is actively maintained.
 - [prepare-local](prepare-local/), [prepare-machine](prepare-machine/):
   - Contributed scripts to automate the creation of local environments.
     These could use some help to test/check that they work.
-- [prepare-vms](prepare-vms/):
-  - Scripts to automate the creation of AWS instances for students.
+- [prepare-labs](prepare-labs/):
+  - Scripts to automate the creation of the lab environment for students.
     These are routinely used and actively maintained.
 - [slides](slides/):
   - All the slides! They are assembled from Markdown files with

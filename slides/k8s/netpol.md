@@ -240,7 +240,9 @@ The second command will fail and time out after 3 seconds.
 
 - For instance, Weave added support for egress rules [in version 2.4](https://github.com/weaveworks/weave/pull/3313) (released in July 2018)
 
-- But only recently added support for ipBlock [in version 2.5](https://github.com/weaveworks/weave/pull/3367) (released in Nov 2018)
+- And added support for ipBlock [in version 2.5](https://github.com/weaveworks/weave/pull/3367) (released in Nov 2018)
+
+- Before 2023, AWS EKS didn't install a network policy controller at all
 
 - Unsupported features might be silently ignored
 

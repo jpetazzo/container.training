@@ -212,7 +212,7 @@ For more details, check [this blog post](https://erickhun.com/posts/kubernetes-f
 
 - Option 3: write some *anonymous* memory pages to swap so they can be freed up
 
-  → similar to option 2, but that memory might be more likely ot be used later
+  → similar to option 2, but that memory might be more likely to be used later
 
 - Option 4: terminate a process and reclaim all its memory
 

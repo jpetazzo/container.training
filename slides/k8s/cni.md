@@ -48,7 +48,7 @@ Look in each plugin's directory for its documentation.
 
 ## CNI configuration in practice
 
-- When we set up the "pod network" (like Calico, Weave...) it ships a CNI configuration
+- When we set up the "pod network" (like Calico, Cilium...) it ships a CNI configuration
 
   (and sometimes, custom CNI plugins)
 

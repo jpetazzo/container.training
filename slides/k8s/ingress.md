@@ -522,7 +522,7 @@ class: extra-details
 
   (e.g. one for internal, another for external traffic)
 
-- To indicate which Ingress Controller should be used by a given Ingress resouce:
+- To indicate which Ingress Controller should be used by a given Ingress resource:
 
   - before Kubernetes 1.18, use the `kubernetes.io/ingress.class` annotation
 

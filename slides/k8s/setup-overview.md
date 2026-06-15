@@ -293,7 +293,7 @@ Don't hesitate to hire help before going to production with your first K8S app!
 
     3. Run `kubeadm init` on the first node (it deploys the control plane on that node)
 
-    4. Set up  Weave (the overlay network) with a single `kubectl apply` command
+    4. Set up  Cilium (the overlay network) with a single `helm install` command
 
     5. Run `kubeadm join` on the other nodes (with the token produced by `kubeadm init`)
 

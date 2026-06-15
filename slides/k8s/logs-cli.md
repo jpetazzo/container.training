@@ -117,13 +117,13 @@ Exactly what we need!
 
 .lab[
 
-- View what's up with the `weave` system containers:
+- View what's up with the `coredns` system containers:
   ```bash
-  stern --tail 1 --timestamps --all-namespaces weave
+  stern --tail 1 --timestamps --all-namespaces coredns
   ```
 
 <!--
-```wait weave-npc```
+```wait coredns-```
 ```key ^C```
 -->
 

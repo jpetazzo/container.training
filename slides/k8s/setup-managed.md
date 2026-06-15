@@ -367,11 +367,11 @@ class: extra-details
 
 - To see available versions and CNI plugins, run `scw k8s version list`
 
-- As of May 2020, Kapsule supports:
+- As of May 2026, Kapsule supports:
 
-  - multiple CNI plugins, including: cilium, calico, weave, flannel
+  - multiple CNI plugins, including: calico, cilium, kilo
 
-  - Kubernetes versions 1.15 to 1.18
+  - Kubernetes versions 1.32 to 1.35
 
   - multiple container runtimes, including: Docker, containerd, CRI-O
 

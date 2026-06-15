@@ -4,14 +4,16 @@ resource "scaleway_instance_server" "_" {
   image             = "ubuntu_jammy"
   zone              = var.location
   name              = each.value.node_name
-  enable_ipv6       = true
   enable_dynamic_ip = true
   tags              = [format("AUTHORIZED_KEY=%s", replace(trimspace(tls_private_key.ssh.public_key_openssh), " ", "_"))]
+  root_volume {
+    size_in_gb = 20
+  }
 }
 
 locals {
   ip_addresses = {
     for key, value in local.nodes :
-    key => scaleway_instance_server._[key].public_ip
+    key => scaleway_instance_server._[key].public_ips[0].address
   }
 }

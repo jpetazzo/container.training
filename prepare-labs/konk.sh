@@ -4,21 +4,22 @@
 # 500 MB RAM
 # 10% CPU
 # (See https://docs.google.com/document/d/1n0lwp6rQKQUIuo_A5LQ1dgCzrmjkDjmDtNj1Jn92UrI)
-# PRO2-XS = 4 core, 16 gb
 # Note that we also need 2 volumes per vcluster (one for vcluster itself, one for shpod),
 # so we might hit the maximum number of volumes per node!
-# (TODO: check what that limit is on Scaleway and Linode)
+# (the limit on Scaleway is 15 volumes per node; 8 on Linode apparently? seems low, to check!)
 #
 # With vspod:
 # 800 MB RAM
 # 33% CPU
 #
+# PRO2-XS = 4 core, 16 GB
+# DEV1-XL = 4 core, 12 GB
 
 set -e
 
 KONKTAG=konk
-PROVIDER=linode
-STUDENTS=2
+PROVIDER=external
+STUDENTS=1
 
 case "$PROVIDER" in
 linode)
@@ -26,7 +27,7 @@ linode)
   export TF_VAR_location=fr-par
   ;;
 scaleway)
-  export TF_VAR_node_size=PRO2-XS
+  export TF_VAR_node_size=DEV1-XL
   # For tiny testing purposes, these are okay too:
   #export TF_VAR_node_size=PLAY2-NANO
   export TF_VAR_location=fr-par-2
@@ -38,6 +39,8 @@ export KUBECONFIG=~/kubeconfig
 
 if [ "$PROVIDER" = "kind" ]; then
   kind create cluster --name $KONKTAG
+  ADDRTYPE=InternalIP
+elif [ "$PROVIDER" = "external" ]; then
   ADDRTYPE=InternalIP
 else
   if ! [ -f tags/$KONKTAG/stage2/kubeconfig.101 ]; then
@@ -60,6 +63,8 @@ done
 helm upgrade --install --repo https://prometheus-community.github.io/helm-charts \
   --namespace prom-system --create-namespace \
   kube-prometheus-stack kube-prometheus-stack
+# if the cluster has strict pod security settings, this will allow node exporter to run
+kubectl label ns prom-system pod-security.kubernetes.io/enforce=privileged
 
 # and also fix sysctl
 kubectl apply -f ../k8s/sysctl.yaml --namespace kube-system

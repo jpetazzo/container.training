@@ -556,17 +556,19 @@ EOF"
     sudo tee /etc/apt/sources.list.d/kubernetes.list"
     pssh --timeout 200 "
     sudo apt-get update -q &&
-    sudo apt-get install -qy kubelet kubeadm kubectl &&
+    sudo apt-get install -qy kubelet kubeadm kubectl cri-tools &&
     sudo apt-mark hold kubelet kubeadm kubectl &&
     kubeadm completion bash | sudo tee /etc/bash_completion.d/kubeadm &&
     kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl &&
+    crictl completion bash | sudo tee /etc/bash_completion.d/crictl &&
     echo 'alias k=kubecolor' | sudo tee /etc/bash_completion.d/k &&
     echo 'complete -F __start_kubectl k' | sudo tee -a /etc/bash_completion.d/k"
 
     # Install helm early
     # (so that we can use it to install e.g. Cilium etc.)
     ARCH=${ARCHITECTURE-amd64}
-    HELM_VERSION=3.19.1
+    # https://github.com/helm/helm/releases
+    HELM_VERSION=4.2.0
     pssh "
     if [ ! -x /usr/local/bin/helm ]; then
         curl -fsSL https://get.helm.sh/helm-v${HELM_VERSION}-linux-${ARCH}.tar.gz |
@@ -595,29 +597,56 @@ _cmd_kubeadm() {
     pssh -I "sudo tee /etc/containerd/config.toml" < lib/containerd-config.toml
     pssh "sudo systemctl restart containerd"
 
+    # Copy the AdmissionConfiguration file.
+    pssh "sudo mkdir -p /etc/kubernetes"
+    pssh -I "sudo tee /etc/kubernetes/AdmissionConfiguration.yaml" < lib/AdmissionConfiguration.yaml
+
     # Initialize kube control plane
     pssh --timeout 200 "
-    IPV6=\$(ip -json a | jq -r '.[].addr_info[] | select(.scope==\"global\" and .family==\"inet6\") | .local' | head -n1)
-    if [ \"\$IPV6\" ]; then
-      ADVERTISE=\"advertiseAddress: \$IPV6\"
-      SERVICE_SUBNET=\"serviceSubnet: fdff::/112\"
-      touch /tmp/install-cilium-ipv6-only
-      touch /tmp/ipv6-only
+    IPV4=\$(ip -json route get 1.1.1.1 | jq -r .[0].prefsrc)
+    IPV6=\$(ip -json route get 2600::  | jq -r .[0].prefsrc)
+    if [ \"\$IPV4\" ] && [ \"\$IPV6\" ]; then
+      KUBEADM_ADVERTISE=
+      SERVICE_SUBNET=10.96.0.0/12,fdff::/112
+      CILIUM_IPV6_ENABLED=true
+      CILIUM_IPV4_ENABLED=true
+      CILIUM_UNDERLAYPROTOCOL=ipv4
+    elif [ \"\$IPV6\" ]; then
+      KUBEADM_ADVERTISE=\"advertiseAddress: \$IPV6\"
+      SERVICE_SUBNET=fdff::/112
+      CILIUM_IPV6_ENABLED=true
+      CILIUM_IPV4_ENABLED=false
+      CILIUM_UNDERLAYPROTOCOL=ipv6
+      # Hack to skip krew and ngrok install
+      # (krew is broken on IPV6-only hosts, as it relies on GitHub)
+      sudo -u $USER_LOGIN mkdir /home/$USER_LOGIN/.krew
+      # (in 2025, Ngrok didn't install cleanly on IPV6-only hosts)
+      sudo ln -s /bin/false /usr/local/bin/ngrok
     else
-      ADVERTISE=
-      SERVICE_SUBNET=
-      touch /tmp/install-weave
+      KUBEADM_ADVERTISE=
+      KUBEADM_SERVICE_SUBNET=10.96.0.0/12
+      CILIUM_IPV6_ENABLED=false
+      CILIUM_IPV4_ENABLED=true
+      CILIUM_UNDERLAYPROTOCOL=ipv4
     fi
-    echo IPV6=\$IPV6 ADVERTISE=\$ADVERTISE
+    cat >/tmp/cilium.yaml <<EOF
+cni:
+  chainingMode: portmap
+ipv4:
+  enabled: \$CILIUM_IPV4_ENABLED
+ipv6:
+  enabled: \$CILIUM_IPV6_ENABLED
+underlayProtocol: \$CILIUM_UNDERLAYPROTOCOL
+EOF
     if i_am_first_node && [ ! -f /etc/kubernetes/admin.conf ]; then
         kubeadm token generate > /tmp/token &&
         cat >/tmp/kubeadm-config.yaml <<EOF
 kind: InitConfiguration
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/v1beta4
 bootstrapTokens:
 - token: \$(cat /tmp/token)
 localAPIEndpoint:
-  \$ADVERTISE
+  \$KUBEADM_ADVERTISE
 nodeRegistration:
   ignorePreflightErrors:
   - NumCPU
@@ -627,7 +656,7 @@ nodeRegistration:
   $IGNORE_IPTABLES
 ---
 kind: JoinConfiguration
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/v1beta4
 discovery:
   bootstrapToken:
     apiServerEndpoint: \$(cat /etc/name_of_first_node):6443
@@ -645,12 +674,21 @@ apiVersion: kubelet.config.k8s.io/v1beta1
 failSwapOn: false
 ---
 kind: ClusterConfiguration
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/v1beta4
 apiServer:
   certSANs:
   - \$(cat /tmp/ip_address)
+  extraArgs:
+  - name: admission-control-config-file
+    value: /etc/kubernetes/AdmissionConfiguration.yaml
+  extraVolumes:
+  - name: admission-control-config-file
+    hostPath: /etc/kubernetes/AdmissionConfiguration.yaml
+    mountPath: /etc/kubernetes/AdmissionConfiguration.yaml
+    readOnly: true
+    pathType: File  
 networking:
-  \$SERVICE_SUBNET
+  serviceSubnet: \$SERVICE_SUBNET
 $CLUSTER_CONFIGURATION_KUBERNETESVERSION
 EOF
 	sudo kubeadm init --config=/tmp/kubeadm-config.yaml
@@ -666,24 +704,15 @@ EOF
         sudo chown -R $USER_LOGIN /home/$USER_LOGIN/.kube
     fi"
 
-    # Install weave as the pod network
+    # Set up CNI
     pssh "
     if i_am_first_node; then
-        if [ -f /tmp/install-weave ]; then
-            curl -fsSL \$GITHUB/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s-1.11.yaml |
-            sed s,weaveworks/weave,quay.io/rackspace/weave, |
-            kubectl apply -f-
-        fi
-        if [ -f /tmp/install-cilium-ipv6-only ]; then
-            helm upgrade -i cilium cilium --repo https://helm.cilium.io/ \
-            --namespace kube-system \
-            --set cni.chainingMode=portmap \
-            --set ipv6.enabled=true \
-            --set ipv4.enabled=false \
-            --set underlayProtocol=ipv6 \
-            --version 1.18.3
-        fi
+        helm upgrade -i cilium cilium --repo https://helm.cilium.io/ \
+        --namespace kube-system \
+        --values /tmp/cilium.yaml \
+        --version 1.19.4
     fi"
+    # https://github.com/cilium/cilium/releases
 
     # FIXME this is a gross hack to add the deployment key to our SSH agent,
     # so that it can be used to bounce from host to host (which is necessary
@@ -707,7 +736,9 @@ EOF
     # Install metrics server
     pssh -I <../k8s/metrics-server.yaml "
     if i_am_first_node; then
-	  kubectl apply -f-
+        kubectl apply -f-
+    else
+        cat
     fi"
     # It would be nice to be able to use that helm chart for metrics-server.
     # Unfortunately, the charts themselves are on github.com and we want to
@@ -864,7 +895,7 @@ EOF
 
     # Install the krew package manager
     pssh "
-    if [ ! -d /home/$USER_LOGIN/.krew ] && [ ! -f /tmp/ipv6-only ]; then
+    if [ ! -d /home/$USER_LOGIN/.krew ]; then
         cd /tmp &&
         KREW=krew-linux_$ARCH
         curl -fsSL \$GITHUB/kubernetes-sigs/krew/releases/latest/download/\$KREW.tar.gz |
@@ -952,13 +983,8 @@ EOF
     fi"
 
     ##VERSION## https://github.com/bitnami-labs/sealed-secrets/releases
-    KUBESEAL_VERSION=0.26.2
+    KUBESEAL_VERSION=0.37.0
     URL=\$GITHUB/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-${ARCH}.tar.gz
-    #case $ARCH in
-    #amd64) FILENAME=kubeseal-linux-amd64;;
-    #arm64) FILENAME=kubeseal-arm64;;
-    #*)     FILENAME=nope;;
-    #esac
     pssh "
     if [ ! -x /usr/local/bin/kubeseal ]; then
         curl -fsSL $URL |
@@ -988,7 +1014,7 @@ EOF
     # Ngrok. Note that unfortunately, this is the x86_64 binary.
     # We might have to rethink how to handle this for multi-arch environments.
     pssh "
-    if [ ! -x /usr/local/bin/ngrok ] && [ ! -f /tmp/ipv6-only ]; then
+    if [ ! -x /usr/local/bin/ngrok ]; then
         curl -fsSL https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz |
         sudo tar -zxvf- -C /usr/local/bin ngrok
     fi"
@@ -1221,6 +1247,24 @@ EOF
     pssh -I sudo tee /opt/tailhist/index.html <lib/tailhist.html
 }
 
+_cmd talos "Add Talos nodes to an OpenStack batch of machines."
+_cmd_talos() {
+    TAG=$1
+    need_tag
+
+    cp terraform/talos/* tags/$TAG
+    cd tags/$TAG
+    terraform apply -auto-approve
+    cd ../..
+
+    pssh "
+    curl -sL https://talos.dev/install | sh
+    talosctl completion bash | sudo tee /etc/bash_completion.d/talosctl
+    "
+    echo "talos_ok" > status
+
+}
+
 _cmd terraform "Apply Terraform configuration to provision resources."
 _cmd_terraform() {
     TAG=$1
@@ -1249,7 +1293,7 @@ _cmd_tools() {
     pssh "
     set -e
     sudo apt-get -q update
-    sudo apt-get -qy install apache2-utils argon2 emacs-nox git httping htop jid joe jq mosh tree unzip
+    sudo apt-get -qy install apache2-utils argon2 emacs-nox git gron httping htop jid joe jq mosh tree unzip
     # This is for VMs with broken PRNG (symptom: running docker-compose randomly hangs)
     sudo apt-get -qy install haveged
     "

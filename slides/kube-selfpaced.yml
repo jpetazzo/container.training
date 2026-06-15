@@ -62,6 +62,7 @@ content:
   - k8s/setup-devel.md
   - k8s/setup-managed.md
   - k8s/setup-selfhosted.md
+  - k8s/kind.md
   - k8s/dashboard.md
   - k8s/k9s.md
   - k8s/tilt.md
@@ -132,6 +133,7 @@ content:
   - k8s/gitworkflows.md
   - k8s/flux.md
   - k8s/argocd.md
+  - k8s/argocd-advanced.md
 -
   - k8s/logs-centralized.md
   - k8s/prometheus.md

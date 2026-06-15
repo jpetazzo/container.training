@@ -34,9 +34,9 @@
 
 - Daemon sets are great for cluster-wide, per-node processes:
 
-  - `kube-proxy`
+  - network components like `kube-proxy`, `calico`, `cilium`...
 
-  - `weave` (our overlay network)
+  - storage components (e.g. CSI plugins)
 
   - monitoring agents
 
@@ -52,7 +52,7 @@
 
 <!-- ##VERSION## -->
 
-- Unfortunately, as of Kubernetes 1.27, the CLI cannot create daemon sets
+- Unfortunately, as of Kubernetes 1.36, the CLI cannot create daemon sets
 
 --
 
@@ -135,7 +135,7 @@
 
 - Or, alternatively:
   ```bash
-  sed -i "s/kind: Deployment/kind: DaemonSet"
+  sed -i "s/kind: Deployment/kind: DaemonSet/"
   ```
 
 ]
@@ -165,19 +165,18 @@
 
 - The core of the error is:
   ```
-  error validating data:
-  [ValidationError(DaemonSet.spec):
-  unknown field "replicas" in io.k8s.api.extensions.v1beta1.DaemonSetSpec,
-  ...
+  unknown field "spec.replicas", unknown field "spec.strategy"
   ```
 
 --
 
 - *Obviously,* it doesn't make sense to specify a number of replicas for a daemon set
 
+  (the field `spec.strategy` is also specific to Deployments)
+
 --
 
-- Workaround: fix the YAML and remove the `replicas` field
+- Workaround: fix the YAML and remove these fields
 
 ---
 

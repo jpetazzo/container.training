@@ -14,9 +14,9 @@ $ hcloud server-type list | grep shared
 variable "node_sizes" {
   type = map(any)
   default = {
-    S = "cpx11"
-    M = "cpx21"
-    L = "cpx31"
+    S = "cx11" # These are actually not available anymore :-)
+    M = "cx23" # might have to try cpx22 instead
+    L = "cx33"
   }
 }
 

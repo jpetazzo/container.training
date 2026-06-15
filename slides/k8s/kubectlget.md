@@ -310,13 +310,13 @@ class: extra-details
 
 - `coredns` provides DNS-based service discovery ([replacing kube-dns as of 1.11](https://kubernetes.io/blog/2018/07/10/coredns-ga-for-kubernetes-cluster-dns/))
 
-- `kube-proxy` is the (per-node) component managing port mappings and such
+- `kube-proxy` is the (per-node) component managing internal service access
 
-- `weave` is the (per-node) component managing the network overlay
+- `cilium` is the (per-node) component managing the network overlay
 
 - the `READY` column indicates the number of containers in each pod
 
-  (1 for most pods, but `weave` has 2, for instance)
+  (which will often be 1 for most pods!)
 
 ---
 

@@ -62,7 +62,7 @@ spec:
       serviceAccountName: consul
       containers:
         - name: consul
-          image: "consul:1.11"
+          image: "hashicorp/consul:1.22"
           env:
             - name: NAMESPACE
               valueFrom:

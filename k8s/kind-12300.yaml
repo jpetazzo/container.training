@@ -1,0 +1,29 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: ClusterConfiguration
+    apiServer:
+      extraArgs:
+        service-node-port-range: "12301-12309"
+  extraPortMappings:
+  - containerPort: 12301
+    hostPort: 12301
+  - containerPort: 12302
+    hostPort: 12302
+  - containerPort: 12303
+    hostPort: 12303
+  - containerPort: 12304
+    hostPort: 12304
+  - containerPort: 12305
+    hostPort: 12305
+  - containerPort: 12306
+    hostPort: 12306
+  - containerPort: 12307
+    hostPort: 12307
+  - containerPort: 12308
+    hostPort: 12308
+  - containerPort: 12309
+    hostPort: 12309
