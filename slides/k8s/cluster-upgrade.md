@@ -81,7 +81,7 @@
 
 ## What version are we running anyway?
 
-- When I say, "I'm running Kubernetes 1.28", is that the version of:
+- When I say, "I'm running Kubernetes 1.31", is that the version of:
 
   - kubectl
 
@@ -129,15 +129,15 @@
 
 ## Kubernetes uses semantic versioning
 
-- Kubernetes versions look like MAJOR.MINOR.PATCH; e.g. in 1.28.9:
+- Kubernetes versions look like MAJOR.MINOR.PATCH; e.g. in 1.31.11:
 
   - MAJOR = 1
-  - MINOR = 28
-  - PATCH = 9
+  - MINOR = 31
+  - PATCH = 11
 
 - It's always possible to mix and match different PATCH releases
 
-  (e.g. 1.28.9 and 1.28.13 are compatible)
+  (e.g. 1.31.11 and 1.31.14 are compatible)
 
 - It is recommended to run the latest PATCH release
 
@@ -153,9 +153,9 @@
 
 - All components support a difference of one¹ MINOR version
 
-- This allows live upgrades (since we can mix e.g. 1.28 and 1.29)
+- This allows live upgrades (since we can mix e.g. 1.31 and 1.32)
 
-- It also means that going from 1.28 to 1.30 requires going through 1.29
+- It also means that going from 1.31 to 1.33 requires going through 1.32
 
 .footnote[¹Except kubelet, which can be up to two MINOR behind API server,
 and kubectl, which can be one MINOR ahead or behind API server.]
@@ -254,7 +254,7 @@ and kubectl, which can be one MINOR ahead or behind API server.]
   sudo vim /etc/kubernetes/manifests/kube-apiserver.yaml
   ```
 
-- Look for the `image:` line, and update it to e.g. `v1.30.1`
+- Look for the `image:` line, and update it to e.g. `v1.35.0`
 
 ]
 
@@ -308,11 +308,11 @@ and kubectl, which can be one MINOR ahead or behind API server.]
 
 ]
 
-Note 1: kubeadm thinks that our cluster is running 1.24.1.
+Note 1: kubeadm thinks that our cluster is running 1.35.0.
 <br/>It is confused by our manual upgrade of the API server!
 
-Note 2: kubeadm itself is still version 1.22.1..
-<br/>It doesn't know how to upgrade do 1.23.X.
+Note 2: kubeadm itself is still version 1.31.11..
+<br/>It doesn't know how to upgrade to higher versions.
 
 ---
 
@@ -322,7 +322,7 @@ Note 2: kubeadm itself is still version 1.22.1..
 
 - The Kubernetes package repositories are now split by minor versions
 
-  (i.e. there is one repository for 1.28, another for 1.29, etc.)
+  (i.e. there is one repository for 1.31, another for 1.32, etc.)
 
 - This avoids accidentally upgrading from one minor version to another
 
@@ -336,7 +336,7 @@ Note 2: kubeadm itself is still version 1.22.1..
 
 - Edit `/etc/apt/sources.list.d/kubernetes.list`
 
-  (or copy it to e.g. `kubernetes-1.29.list` and edit that)
+  (or copy it to e.g. `kubernetes-new.list` and edit that)
 
 - `apt-get update`
 
@@ -361,7 +361,7 @@ Note 2: kubeadm itself is still version 1.22.1..
 
 - Look for the `image:` line, and restore it to the original value
 
-  (e.g. `v1.28.9`)
+  (e.g. `v1.31.11`)
 
 - Wait for the control plane to come back up
 
@@ -382,7 +382,7 @@ Note 2: kubeadm itself is still version 1.22.1..
 
 - Perform the upgrade:
   ```bash
-  sudo kubeadm upgrade apply v1.29.0
+  sudo kubeadm upgrade apply v1.32.0
   ```
 
 ]
@@ -458,7 +458,7 @@ Note 2: kubeadm itself is still version 1.22.1..
   ```bash
     for N in 1 2 3; do
       ssh oldversion$N "
-        sudo sed -i s/1.28/1.29/ /etc/apt/sources.list.d/kubernetes.list &&
+        sudo sed -i s/1.31/1.32/ /etc/apt/sources.list.d/kubernetes.list &&
         sudo rm /etc/apt/preferences.d/kubernetes &&
         sudo apt update &&
         sudo apt install kubeadm -y &&
@@ -472,7 +472,7 @@ Note 2: kubeadm itself is still version 1.22.1..
 
 ## Checking what we've done
 
-- All our nodes should now be updated to version 1.29
+- All our nodes should now be updated to version 1.32
 
 .lab[
 
@@ -587,7 +587,7 @@ class: extra-details
 
 ## Skipping versions
 
-- This example worked because we went from 1.28 to 1.29
+- This example worked because we went from 1.31 to 1.32
 
 - If you are upgrading from e.g. 1.26, you will have to go through 1.27 first
 
