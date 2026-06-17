@@ -103,8 +103,9 @@ Let's see the differences between these clusters.
 
   (requiring more work from our **_⚙️OPS_** team)
 
-- Example: we'll use [k0s] (but many other distros are available)
+- Example: we'll use [Talos] (but many other distros are available, such as [k0s])
 
+[Talos]: https://www.siderolabs.com/talos-linux
 [k0s]: https://k0sproject.io/
 
 ---
@@ -325,7 +326,7 @@ gitGraph
     merge MOVY tag:'MOVY v1.0.3' type: HIGHLIGHT
 
     checkout OPS
-    commit id:'k0s install on METAL cluster'
+    commit id:'Talos install on METAL cluster'
     commit id:'Flux config. for METAL cluster'
     branch METAL_TEST-PROD order:3
     commit id:'ROCKY/MOVY tenants on METAL' type: HIGHLIGHT

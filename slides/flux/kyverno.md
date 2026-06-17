@@ -168,7 +168,7 @@ gitGraph
     merge MOVY tag:'MOVY v1.0.3' type: HIGHLIGHT
 
     checkout OPS
-    commit id:'k0s install on METAL cluster'
+    commit id:'Talos install on METAL cluster'
     commit id:'Flux config. for METAL cluster'
     branch METAL_TEST-PROD order:3
     commit id:'ROCKY/MOVY tenants on METAL' type: HIGHLIGHT

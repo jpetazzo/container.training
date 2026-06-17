@@ -38,6 +38,7 @@ content:
   - exercises/dmuc-auth-details.md
   - exercises/dmuc-networking-details.md
   - exercises/dmuc-staticpods-details.md
+# DAY 2
 -
   - k8s/dmuc-hard.md
   - k8s/apilb.md
@@ -52,6 +53,7 @@ content:
   - k8s/cluster-upgrade.md
   - k8s/cluster-backup.md
   #- k8s/cloud-controller-manager.md
+# DAY 3
 -
   - flux/scenario.md
   - flux/bootstrap.md
@@ -62,7 +64,9 @@ content:
   - flux/app1-rocky-test.md
   - flux/app2-movy-test.md
   - flux/managed-db.md
-  - k8s/k0s.md
+# DAY 4
+-
+  - k8s/talos.md
   - flux/add-cluster.md
   - flux/openebs.md
   - flux/kyverno.md

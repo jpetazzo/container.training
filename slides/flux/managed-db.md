@@ -393,7 +393,7 @@ gitGraph
     merge YouRHere id:'YOU ARE HERE'
 
     checkout OPS
-    commit id:'k0s install on METAL cluster'
+    commit id:'Talos install on METAL cluster'
     commit id:'Flux config. for METAL cluster'
     branch METAL_TEST-PROD order:3
     commit id:'ROCKY/MOVY tenants on METAL' type: HIGHLIGHT
