@@ -425,9 +425,9 @@ We will create a folder with primitives to deploy any component…
 ```bash
 k8s@shpod:~/fleet-config-using-flux-XXXXX$ mkdir -p clusters/CLOUDY/install-components
 
-k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create source git catalog \
-    --namespace=flux-system                                               \
-    --url=https://github.com/jpetazzo/container.training.git              \
+k8s@shpod:~/fleet-config-using-flux-XXXXX$ flux create source git catalog       \
+    --namespace=flux-system                                                     \
+    --url=https://github.com/container-training-fleet/componentcatalog4flux.git \
     --branch=main  --export > ./clusters/CLOUDY/install-components/sync.yaml
 
 k8s@shpod:~/fleet-config-using-flux-XXXXX$     \

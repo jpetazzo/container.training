@@ -10,7 +10,7 @@ The **_⚙️OPS_** team wants to have a real monitoring stack for its clusters.
 
 ## Reviewing our monitoring components in our Flux components catalog
 
-You'll find in https://github.com/jpetazzo/k8s/flux/ a "catalog of components" ready to deploy with Flux.
+You'll find in https://github.com/container-training-fleet/componentcatalog4flux a "catalog of components" ready to deploy with Flux.
 
 Let's review 2  specific folders:
 
