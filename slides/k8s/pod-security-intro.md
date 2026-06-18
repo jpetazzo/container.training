@@ -152,7 +152,7 @@
 
   [Kubewarden](https://www.kubewarden.io/)
 
-  [Kyverno](https://kyverno.io/policies/pod-security/)
+  [Kyverno](https://kyverno.io/policies/)
 
   [OPA Gatekeeper](https://github.com/open-policy-agent/gatekeeper)
 
