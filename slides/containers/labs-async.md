@@ -8,12 +8,11 @@
   - install [Docker CE][docker-ce] or [Podman][podman]
     <br/>(for intermediate/advanced users who prefer the CLI)
 
-  - try platforms like [Play With Docker][pwd] or [KodeKloud]
+  - use an online platform like [KodeKloud]
     <br/>(if you can't/won't install anything locally)
 
 [docker-desktop]: https://docs.docker.com/desktop/
 [podman-desktop]: https://podman-desktop.io/downloads
 [docker-ce]: https://docs.docker.com/engine/install/
 [podman]: https://podman.io/docs/installation#installing-on-linux
-[pwd]: https://labs.play-with-docker.com/
 [KodeKloud]: https://kodekloud.com/free-labs/docker/
