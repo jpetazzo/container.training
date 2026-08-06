@@ -46,7 +46,7 @@ _cmd_clean() {
 			info "Removing $TAG..."
 			rm -rf "$TAG"
 		fi
-	done	
+	done
 }
 
 _cmd codeserver "Install code-server on the clusters"
@@ -312,11 +312,21 @@ _cmd_create() {
     (
         cd tags/$TAG
         terraform init
-        echo tag = \"$TAG\" >> terraform.tfvars
-        echo how_many_clusters = $STUDENTS >> terraform.tfvars
-        if [ "$CLUSTERSIZE" ]; then
-            echo nodes_per_cluster = $CLUSTERSIZE >> terraform.tfvars
-        fi
+        {
+            echo tag = \"$TAG\"
+
+            if [ -z "${TF_VAR_how_many_clusters}" ]; then
+                echo how_many_clusters = $STUDENTS
+            fi
+            if [ -n "$CLUSTERSIZE" ] && [ -z "${TF_VAR_nodes_per_cluster}" ]; then
+                echo nodes_per_cluster = $CLUSTERSIZE >> terraform.tfvars
+            fi
+            env | grep ^TF_VAR_ | while read l; do
+              k="${l/=*}"
+              v="${l/*=}"
+              echo "${k/TF_VAR_/} = \"$v\" "
+          done
+        } >> terraform.tfvars
     )
 
     sep
@@ -686,7 +696,7 @@ apiServer:
     hostPath: /etc/kubernetes/AdmissionConfiguration.yaml
     mountPath: /etc/kubernetes/AdmissionConfiguration.yaml
     readOnly: true
-    pathType: File  
+    pathType: File
 networking:
   serviceSubnet: \$SERVICE_SUBNET
 $CLUSTER_CONFIGURATION_KUBERNETESVERSION
