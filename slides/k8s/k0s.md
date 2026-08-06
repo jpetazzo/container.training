@@ -210,7 +210,7 @@ class: pic
 - Download the `k0sctl` binary
 
   ```bash
-  curl -fsSL https://github.com/k0sproject/k0sctl/releases/download/v0.25.1/k0sctl-linux-amd64 \
+  curl -fsSL https://github.com/k0sproject/k0sctl/releases/download/v0.28.0/k0sctl-linux-amd64 \
     > /usr/local/bin/k0sctl
   chmod +x /usr/local/bin/k0sctl
   ```
