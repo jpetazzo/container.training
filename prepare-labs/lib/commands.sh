@@ -14,6 +14,24 @@ _cmd_help() {
     printf "%s" "$HELP" | sort
 }
 
+_cmd ardening "Make security configurations"
+_cmd_ardening () {
+    local TAG=$1
+    need_tag
+
+    pssh "
+    set -e
+    # copy.fail
+    # Stop current exploit
+    sudo /bin/bash -c 'echo 3  > /proc/sys/vm/drop_caches'
+    sudo /bin/bash -c 'echo \"install algif_aead /bin/false\" > /etc/modprobe.d/copy-fail-disable-algif.conf; rmmod algif_aead 2>/dev/null || true'
+    sudo /bin/bash -c \"printf 'install esp4 /bin/false\ninstall esp6 /bin/false\ninstall rxrpc /bin/false\n' > /etc/modprobe.d/dirtyfrag.conf; rmmod esp4 esp6 rxrpc 2>/dev/null || true\"
+    sudo /bin/bash -c 'echo 3  > /proc/sys/vm/drop_caches'
+    "
+}
+
+
+
 _cmd cards "Generate ready-to-print cards for a group of VMs"
 _cmd_cards() {
     TAG=$1
