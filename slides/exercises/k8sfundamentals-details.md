@@ -57,3 +57,19 @@ class: pic
   (check the logs of the worker; they indicate the port numbers)
 
 - The web UI can be exposed with a NodePort or LoadBalancer Service
+
+---
+
+## And now?
+
+- To protect ourselves against node outages, we decide to replicate each component
+
+- Scale each Deployment to at least 2 replicas
+
+- What do we see in the web UI?
+
+  (exactly the same result? higher graph? lower graph?)
+
+- Can you explain the observed result?
+
+- Is it was to replicate each component like this? Why or why not?
