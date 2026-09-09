@@ -84,19 +84,65 @@ We will call them "dev cluster" and "prod cluster".
 
 - Try to deploy the application using the YAML manifests
 
-- It won't work (the cluster needs the sealing key)
+- It won't work (the cluster doesn't have the sealing key)
 
-- Fix it!
+- There are two ways to fix it:
 
-  (check the next slides if you need hints)
+  - one way that involves transferring a *public* key
+
+  - one way that involves transferring a *private* key
+
+- Do you see what the two methods are?
+
+  (see next slide for the answer)
+
+---
+
+## The two methods
+
+- Transferring a *public* key:
+
+  - we export the target cluster's public key (the "cert")
+
+  - using that public key, we re-seal our secrets
+
+  - then we use these new secrets on the target cluster
+
+  - downside: one new set of sealed secrets per environment!
+
+- Transferring a *private* key:
+
+  - we transfer the original cluster's private key to the target cluster
+
+  - the target cluster can then unseal the original secrets
+
+  - downside: we need to be extra careful with that private key!
+
+---
+
+## Step 3
+
+- Implement both methods
+
+- Check next slides if you need hints!
 
 --
 
-- You will have to copy the Sealed Secret private key
+- The sealed secrets public key is called the "cert"
+
+- `kubeseal` has a command to export it to a file
+
+- `kubeseal` also has a command to use that file
 
 --
 
-- And restart the operator so that it picks up the key
+- The sealed secrets private key is a regular Kubernetes secret
+ 
+  (in `kube-system` or wherever the operator was installed)
+
+- That secret can be copied with basic `kubectl` commands
+
+- The operator needs to be restarted to pick up the new key
 
 ---
 
