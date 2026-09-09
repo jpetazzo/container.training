@@ -10,7 +10,7 @@
 
   - authored (based on examples found in the Kubernetes docs or online)
 
-  - generated (with `kubectl create ... --dry-run -o yaml`, some web app, or an LLM)
+  - generated (with `kubectl create ... --dry-run -o yaml` or another tool)
 
   - dumped (with `kubectl get ... -o yaml`) from existing resources
 

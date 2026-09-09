@@ -60,9 +60,11 @@ class: pic
 
 ---
 
-## And now?
+## High availability
 
-- To protect ourselves against node outages, we decide to replicate each component
+- We want to insulate the app from node outages
+
+- To achieve that, we propose to replicate each component
 
 - Scale each Deployment to at least 2 replicas
 
@@ -72,4 +74,6 @@ class: pic
 
 - Can you explain the observed result?
 
-- Is it was to replicate each component like this? Why or why not?
+- What do you think of this strategy?
+
+  (is it a good idea? why, or why not?)
