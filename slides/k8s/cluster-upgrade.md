@@ -1,5 +1,7 @@
 # Upgrading clusters
 
+**(Note: we won't do the labs for that section!)**
+
 - It's *recommended* to run consistent versions across a cluster
 
   (mostly to have feature parity and latest security updates)
