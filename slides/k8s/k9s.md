@@ -1,4 +1,4 @@
-# k9s
+# k9s and sofka
 
 - Somewhere in between CLI and GUI (or web UI), we can find the magic land of TUI
 
@@ -10,19 +10,38 @@
 
 - But it's nice to have different options!
 
-- Let's see one particular TUI for Kubernetes: [k9s](https://k9scli.io/)
+- Let's see a couple of  TUI for Kubernetes: [k9s] and [sofka]
+
+[k9s]: https://k9scli.io/
+[sofka]: https://sofka.rs/
 
 ---
 
-## Installing k9s
+## Why two tools?
 
-- If you are using a training cluster or the [shpod](https://github.com/jpetazzo/shpod) image, k9s is pre-installed
+- `k9s` came first (first commit in early 2019)
 
-- Otherwise, it can be installed easily:
+- Written in Go
 
-  - with [various package managers](https://k9scli.io/topics/install/)
+- Lots of plugins, documentation, tutorials, etc
 
-  - or by fetching a [binary release](https://github.com/derailed/k9s/releases)
+- `sofka` came later (first commit mid-2026)
+
+- Written in Rust
+
+- Lower RAM and CPU usage ("feels" faster)
+
+---
+
+## Installing them
+
+- If you are using a training cluster or the [shpod] image, both are pre-installed
+
+- Otherwise, they can be installed easily:
+
+  - with various package managers ([k9s][k9spkg], [sofka][sofkapkg])
+
+  - or by fetching a binary release ([k9s][k9sbin], [sofka][sofkabin])
 
 - We don't need to set up or configure anything
 
@@ -30,13 +49,21 @@
 
 - Just run `k9s` to fire it up!
 
+[shpod]: https://github.com/jpetazzo/shpod
+[k9spkg]: https://k9scli.io/topics/install/
+[k9sbin]: https://github.com/derailed/k9s/releases
+[sofkapkg]: https://sofka.rs/#install
+[sofkabin]: https://github.com/nklmilojevic/sofka/releases
+
 ---
 
 ## What kind to we want to see?
 
-- Press `:` to change the type of resource to view
+- They both use `:` to change the type of resource to view
 
-- Then type, for instance, `ns` or `namespace` or `nam[TAB]`, then `[ENTER]`
+- Hit `:` then type, for instance, `ns` or `namespace`, then `[ENTER]`
+
+  (note: they behave differently if you type a partial resource name)
 
 - Use the arrows to move down to e.g. `kube-system`, and press `[ENTER]`
 
@@ -49,6 +76,10 @@
 ---
 
 ## Interacting with pods
+
+- Basic commands are the same between both tools
+
+  (sofka adopted the same keyboard shortcuts here as well)
 
 - `l` to view logs
 
@@ -68,18 +99,17 @@
 
 ## Quick navigation between namespaces
 
-- On top of the screen, we should see shortcuts like this:
+- In both tools: hit `0` to see all namespaces
+
+- In k9s, at the top of the screen, there are shortcuts to namespaces:
+
   ```
   <0> all
   <1> kube-system
   <2> default
   ```
 
-- Pressing the corresponding number switches to that namespace
-
-  (or shows resources across all namespaces with `0`)
-
-- Locate a namespace with a copy of DockerCoins, and go there!
+- In sofka, hit `n` to display the namespace selector
 
 ---
 
@@ -115,7 +145,11 @@
 
 - Very convenient to get a (quasi) realtime view of resources
 
-  (if we use `watch kubectl get` a lot, we will probably like k9s)
+  (if we use `watch kubectl get` a lot, we will probably like k9s and/or sofka)
+
+- Some plugins can be extremely useful
+
+  (e.g. to manage CNPG databases)
 
 ---
 
@@ -133,9 +167,9 @@
 
 ## Conclusion
 
-Try it out, and see if it makes you more productive!
+Try them out, and see if it makes you more productive!
 
 ???
 
-:EN:- The k9s TUI
-:FR:- L'interface texte k9s
+:EN:- The k9s and sofka TUI
+:FR:- Les TUI k9s et sofka

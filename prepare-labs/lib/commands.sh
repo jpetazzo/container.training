@@ -914,6 +914,17 @@ EOF
         sudo tar -C /usr/local/bin -zx kubecolor
     fi"
 
+    # Install sofka
+    SOFKA_VERSION=0.25.3
+    URL=\$GITHUB/nklmilojevic/sofka/releases/download
+    pssh "
+    if [ ! -x /usr/local/bin/sofka ]; then
+        FILENAME=k9s_Linux_$ARCH.tar.gz &&
+        curl -fsSL $URL/v${SOFKA_VERSION}/sofka-v${SOFKA_VERSION}-\$(uname -m)-unknown-linux-gnu.tar.gz |
+        sudo tar -C /usr/local/bin -zx sofka
+        sofka --version
+    fi"
+
     # Install k9s
     pssh "
     if [ ! -x /usr/local/bin/k9s ]; then
