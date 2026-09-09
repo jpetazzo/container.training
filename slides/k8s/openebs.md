@@ -42,7 +42,7 @@ class: extra-details
 
 - The OpenEBS documentation has a [good comparison of engines] to help us pick
 
-[good comparison of engines]: https://docs.openebs.io/docs/next/casengines.html#cstor-vs-jiva-vs-localpv-features-comparison
+[good comparison of engines]: https://openebs.io/docs/concepts/data-engines/
 
 ---
 
@@ -63,7 +63,7 @@ class: extra-details
   ```
 ]
 
-⚠️ We stick to OpenEBS 2.x because 3.x requires additional configuration.
+⚠️ We stick to OpenEBS 2.x because later versions requires additional configuration.
 
 ---
 
