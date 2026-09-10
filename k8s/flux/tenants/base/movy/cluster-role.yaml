@@ -1,0 +1,38 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  namespace: movy-test
+  name: movy-full-access
+rules:
+- apiGroups: ["", extensions, apps]
+  resources: [deployments, replicasets, pods, services, ingresses, statefulsets]
+  verbs: [get, list, watch, create, update, patch, delete] # You can also use [*]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: movy-pv-access
+rules:
+- apiGroups: [""]
+  resources: [persistentvolumes]
+  verbs: [get, list, watch, create, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    toolkit.fluxcd.io/tenant: movy
+  name: movy-reconciler2
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: movy-pv-access
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: gotk:movy-test:reconciler
+- kind: ServiceAccount
+  name: movy
+  namespace: movy-test
+  

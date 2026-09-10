@@ -1,4 +1,4 @@
-# M01- Configuring **_🎬MOVY_** deployment with Flux
+# Configuring **_🎬MOVY_** deployment with Flux
 
 **_🎸ROCKY_** _tenant_ is now fully usable in **_⚗️TEST_** env, let's do the same for another _dev_ team: **_🎬MOVY_**
 
@@ -79,7 +79,7 @@ The **_⚙️OPS_** team push this new tenant configuration to `Github` for `Flu
 ```bash
 k8s@shpod:~/fleet-config-using-flux-XXXXX$ \
     git add . && \
-    git commit -m':wrench: :construction_worker: add MOVY tenant configuration' && \
+    git commit -m':wrench: add MOVY tenant configuration' && \
     git push
 ```
 
@@ -105,9 +105,11 @@ class: extra-details
 k8s@shpod:~$ flux get kustomization -A
 NAMESPACE    NAME         REVISION   SUSPENDED  MESSAGE
 (…)
-flux-system  tenant-prod  False      False      kustomization path not found: stat /tmp/kustomization-113582828/tenants/prod: no such file or directory
+flux-system  tenant-prod  False      False      kustomization path not found:
+stat /tmp/kustomization-113582828/tenants/prod: no such file or directory
 (…)
-movy-test    movy         False      False      Source artifact not found, retrying in 30s                                                             
+movy-test    movy         False      False      Source artifact not found,
+retrying in 30s                                                             
 ```
 
 ]
@@ -138,10 +140,11 @@ class: pic
 
 ### New branch detected
 
-You now have a second app responding on [http://movy.test.mybestdomain.com]  
-But as of now, it's just the same as the **_🎸ROCKY_** one.  
+- You now have a second app responding on [http://movy.test.enix.thegaragebandofit.com]  
 
-We want a specific (pink-colored) version with a dataset full of movie soundtracks.
+  - But as of now, it's just the same as the **_🎸ROCKY_** one.  
+
+- We want a specific (pink-colored) version with a dataset full of movie soundtracks.
 
 ---
 
@@ -201,8 +204,10 @@ They rules ingress and egress network connections considering a described subset
 
 Please, refer to the [`Network policies` chapter in the High Five M4 module](./4.yml.html#toc-network-policies)
 
-- In our case, we just add the file `~/container.training/k8s/M6-network-policies.yaml`
-</br>in our `./tenants/base/movy` folder
+- In our case, we just add the file `~/container.training/k8s/flux/tenants/base/rocky/network-policies.yaml`
+</br>in our `./tenants/base/rocky` folder
+
+- and the same for `./tenants/base/rocky` folder
 
 - without forgetting to update our `kustomization.yaml` file
 
@@ -230,57 +235,55 @@ class: pic
 }%%
 gitGraph
     commit id:"0" tag:"start"
-    branch ROCKY order:3
-    branch MOVY order:4
-    branch YouRHere order:5
+    branch ROCKY order:4
+    branch MOVY order:5
+    branch YouRHere order:6
 
     checkout OPS
-    commit id:'Flux install on CLOUDY cluster' tag:'T01'
-    branch TEST-env order:1
-    commit id:'FLUX install on TEST' tag:'T02' type: HIGHLIGHT
-
-    checkout OPS
-    commit id:'Flux config. for TEST tenant' tag:'T03'
+    commit id:'Flux install on CLOUDY cluster' type: HIGHLIGHT
+    commit id:'Prometheus + Grafana config.'
+    commit id:'Prometheus + Grafana install' type: HIGHLIGHT
+    commit id:'Loki config.'
+    commit id:'Loki install' type: HIGHLIGHT
+    commit id:'Traefik Proxy config.'
+    commit id:'Traefik Proxy install' type: HIGHLIGHT
+    commit id:'Flux config. for multitenants'
+    commit id:'Flux config. for TEST tenant'
     commit id:'namespace isolation by RBAC'
-    checkout TEST-env
-    merge OPS id:'ROCKY tenant creation' tag:'T04'
 
+    branch TEST-env order:1
+    commit id:'ROCKY tenant creation'
     checkout OPS
-    commit id:'ROCKY deploy. config.' tag:'R01'
+    commit id:'ROCKY deploy. config.'
 
     checkout TEST-env
-    merge OPS id:'TEST ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
+    merge OPS id:'TEST ready to deploy ROCKY'
 
     checkout ROCKY
     commit id:'ROCKY' tag:'v1.0.0'
 
     checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.0'
-
-    checkout OPS
-    commit id:'Ingress-controller config.' tag:'T05'
-    checkout TEST-env
-    merge OPS id:'Ingress-controller install' type: HIGHLIGHT tag:'T06'
+    merge ROCKY tag:'ROCKY v1.0.0' type: HIGHLIGHT
 
     checkout OPS
     commit id:'ROCKY patch for ingress config.' tag:'R03'
     checkout TEST-env
-    merge OPS id:'ingress config. for ROCKY app'
+    merge OPS id:'ingress config. for ROCKY app' type: HIGHLIGHT
 
     checkout ROCKY
     commit id:'blue color' tag:'v1.0.1'
     checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.1'
+    merge ROCKY tag:'ROCKY v1.0.1' type: HIGHLIGHT
 
     checkout ROCKY
     commit id:'pink color' tag:'v1.0.2'
     checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.2'
+    merge ROCKY tag:'ROCKY v1.0.2' type: HIGHLIGHT
 
     checkout OPS
-    commit id:'FLUX config for MOVY deployment' tag:'M01'
+    commit id:'FLUX config for MOVY deployment'
     checkout TEST-env
-    merge OPS id:'FLUX ready to deploy MOVY' type: HIGHLIGHT tag:'M02'
+    merge OPS id:'FLUX ready to deploy MOVY'
 
     checkout MOVY
     commit id:'MOVY' tag:'v1.0.3'
@@ -298,23 +301,16 @@ gitGraph
     merge YouRHere id:'YOU ARE HERE'
 
     checkout OPS
-    commit id:'k0s install on METAL cluster' tag:'K01'
-    commit id:'Flux config. for METAL cluster' tag:'K02'
-    branch METAL_TEST-PROD order:3
-    commit id:'ROCKY/MOVY tenants on METAL' type: HIGHLIGHT
-    checkout OPS
-    commit id:'Flux config. for OpenEBS' tag:'K03'
-    checkout METAL_TEST-PROD
-    merge OPS id:'openEBS on METAL' type: HIGHLIGHT
-
-    checkout OPS
-    commit id:'Prometheus install'
+    commit id:'FLUX config. for OLM deployment'
     checkout TEST-env
-    merge OPS type: HIGHLIGHT
-
+    merge OPS id:'OLM deployment' type: HIGHLIGHT
     checkout OPS
-    commit id:'Kyverno install'
-    commit id:'Kyverno rules'
+    commit id:'FLUX config. for CloudNative-PG deployment'
     checkout TEST-env
-    merge OPS type: HIGHLIGHT
+    merge OPS id:'CloudNative-PG deployment' type: HIGHLIGHT
+
+    checkout MOVY
+    commit id:'connection to CloudNative-PG cluster'
+    checkout TEST-env
+    merge MOVY tag:'MOVY v1.0.3' type: HIGHLIGHT
 </pre>

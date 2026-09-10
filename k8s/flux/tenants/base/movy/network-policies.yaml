@@ -1,0 +1,38 @@
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: deny-from-other-namespaces
+  namespace: movy-test
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - podSelector: {}
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-webui
+  namespace: movy-test
+spec:
+  podSelector:
+    matchLabels:
+      app: web
+  ingress:
+  - from: []
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-db
+  namespace: movy-test
+spec:
+  podSelector:
+    matchLabels:
+      app: db
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: web

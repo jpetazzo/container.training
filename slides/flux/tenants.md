@@ -7,10 +7,7 @@ The **_⚙️OPS_** team uses `Flux` with a _GitOps_ code base to:
 - deploy tools and components to extend the clusters capabilites
 - configure _GitOps_ workflow for dev teams in **dedicated and isolated _tenants_**
 
-The **_🎸ROCKY_** team uses `Flux` to deploy every new release of its app, by detecting every new `git push` events happening in its app `Github` repository
-
-
-The **_🎬MOVY_** team uses `Flux` to deploy every new release of its app, packaged and published in a new `Helm` chart release
+Both **_🎸ROCKY_** and **_🎬MOVY_** teams use `Flux` to deploy every new release of their apps, by detecting every new `git push` events happening in their app `Github` repositories.
 
 ---
 
@@ -35,16 +32,6 @@ Several _tenants_ are created
 class: pic
 
 ![Multi-tenants clusters](images/flux/cluster-multi-tenants.png )
-
----
-
-### Flux CLI works locally
-
-First, we have to **locally** clone your `Flux` configuration `Github` repository
-
-- create an ssh key pair
-- add the **public** key to your `Github` repository (**with write access**)
-- and git clone the repository
 
 ---
 
@@ -166,35 +153,43 @@ What the **_🎸ROCKY_** team has to do:
 }%%
 gitGraph
     commit id:"0" tag:"start"
-    branch ROCKY order:3
-    branch MOVY order:4
-    branch YouRHere order:5
+    branch ROCKY order:4
+    branch MOVY order:5
+    branch YouRHere order:6
 
     checkout OPS
-    commit id:'Flux install on CLOUDY cluster' tag:'T01'
-    branch TEST-env order:1
-    commit id:'FLUX install on TEST' tag:'T02' type: HIGHLIGHT
-
-    checkout OPS
-    commit id:'Flux config. for TEST tenant' tag:'T03'
+    commit id:'Flux install on CLOUDY cluster' type: HIGHLIGHT
+    commit id:'Prometheus + Grafana config.'
+    commit id:'Prometheus + Grafana install' type: HIGHLIGHT
+    commit id:'Loki config.'
+    commit id:'Loki install' type: HIGHLIGHT
+    commit id:'Traefik Proxy config.'
+    commit id:'Traefik Proxy install' type: HIGHLIGHT
+    commit id:'Flux config. for multitenants'
+    commit id:'Flux config. for TEST tenant'
     commit id:'namespace isolation by RBAC'
+
+    branch TEST-env order:1
+    commit id:'ROCKY tenant creation'
+    checkout OPS
+    commit id:'ROCKY deploy. config.'
+
     checkout TEST-env
-    merge OPS id:'ROCKY tenant creation' tag:'T04'
+    merge OPS id:'TEST ready to deploy ROCKY'
 
     checkout YouRHere
     commit id:'x'
     checkout OPS
     merge YouRHere id:'YOU ARE HERE'
 
-    checkout OPS
-    commit id:'ROCKY deploy. config.' tag:'R01'
-
-    checkout TEST-env
-    merge OPS id:'TEST ready to deploy ROCKY' type: HIGHLIGHT tag:'R02'
-
     checkout ROCKY
     commit id:'ROCKY' tag:'v1.0.0'
 
     checkout TEST-env
-    merge ROCKY tag:'ROCKY v1.0.0'
+    merge ROCKY tag:'ROCKY v1.0.0' type: HIGHLIGHT
+
+    checkout OPS
+    commit id:'ROCKY patch for ingress config.' tag:'R03'
+    checkout TEST-env
+    merge OPS id:'ingress config. for ROCKY app' type: HIGHLIGHT
 </pre>
