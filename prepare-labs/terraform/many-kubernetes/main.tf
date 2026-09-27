@@ -71,7 +71,7 @@ resource "null_resource" "wait_for_nodes" {
 }
 
 # FIXME: for vcluster setups, instead of using nodes' ExternalIP,
-# we should use the external_ip label set by the konk script.
+# we should use the container.training/node-port-disco label set by the konk script.
 data "external" "externalips" {
   for_each   = local.clusters
   depends_on = [null_resource.wait_for_nodes]

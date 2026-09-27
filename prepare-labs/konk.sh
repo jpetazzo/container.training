@@ -19,7 +19,8 @@ set -e
 
 KONKTAG=konk
 PROVIDER=external
-STUDENTS=1
+NODE_PORT_DISCO=example.container.training
+STUDENTS=2
 
 case "$PROVIDER" in
 linode)
@@ -50,11 +51,25 @@ else
   ADDRTYPE=ExternalIP
 fi
 
-# set external_ip labels
-kubectl get nodes -o=jsonpath='{range .items[*]}{.metadata.name} {.status.addresses[?(@.type=="'$ADDRTYPE'")].address}{"\n"}{end}' |
-while read node address ignoredaddresses; do
-  kubectl label node $node external_ip=$address
-done
+# set the label indicating what address or name to use to reach nodeports
+# (this is used mainly by vcluster; it's added to the K8S API server SAN,
+# and injected in the kubeconfig of the vclusters, so that these clusters
+# can be used from outside)
+if [ "$NODE_PORT_DISCO" = "auto" ]; then
+  kubectl get nodes -o json | jq -r --arg t "$ADDRTYPE" '
+    .items[]
+    | .metadata.name + " " + (
+        [.status.addresses[]
+         | select(.type == $t and (.address | contains(":") | not))
+         | .address]
+        | join(" ")
+      )' |
+  while read node address ignoredaddresses; do
+    kubectl label node $node container.training/node-port-disco=$address
+  done
+else
+  kubectl label node --all container.training/node-port-disco=$NODE_PORT_DISCO
+fi
 
 # vcluster all the things
 ./labctl create --settings settings/mk8s.env --provider vcluster --mode mk8s --students $STUDENTS

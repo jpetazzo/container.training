@@ -4,7 +4,7 @@ resource "helm_release" "_" {
   create_namespace = true
   repository       = "https://charts.loft.sh"
   chart            = "vcluster"
-  version          = "0.30.4"
+  version          = "0.37.2"
   values = [
     yamlencode({
       controlPlane = {

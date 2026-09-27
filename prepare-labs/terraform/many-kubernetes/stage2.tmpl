@@ -48,6 +48,64 @@ data "kubernetes_service" "shpod_${index}" {
   }
 }
 
+resource "kubernetes_manifest" "preferdualstack_policy_${index}" {
+  provider = kubernetes.cluster_${index}
+  manifest = {
+    apiVersion = "admissionregistration.k8s.io/v1"
+    kind       = "MutatingAdmissionPolicy"
+    metadata = {
+      name = "preferdualstack"
+    }
+    spec = {
+      matchConstraints = {
+        resourceRules = [
+          {
+            apiGroups   = [""]
+            apiVersions = ["v1"]
+            operations  = ["CREATE"]
+            resources   = ["services"]
+          }
+        ]
+      }
+      matchConditions = [
+        {
+          name       = "does-not-have-ipfamilypolicy"
+          expression = "!has(object.spec.ipFamilyPolicy)"
+        }
+      ]
+      reinvocationPolicy = "IfNeeded"
+      mutations = [
+        {
+          patchType = "ApplyConfiguration"
+          applyConfiguration = {
+            expression = <<-EOT
+              Object{
+                spec: Object.spec{
+                  ipFamilyPolicy: "PreferDualStack"
+                }
+              }
+            EOT
+          }
+        }
+      ]
+    }
+  }
+}
+
+resource "kubernetes_manifest" "preferdualstack_binding_${index}" {
+  provider = kubernetes.cluster_${index}
+  manifest = {
+    apiVersion = "admissionregistration.k8s.io/v1"
+    kind       = "MutatingAdmissionPolicyBinding"
+    metadata = {
+      name = "preferdualstack"
+    }
+    spec = {
+      policyName = kubernetes_manifest.preferdualstack_policy_${index}.manifest.metadata.name
+    }
+  }
+}
+
 resource "helm_release" "shpod_${index}" {
   provider = helm.cluster_${index}
   repository = "https://shpod.in"
@@ -55,6 +113,10 @@ resource "helm_release" "shpod_${index}" {
   name = "shpod"
   namespace = "shpod"
   create_namespace = false
+  depends_on = [
+    kubernetes_manifest.preferdualstack_policy_${index},
+    kubernetes_manifest.preferdualstack_binding_${index}
+  ]
   values = [
     yamlencode({
       service = {

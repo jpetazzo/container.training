@@ -36,7 +36,7 @@ data "kubernetes_nodes" "_" {
 
 locals {
   kubeconfig_raw           = data.kubernetes_secret_v1.kubeconfig.data.config
-  node_external_ip         = data.kubernetes_nodes._.nodes[0].metadata[0].labels.external_ip
+  node_external_ip         = data.kubernetes_nodes._.nodes[0].metadata[0].labels["container.training/node-port-disco"]
   node_port                = data.kubernetes_service_v1.vcluster.spec[0].port[0].node_port
   host_api_server_url      = yamldecode(file("~/kubeconfig")).clusters[0].cluster.server
   host_api_server_host     = regex("https://([^:]+):", local.host_api_server_url)[0]
