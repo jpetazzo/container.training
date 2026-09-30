@@ -224,6 +224,40 @@ class: extra-details
 
 ---
 
+class: extra-details
+
+## Evolution in token creation
+
+- We don't have any created secret nor Service Account-bound token
+
+- Before k8s 1.22, a long-lived token was automatically created and bound to Service Account.
+
+- Since 1.24, token are created for a time-limited duration and bound to pods.
+
+- With these tokens, pods are able to communicate with the API server
+
+---
+
+## Create a SA-bound token
+
+.lab[
+
+- Let's create a new context that will use that token to access the API
+  ```bash
+  kubectl apply -f- <<EOF
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: jean.doe-token
+    namespace: users
+    annotations:
+      kubernetes.io/service-account.name: jean.doe
+  type: kubernetes.io/service-account-token
+  EOF
+  ```
+
+---
+
 ## Configure `kubectl` to use the token
 
 - Let's create a new context that will use that token to access the API
