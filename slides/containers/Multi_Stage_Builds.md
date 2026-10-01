@@ -315,7 +315,7 @@ class: extra-details
 
   (instead of using multiple Dockerfiles, which could go out of sync)
 
---
+---
 
 class: extra-details
 
