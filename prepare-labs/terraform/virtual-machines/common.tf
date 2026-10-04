@@ -25,7 +25,7 @@ variable "nodes_per_cluster" {
 variable "node_size" {
   type        = string
   default     = "M"
-  description = "If this is S, M, or L, it will correspond to a VM with 2, 4, 8GB of RAM. If it's anything else, it will be a provider-specific instance type, e.g. g7-highmem-4 or c5n.xlarge."
+  description = "If this is XS, S, M, or L, it will correspond to a VM with 512M, 2, 4, 8GB of RAM. If it's anything else, it will be a provider-specific instance type, e.g. g7-highmem-4 or c5n.xlarge."
 }
 
 resource "tls_private_key" "ssh" {
