@@ -226,7 +226,25 @@ class: extra-details
 
 ]
 
-Then go to → https://artifacthub.io/packages/helm/securecodebox/juice-shop
+⚠️ No result found? Check the next slide!
+
+---
+
+In September 2026, the old chart repository for that app was removed.
+
+The Helm chart is now available through an OCI registry.
+
+For some reason, the chart isn't listed on the Artifact Hub anymore.
+
+Try to access the chart address:
+
+→ https://artifacthub.io/packages/helm/securecodebox/juice-shop
+
+If that doesn't work, don't worry - we can still install the chart.
+
+But we'll need the chart documentation. It can be found [here][juice-shop-README].
+
+[juice-shop-README]: https://github.com/secureCodeBox/secureCodeBox/blob/main/demo-targets/juice-shop/README.md
 
 ---
 
@@ -250,21 +268,17 @@ Then go to → https://artifacthub.io/packages/helm/securecodebox/juice-shop
 
 - Click on the "Install" button, it will show instructions
 
+- If the page wasn't available... Use the command below!
+
+
 .lab[
 
-- First, add the repository for that chart:
+- Install the chart:
   ```bash
-  helm repo add juice https://charts.securecodebox.io
-  ```
-
-- Then, install the chart:
-  ```bash
-  helm install my-juice-shop juice/juice-shop
+  helm install my-juice-shop oci://ghcr.io/securecodebox/helm/juice-shop
   ```
 
 ]
-
-Note: it is also possible to install directly a chart, with `--repo https://...`
 
 ---
 
@@ -369,7 +383,7 @@ The `readme` may or may not have (accurate) explanations for the values.
 
 - Update `my-juice-shop`:
   ```bash
-  helm upgrade my-juice-shop juice/juice-shop \
+  helm upgrade my-juice-shop oci://ghcr.io/securecodebox/helm/juice-shop \
        --set service.type=NodePort
   ```
 
