@@ -30,7 +30,7 @@ In this lab, we want to leverage multiple skills:
 
   (will require a "real" domain name!)
 
-[juice-shop]: https://artifacthub.io/packages/helm/securecodebox/juice-shop
+[juice-shop]: https://artifacthub.io/packages/helm/juice-shop/juice-shop
 
 ---
 
