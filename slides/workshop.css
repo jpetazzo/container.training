@@ -154,6 +154,34 @@ div.remark-slide-number {
 .popup-close { background: none; color: var(--fg); border: 0; font-size: 28px; cursor: pointer; }
 .popup-close:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 
+/* 💬 "Ask AI" button above the 🎨 button, and its menu to the left
+   (added by workshop.html when the manifest has "askai: true"). */
+.remark-askai-button { bottom: 96px; font: 18px/1 sans-serif; }
+.askai-menu {
+  position: absolute;
+  bottom: 96px;
+  right: 52px;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  border: 1px solid var(--box-border);
+  border-radius: 6px;
+  background: var(--bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  font: 16px/1.5 'Open Sans', sans-serif;
+  z-index: 10;
+}
+.askai-menu[hidden] { display: none; }
+.askai-menu a {
+  padding: 6px 14px;
+  border-radius: 4px;
+  color: var(--fg);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.askai-menu a:hover, .askai-menu a:focus-visible { background: var(--box-bg); color: var(--link); }
+@media print { .askai-menu { display: none; } }
+
 .debug {
   font-family: monospace;
   position: absolute;
