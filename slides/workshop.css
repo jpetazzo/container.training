@@ -56,6 +56,57 @@ div.remark-slide-number {
   right: 6px;
 }
 
+/* The three numbers show a hover text that explains them. */
+div.remark-slide-number,
+.remark-lecture-number,
+.remark-step-number {
+  cursor: help;
+}
+
+/* Pop-up that explains the three numbers (added by workshop.html). */
+.remark-counter-help {
+  position: fixed;
+  z-index: 1000;
+  max-width: 360px;
+  padding: 8px 12px;
+  border: 1px solid var(--box-border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  font-family: 'Droid Serif';
+  font-size: 14px;
+  line-height: 1.4;
+  pointer-events: none;
+}
+.remark-counter-help[hidden] { display: none; }
+@media print { .remark-counter-help { display: none; } }
+
+/* Lecture counter under the slide number: slide/total in the current
+   lecture (added by workshop.html). */
+.remark-lecture-number {
+  position: absolute;
+  top: 36px;
+  right: 6px;
+  font-size: 20px;
+  opacity: 0.5;
+}
+
+/* Step counter under the lecture counter, on slides with "--" steps
+   (added by workshop.html). Bold and colored on the last step. */
+.remark-step-number {
+  position: absolute;
+  top: 60px;
+  right: 6px;
+  font-size: 20px;
+  opacity: 0.5;
+}
+.remark-step-number.last {
+  font-weight: bold;
+  color: var(--accent);
+  opacity: 1;
+}
+
 /* Round buttons in the bottom-right corner of each slide (added by
    workshop.html): "?" help, and 🎨 theme above it. Each button sets
    its own "bottom". */
@@ -343,6 +394,7 @@ below and above use them. The default values are the original colors.
   --link: blue;
   --muted: #ccc;           /* .gray */
   --red: #fa0000;          /* .red */
+  --accent: #0a7d2c;       /* last-step counter */
   --code-bg: #ccc;         /* inline code */
   --pre-bg: #f0f0f0;       /* code blocks */
   --pre-fg: #444;
@@ -359,7 +411,7 @@ below and above use them. The default values are the original colors.
 }
 :root[data-theme="solarized-light"] {
   --page-bg: #eee8d5; --bg: #fdf6e3; --fg: #586e75; --heading: #073642;
-  --link: #268bd2; --muted: #93a1a1; --red: #dc322f;
+  --link: #268bd2; --muted: #93a1a1; --red: #dc322f; --accent: #859900;
   --code-bg: #eee8d5; --pre-bg: #eee8d5; --pre-fg: #586e75;
   --box-bg: #eee8d5; --box-border: #93a1a1; --line-hl: rgba(181, 137, 0, 0.25);
   --hl-comment: #93a1a1; --hl-string: #2aa198; --hl-title: #268bd2;
@@ -368,7 +420,7 @@ below and above use them. The default values are the original colors.
 }
 :root[data-theme="catppuccin-latte"] {
   --page-bg: #dce0e8; --bg: #eff1f5; --fg: #4c4f69; --heading: #4c4f69;
-  --link: #1e66f5; --muted: #9ca0b0; --red: #d20f39;
+  --link: #1e66f5; --muted: #9ca0b0; --red: #d20f39; --accent: #40a02b;
   --code-bg: #ccd0da; --pre-bg: #e6e9ef; --pre-fg: #4c4f69;
   --box-bg: #e6e9ef; --box-border: #9ca0b0; --line-hl: rgba(223, 142, 29, 0.25);
   --hl-comment: #8c8fa1; --hl-string: #40a02b; --hl-title: #1e66f5;
@@ -377,7 +429,7 @@ below and above use them. The default values are the original colors.
 }
 :root[data-theme="nord"] {
   --page-bg: #242933; --bg: #2e3440; --fg: #d8dee9; --heading: #eceff4;
-  --link: #88c0d0; --muted: #4c566a; --red: #bf616a;
+  --link: #88c0d0; --muted: #4c566a; --red: #bf616a; --accent: #a3be8c;
   --code-bg: #434c5e; --pre-bg: #3b4252; --pre-fg: #d8dee9;
   --box-bg: #3b4252; --box-border: #4c566a; --line-hl: rgba(235, 203, 139, 0.25);
   --hl-comment: #7b88a1; --hl-string: #a3be8c; --hl-title: #88c0d0;
@@ -386,7 +438,7 @@ below and above use them. The default values are the original colors.
 }
 :root[data-theme="catppuccin-mocha"] {
   --page-bg: #11111b; --bg: #1e1e2e; --fg: #cdd6f4; --heading: #cdd6f4;
-  --link: #89b4fa; --muted: #6c7086; --red: #f38ba8;
+  --link: #89b4fa; --muted: #6c7086; --red: #f38ba8; --accent: #a6e3a1;
   --code-bg: #313244; --pre-bg: #181825; --pre-fg: #cdd6f4;
   --box-bg: #181825; --box-border: #45475a; --line-hl: rgba(249, 226, 175, 0.2);
   --hl-comment: #7f849c; --hl-string: #a6e3a1; --hl-title: #89b4fa;
@@ -395,7 +447,7 @@ below and above use them. The default values are the original colors.
 }
 :root[data-theme="github-dark"] {
   --page-bg: #010409; --bg: #0d1117; --fg: #c9d1d9; --heading: #f0f6fc;
-  --link: #58a6ff; --muted: #484f58; --red: #ff7b72;
+  --link: #58a6ff; --muted: #484f58; --red: #ff7b72; --accent: #3fb950;
   --code-bg: #262c36; --pre-bg: #161b22; --pre-fg: #c9d1d9;
   --box-bg: #161b22; --box-border: #30363d; --line-hl: rgba(187, 128, 9, 0.3);
   --hl-comment: #8b949e; --hl-string: #a5d6ff; --hl-title: #d2a8ff;
