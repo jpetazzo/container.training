@@ -1517,33 +1517,64 @@ _cmd webssh "Install a WEB SSH server on the machines (port 1080)"
 _cmd_webssh() {
     TAG=$1
     need_tag
-    pssh "
-    sudo apt-get update &&
-    sudo apt-get install python3-tornado python3-paramiko -y"
-    pssh "
-    cd /opt
-    [ -d webssh ] || sudo git clone \$GITHUB/jpetazzo/webssh"
-    pssh "
-    for KEYFILE in /etc/ssh/*.pub; do
-      read a b c < \$KEYFILE; echo localhost \$a \$b
-    done | sudo tee /opt/webssh/known_hosts"
-    pssh "cat >webssh.service <<EOF
-[Unit]
-Description=webssh
 
-[Install]
-WantedBy=multi-user.target
+    ARCH=${ARCHITECTURE-amd64}
+
+    # gotty serves a web terminal (xterm.js) over plain HTTP.
+    # For each browser connection, it runs ssh-localhost (below),
+    # which asks for a username and then SSHes to this machine.
+    # sshd checks the password, so gotty itself runs as nobody.
+    ##VERSION## https://github.com/sorenisanerd/gotty/releases
+    GOTTY_VERSION=1.8.0
+    pssh "
+    if ! /usr/local/bin/gotty --version 2>/dev/null | grep -qw v$GOTTY_VERSION; then
+        curl -fsSL \$GITHUB/sorenisanerd/gotty/releases/download/v$GOTTY_VERSION/gotty_v${GOTTY_VERSION}_linux_$ARCH.tar.gz |
+        sudo tar -C /usr/local/bin -zx ./gotty
+        gotty --version
+    fi"
+
+    # Trust only this machine's own host keys for the SSH to localhost.
+    pssh "
+    sudo mkdir -p /etc/gotty
+    for KEYFILE in /etc/ssh/ssh_host_*_key.pub; do
+      read a b c < \$KEYFILE; echo localhost \$a \$b
+    done | sudo tee /etc/gotty/known_hosts"
+
+    pssh -I "sudo tee /usr/local/bin/ssh-localhost && sudo chmod 755 /usr/local/bin/ssh-localhost" <<"EOF"
+#!/bin/bash
+# Started by gotty for each browser connection.
+# Ask for a username, then SSH to this machine; sshd checks the password.
+read -r -p "login: " user
+[[ "$user" =~ ^[a-z_][a-z0-9_-]*$ ]] || { echo "Invalid username."; exit 1; }
+exec ssh -o UserKnownHostsFile=/etc/gotty/known_hosts -o StrictHostKeyChecking=yes \
+  -o LogLevel=ERROR "$user@localhost"
+EOF
+
+    pssh -I "sudo tee /etc/systemd/system/gotty.service" <<"EOF"
+[Unit]
+Description=gotty web terminal
+After=network.target ssh.service
 
 [Service]
-WorkingDirectory=/opt/webssh
-ExecStart=/usr/bin/env python3 run.py --fbidhttp=false --port=1080 --policy=reject
+ExecStart=/usr/local/bin/gotty --port 1080 --permit-write --title-format "{{ .hostname }}" /usr/local/bin/ssh-localhost
 User=nobody
 Group=nogroup
 Restart=always
-EOF"
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    # Remove the previous Python webssh service (labs created before gotty).
     pssh "
-    sudo systemctl enable \$PWD/webssh.service &&
-    sudo systemctl start webssh.service"
+    if systemctl list-unit-files webssh.service | grep -q webssh; then
+        sudo systemctl disable --now webssh.service
+    fi"
+
+    pssh "
+    sudo systemctl daemon-reload &&
+    sudo systemctl enable gotty.service &&
+    sudo systemctl restart gotty.service"
 }
 
 _cmd www "Run a web server to access card HTML and PDF"
