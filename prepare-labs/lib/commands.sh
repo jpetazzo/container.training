@@ -1035,6 +1035,109 @@ EOF
     fi"
 }
 
+_cmd sectools "Install CLI tools for the security labs (linting, policies, supply chain)"
+_cmd_sectools() {
+    TAG=$1
+    need_tag
+
+    ARCH=${ARCHITECTURE-amd64}
+    case $ARCH in
+    amd64)
+        HERP_DERP_ARCH=x86_64
+        TRIVY_ARCH=64bit
+        KUBELINTER_SUFFIX=""
+        ;;
+    *)
+        HERP_DERP_ARCH=$ARCH
+        TRIVY_ARCH=ARM64
+        KUBELINTER_SUFFIX=_$ARCH
+        ;;
+    esac
+
+    # Install Kyverno CLI (test policies offline, "kyverno apply/test")
+    ##VERSION## https://github.com/kyverno/kyverno/releases
+    KYVERNO_VERSION=1.19.1
+    pssh "
+    if [ ! -x /usr/local/bin/kyverno ]; then
+        curl -fsSL \$GITHUB/kyverno/kyverno/releases/download/v$KYVERNO_VERSION/kyverno-cli_v${KYVERNO_VERSION}_linux_$HERP_DERP_ARCH.tar.gz |
+        sudo tar -C /usr/local/bin -zx kyverno
+        kyverno completion bash | sudo tee /etc/bash_completion.d/kyverno
+        kyverno version
+    fi"
+
+    # Install kubeconform (schema validation of manifests)
+    ##VERSION## https://github.com/yannh/kubeconform/releases
+    KUBECONFORM_VERSION=0.8.0
+    pssh "
+    if [ ! -x /usr/local/bin/kubeconform ]; then
+        curl -fsSL \$GITHUB/yannh/kubeconform/releases/download/v$KUBECONFORM_VERSION/kubeconform-linux-$ARCH.tar.gz |
+        sudo tar -C /usr/local/bin -zx kubeconform
+        kubeconform -v
+    fi"
+
+    # Install kube-linter (security and best practice checks)
+    ##VERSION## https://github.com/stackrox/kube-linter/releases
+    KUBELINTER_VERSION=0.8.3
+    pssh "
+    if [ ! -x /usr/local/bin/kube-linter ]; then
+        curl -fsSL \$GITHUB/stackrox/kube-linter/releases/download/v$KUBELINTER_VERSION/kube-linter-linux$KUBELINTER_SUFFIX.tar.gz |
+        sudo tar -C /usr/local/bin -zx kube-linter
+        kube-linter completion bash | sudo tee /etc/bash_completion.d/kube-linter
+        kube-linter version
+    fi"
+
+    # Install cosign (sign and verify images)
+    ##VERSION## https://github.com/sigstore/cosign/releases
+    COSIGN_VERSION=3.1.3
+    pssh "
+    if [ ! -x /usr/local/bin/cosign ]; then
+        sudo curl -fsSLo /usr/local/bin/cosign \$GITHUB/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-$ARCH
+        sudo chmod +x /usr/local/bin/cosign
+        cosign completion bash | sudo tee /etc/bash_completion.d/cosign
+        cosign version
+    fi"
+
+    # Install syft (generate SBOMs)
+    ##VERSION## https://github.com/anchore/syft/releases
+    SYFT_VERSION=1.54.0
+    pssh "
+    if [ ! -x /usr/local/bin/syft ]; then
+        curl -fsSL \$GITHUB/anchore/syft/releases/download/v$SYFT_VERSION/syft_${SYFT_VERSION}_linux_$ARCH.tar.gz |
+        sudo tar -C /usr/local/bin -zx syft
+        syft completion bash | sudo tee /etc/bash_completion.d/syft
+        syft version
+    fi"
+
+    # Install trivy (vulnerability scanner)
+    ##VERSION## https://github.com/aquasecurity/trivy/releases
+    TRIVY_VERSION=0.75.0
+    pssh "
+    if [ ! -x /usr/local/bin/trivy ]; then
+        curl -fsSL \$GITHUB/aquasecurity/trivy/releases/download/v$TRIVY_VERSION/trivy_${TRIVY_VERSION}_Linux-$TRIVY_ARCH.tar.gz |
+        sudo tar -C /usr/local/bin -zx trivy
+        trivy completion bash | sudo tee /etc/bash_completion.d/trivy
+        trivy --version
+    fi"
+
+    # Download the trivy vulnerability database for the student user now.
+    # Then 100+ students don't all download it at the same time in class
+    # (the registry that hosts it can rate-limit us).
+    # (-i starts in the user home: trivy reads ./trivy.yaml and fails when
+    # the current directory is /home/ubuntu, which the user cannot read.)
+    pssh "sudo -iu $USER_LOGIN trivy image --download-db-only --quiet"
+
+    # Install yq (edit YAML from the command line)
+    ##VERSION## https://github.com/mikefarah/yq/releases
+    YQ_VERSION=4.54.1
+    pssh "
+    if [ ! -x /usr/local/bin/yq ]; then
+        sudo curl -fsSLo /usr/local/bin/yq \$GITHUB/mikefarah/yq/releases/download/v$YQ_VERSION/yq_linux_$ARCH
+        sudo chmod +x /usr/local/bin/yq
+        yq shell-completion bash | sudo tee /etc/bash_completion.d/yq
+        yq --version
+    fi"
+}
+
 _cmd kubereset "Wipe out Kubernetes configuration on all nodes"
 _cmd_kubereset() {
     TAG=$1
