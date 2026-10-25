@@ -449,3 +449,28 @@ html .remark-code-span-highlighted { background-color: var(--line-hl); }
   transition: opacity 0.4s;
 }
 .theme-toast.visible { opacity: 1; transition: none; }
+
+/* 📋 copy button on bash/shell code blocks (added by workshop.html). */
+pre:has(> .copy-button) {
+  position: relative;
+}
+.copy-button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 6px;
+  border: 1px solid var(--box-border);
+  border-radius: 4px;
+  background: var(--bg);
+  font-size: 16px;
+  line-height: 1.2;
+  cursor: pointer;
+  opacity: 0.5;
+  user-select: none;
+}
+.copy-button:hover {
+  opacity: 1;
+}
+@media print {
+  .copy-button { display: none; }
+}

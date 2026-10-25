@@ -161,6 +161,45 @@
         container.appendChild(button);
       });
 
+      // Copy button on each bash/shell code block. Copies the text without
+      // the slide formatting; one line per code line.
+      async function copyText(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch (e) {
+          // Fallback when the Clipboard API is blocked (e.g. plain http).
+          const area = document.createElement('textarea');
+          area.value = text;
+          area.style.position = 'fixed';
+          area.style.opacity = '0';
+          document.body.appendChild(area);
+          area.select();
+          document.execCommand('copy');
+          area.remove();
+        }
+      }
+      onSlideShown(function () {
+        const blocks = document.querySelectorAll(
+          '.remark-visible pre > code.bash, .remark-visible pre > code.shell');
+        blocks.forEach(function (code) {
+          const pre = code.parentElement;
+          if (pre.querySelector('.copy-button')) return;
+          const button = document.createElement('button');
+          button.className = 'copy-button';
+          button.textContent = '📋';
+          button.title = 'Copy to clipboard';
+          button.addEventListener('click', async function (event) {
+            event.stopPropagation();
+            button.blur();
+            const lines = [...code.querySelectorAll('.remark-code-line')]
+              .map(line => line.textContent);
+            await copyText(lines.join('\n'));
+            button.textContent = '✅';
+            setTimeout(() => { button.textContent = '📋'; }, 1200);
+          });
+          pre.appendChild(button);
+        });
+      });
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ startOnLoad: false });
         onSlideShown(function (slide) {
