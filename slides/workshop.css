@@ -107,6 +107,34 @@ div.remark-slide-number,
   opacity: 1;
 }
 
+/* Deck search uses the same palette as slide content in every theme. */
+.slide-search {
+  width: min(640px, calc(100vw - 48px));
+  max-height: calc(100dvh - 64px);
+  box-sizing: border-box;
+  padding: 24px;
+  border: 1px solid var(--box-border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.5 'Open Sans', sans-serif;
+  overflow: auto;
+}
+.slide-search::backdrop { background: rgba(0, 0, 0, 0.55); }
+.slide-search label { display: block; margin-bottom: 6px; }
+.slide-search input { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--box-border); border-radius: 3px; background: var(--pre-bg); color: var(--fg); font: inherit; }
+.slide-search input:focus-visible, .slide-search button:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+#slide-search-hint { margin: 10px 0; font-size: 13px; }
+.slide-search-status { margin: 12px 0; }
+#slide-search-results { list-style: none; padding: 0; margin: 0; max-height: 45dvh; overflow: auto; }
+#slide-search-results li { display: flex; gap: 16px; align-items: baseline; padding: 10px; border-bottom: 1px solid var(--box-border); cursor: pointer; }
+#slide-search-results li:hover, #slide-search-results li[aria-selected="true"] { background: var(--box-bg); }
+#slide-search-results li[aria-selected="true"] { box-shadow: inset 3px 0 var(--link); }
+.slide-search-number { min-width: 3ch; color: var(--link); font-variant-numeric: tabular-nums; }
+/* 🔍 search button, above the other round buttons (added by workshop.html). */
+.remark-round-button.remark-search-button { bottom: 140px; }
+@media print { .slide-search { display: none; } }
+
 /* Round buttons in the bottom-right corner of each slide (added by
    workshop.html): "?" help, and 🎨 theme above it. Each button sets
    its own "bottom". */
