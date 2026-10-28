@@ -61,7 +61,7 @@ content:
   #- k8s/setup-managed.md
   #- k8s/setup-selfhosted.md
 -
-  - k8s/dashboard.md
+  - k8s/headlamp.md
   - k8s/rollout.md
   - k8s/healthchecks.md
   - k8s/ingress.md

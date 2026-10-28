@@ -58,7 +58,7 @@ content:
   #- k8s/access-eks-cluster.md
   #- k8s/accessinternal.md
   #- k8s/kubectlproxy.md
-- - k8s/dashboard.md
+- - k8s/headlamp.md
   #- k8s/k9s.md
   #- k8s/tilt.md
   #- k8s/kubectlscale.md
