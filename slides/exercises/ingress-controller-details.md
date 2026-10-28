@@ -22,6 +22,15 @@ We will use a different deployment mechanism depending on the cluster that we ha
 
 - Cluster without `LoadBalancer` Services (e.g. deployed with `kubeadm`)
 
+We can also try multiple Ingress Controllers to see if and how they differ.
+
+See [this Kubernetes documentation page][ingress-list] for a list!
+
+Note: it's also possible to install multiple Ingress Controllers in parallel.
+<br/>(They will typically each have their own IngressClass.)
+
+[ingress-list]: https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+
 ---
 
 ## The apps
@@ -44,17 +53,19 @@ For this scenario, we need a cluster with working `LoadBalancer` Services.
 
 (For instance, a managed Kubernetes cluster from a cloud provider.)
 
-We suggest to use "Ingress NGINX" with its default settings.
+We suggest to use Traefik with its default settings.
 
-It can be installed with `kubectl apply` or with `helm`.
+It can be installed with `helm`.
 
-Both methods are described in [the documentation][ingress-nginx-deploy].
+If you're not familiar with Helm, don't panic! Just follow the [Traefik documentation][traefik-install-doc] or instructions on the [ArtifactHub page][traefik-artifacthub]. You shouldn't need any extra values or parameters at this point.
 
 We want our apps to be available on e.g. http://X.X.X.X/blue and http://X.X.X.X/green
 <br/>
-(where X.X.X.X is the IP address of the `LoadBalancer` allocated by Ingress NGINX).
+(where X.X.X.X is the IP address of the `LoadBalancer` allocated by Traefik).
 
-[ingress-nginx-deploy]: https://kubernetes.github.io/ingress-nginx/deploy/
+[traefik-install-doc]: https://doc.traefik.io/traefik/getting-started/kubernetes/#install-traefik
+[traefik-artifacthub]: https://artifacthub.io/packages/helm/traefik/traefik?modal=install
+
 
 ---
 
@@ -64,11 +75,11 @@ We want our apps to be available on e.g. http://X.X.X.X/blue and http://X.X.X.X/
 
 For this scenario, we want to use a local cluster like KinD, minikube, etc.
 
-We suggest to use "Ingress NGINX" again, like for the previous scenario.
+We suggest to use Traefik again, like for the previous scenario.
 
-Furthermore, we want to use `localdev.me`.
+Furthermore, we want to use `localtest.me`.
 
-We want our apps to be available on e.g. `blue.localdev.me` and `green.localdev.me`.
+We want our apps to be available on e.g. `blue.localtest.me` and `green.localtest.me`.
 
 The difficulty is to ensure that `localhost:80` will map to the ingress controller.
 
@@ -112,7 +123,7 @@ We want to deploy the ingress controller so that it listens on port 80 on all no
 
 But this time, we want to use a Helm chart to install the ingress controller.
 
-We can use either the Ingress NGINX Helm chart, or the Traefik Helm chart.
+We can use the Traefik Helm chart.
 
 Test with an untainted node first.
 

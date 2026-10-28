@@ -61,6 +61,7 @@ spec:
         - --api.insecure
         - --entrypoints.http.Address=:80
         - --entrypoints.https.Address=:443
+        - --entrypoints.https.http.tls=true
         - --global.sendAnonymousUsage=true
         - --log.level=INFO
         - --metrics.prometheus
