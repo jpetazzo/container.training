@@ -122,6 +122,7 @@ content:
 -
   - k8s/configuration.md
   - k8s/secrets.md
+  - exercises/namespace-self-destruct-details.md
   - k8s/statefulsets.md
   - k8s/consul.md
   - k8s/pv-pvc-sc.md
