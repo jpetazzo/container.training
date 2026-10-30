@@ -64,7 +64,7 @@
   .small[
   ```bash
     kubectl apply -f \
-            https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.37.0/controller.yaml
+            https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.41.2/controller.yaml
   ```
   ]
 

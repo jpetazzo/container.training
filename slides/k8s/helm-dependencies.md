@@ -57,8 +57,8 @@
   ```yaml
     dependencies:
       - name: redis
-        version: 11.0.5
-        repository: https://charts.bitnami.com/bitnami
+        version: 0.37.13
+        repository: oci://docker.io/cloudpirates
         condition: redis.enabled
   ```
 
@@ -68,7 +68,7 @@ Where do that `repository` and `version` come from?
 
 We're assuming here that we did our research,
 or that our resident Helm expert advised us to
-use Bitnami's Redis chart.
+use that particular Redis chart.
 
 ---
 
@@ -116,7 +116,7 @@ use Bitnami's Redis chart.
 
 - This lets us define loose dependencies in `Chart.yaml`
 
-  (e.g. "version 11.whatever, but below 12")
+  (e.g. "version 0.37.whatever, but below 0.38")
 
 - But have the exact version used in `Chart.lock`
 
@@ -134,13 +134,13 @@ use Bitnami's Redis chart.
   ```yaml
     dependencies:
       - name: redis
-        version: ">=11, <12"
-        repository: https://charts.bitnami.com/bitnami
+        version: ">=0.37, <0.38"
+        repository: oci://docker.io/cloudpirates
   ```
 
-- This makes sure that we have the most recent version in the 11.x train
+- This makes sure that we have the most recent version in the 0.37.x train
 
-- ... But without upgrading to version 12.x
+- ... But without upgrading to version 0.38.x
 
   (because it might be incompatible)
 
@@ -184,36 +184,13 @@ use Bitnami's Redis chart.
 
 ---
 
-## Dependency tuning
+## Passing values to dependencies
 
 - DockerCoins expects the `redis` Service to be named `redis`
 
 - Our Redis chart uses a different Service name by default
 
-- Service name is `{{ template "redis.fullname" . }}-master`
-
-- `redis.fullname` looks like this:
-  ```
-    {{- define "redis.fullname" -}}
-    {{- if .Values.fullnameOverride -}}
-    {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-    {{- else -}}
-    [...]
-    {{- end }}
-    {{- end }}
-  ```
-
-- How do we fix this?
-
----
-
-## Setting dependency variables
-
-- If we set `fullnameOverride` to `redis`:
-
-  - the `{{ template ... }}` block will output `redis`
-
-  - the Service name will be `redis-master`
+- We can override it by setting value `fullnameOverride`
 
 - A parent chart can set values for its dependencies
 
@@ -230,17 +207,49 @@ use Bitnami's Redis chart.
 
 ---
 
+## Modifying a subchart
+
+- Ideally, we don't want to edit our subcharts
+
+  (because we would have to redo our modifications each time there is an update)
+
+- But what if we *have to* edit a subchart?
+
+- Example: using [Bitnami's Redis chart][artifacthub-bitnami-redis]
+
+  (in that chart, the Redis service name has a forced `-master` suffix)
+
+[artifacthub-bitnami-redis]: https://artifacthub.io/packages/helm/bitnami/redis
+
+---
+
 class: extra-details
 
-## Passing templates
+## Why we can't just override the name
 
-- We can even pass template `{{ include "template.name" }}`, but warning:
+- Pull the chart:
 
-   - need to be evaluated with the `tpl` function, on the child side
+  `helm pull oci://docker.io/bitnamicharts/redis --untar`
 
-   - evaluated in the context of the child, with no access to parent variables
+- Check `redis/templates/master/service.yaml`
 
-<!-- FIXME this probably deserves an example, but I can't imagine one right now 😅 -->
+- Service name is `{{ template "redis.fullname" . }}-master`
+
+- How do we change this?
+
+---
+
+## Setting dependency variables
+
+- If we set `fullnameOverride` to `redis`:
+
+  - the `{{ template ... }}` block will output `redis`
+
+  - the Service name will be `redis-master`
+
+- Our client expects to connect to a Service named `redis`
+
+- So, what should we do?
 
 ---
 
@@ -264,10 +273,10 @@ class: extra-details
 
 .lab[
 
-- Decompress the chart:
+- Get the chart:
   ```yaml
   cd charts
-  tar zxf redis-*.tgz
+  helm pull oci://docker.io/bitnamicharts/redis --untar
   cd ..
   ```
 
@@ -328,22 +337,6 @@ class: extra-details
   - when used standalone (`.Chart.IsRoot` is `true`), use `.Release.Name`
 
   - when used as a subchart e.g. with multiple aliases, use `.Chart.Name`
-
----
-
-class: extra-details
-
-## Compatibility with Helm 2
-
-- Chart `apiVersion: v1` is the only version supported by Helm 2
-
-- Chart v1 is also supported by Helm 3
-
-- Use v1 if you want to be compatible with Helm 2
-
-- Instead of `Chart.yaml`, dependencies are defined in `requirements.yaml`
-
-  (and we should commit `requirements.lock` instead of `Chart.lock`)
 
 ???
 
