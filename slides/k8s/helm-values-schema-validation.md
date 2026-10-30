@@ -185,6 +185,59 @@ The second will not.
 
 `"additionalProperties": false` needs to be specified at each level.
 
+---
+
+## Maintaining schemas
+
+- Maintaining these schemas by hand is very tedious
+
+- Multiple tools are available; for instance:
+
+  - https://github.com/dadav/helm-schema (Go; maintained; helm plugin)
+
+  - https://github.com/SocialGouv/helm-schema (TS; less maintained)
+
+  - and [Data to Schema][json-schema-data-to-schema] tools on the JSON Schema website
+
+[json-schema-data-to-schema]: https://json-schema.org/tools#data-to-schema
+
+---
+
+## `dadav/helm-schema`
+
+- Uses a custom `@schema` tag in comments:
+
+  ```yaml
+  # @schema
+  # type: integer
+  # minimum: 1
+  # required: true
+  # @schema
+  # Number of application replicas.
+  replicaCount: 1
+  ```
+
+- Tons of cool features!
+
+- See the project [README][dadav-helm-schema-annotations] for details
+
+[dadav-helm-schema-annotations]: https://github.com/dadav/helm-schema#annotations
+
+---
+
+## `SocialGouv/helm-schema`
+
+- Follows JSDoc standards:
+
+  ```yaml
+  # @param {object} smtp Your SMTP setup
+  smtp:
+    # @param {string} host SMTP hostname
+    host:
+    # @param {number} [port] SMTP port
+    port: 587
+  ```
+
 ???
 
 :EN:- Helm schema validation

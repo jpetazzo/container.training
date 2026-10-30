@@ -12,37 +12,23 @@
 
 ---
 
-## Adding the repo
-
-- If you haven't done it before, you need to add the repo for that chart
-
-.lab[
-
-- Add the repo that holds the chart for the OWASP Juice Shop:
-  ```bash
-  helm repo add juice https://charts.securecodebox.io
-  ```
-
-]
-
----
-
 ## We need a release
 
 - We need to install something with Helm
 
-- Let's use the `juice/juice-shop` chart as an example
+- Let's use the `juice-shop` chart as an example
 
 .lab[
 
-- Install a release called `orange` with the chart `juice/juice-shop`:
+- Install a release called `orange`:
   ```bash
-  helm upgrade orange juice/juice-shop --install
+  helm upgrade orange oci://ghcr.io/securecodebox/helm/juice-shop --install
   ```
 
 - Let's upgrade that release, and change a value:
   ```bash
-  helm upgrade orange juice/juice-shop --set ingress.enabled=true
+  helm upgrade orange oci://ghcr.io/securecodebox/helm/juice-shop \
+       --set ingress.enabled=true
   ```
 
 ]

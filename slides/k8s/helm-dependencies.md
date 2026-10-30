@@ -303,6 +303,24 @@ class: extra-details
 
 ---
 
+class: extra-details
+
+## Using an `ExternalName` Service
+
+- We could also create a Service of type `ExternalName`
+
+- That Service would resolve to e.g. `redis-master.<NAMESPACE>.svc.cluster.local`
+
+- We need to know the cluster's domain name (`cluster.local` by default)
+
+- This only works in this specific situation
+
+  (Service with a "wrong" name)
+
+- This technique can also be used to point to a service in a different Namespace
+
+---
+
 ## Embedding a dependency multiple times
 
 - What if we need multiple copies of the same subchart?

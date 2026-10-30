@@ -44,21 +44,6 @@
 
 ---
 
-## Adding the repo
-
-- If you haven't done it before, you need to add the repo for that chart
-
-.lab[
-
-- Add the repo that holds the chart for the OWASP Juice Shop:
-  ```bash
-  helm repo add juice https://charts.securecodebox.io
-  ```
-
-]
-
----
-
 ## Downloading a chart
 
 - We can use `helm pull` to download a chart from a repo
@@ -67,13 +52,13 @@
 
 - Download the tarball for `juice/juice-shop`:
   ```bash
-  helm pull juice/juice-shop
+  helm pull oci://ghcr.io/securecodebox/helm/juice-shop
   ```
   (This will create a file named `juice-shop-X.Y.Z.tgz`.)
 
 - Or, download + untar `juice/juice-shop`:
   ```bash
-  helm pull juice/juice-shop --untar
+  helm pull oci://ghcr.io/securecodebox/helm/juice-shop --untar
   ```
   (This will create a directory named `juice-shop`.)
 

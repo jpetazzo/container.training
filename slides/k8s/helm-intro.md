@@ -155,6 +155,31 @@ class: extra-details
 
 ---
 
+## Helm 3 vs Helm 4
+
+- [Server-Side Apply][k8s-ssa] support
+
+  (more efficient updates; avoids conflicts when there are concurrent updates)
+
+- New plugin architecture
+
+  - WASM support
+
+  - distinct plugin types (CLI, postrenderer, getter)
+
+- More reliable "wait for resource to be up" with [kstatus]
+
+  (use well-known condition names to track resource status; e.g. `Current` or `Ready`)
+
+- Better OCI support (e.g. digests pinning)
+
+- And much more!
+
+[k8s-ssa]: https://kubernetes.io/docs/reference/using-api/server-side-apply/
+[kstatus]: https://github.com/kubernetes-sigs/cli-utils/tree/master/pkg/kstatus
+
+---
+
 ## Installing Helm
 
 - If the `helm` CLI is not installed in your environment, install it
@@ -168,31 +193,49 @@ class: extra-details
 
 - If it's not installed, run the following command:
   ```bash
-  curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get-helm-3 \
+  curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4 \
   | bash
   ```
 
+- Or download the latest release [from GitHub][helm-releases]
+
 ]
 
-(To install Helm 2, replace `get-helm-3` with `get`.)
+[helm-releases]: https://github.com/helm/helm/releases
 
 ---
 
-## Charts and repositories
+## Charts
+
+- Helm works with *charts*
+
+  (a chart is a collection of files)
+
+- A chart can exist:
+
+  - as plain local files (ideal for development, rapid iteration)
+
+  - as a bundle on an online *repository* (ideal for distribution)
+
+---
+
+## Repositories
 
 - A *repository* (or repo in short) is a collection of charts
 
-- It's just a bunch of files
+- Helm supports HTTP and OCI repositories
 
-  (they can be hosted by a static HTTP server, or on a local directory)
+- HTTP repositories (legacy):
 
-- We can add "repos" to Helm, giving them a nickname
+  - static HTTP servers with a special index file (see `helm repo index`)
 
-- The nickname is used when referring to charts on that repo
+  - charts are tarballs
 
-  (for instance, if we try to install `hello/world`, that
-  means the chart `world` on the repo `hello`; and that repo
-  `hello` might be something like https://blahblah.hello.io/charts/)
+- OCI repositories (newer):
+
+  - same format and protocol as container images
+
+  - no special index file (updates are easier)
 
 ---
 
@@ -225,26 +268,6 @@ class: extra-details
   ```
 
 ]
-
-⚠️ No result found? Check the next slide!
-
----
-
-In September 2026, the old chart repository for that app was removed.
-
-The Helm chart is now available through an OCI registry.
-
-For some reason, the chart isn't listed on the Artifact Hub anymore.
-
-Try to access the chart address:
-
-→ https://artifacthub.io/packages/helm/securecodebox/juice-shop
-
-If that doesn't work, don't worry - we can still install the chart.
-
-But we'll need the chart documentation. It can be found [here][juice-shop-README].
-
-[juice-shop-README]: https://github.com/secureCodeBox/secureCodeBox/blob/main/demo-targets/juice-shop/README.md
 
 ---
 
@@ -329,7 +352,7 @@ It is defined in that chart. In other words, not all charts will provide this la
 
 ## Configuring a release
 
-- By default, `juice/juice-shop` creates a service of type `ClusterIP`
+- By default, `juice-shop` creates a service of type `ClusterIP`
 
 - We would like to change that to a `NodePort`
 
@@ -355,12 +378,12 @@ It is defined in that chart. In other words, not all charts will provide this la
 
 - Look at the README for the app:
   ```bash
-  helm show readme juice/juice-shop
+  helm show readme oci://ghcr.io/securecodebox/helm/juice-shop
   ```
 
 - Look at the values and their defaults:
   ```bash
-  helm show values juice/juice-shop
+  helm show values oci://ghcr.io/securecodebox/helm/juice-shop
   ```
 
 ]
@@ -389,12 +412,23 @@ The `readme` may or may not have (accurate) explanations for the values.
 
 ]
 
-Note that we have to specify the chart that we use (`juice/my-juice-shop`),
-even if we just want to update some values.
+---
 
-We can set multiple values. If we want to set many values, we can use `-f`/`--values` and pass a YAML file with all the values.
+## Gotchas
 
-All unspecified values will take the default values defined in the chart.
+- We need to specify the chart name again
+
+  (even if we just want to update some values)
+
+- We can set multiple values (with multiple `--set` options)
+
+- We can also set multiple values with `-f`/`--values` and pass a YAML file
+
+  (very useful when there are *many* values, or complex nested values)
+
+- If we set at least one value, it will reset all other values to their defaults
+
+  (unless we pass `--reuse-values`)
 
 ---
 
@@ -416,6 +450,24 @@ All unspecified values will take the default values defined in the chart.
   ```
 
 ]
+
+---
+
+## Installing from HTTP repos
+
+- Standard approach:
+  ```bash
+  helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+  helm install metrics-server metrics-server/metrics-server --version 3.14.0
+  ```
+
+  (Note: the repo name is arbitrary; it doesn't have to match `metrics-server`.)
+
+- One-liner approach:
+  ```bash
+  helm install metrics-server metrics-server/metrics-server --version 3.14.0 \
+       --repo https://kubernetes-sigs.github.io/metrics-server/
+  ```
 
 ???
 
