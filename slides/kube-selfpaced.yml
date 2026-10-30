@@ -93,6 +93,7 @@ content:
   - k8s/cainjector.md
   - k8s/templating.md
   - k8s/kustomize.md
+  - exercises/kustomize-details.md
   - k8s/helm-intro.md
   - k8s/helm-chart-format.md
   - k8s/helm-create-basic-chart.md
