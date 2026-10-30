@@ -49,6 +49,28 @@ _cmd_clean() {
 	done	
 }
 
+_cmd cloudinit "Generate the node setup script (cloud-init user data) from CLOUDINIT_STEPS"
+_cmd_cloudinit() {
+    TAG=$1
+    need_tag
+
+    # The steps in CLOUDINIT_STEPS only change the node itself, so each node
+    # can run them alone at first boot, with no SSH from this machine.
+    # Each step runs in pssh record mode: its commands go into the script.
+    [ "$CLOUDINIT_STEPS" ] || die "CLOUDINIT_STEPS is not set in the settings of $TAG."
+    SCRIPT=tags/$TAG/user_data.sh
+    cp lib/nodesetup-header $SCRIPT
+    for STEP in $CLOUDINIT_STEPS; do
+        PSSH_RECORD=$SCRIPT PSSH_RECORD_STEP=$STEP $0 $STEP $TAG
+    done
+    echo nodesetup_done >> $SCRIPT
+
+    # EC2 accepts at most 16 KB of user data; Terraform sends it gzipped.
+    SIZE=$(gzip -c $SCRIPT | wc -c | tr -d ' ')
+    info "Generated $SCRIPT: $(grep -c "^run_block [a-z]" $SCRIPT) blocks, $SIZE bytes gzipped."
+    [ $SIZE -le 16384 ] || die "$SCRIPT is larger than the EC2 user data limit (16 KB gzipped)."
+}
+
 _cmd codeserver "Install code-server on the clusters"
 _cmd_codeserver() {
     TAG=$1
@@ -89,6 +111,17 @@ _cmd_createuser() {
     TAG=$1
     need_tag
 
+    _cmd_usersetup $TAG
+    _cmd_userkeys $TAG
+}
+
+# The node-local part of createuser (it does not need the other nodes),
+# so that cloud-init can run it at first boot (see CLOUDINIT_STEPS).
+_cmd usersetup "Create the student user and their dotfiles, without SSH keys"
+_cmd_usersetup() {
+    TAG=$1
+    need_tag
+
     pssh "
     set -e
     # Create the user if it doesn't exist yet.
@@ -110,36 +143,6 @@ _cmd_createuser() {
     sudo sed -i 's/#MaxAuthTries 6/MaxAuthTries 42/' /etc/ssh/sshd_config
     sudo systemctl restart ssh.service
     "
-
-    pssh "
-    set -e
-    cd /home/$USER_LOGIN
-    sudo -u $USER_LOGIN mkdir -p .ssh
-    if i_am_first_node; then
-      # Generate a key pair with an empty passphrase.
-      if ! sudo -u $USER_LOGIN [ -f .ssh/id_rsa ]; then
-        sudo -u $USER_LOGIN ssh-keygen -t rsa -f .ssh/id_rsa -P ''
-        sudo -u $USER_LOGIN cp .ssh/id_rsa.pub .ssh/authorized_keys
-      fi
-    fi
-    "
-
-    # FIXME this is a gross hack to add the deployment key to our SSH agent,
-    # so that it can be used to bounce from host to host (which is necessary
-    # in the next deployment step). In the long run, we probably want to
-    # generate these keys locally and push them to the machines instead
-    # (once we move everything to Terraform).
-    ssh-add tags/$TAG/id_rsa
-    pssh "
-    set -e
-    cd /home/$USER_LOGIN
-    if ! i_am_first_node; then
-      # Copy keys from the first node.
-      ssh $SSHOPTS \$(cat /etc/name_of_first_node) sudo -u $USER_LOGIN tar -C /home/$USER_LOGIN -cvf- .ssh |
-      sudo -u $USER_LOGIN tar -xf-
-    fi
-    "
-    ssh-add -d tags/$TAG/id_rsa
 
     # FIXME do this only once.
     pssh -I "sudo -u $USER_LOGIN tee -a /home/$USER_LOGIN/.bashrc" <<"SQRL"
@@ -188,6 +191,44 @@ SQRL
     # Install docker-prompt script
     pssh -I sudo tee /usr/local/bin/docker-prompt <lib/docker-prompt
     pssh sudo chmod +x /usr/local/bin/docker-prompt
+}
+
+# The cluster-level part of createuser: all nodes of a cluster get the
+# same key pair for the student user. It needs clusterize first.
+_cmd userkeys "Share an SSH key pair for the student user in each cluster"
+_cmd_userkeys() {
+    TAG=$1
+    need_tag
+
+    pssh "
+    set -e
+    cd /home/$USER_LOGIN
+    sudo -u $USER_LOGIN mkdir -p .ssh
+    if i_am_first_node; then
+      # Generate a key pair with an empty passphrase.
+      if ! sudo -u $USER_LOGIN [ -f .ssh/id_rsa ]; then
+        sudo -u $USER_LOGIN ssh-keygen -t rsa -f .ssh/id_rsa -P ''
+        sudo -u $USER_LOGIN cp .ssh/id_rsa.pub .ssh/authorized_keys
+      fi
+    fi
+    "
+
+    # FIXME this is a gross hack to add the deployment key to our SSH agent,
+    # so that it can be used to bounce from host to host (which is necessary
+    # in the next deployment step). In the long run, we probably want to
+    # generate these keys locally and push them to the machines instead
+    # (once we move everything to Terraform).
+    ssh-add tags/$TAG/id_rsa
+    pssh "
+    set -e
+    cd /home/$USER_LOGIN
+    if ! i_am_first_node; then
+      # Copy keys from the first node.
+      ssh $SSHOPTS \$(cat /etc/name_of_first_node) sudo -u $USER_LOGIN tar -C /home/$USER_LOGIN -cvf- .ssh |
+      sudo -u $USER_LOGIN tar -xf-
+    fi
+    "
+    ssh-add -d tags/$TAG/id_rsa
 
     echo user_ok > tags/$TAG/status
 }
@@ -357,7 +398,7 @@ _cmd_destroy() {
     need_tag
     cd tags/$TAG
     echo destroying > status
-    terraform destroy -auto-approve
+    terraform destroy -auto-approve -parallelism=${TERRAFORM_PARALLELISM-10}
     echo destroyed > status
 }
 
@@ -1050,10 +1091,13 @@ _cmd_kubetest() {
 
     # There are way too many backslashes in the command below.
     # Feel free to make that better ♥
+    # Nodes that just joined stay NotReady until their CNI agent is up,
+    # so wait for that first (kubetest can run right after kubeadm).
     pssh "
     set -e
     if i_am_first_node; then
       which kubectl
+      kubectl wait --for=condition=Ready node --all --timeout=300s
       for NODE in \$(grep [0-9]\$ /etc/hosts | grep -v ^127 | awk {print\ \\\$2}); do
         echo \$NODE ; kubectl get nodes | grep -w \$NODE | grep -w Ready
       done
@@ -1096,6 +1140,69 @@ _cmd_maketag() {
     fi
     MS=$(($(date +%N | tr -d 0)/1000000))
     date +%Y-%m-%d-%H-%M-$MS-$USER
+}
+
+_cmd nodesetup "Wait until cloud-init has run the node setup script on all nodes"
+_cmd_nodesetup() {
+    TAG=$1
+    need_tag
+
+    # Each node runs the script alone, so we only poll the status files that
+    # the script writes (see lib/nodesetup-header). The nodes run at about
+    # the same speed, so first we poll only a few random nodes (cheap).
+    # When they are done, we check all nodes, then only the nodes that are
+    # not done yet, so each check is smaller than the one before.
+    DEADLINE=$(( $(date +%s) + ${NODESETUP_TIMEOUT-1800} ))
+    TODO=tags/$TAG/nodesetup.todo
+    awk 'BEGIN { srand() } { print rand(), $0 }' tags/$TAG/ips.txt | sort -n | head -n 3 | cut -d " " -f 2 > $TODO
+    info "Waiting for the node setup on 3 random VMs..."
+    _nodesetup_wait $TODO
+    cp tags/$TAG/ips.txt $TODO
+    info "Checking the node setup on all $(wc -l < $TODO | tr -d ' ') VMs..."
+    _nodesetup_wait $TODO
+    rm -f $TODO $TODO.status
+}
+
+# Poll the VMs of the host file $1 until all of them are done. After each
+# poll, remove the VMs that are done from the file. Die if a VM failed.
+_nodesetup_wait() {
+    while true; do
+        _nodesetup_status $1 > $1.status
+        if grep -q " failed" $1.status; then
+            grep " failed" $1.status
+            die "Node setup failed. See /var/log/cloud-init-output.log on these VMs."
+        fi
+        grep -v " done$" $1.status | cut -d " " -f 1 > $1.next || true
+        mv $1.next $1
+        DONE=$(grep -c " done$" $1.status || true)
+        RUNNING=$(grep -c " running$" $1.status || true)
+        UNREACHABLE=$(grep -c " unreachable$" $1.status || true)
+        info "Node setup: $DONE done, $RUNNING running, $UNREACHABLE not reachable."
+        [ -s $1 ] || return 0
+        [ $(date +%s) -lt $DEADLINE ] || die "Node setup did not finish in ${NODESETUP_TIMEOUT-1800} seconds."
+        sleep ${NODESETUP_POLL-30}
+    done
+}
+
+# Print "<ip> <status>" for each VM of the host file $1. The status is done,
+# running, failed (with the failed block), or unreachable.
+# A VM that reboots after the setup still has /var/run/reboot-required
+# until the reboot is done, so it is still "running".
+# pssh echoes the command, so the marker is split ('') in the command.
+_nodesetup_status() {
+    PSSH_HOSTFILE=$1 pssh -i -t 15 "
+    if [ -f /var/lib/labctl/failed ]; then
+        echo NODE''SETUP=failed block \$(cat /var/lib/labctl/failed)
+    elif [ -f /var/lib/labctl/done ] && [ ! -f /var/run/reboot-required ]; then
+        echo NODE''SETUP=done
+    else
+        echo NODE''SETUP=running
+    fi" 2>/dev/null | awk '
+        NR == FNR { hosts[$1]; next }
+        /\[(SUCCESS|FAILURE)\]/ { ip = $4 }
+        /^NODESETUP=/ { sub(/^NODESETUP=/, ""); print ip, $0; seen[ip] }
+        END { for (h in hosts) if (!(h in seen)) print h, "unreachable" }
+        ' $1 - || true
 }
 
 _cmd netfix "Disable GRO and run a pinger job on the VMs"
@@ -1223,6 +1330,35 @@ _cmd_standardize() {
     else
         echo GITHUB=https://github.com
     fi | sudo tee -a /etc/environment"
+
+    # Install the latest package updates before the next steps install software.
+    # full-upgrade (not upgrade), so that new packages such as a new kernel
+    # are installed too. Held packages (e.g. kubelet) are not changed.
+    # Wait for the apt lock (apt-daily can still run just after boot),
+    # keep the existing config files, and restart services without a prompt.
+    pssh "
+    sudo apt-get -q -o DPkg::Lock::Timeout=600 update &&
+    sudo DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a apt-get -qy \
+      -o DPkg::Lock::Timeout=600 \
+      -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold \
+      full-upgrade"
+
+    # Reboot the nodes that need it (e.g. a new kernel), then wait for them.
+    # The reboot is delayed by a few seconds, so that the SSH command can
+    # exit cleanly before the connection goes away.
+    # pssh echoes the command, so the marker is split ('') in the command
+    # and only appears whole in the output of a node that reboots.
+    # In record mode (cloud-init), the node setup script reboots at the end.
+    [ "$PSSH_RECORD" ] && return
+    if pssh -i "
+    if [ -f /var/run/reboot-required ]; then
+      sudo systemd-run --on-active=3 systemctl reboot
+      echo REBOOT''SCHEDULED
+    fi" | grep -q REBOOTSCHEDULED; then
+        info "Rebooting the nodes that need it, after the package upgrade."
+        sleep 30
+        _cmd_wait $TAG
+    fi
 }
 
 _cmd tailhist "Install history viewer on port 1088"
@@ -1287,7 +1423,9 @@ _cmd_terraform() {
     echo terraforming > tags/$TAG/status
     (
         cd tags/$TAG
-        terraform apply -auto-approve
+        # Terraform makes 10 API calls at a time by default. With hundreds
+        # of VMs, that is slow; settings can raise it (TERRAFORM_PARALLELISM).
+        terraform apply -auto-approve -parallelism=${TERRAFORM_PARALLELISM-10}
         # The Terraform provider for Proxmox has a bug; sometimes it fails
         # to obtain VM address from the QEMU agent. In that case, we put
         # ERROR in the ips.txt file (instead of the VM IP address). Detect

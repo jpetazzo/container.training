@@ -8,7 +8,13 @@ pssh() {
         return
     fi
 
-    HOSTFILE="tags/$TAG/ips.txt"
+    if [ "$PSSH_RECORD" ]; then
+        pssh_record "$@"
+        return
+    fi
+
+    # PSSH_HOSTFILE can select a subset of the VMs (e.g. in nodesetup).
+    HOSTFILE="${PSSH_HOSTFILE-tags/$TAG/ips.txt}"
 
     [ -f $HOSTFILE ] || {
         >/dev/stderr echo "Hostfile $HOSTFILE not found."
@@ -41,4 +47,30 @@ pssh() {
         -O ForwardAgent=yes \
         $PSSH_I \
         "$@"
+}
+
+# Record mode: when $PSSH_RECORD is set to a file name, pssh does not run
+# the command. It appends a "run_block" line to that file instead, so that
+# the cloudinit command can turn labctl steps into a node setup script.
+# The command (and its stdin, for -I) are base64-encoded, to keep them exact.
+# Commands for another user (-l root) are not recorded: they are only used
+# to fix up cloud images that start with a root login.
+pssh_record() {
+    local STDIN=""
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -I) STDIN=yes; shift;;
+            -i) shift;;
+            -t|--timeout) shift 2;;
+            -l) return 1;;
+            *) break;;
+        esac
+    done
+    local CMD_B64=$(printf "%s" "$*" | base64 | tr -d '\n')
+    local STDIN_B64=-
+    if [ "$STDIN" ]; then
+        STDIN_B64=$(base64 | tr -d '\n')
+        STDIN_B64=${STDIN_B64:--}
+    fi
+    echo "run_block ${PSSH_RECORD_STEP-unknown} $CMD_B64 $STDIN_B64" >> "$PSSH_RECORD"
 }
