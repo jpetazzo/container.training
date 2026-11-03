@@ -1280,6 +1280,16 @@ _cmd_talos() {
 
 }
 
+_cmd talosips "Show the IP address of each lab VM and of its Talos nodes"
+_cmd_talosips() {
+    TAG=$1
+    need_tag $TAG
+    if ! [ -f tags/$TAG/talos.tsv ]; then
+        die "File tags/$TAG/talos.tsv not found. Did the talos step run?"
+    fi
+    paste tags/$TAG/clusters.tsv tags/$TAG/talos.tsv
+}
+
 _cmd terraform "Apply Terraform configuration to provision resources."
 _cmd_terraform() {
     TAG=$1
