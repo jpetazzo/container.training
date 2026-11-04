@@ -1,0 +1,77 @@
+#!/bin/bash
+# List the Kubernetes and Docker tools installed on this lab node.
+# Installed in /usr/local/bin by the kubetools step of labctl.
+# This list does not check the tools: when you add or remove a tool
+# in labctl, edit this list too, and check it on a lab.
+
+if [ -t 1 ]; then
+  HEAD=$'\e[1;36m' TOOL=$'\e[1;32m' OFF=$'\e[0m'
+fi
+
+# A line with no "|" is a category; "cli|description" is a tool.
+while IFS='|' read -r name desc; do
+  [ "$name" ] || continue
+  if [ "$desc" ]; then
+    echo "  - $TOOL$name$OFF: $desc"
+  else
+    echo "$FIRST$HEAD$name$OFF"
+    FIRST=$'\n'
+  fi
+done <<'EOF'
+Cluster and contexts
+kubectl|Control the Kubernetes cluster
+kubecolor|kubectl with colored output (same options as kubectl)
+kubectx (kctx)|Show or switch the kubeconfig context
+kubens (kns)|Show or switch the default namespace
+kubectl krew|Install kubectl plugins
+kubeadm|Create and upgrade clusters (it made this cluster)
+kind|Create local test clusters, with Docker containers as nodes
+
+Terminal UIs
+k9s|Browse, edit, and debug cluster resources in a terminal UI
+sofka|Kubernetes terminal UI, like k9s
+
+Logs and troubleshooting
+stern|Follow the logs of many pods together, with one color per pod
+popeye|Scan the cluster for misconfigured resources
+kubent|Find resources that use deprecated or removed API versions
+crictl|Inspect containers and images on this node's container runtime
+
+YAML and JSON
+jq|Query and transform JSON
+jless|Browse JSON in a pager that you can fold and search
+gron|Make JSON greppable (one line per value)
+jid|Build jq filters interactively
+
+Packaging and deployment
+helm|Install and manage Helm charts
+kustomize|Customize YAML manifests with overlays and patches
+ytt|Template YAML with Starlark
+kompose|Convert Compose files to Kubernetes manifests
+skaffold|Build, push, and deploy in a loop while you edit code
+tilt|Dev environment that rebuilds and redeploys when you edit code
+
+GitOps
+flux|Control Flux, the GitOps operator
+argocd|Control Argo CD, the GitOps operator
+
+Secrets
+kubeseal|Encrypt Secrets for Sealed Secrets, so they can go in Git
+
+Backup and cloud
+velero|Back up and restore cluster resources and volumes
+aws-iam-authenticator|Get Kubernetes credentials from AWS IAM (for EKS)
+
+Containers
+docker|Build, run, and manage containers
+
+Network and remote access
+mosh|SSH that survives network changes and laptop sleep
+ngrok|Expose a local port on a public URL
+httping|Ping an HTTP URL and show the response time
+ab|Load test an HTTP server (ApacheBench)
+
+Terminal
+tmux|Split the terminal and keep sessions after you disconnect
+vim, emacs, joe|Text editors
+EOF
