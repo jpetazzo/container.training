@@ -60,6 +60,19 @@
         // Reminder, if you want to tinker with mermaid,
         // you need to export it, for instance like this:
         // window.mermaid = mermaid;
+
+      // Links that leave this deck (other sites, or other pages on this
+      // site) open in a new tab, so students keep their place in the slides.
+      // Links inside the deck (e.g. #toc) stay in the same tab. One listener
+      // for the whole page covers every slide.
+      document.addEventListener('click', function (event) {
+        const link = event.target.closest('a[href]');
+        if (!link) return;
+        const url = new URL(link.href, location.href);
+        if (url.origin === location.origin && url.pathname === location.pathname) return;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+      }, true);
     </script>
 
     <!-- 
