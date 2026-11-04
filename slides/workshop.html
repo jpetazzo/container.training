@@ -2,6 +2,14 @@
 <html>
   <head>
     <title>Training Materials</title>
+    <script>
+      // Apply the saved theme (see the 🎨 button below) before the page
+      // draws, so it doesn't flash the default colors first.
+      try {
+        const theme = localStorage.getItem('slides-theme');
+        if (theme) document.documentElement.dataset.theme = theme;
+      } catch (e) { /* no storage (private window, etc.): use default */ }
+    </script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="workshop.css">
   </head>
@@ -50,9 +58,151 @@
         excludedClasses: tmplEXCLUDE
       });
       document.querySelector('#loading').style.display = 'none';
+
+      // Remark shows the first slide inside remark.create(), before the
+      // handlers below exist, so that first "afterShowSlide" event is lost.
+      // onSlideShown() registers a handler and also runs it once now, for
+      // the slide on screen (e.g. the buttons on the first slide).
+      function onSlideShown(handler) {
+        slideshow.on('afterShowSlide', handler);
+        handler(slideshow.getSlides()[slideshow.getCurrentSlideIndex()]);
+      }
+
+      // "?" button in the bottom-right corner of each slide. It opens the
+      // same help screen as the "?" key, for people who don't know that key.
+      onSlideShown(function () {
+        const container = document.querySelector('.remark-visible .remark-slide-content');
+        if (!container || container.querySelector('.remark-help-button')) return;
+        const button = document.createElement('button');
+        button.className = 'remark-round-button remark-help-button';
+        button.textContent = '?';
+        button.title = 'Keyboard shortcuts (?)';
+        button.addEventListener('click', function (event) {
+          event.stopPropagation();
+          slideshow.toggleHelp();
+          // Drop focus, so Space/Enter go to Remark, not to this button.
+          button.blur();
+        });
+        container.appendChild(button);
+      });
+
+      // Help screen: a card with a title, a × button, and a hint.
+      const helpContent = document.querySelector('.remark-help-content');
+      if (helpContent) {
+        helpContent.querySelector('h1')?.remove();
+        helpContent.setAttribute('role', 'dialog');
+        helpContent.setAttribute('aria-labelledby', 'remark-help-title');
+        const header = document.createElement('div');
+        header.className = 'popup-header';
+        header.innerHTML = `
+          <h2 id="remark-help-title">Keyboard shortcuts</h2>
+          <button type="button" class="popup-close" aria-label="Close keyboard shortcuts">×</button>`;
+        header.querySelector('button').addEventListener('click', event => {
+          event.stopPropagation();
+          slideshow.toggleHelp();
+        });
+        const hint = document.createElement('p');
+        hint.className = 'remark-help-hint';
+        hint.textContent = '? or Esc closes';
+        // Replace Remark's "<p><b>Keyboard shortcuts</b></p>" title.
+        const oldTitle = helpContent.querySelector(':scope > p');
+        if (oldTitle) oldTitle.remove();
+        helpContent.prepend(header, hint);
+        // A click on the dimmed backdrop (outside the card) closes the help.
+        helpContent.parentElement.addEventListener('click', event => {
+          if (event.target === event.currentTarget) slideshow.toggleHelp();
+        });
+      }
+
+      // 🎨 button above "?": cycle through color themes (workshop.css
+      // defines the colors). Light themes first, then dark from lightest to
+      // darkest. The choice is saved in this browser only.
+      const themes = [
+        { id: '', name: 'Default' },
+        { id: 'solarized-light', name: 'Solarized Light' },
+        { id: 'catppuccin-latte', name: 'Catppuccin Latte' },
+        { id: 'nord', name: 'Nord' },
+        { id: 'catppuccin-mocha', name: 'Catppuccin Mocha' },
+        { id: 'github-dark', name: 'GitHub Dark' },
+      ];
+      const toast = document.createElement('div');
+      toast.className = 'theme-toast';
+      document.body.appendChild(toast);
+      let toastTimer;
+      function nextTheme() {
+        const current = document.documentElement.dataset.theme || '';
+        const i = themes.findIndex(t => t.id === current);
+        const theme = themes[(i + 1) % themes.length];
+        if (theme.id) {
+          document.documentElement.dataset.theme = theme.id;
+        } else {
+          delete document.documentElement.dataset.theme;
+        }
+        try { localStorage.setItem('slides-theme', theme.id); } catch (e) {}
+        // Show the theme name, then fade it out (CSS transition).
+        toast.textContent = `🎨 ${theme.name}`;
+        toast.classList.add('visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('visible'), 1500);
+      }
+      onSlideShown(function () {
+        const container = document.querySelector('.remark-visible .remark-slide-content');
+        if (!container || container.querySelector('.remark-theme-button')) return;
+        const button = document.createElement('button');
+        button.className = 'remark-round-button remark-theme-button';
+        button.textContent = '🎨';
+        button.title = 'Change color theme';
+        button.addEventListener('click', function (event) {
+          event.stopPropagation();
+          nextTheme();
+          // Drop focus, so Space/Enter go to Remark, not to this button.
+          button.blur();
+        });
+        container.appendChild(button);
+      });
+
+      // Copy button on each bash/shell code block. Copies the text without
+      // the slide formatting; one line per code line.
+      async function copyText(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch (e) {
+          // Fallback when the Clipboard API is blocked (e.g. plain http).
+          const area = document.createElement('textarea');
+          area.value = text;
+          area.style.position = 'fixed';
+          area.style.opacity = '0';
+          document.body.appendChild(area);
+          area.select();
+          document.execCommand('copy');
+          area.remove();
+        }
+      }
+      onSlideShown(function () {
+        const blocks = document.querySelectorAll(
+          '.remark-visible pre > code.bash, .remark-visible pre > code.shell');
+        blocks.forEach(function (code) {
+          const pre = code.parentElement;
+          if (pre.querySelector('.copy-button')) return;
+          const button = document.createElement('button');
+          button.className = 'copy-button';
+          button.textContent = '📋';
+          button.title = 'Copy to clipboard';
+          button.addEventListener('click', async function (event) {
+            event.stopPropagation();
+            button.blur();
+            const lines = [...code.querySelectorAll('.remark-code-line')]
+              .map(line => line.textContent);
+            await copyText(lines.join('\n'));
+            button.textContent = '✅';
+            setTimeout(() => { button.textContent = '📋'; }, 1200);
+          });
+          pre.appendChild(button);
+        });
+      });
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ startOnLoad: false });
-        slideshow.on('afterShowSlide', function (slide) {
+        onSlideShown(function (slide) {
           mermaid.run({
             nodes: document.querySelectorAll('div.remark-visible pre.mermaid'),
           });
