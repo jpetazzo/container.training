@@ -1,0 +1,60 @@
+#!/bin/bash
+# Node setup script for cloud-init (EC2 user data).
+# "labctl cloudinit <tag>" generates it: this header, then one run_block line
+# for each pssh command of the steps in CLOUDINIT_STEPS, then nodesetup_done.
+# cloud-init runs it as root, once, at first boot.
+#
+# Each block runs like pssh runs it: as the ubuntu user, in its home
+# directory, with the variables of /etc/environment (e.g. $GITHUB).
+# A block that fails is retried, like labctl retries a step. If it still
+# fails, the node is marked as failed, and "labctl nodesetup" reports it.
+#
+# Results on the node:
+#   /var/lib/labctl/blocks.log       one line per block: number, step, time, attempts
+#   /var/lib/labctl/done             all blocks passed
+#   /var/lib/labctl/failed           the block that failed
+#   /var/log/cloud-init-output.log   the output of all blocks
+
+STATE=/var/lib/labctl
+mkdir -p $STATE/blocks
+BLOCK=0
+
+run_block() {
+    local STEP=$1 CMD_B64=$2 STDIN_B64=$3
+    BLOCK=$((BLOCK+1))
+    local FILE=$STATE/blocks/$BLOCK.sh INPUT=$STATE/blocks/$BLOCK.in
+    {
+        echo 'cd "$HOME"'
+        echo 'set -a; . /etc/environment; set +a'
+        echo "$CMD_B64" | base64 -d
+        echo
+    } > $FILE
+    if [ "$STDIN_B64" = - ]; then
+        : > $INPUT
+    else
+        echo "$STDIN_B64" | base64 -d > $INPUT
+    fi
+    chmod a+r $FILE $INPUT
+    local START=$(date +%s) ATTEMPT
+    for ATTEMPT in 1 2 3; do
+        echo "=== labctl block $BLOCK ($STEP), attempt $ATTEMPT"
+        if sudo -u ubuntu -H bash $FILE < $INPUT; then
+            echo "$BLOCK $STEP $(( $(date +%s) - START ))s attempts=$ATTEMPT" >> $STATE/blocks.log
+            return 0
+        fi
+        sleep 10
+    done
+    echo "$BLOCK $STEP" > $STATE/failed
+    echo "=== labctl block $BLOCK ($STEP) failed after 3 attempts"
+    exit 1
+}
+
+nodesetup_done() {
+    touch $STATE/done
+    # A package upgrade (e.g. a new kernel) can need a reboot. Reboot after
+    # this script exits, so that cloud-init can finish cleanly first.
+    if [ -f /var/run/reboot-required ]; then
+        systemd-run --on-active=5 systemctl reboot
+    fi
+}
+

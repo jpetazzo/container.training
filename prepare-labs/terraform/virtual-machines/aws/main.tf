@@ -7,6 +7,14 @@ resource "aws_instance" "_" {
   key_name          = aws_key_pair._.key_name
   ami               = data.aws_ami._.id
   source_dest_check = false
+  # The node setup script from "labctl cloudinit", if the tag has one.
+  # cloud-init runs it once, at first boot.
+  user_data_base64 = fileexists("${path.module}/user_data.sh") ? base64gzip(file("${path.module}/user_data.sh")) : null
+  lifecycle {
+    # The script only matters at first boot. Don't change running VMs
+    # if it is generated again.
+    ignore_changes = [user_data, user_data_base64]
+  }
 }
 
 resource "aws_key_pair" "_" {
