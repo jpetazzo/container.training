@@ -2,10 +2,18 @@
 <html>
   <head>
     <title>Training Materials</title>
+    <script>
+      // Apply the saved theme (see the 🎨 button below) before the page
+      // draws, so it doesn't flash the default colors first.
+      try {
+        const theme = localStorage.getItem('slides-theme');
+        if (theme) document.documentElement.dataset.theme = theme;
+      } catch (e) { /* no storage (private window, etc.): use default */ }
+    </script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="workshop.css">
   </head>
-  <body>
+  <body class="@@BODYCLASS@@">
     <script src="remark.min.js" type="text/javascript">
     </script>
     <div id="loading">⏳️ Loading...</div>
@@ -50,9 +58,177 @@
         excludedClasses: tmplEXCLUDE
       });
       document.querySelector('#loading').style.display = 'none';
+
+      // Remark shows the first slide inside remark.create(), before the
+      // handlers below exist, so that first "afterShowSlide" event is lost.
+      // onSlideShown() registers a handler and also runs it once now, for
+      // the slide on screen (e.g. the buttons on the first slide).
+      function onSlideShown(handler) {
+        slideshow.on('afterShowSlide', handler);
+        handler(slideshow.getSlides()[slideshow.getCurrentSlideIndex()]);
+      }
+
+      // "?" button in the bottom-right corner of each slide. It opens the
+      // same help screen as the "?" key, for people who don't know that key.
+      onSlideShown(function () {
+        const container = document.querySelector('.remark-visible .remark-slide-content');
+        if (!container || container.querySelector('.remark-help-button')) return;
+        const button = document.createElement('button');
+        button.className = 'remark-round-button remark-help-button';
+        button.textContent = '?';
+        button.title = 'Keyboard shortcuts (?)';
+        button.addEventListener('click', function (event) {
+          event.stopPropagation();
+          slideshow.toggleHelp();
+          // Drop focus, so Space/Enter go to Remark, not to this button.
+          button.blur();
+        });
+        container.appendChild(button);
+      });
+
+      // Help screen: a card with a title, a × button, and a hint.
+      const helpContent = document.querySelector('.remark-help-content');
+      if (helpContent) {
+        helpContent.querySelector('h1')?.remove();
+        helpContent.setAttribute('role', 'dialog');
+        helpContent.setAttribute('aria-labelledby', 'remark-help-title');
+        const header = document.createElement('div');
+        header.className = 'popup-header';
+        header.innerHTML = `
+          <h2 id="remark-help-title">Keyboard shortcuts</h2>
+          <button type="button" class="popup-close" aria-label="Close keyboard shortcuts">×</button>`;
+        header.querySelector('button').addEventListener('click', event => {
+          event.stopPropagation();
+          slideshow.toggleHelp();
+        });
+        const hint = document.createElement('p');
+        hint.className = 'remark-help-hint';
+        hint.textContent = '? or Esc closes';
+        // Replace Remark's "<p><b>Keyboard shortcuts</b></p>" title.
+        const oldTitle = helpContent.querySelector(':scope > p');
+        if (oldTitle) oldTitle.remove();
+        helpContent.prepend(header, hint);
+        // A click on the dimmed backdrop (outside the card) closes the help.
+        helpContent.parentElement.addEventListener('click', event => {
+          if (event.target === event.currentTarget) slideshow.toggleHelp();
+        });
+      }
+
+      // 💬 "Ask AI" button (body class "ask-ai", from "askai: true" in the
+      // deck manifest), on text slides only. It opens a small menu with
+      // Claude and ChatGPT links. Both get the same generic prompt, with the
+      // slide title and the public URL of the chapter's Markdown file
+      // (markmaker writes each chapter to fragments/<path>), so the assistant
+      // can read the slide. The URL is public, so the assistant can open it.
+      const slidesURL = tmpl('@@SLIDESURL@@', '"@@SLIDESURL@@"', '') || location.href;
+      const askAIPrompt = (title, url) =>
+        `I'm a student in a hands-on class: "${tmplTITLE.trim()}".\n` +
+        `Read the slide titled "${title}" in this chapter of our course:\n${url}\n` +
+        'Then tell me more about its topic: the related features and tools, ' +
+        'why it matters in production (including security), and a short example. ' +
+        'Keep it under 300 words, and suggest 3 follow-up questions I could ask.';
+      const askAIServices = [
+        { name: 'Ask Claude', url: q => 'https://claude.ai/new?q=' + encodeURIComponent(q) },
+        { name: 'Ask ChatGPT', url: q => 'https://chatgpt.com/?q=' + encodeURIComponent(q) },
+      ];
+      function addAskAIButton() {
+        if (!document.body.classList.contains('ask-ai')) return;
+        const container = document.querySelector('.remark-visible .remark-slide-content');
+        if (!container || container.querySelector('.remark-askai-button')) return;
+        // Text slides only: skip picture, title, and interstitial slides.
+        if (container.matches('.pic, .title')) return;
+        const heading = container.querySelector('h1, h2');
+        // The footer (.debug) links to the source file, e.g. "k8s/netpol.md".
+        // Generated slides have none. On a slide with "--" steps, only the
+        // last step has the footer, so the button shows on that step.
+        const file = /[\w./-]+\.md\b/.exec(container.querySelector('.debug')?.textContent || '')?.[0];
+        if (!heading || !file || file === 'toc.md') return;
+        const prompt = askAIPrompt(heading.textContent.trim(),
+          new URL('fragments/' + file, slidesURL).href);
+        const button = document.createElement('button');
+        button.className = 'remark-round-button remark-askai-button';
+        button.textContent = '💬';
+        button.title = 'Ask an AI assistant about this slide';
+        button.setAttribute('aria-label', button.title);
+        button.setAttribute('aria-expanded', 'false');
+        const menu = document.createElement('div');
+        menu.className = 'askai-menu';
+        menu.hidden = true;
+        for (const service of askAIServices) {
+          const link = document.createElement('a');
+          link.textContent = service.name;
+          link.href = service.url(prompt);
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.addEventListener('click', () => { menu.hidden = true; });
+          menu.appendChild(link);
+        }
+        button.addEventListener('click', event => {
+          event.stopPropagation();
+          menu.hidden = !menu.hidden;
+          button.setAttribute('aria-expanded', String(!menu.hidden));
+          // Drop focus, so Space/Enter go to Remark, not to this button.
+          button.blur();
+        });
+        container.append(button, menu);
+      }
+      onSlideShown(addAskAIButton);
+      // A click anywhere else closes the menu.
+      document.addEventListener('click', event => {
+        if (event.target.closest('.askai-menu, .remark-askai-button')) return;
+        document.querySelectorAll('.askai-menu').forEach(menu => { menu.hidden = true; });
+      });
+
+      // 🎨 button above "?": cycle through color themes (workshop.css
+      // defines the colors). Light themes first, then dark from lightest to
+      // darkest. The choice is saved in this browser only.
+      const themes = [
+        { id: '', name: 'Default' },
+        { id: 'solarized-light', name: 'Solarized Light' },
+        { id: 'catppuccin-latte', name: 'Catppuccin Latte' },
+        { id: 'nord', name: 'Nord' },
+        { id: 'catppuccin-mocha', name: 'Catppuccin Mocha' },
+        { id: 'github-dark', name: 'GitHub Dark' },
+      ];
+      const toast = document.createElement('div');
+      toast.className = 'theme-toast';
+      document.body.appendChild(toast);
+      let toastTimer;
+      function nextTheme() {
+        const current = document.documentElement.dataset.theme || '';
+        const i = themes.findIndex(t => t.id === current);
+        const theme = themes[(i + 1) % themes.length];
+        if (theme.id) {
+          document.documentElement.dataset.theme = theme.id;
+        } else {
+          delete document.documentElement.dataset.theme;
+        }
+        try { localStorage.setItem('slides-theme', theme.id); } catch (e) {}
+        // Show the theme name, then fade it out (CSS transition).
+        toast.textContent = `🎨 ${theme.name}`;
+        toast.classList.add('visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('visible'), 1500);
+      }
+      onSlideShown(function () {
+        const container = document.querySelector('.remark-visible .remark-slide-content');
+        if (!container || container.querySelector('.remark-theme-button')) return;
+        const button = document.createElement('button');
+        button.className = 'remark-round-button remark-theme-button';
+        button.textContent = '🎨';
+        button.title = 'Change color theme';
+        button.addEventListener('click', function (event) {
+          event.stopPropagation();
+          nextTheme();
+          // Drop focus, so Space/Enter go to Remark, not to this button.
+          button.blur();
+        });
+        container.appendChild(button);
+      });
+
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ startOnLoad: false });
-        slideshow.on('afterShowSlide', function (slide) {
+        onSlideShown(function (slide) {
           mermaid.run({
             nodes: document.querySelectorAll('div.remark-visible pre.mermaid'),
           });
