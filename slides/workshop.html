@@ -2,6 +2,14 @@
 <html>
   <head>
     <title>Training Materials</title>
+    <script>
+      // Apply the saved theme (see the 🎨 button below) before the page
+      // draws, so it doesn't flash the default colors first.
+      try {
+        const theme = localStorage.getItem('slides-theme');
+        if (theme) document.documentElement.dataset.theme = theme;
+      } catch (e) { /* no storage (private window, etc.): use default */ }
+    </script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="workshop.css">
   </head>
@@ -43,16 +51,516 @@
       var tmplTITLE = tmpl('@@TITLE@@', '"@@TITLE@@"', document.title);
       var tmplSLIDENUMBERPREFIX = tmpl('@@SLIDENUMBERPREFIX@@', '"@@SLIDENUMBERPREFIX@@"', "");
       document.title = tmplTITLE;
+      /*
+      Slide numbers vs. steps. Remark makes one internal "slide" per step
+      of an incremental slide ("--"). With countIncrementalSlides: false,
+      the top-right number counts real slides, but Remark still uses step
+      indexes in the URL hash and in "number + Enter". The code below makes
+      the URL hash (#N) and "N + Enter" use the slide number that is shown.
+      Named anchors (#toc) and presenter mode (#pN) also work.
+      */
+      const slideHash = /^#(p?)(\d+)$/;
+      // Map step index (0-based) <-> slide number (1-based), with the same
+      // rule as Remark's slide number: steps with "count: false" don't count.
+      // Filled after remark.create(); empty until then.
+      const stepToSlide = [];
+      const slideFirstStep = [];
+      const slideStepCount = [];
+      // Lecture of each slide number: [position, total], or none for slides
+      // before the first lecture and for interstitial pictures.
+      const slideLecture = [];
+      // Remark writes the hash only with history.replaceState("#<step>")
+      // (and "#p<step>" in presenter mode). Wrap it, so the URL shows the
+      // slide number instead. Our own calls use setHash(), the original.
+      const setHash = history.replaceState.bind(history);
+      history.replaceState = function (state, title, url) {
+        const m = typeof url === 'string' && slideHash.exec(url);
+        if (m && stepToSlide.length) {
+          url = '#' + m[1] + (stepToSlide[+m[2] - 1] || m[2]);
+        }
+        return setHash(state, title, url);
+      };
+      // Remark reads the hash in remark.create(), before we can map it.
+      // Hold it back, and go to the matching step after create().
+      const initialHash = slideHash.exec(window.location.hash);
+      if (initialHash) {
+        setHash(undefined, undefined, '#1');
+      }
+      // On a file:// page (window.origin is "null"), Remark does not use
+      // replaceState: it sets location.hash = "#<step>", which fires
+      // hashchange. Remember that step (see afterShowSlide below), so the
+      // listener below does not read it as a slide number.
+      let remarkStep = null;
+      // Registered before remark.create(), so it runs before Remark's own
+      // hashchange listener and changes the hash that Remark then reads.
+      window.addEventListener('hashchange', function (event) {
+        const m = slideHash.exec(window.location.hash);
+        if (m && +m[2] === remarkStep) {
+          // Remark's own hash: show the slide number, and do not let
+          // Remark read it (it already shows this step).
+          remarkStep = null;
+          event.stopImmediatePropagation();
+          setHash(undefined, undefined, '#' + m[1] + stepToSlide[+m[2] - 1]);
+        } else if (m) {
+          setHash(undefined, undefined, '#' + m[1] + stepForSlide(+m[2]));
+          // If Remark does not move (same slide), put the number back.
+          setTimeout(function () {
+            if (window.location.hash === '#' + m[1] + stepForSlide(+m[2])) {
+              setHash(undefined, undefined, '#' + m[1] + m[2]);
+            }
+          });
+        }
+      });
+
       var slideshow = remark.create({
         ratio: '16:9',
         highlightSpans: true,
+        countIncrementalSlides: false,
         slideNumberFormat: `${tmplSLIDENUMBERPREFIX}%current%/%total%`,
         excludedClasses: tmplEXCLUDE
       });
       document.querySelector('#loading').style.display = 'none';
+
+      // Fill the step <-> slide number maps (declared above).
+      {
+        let n = 0;
+        slideshow.getSlides().forEach(function (slide, i) {
+          if (slide.properties.count !== 'false') n++;
+          const no = Math.max(1, n);
+          stepToSlide[i] = no;
+          if (slideFirstStep[no] === undefined) slideFirstStep[no] = i;
+          slideStepCount[no] = (slideStepCount[no] || 0) + 1;
+        });
+        // A lecture starts at its title slide (made by markmaker.py:
+        // "class: title", "name: toc-..."). The picture slide just before
+        // a title slide separates two lectures, so it is in no lecture.
+        const slides = slideshow.getSlides();
+        const isTitle = s => s && /^toc-/.test(s.properties.name || '') &&
+          /\btitle\b/.test(s.properties['class'] || '');
+        const lectures = [];
+        let lecture = null;
+        slides.forEach(function (slide, i) {
+          const no = stepToSlide[i];
+          if (slideFirstStep[no] !== i) return;
+          if (isTitle(slide)) {
+            lecture = [];
+            lectures.push(lecture);
+          } else if (isTitle(slides[slideFirstStep[no + 1]])) {
+            return;
+          }
+          if (lecture && !lecture.includes(no)) lecture.push(no);
+        });
+        lectures.forEach(function (nos) {
+          nos.forEach((no, i) => { slideLecture[no] = [i + 1, nos.length]; });
+        });
+      }
+      function stepForSlide(no) {
+        no = Math.min(Math.max(no, 1), slideFirstStep.length - 1);
+        return slideFirstStep[no] + 1;
+      }
+      if (initialHash) {
+        window.location.hash = '#' + initialHash[1] + initialHash[2];
+      }
+
+
+      // Remark shows the first slide inside remark.create(), before the
+      // handlers below exist, so that first "afterShowSlide" event is lost.
+      // onSlideShown() registers a handler and also runs it once now, for
+      // the slide on screen (e.g. the buttons on the first slide).
+      function onSlideShown(handler) {
+        slideshow.on('afterShowSlide', handler);
+        handler(slideshow.getSlides()[slideshow.getCurrentSlideIndex()]);
+      }
+
+      // "N + Enter" goes to step N in Remark. Track the digits, and after
+      // Remark has moved, go to the first step of slide N instead.
+      let typedNumber = '';
+      document.addEventListener('keydown', function (event) {
+        if (event.ctrlKey || event.metaKey || event.altKey ||
+            event.target.closest('input, textarea, select, [contenteditable]')) {
+          typedNumber = '';
+          return;
+        }
+        if (/^[0-9]$/.test(event.key)) {
+          typedNumber += event.key;
+        } else if (event.key === 'Enter' && typedNumber) {
+          const no = +typedNumber;
+          setTimeout(function () { slideshow.gotoSlide(stepForSlide(no)); });
+          typedNumber = '';
+        } else {
+          typedNumber = '';
+        }
+      }, true);
+
+      if (window.origin === 'null') {
+        onSlideShown(function (slide) {
+          remarkStep = slide.getSlideIndex() + 1;
+        });
+      }
+
+      // Pop-up that explains the three numbers in the top-right corner.
+      // A page element, not a "title" tooltip: some browsers do not show
+      // "title" tooltips, and others show them only after a delay.
+      const counterSelector = '.remark-slide-number, .remark-lecture-number, .remark-step-number';
+      const counterHelp = document.createElement('div');
+      counterHelp.className = 'remark-counter-help';
+      counterHelp.setAttribute('role', 'tooltip');
+      counterHelp.hidden = true;
+      counterHelp.innerHTML = `
+        <div><b>Top:</b> slide number in the whole workshop</div>
+        <div><b>Middle:</b> slide number in this lecture</div>
+        <div><b>Bottom:</b> step on this slide (only on slides that show more content step by step)</div>`;
+      document.body.appendChild(counterHelp);
+      document.addEventListener('mouseover', function (event) {
+        const counter = event.target instanceof Element &&
+          event.target.closest(counterSelector);
+        if (!counter) return;
+        // Show it under the lowest number of the slide, right-aligned.
+        const numbers = counter.parentElement.querySelectorAll(counterSelector);
+        const bottom = Math.max(...[...numbers].map(n => n.getBoundingClientRect().bottom));
+        const right = counter.getBoundingClientRect().right;
+        counterHelp.style.top = `${bottom + 6}px`;
+        counterHelp.style.right = `${window.innerWidth - right}px`;
+        counterHelp.hidden = false;
+      });
+      document.addEventListener('mouseout', function (event) {
+        const into = event.relatedTarget instanceof Element &&
+          event.relatedTarget.closest(counterSelector);
+        if (event.target instanceof Element &&
+            event.target.closest(counterSelector) && !into) {
+          counterHelp.hidden = true;
+        }
+      });
+      slideshow.on('beforeHideSlide', () => { counterHelp.hidden = true; });
+
+      // Lecture counter under the slide number: "slide/total" in the
+      // current lecture (a lecture title slide and the slides after it).
+      onSlideShown(function (slide) {
+        const lecture = slideLecture[stepToSlide[slide.getSlideIndex()]];
+        const container = document.querySelector('.remark-visible .remark-slide-content');
+        if (!container) return;
+        let counter = container.querySelector('.remark-lecture-number');
+        if (!lecture) {
+          if (counter) counter.remove();
+          return;
+        }
+        if (!counter) {
+          counter = document.createElement('div');
+          counter.className = 'remark-lecture-number';
+          container.appendChild(counter);
+        }
+        counter.textContent = `${lecture[0]}/${lecture[1]}`;
+      });
+
+      // Step counter under the lecture counter: "step/total" on slides with
+      // more than one step. The "last" class marks the final step.
+      onSlideShown(function (slide) {
+        const index = slide.getSlideIndex();
+        const no = stepToSlide[index];
+        const total = slideStepCount[no];
+        const container = document.querySelector('.remark-visible .remark-slide-content');
+        if (!container) return;
+        let counter = container.querySelector('.remark-step-number');
+        if (total < 2) {
+          if (counter) counter.remove();
+          return;
+        }
+        if (!counter) {
+          counter = document.createElement('div');
+          counter.className = 'remark-step-number';
+          container.appendChild(counter);
+        }
+        const step = index - slideFirstStep[no] + 1;
+        counter.textContent = `${step}/${total}`;
+        counter.classList.toggle('last', step === total);
+      });
+
+      const searchDialog = document.createElement('dialog');
+      // Search the rendered student slides, before controls or Mermaid can
+      // change their DOM. Remark has already removed notes and properties.
+      // Keep every step's text, but return only one result per displayed number.
+      const searchSlides = [];
+      const normalizeSearch = text => text.replace(/\s+/g, ' ').trim().toLowerCase();
+      function studentText(node) {
+        if (node.nodeType === Node.TEXT_NODE) return node.textContent;
+        if (node.nodeType !== Node.ELEMENT_NODE) return '';
+        if (node.matches('script, style, .footer, .debug, .remark-slide-number, .remark-lecture-number, .remark-step-number, button, [hidden], .interstitial') ||
+            getComputedStyle(node).display === 'none') return '';
+        // An image has no text: search its title ("![title](file)").
+        if (node.matches('img')) return (node.getAttribute('alt') || '') + ' ';
+        const text = [...node.childNodes].map(studentText).join('');
+        // Preserve spaces inside inline text; separate paragraphs and code lines.
+        return text + (getComputedStyle(node).display === 'inline' ? '' : ' ');
+      }
+      document.querySelectorAll('.remark-slides-area .remark-slide-content').forEach((content, i) => {
+        const no = stepToSlide[i];
+        let entry = searchSlides.find(slide => slide.no === no);
+        if (!entry) {
+          entry = { no, title: '', steps: [] };
+          searchSlides.push(entry);
+        }
+        const heading = content.querySelector('h1, h2, h3, h4, h5, h6');
+        // A slide without a heading uses its first image title.
+        const image = [...content.querySelectorAll('img[alt]:not(.interstitial img)')].find(img => img.alt.trim());
+        if (!entry.title && heading) entry.title = studentText(heading).trim();
+        else if (!entry.title && image) entry.title = image.alt.trim();
+        entry.steps.push({ step: i + 1, text: normalizeSearch(studentText(content)) });
+      });
+      searchDialog.className = 'slide-search';
+      searchDialog.setAttribute('aria-labelledby', 'slide-search-title');
+      searchDialog.innerHTML = `
+        <div class="popup-header">
+          <h2 id="slide-search-title">Search slides</h2>
+          <button type="button" class="popup-close" aria-label="Close search">×</button>
+        </div>
+        <label for="slide-search-input">Text in this deck</label>
+        <input id="slide-search-input" type="search" autocomplete="off"
+          role="combobox" aria-autocomplete="list" aria-expanded="true"
+          aria-controls="slide-search-results" aria-describedby="slide-search-hint">
+        <p id="slide-search-hint">↑ ↓ select · Enter opens · Esc closes</p>
+        <p class="slide-search-status" role="status" aria-live="polite"></p>
+        <ul id="slide-search-results" role="listbox" aria-label="Matching slides"></ul>`;
+      document.body.appendChild(searchDialog);
+      const searchInput = searchDialog.querySelector('input');
+      const searchResults = searchDialog.querySelector('ul');
+      const searchStatus = searchDialog.querySelector('[role="status"]');
+      let searchMatches = [];
+      let selectedResult = -1;
+      // A native modal dialog keeps focus inside and leaves the current reveal alone.
+      function popupControls(dialog) {
+        let returnFocus;
+        function close() {
+          dialog.close();
+          typedNumber = '';
+          if (returnFocus && returnFocus.isConnected && returnFocus.getClientRects().length) returnFocus.focus();
+          else document.body.focus();
+        }
+        function open() {
+          if (dialog.open) return;
+          if (document.body.classList.contains('remark-help-mode')) slideshow.toggleHelp();
+          returnFocus = document.activeElement;
+          typedNumber = '';
+          dialog.showModal();
+        }
+        dialog.querySelector('button').addEventListener('click', close);
+        dialog.addEventListener('cancel', event => { event.preventDefault(); close(); });
+        ['click', 'wheel', 'mousewheel', 'DOMMouseScroll', 'touchstart', 'touchmove', 'touchend'].forEach(type =>
+          dialog.addEventListener(type, event => event.stopPropagation()));
+        return { open, close };
+      }
+      const searchPopup = popupControls(searchDialog);
+      function selectSearchResult(index) {
+        selectedResult = index;
+        [...searchResults.children].forEach((item, i) => {
+          item.setAttribute('aria-selected', String(i === index));
+        });
+        const item = searchResults.children[index];
+        if (item) {
+          searchInput.setAttribute('aria-activedescendant', item.id);
+          item.scrollIntoView({ block: 'nearest' });
+        } else {
+          searchInput.removeAttribute('aria-activedescendant');
+        }
+      }
+      const closeSearch = searchPopup.close;
+      function openSearch() {
+        if (searchDialog.open) return;
+        searchPopup.open();
+        updateSearch();
+        searchInput.focus();
+        searchInput.select();
+      }
+      function openSearchResult(index) {
+        const result = searchMatches[index];
+        if (!result) return;
+        closeSearch();
+        // Open the first step that includes the match, so later reveals show.
+        slideshow.gotoSlide(result.step);
+      }
+      function updateSearch() {
+        const query = normalizeSearch(searchInput.value);
+        searchMatches = [];
+        if (query) searchSlides.forEach(slide => {
+          const match = slide.steps.find(step => step.text.includes(query));
+          if (match) searchMatches.push({ ...slide, step: match.step });
+        });
+        searchResults.replaceChildren();
+        searchStatus.textContent = !query ? 'Type text to search all slides in this deck.' :
+          searchMatches.length ? `${searchMatches.length} matching slides` : 'No matching slides.';
+        searchMatches.forEach((slide, i) => {
+          const item = document.createElement('li');
+          item.id = `slide-search-result-${i}`;
+          item.setAttribute('role', 'option');
+          const number = document.createElement('span');
+          number.className = 'slide-search-number';
+          number.textContent = tmplSLIDENUMBERPREFIX + slide.no;
+          const title = document.createElement('span');
+          title.textContent = slide.title || `Slide ${slide.no}`;
+          item.append(number, title);
+          item.addEventListener('click', () => openSearchResult(i));
+          searchResults.appendChild(item);
+        });
+        selectSearchResult(searchMatches.length ? 0 : -1);
+      }
+      searchInput.addEventListener('input', updateSearch);
+      // A backdrop click belongs to the dialog, so consume it before Remark.
+      window.addEventListener('click', event => {
+        const dialog = searchDialog;
+        if (!dialog.open) return;
+        const rect = dialog.getBoundingClientRect();
+        if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right ||
+            event.clientY < rect.top || event.clientY > rect.bottom)) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          searchPopup.close();
+        }
+      }, true);
+      // Capture at window level before Remark and the numeric Enter handler.
+      // Native edit keys (including Cmd/Ctrl+F) keep their browser behavior.
+      window.addEventListener('keydown', event => {
+        if (searchDialog.open) {
+          event.stopImmediatePropagation();
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            searchPopup.close();
+          } else if (!event.isComposing && event.target === searchInput) {
+            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+              event.preventDefault();
+              if (searchMatches.length) selectSearchResult(
+                (selectedResult + (event.key === 'ArrowDown' ? 1 : -1) + searchMatches.length) % searchMatches.length);
+            } else if (event.key === 'Enter') {
+              event.preventDefault();
+              openSearchResult(selectedResult);
+            }
+          }
+        } else if (event.key === '/' && !event.ctrlKey && !event.metaKey && !event.altKey &&
+                   !event.target.closest('input, textarea, select, [contenteditable]')) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          openSearch();
+        }
+      }, true);
+      ['keypress', 'keyup'].forEach(type => window.addEventListener(type, event => {
+        if (searchDialog.open) event.stopImmediatePropagation();
+      }, true));
+      const helpTable = document.querySelector('.remark-help-content table');
+      if (helpTable) {
+        const row = helpTable.insertRow();
+        row.insertCell().innerHTML = '<span class="key">/</span>';
+        row.insertCell().textContent = 'Search all slides in this deck';
+      }
+      function addSearchButton() {
+        const container = document.querySelector('.remark-visible .remark-slide-content');
+        if (!container || container.querySelector('.remark-search-button')) return;
+        const button = document.createElement('button');
+        button.className = 'remark-round-button remark-search-button';
+        button.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 6 6"></path></svg>';
+        button.title = 'Search all slides (/)';
+        button.setAttribute('aria-label', 'Search all slides (/)');
+        button.addEventListener('click', event => {
+          event.stopPropagation();
+          openSearch();
+        });
+        container.appendChild(button);
+      }
+      onSlideShown(addSearchButton);
+
+      // "?" button in the bottom-right corner of each slide. It opens the
+      // same help screen as the "?" key, for people who don't know that key.
+      onSlideShown(function () {
+        const container = document.querySelector('.remark-visible .remark-slide-content');
+        if (!container || container.querySelector('.remark-help-button')) return;
+        const button = document.createElement('button');
+        button.className = 'remark-round-button remark-help-button';
+        button.textContent = '?';
+        button.title = 'Keyboard shortcuts (?)';
+        button.addEventListener('click', function (event) {
+          event.stopPropagation();
+          slideshow.toggleHelp();
+          // Drop focus, so Space/Enter go to Remark, not to this button.
+          button.blur();
+        });
+        container.appendChild(button);
+      });
+
+      // Help screen: a card with a title, a × button, and a hint.
+      const helpContent = document.querySelector('.remark-help-content');
+      if (helpContent) {
+        helpContent.querySelector('h1')?.remove();
+        helpContent.setAttribute('role', 'dialog');
+        helpContent.setAttribute('aria-labelledby', 'remark-help-title');
+        const header = document.createElement('div');
+        header.className = 'popup-header';
+        header.innerHTML = `
+          <h2 id="remark-help-title">Keyboard shortcuts</h2>
+          <button type="button" class="popup-close" aria-label="Close keyboard shortcuts">×</button>`;
+        header.querySelector('button').addEventListener('click', event => {
+          event.stopPropagation();
+          slideshow.toggleHelp();
+        });
+        const hint = document.createElement('p');
+        hint.className = 'remark-help-hint';
+        hint.textContent = '? or Esc closes';
+        // Replace Remark's "<p><b>Keyboard shortcuts</b></p>" title.
+        const oldTitle = helpContent.querySelector(':scope > p');
+        if (oldTitle) oldTitle.remove();
+        helpContent.prepend(header, hint);
+        // A click on the dimmed backdrop (outside the card) closes the help.
+        helpContent.parentElement.addEventListener('click', event => {
+          if (event.target === event.currentTarget) slideshow.toggleHelp();
+        });
+      }
+
+      // 🎨 button above "?": cycle through color themes (workshop.css
+      // defines the colors). Light themes first, then dark from lightest to
+      // darkest. The choice is saved in this browser only.
+      const themes = [
+        { id: '', name: 'Default' },
+        { id: 'solarized-light', name: 'Solarized Light' },
+        { id: 'catppuccin-latte', name: 'Catppuccin Latte' },
+        { id: 'nord', name: 'Nord' },
+        { id: 'catppuccin-mocha', name: 'Catppuccin Mocha' },
+        { id: 'github-dark', name: 'GitHub Dark' },
+      ];
+      const toast = document.createElement('div');
+      toast.className = 'theme-toast';
+      document.body.appendChild(toast);
+      let toastTimer;
+      function nextTheme() {
+        const current = document.documentElement.dataset.theme || '';
+        const i = themes.findIndex(t => t.id === current);
+        const theme = themes[(i + 1) % themes.length];
+        if (theme.id) {
+          document.documentElement.dataset.theme = theme.id;
+        } else {
+          delete document.documentElement.dataset.theme;
+        }
+        try { localStorage.setItem('slides-theme', theme.id); } catch (e) {}
+        // Show the theme name, then fade it out (CSS transition).
+        toast.textContent = `🎨 ${theme.name}`;
+        toast.classList.add('visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('visible'), 1500);
+      }
+      onSlideShown(function () {
+        const container = document.querySelector('.remark-visible .remark-slide-content');
+        if (!container || container.querySelector('.remark-theme-button')) return;
+        const button = document.createElement('button');
+        button.className = 'remark-round-button remark-theme-button';
+        button.textContent = '🎨';
+        button.title = 'Change color theme';
+        button.addEventListener('click', function (event) {
+          event.stopPropagation();
+          nextTheme();
+          // Drop focus, so Space/Enter go to Remark, not to this button.
+          button.blur();
+        });
+        container.appendChild(button);
+      });
+
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ startOnLoad: false });
-        slideshow.on('afterShowSlide', function (slide) {
+        onSlideShown(function (slide) {
           mermaid.run({
             nodes: document.querySelectorAll('div.remark-visible pre.mermaid'),
           });
