@@ -431,12 +431,25 @@ _cmd_docker() {
       sudo ln -sfn /mnt/docker /var/lib/docker
     fi
 
-    # This will install the latest Docker.
-    sudo apt-get -qy install apt-transport-https ca-certificates curl software-properties-common
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    sudo add-apt-repository 'deb https://download.docker.com/linux/ubuntu jammy stable'
+    # This will install the latest Docker, with the steps from
+    # https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+    # (apt-key was removed in apt 3 / Ubuntu 26.04; the key is now a
+    # keyring file that only the Docker repo trusts, with Signed-By).
     sudo apt-get -q update
-    sudo apt-get -qy install docker-ce
+    sudo apt-get -qy install ca-certificates curl
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
+    sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: \$(. /etc/os-release && echo \"\${UBUNTU_CODENAME:-\$VERSION_CODENAME}\")
+Components: stable
+Architectures: \$(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+    sudo apt-get -q update
+    sudo apt-get -qy install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
     # Add registry mirror configuration.
     if ! [ -f /etc/docker/daemon.json ]; then

@@ -7,6 +7,10 @@ resource "aws_instance" "_" {
   key_name          = aws_key_pair._.key_name
   ami               = data.aws_ami._.id
   source_dest_check = false
+  root_block_device {
+    volume_size = var.root_disk_size
+    volume_type = "gp3"
+  }
 }
 
 resource "aws_key_pair" "_" {
@@ -26,6 +30,6 @@ data "aws_ami" "_" {
   owners      = ["099720109477"] # Canonical
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-resolute-26.04-amd64-server-*"]
   }
 }
