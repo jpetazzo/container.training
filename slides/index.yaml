@@ -985,7 +985,7 @@
   slides: intro-selfpaced.yml.html
 
 - title: Container Orchestration with Docker and Swarm
-  slides: swarm-selfpaced.yml.html
+  slides: swarm.yml.html
 
 - title: Deploying and Scaling Microservices with Docker and Kubernetes
   slides: kube-selfpaced.yml.html
