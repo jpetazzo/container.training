@@ -193,12 +193,30 @@ class: extra-details
   kubectl create namespace users
   ```
 
-- Create the ServiceAccount, ClusterRole, ClusterRoleBinding for `jean.doe`:
+- Create the ServiceAccount, Secret, ClusterRole, ClusterRoleBinding for `jean.doe`:
   ```bash
   kubectl apply -f ~/container.training/k8s/user=jean.doe.yaml
   ```
 
 ]
+
+---
+
+class: extra-details
+
+## ServiceAccount tokens
+
+- To obtain a token for our ServiceAccount, we create a special Secret:
+
+  - with `type: kubernetes.io/service-account-token`
+
+  - and annotation `kubernetes.io/service-account-name=jean.doe`
+
+- Kubernetes will generate a token a store it in that Secret
+
+- We can invalidate the token by deleting the Secret
+
+- We can rotate the token by deleting+recreating the Secret
 
 ---
 
@@ -210,14 +228,9 @@ class: extra-details
 
 .lab[
 
-- List the user's secrets:
-  ```bash
-  kubectl --namespace=users describe serviceaccount jean.doe
-  ```
-
 - Show the user's token:
   ```bash
-  kubectl --namespace=users describe secret `jean.doe-token-xxxxx`
+  kubectl --namespace=users describe secret jean.doe
   ```
 
 ]

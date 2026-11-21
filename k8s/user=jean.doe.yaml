@@ -5,6 +5,15 @@ metadata:
   name: jean.doe
   namespace: users
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: jean.doe
+  namespace: users
+  annotations:
+    kubernetes.io/service-account.name: jean.doe
+type: kubernetes.io/service-account-token
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -30,4 +39,3 @@ subjects:
 - kind: ServiceAccount
   name: jean.doe
   namespace: users
-
