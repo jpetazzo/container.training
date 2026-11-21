@@ -2,3 +2,8 @@
   base = "slides"
   publish = "slides"
   command = "./build.sh once"
+
+[build.environment]
+  # Python used by the build (matches slides/Dockerfile).
+  # Netlify resolves "3.14" to the latest 3.14.x release.
+  PYTHON_VERSION = "3.14"
