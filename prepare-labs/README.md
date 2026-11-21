@@ -112,6 +112,17 @@ In `pssh` mode, students connect directly to the virtual machines using SSH.
 
 The Terraform configuration creates a bunch of virtual machines, then the provisioning and configuration are done with `pssh`. There are a number of "steps" that are executed on the VMs, to install Docker, install a number of convenient tools, install and set up Kubernetes (if needed)... The list of "steps" to be executed is configured in the `settings/*.env` file.
 
+Each `pssh` call waits for all VMs before the next one starts, so a deployment with hundreds of VMs spends most of its time in these waits. To make it faster, a settings file can also have `CLOUDINIT_STEPS` (AWS only for now), as in `settings/kubernetes-cloudinit.env`:
+
+- `CLOUDINIT_STEPS` lists the steps that only change the node itself. The `cloudinit` step runs them in "record mode": `pssh` writes each command into `tags/<tag>/user_data.sh` instead of running it. Terraform gives this script to each VM as cloud-init user data, and each VM runs it alone at first boot.
+- The `nodesetup` step waits until all VMs have run the script, and shows the VMs where it failed. On a VM, `/var/lib/labctl/blocks.log` has the time of each command, and `/var/log/cloud-init-output.log` has their output.
+- `STEPS` keeps the steps that need the other nodes of the cluster (`clusterize`, `userkeys`, `kubeadm`...).
+- `TERRAFORM_PARALLELISM` sets how many VMs Terraform creates or destroys at a time (Terraform's default is 10).
+
+```bash
+./labctl create --students 20 --settings settings/kubernetes-cloudinit.env --provider aws
+```
+
 In `mk8s` mode, students don't connect directly to the virtual machines. Instead, they connect to an SSH server running in a Pod (using the `jpetazzo/shpod` image), itself running on a Kubernetes cluster. The Kubernetes cluster is a managed cluster created by the Terraform configuration.
 
 ## `terraform` directory structure and principles
