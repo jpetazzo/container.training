@@ -111,6 +111,14 @@ def generatefromyaml(manifest, filename):
     html = html.replace("@@MARKDOWN@@", markdown)
     html = html.replace("@@EXCLUDE@@", exclude)
     html = html.replace("@@SLIDENUMBERPREFIX@@", manifest.get("slidenumberprefix", ""))
+    # CSS classes on <body>; workshop.html enables features from them.
+    bodyclass = []
+    # "Ask AI" button (Claude, ChatGPT) on text slides: "askai: true" in the
+    # manifest. It links to the public chapter file, under the "slides" URL.
+    if manifest.get("askai"):
+        bodyclass.append("ask-ai")
+    html = html.replace("@@SLIDESURL@@", manifest.get("slides", ""))
+    html = html.replace("@@BODYCLASS@@", " ".join(bodyclass))
     return html
 
 def processAtAtStrings(text):
