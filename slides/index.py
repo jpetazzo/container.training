@@ -14,6 +14,7 @@ TEMPLATE="""<html>
 <head>
   <title>{{ title }}</title>
   <link rel="stylesheet" href="index.css">
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
   <meta charset="UTF-8">
 </head>
 <body>
