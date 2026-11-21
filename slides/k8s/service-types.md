@@ -258,69 +258,92 @@ class: extra-details
 
 class: extra-details
 
-## Services and endpoints
+## Service, Endpoints, EndpointSlice
 
-- A service has a number of "endpoints"
+- When we create a Service, Kubernetes automatically creates two objects:
 
-- Each endpoint is a host + port where the service is available
+  - an `Endpoints` (legacy - deprecated since K8S 1.33)
 
-- The endpoints are maintained and updated automatically by Kubernetes
+  - an `EndpointSlice` (modern - GA since K8S 1.22)
 
-.lab[
+- These objects store the *endpoints* of a Service
 
-- Check the endpoints that Kubernetes has associated with our `blue` service:
-  ```bash
-  kubectl describe service blue
-  ```
+  (typically, the IP addresses and ports of the backend Pods for that Service)
 
-]
+- In most scenarios, we can ignore them:
 
-In the output, there will be a line starting with `Endpoints:`.
+  - they will be automatically managed by the control plane
 
-That line will list a bunch of addresses in `host:port` format.
+  - we won't need to edit them
 
----
-
-class: extra-details
-
-## Viewing endpoint details
-
-- When we have many endpoints, our display commands truncate the list
-  ```bash
-  kubectl get endpoints
-  ```
-
-- If we want to see the full list, we can use one of the following commands:
-  ```bash
-  kubectl describe endpoints blue
-  kubectl get endpoints blue -o yaml
-  ```
-
-- These commands will show us a list of IP addresses
-
-- These IP addresses should match the addresses of the corresponding pods:
-  ```bash
-  kubectl get pods -l app=blue -o wide
-  ```
+  - `kubectl describe service` will consult them to show endpoints information
 
 ---
 
 class: extra-details
 
-## `endpoints` not `endpoint`
+## Endpoints vs EndpointSlice
 
-- `endpoints` is the only resource that cannot be singular
+- Endpoints:
 
-```bash
-$ kubectl get endpoint
-error: the server doesn't have a resource type "endpoint"
-```
+  - only one per Service (with a name identical to the Service's)
 
-- This is because the type itself is plural (unlike every other resource)
+  - supports only one address family (doesn't work with Dual Stack)
 
-- There is no `endpoint` object: `type Endpoints struct`
+  - scalability problems (all backends in a single etcd object)
 
-- The type doesn't represent a single endpoint, but a list of endpoints
+- EndpointSlice:
+
+  - can have multiple EndpointSlice per Service
+
+  - supports multiple address families
+
+  - backends can be spread across multiple EndpointSlice objects
+
+---
+
+class: extra-details
+
+## Managing Endpoints / EndpointSlice manually
+
+- It's possible to manage Service endpoints manually
+
+- **How?** → clear the Service `spec.selector`
+
+  (then create and manage EndpointSlice objects)
+
+- **Why?** → this is useful when these endpoints are "elsewhere":
+
+  - Pods in another Namespace
+
+  - backends outside of K8S (or in another cluster)
+
+- Example: Kubernetes API server
+
+---
+
+class: extra-details
+
+## Cohabitation of Endpoints and EndpointSlice
+
+- Kubernetes (specifically: kube-proxy) doesn't read Endpoints anymore
+
+- It still writes Endpoints for services
+
+  (but since K8S 1.22, Endpoints are truncated if they exceed 1000 entries)
+
+- If we create/update Endpoints manually, they get *mirrored* to EndpointSlices
+
+  (by the EndpointSliceMirroring controller)
+
+- Endpoints are deprecated!
+
+- Any script/controller using them should be updated to use EndpointSlice instead
+
+- For more details, check the [EndpointSlices KEP][kep0752] and [this blog post][kep-blog]
+
+[kep0752]: https://github.com/kubernetes/enhancements/blob/master/keps/sig-network/0752-endpointslices/README.md
+[kep-blog]: https://kubernetes.io/blog/2025/04/24/endpoints-deprecation/
 
 ---
 
