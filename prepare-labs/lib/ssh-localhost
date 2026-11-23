@@ -1,0 +1,8 @@
+#!/bin/bash
+# Started by gotty for each browser connection.
+# Ask for a username, then SSH to this machine; sshd checks the password.
+# We skip host key checking because we don't care about MITM on localhost.
+read -r -p "login: " user
+[[ "$user" =~ ^[a-z_][a-z0-9._-]*$ ]] || { echo "Invalid username."; exit 1; }
+exec ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+  -o LogLevel=ERROR "$user@localhost"

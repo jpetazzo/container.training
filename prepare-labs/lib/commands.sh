@@ -1525,35 +1525,36 @@ _cmd_weavetest() {
 
 _cmd webssh "Install a WEB SSH server on the machines (port 1080)"
 _cmd_webssh() {
-    TAG=$1
-    need_tag
-    pssh "
-    sudo apt-get update &&
-    sudo apt-get install python3-tornado python3-paramiko -y"
-    pssh "
-    cd /opt
-    [ -d webssh ] || sudo git clone \$GITHUB/jpetazzo/webssh"
-    pssh "
-    for KEYFILE in /etc/ssh/*.pub; do
-      read a b c < \$KEYFILE; echo localhost \$a \$b
-    done | sudo tee /opt/webssh/known_hosts"
-    pssh "cat >webssh.service <<EOF
-[Unit]
-Description=webssh
+  TAG=$1
+  need_tag
+  ARCH=${ARCHITECTURE-amd64}
 
-[Install]
-WantedBy=multi-user.target
+  # gotty serves a web terminal over plain HTTP.
+  # It takes an arbitrary program as argument, and each HTTP
+  # connection spawns a new copy of the program.
+  # Here, our arbitrary program will be ssh-localhost
+  # (as script that basically asks for a login, then
+  # runs "ssh $login@localhost").
+  ##VERSION## https://github.com/sorenisanerd/gotty/releases
+  GOTTY_VERSION=1.8.0
+  pssh "
+  if ! /usr/local/bin/gotty --version | grep -qw v$GOTTY_VERSION; then
+      curl -fsSL \$GITHUB/sorenisanerd/gotty/releases/download/v$GOTTY_VERSION/gotty_v${GOTTY_VERSION}_linux_$ARCH.tar.gz |
+      sudo tar -C /usr/local/bin -zx ./gotty
+  fi"
 
-[Service]
-WorkingDirectory=/opt/webssh
-ExecStart=/usr/bin/env python3 run.py --fbidhttp=false --port=1080 --policy=reject
-User=nobody
-Group=nogroup
-Restart=always
-EOF"
-    pssh "
-    sudo systemctl enable \$PWD/webssh.service &&
-    sudo systemctl start webssh.service"
+  pssh -I "
+  sudo tee /usr/local/bin/ssh-localhost && sudo chmod 755 /usr/local/bin/ssh-localhost" \
+  <lib/ssh-localhost
+
+  pssh -I "
+  sudo tee /etc/systemd/system/gotty.service" \
+  <lib/gotty.service
+
+  pssh "
+  sudo systemctl daemon-reload &&
+  sudo systemctl enable gotty.service &&
+  sudo systemctl restart gotty.service"
 }
 
 _cmd www "Run a web server to access card HTML and PDF"

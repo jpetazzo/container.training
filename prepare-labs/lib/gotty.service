@@ -1,0 +1,12 @@
+[Unit]
+Description=gotty web terminal
+After=network.target ssh.service
+
+[Service]
+ExecStart=/usr/local/bin/gotty --port 1080 --permit-write --title-format "{{ .hostname }}" /usr/local/bin/ssh-localhost
+User=nobody
+Group=nogroup
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
