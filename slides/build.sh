@@ -31,7 +31,7 @@ forever)
   # it with stty.
   STTY=$(stty -g)
   while true; do
-    find . | entr -d $0 once
+    find . | entr -dn $0 once
     STATUS=$?
     case $STATUS in
     2) echo "Directory has changed. Restarting.";;
