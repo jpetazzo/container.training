@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rocky
+  namespace: rocky-test
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: rocky.test.enix.thegaragebandofit.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 80
+  tls:
+    - hosts:
+      - rocky.test.enix.thegaragebandofit.com
+
