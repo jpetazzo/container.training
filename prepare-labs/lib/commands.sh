@@ -795,16 +795,25 @@ _cmd_kubetools() {
         flux --version
     fi"
 
-    # Install kubectx and kubens
+    # Install kubectx and kubens (the Go binaries; the bash scripts are legacy)
+    # The release archives have no completion scripts, so we get them from
+    # the same tag. They also complete the short names kctx and kns.
+    ##VERSION## https://github.com/ahmetb/kubectx/releases
+    KUBECTX_VERSION=0.11.0
+    URL=\$GITHUB/ahmetb/kubectx/releases/download/v$KUBECTX_VERSION
     pssh "
     set -e
-    if ! [ -x /usr/local/bin/kctx ]; then
-      cd /tmp
-      git clone \$GITHUB/ahmetb/kubectx
-      sudo cp kubectx/kubectx /usr/local/bin/kctx
-      sudo cp kubectx/kubens /usr/local/bin/kns
-      sudo cp kubectx/completion/*.bash /etc/bash_completion.d
-    fi"
+    for TOOL in kubectx kubens; do
+      if ! [ -x /usr/local/bin/\$TOOL ]; then
+        curl -fsSL $URL/\${TOOL}_v${KUBECTX_VERSION}_linux_$HERP_DERP_ARCH.tar.gz |
+        sudo tar -C /usr/local/bin -zx \$TOOL
+        curl -fsSL \$GITHUB/ahmetb/kubectx/raw/v$KUBECTX_VERSION/completion/\$TOOL.bash |
+        sudo tee /etc/bash_completion.d/\$TOOL.bash >/dev/null
+      fi
+    done
+    # Short names, which Tab completion doesn't confuse with kubectl.
+    sudo ln -sf kubectx /usr/local/bin/kctx
+    sudo ln -sf kubens /usr/local/bin/kns"
 
     # Install kube-ps1
     pssh "
@@ -1033,6 +1042,26 @@ EOF
         curl -fsSL https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz |
         sudo tar -zxvf- -C /usr/local/bin ngrok
     fi"
+
+    # Install labtools (lists the tools above, by purpose),
+    # and tell students about it in the login message.
+    # The login message keeps only the Ubuntu welcome line (00-header):
+    # we turn off the other update-motd.d scripts (news, updates, ESM...).
+    pssh -I "sudo tee /usr/local/bin/labtools && sudo chmod 755 /usr/local/bin/labtools" <lib/labtools
+    pssh -I "sudo tee /etc/update-motd.d/99-labtools" <<"EOF"
+#!/bin/sh
+LINE='========================================================================'
+echo
+echo
+echo $LINE
+echo "Type labtools to list the Kubernetes and Docker tools on this lab."
+echo $LINE
+echo
+EOF
+    pssh "
+    sudo chmod 644 /etc/update-motd.d/*
+    sudo chmod 755 /etc/update-motd.d/00-header /etc/update-motd.d/99-labtools
+    "
 }
 
 _cmd kubereset "Wipe out Kubernetes configuration on all nodes"
